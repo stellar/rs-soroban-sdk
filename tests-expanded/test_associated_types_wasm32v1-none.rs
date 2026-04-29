@@ -58,6 +58,15 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x04exec\0\0\0\0\0\0\0\x01\0\0\0\x10"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_EXEC: [u8; 42usize] =
+    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
+        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+        *b"\xa5 5J;P\x91\x10g\xe9\x0eC967\xc5\x13\xe6#\xb2\xa0Wtv\xeeL\xed\xa1\x96]z\xf2",
+        [],
+    );
 impl<'a> ContractClient<'a> {
     pub fn exec(&self) -> String {
         use core::ops::Not;

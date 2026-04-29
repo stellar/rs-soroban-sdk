@@ -46,6 +46,17 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x05empty\0\0\0\0\0\0\0\0\0\0\0"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_EMPTY: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    42usize,
+    0usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    *b"\x02\xe7\xd0\x8a\xd9\x1eRo\x96A\x9b\x0b~\x9b\xdd\x94/\xdc\x8ai\xe5:\xd7\x8b\x93(h\x18\x84\xac\x95\x98",
+    [],
+);
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__empty2__spec {
@@ -61,6 +72,17 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x06empty2\0\0\0\0\0\0\0\0\0\0"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_EMPTY2: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    42usize,
+    0usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    *b"s\x9dR\x0b\xe0\xfb\xe3g\x97\xfcu\xe1\xc5\xffE\x93\x96\xed\n~\x18\xea\x85\xd2\xdbC\x8a\x18@\x90\x04\x01",
+    [],
+);
 impl<'a> ContractClient<'a> {
     pub fn empty(&self) -> () {
         use core::ops::Not;

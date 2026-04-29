@@ -44,6 +44,17 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x03add\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\n\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\n\0\0\0\x01\0\0\0\n"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_ADD: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    42usize,
+    0usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    *b"\x89\x11\x92\x11\xe2Y\xa1\xfb\xcb14'\xf0\x13\xef\xdf\x9f\xb7\xfb\x11%5 \xc1\x1em\xc3\xcb\xec\x0c\xa0\xb6",
+    [],
+);
 impl<'a> ContractClient<'a> {
     pub fn add(&self, a: &u128, b: &u128) -> u128 {
         use core::ops::Not;

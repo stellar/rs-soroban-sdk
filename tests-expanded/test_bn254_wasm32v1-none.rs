@@ -20,18 +20,19 @@ impl MockProof {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\tMockProof\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02g1\0\0\0\0\x03\xea\0\0\x03\xee\0\0\0@\0\0\0\0\0\0\0\x02g2\0\0\0\0\x03\xea\0\0\x03\xee\0\0\0\x80"
     }
 }
-impl soroban_sdk::SpecShakingMarker for MockProof {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <Vec<Bn254G1Affine> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Vec<Bn254G2Affine> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: [u8; 14usize] = *b"SpEcV1:\x81\xa6\xa0\x9e\xe7\xa7\x1f";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
-    }
+impl soroban_sdk::spec_shaking::SpecTypeId for MockProof {
+    const SPEC_TYPE_ID: [u8; 32] =
+        *b":\x81\xa6\xa0\x9e\xe7\xa7\x1f\xb2\xd7\xc9\x1b)/\x02d\xafvb+Mi[n13\xa4\x87\xd6\x1dT\x08";
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_TYPE_MOCKPROOF: [u8; 42usize] =
+    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
+        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+        *b":\x81\xa6\xa0\x9e\xe7\xa7\x1f\xb2\xd7\xc9\x1b)/\x02d\xafvb+Mi[n13\xa4\x87\xd6\x1dT\x08",
+        [],
+    );
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MockProof {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
@@ -141,6 +142,17 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0everify_pairing\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05proof\0\0\0\0\0\x07\xd0\0\0\0\tMockProof\0\0\0\0\0\0\x01\0\0\0\x01"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_VERIFY_PAIRING: [u8; 74usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    74usize,
+    1usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    *b"(\xf5\xcfQ\xad\x8eE\xd6x\xb8\xe8\xb3\x81\xe7\xa4\x18w\xfa\xe4\x0e{a\xf9\x05\xdb\xb0\xa6\xaf\x06\xbe\x1aw",
+    [<MockProof as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID],
+);
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__g1_add__spec {
@@ -156,6 +168,17 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x06g1_add\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\x03\xee\0\0\0@\0\0\0\0\0\0\0\x01b\0\0\0\0\0\x03\xee\0\0\0@\0\0\0\x01\0\0\x03\xee\0\0\0@"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_G1_ADD: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    42usize,
+    0usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    *b"\xe0\xaf\xf3\xacg\xce\x8d2\x14\xbai\x82\xa7q\xf3\xf5g\xd2*\xdb\xc8\xae\x04\xbaC\xe1\xc1\xed\x95l\xccv",
+    [],
+);
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__g1_mul__spec {
@@ -171,6 +194,17 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x06g1_mul\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01p\0\0\0\0\0\x03\xee\0\0\0@\0\0\0\0\0\0\0\x01s\0\0\0\0\0\0\x0c\0\0\0\x01\0\0\x03\xee\0\0\0@"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_G1_MUL: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    42usize,
+    0usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    *b"86PV\x83\x14\xc9\xec+\x07\xc3\x91\x12\x10\x9c\xae\xd5:XB\x80\x95\xf8\xd4s\x901_\xb0r\xa2^",
+    [],
+);
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__fr_vec_get__spec {
@@ -186,6 +220,15 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\nfr_vec_get\0\0\0\0\0\x02\0\0\0\0\0\0\0\x06values\0\0\0\0\x03\xea\0\0\0\x0c\0\0\0\0\0\0\0\x05index\0\0\0\0\0\0\x04\0\0\0\x01\0\0\0\x0c"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_FR_VEC_GET: [u8; 42usize] =
+    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
+        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+        *b"\xefy\x1dH\xc0j@N\xca\x03J\x07yA&=\x12\x9ff\xaa\\:\xb8HF\x93[\x06\xeef]\x84",
+        [],
+    );
 impl<'a> ContractClient<'a> {
     pub fn verify_pairing(&self, proof: &MockProof) -> bool {
         use core::ops::Not;

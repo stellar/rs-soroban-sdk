@@ -60,6 +60,17 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_u32\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x04\0\0\0\x01\0\0\0\x04"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_TEST_U32: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    42usize,
+    0usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    *b"\xe2\x92L\x8b L\x07\xa1\x88\x07\xb8C\xc6\x85*\x8a\xc84\xc1\xbeTc8^\xdd\x06B\xb9\x94~8\xdc",
+    [],
+);
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__test_string__spec {
@@ -75,6 +86,17 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0btest_string\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x10\0\0\0\x01\0\0\0\x10"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_TEST_STRING: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    42usize,
+    0usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    *b"G\xfe^\xa9(|>\x01\xc9\xf4\x9f\xfe\xb8\x88\xde8K\xefn\xb7\xd8\xa8\xbb.\xca'\xa9C\xb9\xe2\x0f\x8d",
+    [],
+);
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__test_env_param__spec {
@@ -91,6 +113,15 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0etest_env_param\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_TEST_ENV_PARAM: [u8; 42usize] =
+    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
+        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+        *b"\xf5\xeb\xae\xe9\xa1L\xe56?k \x12\x8eT\xf3\xfd\x0f\xbc2\xd6XL\xed-\xa9Y}\xe5L9\x85\x16",
+        [],
+    );
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__test_struct__spec {
@@ -106,6 +137,18 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0btest_struct\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd0\0\0\0\x08MyStruct\0\0\0\x01\0\0\x07\xd0\0\0\0\x08MyStruct"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_TEST_STRUCT: [u8; 106usize] =
+    soroban_sdk::spec_shaking::spec_graph_record::<106usize, 2usize>(
+        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+        *b"\xe3J\x02q\xbbS\x01G\xe1\x81W'^@\xb2\x8b8\xb1\xe3\x8c\xce'\xde\x8b\xc8]\xc0\xb7Dcl ",
+        [
+            <MyStruct as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID,
+            <MyStruct as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID,
+        ],
+    );
 impl<'a> ContractClient<'a> {
     pub fn test_u32(&self, v: &u32) -> u32 {
         use core::ops::Not;
@@ -911,6 +954,15 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\x10Test i32 values.\0\0\0\x08test_i32\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x05\0\0\0\x01\0\0\0\x05"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_TEST_I32: [u8; 42usize] =
+    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
+        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+        *b"RO\xc6\xf8W\x07\xe9\xe3_\xe3J9D\xa5\x87\xc3\x9d`\x04c\xa5\xb3%\xe91\x07#E\xc2\xb3l\xd9",
+        [],
+    );
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__test_u64__spec {
@@ -926,6 +978,17 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_u64\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x06\0\0\0\x01\0\0\0\x06"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_TEST_U64: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    42usize,
+    0usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    *b"\xeaQ\x08\xd6\xb9\xb9\xe62\x87\xb7\x81$\xf6\x8f\x81\x98\xa5\xae\x1c/\xbc\x9c\x8c\xc4\x95\xc15\xbeg\xb4\xc4\t",
+    [],
+);
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__test_i64__spec {
@@ -941,6 +1004,17 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_i64\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x07\0\0\0\x01\0\0\0\x07"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_TEST_I64: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    42usize,
+    0usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    *b"\xa4\x97mN\xcb\x1b\x08}\x84\x02o\xa9;4\xf9*\x80\t\xe52\xe4\xe1.\x96\xfaaZ\x15\x1b\x80\x99L",
+    [],
+);
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__test_u128__spec {
@@ -956,6 +1030,17 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_u128\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\n\0\0\0\x01\0\0\0\n"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_TEST_U128: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    42usize,
+    0usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    *b"\xb8\xec\xfb\xc6\xf0k\xa6 ie\x91\xe1\x04{q\x94\xf1Q\x1b\xa6\xda\x1a\xae/Co\xcc\x0c\x94\xbe\t\x01",
+    [],
+);
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__test_i128__spec {
@@ -971,6 +1056,15 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_i128\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x0b\0\0\0\x01\0\0\0\x0b"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_TEST_I128: [u8; 42usize] =
+    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
+        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+        *b"K\xdf\x89\x8c\xc4\xc7\xb8Fz\xcb\xff\xb7^,C\xfe\xf7\xde\xd3K\xa4Y\x03Xq\xa62X5z&\x1b",
+        [],
+    );
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__test_bool__spec {
@@ -986,6 +1080,17 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_bool\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x01\0\0\0\x01\0\0\0\x01"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_TEST_BOOL: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    42usize,
+    0usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    *b"]\xb8\xa6\xf2A\xb4\x93\xa4\xfa\x06\x11\xf2\x9e;\x02}\xb8\\T\xef\xd3]\"\x7f\xd4A\xbf\x89\xe2~\xaa\xc9",
+    [],
+);
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__test_address__spec {
@@ -1001,6 +1106,15 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0ctest_address\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x13\0\0\0\x01\0\0\0\x13"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_TEST_ADDRESS: [u8; 42usize] =
+    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
+        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+        *b"\xe1\xa1\xce]Y\n1X\xf5\xa1\xd0A\xf9\xfa\0,\xa9/2.\xfak\x83.\x9d\xf4\xbe-\xdc\xc8\x15Y",
+        [],
+    );
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__test_bytes__spec {
@@ -1016,6 +1130,15 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\ntest_bytes\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x0e\0\0\0\x01\0\0\0\x0e"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_TEST_BYTES: [u8; 42usize] =
+    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
+        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+        *b"5\xdd\x0c4\x83\xcc&m\xd3@{\x1d'\x01\x89b\xc4E\xe0s\x80w\xaa+\xa7ttU\xb8Z\x99|",
+        [],
+    );
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__test_bytes_n__spec {
@@ -1031,6 +1154,15 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0ctest_bytes_n\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x03\xee\0\0\0 \0\0\0\x01\0\0\x03\xee\0\0\0 "
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_TEST_BYTES_N: [u8; 42usize] =
+    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
+        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+        *b"e\xc8ovtK?\xb2ixC\x15b\xb8\xfd\xc2\xd4pf\xc2,\xcd\x1b\xb6\xd5\x97\x16 \xbe\xcf\x81\xdd",
+        [],
+    );
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__test_symbol__spec {
@@ -1046,6 +1178,15 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0btest_symbol\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x11\0\0\0\x01\0\0\0\x11"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_TEST_SYMBOL: [u8; 42usize] =
+    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
+        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+        *b"\xb3\xbb?\xa3\xe95v]E\x90^\x17\x8dzlte\x02\n%\xe8\x93\xd2f\x16\xec\xc1\x12\x0c}(^",
+        [],
+    );
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__test_vec__spec {
@@ -1061,6 +1202,15 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_vec\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x03\xea\0\0\0\x04\0\0\0\x01\0\0\x03\xea\0\0\0\x04"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_TEST_VEC: [u8; 42usize] =
+    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
+        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+        *b"il\x1aVT\xad'\\T\xdf\xbeC\x16\xda\xec\xf7\x93t\xea%'l\x06\x0f\xff\xbd9p_\xf3'\xef",
+        [],
+    );
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__test_map__spec {
@@ -1076,6 +1226,15 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_map\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x03\xec\0\0\0\x04\0\0\0\x04\0\0\0\x01\0\0\x03\xec\0\0\0\x04\0\0\0\x04"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_TEST_MAP: [u8; 42usize] =
+    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
+        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+        *b"\xe0I\xc0\xec\x08W\xe7\x18\xd3\x81E&\xcc!`\xc9\xf7\x81~p\xdd1j\xbc\x1f<\xc2\xdb&+%t",
+        [],
+    );
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__test_duration__spec {
@@ -1092,6 +1251,17 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\rtest_duration\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\t\0\0\0\x01\0\0\0\t"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_TEST_DURATION: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    42usize,
+    0usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    *b"\"g\xca\xf3\x95\xc5f\"\x95\xb0\t\"\x12\x01\xf7\xa7\xa7\xe3\x9a\x9a\x90\xdc\x04\xe1\xfft\xd7\xe2\x01\xad\xeb@",
+    [],
+);
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__test_timepoint__spec {
@@ -1108,6 +1278,17 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0etest_timepoint\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x08\0\0\0\x01\0\0\0\x08"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_TEST_TIMEPOINT: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    42usize,
+    0usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    *b"\x98S\x95 \xc6\xb1\xfa*\x0f\r\x0b\x1f\x0fu\xe9C\xdc\xc17\x07\xf5\xe7\xe4\xa3\xdd\xe4\xd2\xe2\x01\x19\x07k",
+    [],
+);
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__test_i256__spec {
@@ -1123,6 +1304,15 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_i256\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\r\0\0\0\x01\0\0\0\r"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_TEST_I256: [u8; 42usize] =
+    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
+        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+        *b"\x7f\xef\xe5_|\xbb\xc6\xa9\xbd\xf1HP:jO8U\x8a|E\x03C\xc29\xd1c\xe5\xa1\xf8Q)?",
+        [],
+    );
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__test_u256__spec {
@@ -1138,6 +1328,15 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_u256\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x0c\0\0\0\x01\0\0\0\x0c"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_TEST_U256: [u8; 42usize] =
+    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
+        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+        *b"\xe3\xff\x18\xda\xd9V\x04P.\xc3\x0bX\xbd\x95\xb2\03U_\x9a~\xb82\"t\xff\x90=,o\x11\x89",
+        [],
+    );
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__test_enum_unit__spec {
@@ -1154,6 +1353,20 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0etest_enum_unit\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd0\0\0\0\nMyEnumUnit\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\nMyEnumUnit\0\0"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_TEST_ENUM_UNIT: [u8; 106usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    106usize,
+    2usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    *b"\x12fTH\xb0\xbd\xb3\xfb\x8f\r&\x857\xf4\xbc\x05\x16\xfa\xfc\x0ey\xee\x07\ra\x18\x80\xa1\x1e4\xbe+",
+    [
+        <MyEnumUnit as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID,
+        <MyEnumUnit as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID,
+    ],
+);
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__test_enum_variants__spec {
@@ -1170,6 +1383,20 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x12test_enum_variants\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd0\0\0\0\x0eMyEnumVariants\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x0eMyEnumVariants\0\0"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_TEST_ENUM_VARIANTS: [u8; 106usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    106usize,
+    2usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    *b"\xbf\xb8\x9d\xfbU@\x9d_\n\x9b\xb9<`\x90\xda\x14E\x17\xdd{\xd4<\xc2\xadL\xd7f\xaf\x84\xae\xbfe",
+    [
+        <MyEnumVariants as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID,
+        <MyEnumVariants as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID,
+    ],
+);
 impl<'a> ContractClient<'a> {
     /// Test i32 values.
     pub fn test_i32(&self, v: &i32) -> i32 {

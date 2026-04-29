@@ -158,6 +158,16 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x04exec\0\0\0\x03\0\0\0\0\0\0\0\x02i1\0\0\0\0\0\x04\0\0\0\0\0\0\0\x02i2\0\0\0\0\0\x04\0\0\0\0\0\0\0\x02i3\0\0\0\0\0\x04\0\0\0\x01\0\0\0\x04"
     }
 }
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_EXEC: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    42usize,
+    0usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    *b"\xfaz&!\x8c\x16\xbb\xac\x1f\x7fx\x9d0\xb2\xd4\x8cj\xc8\xa0\xaf\xb7{\xed\x9fI\xaf\xa7\x86\xea\xe5\xddV",
+    [],
+);
 impl<'a> ContractClient<'a> {
     pub fn exec(&self, i1: &u32, i2: &u32, i3: &u32) -> u32 {
         use core::ops::Not;

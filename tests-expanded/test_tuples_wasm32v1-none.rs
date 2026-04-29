@@ -48,6 +48,15 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x07void_fn\0\0\0\0\x01\0\0\0\0\0\0\0\x08void_arg\0\0\0\x02\0\0\0\x01\0\0\0\x02"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_VOID_FN: [u8; 42usize] =
+    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
+        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+        *b"\x94\x83*7S\xb5C\x1dJ\xfdD\x96\xff>j.#\x8b\xe3\xd8\xd8@\x07V\xf5\x931\xc6\xe7\xa1\xdcC",
+        [],
+    );
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__tuple1__spec {
@@ -63,6 +72,17 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x06tuple1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03arg\0\0\0\x03\xed\0\0\0\x01\0\0\0\x04\0\0\0\x01\0\0\x03\xed\0\0\0\x01\0\0\0\x04"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_TUPLE1: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    42usize,
+    0usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    *b"\xb0\xef<f\xb1\x98h\x93m\x8f\xed\xf3o\xe1\x1a\xca\xd3\xeb\xa6w\xe1\x03\x0b\x95\xcdB\x85<\xa1Sa!",
+    [],
+);
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__tuple2__spec {
@@ -78,6 +98,15 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x06tuple2\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03arg\0\0\0\x03\xed\0\0\0\x02\0\0\0\x04\0\0\0\x07\0\0\0\x01\0\0\x03\xed\0\0\0\x02\0\0\0\x04\0\0\0\x07"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_TUPLE2: [u8; 42usize] =
+    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
+        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+        *b"w\x9e\xa1:\xedN\x8a)\xca\x95\xd4e\x99\xfd\x95\x94Ff0w+N\xef\x85\x87k\xe58Se\xa3l",
+        [],
+    );
 impl<'a> ContractClient<'a> {
     pub fn void_fn(&self, _void_arg: &()) -> () {
         use core::ops::Not;

@@ -56,16 +56,20 @@ impl UdtEnum2 {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08UdtEnum2\0\0\0\x02\0\0\0\0\0\0\0\x01A\0\0\0\0\0\0\n\0\0\0\0\0\0\0\x01B\0\0\0\0\0\0\x0f"
     }
 }
-impl soroban_sdk::SpecShakingMarker for UdtEnum2 {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xaf\xf7\x93\xba\x9eM\xde\x9a";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
-    }
+impl soroban_sdk::spec_shaking::SpecTypeId for UdtEnum2 {
+    const SPEC_TYPE_ID: [u8; 32] = *b"\xaf\xf7\x93\xba\x9eM\xde\x9a?'\xa8\xb9\xcb\x94\x9f\x88\xf6L\xc0\xb9\x18\xd1\xc9\x1a5\xf8\x99\xa59\xc2\xcf\x9e";
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_TYPE_UDTENUM2: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    42usize,
+    0usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    *b"\xaf\xf7\x93\xba\x9eM\xde\x9a?'\xa8\xb9\xcb\x94\x9f\x88\xf6L\xc0\xb9\x18\xd1\xc9\x1a5\xf8\x99\xa59\xc2\xcf\x9e",
+    [],
+);
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtEnum2 {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -176,19 +180,24 @@ impl UdtEnum {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x07UdtEnum\0\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x04UdtA\0\0\0\x01\0\0\0\0\0\0\0\x04UdtB\0\0\0\x01\0\0\x07\xd0\0\0\0\tUdtStruct\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04UdtC\0\0\0\x01\0\0\x07\xd0\0\0\0\x08UdtEnum2\0\0\0\x01\0\0\0\0\0\0\0\x04UdtD\0\0\0\x01\0\0\x07\xd0\0\0\0\x08UdtTuple"
     }
 }
-impl soroban_sdk::SpecShakingMarker for UdtEnum {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <UdtStruct as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <UdtEnum2 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <UdtTuple as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xf3\xb0\xab@i\rH\xb4";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
-    }
+impl soroban_sdk::spec_shaking::SpecTypeId for UdtEnum {
+    const SPEC_TYPE_ID: [u8; 32] = *b"\xf3\xb0\xab@i\rH\xb4\x81\x9c\x94|?A\xef\xcf\xf3%Q\xd5\x8b\x90\xb2B\x18\xfb\x8c>\xaa\x8c^2";
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_TYPE_UDTENUM: [u8; 138usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    138usize,
+    3usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    *b"\xf3\xb0\xab@i\rH\xb4\x81\x9c\x94|?A\xef\xcf\xf3%Q\xd5\x8b\x90\xb2B\x18\xfb\x8c>\xaa\x8c^2",
+    [
+        <UdtStruct as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID,
+        <UdtEnum2 as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID,
+        <UdtTuple as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID,
+    ],
+);
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtEnum {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -341,18 +350,20 @@ impl UdtTuple {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x08UdtTuple\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x011\0\0\0\0\0\x03\xea\0\0\0\x07"
     }
 }
-impl soroban_sdk::SpecShakingMarker for UdtTuple {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Vec<i64> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xeb\x9f\x12&\x9av(*";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
-    }
+impl soroban_sdk::spec_shaking::SpecTypeId for UdtTuple {
+    const SPEC_TYPE_ID: [u8; 32] = *b"\xeb\x9f\x12&\x9av(*\x7f17.3\x91\xccc\xfc\xec\xee3\x0f\x96\xf2P\x1b9\xe8\xc6\x8f\xf0\xe0\xeb";
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_TYPE_UDTTUPLE: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    42usize,
+    0usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    *b"\xeb\x9f\x12&\x9av(*\x7f17.3\x91\xccc\xfc\xec\xee3\x0f\x96\xf2P\x1b9\xe8\xc6\x8f\xf0\xe0\xeb",
+    [],
+);
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtTuple {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -457,19 +468,20 @@ impl UdtStruct {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\tUdtStruct\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x01c\0\0\0\0\0\x03\xea\0\0\0\x07"
     }
 }
-impl soroban_sdk::SpecShakingMarker for UdtStruct {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Vec<i64> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x16'd8\xff\xc9\xb1\xf8";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
-    }
+impl soroban_sdk::spec_shaking::SpecTypeId for UdtStruct {
+    const SPEC_TYPE_ID: [u8; 32] = *b"\x16'd8\xff\xc9\xb1\xf8\x1cf\xb0\x84\xb1\xb8\xfay\x84`\xe4\xddp;\xc5*\x0e\xbaH:\x94\xbb\xb2\x87";
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_TYPE_UDTSTRUCT: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    42usize,
+    0usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    *b"\x16'd8\xff\xc9\xb1\xf8\x1cf\xb0\x84\xb1\xb8\xfay\x84`\xe4\xddp;\xc5*\x0e\xbaH:\x94\xbb\xb2\x87",
+    [],
+);
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtStruct {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
@@ -578,6 +590,20 @@ impl UdtRecursive {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cUdtRecursive\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x11\0\0\0\0\0\0\0\x01b\0\0\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x0cUdtRecursive"
     }
 }
+impl soroban_sdk::spec_shaking::SpecTypeId for UdtRecursive {
+    const SPEC_TYPE_ID: [u8; 32] = *b"\xc8\x12\x91\xfe\xd7\x13\xf5\x9c\xe4\xc7\x03\xdc@#$F\r\x04\xe2j_\xb0\xacC\xfd\x0b\xc0J~<\xfc\x05";
+}
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_TYPE_UDTRECURSIVE: [u8; 74usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    74usize,
+    1usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    *b"\xc8\x12\x91\xfe\xd7\x13\xf5\x9c\xe4\xc7\x03\xdc@#$F\r\x04\xe2j_\xb0\xacC\xfd\x0b\xc0J~<\xfc\x05",
+    [<UdtRecursive as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID],
+);
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtRecursive {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
@@ -682,6 +708,20 @@ impl RecursiveToEnum {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0fRecursiveToEnum\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x11\0\0\0\0\0\0\0\x01b\0\0\0\0\0\x03\xec\0\0\0\x04\0\0\x07\xd0\0\0\0\rRecursiveEnum\0\0\0"
     }
 }
+impl soroban_sdk::spec_shaking::SpecTypeId for RecursiveToEnum {
+    const SPEC_TYPE_ID: [u8; 32] = *b"\xe1oU\xdb\xd47\x98\x14z\xb2+\xbb\xdf\xdbn\x14$\x92\xbb\xf1M\xf2\x10&P\x0c\xd1\x13J\x97Ci";
+}
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_TYPE_RECURSIVETOENUM: [u8; 74usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    74usize,
+    1usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    *b"\xe1oU\xdb\xd47\x98\x14z\xb2+\xbb\xdf\xdbn\x14$\x92\xbb\xf1M\xf2\x10&P\x0c\xd1\x13J\x97Ci",
+    [<RecursiveEnum as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID],
+);
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for RecursiveToEnum {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
@@ -793,6 +833,19 @@ impl RecursiveEnum {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\rRecursiveEnum\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x0cNotRecursive\0\0\0\x01\0\0\0\0\0\0\0\tRecursive\0\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x0fRecursiveToEnum\0"
     }
 }
+impl soroban_sdk::spec_shaking::SpecTypeId for RecursiveEnum {
+    const SPEC_TYPE_ID: [u8; 32] =
+        *b"\xff{V \xab\r\xdcd\xe7~\x19\x83<\xc27t\xc6\x9d=\x9f\x8f\x12\x0e\x18>%\x08\x89.&\0M";
+}
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_TYPE_RECURSIVEENUM: [u8; 74usize] =
+    soroban_sdk::spec_shaking::spec_graph_record::<74usize, 1usize>(
+        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+        *b"\xff{V \xab\r\xdcd\xe7~\x19\x83<\xc27t\xc6\x9d=\x9f\x8f\x12\x0e\x18>%\x08\x89.&\0M",
+        [<RecursiveToEnum as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID],
+    );
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for RecursiveEnum {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -931,6 +984,20 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x03add\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\x07\xd0\0\0\0\x07UdtEnum\0\0\0\0\0\0\0\0\x01b\0\0\0\0\0\x07\xd0\0\0\0\x07UdtEnum\0\0\0\0\x01\0\0\0\x07"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_ADD: [u8; 106usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    106usize,
+    2usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    *b"\xeb\xb9m\xe34\x1d[[\xe4K\xe7\xe3\xf4.\x99\x9b\xf2\x1a\xe15\xa1D+\xa8\x1b\x1cV\n\xed\xc1\xa4\x89",
+    [
+        <UdtEnum as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID,
+        <UdtEnum as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID,
+    ],
+);
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__recursive__spec {
@@ -946,6 +1013,18 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\trecursive\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01a\0\0\0\0\0\x07\xd0\0\0\0\x0cUdtRecursive\0\0\0\x01\0\0\x03\xe8\0\0\x07\xd0\0\0\0\x0cUdtRecursive"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_RECURSIVE: [u8; 106usize] =
+    soroban_sdk::spec_shaking::spec_graph_record::<106usize, 2usize>(
+        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+        *b"(`\x83Z;\x970\xd8\xdaZp\xcf\x9e\xbf\x82\x86|0\xb6\x90\x10Mf\x13\xcf\xd76\x0cDn\xdb\xb2",
+        [
+            <UdtRecursive as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID,
+            <UdtRecursive as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID,
+        ],
+    );
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__recursive_enum__spec {
@@ -962,6 +1041,20 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0erecursive_enum\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\x07\xd0\0\0\0\rRecursiveEnum\0\0\0\0\0\0\0\0\0\0\x03key\0\0\0\0\x04\0\0\0\x01\0\0\x03\xe9\0\0\x03\xe8\0\0\x07\xd0\0\0\0\rRecursiveEnum\0\0\0\0\0\0\x03"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_RECURSIVE_ENUM: [u8; 106usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    106usize,
+    2usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    *b"\x84H!\x0e\xfc\xdbM6\x02\xaaN\xe4\xee\x99J\x08\x94\x08\xa9\xc0D\x88Ci\xc9\x07~\xb9\xa6\xc5\xec\xaa",
+    [
+        <RecursiveEnum as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID,
+        <RecursiveEnum as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID,
+    ],
+);
 impl<'a> ContractClient<'a> {
     pub fn add(&self, a: &UdtEnum, b: &UdtEnum) -> i64 {
         use core::ops::Not;

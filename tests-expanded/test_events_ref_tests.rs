@@ -148,16 +148,16 @@ impl<'a> Transfer<'a> {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x08Transfer\0\0\0\x01\0\0\0\x08transfer\0\0\0\x04\0\0\0\0\0\0\0\x04from\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02to\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x06amount\0\0\0\0\0\x0b\0\0\0\0\0\0\0\0\0\0\0\x0bto_muxed_id\0\0\0\x03\xe8\0\0\0\x06\0\0\0\0\0\0\0\x02"
     }
 }
-impl<'a> soroban_sdk::SpecShakingMarker for Transfer<'a> {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <&'a Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <&'a Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <&'a i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Option<&'a u64> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-    }
-}
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_EVENT_TRANSFER: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    42usize,
+    0usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_EVENT,
+    *b";\xc1i\xa0H>\x8d\xf1\x91\x8e\xbe\xb2\xcb\xba\xd8\xec \xf2\x02G\xf1?\x9b\r\xf3`\x0c0n\xedA\x8b",
+    [],
+);
 impl<'a> soroban_sdk::Event for Transfer<'a> {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
         use soroban_sdk::IntoVal;
@@ -190,7 +190,6 @@ impl<'a> soroban_sdk::Event for Transfer<'a> {
 }
 impl<'a> Transfer<'a> {
     pub fn publish(&self, env: &soroban_sdk::Env) {
-        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
@@ -231,6 +230,16 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x08transfer\0\0\0\x03\0\0\0\0\0\0\0\x04from\0\0\0\x13\0\0\0\0\0\0\0\x02to\0\0\0\0\0\x14\0\0\0\0\0\0\0\x06amount\0\0\0\0\0\x0b\0\0\0\0"
     }
 }
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_TRANSFER: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    42usize,
+    0usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    *b"\xafT\x04\xcb\x89\x8d\x07\x1e\xc7q\x8a\xea\xbff?J.\x13\xc0\xe2\xbfx?\x05>Q\x14\x97'X-\xd8",
+    [],
+);
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__failed_transfer__spec {
@@ -246,6 +255,16 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0ffailed_transfer\0\0\0\0\x03\0\0\0\0\0\0\0\x04from\0\0\0\x13\0\0\0\0\0\0\0\x02to\0\0\0\0\0\x13\0\0\0\0\0\0\0\x06amount\0\0\0\0\0\x0b\0\0\0\0"
     }
 }
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_FAILED_TRANSFER: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    42usize,
+    0usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    *b"\xba\xaa\xb6\xe3u?\xd0\x07\xc9\xc0\x0fAw\xa3\x7f\xfe[.\xdf\xe2\xe2\xf8+\x8e\xcbE\xe6$\xd1w&\xf8",
+    [],
+);
 impl<'a> ContractClient<'a> {
     pub fn transfer(&self, from: &Address, to: impl Into<MuxedAddress>, amount: &i128) -> () {
         use core::ops::Not;

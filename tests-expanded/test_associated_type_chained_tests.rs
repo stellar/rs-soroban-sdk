@@ -215,6 +215,14 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x07set_val\0\0\0\0\x01\0\0\0\0\0\0\0\x05input\0\0\0\0\0\0\x06\0\0\0\0"
     }
 }
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_SET_VAL: [u8; 42usize] =
+    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
+        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+        *b"\xc6-\xf8\xb1V\x0eY\x8f\x0fZh\x86p\x8bs\xc3E\x92BZ\x8d\x93d\x92.\xfa\xb2\x95`,;\xb4",
+        [],
+    );
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__get_val__spec {
@@ -229,6 +237,16 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x07get_val\0\0\0\0\0\0\0\0\x01\0\0\0\x06"
     }
 }
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_GET_VAL: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    42usize,
+    0usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    *b"\xb2d\xe3@\xd4W\xa0J\x8f\xfc\xb9\xad\x83}\xa8\xe5\xb9D\x12\x917\xa3\xedS\xaaB\xff\x1a\xf6\x80\xa9\xc8",
+    [],
+);
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__both__spec {
@@ -243,6 +261,16 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x04both\0\0\0\x01\0\0\0\0\0\0\0\x05input\0\0\0\0\0\0\x06\0\0\0\x01\0\0\0\x06"
     }
 }
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_BOTH: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    42usize,
+    0usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    *b"\x90`f\x8d\xd5\xe8\xe6\xc0F\xa7\xaa\xe2( \xe6t\xd9\xa8\x03dK\xf1p\x98\x19\xba\x81y\xe7m\xe6\x03",
+    [],
+);
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__wrapped__spec {
@@ -257,6 +285,16 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x07wrapped\0\0\0\0\x01\0\0\0\0\0\0\0\x05input\0\0\0\0\0\x03\xea\0\0\0\x06\0\0\0\x01\0\0\x03\xe9\0\0\0\x06\0\0\0\x03"
     }
 }
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_WRAPPED: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    42usize,
+    0usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    *b"\xda\xa7\xa2Fh\xc9\xc3\xe3\xb9\xa2\x85\x9d\x8d\x16d4\xf1\xb9\x0c@Cjd\xc6\x1b=\xedky\xa0;\x92",
+    [],
+);
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__double_wrapped__spec {
@@ -272,6 +310,14 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0edouble_wrapped\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05input\0\0\0\0\0\x03\xe8\0\0\x03\xea\0\0\0\x06\0\0\0\x01\0\0\x03\xe9\0\0\x03\xea\0\0\0\x06\0\0\0\x03"
     }
 }
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_DOUBLE_WRAPPED: [u8; 42usize] =
+    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
+        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+        *b"F\x0b\x86\xec]\xcc\t,7\x9c\x9a\x98kB\xcc\x050\xc8,i#Z\xf0\x83\xb7_\xc5O\x92$\xb0\xdc",
+        [],
+    );
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__valval__spec {
@@ -286,6 +332,16 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x06valval\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05input\0\0\0\0\0\0\x06\0\0\0\x01\0\0\x03\xe8\0\0\0\x06"
     }
 }
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_VALVAL: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    42usize,
+    0usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    *b"\x13\xeaE\xa5\x1e\xe5\x06\xdf\x9b\xee\x8ds\xc8\xcc\x054\xc9\0\x1f\xf6\x842\xd8u\xd2o\xfen\xc0\x83Q\xf9",
+    [],
+);
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__tuple__spec {
@@ -300,6 +356,16 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x05tuple\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05input\0\0\0\0\0\0\x06\0\0\0\x01\0\0\x03\xed\0\0\0\x02\0\0\0\x06\0\0\0\x06"
     }
 }
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_TUPLE: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    42usize,
+    0usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    *b"\xe1ca\xfe\x88\x13\xc3\xec%\xe3\xdd\xd2\xfaT\x86y\xc2\xf55\xe0\xa1\xe1&\xe8E\xf6}\xf3\xe5\x99\x86\xb6",
+    [],
+);
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__valref__spec {
@@ -314,6 +380,16 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x06valref\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05input\0\0\0\0\0\0\x06\0\0\0\x01\0\0\0\x06"
     }
 }
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_VALREF: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    42usize,
+    0usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    *b"^\x11\xe1\x0e\xc9\xd2^-\xa7Z?O\x97\xd5\xe3#\xa8\x12!\xf4j\x01\xe8%Z\x9e\xde&P\x80\x17\xd2",
+    [],
+);
 impl<'a> ContractClient<'a> {
     pub fn set_val(&self, input: &u64) -> () {
         use core::ops::Not;
