@@ -6,7 +6,7 @@ use soroban_sdk::{
 #[contract]
 pub struct Contract;
 
-// --- Used types: markers expected ---
+// --- Used types: reachable from function specs or event-root markers ---
 
 // Used as fn param (struct with nested type)
 #[contracttype]
@@ -14,6 +14,13 @@ pub struct Contract;
 pub struct UsedParamStruct {
     pub a: u32,
     pub nested: UsedNestedInStruct,
+}
+
+// Used only as constructor param
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedConstructorMeta {
+    pub val: u32,
 }
 
 // Used as fn return (union enum)
@@ -231,7 +238,7 @@ pub struct UsedVecElementNested {
     pub vec_inner: Vec<UsedVecInnerVecElement>,
 }
 
-// --- Non-pub used types: spec entries + markers expected with feature ---
+// --- Non-pub used types: spec entries expected with feature ---
 
 // Non-pub struct used as fn param
 #[contracttype]
@@ -247,7 +254,7 @@ enum UsedNonPubError {
     Fail = 1,
 }
 
-// --- Recursive types: nested type with recursive reference safely includes all markers ---
+// --- Recursive types: graph pruning should include all reachable entries ---
 
 #[contracttype]
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -276,15 +283,15 @@ pub struct UsedLeaf {
 
 // --- Lib-imported types (Rust crate dep): rlib statics linked into cdylib ---
 // Only StructC is used in a contract fn; other spec_lib types have spec entries
-// but no markers.
+// but are not rooted by any function or published event.
 
-// --- WASM-imported types (contractimport!): only used ones should have markers ---
+// --- WASM-imported types (contractimport!): only used ones should survive pruning ---
 
 mod wasm_imported {
     soroban_sdk::contractimport!(file = "../../target/wasm32v1-none/release/test_spec_import.wasm");
 }
 
-// --- Unused types: no markers expected ---
+// --- Unused types: not rooted by function specs or published events ---
 
 #[contracttype]
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -314,7 +321,7 @@ pub struct UnusedEvent {
     pub data: u32,
 }
 
-// Used only in a non-contractimpl fn: spec entry exists but no marker
+// Used only in a non-contractimpl fn: spec entry exists but is not rooted.
 #[contracttype]
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct UnusedNonContractFnParam {
@@ -327,14 +334,14 @@ pub struct UnusedNonContractFnReturn {
     pub x: u32,
 }
 
-// Non-pub unused struct: spec entry exists but no marker
+// Non-pub unused struct: spec entry exists but is not rooted.
 #[contracttype]
 #[derive(Clone, Debug, Eq, PartialEq)]
 struct UnusedNonPubStruct {
     pub x: u32,
 }
 
-// Non-pub unused error: spec entry exists but no marker
+// Non-pub unused error: spec entry exists but is not rooted.
 #[contracterror]
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 enum UnusedNonPubError {
@@ -344,6 +351,8 @@ enum UnusedNonPubError {
 #[allow(private_interfaces)]
 #[contractimpl]
 impl Contract {
+    pub fn __constructor(_env: Env, _meta: UsedConstructorMeta) {}
+
     pub fn with_param(_env: Env, _s: UsedParamStruct, _ie: UsedParamIntEnum) {}
 
     pub fn with_return(_env: Env) -> UsedReturnEnum {
@@ -441,8 +450,8 @@ impl Contract {
     }
 }
 
-// Non-contractimpl function: types used here should NOT have markers since
-// they are not at a contract boundary.
+// Non-contractimpl function: types used here should not be kept since they are
+// not at a contract boundary.
 #[allow(dead_code)]
 fn non_contract_fn(_s: UnusedNonContractFnParam) -> UnusedNonContractFnReturn {
     UnusedNonContractFnReturn { x: 1 }

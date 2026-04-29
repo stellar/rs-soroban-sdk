@@ -43,7 +43,7 @@
 //! ### Spec Shaking v2 (this feature)
 //!
 //! - Everything exported (types, events, functions, imports)
-//! - Unused entries shaken out using dead code / spec elimination
+//! - Unused entries shaken out using event-root markers and spec graph pruning
 //!
 //! A contract's spec (the `contractspecv0` custom section in the Wasm binary)
 //! contains entries for every function, type, and event defined by the contract.
@@ -53,28 +53,23 @@
 //!
 //! ### How It Works
 //!
-//! When this feature is enabled, the SDK embeds 14-byte **markers** in the Wasm
-//! data section for each exported type and event. A marker consists of a
-//! `SpEcV1` magic prefix followed by 8 bytes of a SHA-256 hash of the spec
-//! entry's XDR.
+//! Function parameter and return types are rooted directly from the function
+//! entries in `contractspecv0`. Post-build tools walk `ScSpecTypeDef` references
+//! from those roots to retain nested UDTs through structs, unions, tuples, and
+//! containers.
 //!
-//! Markers are placed inside functions that are only called when the type is
-//! actually used:
-//! - **Function parameters**: marker is triggered when deserializing the input.
-//! - **Function return values**: marker is triggered when serializing the output.
-//! - **Error returns**: marker is triggered via `Result<T, E>` serialization.
-//! - **Event publishes**: marker is triggered inside the `publish()` call.
-//! - **Nested types**: a type's marker function calls the marker functions of
-//!   its field types, so nested types are transitively marked.
-//! - **Container types**: `Vec<T>`, `Map<K, V>`, `Option<T>`, and `Result<T, E>`
-//!   propagate markers to their inner types.
+//! Events need one extra reachability signal because `contractspecv0` contains
+//! every exported event, not just events that are actually published by reachable
+//! contract code. For each exported event, the SDK embeds a 14-byte marker in
+//! the event's generated `publish()` method. A marker consists of a `SpEcV1`
+//! magic prefix followed by 8 bytes of a SHA-256 hash of the event spec entry's
+//! XDR.
 //!
-//! The Rust compiler's dead code elimination (DCE) removes markers for types
-//! that are never used, while keeping markers for types that are.
-//!
-//! Post-build tools (e.g. `stellar-cli`) scan the Wasm data section for
-//! `SpEcV1` markers, match them against spec entries, and strip any entries
-//! without a corresponding marker.
+//! Post-build tools (e.g. `stellar-cli`) scan the Wasm data section for event
+//! markers, keep marked events, keep all functions, walk UDT references from
+//! those roots, and strip the remaining entries from `contractspecv0`. If
+//! multiple UDT entries have the same name, all matching entries are kept
+//! conservatively because `ScSpecTypeDef::Udt` stores only a name.
 //!
 //! ### Changed Behaviour
 //!
@@ -84,15 +79,15 @@
 //!
 //! Without this feature, spec entries are only generated for `pub` types (or
 //! when `export = true` is explicitly set). With this feature, spec entries
-//! and markers are generated for all types regardless of visibility, unless
-//! `export = false` is explicitly set. This ensures all types can participate
-//! in spec shaking.
+//! are generated for all types regardless of visibility, unless `export = false`
+//! is explicitly set. This ensures all types can participate in spec graph
+//! pruning.
 //!
 //! #### [`contracterror`]
 //!
 //! Same as [`contracttype`]: without this feature, spec entries are only
-//! generated for `pub` types. With this feature, spec entries and markers are
-//! generated for all error enums regardless of visibility, unless
+//! generated for `pub` types. With this feature, spec entries are generated for
+//! all error enums regardless of visibility, unless
 //! `export = false` is explicitly set.
 //!
 //! #### [`contractevent`]
@@ -110,17 +105,17 @@
 //! the type definitions.
 //!
 //! With this feature, [`contractimport!`] generates imported types with
-//! `export = true`. Imported types produce spec entries and markers in the
-//! importing contract, just like locally defined types. This changes the
+//! `export = true`. Imported types produce spec entries in the importing
+//! contract, just like locally defined types. This changes the
 //! contract's spec to be self-contained — it includes the type definitions for
 //! all types used at the contract boundary, regardless of where those types
 //! were originally defined. Specifically:
 //!
 //! - Imported types that are used in the contract's function signatures or
-//!   events will have their markers survive DCE and their spec entries will be
-//!   kept after shaking.
+//!   published events will be reachable from the spec graph and their spec
+//!   entries will be kept after shaking.
 //! - Imported types that are **not** used at any contract boundary will have
-//!   their markers eliminated by DCE and their spec entries will be stripped.
+//!   their spec entries stripped.
 //!
 //! This ensures that a contract importing a large interface only includes spec
 //! entries for the types it actually uses, while still producing a

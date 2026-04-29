@@ -132,6 +132,101 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedParamStruct> for soroban_sdk
         <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedParamStruct>>::try_from_val(env, *val)
     }
 }
+pub struct UsedConstructorMeta {
+    pub val: u32,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UsedConstructorMeta {
+    #[inline]
+    fn clone(&self) -> UsedConstructorMeta {
+        UsedConstructorMeta {
+            val: ::core::clone::Clone::clone(&self.val),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UsedConstructorMeta {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field1_finish(
+            f,
+            "UsedConstructorMeta",
+            "val",
+            &&self.val,
+        )
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UsedConstructorMeta {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<u32>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UsedConstructorMeta {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UsedConstructorMeta {
+    #[inline]
+    fn eq(&self, other: &UsedConstructorMeta) -> bool {
+        self.val == other.val
+    }
+}
+#[link_section = "contractspecv0"]
+pub static __SPEC_XDR_TYPE_USEDCONSTRUCTORMETA: [u8; 56usize] = UsedConstructorMeta::spec_xdr();
+impl UsedConstructorMeta {
+    pub const fn spec_xdr() -> [u8; 56usize] {
+        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x13UsedConstructorMeta\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedConstructorMeta {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
+        let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+            .map_err(|_| ConversionError)?;
+        Ok(Self {
+            val: vals[0]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedConstructorMeta> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UsedConstructorMeta,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let vals: [Val; 1usize] = [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
+        Ok(env
+            .map_new_from_slices(&KEYS, &vals)
+            .map_err(|_| ConversionError)?
+            .into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedConstructorMeta> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UsedConstructorMeta,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedConstructorMeta>>::try_from_val(
+            env, *val,
+        )
+    }
+}
 pub enum UsedReturnEnum {
     A(u32),
     B(i64),
@@ -6961,6 +7056,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UnusedNonPubError> for soroban_s
 }
 #[allow(private_interfaces)]
 impl Contract {
+    pub fn __constructor(_env: Env, _meta: UsedConstructorMeta) {}
     pub fn with_param(_env: Env, _s: UsedParamStruct, _ie: UsedParamIntEnum) {}
     pub fn with_return(_env: Env) -> UsedReturnEnum {
         UsedReturnEnum::A(1)
@@ -7035,6 +7131,22 @@ impl Contract {
             payload: &payload,
         }
         .publish(&env);
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract____constructor__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_FN___CONSTRUCTOR: [u8; 76usize] =
+        super::Contract::spec_xdr___constructor();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr___constructor() -> [u8; 76usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\r__constructor\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04meta\0\0\x07\xd0\0\0\0\x13UsedConstructorMeta\0\0\0\0\0"
     }
 }
 #[doc(hidden)]
@@ -7918,6 +8030,11 @@ impl<'a> ContractClient<'a> {
 impl ContractArgs {
     #[inline(always)]
     #[allow(clippy::unused_unit)]
+    pub fn __constructor<'i>(_meta: &'i UsedConstructorMeta) -> (&'i UsedConstructorMeta,) {
+        (_meta,)
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
     pub fn with_param<'i>(
         _s: &'i UsedParamStruct,
         _ie: &'i UsedParamIntEnum,
@@ -8026,6 +8143,37 @@ impl ContractArgs {
     pub fn publish_ref_event<'i>() -> () {
         ()
     }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).__constructor` instead")]
+#[allow(deprecated)]
+pub fn __Contract____constructor__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::__constructor(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).__constructor` instead")]
+#[export_name = "__constructor"]
+pub extern "C" fn __Contract____constructor__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract____constructor__invoke_raw(soroban_sdk::Env::default(), arg_0)
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]

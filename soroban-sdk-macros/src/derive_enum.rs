@@ -1,6 +1,6 @@
 use itertools::MultiUnzip;
 use proc_macro2::{Literal, TokenStream as TokenStream2};
-use quote::{format_ident, quote, ToTokens};
+use quote::{format_ident, quote};
 use syn::{
     ext::IdentExt as _, spanned::Spanned, Attribute, DataEnum, Error, Fields, Ident, Path,
     Visibility,
@@ -36,12 +36,12 @@ pub fn derive_type_enum(
     let (
         spec_cases,
         case_name_str_lits,
-        variant_field_types,
         try_froms,
         try_intos,
         try_from_xdrs,
         into_xdrs,
-    ): (Vec<_>, Vec<_>, Vec<Vec<_>>, Vec<_>, Vec<_>, Vec<_>, Vec<_>) = variants
+        case_type_id_refs,
+    ): (Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>) = variants
         .iter()
         .enumerate()
         .map(|(case_num, variant)| {
@@ -80,9 +80,6 @@ pub fn derive_type_enum(
                 _ => {}
             }
 
-            // Collect field types for SpecShakingMarker
-            let field_types: Vec<_> = variant.fields.iter().map(|f| &f.ty).collect();
-
             let is_unit_variant = variant.fields == Fields::Unit;
             if !is_unit_variant {
                 let VariantTokens {
@@ -91,6 +88,7 @@ pub fn derive_type_enum(
                     try_into,
                     try_from_xdr,
                     into_xdr,
+                    type_id_refs,
                 } = map_tuple_variant(
                     path,
                     enum_ident,
@@ -105,11 +103,11 @@ pub fn derive_type_enum(
                 (
                     spec_case,
                     case_name_str_lit,
-                    field_types,
                     try_from,
                     try_into,
                     try_from_xdr,
                     into_xdr,
+                    type_id_refs,
                 )
             } else {
                 let VariantTokens {
@@ -118,6 +116,7 @@ pub fn derive_type_enum(
                     try_into,
                     try_from_xdr,
                     into_xdr,
+                    type_id_refs,
                 } = map_empty_variant(
                     path,
                     enum_ident,
@@ -130,11 +129,11 @@ pub fn derive_type_enum(
                 (
                     spec_case,
                     case_name_str_lit,
-                    field_types,
                     try_from,
                     try_into,
                     try_from_xdr,
                     into_xdr,
+                    type_id_refs,
                 )
             }
         })
@@ -167,6 +166,26 @@ pub fn derive_type_enum(
             "__SPEC_XDR_TYPE_{}",
             enum_ident.unraw().to_string().to_uppercase()
         );
+        let spec_shaking_gen = if cfg!(feature = "experimental_spec_shaking_v2") {
+            let graph_ident = format_ident!(
+                "__SPEC_GRAPH_TYPE_{}",
+                enum_ident.unraw().to_string().to_uppercase()
+            );
+            let type_id_impl = shaking::generate_type_id_impl(path, enum_ident, spec_xdr);
+            let graph_record = shaking::generate_graph_record(
+                path,
+                &graph_ident,
+                quote! { #path::spec_shaking::GRAPH_RECORD_KIND_UDT },
+                spec_xdr,
+                case_type_id_refs.into_iter().flatten().collect(),
+            );
+            Some(quote! {
+                #type_id_impl
+                #graph_record
+            })
+        } else {
+            None
+        };
         Some(quote! {
             #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
             pub static #spec_ident: [u8; #spec_xdr_len] = #enum_ident::spec_xdr();
@@ -176,30 +195,8 @@ pub fn derive_type_enum(
                     *#spec_xdr_lit
                 }
             }
-        })
-    } else {
-        None
-    };
 
-    // SpecShakingMarker impl - only generated when spec is true and the
-    // experimental_spec_shaking_v2 feature is enabled.
-    let spec_shaking_impl = if cfg!(feature = "experimental_spec_shaking_v2") {
-        spec_xdr.as_ref().map(|spec_xdr| {
-            // Flatten all variant field types for shaking calls, deduplicating
-            // to avoid redundant calls for types that appear in multiple variants.
-            let all_field_types =
-                itertools::Itertools::unique_by(variant_field_types.iter().flatten(), |t| {
-                    t.to_token_stream().to_string()
-                });
-            shaking::generate_marker_impl(
-                path,
-                quote!(#enum_ident),
-                spec_xdr,
-                all_field_types.cloned(),
-                None,
-                None,
-                None,
-            )
+            #spec_shaking_gen
         })
     } else {
         None
@@ -208,8 +205,6 @@ pub fn derive_type_enum(
     // Output.
     let mut output = quote! {
         #spec_gen
-
-        #spec_shaking_impl
 
         impl #path::TryFromVal<#path::Env, #path::Val> for #enum_ident {
             type Error = #path::ConversionError;
@@ -329,6 +324,7 @@ struct VariantTokens {
     try_into: TokenStream2,
     try_from_xdr: TokenStream2,
     into_xdr: TokenStream2,
+    type_id_refs: Vec<TokenStream2>,
 }
 
 fn map_empty_variant(
@@ -380,6 +376,7 @@ fn map_empty_variant(
         try_into,
         try_from_xdr,
         into_xdr,
+        type_id_refs: Vec::new(),
     }
 }
 
@@ -433,6 +430,10 @@ fn map_tuple_variant(
             type_: field_types,
         })
     };
+    let type_id_refs = fields
+        .iter()
+        .flat_map(|field| shaking::type_id_refs(path, &field.ty))
+        .collect::<Vec<_>>();
 
     let num_fields = fields.iter().len();
     let try_from = {
@@ -519,5 +520,6 @@ fn map_tuple_variant(
         try_into,
         try_from_xdr,
         into_xdr,
+        type_id_refs,
     }
 }

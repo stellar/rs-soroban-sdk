@@ -86,6 +86,26 @@ pub fn derive_type_error_enum_int(
             "__SPEC_XDR_TYPE_{}",
             enum_ident.unraw().to_string().to_uppercase()
         );
+        let spec_shaking_gen = if cfg!(feature = "experimental_spec_shaking_v2") {
+            let graph_ident = format_ident!(
+                "__SPEC_GRAPH_TYPE_{}",
+                enum_ident.unraw().to_string().to_uppercase()
+            );
+            let type_id_impl = shaking::generate_type_id_impl(path, enum_ident, spec_xdr);
+            let graph_record = shaking::generate_graph_record(
+                path,
+                &graph_ident,
+                quote! { #path::spec_shaking::GRAPH_RECORD_KIND_UDT },
+                spec_xdr,
+                Vec::new(),
+            );
+            Some(quote! {
+                #type_id_impl
+                #graph_record
+            })
+        } else {
+            None
+        };
         Some(quote! {
             #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
             pub static #spec_ident: [u8; #spec_xdr_len] = #enum_ident::spec_xdr();
@@ -95,24 +115,8 @@ pub fn derive_type_error_enum_int(
                     *#spec_xdr_lit
                 }
             }
-        })
-    } else {
-        None
-    };
 
-    // SpecShakingMarker impl - only generated when spec is true and the
-    // experimental_spec_shaking_v2 feature is enabled.
-    let spec_shaking_impl = if cfg!(feature = "experimental_spec_shaking_v2") {
-        spec_xdr.as_ref().map(|spec_xdr| {
-            shaking::generate_marker_impl(
-                path,
-                quote!(#enum_ident),
-                spec_xdr,
-                std::iter::empty(),
-                None,
-                None,
-                None,
-            )
+            #spec_shaking_gen
         })
     } else {
         None
@@ -121,8 +125,6 @@ pub fn derive_type_error_enum_int(
     // Output.
     quote! {
         #spec_gen
-
-        #spec_shaking_impl
 
         impl TryFrom<#path::Error> for #enum_ident {
             type Error = #path::Error;
