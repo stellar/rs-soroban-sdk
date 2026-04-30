@@ -1,18 +1,28 @@
 //! Wasm rewriting helpers for spec shaking.
 
+use std::io::Cursor;
+
 use stellar_xdr::curr as stellar_xdr;
-use stellar_xdr::{Limits, WriteXdr};
+use stellar_xdr::{Limited, Limits, ReadXdr, ScMetaEntry, WriteXdr};
+use wasmparser::{BinaryReaderError, Parser, Payload};
 
 use crate::{read, shaking};
 
 const WASM_HEADER: &[u8; 8] = b"\0asm\x01\0\0\0";
 const CUSTOM_SECTION_ID: u8 = 0;
 const CONTRACT_SPEC_SECTION: &str = "contractspecv0";
+const CONTRACT_META_SECTION: &str = "contractmetav0";
 
 #[derive(thiserror::Error, Debug)]
 pub enum ShakeError {
     #[error("reading contract spec")]
     ReadSpec(read::FromWasmError),
+    #[error("reading contract meta")]
+    ReadMeta(BinaryReaderError),
+    #[error("parsing contract meta")]
+    ParseMeta(stellar_xdr::Error),
+    #[error("unsupported spec shaking version {0}, expected 2")]
+    UnsupportedSpecShakingVersion(u32),
     #[error("encoding contract spec")]
     EncodeSpec(stellar_xdr::Error),
     #[error("rewriting wasm")]
@@ -35,11 +45,17 @@ pub enum RewriteError {
 
 /// Filters `contractspecv0` using spec shaking v2 reachability and removes the sidecar graph.
 ///
-/// This helper does not inspect `contractmetav0`; callers should use
-/// [`shaking::spec_shaking_version_for_meta`] to decide whether a Wasm should be shaken before
-/// calling it.
+/// This helper only operates on Wasms whose `contractmetav0` declares
+/// `rssdk_spec_shaking = "2"`. Passing a v1 or non-Rust contract would make marker scanning
+/// ambiguous and could strip unmarked events, so those inputs are rejected before rewriting.
 pub fn shake_contract_spec(wasm: &[u8]) -> Result<Vec<u8>, ShakeError> {
     let entries = read::from_wasm(wasm).map_err(ShakeError::ReadSpec)?;
+    let meta = contract_meta_from_wasm(wasm)?;
+    let version = shaking::spec_shaking_version_for_meta(&meta);
+    if version != 2 {
+        return Err(ShakeError::UnsupportedSpecShakingVersion(version));
+    }
+
     let markers = shaking::find_all(wasm);
     let graph = shaking::find_graph(wasm);
     let filtered = shaking::filter_with_graph(entries, &markers, &graph);
@@ -54,6 +70,32 @@ pub fn shake_contract_spec(wasm: &[u8]) -> Result<Vec<u8>, ShakeError> {
     }
 
     rewrite_contract_spec(wasm, &spec_xdr).map_err(ShakeError::Rewrite)
+}
+
+fn contract_meta_from_wasm(wasm: &[u8]) -> Result<Vec<ScMetaEntry>, ShakeError> {
+    let mut meta = Vec::new();
+    for payload in Parser::new(0).parse_all(wasm) {
+        let payload = payload.map_err(ShakeError::ReadMeta)?;
+        let Payload::CustomSection(section) = payload else {
+            continue;
+        };
+        if section.name() != CONTRACT_META_SECTION {
+            continue;
+        }
+
+        let cursor = Cursor::new(section.data());
+        let entries = ScMetaEntry::read_xdr_iter(&mut Limited::new(
+            cursor,
+            Limits {
+                depth: 500,
+                len: 0x1000000,
+            },
+        ))
+        .collect::<Result<Vec<_>, _>>()
+        .map_err(ShakeError::ParseMeta)?;
+        meta.extend(entries);
+    }
+    Ok(meta)
 }
 
 fn rewrite_contract_spec(wasm: &[u8], spec_xdr: &[u8]) -> Result<Vec<u8>, RewriteError> {
@@ -181,11 +223,14 @@ fn write_var_u32(out: &mut Vec<u8>, mut value: u32) {
 
 #[cfg(test)]
 mod tests {
-    use super::{shake_contract_spec, write_custom_section, CONTRACT_SPEC_SECTION, WASM_HEADER};
+    use super::{
+        shake_contract_spec, write_custom_section, ShakeError, CONTRACT_META_SECTION,
+        CONTRACT_SPEC_SECTION, WASM_HEADER,
+    };
     use crate::{read, shaking};
     use stellar_xdr::curr::{
-        Limits, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeUdt,
-        ScSpecUdtStructFieldV0, ScSpecUdtStructV0, StringM, WriteXdr,
+        Limits, ScMetaEntry, ScMetaV0, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0,
+        ScSpecTypeDef, ScSpecTypeUdt, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, StringM, WriteXdr,
     };
 
     fn function_with_udt(name: &str, udt_name: &str) -> ScSpecEntry {
@@ -228,6 +273,19 @@ mod tests {
         xdr
     }
 
+    fn meta_xdr(value: &str) -> Vec<u8> {
+        ScMetaEntry::ScMetaV0(ScMetaV0 {
+            key: shaking::META_KEY.try_into().unwrap(),
+            val: value.try_into().unwrap(),
+        })
+        .to_xdr(Limits::none())
+        .unwrap()
+    }
+
+    fn v2_meta_xdr() -> Vec<u8> {
+        meta_xdr(shaking::META_VALUE_V2)
+    }
+
     fn graph_record(kind: u16, entry: &ScSpecEntry, refs: &[ScSpecEntry]) -> Vec<u8> {
         let mut record = Vec::new();
         record.extend_from_slice(b"SpGrV");
@@ -257,8 +315,10 @@ mod tests {
         let entries = vec![function.clone(), used.clone(), unused_duplicate.clone()];
 
         let spec = spec_xdr(&entries);
+        let meta = v2_meta_xdr();
         let graph = graph_record(0, &function, std::slice::from_ref(&used));
         let wasm = minimal_wasm(&[
+            (CONTRACT_META_SECTION, &meta),
             (CONTRACT_SPEC_SECTION, &spec),
             (shaking::GRAPH_SECTION, &graph),
         ]);
@@ -278,10 +338,12 @@ mod tests {
         let function = function_with_udt("run", "Shared");
         let used = struct_entry("Shared", "used", ScSpecTypeDef::I32);
         let spec = spec_xdr(&[function.clone(), used.clone()]);
+        let meta = v2_meta_xdr();
         let graph = graph_record(0, &function, &[used]);
         let other = b"kept";
         let wasm = minimal_wasm(&[
             ("before", other.as_slice()),
+            (CONTRACT_META_SECTION, &meta),
             (CONTRACT_SPEC_SECTION, &spec),
             (shaking::GRAPH_SECTION, &graph),
             ("after", other.as_slice()),
@@ -294,5 +356,39 @@ mod tests {
             .windows("before".len())
             .any(|bytes| bytes == b"before"));
         assert!(shaken.windows("after".len()).any(|bytes| bytes == b"after"));
+    }
+
+    #[test]
+    fn test_shake_contract_spec_rejects_missing_v2_meta() {
+        let function = function_with_udt("run", "Shared");
+        let used = struct_entry("Shared", "used", ScSpecTypeDef::I32);
+        let spec = spec_xdr(&[function.clone(), used.clone()]);
+        let graph = graph_record(0, &function, &[used]);
+        let wasm = minimal_wasm(&[
+            (CONTRACT_SPEC_SECTION, &spec),
+            (shaking::GRAPH_SECTION, &graph),
+        ]);
+
+        let err = shake_contract_spec(&wasm).unwrap_err();
+
+        assert!(matches!(err, ShakeError::UnsupportedSpecShakingVersion(1)));
+    }
+
+    #[test]
+    fn test_shake_contract_spec_rejects_non_v2_meta() {
+        let function = function_with_udt("run", "Shared");
+        let used = struct_entry("Shared", "used", ScSpecTypeDef::I32);
+        let spec = spec_xdr(&[function.clone(), used.clone()]);
+        let meta = meta_xdr("1");
+        let graph = graph_record(0, &function, &[used]);
+        let wasm = minimal_wasm(&[
+            (CONTRACT_META_SECTION, &meta),
+            (CONTRACT_SPEC_SECTION, &spec),
+            (shaking::GRAPH_SECTION, &graph),
+        ]);
+
+        let err = shake_contract_spec(&wasm).unwrap_err();
+
+        assert!(matches!(err, ShakeError::UnsupportedSpecShakingVersion(1)));
     }
 }
