@@ -183,6 +183,11 @@ pub fn derive_fn_spec(
     let ty_str = ty_to_safe_ident_str(ty);
     let spec_ident = format_ident!("__SPEC_XDR_FN_{}", ident.unraw().to_string().to_uppercase());
     let spec_fn_ident = format_ident!("spec_xdr_{}", ident);
+    // Spec shaking v2 invariant: every exported FunctionV0 spec emitted with v2 enabled must
+    // have a matching function graph record keyed by this exact spec XDR. The graph-aware
+    // post-build filter keeps functions as roots, but uses this record to discover parameter and
+    // return UDTs. Emitting one without the other can silently strip those UDTs from the shaken
+    // spec.
     let spec_shaking_graph = if export && cfg!(feature = "experimental_spec_shaking_v2") {
         let graph_ident = format_ident!(
             "__SPEC_GRAPH_FN_{}_{}",

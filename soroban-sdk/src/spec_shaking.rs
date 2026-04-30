@@ -1,4 +1,27 @@
 //! Hidden support types for experimental spec shaking.
+//!
+//! Spec shaking v2 lets post-build tools remove unused entries from a contract's
+//! public `contractspecv0` custom section. Rust code cannot directly tell the
+//! linker which spec bytes are semantically reachable, so the SDK emits two
+//! pieces of build metadata:
+//!
+//! - `SpEcV1` markers for extra roots that cannot be inferred from function
+//!   specs, currently published events and errors thrown through
+//!   `panic_with_error!` or `assert_with_error!`.
+//! - Removable graph records in [`GRAPH_SECTION`] that describe exact
+//!   spec-entry reachability by `SHA256(spec_entry_xdr)` ID.
+//!
+//! Function specs are roots because every exported `FunctionV0` entry defines
+//! callable contract API. In v2, every exported function spec must also have a
+//! matching [`GRAPH_RECORD_KIND_FUNCTION`] record keyed by that exact function
+//! spec entry. The graph-aware post-build filter keeps the function entry
+//! itself either way, but it discovers the function's parameter and return UDTs
+//! only through that graph record. If the record is missing, UDTs reachable only
+//! through that function can be stripped from the final spec.
+//!
+//! Events, errors, and UDTs also emit graph records when v2 is enabled. The
+//! sidecar is private build metadata and is removed after `contractspecv0` is
+//! rewritten.
 
 /// The custom section containing removable spec graph records.
 #[doc(hidden)]

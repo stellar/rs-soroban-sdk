@@ -22,11 +22,15 @@
 /// publish methods and errors thrown by `panic_with_error!` or `assert_with_error!`. Function input
 /// and output roots are discovered directly from the function
 /// entries in `contractspecv0`, and UDT reachability is discovered from exact spec IDs in the
-/// removable `contractspecv0.rssdk.graphv0` sidecar when present. If the sidecar is absent, the
-/// filter falls back to graph-walking `ScSpecTypeDef` references from those roots by UDT name. In
-/// that fallback, if multiple distinct UDT entries have the same name, all matching entries are
-/// kept conservatively because `ScSpecTypeDef::Udt` stores only the name. Exact duplicate entries
-/// are collapsed during filtering.
+/// removable `contractspecv0.rssdk.graphv0` sidecar when present. With the sidecar present, every
+/// function spec entry is expected to have a matching function graph record keyed by that exact
+/// entry's spec ID. The graph-aware filter keeps function entries themselves even if their graph
+/// records are absent, but their parameter and return UDTs are only reached through those records.
+/// If a function record is missing, UDTs reachable only through that function can be stripped. If
+/// the sidecar is absent, the filter falls back to graph-walking `ScSpecTypeDef` references from
+/// those roots by UDT name. In that fallback, if multiple distinct UDT entries have the same name,
+/// all matching entries are kept conservatively because `ScSpecTypeDef::Udt` stores only the name.
+/// Exact duplicate entries are collapsed during filtering.
 ///
 /// Post-processing tools (e.g. stellar-cli) can:
 /// 1. Scan the WASM data section for "SpEcV1" patterns
@@ -372,6 +376,9 @@ fn reachable_entry_indexes_with_graph(
     markers: &HashSet<Marker>,
     graph: &SpecGraph,
 ) -> HashSet<usize> {
+    // The sidecar graph is authoritative for UDT reachability when present. Function entries are
+    // always API roots, but their argument and return UDTs are only queued through the matching
+    // function graph record.
     let mut entry_indexes_by_id = HashMap::<SpecId, Vec<usize>>::new();
     for (i, entry) in entries.iter().enumerate() {
         entry_indexes_by_id

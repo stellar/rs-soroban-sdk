@@ -43,7 +43,7 @@
 //! ### Spec Shaking v2 (this feature)
 //!
 //! - Everything exported (types, events, functions, imports)
-//! - Unused entries shaken out using event-root markers and spec graph pruning
+//! - Unused entries shaken out using extra-root markers and exact spec graph pruning
 //!
 //! A contract's spec (the `contractspecv0` custom section in the Wasm binary)
 //! contains entries for every function, type, and event defined by the contract.
@@ -53,23 +53,28 @@
 //!
 //! ### How It Works
 //!
-//! Function parameter and return types are rooted directly from the function
-//! entries in `contractspecv0`. Post-build tools walk `ScSpecTypeDef` references
-//! from those roots to retain nested UDTs through structs, unions, tuples, and
-//! containers.
+//! Function entries in `contractspecv0` are always roots. The macros also emit
+//! a removable sidecar graph in the private `contractspecv0.rssdk.graphv0`
+//! custom section. Each graph record is keyed by the SHA-256 hash of a full spec
+//! entry's XDR and lists the exact child spec-entry IDs referenced by that
+//! entry. Generated UDTs implement the hidden `SpecTypeId` helper so function,
+//! event, and UDT graph records can refer to exact type specs instead of only
+//! their `ScSpecTypeDef::Udt` names.
 //!
-//! Events need one extra reachability signal because `contractspecv0` contains
-//! every exported event, not just events that are actually published by reachable
-//! contract code. For each exported event, the SDK embeds a 14-byte marker in
-//! the event's generated `publish()` method. A marker consists of a `SpEcV1`
-//! magic prefix followed by 8 bytes of a SHA-256 hash of the event spec entry's
-//! XDR.
+//! Events and errors thrown through `panic_with_error!` or
+//! `assert_with_error!` need one extra reachability signal because those use
+//! sites are not visible from function specs alone. For each exported event or
+//! contract error, the SDK embeds a 14-byte marker in reachable code that uses
+//! it. A marker consists of a `SpEcV1` magic prefix followed by 8 bytes of a
+//! SHA-256 hash of the spec entry's XDR.
 //!
-//! Post-build tools (e.g. `stellar-cli`) scan the Wasm data section for event
-//! markers, keep marked events, keep all functions, walk UDT references from
-//! those roots, and strip the remaining entries from `contractspecv0`. If
-//! multiple UDT entries have the same name, all matching entries are kept
-//! conservatively because `ScSpecTypeDef::Udt` stores only a name.
+//! Post-build tools (e.g. `stellar-cli`) scan the Wasm data section for
+//! markers, read the sidecar graph, keep all functions and marked extra roots,
+//! traverse UDT references by exact spec ID, rewrite `contractspecv0`, and
+//! remove `contractspecv0.rssdk.graphv0`. If the sidecar graph is missing, the
+//! filter falls back to walking `ScSpecTypeDef` references by UDT name; only in
+//! that fallback are multiple distinct UDT entries with the same name all kept
+//! conservatively.
 //!
 //! ### Changed Behaviour
 //!
