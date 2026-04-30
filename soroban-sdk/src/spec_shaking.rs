@@ -42,6 +42,13 @@ impl SpecShakingMarker for crate::Error {
     fn spec_shaking_marker() {}
 }
 
+impl<T: SpecShakingMarker> SpecShakingMarker for &T {
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        T::spec_shaking_marker();
+    }
+}
+
 /// Implemented by generated UDTs so sidecar graph records can refer to exact type specs.
 #[doc(hidden)]
 pub trait SpecTypeId {

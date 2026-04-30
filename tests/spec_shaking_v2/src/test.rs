@@ -49,6 +49,7 @@ fn test_spec_shaking_v2() {
         "with_return",
         "with_error",
         "with_panic_error",
+        "with_panic_error_ref",
         "with_assert_error",
         "with_panic_raw_error",
         "with_vec",
@@ -86,6 +87,7 @@ fn test_spec_shaking_v2() {
         "UsedErrorEnum",
         // error types used only via panic_with_error! / assert_with_error!
         "UsedPanicErrorEnum",
+        "UsedPanicErrorEnumRef",
         "UsedAssertErrorEnum",
         // nested in fn param struct
         "UsedNestedInStruct",
@@ -146,7 +148,7 @@ fn test_spec_shaking_v2() {
     }
     // Function input/output types are rooted from contractspecv0. Events and
     // panic/assert-only errors need markers because their reachability is not in the spec.
-    assert_eq!(markers.len(), 8);
+    assert_eq!(markers.len(), 9);
 
     // Unused types/events should exist in unfiltered entries.
     let unused = [

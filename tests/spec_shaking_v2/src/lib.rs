@@ -55,6 +55,13 @@ pub enum UsedPanicErrorEnum {
     Boom = 1,
 }
 
+// Used only via panic_with_error! as a reference (never appears in a Result return).
+#[contracterror]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum UsedPanicErrorEnumRef {
+    Boom = 1,
+}
+
 // Used only via assert_with_error! (never appears in a Result return).
 #[contracterror]
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -390,6 +397,12 @@ impl Contract {
     pub fn with_panic_error(env: Env, fail: bool) {
         if fail {
             panic_with_error!(&env, UsedPanicErrorEnum::Boom);
+        }
+    }
+
+    pub fn with_panic_error_ref(env: Env, fail: bool) {
+        if fail {
+            panic_with_error!(&env, &UsedPanicErrorEnumRef::Boom);
         }
     }
 

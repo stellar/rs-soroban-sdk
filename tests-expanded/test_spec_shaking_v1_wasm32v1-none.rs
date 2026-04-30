@@ -764,6 +764,153 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedPanicErrorEnum> for soroban_
         )
     }
 }
+pub enum UsedPanicErrorEnumRef {
+    Boom = 1,
+}
+#[automatically_derived]
+impl ::core::marker::Copy for UsedPanicErrorEnumRef {}
+#[automatically_derived]
+impl ::core::clone::Clone for UsedPanicErrorEnumRef {
+    #[inline]
+    fn clone(&self) -> UsedPanicErrorEnumRef {
+        *self
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UsedPanicErrorEnumRef {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::write_str(f, "Boom")
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UsedPanicErrorEnumRef {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {}
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UsedPanicErrorEnumRef {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UsedPanicErrorEnumRef {
+    #[inline]
+    fn eq(&self, other: &UsedPanicErrorEnumRef) -> bool {
+        true
+    }
+}
+#[link_section = "contractspecv0"]
+pub static __SPEC_XDR_TYPE_USEDPANICERRORENUMREF: [u8; 60usize] = UsedPanicErrorEnumRef::spec_xdr();
+impl UsedPanicErrorEnumRef {
+    pub const fn spec_xdr() -> [u8; 60usize] {
+        *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x15UsedPanicErrorEnumRef\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04Boom\0\0\0\x01"
+    }
+}
+impl TryFrom<soroban_sdk::Error> for UsedPanicErrorEnumRef {
+    type Error = soroban_sdk::Error;
+    #[inline(always)]
+    fn try_from(error: soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
+        if error.is_type(soroban_sdk::xdr::ScErrorType::Contract) {
+            let discriminant = error.get_code();
+            Ok(match discriminant {
+                1u32 => Self::Boom,
+                _ => return Err(error),
+            })
+        } else {
+            Err(error)
+        }
+    }
+}
+impl TryFrom<&soroban_sdk::Error> for UsedPanicErrorEnumRef {
+    type Error = soroban_sdk::Error;
+    #[inline(always)]
+    fn try_from(error: &soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
+        <_ as TryFrom<soroban_sdk::Error>>::try_from(*error)
+    }
+}
+impl From<UsedPanicErrorEnumRef> for soroban_sdk::Error {
+    #[inline(always)]
+    fn from(val: UsedPanicErrorEnumRef) -> soroban_sdk::Error {
+        <_ as From<&UsedPanicErrorEnumRef>>::from(&val)
+    }
+}
+impl From<&UsedPanicErrorEnumRef> for soroban_sdk::Error {
+    #[inline(always)]
+    fn from(val: &UsedPanicErrorEnumRef) -> soroban_sdk::Error {
+        match val {
+            UsedPanicErrorEnumRef::Boom => soroban_sdk::Error::from_contract_error(1u32),
+        }
+    }
+}
+impl TryFrom<soroban_sdk::InvokeError> for UsedPanicErrorEnumRef {
+    type Error = soroban_sdk::InvokeError;
+    #[inline(always)]
+    fn try_from(error: soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
+        match error {
+            soroban_sdk::InvokeError::Abort => Err(error),
+            soroban_sdk::InvokeError::Contract(code) => Ok(match code {
+                1u32 => Self::Boom,
+                _ => return Err(error),
+            }),
+        }
+    }
+}
+impl TryFrom<&soroban_sdk::InvokeError> for UsedPanicErrorEnumRef {
+    type Error = soroban_sdk::InvokeError;
+    #[inline(always)]
+    fn try_from(error: &soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
+        <_ as TryFrom<soroban_sdk::InvokeError>>::try_from(*error)
+    }
+}
+impl From<UsedPanicErrorEnumRef> for soroban_sdk::InvokeError {
+    #[inline(always)]
+    fn from(val: UsedPanicErrorEnumRef) -> soroban_sdk::InvokeError {
+        <_ as From<&UsedPanicErrorEnumRef>>::from(&val)
+    }
+}
+impl From<&UsedPanicErrorEnumRef> for soroban_sdk::InvokeError {
+    #[inline(always)]
+    fn from(val: &UsedPanicErrorEnumRef) -> soroban_sdk::InvokeError {
+        match val {
+            UsedPanicErrorEnumRef::Boom => soroban_sdk::InvokeError::Contract(1u32),
+        }
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedPanicErrorEnumRef {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::TryIntoVal;
+        let error: soroban_sdk::Error = val.try_into_val(env)?;
+        error.try_into().map_err(|_| soroban_sdk::ConversionError)
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedPanicErrorEnumRef> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UsedPanicErrorEnumRef,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        let error: soroban_sdk::Error = val.into();
+        Ok(error.into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedPanicErrorEnumRef> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UsedPanicErrorEnumRef,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedPanicErrorEnumRef>>::try_from_val(
+            env, *val,
+        )
+    }
+}
 pub enum UsedAssertErrorEnum {
     Bad = 1,
 }
@@ -7511,6 +7658,13 @@ impl Contract {
             };
         }
     }
+    pub fn with_panic_error_ref(env: Env, fail: bool) {
+        if fail {
+            {
+                (&env).panic_with_error(&UsedPanicErrorEnumRef::Boom);
+            };
+        }
+    }
     pub fn with_assert_error(env: Env, ok: bool) {
         {
             if !(ok) {
@@ -7671,6 +7825,22 @@ impl Contract {
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_panic_error() -> [u8; 52usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x10with_panic_error\0\0\0\x01\0\0\0\0\0\0\0\x04fail\0\0\0\x01\0\0\0\0"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__with_panic_error_ref__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_FN_WITH_PANIC_ERROR_REF: [u8; 56usize] =
+        super::Contract::spec_xdr_with_panic_error_ref();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_with_panic_error_ref() -> [u8; 56usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x14with_panic_error_ref\0\0\0\x01\0\0\0\0\0\0\0\x04fail\0\0\0\x01\0\0\0\0"
     }
 }
 #[doc(hidden)]
@@ -8092,6 +8262,31 @@ impl<'a> ContractClient<'a> {
         let res = self.env.try_invoke_contract(
             &self.address,
             &{ soroban_sdk::Symbol::new(&self.env, "with_panic_error") },
+            ::soroban_sdk::Vec::from_array(&self.env, [fail.into_val(&self.env)]),
+        );
+        res
+    }
+    pub fn with_panic_error_ref(&self, fail: &bool) -> () {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "with_panic_error_ref") },
+            ::soroban_sdk::Vec::from_array(&self.env, [fail.into_val(&self.env)]),
+        );
+        res
+    }
+    pub fn try_with_panic_error_ref(
+        &self,
+        fail: &bool,
+    ) -> Result<
+        Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "with_panic_error_ref") },
             ::soroban_sdk::Vec::from_array(&self.env, [fail.into_val(&self.env)]),
         );
         res
@@ -8644,6 +8839,11 @@ impl ContractArgs {
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
+    pub fn with_panic_error_ref<'i>(fail: &'i bool) -> (&'i bool,) {
+        (fail,)
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
     pub fn with_assert_error<'i>(ok: &'i bool) -> (&'i bool,) {
         (ok,)
     }
@@ -8881,6 +9081,37 @@ pub extern "C" fn __Contract__with_panic_error__invoke_raw_extern(
 ) -> soroban_sdk::Val {
     #[allow(deprecated)]
     __Contract__with_panic_error__invoke_raw(soroban_sdk::Env::default(), arg_0)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).with_panic_error_ref` instead")]
+#[allow(deprecated)]
+pub fn __Contract__with_panic_error_ref__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::with_panic_error_ref(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).with_panic_error_ref` instead")]
+#[export_name = "with_panic_error_ref"]
+pub extern "C" fn __Contract__with_panic_error_ref__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__with_panic_error_ref__invoke_raw(soroban_sdk::Env::default(), arg_0)
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
