@@ -19,9 +19,11 @@
 //! only through that graph record. If the record is missing, UDTs reachable only
 //! through that function can be stripped from the final spec.
 //!
-//! Events, errors, and UDTs also emit graph records when v2 is enabled. The
-//! sidecar is private build metadata and is removed after `contractspecv0` is
-//! rewritten.
+//! Events, errors, and UDTs with public spec entries also emit graph records
+//! when v2 is enabled. Types marked `export = false` still implement
+//! [`SpecTypeId`] so other graph records can refer to them exactly, but they do
+//! not export spec entries or graph records of their own. The sidecar is private
+//! build metadata and is removed after `contractspecv0` is rewritten.
 
 /// The custom section containing removable spec graph records.
 #[doc(hidden)]
@@ -73,6 +75,10 @@ impl<T: SpecShakingMarker> SpecShakingMarker for &T {
 }
 
 /// Implemented by generated UDTs so sidecar graph records can refer to exact type specs.
+///
+/// This is also generated for `export = false` UDTs when spec shaking v2 is
+/// enabled. Those types can be referenced by graph records without adding their
+/// own entries to `contractspecv0`.
 #[doc(hidden)]
 pub trait SpecTypeId {
     const SPEC_TYPE_ID: [u8; 32];

@@ -228,6 +228,94 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedConstructorMeta> for soroban
         )
     }
 }
+pub struct Context {
+    pub val: u32,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for Context {
+    #[inline]
+    fn clone(&self) -> Context {
+        Context {
+            val: ::core::clone::Clone::clone(&self.val),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for Context {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field1_finish(f, "Context", "val", &&self.val)
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for Context {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<u32>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for Context {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for Context {
+    #[inline]
+    fn eq(&self, other: &Context) -> bool {
+        self.val == other.val
+    }
+}
+#[link_section = "contractspecv0"]
+pub static __SPEC_XDR_TYPE_CONTEXT: [u8; 44usize] = Context::spec_xdr();
+impl Context {
+    pub const fn spec_xdr() -> [u8; 44usize] {
+        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07Context\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Context {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
+        let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+            .map_err(|_| ConversionError)?;
+        Ok(Self {
+            val: vals[0]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, Context> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &Context,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let vals: [Val; 1usize] = [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
+        Ok(env
+            .map_new_from_slices(&KEYS, &vals)
+            .map_err(|_| ConversionError)?
+            .into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &Context> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&Context,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, Context>>::try_from_val(env, *val)
+    }
+}
 pub enum UsedReturnEnum {
     A(u32),
     B(i64),
@@ -7645,6 +7733,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UnusedNonPubError> for soroban_s
 impl Contract {
     pub fn __constructor(_env: Env, _meta: UsedConstructorMeta) {}
     pub fn with_param(_env: Env, _s: UsedParamStruct, _ie: UsedParamIntEnum) {}
+    pub fn with_context(_env: Env, _context: Context) {}
     pub fn with_return(_env: Env) -> UsedReturnEnum {
         UsedReturnEnum::A(1)
     }
@@ -7779,6 +7868,21 @@ impl Contract {
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_param() -> [u8; 104usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\nwith_param\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01s\0\0\0\0\0\x07\xd0\0\0\0\x0fUsedParamStruct\0\0\0\0\0\0\0\0\x02ie\0\0\0\0\x07\xd0\0\0\0\x10UsedParamIntEnum\0\0\0\0"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__with_context__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_FN_WITH_CONTEXT: [u8; 64usize] = super::Contract::spec_xdr_with_context();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_with_context() -> [u8; 64usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x0cwith_context\0\0\0\x01\0\0\0\0\0\0\0\x07context\0\0\0\x07\xd0\0\0\0\x07Context\0\0\0\0\0"
     }
 }
 #[doc(hidden)]
@@ -8187,6 +8291,31 @@ impl<'a> ContractClient<'a> {
                 &self.env,
                 [_s.into_val(&self.env), _ie.into_val(&self.env)],
             ),
+        );
+        res
+    }
+    pub fn with_context(&self, _context: &Context) -> () {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "with_context") },
+            ::soroban_sdk::Vec::from_array(&self.env, [_context.into_val(&self.env)]),
+        );
+        res
+    }
+    pub fn try_with_context(
+        &self,
+        _context: &Context,
+    ) -> Result<
+        Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "with_context") },
+            ::soroban_sdk::Vec::from_array(&self.env, [_context.into_val(&self.env)]),
         );
         res
     }
@@ -8824,6 +8953,11 @@ impl ContractArgs {
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
+    pub fn with_context<'i>(_context: &'i Context) -> (&'i Context,) {
+        (_context,)
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
     pub fn with_return<'i>() -> () {
         ()
     }
@@ -9014,6 +9148,37 @@ pub extern "C" fn __Contract__with_param__invoke_raw_extern(
 ) -> soroban_sdk::Val {
     #[allow(deprecated)]
     __Contract__with_param__invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).with_context` instead")]
+#[allow(deprecated)]
+pub fn __Contract__with_context__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::with_context(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).with_context` instead")]
+#[export_name = "with_context"]
+pub extern "C" fn __Contract__with_context__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__with_context__invoke_raw(soroban_sdk::Env::default(), arg_0)
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]

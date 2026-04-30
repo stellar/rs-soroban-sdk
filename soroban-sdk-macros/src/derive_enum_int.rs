@@ -68,21 +68,19 @@ pub fn derive_type_enum_int(
         return quote! { #(#compile_errors)* };
     }
 
-    // Compute spec XDR once if spec is enabled.
-    let spec_xdr = if spec {
-        let spec_entry = ScSpecEntry::UdtEnumV0(ScSpecUdtEnumV0 {
-            doc: docs_from_attrs(attrs),
-            lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
-            name: enum_ident.unraw().to_string().try_into().unwrap(),
-            cases: spec_cases.try_into().unwrap(),
-        });
-        Some(spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap())
-    } else {
-        None
-    };
+    // Compute spec XDR once. Spec shaking v2 needs exact IDs even for
+    // `export = false` types so other graph records can reference them without
+    // also exporting their `contractspecv0` entries.
+    let spec_entry = ScSpecEntry::UdtEnumV0(ScSpecUdtEnumV0 {
+        doc: docs_from_attrs(attrs),
+        lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
+        name: enum_ident.unraw().to_string().try_into().unwrap(),
+        cases: spec_cases.try_into().unwrap(),
+    });
+    let spec_xdr = spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap();
 
     // Generated code spec.
-    let spec_gen = if let Some(ref spec_xdr) = spec_xdr {
+    let spec_gen = if spec {
         let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
         let spec_xdr_len = spec_xdr.len();
         let spec_ident = format_ident!(
@@ -94,12 +92,12 @@ pub fn derive_type_enum_int(
                 "__SPEC_GRAPH_TYPE_{}",
                 enum_ident.unraw().to_string().to_uppercase()
             );
-            let type_id_impl = shaking::generate_type_id_impl(path, enum_ident, spec_xdr);
+            let type_id_impl = shaking::generate_type_id_impl(path, enum_ident, &spec_xdr);
             let graph_record = shaking::generate_graph_record(
                 path,
                 &graph_ident,
                 quote! { #path::spec_shaking::GRAPH_RECORD_KIND_UDT },
-                spec_xdr,
+                &spec_xdr,
                 Vec::new(),
             );
             Some(quote! {
@@ -121,6 +119,8 @@ pub fn derive_type_enum_int(
 
             #spec_shaking_gen
         })
+    } else if cfg!(feature = "experimental_spec_shaking_v2") {
+        Some(shaking::generate_type_id_impl(path, enum_ident, &spec_xdr))
     } else {
         None
     };

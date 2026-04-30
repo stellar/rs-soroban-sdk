@@ -238,13 +238,13 @@ impl Contract {
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[used]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_FN_CONTRACT___CHECK_AUTH: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
-    42usize,
-    0usize,
+pub static __SPEC_GRAPH_FN_CONTRACT___CHECK_AUTH: [u8; 74usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    74usize,
+    1usize,
 >(
     soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
     *b",\x10\xd9\xc4i\xd1;\xac\xbd\x1c\xeaT.\xc8$\xf0@\0\xd4/\xca\x1c\xa2I\x86\x88\xb5|]A\xb3\x1e",
-    [],
+    [<Context as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID],
 );
 impl<'a> ContractClient<'a> {}
 impl ContractArgs {

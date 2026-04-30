@@ -24,6 +24,13 @@ pub struct UsedConstructorMeta {
     pub val: u32,
 }
 
+// Used as fn param with the same name as soroban_sdk::auth::Context.
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct Context {
+    pub val: u32,
+}
+
 // Used as fn return (union enum)
 #[contracttype]
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -385,6 +392,8 @@ impl Contract {
     pub fn __constructor(_env: Env, _meta: UsedConstructorMeta) {}
 
     pub fn with_param(_env: Env, _s: UsedParamStruct, _ie: UsedParamIntEnum) {}
+
+    pub fn with_context(_env: Env, _context: Context) {}
 
     pub fn with_return(_env: Env) -> UsedReturnEnum {
         UsedReturnEnum::A(1)

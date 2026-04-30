@@ -46,6 +46,7 @@ fn test_spec_shaking_v2() {
     for expected_fn in [
         "__constructor",
         "with_param",
+        "with_context",
         "with_return",
         "with_error",
         "with_panic_error",
@@ -81,6 +82,7 @@ fn test_spec_shaking_v2() {
     let used = [
         // fn param/return/error types
         "UsedConstructorMeta",
+        "Context",
         "UsedParamStruct",
         "UsedReturnEnum",
         "UsedParamIntEnum",

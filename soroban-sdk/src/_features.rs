@@ -60,6 +60,10 @@
 //! entry. Generated UDTs implement the hidden `SpecTypeId` helper so function,
 //! event, and UDT graph records can refer to exact type specs instead of only
 //! their `ScSpecTypeDef::Udt` names.
+//! `export = false` types still get this hidden exact ID when v2 is enabled,
+//! but they do not emit public spec entries or UDT graph records of their own.
+//! A graph reference to such a type is harmless: if there is no matching spec
+//! entry in `contractspecv0`, the post-build graph walk has nothing to keep.
 //!
 //! Events and errors thrown through `panic_with_error!` or
 //! `assert_with_error!` need one extra reachability signal because those use
@@ -86,14 +90,17 @@
 //! when `export = true` is explicitly set). With this feature, spec entries
 //! are generated for all types regardless of visibility, unless `export = false`
 //! is explicitly set. This ensures all types can participate in spec graph
-//! pruning.
+//! pruning. Types with `export = false` do not emit public spec entries, but
+//! they still get the hidden `SpecTypeId` helper so other graph records can
+//! reference them exactly.
 //!
 //! #### [`contracterror`]
 //!
 //! Same as [`contracttype`]: without this feature, spec entries are only
 //! generated for `pub` types. With this feature, spec entries are generated for
 //! all error enums regardless of visibility, unless
-//! `export = false` is explicitly set.
+//! `export = false` is explicitly set. Error enums with `export = false` still
+//! get the hidden `SpecTypeId` helper for exact graph references.
 //!
 //! #### [`contractevent`]
 //!

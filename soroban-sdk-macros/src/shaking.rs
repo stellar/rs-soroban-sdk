@@ -20,7 +20,10 @@
 
 use proc_macro2::TokenStream as TokenStream2;
 use quote::quote;
-use syn::{GenericArgument, Ident, Path, PathArguments, Type, TypeReference};
+use stellar_xdr::curr::ScSpecTypeDef;
+use syn::{ext::IdentExt as _, GenericArgument, Ident, Path, PathArguments, Type, TypeReference};
+
+use crate::map_type::map_type;
 
 /// Generates a marker block for a spec entry root.
 ///
@@ -111,10 +114,12 @@ pub fn type_id_refs(path: &Path, ty: &Type) -> Vec<TokenStream2> {
             .flat_map(|ty| type_id_refs(path, ty))
             .collect(),
         Type::Path(type_path) => {
+            // Excludes malformed or empty paths. Without a terminal path segment,
+            // there is no type constructor to classify or generic arguments to walk.
             let Some(segment) = type_path.path.segments.last() else {
                 return Vec::new();
             };
-            let ident = segment.ident.to_string();
+            let ident = segment.ident.unraw().to_string();
             match ident.as_str() {
                 "Option" | "Vec" => generic_type_args(segment)
                     .into_iter()
@@ -126,15 +131,32 @@ pub fn type_id_refs(path: &Path, ty: &Type) -> Vec<TokenStream2> {
                     .take(2)
                     .flat_map(|ty| type_id_refs(path, ty))
                     .collect(),
-                ident if is_builtin_type_ident(ident) => Vec::new(),
-                _ => vec![quote! { <#ty as #path::spec_shaking::SpecTypeId>::SPEC_TYPE_ID }],
+                _ if should_emit_type_id_ref(ty) => {
+                    vec![quote! { <#ty as #path::spec_shaking::SpecTypeId>::SPEC_TYPE_ID }]
+                }
+                _ => Vec::new(),
             }
         }
+        // Excludes non-path type syntax such as arrays, slices, bare function
+        // pointers, `impl Trait`, and inferred types. Contract specs either do
+        // not accept these forms here or reject them through `map_type` when the
+        // surrounding spec entry is built.
         _ => Vec::new(),
     }
 }
 
+fn should_emit_type_id_ref(ty: &Type) -> bool {
+    // `map_type` is the canonical Rust-type-to-spec-type mapper. Only UDT-shaped
+    // spec types need an exact graph ref; all SDK/builtin mappings return a
+    // concrete non-UDT spec type. Under v2, even `export = false` contract types
+    // get a hidden `SpecTypeId`, so SDK boundary types such as `auth::Context`
+    // and user-defined UDTs named `Context` can be handled uniformly.
+    matches!(map_type(ty, true, true), Ok(ScSpecTypeDef::Udt(_)))
+}
+
 fn generic_type_args(segment: &syn::PathSegment) -> Vec<&Type> {
+    // Excludes non-generic path segments. Plain UDTs and concrete builtin types
+    // have no child type arguments for the graph walker to recurse into.
     let PathArguments::AngleBracketed(args) = &segment.arguments else {
         return Vec::new();
     };
@@ -150,44 +172,78 @@ fn generic_type_args(segment: &syn::PathSegment) -> Vec<&Type> {
         .collect()
 }
 
-fn is_builtin_type_ident(ident: &str) -> bool {
-    matches!(
-        ident,
-        "Val"
-            | "u64"
-            | "i64"
-            | "u32"
-            | "i32"
-            | "u128"
-            | "i128"
-            | "U256"
-            | "I256"
-            | "bool"
-            | "Symbol"
-            | "String"
-            | "Error"
-            | "Bytes"
-            | "BytesN"
-            | "Address"
-            | "MuxedAddress"
-            | "Timepoint"
-            | "Duration"
-            | "Context"
-            | "Hash"
-            | "Fp"
-            | "Fp2"
-            | "G1Affine"
-            | "G2Affine"
-            | "Fr"
-            | "Bls12381Fp"
-            | "Bls12381Fp2"
-            | "Bls12381G1Affine"
-            | "Bls12381G2Affine"
-            | "Bls12381Fr"
-            | "Bn254Fp"
-            | "Bn254G1Affine"
-            | "Bn254G2Affine"
-            | "Bn254Fr"
-            | "BnScalar"
-    )
+#[cfg(test)]
+mod test {
+    use super::*;
+    use syn::{parse_quote, Type};
+
+    fn refs_for(ty: Type) -> Vec<String> {
+        let path: Path = parse_quote!(soroban_sdk);
+        type_id_refs(&path, &ty)
+            .into_iter()
+            .map(|tokens| tokens.to_string())
+            .collect()
+    }
+
+    #[test]
+    fn type_id_refs_skip_types_mapped_by_map_type_to_builtins() {
+        for ty in [
+            parse_quote!(Val),
+            parse_quote!(u64),
+            parse_quote!(i64),
+            parse_quote!(u32),
+            parse_quote!(i32),
+            parse_quote!(u128),
+            parse_quote!(i128),
+            parse_quote!(U256),
+            parse_quote!(I256),
+            parse_quote!(bool),
+            parse_quote!(Symbol),
+            parse_quote!(String),
+            parse_quote!(Error),
+            parse_quote!(Bytes),
+            parse_quote!(Address),
+            parse_quote!(MuxedAddress),
+            parse_quote!(Timepoint),
+            parse_quote!(Duration),
+            parse_quote!(BytesN<32>),
+            parse_quote!(Hash<32>),
+            parse_quote!(Fp),
+            parse_quote!(Fp2),
+            parse_quote!(G1Affine),
+            parse_quote!(G2Affine),
+            parse_quote!(Fr),
+            parse_quote!(Bls12381Fp),
+            parse_quote!(Bls12381Fp2),
+            parse_quote!(Bls12381G1Affine),
+            parse_quote!(Bls12381G2Affine),
+            parse_quote!(Bls12381Fr),
+            parse_quote!(Bn254Fp),
+            parse_quote!(Bn254G1Affine),
+            parse_quote!(Bn254G2Affine),
+            parse_quote!(Bn254Fr),
+            parse_quote!(BnScalar),
+            parse_quote!(Vec<Bn254G2Affine>),
+        ] {
+            assert!(refs_for(ty).is_empty());
+        }
+    }
+
+    #[test]
+    fn type_id_refs_emit_context_like_udts() {
+        let refs = refs_for(parse_quote!(Vec<Context>));
+
+        assert_eq!(refs.len(), 1);
+        assert!(refs[0].contains("Context"));
+        assert!(refs[0].contains("SpecTypeId"));
+    }
+
+    #[test]
+    fn type_id_refs_emit_udts_recursively() {
+        let refs = refs_for(parse_quote!(Map<Address, Option<MyType>>));
+
+        assert_eq!(refs.len(), 1);
+        assert!(refs[0].contains("MyType"));
+        assert!(refs[0].contains("SpecTypeId"));
+    }
 }
