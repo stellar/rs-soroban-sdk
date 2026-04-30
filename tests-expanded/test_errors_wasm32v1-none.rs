@@ -147,6 +147,16 @@ impl Error {
 impl soroban_sdk::spec_shaking::SpecTypeId for Error {
     const SPEC_TYPE_ID: [u8; 32] = *b"\xbc\x04\x04\xea\xa4\x9e6(]\xfd\x81&\xd9\xf8d+\xb4\x03\x83\x81Df\x88\x9alm\xe1\xbd\xb2\xf4r\xde";
 }
+impl soroban_sdk::spec_shaking::SpecShakingMarker for Error {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1\xbc\x04\x04\xea\xa4\x9e6(";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[used]
 #[allow(non_upper_case_globals)]

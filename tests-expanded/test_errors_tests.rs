@@ -521,6 +521,11 @@ impl Error {
 impl soroban_sdk::spec_shaking::SpecTypeId for Error {
     const SPEC_TYPE_ID: [u8; 32] = *b"\xbc\x04\x04\xea\xa4\x9e6(]\xfd\x81&\xd9\xf8d+\xb4\x03\x83\x81Df\x88\x9alm\xe1\xbd\xb2\xf4r\xde";
 }
+impl soroban_sdk::spec_shaking::SpecShakingMarker for Error {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {}
+}
 #[used]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_TYPE_ERROR: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<

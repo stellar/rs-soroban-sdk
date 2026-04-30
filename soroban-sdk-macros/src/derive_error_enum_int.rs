@@ -92,6 +92,7 @@ pub fn derive_type_error_enum_int(
                 enum_ident.unraw().to_string().to_uppercase()
             );
             let type_id_impl = shaking::generate_type_id_impl(path, enum_ident, spec_xdr);
+            let marker_impl = shaking::generate_error_marker_impl(path, enum_ident, spec_xdr);
             let graph_record = shaking::generate_graph_record(
                 path,
                 &graph_ident,
@@ -101,6 +102,7 @@ pub fn derive_type_error_enum_int(
             );
             Some(quote! {
                 #type_id_impl
+                #marker_impl
                 #graph_record
             })
         } else {

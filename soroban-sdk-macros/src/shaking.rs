@@ -5,14 +5,15 @@
 //! - 8 bytes: first 64 bits of SHA256 hash of the spec entry XDR
 //!
 //! Markers are embedded at roots that cannot be derived from `contractspecv0`,
-//! currently event publish methods. Function input/output roots are derived from
-//! function entries in `contractspecv0`, and UDT reachability is discovered by
-//! exact spec IDs in removable sidecar graph records.
+//! currently event publish methods and errors thrown via `panic_with_error!` or
+//! `assert_with_error!`. Function input/output roots are derived from function
+//! entries in `contractspecv0`, and UDT reachability is discovered by exact spec
+//! IDs in removable sidecar graph records.
 //!
 //! Post-processing tools (e.g. stellar-cli) can:
 //! 1. Scan the WASM data section for "SpEcV1" patterns
 //! 2. Extract the hash from each marker
-//! 3. Keep marked events and all functions
+//! 3. Keep marked entries and all functions
 //! 4. Read the removable sidecar graph when present
 //! 5. Walk UDT references from those roots
 //! 6. Strip unused specs from contractspecv0 and drop the sidecar graph
@@ -36,6 +37,24 @@ pub fn generate_marker_block(spec_xdr: &[u8]) -> TokenStream2 {
         {
             static MARKER: [u8; #marker_len] = *#marker_lit;
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
+
+/// Generates a call-site hook for an error spec root.
+///
+/// The hook emits the same `SpEcV1` marker block used by events. It roots only
+/// the error entry; referenced types are retained through the spec graph.
+pub fn generate_error_marker_impl(path: &Path, ident: &Ident, spec_xdr: &[u8]) -> TokenStream2 {
+    let marker_block = generate_marker_block(spec_xdr);
+
+    quote! {
+        impl #path::spec_shaking::SpecShakingMarker for #ident {
+            #[doc(hidden)]
+            #[inline(always)]
+            fn spec_shaking_marker() {
+                #marker_block
+            }
         }
     }
 }

@@ -7,7 +7,7 @@
 /// shaking version:
 ///
 /// - Absent or `"1"` — version 1 (no markers, no shaking possible).
-/// - `"2"` — version 2, event-root markers are embedded in the data section.
+/// - `"2"` — version 2, extra-root markers are embedded in the data section.
 ///
 /// Use [`spec_shaking_version_for_meta`] to determine the version from the
 /// contract's meta entries.
@@ -19,7 +19,8 @@
 /// - 8 bytes: first 64 bits of SHA256 hash of the spec entry XDR
 ///
 /// Markers are embedded for roots that cannot be discovered from the spec alone, currently event
-/// publish methods. Function input and output roots are discovered directly from the function
+/// publish methods and errors thrown by `panic_with_error!` or `assert_with_error!`. Function input
+/// and output roots are discovered directly from the function
 /// entries in `contractspecv0`, and UDT reachability is discovered from exact spec IDs in the
 /// removable `contractspecv0.rssdk.graphv0` sidecar when present. If the sidecar is absent, the
 /// filter falls back to graph-walking `ScSpecTypeDef` references from those roots by UDT name. In
@@ -30,16 +31,17 @@
 /// Post-processing tools (e.g. stellar-cli) can:
 /// 1. Scan the WASM data section for "SpEcV1" patterns
 /// 2. Extract the hash from each marker
-/// 3. Keep marked events and all functions
+/// 3. Keep marked entries and all functions
 /// 4. Read the removable sidecar graph when present
 /// 5. Walk UDT references from those roots
 /// 6. Strip unused specs from contractspecv0 and drop the sidecar graph
 ///
 /// Today markers are only used in contracts written in Rust, leveraging how Rust can eliminate
-/// dead code to make event markers a good signal for whether an event is published by reachable
-/// contract code. It's not known if the same pattern could be used in other languages, and so it is
-/// not a general part of the SEP-48 Contract Interface Specification. Markers are just a mechanism
-/// used by the Rust soroban-sdk and the stellar-cli to achieve accurately scoped contract specs.
+/// dead code to make markers a good signal for whether an event is published or an error is thrown
+/// by reachable contract code. It's not known if the same pattern could be used in other languages,
+/// and so it is not a general part of the SEP-48 Contract Interface Specification. Markers are just
+/// a mechanism used by the Rust soroban-sdk and the stellar-cli to achieve accurately scoped
+/// contract specs.
 use std::collections::{HashMap, HashSet, VecDeque};
 
 use sha2::{Digest, Sha256};
@@ -303,18 +305,19 @@ fn find_all_in_data(data: &[u8], markers: &mut HashSet<Marker>) {
     }
 }
 
-/// Filters spec entries using function roots, event markers, and UDT graph reachability.
+/// Filters spec entries using function roots, extra-root markers, and UDT graph reachability.
 ///
 /// Functions are always kept as they define the contract's API. Function input and output
-/// type definitions are used as roots for a conservative UDT graph walk. Events are kept only
-/// when their marker is present in the WASM data section, and their param types become roots.
+/// type definitions are used as roots for a conservative UDT graph walk. Non-function entries are
+/// kept when their marker is present in the WASM data section, and their param/reference types
+/// become roots.
 /// UDT references are resolved by name; if a name resolves to multiple distinct entries, all
 /// entries with that name are kept. Exact duplicate entries are collapsed.
 ///
 /// # Arguments
 ///
 /// * `entries` - The spec entries to filter
-/// * `markers` - Event markers extracted from the WASM data section
+/// * `markers` - Extra-root markers extracted from the WASM data section
 ///
 /// # Returns
 ///
@@ -366,7 +369,7 @@ fn filter_reachable_entries(
 
 fn reachable_entry_indexes_with_graph(
     entries: &[ScSpecEntry],
-    event_markers: &HashSet<Marker>,
+    markers: &HashSet<Marker>,
     graph: &SpecGraph,
 ) -> HashSet<usize> {
     let mut entry_indexes_by_id = HashMap::<SpecId, Vec<usize>>::new();
@@ -386,9 +389,7 @@ fn reachable_entry_indexes_with_graph(
                 reachable.insert(i);
                 add_graph_refs(entry, graph, &mut pending_spec_ids);
             }
-            ScSpecEntry::EventV0(_)
-                if event_markers.contains(&generate_marker_for_entry(entry)) =>
-            {
+            _ if markers.contains(&generate_marker_for_entry(entry)) => {
                 reachable.insert(i);
                 add_graph_refs(entry, graph, &mut pending_spec_ids);
             }
@@ -423,10 +424,7 @@ fn add_graph_refs(entry: &ScSpecEntry, graph: &SpecGraph, pending_spec_ids: &mut
     }
 }
 
-fn reachable_entry_indexes(
-    entries: &[ScSpecEntry],
-    event_markers: &HashSet<Marker>,
-) -> HashSet<usize> {
+fn reachable_entry_indexes(entries: &[ScSpecEntry], markers: &HashSet<Marker>) -> HashSet<usize> {
     let mut udt_entries_by_name = HashMap::<String, Vec<usize>>::new();
     for (i, entry) in entries.iter().enumerate() {
         if let Some(name) = udt_entry_name(entry) {
@@ -443,9 +441,7 @@ fn reachable_entry_indexes(
                 reachable.insert(i);
                 add_entry_type_refs(entry, &mut pending_udt_names);
             }
-            ScSpecEntry::EventV0(_)
-                if event_markers.contains(&generate_marker_for_entry(entry)) =>
-            {
+            _ if markers.contains(&generate_marker_for_entry(entry)) => {
                 reachable.insert(i);
                 add_entry_type_refs(entry, &mut pending_udt_names);
             }
@@ -822,6 +818,80 @@ mod tests {
         assert!(filtered.iter().any(|e| matches!(e, ScSpecEntry::UdtStructV0(s) if s.name.to_utf8_string_lossy() == "TransferPayload")));
         assert!(!filtered.iter().any(|e| matches!(e, ScSpecEntry::EventV0(event) if event.name.to_utf8_string_lossy() == "Unused")));
         assert!(!filtered.iter().any(|e| matches!(e, ScSpecEntry::UdtStructV0(s) if s.name.to_utf8_string_lossy() == "UnusedPayload")));
+    }
+
+    #[test]
+    fn test_filter_keeps_marked_udt_and_type_refs() {
+        let marked = make_struct("Marked", vec![("child", udt("Child"))]);
+        let child = make_struct("Child", vec![("field", ScSpecTypeDef::U32)]);
+        let unused = make_struct("Unused", vec![("field", ScSpecTypeDef::U32)]);
+
+        let entries = vec![
+            make_function("foo", vec![ScSpecTypeDef::U32]),
+            marked.clone(),
+            child,
+            unused,
+        ];
+
+        let mut markers = HashSet::new();
+        markers.insert(generate_marker_for_entry(&marked));
+
+        let filtered: Vec<_> = filter(entries, &markers).collect();
+
+        assert!(filtered
+            .iter()
+            .any(|e| matches!(e, ScSpecEntry::UdtStructV0(s) if s.name.to_utf8_string_lossy() == "Marked")));
+        assert!(filtered.iter().any(
+            |e| matches!(e, ScSpecEntry::UdtStructV0(s) if s.name.to_utf8_string_lossy() == "Child")
+        ));
+        assert!(!filtered
+            .iter()
+            .any(|e| matches!(e, ScSpecEntry::UdtStructV0(s) if s.name.to_utf8_string_lossy() == "Unused")));
+    }
+
+    #[test]
+    fn test_filter_with_graph_keeps_marked_udt_and_graph_refs() {
+        let marked = make_struct("Marked", vec![("child", udt("Child"))]);
+        let child = make_struct("Child", vec![("field", ScSpecTypeDef::U32)]);
+        let unused = make_struct("Unused", vec![("field", ScSpecTypeDef::U32)]);
+
+        let mut graph = SpecGraph::default();
+        graph.insert(
+            generate_spec_id_for_entry(&marked),
+            SpecGraphEntry {
+                kind: SpecGraphEntryKind::Udt,
+                refs: vec![generate_spec_id_for_entry(&child)],
+            },
+        );
+        graph.insert(
+            generate_spec_id_for_entry(&child),
+            SpecGraphEntry {
+                kind: SpecGraphEntryKind::Udt,
+                refs: vec![],
+            },
+        );
+
+        let entries = vec![
+            make_function("foo", vec![ScSpecTypeDef::U32]),
+            marked.clone(),
+            child,
+            unused,
+        ];
+
+        let mut markers = HashSet::new();
+        markers.insert(generate_marker_for_entry(&marked));
+
+        let filtered: Vec<_> = filter_with_graph(entries, &markers, &graph).collect();
+
+        assert!(filtered
+            .iter()
+            .any(|e| matches!(e, ScSpecEntry::UdtStructV0(s) if s.name.to_utf8_string_lossy() == "Marked")));
+        assert!(filtered.iter().any(
+            |e| matches!(e, ScSpecEntry::UdtStructV0(s) if s.name.to_utf8_string_lossy() == "Child")
+        ));
+        assert!(!filtered
+            .iter()
+            .any(|e| matches!(e, ScSpecEntry::UdtStructV0(s) if s.name.to_utf8_string_lossy() == "Unused")));
     }
 
     #[test]

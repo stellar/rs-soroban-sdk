@@ -60,6 +60,16 @@ impl Error {
 impl soroban_sdk::spec_shaking::SpecTypeId for Error {
     const SPEC_TYPE_ID: [u8; 32] = *b"\xa8\x1f\xc4#\x9c\x8f\xeb\x88\xeb \xbbr!pt\x83\xce\xbdLr\"\xde\xe9\xc0\x04\xae\xb1\xf5\xa6dr\x8a";
 }
+impl soroban_sdk::spec_shaking::SpecShakingMarker for Error {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1\xa8\x1f\xc4#\x9c\x8f\xeb\x88";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[used]
 #[allow(non_upper_case_globals)]

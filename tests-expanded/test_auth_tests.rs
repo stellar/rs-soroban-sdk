@@ -1147,6 +1147,11 @@ mod test_a {
         impl soroban_sdk::spec_shaking::SpecTypeId for Error {
             const SPEC_TYPE_ID: [u8; 32] = *b"`\xfc\xd6\xce\xb5\x01y\x85\xf2\xcc\xa5\xd8\xd0\xd6\xd9P\xa7I\xa1\x17\x12\x9e\xe9\xee\x9d\r\x94\x07H\xbf\xd6\xdf";
         }
+        impl soroban_sdk::spec_shaking::SpecShakingMarker for Error {
+            #[doc(hidden)]
+            #[inline(always)]
+            fn spec_shaking_marker() {}
+        }
         #[used]
         #[allow(non_upper_case_globals)]
         pub static __SPEC_GRAPH_TYPE_ERROR: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
@@ -2666,6 +2671,11 @@ mod test_b {
         }
         impl soroban_sdk::spec_shaking::SpecTypeId for Error {
             const SPEC_TYPE_ID: [u8; 32] = *b"`\xfc\xd6\xce\xb5\x01y\x85\xf2\xcc\xa5\xd8\xd0\xd6\xd9P\xa7I\xa1\x17\x12\x9e\xe9\xee\x9d\r\x94\x07H\xbf\xd6\xdf";
+        }
+        impl soroban_sdk::spec_shaking::SpecShakingMarker for Error {
+            #[doc(hidden)]
+            #[inline(always)]
+            fn spec_shaking_marker() {}
         }
         #[used]
         #[allow(non_upper_case_globals)]

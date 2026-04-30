@@ -28,6 +28,20 @@ pub const GRAPH_RECORD_KIND_EVENT: u16 = 1;
 #[doc(hidden)]
 pub const GRAPH_RECORD_KIND_UDT: u16 = 2;
 
+/// Call-site hook for error specs thrown through `panic_with_error!`.
+///
+/// This roots only the error's own spec entry. Types referenced by that entry
+/// are retained by walking the removable spec graph.
+#[doc(hidden)]
+pub trait SpecShakingMarker {
+    fn spec_shaking_marker();
+}
+
+impl SpecShakingMarker for crate::Error {
+    #[inline(always)]
+    fn spec_shaking_marker() {}
+}
+
 /// Implemented by generated UDTs so sidecar graph records can refer to exact type specs.
 #[doc(hidden)]
 pub trait SpecTypeId {

@@ -144,9 +144,9 @@ fn test_spec_shaking_v2() {
             "used type/event {name} should be present in filtered entries, but was not found"
         );
     }
-    // Function input/output types are rooted from contractspecv0. Only events
-    // need markers because published-event reachability is not in the spec.
-    assert_eq!(markers.len(), 6);
+    // Function input/output types are rooted from contractspecv0. Events and
+    // panic/assert-only errors need markers because their reachability is not in the spec.
+    assert_eq!(markers.len(), 8);
 
     // Unused types/events should exist in unfiltered entries.
     let unused = [

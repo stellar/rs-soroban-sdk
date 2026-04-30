@@ -569,6 +569,16 @@ impl UsedErrorEnum {
 impl soroban_sdk::spec_shaking::SpecTypeId for UsedErrorEnum {
     const SPEC_TYPE_ID: [u8; 32] = *b"Hh\xdc\xaaa\x8d\xf7\re\xda\x8d\xd7\x15\x1b\xfb\x07v\x9e\x94}\x06\x18\x88\xf7{\xcc\xb0C\xcb\xa3\xb6~";
 }
+impl soroban_sdk::spec_shaking::SpecShakingMarker for UsedErrorEnum {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1Hh\xdc\xaaa\x8d\xf7\r";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[used]
 #[allow(non_upper_case_globals)]
@@ -729,7 +739,10 @@ impl UsedPanicErrorEnum {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x12UsedPanicErrorEnum\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04Boom\0\0\0\x01"
     }
 }
-impl soroban_sdk::SpecShakingMarker for UsedPanicErrorEnum {
+impl soroban_sdk::spec_shaking::SpecTypeId for UsedPanicErrorEnum {
+    const SPEC_TYPE_ID: [u8; 32] = *b"\r\xb76\xae\x93D\xef\x1aa\xb8\x95\x90\xd0\x15\xf7\x9aq]\x18w\x11\x92-\x99\x8e\n\x11\xfe\xe2sdQ";
+}
+impl soroban_sdk::spec_shaking::SpecShakingMarker for UsedPanicErrorEnum {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -739,6 +752,17 @@ impl soroban_sdk::SpecShakingMarker for UsedPanicErrorEnum {
         }
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_TYPE_USEDPANICERRORENUM: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    42usize,
+    0usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    *b"\r\xb76\xae\x93D\xef\x1aa\xb8\x95\x90\xd0\x15\xf7\x9aq]\x18w\x11\x92-\x99\x8e\n\x11\xfe\xe2sdQ",
+    [],
+);
 impl TryFrom<soroban_sdk::Error> for UsedPanicErrorEnum {
     type Error = soroban_sdk::Error;
     #[inline(always)]
@@ -886,7 +910,10 @@ impl UsedAssertErrorEnum {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x13UsedAssertErrorEnum\0\0\0\0\x01\0\0\0\0\0\0\0\x03Bad\0\0\0\0\x01"
     }
 }
-impl soroban_sdk::SpecShakingMarker for UsedAssertErrorEnum {
+impl soroban_sdk::spec_shaking::SpecTypeId for UsedAssertErrorEnum {
+    const SPEC_TYPE_ID: [u8; 32] = *b"\x8b\x89\x1f#\xbd\x157\xf4Gx\xa2a\x0ehQ\xe4\xdd\x02O0\x0b\x96\xeb\x0f\xb6\0\xa3\x91)\xf9;\x19";
+}
+impl soroban_sdk::spec_shaking::SpecShakingMarker for UsedAssertErrorEnum {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -896,6 +923,17 @@ impl soroban_sdk::SpecShakingMarker for UsedAssertErrorEnum {
         }
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_TYPE_USEDASSERTERRORENUM: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    42usize,
+    0usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    *b"\x8b\x89\x1f#\xbd\x157\xf4Gx\xa2a\x0ehQ\xe4\xdd\x02O0\x0b\x96\xeb\x0f\xb6\0\xa3\x91)\xf9;\x19",
+    [],
+);
 impl TryFrom<soroban_sdk::Error> for UsedAssertErrorEnum {
     type Error = soroban_sdk::Error;
     #[inline(always)]
@@ -3881,6 +3919,16 @@ impl UsedNonPubError {
 impl soroban_sdk::spec_shaking::SpecTypeId for UsedNonPubError {
     const SPEC_TYPE_ID: [u8; 32] = *b"\xa9<\xd8+\xb7\xa7\r\x17\xf1\x12\x1e\x03\xeb9\xb4\xa9'\xfc\x11\xab\x86>\xb5jd\\5\xf1]\xf2\xbb\x14";
 }
+impl soroban_sdk::spec_shaking::SpecShakingMarker for UsedNonPubError {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1\xa9<\xd8+\xb7\xa7\r\x17";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[used]
 #[allow(non_upper_case_globals)]
@@ -6579,6 +6627,16 @@ mod wasm_imported {
     impl soroban_sdk::spec_shaking::SpecTypeId for ErrorA {
         const SPEC_TYPE_ID: [u8; 32] = *b"\xe9R\xa7\xe8b\x99\xa2\xc3\x15$]1\x88\xb5~p\x1c\xe0\xc5.\xac\x12\xb8\xbd\xd5t\xfd[\x98B\xb7d";
     }
+    impl soroban_sdk::spec_shaking::SpecShakingMarker for ErrorA {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {
+            {
+                static MARKER: [u8; 14usize] = *b"SpEcV1\xe9R\xa7\xe8b\x99\xa2\xc3";
+                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            }
+        }
+    }
     #[link_section = "contractspecv0.rssdk.graphv0"]
     #[used]
     #[allow(non_upper_case_globals)]
@@ -6775,6 +6833,16 @@ mod wasm_imported {
     impl soroban_sdk::spec_shaking::SpecTypeId for ErrorB {
         const SPEC_TYPE_ID: [u8; 32] = *b"\x1d1\xd6\xfb\x88\xd2=\xe3}\xcd\xe8\xd8\xc1 \xd0\x9c\xfe\xab|\xdd\xaf!>\xa6=\xbf8`\xcd\x82CR";
     }
+    impl soroban_sdk::spec_shaking::SpecShakingMarker for ErrorB {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {
+            {
+                static MARKER: [u8; 14usize] = *b"SpEcV1\x1d1\xd6\xfb\x88\xd2=\xe3";
+                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            }
+        }
+    }
     #[link_section = "contractspecv0.rssdk.graphv0"]
     #[used]
     #[allow(non_upper_case_globals)]
@@ -6970,6 +7038,16 @@ mod wasm_imported {
     }
     impl soroban_sdk::spec_shaking::SpecTypeId for ErrorC {
         const SPEC_TYPE_ID: [u8; 32] = *b"\xb9\x01\xafj\xe0c\xa3\rk\x83\xec\x83DA\xd9\\q\xfbtE\xc0\xf8\x83\xdd\x84\xc9\xb0\x95\x18\x98pd";
+    }
+    impl soroban_sdk::spec_shaking::SpecShakingMarker for ErrorC {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {
+            {
+                static MARKER: [u8; 14usize] = *b"SpEcV1\xb9\x01\xafj\xe0c\xa3\r";
+                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            }
+        }
     }
     #[link_section = "contractspecv0.rssdk.graphv0"]
     #[used]
@@ -7950,7 +8028,11 @@ impl UnusedPubError {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x0eUnusedPubError\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04Nope\0\0\0\x01"
     }
 }
-impl soroban_sdk::SpecShakingMarker for UnusedPubError {
+impl soroban_sdk::spec_shaking::SpecTypeId for UnusedPubError {
+    const SPEC_TYPE_ID: [u8; 32] =
+        *b"\xe7\xf0{7\xdd\x90z=3\xe0\xb9\\\xdfc\x03\xe6lF_A\x90L<x\xde\x9a\\V\xcaF\x9d\x1d";
+}
+impl soroban_sdk::spec_shaking::SpecShakingMarker for UnusedPubError {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -7960,6 +8042,15 @@ impl soroban_sdk::SpecShakingMarker for UnusedPubError {
         }
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_TYPE_UNUSEDPUBERROR: [u8; 42usize] =
+    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
+        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+        *b"\xe7\xf0{7\xdd\x90z=3\xe0\xb9\\\xdfc\x03\xe6lF_A\x90L<x\xde\x9a\\V\xcaF\x9d\x1d",
+        [],
+    );
 impl TryFrom<soroban_sdk::Error> for UnusedPubError {
     type Error = soroban_sdk::Error;
     #[inline(always)]
@@ -8431,6 +8522,16 @@ impl UnusedNonPubError {
 impl soroban_sdk::spec_shaking::SpecTypeId for UnusedNonPubError {
     const SPEC_TYPE_ID: [u8; 32] = *b"\xd9_\x99\"=\xc6FM\xa7U\x9d\xc5\x8b\x9b\xee\x99!\x86}\x99|P\x15\x8e\x16\x0e&\xe5p\xa3]\xe4";
 }
+impl soroban_sdk::spec_shaking::SpecShakingMarker for UnusedNonPubError {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1\xd9_\x99\"=\xc6FM";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[used]
 #[allow(non_upper_case_globals)]
@@ -8771,6 +8872,17 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x10with_panic_error\0\0\0\x01\0\0\0\0\0\0\0\x04fail\0\0\0\x01\0\0\0\0"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_WITH_PANIC_ERROR: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    42usize,
+    0usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    *b"\xc6\xf0\xfd2g\x89\x8d\x16\x10\xe1P\x83<\xf6(\x19\xc4\x81\x8120\xe7\x14\xa6\xa7\x90\xd9\xe4\xd3\x9d\xaa\x0e",
+    [],
+);
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__with_assert_error__spec {
@@ -8787,6 +8899,17 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x11with_assert_error\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02ok\0\0\0\0\0\x01\0\0\0\0"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_WITH_ASSERT_ERROR: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    42usize,
+    0usize,
+>(
+    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    *b"\xee\xec\xcb\x84V\xda\x92P\"t'\xe64\xde\x853\xcb\xd44Z\x04\x1c\x13\xca\xcd\xf9\xb3\xab^\xdb\x91\xb4",
+    [],
+);
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__with_panic_raw_error__spec {
@@ -8803,6 +8926,15 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x14with_panic_raw_error\0\0\0\x01\0\0\0\0\0\0\0\x04fail\0\0\0\x01\0\0\0\0"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[used]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_WITH_PANIC_RAW_ERROR: [u8; 42usize] =
+    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
+        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+        *b"\xa8\x16\x96\x10I\xdc\x18\xfb-\xcc.P\xe4\x8a\x8f\x88\x04&\x8a\xc61@\x9af,\xb9c5R\0,\"",
+        [],
+    );
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__with_vec__spec {

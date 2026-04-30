@@ -336,9 +336,6 @@ pub struct UnusedEvent {
     pub data: u32,
 }
 
-<<<<<<< HEAD
-// Used only in a non-contractimpl fn: spec entry exists but is not rooted.
-=======
 // A pub #[contracterror] enum that is never referenced anywhere — neither in a
 // Result return type, nor in panic_with_error! / assert_with_error!. Confirms
 // that an error enum that is not actually used is shaken out of the spec.
@@ -349,7 +346,6 @@ pub enum UnusedPubError {
 }
 
 // Used only in a non-contractimpl fn: spec entry exists but no marker
->>>>>>> 95914bbf (Retain panic-only error enums in spec shaking v2 (#1852))
 #[contracttype]
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct UnusedNonContractFnParam {
