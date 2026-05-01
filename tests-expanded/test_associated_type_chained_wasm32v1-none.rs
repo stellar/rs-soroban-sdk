@@ -107,8 +107,8 @@ impl Contract {
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_FN_CONTRACT_SET_VAL: [u8; 42usize] =
-    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+        0,
         *b"\xc6-\xf8\xb1V\x0eY\x8f\x0fZh\x86p\x8bs\xc3E\x92BZ\x8d\x93d\x92.\xfa\xb2\x95`,;\xb4",
         [],
     );
@@ -129,11 +129,11 @@ impl Contract {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_FN_CONTRACT_GET_VAL: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_FN_CONTRACT_GET_VAL: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    0,
     *b"\xb2d\xe3@\xd4W\xa0J\x8f\xfc\xb9\xad\x83}\xa8\xe5\xb9D\x12\x917\xa3\xedS\xaaB\xff\x1a\xf6\x80\xa9\xc8",
     [],
 );
@@ -154,11 +154,11 @@ impl Contract {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_FN_CONTRACT_BOTH: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_FN_CONTRACT_BOTH: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    0,
     *b"\x90`f\x8d\xd5\xe8\xe6\xc0F\xa7\xaa\xe2( \xe6t\xd9\xa8\x03dK\xf1p\x98\x19\xba\x81y\xe7m\xe6\x03",
     [],
 );
@@ -179,11 +179,11 @@ impl Contract {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_FN_CONTRACT_WRAPPED: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_FN_CONTRACT_WRAPPED: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    0,
     *b"\xda\xa7\xa2Fh\xc9\xc3\xe3\xb9\xa2\x85\x9d\x8d\x16d4\xf1\xb9\x0c@Cjd\xc6\x1b=\xedky\xa0;\x92",
     [],
 );
@@ -206,8 +206,8 @@ impl Contract {
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_FN_CONTRACT_DOUBLE_WRAPPED: [u8; 42usize] =
-    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+        0,
         *b"F\x0b\x86\xec]\xcc\t,7\x9c\x9a\x98kB\xcc\x050\xc8,i#Z\xf0\x83\xb7_\xc5O\x92$\xb0\xdc",
         [],
     );
@@ -228,11 +228,11 @@ impl Contract {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_FN_CONTRACT_VALVAL: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_FN_CONTRACT_VALVAL: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    0,
     *b"\x13\xeaE\xa5\x1e\xe5\x06\xdf\x9b\xee\x8ds\xc8\xcc\x054\xc9\0\x1f\xf6\x842\xd8u\xd2o\xfen\xc0\x83Q\xf9",
     [],
 );
@@ -253,11 +253,11 @@ impl Contract {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_FN_CONTRACT_TUPLE: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_FN_CONTRACT_TUPLE: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    0,
     *b"\xe1ca\xfe\x88\x13\xc3\xec%\xe3\xdd\xd2\xfaT\x86y\xc2\xf55\xe0\xa1\xe1&\xe8E\xf6}\xf3\xe5\x99\x86\xb6",
     [],
 );
@@ -278,11 +278,11 @@ impl Contract {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_FN_CONTRACT_VALREF: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_FN_CONTRACT_VALREF: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    0,
     *b"^\x11\xe1\x0e\xc9\xd2^-\xa7Z?O\x97\xd5\xe3#\xa8\x12!\xf4j\x01\xe8%Z\x9e\xde&P\x80\x17\xd2",
     [],
 );

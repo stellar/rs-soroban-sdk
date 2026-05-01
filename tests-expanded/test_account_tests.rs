@@ -65,11 +65,11 @@ impl soroban_sdk::spec_shaking::SpecShakingMarker for Error {
     fn spec_shaking_marker() {}
 }
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_ERROR: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_ERROR: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"\xa8\x1f\xc4#\x9c\x8f\xeb\x88\xeb \xbbr!pt\x83\xce\xbdLr\"\xde\xe9\xc0\x04\xae\xb1\xf5\xa6dr\x8a",
     [],
 );
@@ -339,11 +339,11 @@ impl Contract {
     }
 }
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_FN_CONTRACT___CHECK_AUTH: [u8; 74usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_FN_CONTRACT___CHECK_AUTH: [u8; 74usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     74usize,
     1usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    0,
     *b",\x10\xd9\xc4i\xd1;\xac\xbd\x1c\xeaT.\xc8$\xf0@\0\xd4/\xca\x1c\xa2I\x86\x88\xb5|]A\xb3\x1e",
     [<Context as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID],
 );

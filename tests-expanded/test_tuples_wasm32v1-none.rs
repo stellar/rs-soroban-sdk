@@ -51,8 +51,8 @@ impl Contract {
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_FN_CONTRACT_VOID_FN: [u8; 42usize] =
-    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+        0,
         *b"\x94\x83*7S\xb5C\x1dJ\xfdD\x96\xff>j.#\x8b\xe3\xd8\xd8@\x07V\xf5\x931\xc6\xe7\xa1\xdcC",
         [],
     );
@@ -73,11 +73,11 @@ impl Contract {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_FN_CONTRACT_TUPLE1: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_FN_CONTRACT_TUPLE1: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    0,
     *b"\xb0\xef<f\xb1\x98h\x93m\x8f\xed\xf3o\xe1\x1a\xca\xd3\xeb\xa6w\xe1\x03\x0b\x95\xcdB\x85<\xa1Sa!",
     [],
 );
@@ -99,8 +99,8 @@ impl Contract {
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_FN_CONTRACT_TUPLE2: [u8; 42usize] =
-    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+        0,
         *b"w\x9e\xa1:\xedN\x8a)\xca\x95\xd4e\x99\xfd\x95\x94Ff0w+N\xef\x85\x87k\xe58Se\xa3l",
         [],
     );

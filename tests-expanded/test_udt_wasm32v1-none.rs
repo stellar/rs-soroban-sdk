@@ -61,11 +61,11 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UdtEnum2 {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_UDTENUM2: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_UDTENUM2: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"\xaf\xf7\x93\xba\x9eM\xde\x9a?'\xa8\xb9\xcb\x94\x9f\x88\xf6L\xc0\xb9\x18\xd1\xc9\x1a5\xf8\x99\xa59\xc2\xcf\x9e",
     [],
 );
@@ -184,11 +184,11 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UdtEnum {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_UDTENUM: [u8; 138usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_UDTENUM: [u8; 138usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     138usize,
     3usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"\xf3\xb0\xab@i\rH\xb4\x81\x9c\x94|?A\xef\xcf\xf3%Q\xd5\x8b\x90\xb2B\x18\xfb\x8c>\xaa\x8c^2",
     [
         <UdtStruct as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID,
@@ -353,11 +353,11 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UdtTuple {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_UDTTUPLE: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_UDTTUPLE: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"\xeb\x9f\x12&\x9av(*\x7f17.3\x91\xccc\xfc\xec\xee3\x0f\x96\xf2P\x1b9\xe8\xc6\x8f\xf0\xe0\xeb",
     [],
 );
@@ -470,11 +470,11 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UdtStruct {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_UDTSTRUCT: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_UDTSTRUCT: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"\x16'd8\xff\xc9\xb1\xf8\x1cf\xb0\x84\xb1\xb8\xfay\x84`\xe4\xddp;\xc5*\x0e\xbaH:\x94\xbb\xb2\x87",
     [],
 );
@@ -591,11 +591,11 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UdtRecursive {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_UDTRECURSIVE: [u8; 74usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_UDTRECURSIVE: [u8; 74usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     74usize,
     1usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"\xc8\x12\x91\xfe\xd7\x13\xf5\x9c\xe4\xc7\x03\xdc@#$F\r\x04\xe2j_\xb0\xacC\xfd\x0b\xc0J~<\xfc\x05",
     [<UdtRecursive as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID],
 );
@@ -708,11 +708,11 @@ impl soroban_sdk::spec_shaking::SpecTypeId for RecursiveToEnum {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_RECURSIVETOENUM: [u8; 74usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_RECURSIVETOENUM: [u8; 74usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     74usize,
     1usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"\xe1oU\xdb\xd47\x98\x14z\xb2+\xbb\xdf\xdbn\x14$\x92\xbb\xf1M\xf2\x10&P\x0c\xd1\x13J\x97Ci",
     [<RecursiveEnum as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID],
 );
@@ -834,8 +834,8 @@ impl soroban_sdk::spec_shaking::SpecTypeId for RecursiveEnum {
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_TYPE_RECURSIVEENUM: [u8; 74usize] =
-    soroban_sdk::spec_shaking::spec_graph_record::<74usize, 1usize>(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    soroban_sdk::spec_shaking::encode_graph_record::<74usize, 1usize>(
+        2,
         *b"\xff{V \xab\r\xdcd\xe7~\x19\x83<\xc27t\xc6\x9d=\x9f\x8f\x12\x0e\x18>%\x08\x89.&\0M",
         [<RecursiveToEnum as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID],
     );
@@ -979,11 +979,11 @@ impl Contract {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_FN_CONTRACT_ADD: [u8; 106usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_FN_CONTRACT_ADD: [u8; 106usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     106usize,
     2usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    0,
     *b"\xeb\xb9m\xe34\x1d[[\xe4K\xe7\xe3\xf4.\x99\x9b\xf2\x1a\xe15\xa1D+\xa8\x1b\x1cV\n\xed\xc1\xa4\x89",
     [
         <UdtEnum as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID,
@@ -1008,8 +1008,8 @@ impl Contract {
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_FN_CONTRACT_RECURSIVE: [u8; 106usize] =
-    soroban_sdk::spec_shaking::spec_graph_record::<106usize, 2usize>(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    soroban_sdk::spec_shaking::encode_graph_record::<106usize, 2usize>(
+        0,
         *b"(`\x83Z;\x970\xd8\xdaZp\xcf\x9e\xbf\x82\x86|0\xb6\x90\x10Mf\x13\xcf\xd76\x0cDn\xdb\xb2",
         [
             <UdtRecursive as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID,
@@ -1034,11 +1034,11 @@ impl Contract {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_FN_CONTRACT_RECURSIVE_ENUM: [u8; 106usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_FN_CONTRACT_RECURSIVE_ENUM: [u8; 106usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     106usize,
     2usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    0,
     *b"\x84H!\x0e\xfc\xdbM6\x02\xaaN\xe4\xee\x99J\x08\x94\x08\xa9\xc0D\x88Ci\xc9\x07~\xb9\xa6\xc5\xec\xaa",
     [
         <RecursiveEnum as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID,

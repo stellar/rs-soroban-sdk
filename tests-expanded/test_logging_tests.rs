@@ -238,8 +238,8 @@ impl Contract {
 }
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_FN_CONTRACT_HELLO: [u8; 42usize] =
-    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+        0,
         *b"\xbe\xe2\xaaPL<\xb0\x1ft|RR\xd1Y\xd0\xfb\xeb?f\x01\x0c}\x12W\x9e\xb7RQ3O\x85,",
         [],
     );

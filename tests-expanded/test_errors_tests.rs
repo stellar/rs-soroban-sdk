@@ -167,11 +167,11 @@ impl soroban_sdk::spec_shaking::SpecTypeId for Flag {
     const SPEC_TYPE_ID: [u8; 32] = *b"g\x19\x8d\xc6\x8aP\xeb\xb7\xf3C>\x01h\xac\xec\xf6x\xa0\xeeq&Ib=\xa2\xe0\xe2P\x9dg\xdd\x85";
 }
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_FLAG: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_FLAG: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"g\x19\x8d\xc6\x8aP\xeb\xb7\xf3C>\x01h\xac\xec\xf6x\xa0\xeeq&Ib=\xa2\xe0\xe2P\x9dg\xdd\x85",
     [],
 );
@@ -526,11 +526,11 @@ impl soroban_sdk::spec_shaking::SpecShakingMarker for Error {
     fn spec_shaking_marker() {}
 }
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_ERROR: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_ERROR: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"\xbc\x04\x04\xea\xa4\x9e6(]\xfd\x81&\xd9\xf8d+\xb4\x03\x83\x81Df\x88\x9alm\xe1\xbd\xb2\xf4r\xde",
     [],
 );
@@ -697,11 +697,11 @@ impl Contract {
     }
 }
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_FN_CONTRACT_HELLO: [u8; 74usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_FN_CONTRACT_HELLO: [u8; 74usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     74usize,
     1usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    0,
     *b"=\xdd\xb5\xf0Pk\xc3\x82{\xdf\xd1v\xd2\xe2\xbd\xa5\xb4|\xfc\x18x\x1eY\x18\x88\xf0\xbd\xe1;`\xe7\x14",
     [<Flag as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID],
 );
@@ -721,8 +721,8 @@ impl Contract {
 }
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_FN_CONTRACT_PERSISTED: [u8; 42usize] =
-    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+        0,
         *b"f\xa64\xf3\xb6\xcc/1nKG$KmS\xdc.&g\xe4v\xfeh\xdc\xe7\xf9\xdd\x9d\xd2q$\xa0",
         [],
     );

@@ -393,8 +393,8 @@ pub mod submodule {
     }
     #[allow(non_upper_case_globals)]
     pub static __SPEC_GRAPH_FN_CONTRACTSUPERPATH_SUPER_PATH_METHOD: [u8; 42usize] =
-        soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
-            soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+        soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+            0,
             *b"\xb8\x10'J9fl\xe7\x96\x84u\xc89\xa8\xedN6d\xe8F\0\x8ccz\xb00\xe7t\xde\x0b:\xc1",
             [],
         );

@@ -86,11 +86,11 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UsedParamStruct {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_USEDPARAMSTRUCT: [u8; 74usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_USEDPARAMSTRUCT: [u8; 74usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     74usize,
     1usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"X\x03\xf6t\xc7\xd0\x01\"\x961\xf3\x1e\xad~\xda\xcc\xb4YQl\xb8N\x0f\x89&\x95m\x90\n\xab\xd4\xe3",
     [<UsedNestedInStruct as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID],
 );
@@ -200,11 +200,11 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UsedConstructorMeta {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_USEDCONSTRUCTORMETA: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_USEDCONSTRUCTORMETA: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"6\xc8\x1co\xa3\xfa}e0\xac\x8c\x1c\x938\xca\xc9\xa2\x8c\x156\x97~\x0f\xb2GV\xad\xb7\x1a\x1bT\xaa",
     [],
 );
@@ -305,8 +305,8 @@ impl soroban_sdk::spec_shaking::SpecTypeId for Context {
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_TYPE_CONTEXT: [u8; 42usize] =
-    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+        2,
         *b"\x86\xf7:L*\xf3\x0b\x94\xd8\x8bM1m\x13\xed\x8fJ}\xb4\xc1\x15u\xd0\xd3\xb6Xe\nj6\x84\"",
         [],
     );
@@ -420,11 +420,11 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UsedReturnEnum {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_USEDRETURNENUM: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_USEDRETURNENUM: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"\xe7\xcf\x9b1n\x15\x13\xfe+*\x08\xd9L\x80\xdd\xef0\x8e\xe4\xcc\x12tD\xe3<\x80\xfc\x0b\t\x7fgc",
     [],
 );
@@ -564,11 +564,11 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UsedParamIntEnum {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_USEDPARAMINTENUM: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_USEDPARAMINTENUM: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"\xc2\xf4N\xbf\xebqvp\xb8\xb6\xbe\t\x99\xef\xb0\xf8\xc1G\xfa;\x1c\xd1\x9bg\xb3\xdbS\x92\xf6\"-@",
     [],
 );
@@ -677,11 +677,11 @@ impl soroban_sdk::spec_shaking::SpecShakingMarker for UsedErrorEnum {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_USEDERRORENUM: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_USEDERRORENUM: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"Hh\xdc\xaaa\x8d\xf7\re\xda\x8d\xd7\x15\x1b\xfb\x07v\x9e\x94}\x06\x18\x88\xf7{\xcc\xb0C\xcb\xa3\xb6~",
     [],
 );
@@ -849,11 +849,11 @@ impl soroban_sdk::spec_shaking::SpecShakingMarker for UsedPanicErrorEnum {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_USEDPANICERRORENUM: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_USEDPANICERRORENUM: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"\r\xb76\xae\x93D\xef\x1aa\xb8\x95\x90\xd0\x15\xf7\x9aq]\x18w\x11\x92-\x99\x8e\n\x11\xfe\xe2sdQ",
     [],
 );
@@ -1019,11 +1019,11 @@ impl soroban_sdk::spec_shaking::SpecShakingMarker for UsedPanicErrorEnumRef {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_USEDPANICERRORENUMREF: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_USEDPANICERRORENUMREF: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"!v\x9b\xbb<\xd2\x9f\xc9\xfd|\x8e\xd7\x8f`\x80\xf9M\x8e\xb8\x98*l\xbfx\xce\xaa\xa6\n;i\x96x",
     [],
 );
@@ -1189,11 +1189,11 @@ impl soroban_sdk::spec_shaking::SpecShakingMarker for UsedAssertErrorEnum {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_USEDASSERTERRORENUM: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_USEDASSERTERRORENUM: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"\x8b\x89\x1f#\xbd\x157\xf4Gx\xa2a\x0ehQ\xe4\xdd\x02O0\x0b\x96\xeb\x0f\xb6\0\xa3\x91)\xf9;\x19",
     [],
 );
@@ -1356,11 +1356,11 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UsedNestedInStruct {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_USEDNESTEDINSTRUCT: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_USEDNESTEDINSTRUCT: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"\x84\x08Y\xae\xa0\xf128\x93a\xcd\xa3\x96yv\rTB\xfb/\x85\xee\x8e?\x01\x9fp\x91\x01U\x12\x83",
     [],
 );
@@ -1461,8 +1461,8 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UsedVecElement {
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_TYPE_USEDVECELEMENT: [u8; 42usize] =
-    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+        2,
         *b"\xe2\x01y\xc9\x9a\xf8\xedt%\xbcu\xa0\x89 \xbc \x8e\xa2!\xe5H\xa5\xf6r\xa9DK6/\xe7]6",
         [],
     );
@@ -1566,11 +1566,11 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UsedMapKey {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_USEDMAPKEY: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_USEDMAPKEY: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"[\xf4R\xdf\xdd\xb4\xb0\xbc\xe0\x96b:H\xc4\xda\xe4'\xee@\xd9\x1e\xf5!\x8aa\xf3hT$\xad\0\xcd",
     [],
 );
@@ -1664,8 +1664,8 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UsedMapVal {
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_TYPE_USEDMAPVAL: [u8; 42usize] =
-    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+        2,
         *b"\xaaX8\xde\xef\xbb6%\xb2\xe5DxT\xd07Jk\x12\xd3\x97<\xc5b\x1c\x9f'\xd7\x85\x98\x1e\x1dX",
         [],
     );
@@ -1767,11 +1767,11 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UsedOptionElement {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_USEDOPTIONELEMENT: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_USEDOPTIONELEMENT: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"\xb3/\x97\xd5\x06\xbd3Bb\xd9\xac\xadF\0\xb4v\xad\x10<\xc2\xfb\xaf\x97\xf4fy1\xc1,\xba\x07\xa9",
     [],
 );
@@ -1868,11 +1868,11 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UsedResultOk {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_USEDRESULTOK: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_USEDRESULTOK: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"k\xe4zxB\xd1+\x02\xad\x01R\xc2\xd1\xb9:\x9d\x8e\xb2\xfb~\xee\xf9\x80\x156\x90 \x02\\x\xe2\xe1",
     [],
 );
@@ -1976,11 +1976,11 @@ impl UsedEventSimple {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_EVENT_USEDEVENTSIMPLE: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_EVENT_USEDEVENTSIMPLE: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_EVENT,
+    1,
     *b"v1\x0eP\xa9C\xc7*\xce\xf5\x10\x1d\xb2\xaeFR|\n\x1e\x88\x8bB~\x8e\xc3\xb8\xdf\x1b\xd1\x0cx\xeb",
     [],
 );
@@ -2069,8 +2069,8 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UsedEventTopicType {
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_TYPE_USEDEVENTTOPICTYPE: [u8; 42usize] =
-    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+        2,
         *b"\xf5\xd4\x9b\xa3\xccI\x13\xf7\xbf7!\xf53\"u\xb3a\xe3\x1e0\xcdc?P5Zh\xdb\xcc\xb5\x81\xf6",
         [],
     );
@@ -2172,11 +2172,11 @@ impl UsedEventWithTopicType {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_EVENT_USEDEVENTWITHTOPICTYPE: [u8; 74usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_EVENT_USEDEVENTWITHTOPICTYPE: [u8; 74usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     74usize,
     1usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_EVENT,
+    1,
     *b"q^\xe2&\x9di\x9d\x0e\xea\x19\xc6\xe7{\xdd\xcf\xfc\xf1\xe5\x81\x94u\xd0\x08A\x93\xc9\"\xee\xbe\xa0h\xef",
     [<UsedEventTopicType as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID],
 );
@@ -2270,8 +2270,8 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UsedEventDataType {
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_TYPE_USEDEVENTDATATYPE: [u8; 42usize] =
-    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+        2,
         *b"\xc2 \x1b\xdc\xc8gxZ{C<0\";\xe6w\xb4\xf6l\xfa|\xbe\x9b\xfc\x9612\x9e0\x02\x89\x0e",
         [],
     );
@@ -2382,11 +2382,11 @@ impl UsedEventWithDataType {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_EVENT_USEDEVENTWITHDATATYPE: [u8; 74usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_EVENT_USEDEVENTWITHDATATYPE: [u8; 74usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     74usize,
     1usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_EVENT,
+    1,
     *b"q\xa3z;6\xa6R\x01\xa6-V\x13\x03\xcc\xff\x03\x84\x1f\xfb\xbe`v\xba\x0e\xe9\xd3\x0f\xf8$#t0",
     [<UsedEventDataType as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID],
 );
@@ -2474,11 +2474,11 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UsedEventTopicOuter {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_USEDEVENTTOPICOUTER: [u8; 74usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_USEDEVENTTOPICOUTER: [u8; 74usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     74usize,
     1usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"\x94\xc7w/_\xebXc\xa9\x03\x88\x02\x07^\x08\xa2\x8e_\x97\xfe\x1a\x86o\x86\xf0h\x0e\xd5Q],\xce",
     [<UsedEventTopicInner as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID],
 );
@@ -2584,11 +2584,11 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UsedEventTopicInner {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_USEDEVENTTOPICINNER: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_USEDEVENTTOPICINNER: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"6\x83?\xf0\xcdW\xb1/\x84\x83\xf4\xb9w\xfcY1^\xd2iW\x04\xf2\x84\xb9\n\x15 \xc2\x16\xce\x95\x08",
     [],
 );
@@ -2696,8 +2696,8 @@ impl UsedEventWithNestedTopic {
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_EVENT_USEDEVENTWITHNESTEDTOPIC: [u8; 74usize] =
-    soroban_sdk::spec_shaking::spec_graph_record::<74usize, 1usize>(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_EVENT,
+    soroban_sdk::spec_shaking::encode_graph_record::<74usize, 1usize>(
+        1,
         *b"\xe3\xf2\x9b5%a\xfb\xd6pv\xcf\xd0q\x91\x9f\xae\x8d\x9d\x8dLKjc\xed&r;W\x13f\x8c\xba",
         [<UsedEventTopicOuter as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID],
     );
@@ -2785,11 +2785,11 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UsedEventDataOuter {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_USEDEVENTDATAOUTER: [u8; 74usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_USEDEVENTDATAOUTER: [u8; 74usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     74usize,
     1usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"'\xf2\xa2\xb9\xd0)\xc0u \x17\xc1\xe1\xcc5t\"\x83\xad\x90)\x86\xd5j\x85\x1cD\xc9\x0f|\xb2\x01\x1a",
     [<UsedEventDataInner as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID],
 );
@@ -2895,11 +2895,11 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UsedEventDataInner {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_USEDEVENTDATAINNER: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_USEDEVENTDATAINNER: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"\x0c\xf0\xf6w\xfd\x1a\x1b\x94\x8e\xdb9\xf07\x16K{\xce\xe5no\xb5>\x94\xf3\xa9\x15\x8b\x93\xda*\xc1\x84",
     [],
 );
@@ -3006,11 +3006,11 @@ impl UsedEventWithNestedData {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_EVENT_USEDEVENTWITHNESTEDDATA: [u8; 74usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_EVENT_USEDEVENTWITHNESTEDDATA: [u8; 74usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     74usize,
     1usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_EVENT,
+    1,
     *b" \xfbl\x04B\x82\xc0\xb4.\xec\xfdE\xa0\x8d\xca\xea\xd9\"\xc2\xf1\xcf\xe4-\xe2|\x1b&\x9eF\xc1e0",
     [<UsedEventDataOuter as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID],
 );
@@ -3100,11 +3100,11 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UsedRefTopicType {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_USEDREFTOPICTYPE: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_USEDREFTOPICTYPE: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"@\xb9LO\xf9\xd1\xe8\xe2\xbb\x94X\x08\xab\x8a\xaf\x95(\xcd\x91\x1f\x96\xce\t\xff\x86|\xb4\xb6\x84K\xed ",
     [],
 );
@@ -3201,11 +3201,11 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UsedRefDataType {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_USEDREFDATATYPE: [u8; 74usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_USEDREFDATATYPE: [u8; 74usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     74usize,
     1usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"'\xbd_A\r\x9a\x89\x02l\x941T>\xcd\xc3\xafg\xb6\x01\xa4D\x15\xa9\xf5\xfd\x1d\r\xfe\xb8\xe90A",
     [<UsedRefDataInner as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID],
 );
@@ -3306,8 +3306,8 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UsedRefDataInner {
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_TYPE_USEDREFDATAINNER: [u8; 42usize] =
-    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+        2,
         *b"K\xdf'8m/\xe8\x1dr\xe0'{3\xa9\xe0\\\x0c\xeb\xc4\xe3\xb3\nA\xfey\xf4\x11\x13\xd2\x08{~",
         [],
     );
@@ -3412,8 +3412,8 @@ impl<'a> UsedEventWithRefs<'a> {
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_EVENT_USEDEVENTWITHREFS: [u8; 106usize] =
-    soroban_sdk::spec_shaking::spec_graph_record::<106usize, 2usize>(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_EVENT,
+    soroban_sdk::spec_shaking::encode_graph_record::<106usize, 2usize>(
+        1,
         *b"[Q+\xe9\xde\xd5\xf2>`4p2\xd1G\xec\xe6\xac\x1a\x85\x03{\x04W3\x14\xde|\xac\xdc\x9bl\x99",
         [
             <UsedRefTopicType as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID,
@@ -3501,8 +3501,8 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UsedTupleElement {
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_TYPE_USEDTUPLEELEMENT: [u8; 42usize] =
-    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+        2,
         *b"\xde\x1dMa\x01\xec\xb0A\nT\x8b\x1e\xbb\x88\x034\xcfwRz\x7f\x1b\x05\xc2b1\xe7r8{\xce\xc7",
         [],
     );
@@ -3605,11 +3605,11 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UsedTupleReturnElement {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_USEDTUPLERETURNELEMENT: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_USEDTUPLERETURNELEMENT: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"Y\xa66\xb3\xecxE\x13\xdaZ\xbe\xa2r?J\xa2D\xc2\xd8\xb5\x1d8\xd1tn\x9d\x10\x86\x04\x1a\xf2\x1b",
     [],
 );
@@ -3716,8 +3716,8 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UsedVecInnerVecElement {
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_TYPE_USEDVECINNERVECELEMENT: [u8; 42usize] =
-    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+        2,
         *b"\xcf@%X\xde+J@\xc4\xe7\xb8=\xdd(\x16za\xe2\xb0\xa6\x9e>\xc6h\x18\xc6\xdfl\0s\xa3D",
         [],
     );
@@ -3823,8 +3823,8 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UsedVecInnerElement {
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_TYPE_USEDVECINNERELEMENT: [u8; 42usize] =
-    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+        2,
         *b"\xb4\xabN]\xe3\xeaA\xd6AQ\x80Y\xe9H\xaa6L/k\xb0\x17\xcdg\x92=\x8f\x8dA\xeaXP\x18",
         [],
     );
@@ -3938,11 +3938,11 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UsedVecElementNested {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_USEDVECELEMENTNESTED: [u8; 106usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_USEDVECELEMENTNESTED: [u8; 106usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     106usize,
     2usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"\x13?J\x12d\xden|\xe9\xd0`\x82\xf0\x19\xd4s\x1e\xa4\x87\xe1\xe6p.-\xa2\x1b\xb1\xae[\xcc`\xcc",
     [
         <UsedVecInnerElement as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID,
@@ -4058,11 +4058,11 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UsedNonPubStruct {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_USEDNONPUBSTRUCT: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_USEDNONPUBSTRUCT: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"p\x8c\x0fN!\x082\xd8n\x8c\xea\x0fh\x9c\xb8\xd8\xbe\xddnI\xa0\x91\xcdb3\xd8\x07t\x0c\xcd\xfa\xb0",
     [],
 );
@@ -4167,11 +4167,11 @@ impl soroban_sdk::spec_shaking::SpecShakingMarker for UsedNonPubError {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_USEDNONPUBERROR: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_USEDNONPUBERROR: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"\xa9<\xd8+\xb7\xa7\r\x17\xf1\x12\x1e\x03\xeb9\xb4\xa9'\xfc\x11\xab\x86>\xb5jd\\5\xf1]\xf2\xbb\x14",
     [],
 );
@@ -4332,11 +4332,11 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UsedRecursiveRoot {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_USEDRECURSIVEROOT: [u8; 74usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_USEDRECURSIVEROOT: [u8; 74usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     74usize,
     1usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"u2\x0b\x97\xae\xcd\x86\xbf\x0b(\x18\x06\x90x\xae?\xceC\xbe\x7f\xc9\x9c= \xb0\xa5\xd0=j\x91\xfd\xbb",
     [<UsedRecursiveNode as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID],
 );
@@ -4462,8 +4462,8 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UsedRecursiveNode {
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_TYPE_USEDRECURSIVENODE: [u8; 106usize] =
-    soroban_sdk::spec_shaking::spec_graph_record::<106usize, 2usize>(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    soroban_sdk::spec_shaking::encode_graph_record::<106usize, 2usize>(
+        2,
         *b"*\\\x9c\xf4e\xaa\x1e]V\xdcG\x0f>f\xb3N\xf3\xa9\xf5\t\x86y\xbf\0\x11Q\t\xf3\xc8\xae\xf4E",
         [
             <UsedLeaf as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID,
@@ -4604,11 +4604,11 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UsedRecursiveLeaf {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_USEDRECURSIVELEAF: [u8; 74usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_USEDRECURSIVELEAF: [u8; 74usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     74usize,
     1usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"?\xd9\xb3q\xdep>\xf3\xab\xb06G\x9d\xb5\x9cd\x9c\x97\xa5T\xcc\xa1\x98*\x83\xe90\xdd\xdb#\x186",
     [<UsedRecursiveRoot as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID],
 );
@@ -4705,11 +4705,11 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UsedLeaf {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_USEDLEAF: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_USEDLEAF: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"\xe6Q\xd5T\x13\x8a\xb7l\xa1E\xc4q\x84\x01\xf9Y\xe49\x83<K{\xac\xde\xa9\xcc+\xcf\xc5\x88\xe00",
     [],
 );
@@ -5095,8 +5095,8 @@ mod wasm_imported {
     #[link_section = "contractspecv0.rssdk.graphv0"]
     #[allow(non_upper_case_globals)]
     pub static __SPEC_GRAPH_TYPE_STRUCTA: [u8; 42usize] =
-        soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
-            soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+        soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+            2,
             *b"\xb6\x1c\xfd\xdfhY-d\xc190\xf9\xa0\xde\x1b&\xc5y\xfe\x80R\x860\xa4\xa2GE\xd7\xcd,YJ",
             [],
         );
@@ -5228,8 +5228,8 @@ mod wasm_imported {
     #[link_section = "contractspecv0.rssdk.graphv0"]
     #[allow(non_upper_case_globals)]
     pub static __SPEC_GRAPH_TYPE_STRUCTB: [u8; 42usize] =
-        soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
-            soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+        soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+            2,
             *b"\xf3\xc4\xd3\x8c\xc1w\xe9\x18\x7f\xbdXAi{P7\xbe\xa3riQ*,\x95\xa2\xb0\xe6\x9fo#&`",
             [],
         );
@@ -5359,11 +5359,11 @@ mod wasm_imported {
     }
     #[link_section = "contractspecv0.rssdk.graphv0"]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_GRAPH_TYPE_STRUCTC: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    pub static __SPEC_GRAPH_TYPE_STRUCTC: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
         42usize,
         0usize,
     >(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+        2,
         *b"\xa3\x16\n\x8f\xc9\x92\xd2\x11\xfe\x9f\x8b\x9a\x1f L\xd2\x0f\xec\x8a\xc7\xcdwU\x85\xc5\x166\xe7|\xad)N",
         [],
     );
@@ -5490,11 +5490,11 @@ mod wasm_imported {
     }
     #[link_section = "contractspecv0.rssdk.graphv0"]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_GRAPH_TYPE_STRUCTTUPLEA: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    pub static __SPEC_GRAPH_TYPE_STRUCTTUPLEA: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
         42usize,
         0usize,
     >(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+        2,
         *b"\xcf)\x97]S\xb2\xfd)9\x03!Po\x97\xbb%\x93l\x96\xc9V\xcf\xa97\x9d\r\xf3\x0c\xe5\x1f.[",
         [],
     );
@@ -5617,11 +5617,11 @@ mod wasm_imported {
     }
     #[link_section = "contractspecv0.rssdk.graphv0"]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_GRAPH_TYPE_STRUCTTUPLEB: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    pub static __SPEC_GRAPH_TYPE_STRUCTTUPLEB: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
         42usize,
         0usize,
     >(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+        2,
         *b"x\xd98\x9c\x1ao\xac\x8c\x08v\x8b\xec\xbf\xeb\xbd~\xd0\xb8F\xaa\xbc\x12<\xa0\x89\xe1L&\x9e\x04\xfc\xa0",
         [],
     );
@@ -5745,11 +5745,11 @@ mod wasm_imported {
     }
     #[link_section = "contractspecv0.rssdk.graphv0"]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_GRAPH_TYPE_STRUCTTUPLEC: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    pub static __SPEC_GRAPH_TYPE_STRUCTTUPLEC: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
         42usize,
         0usize,
     >(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+        2,
         *b"\xc5=\x81\xc1\"\xafT\xd9\x03\x9b\x9a]\xc4mcc\xa0y|\x12j\xe5\x9e\xb4_A\xfb\x08j#\x99\x9b",
         [],
     );
@@ -5877,11 +5877,11 @@ mod wasm_imported {
     }
     #[link_section = "contractspecv0.rssdk.graphv0"]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_GRAPH_TYPE_ENUMA: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    pub static __SPEC_GRAPH_TYPE_ENUMA: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
         42usize,
         0usize,
     >(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+        2,
         *b"\xa2=N\xc1p\x95\x90\xb2/\xd4:\xe6\xc6\xae\xa2Z\xdbw\xdf\x9bT\xc6\x1a\xdd\xf1\x7f=u\xbdz\x07\xeb",
         [],
     );
@@ -6087,8 +6087,8 @@ mod wasm_imported {
     #[link_section = "contractspecv0.rssdk.graphv0"]
     #[allow(non_upper_case_globals)]
     pub static __SPEC_GRAPH_TYPE_ENUMB: [u8; 42usize] =
-        soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
-            soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+        soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+            2,
             *b"'\x1b\0DSH^\xcc\x19\x8f\x93\xda\x937\xd01\"v\x96k\xce\xf4\xe7\xbact)\xb3KY\t\x89",
             [],
         );
@@ -6294,11 +6294,11 @@ mod wasm_imported {
     }
     #[link_section = "contractspecv0.rssdk.graphv0"]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_GRAPH_TYPE_ENUMC: [u8; 106usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    pub static __SPEC_GRAPH_TYPE_ENUMC: [u8; 106usize] = soroban_sdk::spec_shaking::encode_graph_record::<
         106usize,
         2usize,
     >(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+        2,
         *b"\xa0\xdd\x8f\xdc\xc9W\xbe\xc2P;\x8c\xbd\xe5\x17V\x11\xf5\xfc_\x82X@\x0e\x8f4\xab|\xdc\xf7\xfd\x96D",
         [
             <StructA as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID,
@@ -6473,11 +6473,11 @@ mod wasm_imported {
     }
     #[link_section = "contractspecv0.rssdk.graphv0"]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_GRAPH_TYPE_ENUMINTA: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    pub static __SPEC_GRAPH_TYPE_ENUMINTA: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
         42usize,
         0usize,
     >(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+        2,
         *b"V]\x80\\~\x1a\x08/\xa1\x13\xf0r\x98\xa8\xc8\x9c\xdfS\x1b\xbc\x80\x10nP\x81\xfd-\x90\n\xab\x99\t",
         [],
     );
@@ -6598,11 +6598,11 @@ mod wasm_imported {
     }
     #[link_section = "contractspecv0.rssdk.graphv0"]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_GRAPH_TYPE_ENUMINTB: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    pub static __SPEC_GRAPH_TYPE_ENUMINTB: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
         42usize,
         0usize,
     >(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+        2,
         *b",\x9c\xc0_\xed_)\x85\x9b\x01\xac\x9d\xf9OMlv*\xfbE\x8f\xab\x8f.\xdaQ\x161\xc1\x07\xbap",
         [],
     );
@@ -6723,11 +6723,11 @@ mod wasm_imported {
     }
     #[link_section = "contractspecv0.rssdk.graphv0"]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_GRAPH_TYPE_ENUMINTC: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    pub static __SPEC_GRAPH_TYPE_ENUMINTC: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
         42usize,
         0usize,
     >(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+        2,
         *b"`\xca\xda\x19\xb9c\xf0/\xb0T\x02-\x98\x95\xbd\xbb\x87\xbf-\x9d\x1bp\xf0=\x96\xf2D\xf6yT\xdc\xd4",
         [],
     );
@@ -6858,11 +6858,11 @@ mod wasm_imported {
     }
     #[link_section = "contractspecv0.rssdk.graphv0"]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_GRAPH_TYPE_ERRORA: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    pub static __SPEC_GRAPH_TYPE_ERRORA: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
         42usize,
         0usize,
     >(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+        2,
         *b"\xe9R\xa7\xe8b\x99\xa2\xc3\x15$]1\x88\xb5~p\x1c\xe0\xc5.\xac\x12\xb8\xbd\xd5t\xfd[\x98B\xb7d",
         [],
     );
@@ -7063,11 +7063,11 @@ mod wasm_imported {
     }
     #[link_section = "contractspecv0.rssdk.graphv0"]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_GRAPH_TYPE_ERRORB: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    pub static __SPEC_GRAPH_TYPE_ERRORB: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
         42usize,
         0usize,
     >(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+        2,
         *b"\x1d1\xd6\xfb\x88\xd2=\xe3}\xcd\xe8\xd8\xc1 \xd0\x9c\xfe\xab|\xdd\xaf!>\xa6=\xbf8`\xcd\x82CR",
         [],
     );
@@ -7268,11 +7268,11 @@ mod wasm_imported {
     }
     #[link_section = "contractspecv0.rssdk.graphv0"]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_GRAPH_TYPE_ERRORC: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    pub static __SPEC_GRAPH_TYPE_ERRORC: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
         42usize,
         0usize,
     >(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+        2,
         *b"\xb9\x01\xafj\xe0c\xa3\rk\x83\xec\x83DA\xd9\\q\xfbtE\xc0\xf8\x83\xdd\x84\xc9\xb0\x95\x18\x98pd",
         [],
     );
@@ -7461,8 +7461,8 @@ mod wasm_imported {
     #[link_section = "contractspecv0.rssdk.graphv0"]
     #[allow(non_upper_case_globals)]
     pub static __SPEC_GRAPH_EVENT_EVENTA: [u8; 42usize] =
-        soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
-            soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_EVENT,
+        soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+            1,
             *b"K\xe6\x8ej\x19\x9en\xbd\xccv\xd2:}`\x07\xddn\xe9\x904>\x9b^h\xa7\x04%Be#r\x9b",
             [],
         );
@@ -7584,11 +7584,11 @@ mod wasm_imported {
     }
     #[link_section = "contractspecv0.rssdk.graphv0"]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_GRAPH_EVENT_EVENTB: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    pub static __SPEC_GRAPH_EVENT_EVENTB: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
         42usize,
         0usize,
     >(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_EVENT,
+        1,
         *b"\xe6\xaa\xefz\x17i$\x15\x95\x112\x06\xef\xd7R\xa8\xc9\x83\xf2\xc8\x87i\xadz\x1e\xdc\x8e\x90\x1c-\x80`",
         [],
     );
@@ -7713,11 +7713,11 @@ mod wasm_imported {
     }
     #[link_section = "contractspecv0.rssdk.graphv0"]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_GRAPH_EVENT_EVENTC: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+    pub static __SPEC_GRAPH_EVENT_EVENTC: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
         42usize,
         0usize,
     >(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_EVENT,
+        1,
         *b"\x16\xd6\xdf\xe7\xdb\xb4W@\x9b\x92\x97\xb9\x1a\x14\xeeK\xbf6\xfe\x92\xab`\xa1\xe3\xc8r\\\"T0\xb8!",
         [],
     );
@@ -7805,11 +7805,11 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UnusedStruct {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_UNUSEDSTRUCT: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_UNUSEDSTRUCT: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"|\x9c\t\x1e\xf5\xa8\x19\xa0\t\xdb\x92\xcaaA\xc9\x1e\xee\xf2\xf0\xd1\x95L\xc7\xec\xc0\x08U\x9a\xe6\x8f\xcb\x1c",
     [],
 );
@@ -7919,11 +7919,11 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UnusedEnum {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_UNUSEDENUM: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_UNUSEDENUM: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"/\x82\x9a0\xbe@\x0eZ\xe3\x8c\xaf\xe8\x9f\xcb\x96\x9d\x06S\xe9,\x94\x9b\x83U-|16\x1d\xa3\xdb\xb1",
     [],
 );
@@ -8057,11 +8057,11 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UnusedIntEnum {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_UNUSEDINTENUM: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_UNUSEDINTENUM: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"\x0c\xdd\xee~,\x83\xe4\x9c\xf6\x82\x80\xd5\xc3\xe4\xce\x0c\xe1\xf7\xff\xe0\xcf\x8f\x0e\xc7Cue;\xd2;\x90\xf5",
     [],
 );
@@ -8160,11 +8160,11 @@ impl UnusedEvent {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_EVENT_UNUSEDEVENT: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_EVENT_UNUSEDEVENT: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_EVENT,
+    1,
     *b"\x10\xe8\xf6\xcc\xea\xc3Sb\x01\xb0_\x05\xcb\xf1It\xa2\xca\xdc\xd7\xa9\xc2~\xbd_\x08\x98@y\xc2\xf1\xbf",
     [],
 );
@@ -8254,8 +8254,8 @@ impl soroban_sdk::spec_shaking::SpecShakingMarker for UnusedPubError {
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_TYPE_UNUSEDPUBERROR: [u8; 42usize] =
-    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+        2,
         *b"\xe7\xf0{7\xdd\x90z=3\xe0\xb9\\\xdfc\x03\xe6lF_A\x90L<x\xde\x9a\\V\xcaF\x9d\x1d",
         [],
     );
@@ -8417,11 +8417,11 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UnusedNonContractFnParam {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_UNUSEDNONCONTRACTFNPARAM: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_UNUSEDNONCONTRACTFNPARAM: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"\x81\xbc\xdb\xb4\xc1\xcb\xbd\xc5\x8a\x8d\xbc\xf2\x19kdi@]\xbe\xc3\xbf\x97lX\x84d=\x90\x1b\xc8\xc5\x86",
     [],
 );
@@ -8526,11 +8526,11 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UnusedNonContractFnReturn {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_UNUSEDNONCONTRACTFNRETURN: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_UNUSEDNONCONTRACTFNRETURN: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"\x7fe\x1c\n\x87g\x1d\xc0\x06x\xb0\xae8\x04\x1eO(Q\xf0\xe5\xb2\xef.\xd8\x95\xe1;*\xa4\x96\xf49",
     [],
 );
@@ -8631,8 +8631,8 @@ impl soroban_sdk::spec_shaking::SpecTypeId for UnusedNonPubStruct {
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_TYPE_UNUSEDNONPUBSTRUCT: [u8; 42usize] =
-    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+        2,
         *b"\xa8;,%}]PA\xe4\xae\xa7|l\"\xef\xeb\xc8\xe6\x08\n\xea\xf8x\xaa\x95\xb2\xa4\xaat\xdfB6",
         [],
     );
@@ -8739,11 +8739,11 @@ impl soroban_sdk::spec_shaking::SpecShakingMarker for UnusedNonPubError {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_TYPE_UNUSEDNONPUBERROR: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_TYPE_UNUSEDNONPUBERROR: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    2,
     *b"\xd9_\x99\"=\xc6FM\xa7U\x9d\xc5\x8b\x9b\xee\x99!\x86}\x99|P\x15\x8e\x16\x0e&\xe5p\xa3]\xe4",
     [],
 );
@@ -8978,11 +8978,11 @@ impl Contract {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_FN_CONTRACT___CONSTRUCTOR: [u8; 74usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_FN_CONTRACT___CONSTRUCTOR: [u8; 74usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     74usize,
     1usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    0,
     *b"\xc2\x7f\t\x92\x8d\xa6\xe9Pv\xc6\xab\xcf\x07Q\x98\x10\xd5\xd8|\x85\xe7\x12\xf6\x8aR\xa0]\xff\x1e~\xccV",
     [<UsedConstructorMeta as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID],
 );
@@ -9003,11 +9003,11 @@ impl Contract {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_FN_CONTRACT_WITH_PARAM: [u8; 106usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_FN_CONTRACT_WITH_PARAM: [u8; 106usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     106usize,
     2usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    0,
     *b"9AZ\x8d\xc6\x89R\xa2A\xb7\xff\xf2d\xef\xb2b\xd6\x93\x96\x8a\xf6\xf3\xf3\xe2\x8f\xcc\x88T\x13\x10a\xdb",
     [
         <UsedParamStruct as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID,
@@ -9031,11 +9031,11 @@ impl Contract {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_FN_CONTRACT_WITH_CONTEXT: [u8; 74usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_FN_CONTRACT_WITH_CONTEXT: [u8; 74usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     74usize,
     1usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    0,
     *b"b\xc2\xbdU\xd1\x05\x81o\xa4\x12\xb3\"\xe5\xb0H\x19\x8a\x02M\xe6\xe2\xb4\xc6\x9e\x98\xb7{\xcd\x1f\\\xb0\x15",
     [<Context as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID],
 );
@@ -9056,11 +9056,11 @@ impl Contract {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_FN_CONTRACT_WITH_RETURN: [u8; 74usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_FN_CONTRACT_WITH_RETURN: [u8; 74usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     74usize,
     1usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    0,
     *b"K\xaa\xb0_Y\\]\xc1\x06\xa8\xd9\xbf\x0f%\xfd\xa2\x13\xee\x84\xe4\xff<6\xf4\x03\"2\x9d\xfb\xb9\xfe\xf2",
     [<UsedReturnEnum as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID],
 );
@@ -9081,11 +9081,11 @@ impl Contract {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_FN_CONTRACT_WITH_ERROR: [u8; 74usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_FN_CONTRACT_WITH_ERROR: [u8; 74usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     74usize,
     1usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    0,
     *b",\xccnmf\x98\xf0\x1f\xb7\x1e\xc6\x9b\xb8\x1d`\xdeVb\xcc\xd9\xd5;\xc9\x17E:\x18\x96i?\xees",
     [<UsedErrorEnum as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID],
 );
@@ -9107,11 +9107,11 @@ impl Contract {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_FN_CONTRACT_WITH_PANIC_ERROR: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_FN_CONTRACT_WITH_PANIC_ERROR: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    0,
     *b"\xc6\xf0\xfd2g\x89\x8d\x16\x10\xe1P\x83<\xf6(\x19\xc4\x81\x8120\xe7\x14\xa6\xa7\x90\xd9\xe4\xd3\x9d\xaa\x0e",
     [],
 );
@@ -9133,11 +9133,11 @@ impl Contract {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_FN_CONTRACT_WITH_PANIC_ERROR_REF: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_FN_CONTRACT_WITH_PANIC_ERROR_REF: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    0,
     *b"\xcdB\x02\xf7\xfd\x86\xae<*\x7fR\xee9\x815\"K\xa8\x1c\x18<\x812\xfc\xf0s\xd3U\xd9\xbdD\x16",
     [],
 );
@@ -9159,11 +9159,11 @@ impl Contract {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_FN_CONTRACT_WITH_ASSERT_ERROR: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_FN_CONTRACT_WITH_ASSERT_ERROR: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    0,
     *b"\xee\xec\xcb\x84V\xda\x92P\"t'\xe64\xde\x853\xcb\xd44Z\x04\x1c\x13\xca\xcd\xf9\xb3\xab^\xdb\x91\xb4",
     [],
 );
@@ -9186,8 +9186,8 @@ impl Contract {
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_FN_CONTRACT_WITH_PANIC_RAW_ERROR: [u8; 42usize] =
-    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+        0,
         *b"\xa8\x16\x96\x10I\xdc\x18\xfb-\xcc.P\xe4\x8a\x8f\x88\x04&\x8a\xc61@\x9af,\xb9c5R\0,\"",
         [],
     );
@@ -9208,11 +9208,11 @@ impl Contract {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_FN_CONTRACT_WITH_VEC: [u8; 74usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_FN_CONTRACT_WITH_VEC: [u8; 74usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     74usize,
     1usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    0,
     *b"\xac\xab\xce\x9a\xb4\x11\xfd\xff\x88\xc6x\xbf\x90\xbc\x9c\xf4.Fy<o\xa9Sw\xc8\xcc\xbd\xe3\x1c?\x8c\x8e",
     [<UsedVecElement as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID],
 );
@@ -9234,11 +9234,11 @@ impl Contract {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_FN_CONTRACT_WITH_VEC_NESTED: [u8; 74usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_FN_CONTRACT_WITH_VEC_NESTED: [u8; 74usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     74usize,
     1usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    0,
     *b"=\xc9^7\x8a\xd6\xc3\x91\x81\xea\x1aw\xf0&\x84\xc5=w\xbe\xce\xa3Q\xaa)\xa3\xe1z\x05\xc3\x90\xe9\xfe",
     [<UsedVecElementNested as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID],
 );
@@ -9259,11 +9259,11 @@ impl Contract {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_FN_CONTRACT_WITH_MAP: [u8; 106usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_FN_CONTRACT_WITH_MAP: [u8; 106usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     106usize,
     2usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    0,
     *b"\x1c:c\xadb\x1c6\x05Z<\x1c\x1e~,\xa4?\xd5\xce:\x1d4g\xc1\x1e\xdc\x1f\xf3\x87\xa5\xe2\x97\xa1",
     [
         <UsedMapKey as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID,
@@ -9287,11 +9287,11 @@ impl Contract {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_FN_CONTRACT_WITH_OPTION: [u8; 74usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_FN_CONTRACT_WITH_OPTION: [u8; 74usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     74usize,
     1usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    0,
     *b"\x98;\xeb\x9f\x1c\xdf\xf3\xd2\x90E\x08\xce)e\x16\xdazb\xaeB}\xa9\x8d\xdd6P\xa9g\xc5\xea\xb7m",
     [<UsedOptionElement as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID],
 );
@@ -9313,8 +9313,8 @@ impl Contract {
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_FN_CONTRACT_WITH_RESULT: [u8; 106usize] =
-    soroban_sdk::spec_shaking::spec_graph_record::<106usize, 2usize>(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    soroban_sdk::spec_shaking::encode_graph_record::<106usize, 2usize>(
+        0,
         *b"6<n\xf17\x96\x0bC\x1e\x89\xde<\x91cE\xc8\xf5\xa4\x10\xd202.\xc2\x1a\x1b9\xa7\xb3n\x0eW",
         [
             <UsedResultOk as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID,
@@ -9339,11 +9339,11 @@ impl Contract {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_FN_CONTRACT_WITH_RECURSION: [u8; 74usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_FN_CONTRACT_WITH_RECURSION: [u8; 74usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     74usize,
     1usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    0,
     *b"\x95\x02\"L\x8a\x81*\x08\x17c\xae#g\t\xb6\x02\rt\x03\x9e\xe5D\xf2\xfd\xd5\x94\x04\xa4\x0cG\x88\xbd",
     [<UsedRecursiveRoot as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID],
 );
@@ -9365,11 +9365,11 @@ impl Contract {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_FN_CONTRACT_PUBLISH_SIMPLE: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_FN_CONTRACT_PUBLISH_SIMPLE: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    0,
     *b"U\x86\x1b\x93v\xa5\x8c\x81\x9c\xf5\xb4\xf4\xd7\xd5\x8c?\xe4\xb4?;{\x9a\xe957p\xfd-\x8e\x91\xfb\xb9",
     [],
 );
@@ -9392,8 +9392,8 @@ impl Contract {
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_FN_CONTRACT_PUBLISH_TOPIC_TYPE: [u8; 42usize] =
-    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+        0,
         *b"\xee\x97\xa6+\xa5\xb6\xc5 b\xed\x18RU\x89z',\x9ffq\xc0c\xbfZ\xcar\x14^oz\xf6_",
         [],
     );
@@ -9416,8 +9416,8 @@ impl Contract {
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_FN_CONTRACT_PUBLISH_DATA_TYPE: [u8; 42usize] =
-    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+        0,
         *b"\xb5z-\x08C&*\xbe\x83:\x87\"\xe9$|\xd8\xfa\xfeB\xea\xf0.\xb6W\xf0\x86][o\xcb\x8c\xe5",
         [],
     );
@@ -9439,11 +9439,11 @@ impl Contract {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_FN_CONTRACT_PUBLISH_NESTED_TOPIC: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_FN_CONTRACT_PUBLISH_NESTED_TOPIC: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    0,
     *b"\xa3\x15\xec\xffg\x02E\xabPG\xb9\x01Q\xf0\0\xe0 \xebF\xa3\xce\xe4\x9a\xda\xbfC\xbe[\x16|\x0cy",
     [],
 );
@@ -9465,11 +9465,11 @@ impl Contract {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_FN_CONTRACT_PUBLISH_NESTED_DATA: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_FN_CONTRACT_PUBLISH_NESTED_DATA: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    0,
     *b"\x85\x91`+\xaez\xee\x08\x9a\\\x18\xab1\xab\x13\xf6\xc6%\xfbj\xf2\xff/\x98E\xe6\xc9\xa7L\x83\x86\xbb",
     [],
 );
@@ -9491,11 +9491,11 @@ impl Contract {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_FN_CONTRACT_WITH_LIB_STRUCT: [u8; 74usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_FN_CONTRACT_WITH_LIB_STRUCT: [u8; 74usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     74usize,
     1usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    0,
     *b"?\xbe1a\xd0/\xc8\xee\xc8\xfc\xf1\xfe\x0e\xb6\x81`\x91\xeao\x10\xc5\xc4\xa0L^\xdd\xf4j\x01F,Z",
     [<test_spec_lib::StructC as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID],
 );
@@ -9517,11 +9517,11 @@ impl Contract {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_FN_CONTRACT_WITH_WASM_IMPORTED: [u8; 74usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_FN_CONTRACT_WITH_WASM_IMPORTED: [u8; 74usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     74usize,
     1usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    0,
     *b"\xa3\x98\xd5x\xf0O\"\x89\xdc>\xfe\xc4\xd4\xdf\xc1\x8aN\x19v\xed\xaa\t\x85p\xc5\xa5[\xef\xb0\xd6>\xae",
     [<wasm_imported::StructA as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID],
 );
@@ -9543,8 +9543,8 @@ impl Contract {
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_FN_CONTRACT_WITH_NON_PUB: [u8; 74usize] =
-    soroban_sdk::spec_shaking::spec_graph_record::<74usize, 1usize>(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    soroban_sdk::spec_shaking::encode_graph_record::<74usize, 1usize>(
+        0,
         *b"\x13\xb2]FU\xec\xf3\xbb%\x0c6Veq\xda\x82q\x96\xd1F\x96\xaday`\xfe\xef\\3\x1aB\n",
         [<UsedNonPubStruct as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID],
     );
@@ -9566,11 +9566,11 @@ impl Contract {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_FN_CONTRACT_WITH_NON_PUB_ERROR: [u8; 74usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_FN_CONTRACT_WITH_NON_PUB_ERROR: [u8; 74usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     74usize,
     1usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    0,
     *b"D\xbeG?\x1c\x8c\xb2\x96\xbcS\xed\xb1`\xb3\x1a\xb6>\xe397\xc1\x9e\x19\x18#\x81\xd1\xcb\x85O\xb6\xea",
     [<UsedNonPubError as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID],
 );
@@ -9592,8 +9592,8 @@ impl Contract {
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_FN_CONTRACT_WITH_TUPLE: [u8; 74usize] =
-    soroban_sdk::spec_shaking::spec_graph_record::<74usize, 1usize>(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    soroban_sdk::spec_shaking::encode_graph_record::<74usize, 1usize>(
+        0,
         *b"\x921\x17mb\xdb@#\x02]\xc0o\x95\xa30x\x9e\x8e\x0e5\r\xc0\xc2\xe7-G\x90\x19\x1cf\xc8=",
         [<UsedTupleElement as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID],
     );
@@ -9615,11 +9615,11 @@ impl Contract {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_FN_CONTRACT_WITH_TUPLE_RETURN: [u8; 74usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_FN_CONTRACT_WITH_TUPLE_RETURN: [u8; 74usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     74usize,
     1usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    0,
     *b"\xe3\x01\xf3\xbf\xd9\x995\x9a\xba\x90\rF\xc6\xb3^\x86\x12L\xffR\xf0\xbd\x0b\xc0N\xc0\xe1f\x13\x88w\x84",
     [<UsedTupleReturnElement as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID],
 );
@@ -9641,11 +9641,11 @@ impl Contract {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_FN_CONTRACT_PUBLISH_REF_EVENT: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_FN_CONTRACT_PUBLISH_REF_EVENT: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    0,
     *b"\xb6\x92\x87\x14\xa1\xab\x9b\xe8\x85\xa5\x8c\xe6\xf5\x150\x82\x81\x1c\x9d\x9a\xef\x16C\x04{=\x7f<\xfd\r\xf1a",
     [],
 );

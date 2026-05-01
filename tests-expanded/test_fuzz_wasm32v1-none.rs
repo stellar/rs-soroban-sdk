@@ -50,11 +50,11 @@ impl Contract {
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_FN_CONTRACT_RUN: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_FN_CONTRACT_RUN: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    0,
     *b"\xe6\xf9\xeaJ\x16\xbb\xf8\"\x15\x07A\x9b\xac\xf7)}\x0f\xac\x9c\xcd\x97\xe4\x87\x9fk\xb3\x86\x08C_\x85\x1d",
     [],
 );

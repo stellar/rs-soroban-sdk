@@ -157,11 +157,11 @@ impl Contract {
     }
 }
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_FN_CONTRACT_CALC: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_FN_CONTRACT_CALC: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    0,
     *b"\xfe\xc0\xa1\x08H>\x93E\xab{\x15{\x12c\xcf\x11\xf4'\xa9\x8du\xdc\x9c\xd1Q.\x0e\xc1\x19ov\x12",
     [],
 );

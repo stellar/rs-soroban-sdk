@@ -164,11 +164,11 @@ impl Contract {
     }
 }
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_FN_CONTRACT_ADD_WITH: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_FN_CONTRACT_ADD_WITH: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    0,
     *b"\xa2\0%\xfe\xd2\xa1\xa3\x9b\x17\x14\xe0Z\x92\xfbz\x18,\xa67P\xe7\xccc\x08:\x18\x10\\IA \x11",
     [],
 );
@@ -527,11 +527,11 @@ impl AddContract {
     }
 }
 #[allow(non_upper_case_globals)]
-pub static __SPEC_GRAPH_FN_ADDCONTRACT_ADD: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
+pub static __SPEC_GRAPH_FN_ADDCONTRACT_ADD: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
     42usize,
     0usize,
 >(
-    soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_FUNCTION,
+    0,
     *b"8\xdb\x90\x03q[#*\x9c\xe0\xb6&\xc3\xd6\xb6\xe7h\xdf\x81\xbfG\x1a\x05dRg\x18\xd7\x93b\xa2F",
     [],
 );

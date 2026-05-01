@@ -63,8 +63,8 @@ impl soroban_sdk::spec_shaking::SpecTypeId for MyStruct {
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_TYPE_MYSTRUCT: [u8; 42usize] =
-    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+        2,
         *b"\x08\xd4\xa7b\xae1|\xdd\xd3\xf5\xf9rU\xe4{\xebN\tY\xa4$\xc2\x93I\x94F*R\xe2\x0cwp",
         [],
     );
@@ -176,8 +176,8 @@ impl soroban_sdk::spec_shaking::SpecTypeId for MyEnumUnit {
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_TYPE_MYENUMUNIT: [u8; 42usize] =
-    soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+        2,
         *b"2E\x1b4\x1c\x83\xab\xeb\"\xdf!\x80\x95D/G\xbf\xc6\xcb\x8f_>\xdcR\xf8W\xf5T\x90\xee\xb4m",
         [],
     );
@@ -299,8 +299,8 @@ impl soroban_sdk::spec_shaking::SpecTypeId for MyEnumVariants {
 #[link_section = "contractspecv0.rssdk.graphv0"]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_TYPE_MYENUMVARIANTS: [u8; 106usize] =
-    soroban_sdk::spec_shaking::spec_graph_record::<106usize, 2usize>(
-        soroban_sdk::spec_shaking::GRAPH_RECORD_KIND_UDT,
+    soroban_sdk::spec_shaking::encode_graph_record::<106usize, 2usize>(
+        2,
         *b"\xceHo\xd4mpUm\xc4G\xbc%\xc9j\x1b\xb7\x82R\xb3e\xb5\x10\x9b\xa0\x05\xe2_I:G^B",
         [
             <MyStruct as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID,
