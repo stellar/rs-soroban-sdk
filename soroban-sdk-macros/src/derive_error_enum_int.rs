@@ -65,9 +65,9 @@ pub fn derive_type_error_enum_int(
         return quote! { #(#compile_errors)* };
     }
 
-    // Compute spec XDR once. Spec shaking v2 needs exact IDs even for
-    // `export = false` types so other graph records can reference them without
-    // also exporting their `contractspecv0` entries.
+    // Compute spec XDR once. Spec shaking v2 emits SpecTypeId even for
+    // `export = false` types so graph records can be built without exporting
+    // those types to `contractspecv0`.
     let spec_entry = ScSpecEntry::UdtErrorEnumV0(ScSpecUdtErrorEnumV0 {
         doc: docs_from_attrs(attrs),
         lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),

@@ -16,14 +16,16 @@
 //! by that exact function spec entry. The graph-aware post-build filter keeps
 //! the function entry itself as a root, but it discovers the function's
 //! parameter and return UDTs only through that graph record. If a reachable
-//! function references UDTs and its graph record is missing or incomplete, the
-//! filter rejects the contract.
+//! function references UDTs and the graph cannot resolve those UDTs to exported
+//! spec entries, the filter rejects the contract.
 //!
 //! Events, errors, and UDTs with public spec entries also emit graph records
 //! when v2 is enabled. Types marked `export = false` still implement
-//! [`SpecTypeId`] so other graph records can refer to them exactly, but they do
-//! not export spec entries or graph records of their own. The sidecar is private
-//! build metadata and is removed after `contractspecv0` is rewritten.
+//! [`SpecTypeId`] so generated graph records can be built, but they do not
+//! export spec entries or graph records of their own. A reachable boundary edge
+//! to one of these types is rejected because there is no exported spec entry to
+//! retain. The sidecar is private build metadata and is removed after
+//! `contractspecv0` is rewritten.
 
 #[doc(hidden)]
 /// Re-exported as function is referenced by generated code
@@ -53,8 +55,8 @@ impl<T: SpecShakingMarker> SpecShakingMarker for &T {
 /// Implemented by generated UDTs so sidecar graph records can refer to exact type specs.
 ///
 /// This is also generated for `export = false` UDTs when spec shaking v2 is
-/// enabled. Those types can be referenced by graph records without adding their
-/// own entries to `contractspecv0`.
+/// enabled so graph records can be built without adding those types to
+/// `contractspecv0`.
 #[doc(hidden)]
 pub trait SpecTypeId {
     const SPEC_TYPE_ID: [u8; 32];

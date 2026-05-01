@@ -23,8 +23,8 @@
 /// and output roots are discovered directly from the function entries in `contractspecv0`, and UDT
 /// reachability is discovered from exact spec IDs in the removable
 /// `contractspecv0.rssdk.graphv0` sidecar. When a reachable function, event, or UDT entry
-/// references UDTs, its graph record must be present and must list the exact spec IDs of those
-/// referenced types. The filter keeps function entries themselves as API roots, but their
+/// references UDTs, its graph record must be present and must resolve those referenced UDTs to
+/// exported spec entries. The filter keeps function entries themselves as API roots, but their
 /// parameter and return UDTs are only reached through graph records. Exact duplicate spec entries
 /// are collapsed during filtering.
 ///
@@ -126,8 +126,6 @@ pub enum SpecShakingError {
         entry: String,
         type_name: String,
     },
-    #[error("spec graph entry for {entry} has unexpected references")]
-    UnexpectedGraphReferences { spec_id: SpecId, entry: String },
     #[error("graph reference from {entry} to unknown spec id {ref_spec_id} does not match any spec entry")]
     MissingReferencedSpecEntry {
         spec_id: SpecId,
@@ -306,9 +304,9 @@ fn find_all_in_data(data: &[u8], markers: &mut HashSet<Marker>) {
 ///
 /// # Errors
 ///
-/// Returns an error when a reachable entry needs a graph record or graph reference that is absent
-/// or malformed. Empty graphs are accepted for contracts whose reachable entries do not reference
-/// any UDTs.
+/// Returns an error when a reachable entry references a UDT that cannot be resolved through the
+/// graph to an exported spec entry. Empty graphs are accepted for contracts whose reachable
+/// entries do not reference any UDTs.
 #[allow(clippy::implicit_hasher)]
 pub fn filter<'a, I: IntoIterator<Item = ScSpecEntry> + 'a>(
     entries: I,
@@ -429,10 +427,11 @@ fn add_graph_refs(
     let spec_id = generate_spec_id_for_entry(entry);
     let entry_description = spec_entry_description(entry);
     let expected_names = referenced_udt_names(entry);
+    if expected_names.is_empty() {
+        return Ok(());
+    }
+
     let Some(record) = graph.entries.get(&spec_id) else {
-        if expected_names.is_empty() {
-            return Ok(());
-        }
         return Err(SpecShakingError::MissingGraphEntry {
             spec_id,
             entry: entry_description,
@@ -446,13 +445,6 @@ fn add_graph_refs(
             entry: entry_description,
             expected: expected_kind,
             actual: record.kind,
-        });
-    }
-
-    if expected_names.is_empty() && !record.refs.is_empty() {
-        return Err(SpecShakingError::UnexpectedGraphReferences {
-            spec_id,
-            entry: entry_description,
         });
     }
 
@@ -981,37 +973,13 @@ mod tests {
     }
 
     #[test]
-    fn test_filter_rejects_unexpected_graph_references() {
-        let foo = make_function("foo", vec![ScSpecTypeDef::U32]);
-        let stray = make_struct("Stray", vec![("field", ScSpecTypeDef::U32)]);
-        let entries = vec![foo.clone(), stray.clone()];
-        let graph = SpecGraph::from_records([(&foo, SpecGraphEntryKind::Function, vec![&stray])]);
-        let markers = HashSet::new();
-
-        let Err(err) = filter(entries, &markers, &graph) else {
-            panic!("unexpected graph refs should be rejected");
-        };
-
-        assert_eq!(
-            err.to_string(),
-            "spec graph entry for function foo has unexpected references"
-        );
-        assert!(
-            matches!(&err, SpecShakingError::UnexpectedGraphReferences { entry, .. } if entry == "function foo")
-        );
-    }
-
-    #[test]
     fn test_filter_rejects_missing_referenced_spec_entry() {
-        let foo = make_function("foo", vec![udt("Input")]);
-        let mut graph = SpecGraph::default();
-        graph.insert(
-            generate_spec_id_for_entry(&foo),
-            SpecGraphEntry {
-                kind: SpecGraphEntryKind::Function,
-                refs: vec![[3u8; 32]],
-            },
-        );
+        let foo = make_function("foo", vec![udt("Hidden")]);
+        // This mirrors a reachable boundary UDT with `export = false`: the macro can refer to
+        // the exact type ID, but no matching UDT entry is exported in contractspecv0.
+        let hidden = make_struct("Hidden", vec![("field", ScSpecTypeDef::U32)]);
+        let hidden_id = generate_spec_id_for_entry(&hidden);
+        let graph = SpecGraph::from_records([(&foo, SpecGraphEntryKind::Function, vec![&hidden])]);
         let markers = HashSet::new();
 
         let Err(err) = filter(vec![foo], &markers, &graph) else {
@@ -1020,9 +988,9 @@ mod tests {
 
         assert!(err
             .to_string()
-            .starts_with("graph reference from function foo to unknown spec id 030303"));
+            .starts_with("graph reference from function foo to unknown spec id"));
         assert!(
-            matches!(&err, SpecShakingError::MissingReferencedSpecEntry { entry, ref_id, .. } if entry == "function foo" && ref_id == &[3u8; 32])
+            matches!(&err, SpecShakingError::MissingReferencedSpecEntry { entry, ref_id, .. } if entry == "function foo" && ref_id == &hidden_id)
         );
     }
 
@@ -1049,11 +1017,12 @@ mod tests {
 
     #[test]
     fn test_filter_rejects_graph_entry_kind_mismatch() {
-        let foo = make_function("foo", vec![ScSpecTypeDef::U32]);
-        let graph = SpecGraph::from_records([(&foo, SpecGraphEntryKind::Event, vec![])]);
+        let foo = make_function("foo", vec![udt("Input")]);
+        let input = make_struct("Input", vec![("field", ScSpecTypeDef::U32)]);
+        let graph = SpecGraph::from_records([(&foo, SpecGraphEntryKind::Event, vec![&input])]);
         let markers = HashSet::new();
 
-        let Err(err) = filter(vec![foo], &markers, &graph) else {
+        let Err(err) = filter(vec![foo, input], &markers, &graph) else {
             panic!("graph entry kind mismatch should be rejected");
         };
 

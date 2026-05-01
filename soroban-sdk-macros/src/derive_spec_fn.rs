@@ -186,8 +186,8 @@ pub fn derive_fn_spec(
     // Spec shaking v2 invariant: every exported FunctionV0 spec emitted with v2 enabled must
     // have a matching function graph record keyed by this exact spec XDR. The graph-aware
     // post-build filter keeps functions as roots, but uses this record to discover parameter and
-    // return UDTs. Emitting one without the other makes the v2 graph incomplete and is rejected by
-    // the strict post-build filter.
+    // return UDTs. Emitting one without the other leaves referenced UDTs unresolved and is
+    // rejected by the post-build filter.
     let spec_shaking_graph = if export && cfg!(feature = "experimental_spec_shaking_v2") {
         let graph_ident = format_ident!(
             "__SPEC_GRAPH_FN_{}_{}",
