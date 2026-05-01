@@ -19,6 +19,7 @@
 //! 6. Strip unused specs from contractspecv0 and drop the sidecar graph
 
 use proc_macro2::TokenStream as TokenStream2;
+use quote::format_ident;
 use quote::quote;
 use stellar_xdr::curr::ScSpecTypeDef;
 use syn::{ext::IdentExt as _, GenericArgument, Ident, Path, PathArguments, Type, TypeReference};
@@ -72,6 +73,45 @@ pub fn generate_type_id_impl(path: &Path, ident: &Ident, spec_xdr: &[u8]) -> Tok
             const SPEC_TYPE_ID: [u8; 32] = *#spec_id_lit;
         }
     }
+}
+
+/// Generates spec-shaking metadata for a UDT.
+pub fn generate_udt_shaking(
+    path: &Path,
+    ident: &Ident,
+    spec_xdr: &[u8],
+    refs: Vec<TokenStream2>,
+    spec_exported: bool,
+    generate_marker: bool,
+) -> Option<TokenStream2> {
+    let type_id_impl = generate_type_id_impl(path, ident, spec_xdr);
+    if !spec_exported {
+        return Some(type_id_impl);
+    }
+
+    let marker_impl = if generate_marker {
+        Some(generate_error_marker_impl(path, ident, spec_xdr))
+    } else {
+        None
+    };
+
+    let graph_ident = format_ident!(
+        "__SPEC_GRAPH_TYPE_{}",
+        ident.unraw().to_string().to_uppercase()
+    );
+    let graph_record = generate_graph_record(
+        path,
+        &graph_ident,
+        soroban_spec_markers::SpecGraphEntryKind::Udt,
+        spec_xdr,
+        refs,
+    );
+
+    Some(quote! {
+        #type_id_impl
+        #marker_impl
+        #graph_record
+    })
 }
 
 /// Generates one removable graph record in `contractspecv0.rssdk.graphv0` at compile time.

@@ -53,7 +53,11 @@ pub fn derive_type_struct_tuple(
             let try_into_xdr = quote! {
                 (&val.#field_idx_lit).try_into().map_err(|_| #path::xdr::Error::Invalid)?
             };
-            let field_type_id_refs = shaking::type_id_refs(path, &field.ty);
+            let field_type_id_refs = if cfg!(feature = "experimental_spec_shaking_v2") {
+                shaking::type_id_refs(path, &field.ty)
+            } else {
+                Vec::new()
+            };
             (field_spec, field_idx_lit, try_from_xdr, try_into_xdr, field_type_id_refs)
         })
         .multiunzip();
@@ -74,6 +78,18 @@ pub fn derive_type_struct_tuple(
         fields: field_specs.try_into().unwrap(),
     });
     let spec_xdr = spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap();
+    let spec_shaking_gen = if cfg!(feature = "experimental_spec_shaking_v2") {
+        shaking::generate_udt_shaking(
+            path,
+            ident,
+            &spec_xdr,
+            field_type_id_refs.into_iter().flatten().collect(),
+            spec,
+            false,
+        )
+    } else {
+        None
+    };
 
     // Generated code spec.
     let spec_gen = if spec {
@@ -83,26 +99,6 @@ pub fn derive_type_struct_tuple(
             "__SPEC_XDR_TYPE_{}",
             ident.unraw().to_string().to_uppercase()
         );
-        let spec_shaking_gen = if cfg!(feature = "experimental_spec_shaking_v2") {
-            let graph_ident = format_ident!(
-                "__SPEC_GRAPH_TYPE_{}",
-                ident.unraw().to_string().to_uppercase()
-            );
-            let type_id_impl = shaking::generate_type_id_impl(path, ident, &spec_xdr);
-            let graph_record = shaking::generate_graph_record(
-                path,
-                &graph_ident,
-                soroban_spec_markers::SpecGraphEntryKind::Udt,
-                &spec_xdr,
-                field_type_id_refs.into_iter().flatten().collect(),
-            );
-            Some(quote! {
-                #type_id_impl
-                #graph_record
-            })
-        } else {
-            None
-        };
         Some(quote! {
             #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
             pub static #spec_ident: [u8; #spec_xdr_len] = #ident::spec_xdr();
@@ -115,10 +111,8 @@ pub fn derive_type_struct_tuple(
 
             #spec_shaking_gen
         })
-    } else if cfg!(feature = "experimental_spec_shaking_v2") {
-        Some(shaking::generate_type_id_impl(path, ident, &spec_xdr))
     } else {
-        None
+        spec_shaking_gen
     };
 
     // Output.

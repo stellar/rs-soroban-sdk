@@ -75,6 +75,11 @@ pub fn derive_type_error_enum_int(
         cases: spec_cases.try_into().unwrap(),
     });
     let spec_xdr = spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap();
+    let spec_shaking_gen = if cfg!(feature = "experimental_spec_shaking_v2") {
+        shaking::generate_udt_shaking(path, enum_ident, &spec_xdr, Vec::new(), spec, true)
+    } else {
+        None
+    };
 
     // Generated code spec.
     let spec_gen = if spec {
@@ -84,28 +89,6 @@ pub fn derive_type_error_enum_int(
             "__SPEC_XDR_TYPE_{}",
             enum_ident.unraw().to_string().to_uppercase()
         );
-        let spec_shaking_gen = if cfg!(feature = "experimental_spec_shaking_v2") {
-            let graph_ident = format_ident!(
-                "__SPEC_GRAPH_TYPE_{}",
-                enum_ident.unraw().to_string().to_uppercase()
-            );
-            let type_id_impl = shaking::generate_type_id_impl(path, enum_ident, &spec_xdr);
-            let marker_impl = shaking::generate_error_marker_impl(path, enum_ident, &spec_xdr);
-            let graph_record = shaking::generate_graph_record(
-                path,
-                &graph_ident,
-                soroban_spec_markers::SpecGraphEntryKind::Udt,
-                &spec_xdr,
-                Vec::new(),
-            );
-            Some(quote! {
-                #type_id_impl
-                #marker_impl
-                #graph_record
-            })
-        } else {
-            None
-        };
         Some(quote! {
             #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
             pub static #spec_ident: [u8; #spec_xdr_len] = #enum_ident::spec_xdr();
@@ -118,10 +101,8 @@ pub fn derive_type_error_enum_int(
 
             #spec_shaking_gen
         })
-    } else if cfg!(feature = "experimental_spec_shaking_v2") {
-        Some(shaking::generate_type_id_impl(path, enum_ident, &spec_xdr))
     } else {
-        None
+        spec_shaking_gen
     };
 
     // Output.
