@@ -93,7 +93,6 @@ pub fn generate_graph_record(
 
     quote! {
         #[cfg_attr(target_family = "wasm", link_section = "contractspecv0.rssdk.graphv0")]
-        #[used]
         #[allow(non_upper_case_globals)]
         pub static #ident: [u8; #record_len] =
             #path::spec_shaking::spec_graph_record::<#record_len, #ref_count>(
@@ -106,6 +105,8 @@ pub fn generate_graph_record(
 
 /// Generates exact UDT spec identity expressions referenced by a Rust type.
 pub fn type_id_refs(path: &Path, ty: &Type) -> Vec<TokenStream2> {
+    // Keep this traversal in sync with `soroban-spec/src/shaking.rs::add_type_def_udt_names`.
+    // The post-build validator mirrors these macro-emitted graph refs for each spec container.
     match ty {
         Type::Reference(TypeReference { elem, .. }) => type_id_refs(path, elem),
         Type::Tuple(tuple) => tuple
