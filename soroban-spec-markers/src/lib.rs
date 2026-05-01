@@ -159,6 +159,13 @@ pub const fn graph_record_len(ref_count: usize) -> usize {
 }
 
 /// Generates an encoded removable spec graph record in const contexts.
+///
+/// This is a `const fn` rather than a fully baked byte literal because SDK macros emit graph
+/// records before every referenced UDT's exact spec ID is known. When `derive_*` expands for type
+/// `Foo`, it knows `Foo`'s own spec XDR and can hash it, but referenced UDTs such as `Bar` or
+/// `Baz` may be defined elsewhere, possibly in another crate. The macro therefore emits each ref
+/// as a trait-associated constant expression like `<Bar as SpecTypeId>::SPEC_TYPE_ID` and lets
+/// const-eval resolve the final 32-byte IDs after all impls are in scope.
 pub const fn encode_graph_record<const LEN: usize, const N: usize>(
     kind: u16,
     spec_id: SpecId,
@@ -364,6 +371,29 @@ mod tests {
     }
 
     #[test]
+    fn marker_decode_rejects_truncated_marker() {
+        assert_eq!(
+            decode_marker(b"SpEcV1\x01\x02\x03").unwrap_err(),
+            DecodeMarkerError::TruncatedMarker
+        );
+    }
+
+    #[test]
+    fn marker_decode_rejects_invalid_magic() {
+        let marker = *b"NoEcV1\x01\x02\x03\x04\x05\x06\x07\x08";
+
+        assert_eq!(
+            decode_marker(&marker).unwrap_err(),
+            DecodeMarkerError::InvalidMagic
+        );
+    }
+
+    #[test]
+    fn graph_record_kind_rejects_out_of_range_value() {
+        assert_eq!(SpecGraphEntryKind::from_u16(3), None);
+    }
+
+    #[test]
     fn graph_record_encode_has_stable_bytes() {
         const LEN: usize = graph_record_len(2);
         let spec_id = [1u8; SPEC_ID_LEN];
@@ -418,5 +448,71 @@ mod tests {
         assert_eq!(decoded_refs.next(), Some(refs[0]));
         assert_eq!(decoded_refs.next(), Some(refs[1]));
         assert_eq!(decoded_refs.next(), None);
+    }
+
+    #[test]
+    fn graph_record_decode_rejects_truncated_header() {
+        assert_eq!(
+            decode_graph_record(&[0u8; GRAPH_RECORD_HEADER_LEN - 1]).unwrap_err(),
+            DecodeGraphRecordError::TruncatedHeader
+        );
+    }
+
+    #[test]
+    fn graph_record_decode_rejects_invalid_magic() {
+        let record = [0u8; GRAPH_RECORD_HEADER_LEN];
+
+        assert_eq!(
+            decode_graph_record(&record).unwrap_err(),
+            DecodeGraphRecordError::InvalidMagic
+        );
+    }
+
+    #[test]
+    fn graph_record_decode_rejects_unsupported_version() {
+        const LEN: usize = graph_record_len(0);
+        let mut record = encode_graph_record::<LEN, 0>(
+            SpecGraphEntryKind::Function.to_u16(),
+            [1u8; SPEC_ID_LEN],
+            [],
+        );
+        record[5] = GRAPH_RECORD_VERSION + 1;
+
+        assert_eq!(
+            decode_graph_record(&record).unwrap_err(),
+            DecodeGraphRecordError::UnsupportedVersion { version: record[5] }
+        );
+    }
+
+    #[test]
+    fn graph_record_decode_rejects_invalid_kind() {
+        const LEN: usize = graph_record_len(0);
+        let mut record = encode_graph_record::<LEN, 0>(
+            SpecGraphEntryKind::Function.to_u16(),
+            [1u8; SPEC_ID_LEN],
+            [],
+        );
+        record[6] = 0xff;
+        record[7] = 0xff;
+
+        assert_eq!(
+            decode_graph_record(&record).unwrap_err(),
+            DecodeGraphRecordError::InvalidKind { kind: u16::MAX }
+        );
+    }
+
+    #[test]
+    fn graph_record_decode_rejects_truncated_refs() {
+        const LEN: usize = graph_record_len(1);
+        let record = encode_graph_record::<LEN, 1>(
+            SpecGraphEntryKind::Function.to_u16(),
+            [1u8; SPEC_ID_LEN],
+            [[2u8; SPEC_ID_LEN]],
+        );
+
+        assert_eq!(
+            decode_graph_record(&record[..record.len() - 1]).unwrap_err(),
+            DecodeGraphRecordError::TruncatedRefs
+        );
     }
 }

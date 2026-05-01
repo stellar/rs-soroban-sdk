@@ -12,12 +12,12 @@
 //!   spec-entry reachability by `SHA256(spec_entry_xdr)` ID.
 //!
 //! Function specs are roots because every exported `FunctionV0` entry defines
-//! callable contract API. In v2, every exported function spec must also have a
-//! matching function graph record keyed by that exact function
-//! spec entry. The graph-aware post-build filter keeps the function entry
-//! itself either way, but it discovers the function's parameter and return UDTs
-//! only through that graph record. If the record is missing, UDTs reachable only
-//! through that function can be stripped from the final spec.
+//! callable contract API. The macros emit a matching function graph record keyed
+//! by that exact function spec entry. The graph-aware post-build filter keeps
+//! the function entry itself as a root, but it discovers the function's
+//! parameter and return UDTs only through that graph record. If a reachable
+//! function references UDTs and its graph record is missing or incomplete, the
+//! filter rejects the contract.
 //!
 //! Events, errors, and UDTs with public spec entries also emit graph records
 //! when v2 is enabled. Types marked `export = false` still implement

@@ -62,8 +62,8 @@
 //! their `ScSpecTypeDef::Udt` names.
 //! `export = false` types still get this hidden exact ID when v2 is enabled,
 //! but they do not emit public spec entries or UDT graph records of their own.
-//! A graph reference to such a type is harmless: if there is no matching spec
-//! entry in `contractspecv0`, the post-build graph walk has nothing to keep.
+//! A reachable graph reference to such a type is invalid for post-build
+//! shaking because there is no matching spec entry in `contractspecv0` to keep.
 //!
 //! Events and errors thrown through `panic_with_error!` or
 //! `assert_with_error!` need one extra reachability signal because those use
@@ -75,10 +75,11 @@
 //! Post-build tools (e.g. `stellar-cli`) scan the Wasm data section for
 //! markers, read the sidecar graph, keep all functions and marked extra roots,
 //! traverse UDT references by exact spec ID, rewrite `contractspecv0`, and
-//! remove `contractspecv0.rssdk.graphv0`. If the sidecar graph is missing, the
-//! filter falls back to walking `ScSpecTypeDef` references by UDT name; only in
-//! that fallback are multiple distinct UDT entries with the same name all kept
-//! conservatively.
+//! remove `contractspecv0.rssdk.graphv0`. When a reachable function, event, or
+//! UDT entry references UDTs, its graph record must be present and complete.
+//! Missing graph records, missing references, references to unknown spec IDs,
+//! and references to non-UDT spec entries are rejected instead of falling back
+//! to name-based matching.
 //!
 //! ### Changed Behaviour
 //!
@@ -91,8 +92,10 @@
 //! are generated for all types regardless of visibility, unless `export = false`
 //! is explicitly set. This ensures all types can participate in spec graph
 //! pruning. Types with `export = false` do not emit public spec entries, but
-//! they still get the hidden `SpecTypeId` helper so other graph records can
-//! reference them exactly.
+//! they still get the hidden `SpecTypeId` helper so graph records can identify
+//! them exactly. A reachable graph edge to one of these hidden-only types is
+//! rejected during strict post-build validation because the referenced spec
+//! entry is absent.
 //!
 //! #### [`contracterror`]
 //!
@@ -100,7 +103,8 @@
 //! generated for `pub` types. With this feature, spec entries are generated for
 //! all error enums regardless of visibility, unless
 //! `export = false` is explicitly set. Error enums with `export = false` still
-//! get the hidden `SpecTypeId` helper for exact graph references.
+//! get the hidden `SpecTypeId` helper for exact graph references, but cannot be
+//! the target of a reachable graph edge in a valid shaken v2 spec.
 //!
 //! #### [`contractevent`]
 //!

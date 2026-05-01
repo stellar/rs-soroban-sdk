@@ -71,7 +71,10 @@ pub struct SpecGraph {
 }
 
 impl SpecGraph {
-    /// Inserts a graph entry, merging duplicate records for the same spec ID.
+    /// Inserts a graph entry, merging refs for duplicate records with the same spec ID.
+    ///
+    /// If a duplicate record has a different kind, the first kind is retained; the mismatch is
+    /// reported later when the graph is validated against the reachable spec entry.
     pub fn insert(&mut self, spec_id: SpecId, entry: SpecGraphEntry) {
         let existing = self.entries.entry(spec_id).or_insert(SpecGraphEntry {
             kind: entry.kind,
@@ -597,10 +600,7 @@ fn add_type_def_udt_names(type_: &ScSpecTypeDef, names: &mut Vec<String>) {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use soroban_spec_markers::{
-        generate_graph_record, graph_record_len, GRAPH_RECORD_KIND_EVENT, GRAPH_RECORD_MAGIC,
-        GRAPH_RECORD_VERSION,
-    };
+    use soroban_spec_markers::generate_graph_record;
     use stellar_xdr::curr::{
         ScMetaV0, ScSpecEntry, ScSpecEventDataFormat, ScSpecEventParamLocationV0,
         ScSpecEventParamV0, ScSpecEventV0, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef,
@@ -785,27 +785,6 @@ mod tests {
     }
 
     #[test]
-    fn test_generate_marker_for_entry_struct() {
-        let entry = make_struct("MyStruct", vec![("field", ScSpecTypeDef::U32)]);
-        let marker = generate_marker_for_entry(&entry);
-
-        // Marker should be 14 bytes (6-byte prefix + 8-byte hash)
-        assert_eq!(marker.len(), MARKER_LEN);
-
-        // First 6 bytes should be magic
-        assert_eq!(&marker[..6], MARKER_MAGIC.as_slice());
-
-        // Same entry produces same marker
-        let marker2 = generate_marker_for_entry(&entry);
-        assert_eq!(marker, marker2);
-
-        // Different entry produces different marker
-        let entry2 = make_struct("DifferentStruct", vec![("field", ScSpecTypeDef::U32)]);
-        let marker3 = generate_marker_for_entry(&entry2);
-        assert_ne!(marker, marker3);
-    }
-
-    #[test]
     fn test_find_all_in_data() {
         let entry1 = make_event("Transfer");
         let entry2 = make_struct("MyStruct", vec![("field", ScSpecTypeDef::U32)]);
@@ -845,29 +824,6 @@ mod tests {
                 refs: vec![ref_id],
             })
         );
-    }
-
-    #[test]
-    fn test_generate_graph_record_exact_bytes() {
-        let spec_id = [1u8; 32];
-        let refs = [[2u8; 32], [3u8; 32]];
-
-        let record = generate_graph_record(SpecGraphEntryKind::Event, spec_id, &refs);
-
-        assert_eq!(record.len(), graph_record_len(refs.len()));
-        assert_eq!(&record[0..5], &GRAPH_RECORD_MAGIC);
-        assert_eq!(record[5], GRAPH_RECORD_VERSION);
-        assert_eq!(
-            u16::from_be_bytes([record[6], record[7]]),
-            GRAPH_RECORD_KIND_EVENT
-        );
-        assert_eq!(&record[8..40], &spec_id);
-        assert_eq!(
-            u16::from_be_bytes([record[40], record[41]]),
-            refs.len() as u16
-        );
-        assert_eq!(&record[42..74], &refs[0]);
-        assert_eq!(&record[74..106], &refs[1]);
     }
 
     #[test]
@@ -1111,29 +1067,7 @@ mod tests {
     }
 
     #[test]
-    fn test_filter_removes_all_events_if_no_markers() {
-        let foo = make_function("foo", vec![ScSpecTypeDef::U32]);
-        let transfer = make_event("Transfer");
-        let mint = make_event("Mint");
-
-        let entries = vec![foo.clone(), transfer.clone(), mint.clone()];
-        let graph = SpecGraph::from_records([
-            (&foo, SpecGraphEntryKind::Function, vec![]),
-            (&transfer, SpecGraphEntryKind::Event, vec![]),
-            (&mint, SpecGraphEntryKind::Event, vec![]),
-        ]);
-
-        let markers = HashSet::new();
-
-        let filtered: Vec<_> = filter(entries, &markers, &graph).unwrap().collect();
-
-        // Should have: 1 function, 0 events
-        assert_eq!(filtered.len(), 1);
-        assert!(matches!(filtered[0], ScSpecEntry::FunctionV0(_)));
-    }
-
-    #[test]
-    fn test_filter_removes_all_types_if_no_markers() {
+    fn test_filter_removes_all_non_function_entries_without_markers() {
         let foo = make_function("foo", vec![ScSpecTypeDef::U32]);
         let my_struct = make_struct("MyStruct", vec![("field", ScSpecTypeDef::U32)]);
         let my_enum = make_enum("MyEnum");
@@ -1345,15 +1279,6 @@ mod tests {
     #[test]
     fn test_spec_shaking_version_absent() {
         let meta = vec![];
-        assert_eq!(spec_shaking_version_for_meta(&meta), 1);
-    }
-
-    #[test]
-    fn test_spec_shaking_version_other_keys() {
-        let meta = vec![ScMetaEntry::ScMetaV0(ScMetaV0 {
-            key: "rssdkver".try_into().unwrap(),
-            val: "1.0.0".try_into().unwrap(),
-        })];
         assert_eq!(spec_shaking_version_for_meta(&meta), 1);
     }
 

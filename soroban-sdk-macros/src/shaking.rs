@@ -1,22 +1,11 @@
-//! Generates root marker blocks for spec shaking.
+//! Generates the emit-side artifacts used by spec shaking v2.
 //!
-//! The marker is a byte array in the data section with a distinctive pattern:
-//! - 6 bytes: "SpEcV1" prefix
-//! - 8 bytes: first 64 bits of SHA256 hash of the spec entry XDR
+//! SDK macros use these helpers to emit root markers for events and thrown
+//! errors, exact `SpecTypeId` implementations for UDTs, and removable graph
+//! records in the private `contractspecv0.rssdk.graphv0` sidecar section.
 //!
-//! Markers are embedded at roots that cannot be derived from `contractspecv0`,
-//! currently event publish methods and errors thrown via `panic_with_error!` or
-//! `assert_with_error!`. Function input/output roots are derived from function
-//! entries in `contractspecv0`, and UDT reachability is discovered by exact spec
-//! IDs in removable sidecar graph records.
-//!
-//! Post-processing tools (e.g. stellar-cli) can:
-//! 1. Scan the WASM data section for "SpEcV1" patterns
-//! 2. Extract the hash from each marker
-//! 3. Keep marked entries and all functions
-//! 4. Read the removable sidecar graph when present
-//! 5. Walk UDT references from those roots
-//! 6. Strip unused specs from contractspecv0 and drop the sidecar graph
+//! See `soroban-spec-markers` for the marker and graph wire formats, and
+//! `soroban-spec` for the post-build reachability filter and Wasm rewriting.
 
 use proc_macro2::TokenStream as TokenStream2;
 use quote::format_ident;
@@ -116,13 +105,8 @@ pub fn generate_udt_shaking(
 
 /// Generates one removable graph record in `contractspecv0.rssdk.graphv0` at compile time.
 ///
-/// This exists as a `const fn` rather than a fully baked byte literal because of how
-/// the SDK macros emit graph records. When `derive_*` expands for type `Foo`,
-/// it knows `Foo`'s own spec XDR and can hash it — but `Foo`'s referenced
-/// UDTs (`Bar`, `Baz`, …) are defined elsewhere, possibly in another crate,
-/// and the macro has no visibility into their tokens. So the macro emits each ref as a
-/// trait-associated constant expression `<Bar as SpecTypeId>::SPEC_TYPE_ID` and lets
-/// const-eval resolve the 32 bytes after all impls are in scope.
+/// Emits a `pub static [u8; LEN]` initialized by `encode_graph_record`, wired into
+/// `contractspecv0.rssdk.graphv0` via `link_section`.
 pub fn generate_graph_record(
     path: &Path,
     ident: &Ident,
@@ -226,7 +210,14 @@ fn generic_type_args(segment: &syn::PathSegment) -> Vec<&Type> {
 #[cfg(test)]
 mod test {
     use super::*;
+    use soroban_spec::shaking::{filter, SpecGraph, SpecGraphEntryKind};
+    use std::collections::HashSet;
     use syn::{parse_quote, Type};
+
+    use stellar_xdr::curr::{
+        ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeMap, ScSpecTypeResult,
+        ScSpecTypeUdt, ScSpecTypeVec, ScSpecUdtStructV0, StringM, VecM,
+    };
 
     fn refs_for(ty: Type) -> Vec<String> {
         let path: Path = parse_quote!(soroban_sdk);
@@ -296,5 +287,93 @@ mod test {
         assert_eq!(refs.len(), 1);
         assert!(refs[0].contains("MyType"));
         assert!(refs[0].contains("SpecTypeId"));
+    }
+
+    #[test]
+    fn type_id_refs_match_strict_spec_graph_validation() {
+        let path: Path = parse_quote!(soroban_sdk);
+        let rust_ty: Type = parse_quote!(Result<Vec<Foo>, Map<u32, Bar>>);
+        let macro_ref_names = type_id_refs(&path, &rust_ty)
+            .into_iter()
+            .map(type_id_ref_name)
+            .collect::<Vec<_>>();
+        assert_eq!(macro_ref_names, vec!["Foo", "Bar"]);
+
+        let function = make_function(
+            "foo",
+            ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
+                ok_type: Box::new(ScSpecTypeDef::Vec(Box::new(ScSpecTypeVec {
+                    element_type: Box::new(udt("Foo")),
+                }))),
+                error_type: Box::new(ScSpecTypeDef::Map(Box::new(ScSpecTypeMap {
+                    key_type: Box::new(ScSpecTypeDef::U32),
+                    value_type: Box::new(udt("Bar")),
+                }))),
+            })),
+        );
+        let foo = make_struct("Foo");
+        let bar = make_struct("Bar");
+        let entries = vec![function.clone(), foo.clone(), bar.clone()];
+        let graph_refs = macro_ref_names
+            .iter()
+            .map(|name| match name.as_str() {
+                "Foo" => &foo,
+                "Bar" => &bar,
+                _ => panic!("unexpected macro ref {name}"),
+            })
+            .collect::<Vec<_>>();
+        let graph = SpecGraph::from_records([
+            (&function, SpecGraphEntryKind::Function, graph_refs),
+            (&foo, SpecGraphEntryKind::Udt, vec![]),
+            (&bar, SpecGraphEntryKind::Udt, vec![]),
+        ]);
+
+        let filtered = filter(entries.clone(), &HashSet::new(), &graph)
+            .unwrap()
+            .collect::<Vec<_>>();
+
+        assert_eq!(filtered, entries);
+    }
+
+    fn type_id_ref_name(tokens: TokenStream2) -> String {
+        let tokens = tokens.to_string();
+        tokens
+            .split(" as ")
+            .next()
+            .expect("type id ref should contain a type")
+            .trim()
+            .trim_start_matches('<')
+            .trim()
+            .replace(' ', "")
+    }
+
+    fn udt(name: &str) -> ScSpecTypeDef {
+        ScSpecTypeDef::Udt(ScSpecTypeUdt {
+            name: name.try_into().unwrap(),
+        })
+    }
+
+    fn make_function(name: &str, input_type: ScSpecTypeDef) -> ScSpecEntry {
+        ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+            doc: StringM::default(),
+            name: name.try_into().unwrap(),
+            inputs: vec![ScSpecFunctionInputV0 {
+                doc: StringM::default(),
+                name: "arg0".try_into().unwrap(),
+                type_: input_type,
+            }]
+            .try_into()
+            .unwrap(),
+            outputs: VecM::default(),
+        })
+    }
+
+    fn make_struct(name: &str) -> ScSpecEntry {
+        ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
+            doc: StringM::default(),
+            lib: StringM::default(),
+            name: name.try_into().unwrap(),
+            fields: VecM::default(),
+        })
     }
 }
