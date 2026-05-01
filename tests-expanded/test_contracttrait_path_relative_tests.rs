@@ -395,7 +395,6 @@ impl ContractRelativePath {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x14relative_path_method\0\0\0\0\0\0\0\x01\0\0\0\x04"
     }
 }
-#[used]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_FN_CONTRACTRELATIVEPATH_RELATIVE_PATH_METHOD: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
     42usize,

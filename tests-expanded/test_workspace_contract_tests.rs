@@ -156,7 +156,6 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x05value\0\0\0\0\0\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x05Value\0\0\0"
     }
 }
-#[used]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_FN_CONTRACT_VALUE: [u8; 74usize] = soroban_sdk::spec_shaking::spec_graph_record::<
     74usize,

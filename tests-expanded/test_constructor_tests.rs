@@ -150,7 +150,6 @@ impl DataKey {
 impl soroban_sdk::spec_shaking::SpecTypeId for DataKey {
     const SPEC_TYPE_ID: [u8; 32] = *b"\x14\x94}~\xec\x15\x94\x84\xa9\xeb\xe4{6pmG_RP\xb5I\xaf\x83\xfe\x13\xf9%d\xed\x80\x08\x8f";
 }
-#[used]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_TYPE_DATAKEY: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
     42usize,
@@ -730,7 +729,6 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\r__constructor\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x08init_key\0\0\0\x04\0\0\0\0\0\0\0\ninit_value\0\0\0\0\0\x07\0\0\0\0"
     }
 }
-#[used]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_FN_CONTRACT___CONSTRUCTOR: [u8; 42usize] =
     soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
@@ -752,7 +750,6 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x08get_data\0\0\0\x01\0\0\0\0\0\0\0\x03key\0\0\0\x07\xd0\0\0\0\x07DataKey\0\0\0\0\x01\0\0\x03\xe8\0\0\0\x07"
     }
 }
-#[used]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_FN_CONTRACT_GET_DATA: [u8; 74usize] = soroban_sdk::spec_shaking::spec_graph_record::<
     74usize,

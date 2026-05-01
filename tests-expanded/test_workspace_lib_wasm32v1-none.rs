@@ -44,7 +44,6 @@ impl soroban_sdk::spec_shaking::SpecTypeId for Value {
     const SPEC_TYPE_ID: [u8; 32] = *b"\x82\xf8t\xbe\t\x04b\\<S\x0e~\x99M\xb8\x02E\x96#\x9d\xc3G\xf7\x87i\xdb\xf8\xfb\xad\xc7\x83\x15";
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
-#[used]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_TYPE_VALUE: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
     42usize,

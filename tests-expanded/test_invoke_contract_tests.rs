@@ -163,7 +163,6 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x08add_with\0\0\0\x03\0\0\0\0\0\0\0\x01x\0\0\0\0\0\0\x05\0\0\0\0\0\0\0\x01y\0\0\0\0\0\0\x05\0\0\0\0\0\0\0\x0bcontract_id\0\0\0\0\x13\0\0\0\x01\0\0\0\x05"
     }
 }
-#[used]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_FN_CONTRACT_ADD_WITH: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
     42usize,
@@ -527,7 +526,6 @@ impl AddContract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x03add\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x05\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x05\0\0\0\x01\0\0\0\x05"
     }
 }
-#[used]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_FN_ADDCONTRACT_ADD: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
     42usize,

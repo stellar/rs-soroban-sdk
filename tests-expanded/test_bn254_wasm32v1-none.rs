@@ -25,7 +25,6 @@ impl soroban_sdk::spec_shaking::SpecTypeId for MockProof {
         *b":\x81\xa6\xa0\x9e\xe7\xa7\x1f\xb2\xd7\xc9\x1b)/\x02d\xafvb+Mi[n13\xa4\x87\xd6\x1dT\x08";
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
-#[used]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_TYPE_MOCKPROOF: [u8; 42usize] =
     soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
@@ -143,7 +142,6 @@ impl Contract {
     }
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
-#[used]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_FN_CONTRACT_VERIFY_PAIRING: [u8; 74usize] = soroban_sdk::spec_shaking::spec_graph_record::<
     74usize,
@@ -169,7 +167,6 @@ impl Contract {
     }
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
-#[used]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_FN_CONTRACT_G1_ADD: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
     42usize,
@@ -195,7 +192,6 @@ impl Contract {
     }
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
-#[used]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_FN_CONTRACT_G1_MUL: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
     42usize,
@@ -221,7 +217,6 @@ impl Contract {
     }
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
-#[used]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_FN_CONTRACT_FR_VEC_GET: [u8; 42usize] =
     soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(

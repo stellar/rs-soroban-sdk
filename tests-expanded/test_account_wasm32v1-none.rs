@@ -71,7 +71,6 @@ impl soroban_sdk::spec_shaking::SpecShakingMarker for Error {
     }
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
-#[used]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_TYPE_ERROR: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
     42usize,
@@ -236,7 +235,6 @@ impl Contract {
     }
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
-#[used]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_FN_CONTRACT___CHECK_AUTH: [u8; 74usize] = soroban_sdk::spec_shaking::spec_graph_record::<
     74usize,

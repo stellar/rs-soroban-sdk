@@ -31,7 +31,6 @@ mod feat1 {
         }
     }
     #[link_section = "contractspecv0.rssdk.graphv0"]
-    #[used]
     #[allow(non_upper_case_globals)]
     pub static __SPEC_GRAPH_FN_CONTRACT_ONE: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
         42usize,
@@ -126,7 +125,6 @@ mod feat2 {
         }
     }
     #[link_section = "contractspecv0.rssdk.graphv0"]
-    #[used]
     #[allow(non_upper_case_globals)]
     pub static __SPEC_GRAPH_FN_SUPER__CONTRACT_TWO: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
         42usize,
@@ -236,7 +234,6 @@ impl Contract {
     }
 }
 #[link_section = "contractspecv0.rssdk.graphv0"]
-#[used]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_FN_CONTRACT_ZERO: [u8; 42usize] =
     soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(

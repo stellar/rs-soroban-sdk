@@ -166,7 +166,6 @@ impl Flag {
 impl soroban_sdk::spec_shaking::SpecTypeId for Flag {
     const SPEC_TYPE_ID: [u8; 32] = *b"g\x19\x8d\xc6\x8aP\xeb\xb7\xf3C>\x01h\xac\xec\xf6x\xa0\xeeq&Ib=\xa2\xe0\xe2P\x9dg\xdd\x85";
 }
-#[used]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_TYPE_FLAG: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
     42usize,
@@ -526,7 +525,6 @@ impl soroban_sdk::spec_shaking::SpecShakingMarker for Error {
     #[inline(always)]
     fn spec_shaking_marker() {}
 }
-#[used]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_TYPE_ERROR: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
     42usize,
@@ -698,7 +696,6 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x05hello\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04flag\0\0\x07\xd0\0\0\0\x04Flag\0\0\0\x01\0\0\x03\xe9\0\0\0\x11\0\0\0\x03"
     }
 }
-#[used]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_FN_CONTRACT_HELLO: [u8; 74usize] = soroban_sdk::spec_shaking::spec_graph_record::<
     74usize,
@@ -722,7 +719,6 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\tpersisted\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\x01"
     }
 }
-#[used]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_FN_CONTRACT_PERSISTED: [u8; 42usize] =
     soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(

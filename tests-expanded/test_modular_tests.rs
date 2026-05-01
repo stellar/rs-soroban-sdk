@@ -29,7 +29,6 @@ mod feat1 {
             *b"\0\0\0\0\0\0\0\0\0\0\0\x03one\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
         }
     }
-    #[used]
     #[allow(non_upper_case_globals)]
     pub static __SPEC_GRAPH_FN_CONTRACT_ONE: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
         42usize,
@@ -217,7 +216,6 @@ mod feat2 {
             *b"\0\0\0\0\0\0\0\0\0\0\0\x03two\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
         }
     }
-    #[used]
     #[allow(non_upper_case_globals)]
     pub static __SPEC_GRAPH_FN_SUPER__CONTRACT_TWO: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
         42usize,
@@ -604,7 +602,6 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x04zero\0\0\0\0\0\0\0\x01\0\0\0\x04"
     }
 }
-#[used]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_FN_CONTRACT_ZERO: [u8; 42usize] =
     soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(

@@ -156,7 +156,6 @@ impl ContractA {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x03fn1\0\0\0\0\x01\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x13\0\0\0\x01\0\0\0\x06"
     }
 }
-#[used]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_FN_CONTRACTA_FN1: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
     42usize,
@@ -829,7 +828,6 @@ mod test_a {
                 *b"\0\0\0\0\0\0\0\0\0\0\0\x0c__check_auth\0\0\0\x03\0\0\0\0\0\0\0\x11signature_payload\0\0\0\0\0\0\0\0\0\0\0\0\0\0\nsignatures\0\0\0\0\0\0\0\0\0\0\0\0\0\x0cauth_context\0\0\0\0\0\0\0\0"
             }
         }
-        #[used]
         #[allow(non_upper_case_globals)]
         pub static __SPEC_GRAPH_FN_CONTRACT___CHECK_AUTH: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
             42usize,
@@ -1152,7 +1150,6 @@ mod test_a {
             #[inline(always)]
             fn spec_shaking_marker() {}
         }
-        #[used]
         #[allow(non_upper_case_globals)]
         pub static __SPEC_GRAPH_TYPE_ERROR: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
             42usize,
@@ -1295,7 +1292,6 @@ mod test_a {
                 *b"\0\0\0\0\0\0\0\0\0\0\0\x0c__check_auth\0\0\0\x03\0\0\0\0\0\0\0\x11signature_payload\0\0\0\0\0\0\0\0\0\0\0\0\0\0\nsignatures\0\0\0\0\0\0\0\0\0\0\0\0\0\x0cauth_context\0\0\0\0\0\0\0\x01\0\0\x03\xe9\0\0\0\x02\0\0\0\x03"
             }
         }
-        #[used]
         #[allow(non_upper_case_globals)]
         pub static __SPEC_GRAPH_FN_CONTRACT___CHECK_AUTH: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
             42usize,
@@ -1568,7 +1564,6 @@ impl ContractB {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x03fn2\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x13\0\0\0\0\0\0\0\x03sub\0\0\0\0\x13\0\0\0\x01\0\0\0\x06"
     }
 }
-#[used]
 #[allow(non_upper_case_globals)]
 pub static __SPEC_GRAPH_FN_CONTRACTB_FN2: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
     42usize,
@@ -2354,7 +2349,6 @@ mod test_b {
                 *b"\0\0\0\0\0\0\0\0\0\0\0\x0c__check_auth\0\0\0\x03\0\0\0\0\0\0\0\x11signature_payload\0\0\0\0\0\0\0\0\0\0\0\0\0\0\nsignatures\0\0\0\0\0\0\0\0\0\0\0\0\0\x0cauth_context\0\0\0\0\0\0\0\0"
             }
         }
-        #[used]
         #[allow(non_upper_case_globals)]
         pub static __SPEC_GRAPH_FN_CONTRACT___CHECK_AUTH: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
             42usize,
@@ -2677,7 +2671,6 @@ mod test_b {
             #[inline(always)]
             fn spec_shaking_marker() {}
         }
-        #[used]
         #[allow(non_upper_case_globals)]
         pub static __SPEC_GRAPH_TYPE_ERROR: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
             42usize,
@@ -2820,7 +2813,6 @@ mod test_b {
                 *b"\0\0\0\0\0\0\0\0\0\0\0\x0c__check_auth\0\0\0\x03\0\0\0\0\0\0\0\x11signature_payload\0\0\0\0\0\0\0\0\0\0\0\0\0\0\nsignatures\0\0\0\0\0\0\0\0\0\0\0\0\0\x0cauth_context\0\0\0\0\0\0\0\x01\0\0\x03\xe9\0\0\0\x02\0\0\0\x03"
             }
         }
-        #[used]
         #[allow(non_upper_case_globals)]
         pub static __SPEC_GRAPH_FN_CONTRACT___CHECK_AUTH: [u8; 42usize] = soroban_sdk::spec_shaking::spec_graph_record::<
             42usize,

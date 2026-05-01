@@ -137,7 +137,6 @@ pub mod submodule {
         }
     }
     #[link_section = "contractspecv0.rssdk.graphv0"]
-    #[used]
     #[allow(non_upper_case_globals)]
     pub static __SPEC_GRAPH_FN_CONTRACTSUPERPATH_SUPER_PATH_METHOD: [u8; 42usize] =
         soroban_sdk::spec_shaking::spec_graph_record::<42usize, 0usize>(
