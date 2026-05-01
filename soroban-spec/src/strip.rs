@@ -23,6 +23,8 @@ pub enum ShakeError {
     ParseMeta(stellar_xdr::Error),
     #[error("unsupported spec shaking version {0}, expected 2")]
     UnsupportedSpecShakingVersion(u32),
+    #[error(transparent)]
+    SpecShaking(#[from] shaking::SpecShakingError),
     #[error("encoding contract spec")]
     EncodeSpec(stellar_xdr::Error),
     #[error("rewriting wasm")]
@@ -46,8 +48,9 @@ pub enum RewriteError {
 /// Filters `contractspecv0` using spec shaking v2 reachability and removes the sidecar graph.
 ///
 /// This helper only operates on Wasms whose `contractmetav0` declares
-/// `rssdk_spec_shaking = "2"`. Passing a v1 or non-Rust contract would make marker scanning
-/// ambiguous and could strip unmarked events, so those inputs are rejected before rewriting.
+/// `rssdk_spec_shaking = "2"` and whose graph, when needed for reachable UDT references, is valid
+/// and complete. Passing a v1, non-Rust, or corrupted v2 contract would make marker scanning or
+/// graph traversal ambiguous, so those inputs are rejected before rewriting.
 pub fn shake_contract_spec(wasm: &[u8]) -> Result<Vec<u8>, ShakeError> {
     let entries = read::from_wasm(wasm).map_err(ShakeError::ReadSpec)?;
     let meta = contract_meta_from_wasm(wasm)?;
@@ -57,8 +60,8 @@ pub fn shake_contract_spec(wasm: &[u8]) -> Result<Vec<u8>, ShakeError> {
     }
 
     let markers = shaking::find_all(wasm);
-    let graph = shaking::find_graph(wasm);
-    let filtered = shaking::filter_with_graph(entries, &markers, &graph);
+    let graph = shaking::find_graph(wasm)?;
+    let filtered = shaking::filter(entries, &markers, &graph)?;
 
     let mut spec_xdr = Vec::new();
     for entry in filtered {
@@ -233,21 +236,28 @@ mod tests {
         ScSpecTypeDef, ScSpecTypeUdt, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, StringM, WriteXdr,
     };
 
-    fn function_with_udt(name: &str, udt_name: &str) -> ScSpecEntry {
+    fn function_with_type(name: &str, type_: ScSpecTypeDef) -> ScSpecEntry {
         ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
             doc: StringM::default(),
             name: name.try_into().unwrap(),
             inputs: vec![ScSpecFunctionInputV0 {
                 doc: StringM::default(),
                 name: "arg".try_into().unwrap(),
-                type_: ScSpecTypeDef::Udt(ScSpecTypeUdt {
-                    name: udt_name.try_into().unwrap(),
-                }),
+                type_,
             }]
             .try_into()
             .unwrap(),
             outputs: vec![].try_into().unwrap(),
         })
+    }
+
+    fn function_with_udt(name: &str, udt_name: &str) -> ScSpecEntry {
+        function_with_type(
+            name,
+            ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                name: udt_name.try_into().unwrap(),
+            }),
+        )
     }
 
     fn struct_entry(name: &str, field_name: &str, type_: ScSpecTypeDef) -> ScSpecEntry {
@@ -327,7 +337,7 @@ mod tests {
         let filtered = read::from_wasm(&shaken).unwrap();
 
         assert_eq!(filtered, vec![function, used]);
-        assert!(shaking::find_graph(&shaken).entries.is_empty());
+        assert!(shaking::find_graph(&shaken).unwrap().entries.is_empty());
         assert!(!shaken
             .windows(shaking::GRAPH_SECTION.len())
             .any(|bytes| bytes == shaking::GRAPH_SECTION.as_bytes()));
@@ -390,5 +400,61 @@ mod tests {
         let err = shake_contract_spec(&wasm).unwrap_err();
 
         assert!(matches!(err, ShakeError::UnsupportedSpecShakingVersion(1)));
+    }
+
+    #[test]
+    fn test_shake_contract_spec_accepts_v2_meta_with_empty_graph_without_udts() {
+        let function = function_with_type("run", ScSpecTypeDef::I32);
+        let spec = spec_xdr(std::slice::from_ref(&function));
+        let meta = v2_meta_xdr();
+        let wasm = minimal_wasm(&[
+            (CONTRACT_META_SECTION, &meta),
+            (CONTRACT_SPEC_SECTION, &spec),
+        ]);
+
+        let shaken = shake_contract_spec(&wasm).unwrap();
+
+        assert_eq!(read::from_wasm(&shaken).unwrap(), vec![function]);
+        assert!(shaking::find_graph(&shaken).unwrap().entries.is_empty());
+    }
+
+    #[test]
+    fn test_shake_contract_spec_rejects_v2_meta_with_missing_graph_entry() {
+        let function = function_with_udt("run", "Shared");
+        let used = struct_entry("Shared", "used", ScSpecTypeDef::I32);
+        let spec = spec_xdr(&[function, used]);
+        let meta = v2_meta_xdr();
+        let wasm = minimal_wasm(&[
+            (CONTRACT_META_SECTION, &meta),
+            (CONTRACT_SPEC_SECTION, &spec),
+        ]);
+
+        let err = shake_contract_spec(&wasm).unwrap_err();
+
+        assert!(matches!(
+            err,
+            ShakeError::SpecShaking(shaking::SpecShakingError::MissingGraphEntry { .. })
+        ));
+    }
+
+    #[test]
+    fn test_shake_contract_spec_rejects_v2_meta_with_malformed_graph() {
+        let function = function_with_udt("run", "Shared");
+        let used = struct_entry("Shared", "used", ScSpecTypeDef::I32);
+        let spec = spec_xdr(&[function, used]);
+        let meta = v2_meta_xdr();
+        let truncated_graph = &b"SpGrV"[..];
+        let wasm = minimal_wasm(&[
+            (CONTRACT_META_SECTION, &meta),
+            (CONTRACT_SPEC_SECTION, &spec),
+            (shaking::GRAPH_SECTION, truncated_graph),
+        ]);
+
+        let err = shake_contract_spec(&wasm).unwrap_err();
+
+        assert!(matches!(
+            err,
+            ShakeError::SpecShaking(shaking::SpecShakingError::TruncatedRecord { .. })
+        ));
     }
 }

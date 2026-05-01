@@ -14,17 +14,18 @@ fn test_spec_shaking_v2() {
 
     // Find event-root markers embedded in the WASM data section.
     let markers = soroban_spec::shaking::find_all(WASM);
-    let graph = soroban_spec::shaking::find_graph(WASM);
+    let graph = soroban_spec::shaking::find_graph(WASM).unwrap();
 
     // Filter entries using function roots, event-root markers, and exact sidecar graph refs.
-    let filtered: Vec<_> =
-        soroban_spec::shaking::filter_with_graph(entries.iter().cloned(), &markers, &graph)
-            .collect();
     assert!(!graph.entries.is_empty());
+    let filtered: Vec<_> = soroban_spec::shaking::filter(entries.iter().cloned(), &markers, &graph)
+        .unwrap()
+        .collect();
 
     let shaken = soroban_spec::strip::shake_contract_spec(WASM).unwrap();
     assert_eq!(soroban_spec::read::from_wasm(&shaken).unwrap(), filtered);
     assert!(soroban_spec::shaking::find_graph(&shaken)
+        .unwrap()
         .entries
         .is_empty());
 

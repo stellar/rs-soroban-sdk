@@ -20,24 +20,20 @@
 ///
 /// Markers are embedded for roots that cannot be discovered from the spec alone, currently event
 /// publish methods and errors thrown by `panic_with_error!` or `assert_with_error!`. Function input
-/// and output roots are discovered directly from the function
-/// entries in `contractspecv0`, and UDT reachability is discovered from exact spec IDs in the
-/// removable `contractspecv0.rssdk.graphv0` sidecar when present. With the sidecar present, every
-/// function spec entry is expected to have a matching function graph record keyed by that exact
-/// entry's spec ID. The graph-aware filter keeps function entries themselves even if their graph
-/// records are absent, but their parameter and return UDTs are only reached through those records.
-/// If a function record is missing, UDTs reachable only through that function can be stripped. If
-/// the sidecar is absent, the filter falls back to graph-walking `ScSpecTypeDef` references from
-/// those roots by UDT name. In that fallback, if multiple distinct UDT entries have the same name,
-/// all matching entries are kept conservatively because `ScSpecTypeDef::Udt` stores only the name.
-/// Exact duplicate entries are collapsed during filtering.
+/// and output roots are discovered directly from the function entries in `contractspecv0`, and UDT
+/// reachability is discovered from exact spec IDs in the removable
+/// `contractspecv0.rssdk.graphv0` sidecar. When a reachable function, event, or UDT entry
+/// references UDTs, its graph record must be present and must list the exact spec IDs of those
+/// referenced types. The filter keeps function entries themselves as API roots, but their
+/// parameter and return UDTs are only reached through graph records. Exact duplicate spec entries
+/// are collapsed during filtering.
 ///
 /// Post-processing tools (e.g. stellar-cli) can:
 /// 1. Scan the WASM data section for "SpEcV1" patterns
 /// 2. Extract the hash from each marker
-/// 3. Keep marked entries and all functions
-/// 4. Read the removable sidecar graph when present
-/// 5. Walk UDT references from those roots
+/// 3. Read the removable sidecar graph
+/// 4. Keep marked entries and all functions
+/// 5. Walk exact spec-ID references from those roots
 /// 6. Strip unused specs from contractspecv0 and drop the sidecar graph
 ///
 /// Today markers are only used in contracts written in Rust, leveraging how Rust can eliminate
@@ -46,12 +42,16 @@
 /// and so it is not a general part of the SEP-48 Contract Interface Specification. Markers are just
 /// a mechanism used by the Rust soroban-sdk and the stellar-cli to achieve accurately scoped
 /// contract specs.
-use std::collections::{HashMap, HashSet, VecDeque};
+use std::{
+    collections::{HashMap, HashSet, VecDeque},
+    fmt::Write as _,
+};
 
 use sha2::{Digest, Sha256};
 use stellar_xdr::curr::{
     Limits, ScMetaEntry, ScSpecEntry, ScSpecTypeDef, ScSpecUdtUnionCaseV0, WriteXdr,
 };
+use wasmparser::BinaryReaderError;
 
 /// The contract meta key that indicates the spec shaking version.
 ///
@@ -121,6 +121,69 @@ impl SpecGraph {
             }
         }
     }
+
+    /// Builds a [`SpecGraph`] from a sequence of `(entry, kind, refs)` tuples.
+    ///
+    /// Each tuple becomes one record keyed by the entry's spec ID, with `refs` resolved to spec
+    /// IDs by hashing each referenced entry. Useful for tests and for synthesizing a graph that
+    /// mirrors what the SDK macros emit at compile time.
+    pub fn from_records<'a, I>(records: I) -> Self
+    where
+        I: IntoIterator<Item = (&'a ScSpecEntry, SpecGraphEntryKind, Vec<&'a ScSpecEntry>)>,
+    {
+        let mut graph = Self::default();
+        for (entry, kind, refs) in records {
+            let spec_id = generate_spec_id_for_entry(entry);
+            let refs = refs.into_iter().map(generate_spec_id_for_entry).collect();
+            graph.insert(spec_id, SpecGraphEntry { kind, refs });
+        }
+        graph
+    }
+}
+
+#[derive(Debug, thiserror::Error)]
+pub enum SpecShakingError {
+    #[error("reading wasm")]
+    ReadWasm(BinaryReaderError),
+    #[error("invalid spec graph record magic at offset {offset}")]
+    InvalidMagic { offset: usize },
+    #[error("unsupported spec graph record version {version} at offset {offset}")]
+    UnsupportedVersion { offset: usize, version: u8 },
+    #[error("invalid spec graph record kind {kind} at offset {offset}")]
+    InvalidKind { offset: usize, kind: u16 },
+    #[error("truncated spec graph record at offset {offset}")]
+    TruncatedRecord { offset: usize },
+    #[error("missing spec graph entry for {entry}")]
+    MissingGraphEntry { spec_id: SpecId, entry: String },
+    #[error("missing graph reference from {entry} to UDT {type_name}")]
+    MissingGraphReference {
+        spec_id: SpecId,
+        entry: String,
+        type_name: String,
+    },
+    #[error("spec graph entry for {entry} has unexpected references")]
+    UnexpectedGraphReferences { spec_id: SpecId, entry: String },
+    #[error("graph reference from {entry} to unknown spec id {ref_spec_id} does not match any spec entry")]
+    MissingReferencedSpecEntry {
+        spec_id: SpecId,
+        entry: String,
+        ref_id: SpecId,
+        ref_spec_id: String,
+    },
+    #[error("graph reference from {entry} to {ref_entry} does not point to a UDT spec entry")]
+    ReferencedSpecEntryNotUdt {
+        spec_id: SpecId,
+        entry: String,
+        ref_id: SpecId,
+        ref_entry: String,
+    },
+    #[error("spec graph entry for {entry} has kind {actual:?}, expected {expected:?}")]
+    GraphEntryKindMismatch {
+        spec_id: SpecId,
+        entry: String,
+        expected: SpecGraphEntryKind,
+        actual: SpecGraphEntryKind,
+    },
 }
 
 /// Returns the spec shaking version indicated by the contract meta entries.
@@ -222,46 +285,43 @@ pub fn find_all(wasm_bytes: &[u8]) -> HashSet<Marker> {
 }
 
 /// Finds removable spec graph records in a WASM binary.
-pub fn find_graph(wasm_bytes: &[u8]) -> SpecGraph {
+pub fn find_graph(wasm_bytes: &[u8]) -> Result<SpecGraph, SpecShakingError> {
     let mut graph = SpecGraph::default();
 
     for payload in wasmparser::Parser::new(0).parse_all(wasm_bytes) {
-        let Ok(payload) = payload else { continue };
+        let payload = payload.map_err(SpecShakingError::ReadWasm)?;
 
         if let wasmparser::Payload::CustomSection(section) = payload {
             if section.name() == GRAPH_SECTION {
-                find_graph_in_data(section.data(), &mut graph);
+                find_graph_in_data(section.data(), &mut graph)?;
             }
         }
     }
 
-    graph
+    Ok(graph)
 }
 
-fn find_graph_in_data(data: &[u8], graph: &mut SpecGraph) {
+fn find_graph_in_data(data: &[u8], graph: &mut SpecGraph) -> Result<(), SpecShakingError> {
     let mut offset = 0;
-    while offset + GRAPH_RECORD_HEADER_LEN <= data.len() {
-        let Some(pos) = data[offset..]
-            .windows(GRAPH_RECORD_MAGIC.len())
-            .position(|bytes| bytes == GRAPH_RECORD_MAGIC)
-        else {
-            break;
-        };
-        offset += pos;
-
+    while offset < data.len() {
         if offset + GRAPH_RECORD_HEADER_LEN > data.len() {
-            break;
+            return Err(SpecShakingError::TruncatedRecord { offset });
+        }
+
+        if !data[offset..].starts_with(GRAPH_RECORD_MAGIC) {
+            return Err(SpecShakingError::InvalidMagic { offset });
         }
 
         if data[offset + 5] != GRAPH_RECORD_VERSION {
-            offset += GRAPH_RECORD_MAGIC.len();
-            continue;
+            return Err(SpecShakingError::UnsupportedVersion {
+                offset,
+                version: data[offset + 5],
+            });
         }
 
         let kind = u16::from_be_bytes([data[offset + 6], data[offset + 7]]);
         let Some(kind) = SpecGraphEntryKind::from_u16(kind) else {
-            offset += GRAPH_RECORD_MAGIC.len();
-            continue;
+            return Err(SpecShakingError::InvalidKind { offset, kind });
         };
 
         let mut spec_id = [0u8; 32];
@@ -269,13 +329,13 @@ fn find_graph_in_data(data: &[u8], graph: &mut SpecGraph) {
 
         let ref_count = u16::from_be_bytes([data[offset + 40], data[offset + 41]]) as usize;
         let Some(refs_len) = ref_count.checked_mul(32) else {
-            break;
+            return Err(SpecShakingError::TruncatedRecord { offset });
         };
         let Some(record_len) = GRAPH_RECORD_HEADER_LEN.checked_add(refs_len) else {
-            break;
+            return Err(SpecShakingError::TruncatedRecord { offset });
         };
         if offset + record_len > data.len() {
-            break;
+            return Err(SpecShakingError::TruncatedRecord { offset });
         }
 
         let mut refs = Vec::with_capacity(ref_count);
@@ -289,6 +349,7 @@ fn find_graph_in_data(data: &[u8], graph: &mut SpecGraph) {
         graph.insert(spec_id, SpecGraphEntry { kind, refs });
         offset += record_len;
     }
+    Ok(())
 }
 
 /// Finds spec markers in a data segment.
@@ -311,45 +372,31 @@ fn find_all_in_data(data: &[u8], markers: &mut HashSet<Marker>) {
 
 /// Filters spec entries using function roots, extra-root markers, and UDT graph reachability.
 ///
-/// Functions are always kept as they define the contract's API. Function input and output
-/// type definitions are used as roots for a conservative UDT graph walk. Non-function entries are
-/// kept when their marker is present in the WASM data section, and their param/reference types
-/// become roots.
-/// UDT references are resolved by name; if a name resolves to multiple distinct entries, all
-/// entries with that name are kept. Exact duplicate entries are collapsed.
+/// Functions are always kept as they define the contract's API. Function input and output UDTs
+/// are queued for reachability through the matching function graph record. Non-function entries
+/// are kept when their marker is present in the WASM data section, and their referenced UDTs are
+/// queued through their graph records. Exact duplicate spec entries are collapsed.
 ///
 /// # Arguments
 ///
 /// * `entries` - The spec entries to filter
 /// * `markers` - Extra-root markers extracted from the WASM data section
+/// * `graph` - The removable sidecar graph
 ///
-/// # Returns
+/// # Errors
 ///
-/// Iterator of filtered entries with only used types/events remaining.
+/// Returns an error when a reachable entry needs a graph record or graph reference that is absent
+/// or malformed. Empty graphs are accepted for contracts whose reachable entries do not reference
+/// any UDTs.
 #[allow(clippy::implicit_hasher)]
 pub fn filter<'a, I: IntoIterator<Item = ScSpecEntry> + 'a>(
     entries: I,
     markers: &'a HashSet<Marker>,
-) -> impl Iterator<Item = ScSpecEntry> + 'a {
-    let entries = entries.into_iter().collect::<Vec<_>>();
-    let reachable = reachable_entry_indexes(&entries, markers);
-    filter_reachable_entries(entries, reachable)
-}
-
-/// Filters spec entries using a removable sidecar graph when present.
-#[allow(clippy::implicit_hasher)]
-pub fn filter_with_graph<'a, I: IntoIterator<Item = ScSpecEntry> + 'a>(
-    entries: I,
-    markers: &'a HashSet<Marker>,
     graph: &'a SpecGraph,
-) -> impl Iterator<Item = ScSpecEntry> + 'a {
+) -> Result<impl Iterator<Item = ScSpecEntry> + 'a, SpecShakingError> {
     let entries = entries.into_iter().collect::<Vec<_>>();
-    let reachable = if graph.entries.is_empty() {
-        reachable_entry_indexes(&entries, markers)
-    } else {
-        reachable_entry_indexes_with_graph(&entries, markers, graph)
-    };
-    filter_reachable_entries(entries, reachable)
+    let reachable = reachable_entry_indexes_with_graph(&entries, markers, graph)?;
+    Ok(filter_reachable_entries(entries, reachable))
 }
 
 fn filter_reachable_entries(
@@ -375,16 +422,22 @@ fn reachable_entry_indexes_with_graph(
     entries: &[ScSpecEntry],
     markers: &HashSet<Marker>,
     graph: &SpecGraph,
-) -> HashSet<usize> {
+) -> Result<HashSet<usize>, SpecShakingError> {
     // The sidecar graph is authoritative for UDT reachability when present. Function entries are
     // always API roots, but their argument and return UDTs are only queued through the matching
     // function graph record.
     let mut entry_indexes_by_id = HashMap::<SpecId, Vec<usize>>::new();
+    let mut udt_names_by_id = HashMap::<SpecId, Vec<String>>::new();
+    let mut entry_descriptions_by_id = HashMap::<SpecId, String>::new();
     for (i, entry) in entries.iter().enumerate() {
-        entry_indexes_by_id
-            .entry(generate_spec_id_for_entry(entry))
-            .or_default()
-            .push(i);
+        let spec_id = generate_spec_id_for_entry(entry);
+        entry_indexes_by_id.entry(spec_id).or_default().push(i);
+        entry_descriptions_by_id
+            .entry(spec_id)
+            .or_insert_with(|| spec_entry_description(entry));
+        if let Some(name) = udt_entry_name(entry) {
+            udt_names_by_id.entry(spec_id).or_default().push(name);
+        }
     }
 
     let mut reachable = HashSet::<usize>::new();
@@ -394,11 +447,25 @@ fn reachable_entry_indexes_with_graph(
         match entry {
             ScSpecEntry::FunctionV0(_) => {
                 reachable.insert(i);
-                add_graph_refs(entry, graph, &mut pending_spec_ids);
+                add_graph_refs(
+                    entry,
+                    graph,
+                    &entry_indexes_by_id,
+                    &udt_names_by_id,
+                    &entry_descriptions_by_id,
+                    &mut pending_spec_ids,
+                )?;
             }
             _ if markers.contains(&generate_marker_for_entry(entry)) => {
                 reachable.insert(i);
-                add_graph_refs(entry, graph, &mut pending_spec_ids);
+                add_graph_refs(
+                    entry,
+                    graph,
+                    &entry_indexes_by_id,
+                    &udt_names_by_id,
+                    &entry_descriptions_by_id,
+                    &mut pending_spec_ids,
+                )?;
             }
             _ => {}
         }
@@ -410,67 +477,115 @@ fn reachable_entry_indexes_with_graph(
             continue;
         }
 
-        if let Some(indices) = entry_indexes_by_id.get(&spec_id) {
-            for &i in indices {
-                reachable.insert(i);
-            }
-        }
-
-        if let Some(record) = graph.entries.get(&spec_id) {
-            pending_spec_ids.extend(record.refs.iter().copied());
-        }
-    }
-
-    reachable
-}
-
-fn add_graph_refs(entry: &ScSpecEntry, graph: &SpecGraph, pending_spec_ids: &mut VecDeque<SpecId>) {
-    let spec_id = generate_spec_id_for_entry(entry);
-    if let Some(record) = graph.entries.get(&spec_id) {
-        pending_spec_ids.extend(record.refs.iter().copied());
-    }
-}
-
-fn reachable_entry_indexes(entries: &[ScSpecEntry], markers: &HashSet<Marker>) -> HashSet<usize> {
-    let mut udt_entries_by_name = HashMap::<String, Vec<usize>>::new();
-    for (i, entry) in entries.iter().enumerate() {
-        if let Some(name) = udt_entry_name(entry) {
-            udt_entries_by_name.entry(name).or_default().push(i);
-        }
-    }
-
-    let mut reachable = HashSet::<usize>::new();
-    let mut pending_udt_names = VecDeque::<String>::new();
-
-    for (i, entry) in entries.iter().enumerate() {
-        match entry {
-            ScSpecEntry::FunctionV0(_) => {
-                reachable.insert(i);
-                add_entry_type_refs(entry, &mut pending_udt_names);
-            }
-            _ if markers.contains(&generate_marker_for_entry(entry)) => {
-                reachable.insert(i);
-                add_entry_type_refs(entry, &mut pending_udt_names);
-            }
-            _ => {}
-        }
-    }
-
-    let mut visited_udt_names = HashSet::<String>::new();
-    while let Some(name) = pending_udt_names.pop_front() {
-        if !visited_udt_names.insert(name.clone()) {
+        let Some(indices) = entry_indexes_by_id.get(&spec_id) else {
             continue;
-        }
-        if let Some(indices) = udt_entries_by_name.get(&name) {
-            for &i in indices {
-                if reachable.insert(i) {
-                    add_entry_type_refs(&entries[i], &mut pending_udt_names);
-                }
+        };
+        for &i in indices {
+            if reachable.insert(i) {
+                add_graph_refs(
+                    &entries[i],
+                    graph,
+                    &entry_indexes_by_id,
+                    &udt_names_by_id,
+                    &entry_descriptions_by_id,
+                    &mut pending_spec_ids,
+                )?;
             }
         }
     }
 
-    reachable
+    Ok(reachable)
+}
+
+fn add_graph_refs(
+    entry: &ScSpecEntry,
+    graph: &SpecGraph,
+    entry_indexes_by_id: &HashMap<SpecId, Vec<usize>>,
+    udt_names_by_id: &HashMap<SpecId, Vec<String>>,
+    entry_descriptions_by_id: &HashMap<SpecId, String>,
+    pending_spec_ids: &mut VecDeque<SpecId>,
+) -> Result<(), SpecShakingError> {
+    let spec_id = generate_spec_id_for_entry(entry);
+    let entry_description = spec_entry_description(entry);
+    let expected_names = referenced_udt_names(entry);
+    let Some(record) = graph.entries.get(&spec_id) else {
+        if expected_names.is_empty() {
+            return Ok(());
+        }
+        return Err(SpecShakingError::MissingGraphEntry {
+            spec_id,
+            entry: entry_description,
+        });
+    };
+
+    let expected_kind = graph_entry_kind_for_spec(entry);
+    if record.kind != expected_kind {
+        return Err(SpecShakingError::GraphEntryKindMismatch {
+            spec_id,
+            entry: entry_description,
+            expected: expected_kind,
+            actual: record.kind,
+        });
+    }
+
+    if expected_names.is_empty() && !record.refs.is_empty() {
+        return Err(SpecShakingError::UnexpectedGraphReferences {
+            spec_id,
+            entry: entry_description,
+        });
+    }
+
+    for ref_id in record.refs.iter().copied() {
+        if !entry_indexes_by_id.contains_key(&ref_id) {
+            return Err(SpecShakingError::MissingReferencedSpecEntry {
+                spec_id,
+                entry: entry_description,
+                ref_id,
+                ref_spec_id: spec_id_hex(ref_id),
+            });
+        }
+        if !udt_names_by_id.contains_key(&ref_id) {
+            let ref_entry = entry_descriptions_by_id
+                .get(&ref_id)
+                .cloned()
+                .expect("referenced spec entry should have a description");
+            return Err(SpecShakingError::ReferencedSpecEntryNotUdt {
+                spec_id,
+                entry: entry_description,
+                ref_id,
+                ref_entry,
+            });
+        }
+    }
+
+    for expected_name in expected_names {
+        let has_ref = record.refs.iter().any(|ref_id| {
+            udt_names_by_id
+                .get(ref_id)
+                .is_some_and(|names| names.contains(&expected_name))
+        });
+        if !has_ref {
+            return Err(SpecShakingError::MissingGraphReference {
+                spec_id,
+                entry: entry_description,
+                type_name: expected_name,
+            });
+        }
+    }
+
+    pending_spec_ids.extend(record.refs.iter().copied());
+    Ok(())
+}
+
+fn graph_entry_kind_for_spec(entry: &ScSpecEntry) -> SpecGraphEntryKind {
+    match entry {
+        ScSpecEntry::FunctionV0(_) => SpecGraphEntryKind::Function,
+        ScSpecEntry::EventV0(_) => SpecGraphEntryKind::Event,
+        ScSpecEntry::UdtStructV0(_)
+        | ScSpecEntry::UdtUnionV0(_)
+        | ScSpecEntry::UdtEnumV0(_)
+        | ScSpecEntry::UdtErrorEnumV0(_) => SpecGraphEntryKind::Udt,
+    }
 }
 
 fn udt_entry_name(entry: &ScSpecEntry) -> Option<String> {
@@ -483,55 +598,78 @@ fn udt_entry_name(entry: &ScSpecEntry) -> Option<String> {
     }
 }
 
-fn add_entry_type_refs(entry: &ScSpecEntry, pending_udt_names: &mut VecDeque<String>) {
+fn spec_entry_description(entry: &ScSpecEntry) -> String {
+    match entry {
+        ScSpecEntry::FunctionV0(f) => format!("function {}", f.name.to_utf8_string_lossy()),
+        ScSpecEntry::EventV0(e) => format!("event {}", e.name.to_utf8_string_lossy()),
+        ScSpecEntry::UdtStructV0(s) => format!("UDT {}", s.name.to_utf8_string_lossy()),
+        ScSpecEntry::UdtUnionV0(u) => format!("UDT {}", u.name.to_utf8_string_lossy()),
+        ScSpecEntry::UdtEnumV0(e) => format!("UDT {}", e.name.to_utf8_string_lossy()),
+        ScSpecEntry::UdtErrorEnumV0(e) => format!("UDT {}", e.name.to_utf8_string_lossy()),
+    }
+}
+
+fn spec_id_hex(spec_id: SpecId) -> String {
+    let mut hex = String::with_capacity(64);
+    for byte in spec_id {
+        write!(&mut hex, "{byte:02x}").expect("writing to String should not fail");
+    }
+    hex
+}
+
+fn referenced_udt_names(entry: &ScSpecEntry) -> Vec<String> {
+    let mut names = Vec::new();
     match entry {
         ScSpecEntry::FunctionV0(f) => {
             for input in f.inputs.iter() {
-                add_type_def_refs(&input.type_, pending_udt_names);
+                add_type_def_udt_names(&input.type_, &mut names);
             }
             for output in f.outputs.iter() {
-                add_type_def_refs(output, pending_udt_names);
+                add_type_def_udt_names(output, &mut names);
             }
         }
         ScSpecEntry::EventV0(e) => {
             for param in e.params.iter() {
-                add_type_def_refs(&param.type_, pending_udt_names);
+                add_type_def_udt_names(&param.type_, &mut names);
             }
         }
         ScSpecEntry::UdtStructV0(s) => {
             for field in s.fields.iter() {
-                add_type_def_refs(&field.type_, pending_udt_names);
+                add_type_def_udt_names(&field.type_, &mut names);
             }
         }
         ScSpecEntry::UdtUnionV0(u) => {
             for case in u.cases.iter() {
                 if let ScSpecUdtUnionCaseV0::TupleV0(tuple) = case {
                     for type_ in tuple.type_.iter() {
-                        add_type_def_refs(type_, pending_udt_names);
+                        add_type_def_udt_names(type_, &mut names);
                     }
                 }
             }
         }
         ScSpecEntry::UdtEnumV0(_) | ScSpecEntry::UdtErrorEnumV0(_) => {}
     }
+    names
 }
 
-fn add_type_def_refs(type_: &ScSpecTypeDef, pending_udt_names: &mut VecDeque<String>) {
+fn add_type_def_udt_names(type_: &ScSpecTypeDef, names: &mut Vec<String>) {
+    // Keep this traversal in sync with `soroban-sdk-macros/src/shaking.rs::type_id_refs`.
+    // This validator mirrors the macro-emitted graph refs for every spec container.
     match type_ {
-        ScSpecTypeDef::Udt(udt) => pending_udt_names.push_back(udt.name.to_utf8_string_lossy()),
-        ScSpecTypeDef::Option(option) => add_type_def_refs(&option.value_type, pending_udt_names),
+        ScSpecTypeDef::Udt(udt) => names.push(udt.name.to_utf8_string_lossy()),
+        ScSpecTypeDef::Option(option) => add_type_def_udt_names(&option.value_type, names),
         ScSpecTypeDef::Result(result) => {
-            add_type_def_refs(&result.ok_type, pending_udt_names);
-            add_type_def_refs(&result.error_type, pending_udt_names);
+            add_type_def_udt_names(&result.ok_type, names);
+            add_type_def_udt_names(&result.error_type, names);
         }
-        ScSpecTypeDef::Vec(vec) => add_type_def_refs(&vec.element_type, pending_udt_names),
+        ScSpecTypeDef::Vec(vec) => add_type_def_udt_names(&vec.element_type, names),
         ScSpecTypeDef::Map(map) => {
-            add_type_def_refs(&map.key_type, pending_udt_names);
-            add_type_def_refs(&map.value_type, pending_udt_names);
+            add_type_def_udt_names(&map.key_type, names);
+            add_type_def_udt_names(&map.value_type, names);
         }
         ScSpecTypeDef::Tuple(tuple) => {
             for type_ in tuple.value_types.iter() {
-                add_type_def_refs(type_, pending_udt_names);
+                add_type_def_udt_names(type_, names);
             }
         }
         _ => {}
@@ -789,7 +927,7 @@ mod tests {
         let data = graph_record_bytes(0, spec_id, &[ref_id]);
 
         let mut graph = SpecGraph::default();
-        find_graph_in_data(&data, &mut graph);
+        find_graph_in_data(&data, &mut graph).unwrap();
 
         assert_eq!(
             graph.entries.get(&spec_id),
@@ -802,21 +940,35 @@ mod tests {
 
     #[test]
     fn test_filter_keeps_marked_events_and_event_param_types() {
+        let foo = make_function("foo", vec![ScSpecTypeDef::U32]);
         let transfer_payload = make_struct("TransferPayload", vec![("amount", ScSpecTypeDef::U32)]);
         let transfer_event = make_event_with_params("Transfer", vec![udt("TransferPayload")]);
+        let unused_payload = make_struct("UnusedPayload", vec![("amount", ScSpecTypeDef::U32)]);
+        let unused_event = make_event("Unused");
 
         let entries = vec![
-            make_function("foo", vec![ScSpecTypeDef::U32]),
-            transfer_payload,
+            foo.clone(),
+            transfer_payload.clone(),
             transfer_event.clone(),
-            make_struct("UnusedPayload", vec![("amount", ScSpecTypeDef::U32)]),
-            make_event("Unused"),
+            unused_payload.clone(),
+            unused_event.clone(),
         ];
+        let graph = SpecGraph::from_records([
+            (&foo, SpecGraphEntryKind::Function, vec![]),
+            (&transfer_payload, SpecGraphEntryKind::Udt, vec![]),
+            (
+                &transfer_event,
+                SpecGraphEntryKind::Event,
+                vec![&transfer_payload],
+            ),
+            (&unused_payload, SpecGraphEntryKind::Udt, vec![]),
+            (&unused_event, SpecGraphEntryKind::Event, vec![]),
+        ]);
 
         let mut markers = HashSet::new();
         markers.insert(generate_marker_for_entry(&transfer_event));
 
-        let filtered: Vec<_> = filter(entries, &markers).collect();
+        let filtered: Vec<_> = filter(entries, &markers, &graph).unwrap().collect();
 
         // Should have: 1 function + 1 used event + 1 event param type.
         assert_eq!(filtered.len(), 3);
@@ -828,22 +980,24 @@ mod tests {
     }
 
     #[test]
-    fn test_filter_keeps_marked_udt_and_type_refs() {
+    fn test_filter_keeps_marked_udt_and_graph_refs() {
+        let foo = make_function("foo", vec![ScSpecTypeDef::U32]);
         let marked = make_struct("Marked", vec![("child", udt("Child"))]);
         let child = make_struct("Child", vec![("field", ScSpecTypeDef::U32)]);
         let unused = make_struct("Unused", vec![("field", ScSpecTypeDef::U32)]);
 
-        let entries = vec![
-            make_function("foo", vec![ScSpecTypeDef::U32]),
-            marked.clone(),
-            child,
-            unused,
-        ];
+        let entries = vec![foo.clone(), marked.clone(), child.clone(), unused.clone()];
+        let graph = SpecGraph::from_records([
+            (&foo, SpecGraphEntryKind::Function, vec![]),
+            (&marked, SpecGraphEntryKind::Udt, vec![&child]),
+            (&child, SpecGraphEntryKind::Udt, vec![]),
+            (&unused, SpecGraphEntryKind::Udt, vec![]),
+        ]);
 
         let mut markers = HashSet::new();
         markers.insert(generate_marker_for_entry(&marked));
 
-        let filtered: Vec<_> = filter(entries, &markers).collect();
+        let filtered: Vec<_> = filter(entries, &markers, &graph).unwrap().collect();
 
         assert!(filtered
             .iter()
@@ -857,61 +1011,171 @@ mod tests {
     }
 
     #[test]
-    fn test_filter_with_graph_keeps_marked_udt_and_graph_refs() {
-        let marked = make_struct("Marked", vec![("child", udt("Child"))]);
-        let child = make_struct("Child", vec![("field", ScSpecTypeDef::U32)]);
-        let unused = make_struct("Unused", vec![("field", ScSpecTypeDef::U32)]);
+    fn test_filter_accepts_empty_graph_without_udt_refs() {
+        let entries = vec![make_function("foo", vec![ScSpecTypeDef::U32])];
+        let markers = HashSet::new();
+        let graph = SpecGraph::default();
 
+        let filtered: Vec<_> = filter(entries.clone(), &markers, &graph).unwrap().collect();
+
+        assert_eq!(filtered, entries);
+    }
+
+    #[test]
+    fn test_filter_rejects_missing_graph_entry_for_udt_refs() {
+        let entries = vec![
+            make_function("foo", vec![udt("Input")]),
+            make_struct("Input", vec![("field", ScSpecTypeDef::U32)]),
+        ];
+        let markers = HashSet::new();
+        let graph = SpecGraph::default();
+
+        let Err(err) = filter(entries, &markers, &graph) else {
+            panic!("missing graph entry should be rejected");
+        };
+
+        assert_eq!(err.to_string(), "missing spec graph entry for function foo");
+        assert!(
+            matches!(&err, SpecShakingError::MissingGraphEntry { entry, .. } if entry == "function foo")
+        );
+    }
+
+    #[test]
+    fn test_filter_rejects_missing_transitive_graph_entry() {
+        let foo = make_function("foo", vec![udt("Root")]);
+        let root = make_struct("Root", vec![("leaf", udt("Leaf"))]);
+        let leaf = make_struct("Leaf", vec![("field", ScSpecTypeDef::U32)]);
+        let entries = vec![foo.clone(), root.clone(), leaf.clone()];
+        let graph = SpecGraph::from_records([(&foo, SpecGraphEntryKind::Function, vec![&root])]);
+        let markers = HashSet::new();
+
+        let Err(err) = filter(entries, &markers, &graph) else {
+            panic!("missing transitive graph entry should be rejected");
+        };
+
+        assert!(matches!(err, SpecShakingError::MissingGraphEntry { .. }));
+    }
+
+    #[test]
+    fn test_filter_rejects_missing_graph_reference() {
+        let foo = make_function("foo", vec![udt("Input")]);
+        let input = make_struct("Input", vec![("field", ScSpecTypeDef::U32)]);
+        let entries = vec![foo.clone(), input];
+        let graph = SpecGraph::from_records([(&foo, SpecGraphEntryKind::Function, vec![])]);
+        let markers = HashSet::new();
+
+        let Err(err) = filter(entries, &markers, &graph) else {
+            panic!("missing graph ref should be rejected");
+        };
+
+        assert!(matches!(
+            err,
+            SpecShakingError::MissingGraphReference { type_name, .. } if type_name == "Input"
+        ));
+    }
+
+    #[test]
+    fn test_filter_rejects_unexpected_graph_references() {
+        let foo = make_function("foo", vec![ScSpecTypeDef::U32]);
+        let stray = make_struct("Stray", vec![("field", ScSpecTypeDef::U32)]);
+        let entries = vec![foo.clone(), stray.clone()];
+        let graph = SpecGraph::from_records([(&foo, SpecGraphEntryKind::Function, vec![&stray])]);
+        let markers = HashSet::new();
+
+        let Err(err) = filter(entries, &markers, &graph) else {
+            panic!("unexpected graph refs should be rejected");
+        };
+
+        assert_eq!(
+            err.to_string(),
+            "spec graph entry for function foo has unexpected references"
+        );
+        assert!(
+            matches!(&err, SpecShakingError::UnexpectedGraphReferences { entry, .. } if entry == "function foo")
+        );
+    }
+
+    #[test]
+    fn test_filter_rejects_missing_referenced_spec_entry() {
+        let foo = make_function("foo", vec![udt("Input")]);
         let mut graph = SpecGraph::default();
         graph.insert(
-            generate_spec_id_for_entry(&marked),
+            generate_spec_id_for_entry(&foo),
             SpecGraphEntry {
-                kind: SpecGraphEntryKind::Udt,
-                refs: vec![generate_spec_id_for_entry(&child)],
+                kind: SpecGraphEntryKind::Function,
+                refs: vec![[3u8; 32]],
             },
         );
-        graph.insert(
-            generate_spec_id_for_entry(&child),
-            SpecGraphEntry {
-                kind: SpecGraphEntryKind::Udt,
-                refs: vec![],
-            },
+        let markers = HashSet::new();
+
+        let Err(err) = filter(vec![foo], &markers, &graph) else {
+            panic!("missing referenced spec entry should be rejected");
+        };
+
+        assert!(err
+            .to_string()
+            .starts_with("graph reference from function foo to unknown spec id 030303"));
+        assert!(
+            matches!(&err, SpecShakingError::MissingReferencedSpecEntry { entry, ref_id, .. } if entry == "function foo" && ref_id == &[3u8; 32])
         );
+    }
 
-        let entries = vec![
-            make_function("foo", vec![ScSpecTypeDef::U32]),
-            marked.clone(),
-            child,
-            unused,
-        ];
+    #[test]
+    fn test_filter_rejects_referenced_spec_entry_not_udt() {
+        let foo = make_function("foo", vec![udt("Input")]);
+        let bar = make_function("bar", vec![ScSpecTypeDef::U32]);
+        let entries = vec![foo.clone(), bar.clone()];
+        let graph = SpecGraph::from_records([(&foo, SpecGraphEntryKind::Function, vec![&bar])]);
+        let markers = HashSet::new();
 
-        let mut markers = HashSet::new();
-        markers.insert(generate_marker_for_entry(&marked));
+        let Err(err) = filter(entries, &markers, &graph) else {
+            panic!("non-UDT graph refs should be rejected");
+        };
 
-        let filtered: Vec<_> = filter_with_graph(entries, &markers, &graph).collect();
+        assert_eq!(
+            err.to_string(),
+            "graph reference from function foo to function bar does not point to a UDT spec entry"
+        );
+        assert!(
+            matches!(&err, SpecShakingError::ReferencedSpecEntryNotUdt { entry, ref_entry, .. } if entry == "function foo" && ref_entry == "function bar")
+        );
+    }
 
-        assert!(filtered
-            .iter()
-            .any(|e| matches!(e, ScSpecEntry::UdtStructV0(s) if s.name.to_utf8_string_lossy() == "Marked")));
-        assert!(filtered.iter().any(
-            |e| matches!(e, ScSpecEntry::UdtStructV0(s) if s.name.to_utf8_string_lossy() == "Child")
-        ));
-        assert!(!filtered
-            .iter()
-            .any(|e| matches!(e, ScSpecEntry::UdtStructV0(s) if s.name.to_utf8_string_lossy() == "Unused")));
+    #[test]
+    fn test_filter_rejects_graph_entry_kind_mismatch() {
+        let foo = make_function("foo", vec![ScSpecTypeDef::U32]);
+        let graph = SpecGraph::from_records([(&foo, SpecGraphEntryKind::Event, vec![])]);
+        let markers = HashSet::new();
+
+        let Err(err) = filter(vec![foo], &markers, &graph) else {
+            panic!("graph entry kind mismatch should be rejected");
+        };
+
+        assert_eq!(
+            err.to_string(),
+            "spec graph entry for function foo has kind Event, expected Function"
+        );
+        assert!(
+            matches!(&err, SpecShakingError::GraphEntryKindMismatch { entry, expected, actual, .. } if entry == "function foo" && expected == &SpecGraphEntryKind::Function && actual == &SpecGraphEntryKind::Event)
+        );
     }
 
     #[test]
     fn test_filter_removes_all_events_if_no_markers() {
-        let entries = vec![
-            make_function("foo", vec![ScSpecTypeDef::U32]),
-            make_event("Transfer"),
-            make_event("Mint"),
-        ];
+        let foo = make_function("foo", vec![ScSpecTypeDef::U32]);
+        let transfer = make_event("Transfer");
+        let mint = make_event("Mint");
+
+        let entries = vec![foo.clone(), transfer.clone(), mint.clone()];
+        let graph = SpecGraph::from_records([
+            (&foo, SpecGraphEntryKind::Function, vec![]),
+            (&transfer, SpecGraphEntryKind::Event, vec![]),
+            (&mint, SpecGraphEntryKind::Event, vec![]),
+        ]);
 
         let markers = HashSet::new();
 
-        let filtered: Vec<_> = filter(entries, &markers).collect();
+        let filtered: Vec<_> = filter(entries, &markers, &graph).unwrap().collect();
 
         // Should have: 1 function, 0 events
         assert_eq!(filtered.len(), 1);
@@ -920,16 +1184,27 @@ mod tests {
 
     #[test]
     fn test_filter_removes_all_types_if_no_markers() {
+        let foo = make_function("foo", vec![ScSpecTypeDef::U32]);
+        let my_struct = make_struct("MyStruct", vec![("field", ScSpecTypeDef::U32)]);
+        let my_enum = make_enum("MyEnum");
+        let unused_event = make_event("Unused");
+
         let entries = vec![
-            make_function("foo", vec![ScSpecTypeDef::U32]),
-            make_struct("MyStruct", vec![("field", ScSpecTypeDef::U32)]),
-            make_enum("MyEnum"),
-            make_event("Unused"),
+            foo.clone(),
+            my_struct.clone(),
+            my_enum.clone(),
+            unused_event.clone(),
         ];
+        let graph = SpecGraph::from_records([
+            (&foo, SpecGraphEntryKind::Function, vec![]),
+            (&my_struct, SpecGraphEntryKind::Udt, vec![]),
+            (&my_enum, SpecGraphEntryKind::Udt, vec![]),
+            (&unused_event, SpecGraphEntryKind::Event, vec![]),
+        ]);
 
         let markers = HashSet::new(); // No markers
 
-        let filtered: Vec<_> = filter(entries, &markers).collect();
+        let filtered: Vec<_> = filter(entries, &markers, &graph).unwrap().collect();
 
         // Should have: only functions (always kept), no types or events
         assert_eq!(filtered.len(), 1);
@@ -940,17 +1215,30 @@ mod tests {
 
     #[test]
     fn test_filter_keeps_function_referenced_types_without_markers() {
+        let foo = make_function_with_outputs("foo", vec![udt("Input")], vec![udt("Output")]);
+        let input = make_struct("Input", vec![("field", ScSpecTypeDef::U32)]);
+        let output = make_struct("Output", vec![("field", ScSpecTypeDef::U32)]);
+        let unused_struct = make_struct("UnusedStruct", vec![("field", ScSpecTypeDef::U32)]);
+        let unused_event = make_event("UnusedEvent");
+
         let entries = vec![
-            make_function_with_outputs("foo", vec![udt("Input")], vec![udt("Output")]),
-            make_struct("Input", vec![("field", ScSpecTypeDef::U32)]),
-            make_struct("Output", vec![("field", ScSpecTypeDef::U32)]),
-            make_struct("UnusedStruct", vec![("field", ScSpecTypeDef::U32)]),
-            make_event("UnusedEvent"),
+            foo.clone(),
+            input.clone(),
+            output.clone(),
+            unused_struct.clone(),
+            unused_event.clone(),
         ];
+        let graph = SpecGraph::from_records([
+            (&foo, SpecGraphEntryKind::Function, vec![&input, &output]),
+            (&input, SpecGraphEntryKind::Udt, vec![]),
+            (&output, SpecGraphEntryKind::Udt, vec![]),
+            (&unused_struct, SpecGraphEntryKind::Udt, vec![]),
+            (&unused_event, SpecGraphEntryKind::Event, vec![]),
+        ]);
 
         let markers = HashSet::new();
 
-        let filtered: Vec<_> = filter(entries, &markers).collect();
+        let filtered: Vec<_> = filter(entries, &markers, &graph).unwrap().collect();
 
         // Should have: 1 function + input and output types.
         assert_eq!(filtered.len(), 3);
@@ -970,15 +1258,21 @@ mod tests {
 
     #[test]
     fn test_filter_keeps_transitive_type_refs() {
-        let entries = vec![
-            make_function("foo", vec![udt("Root")]),
-            make_struct("Root", vec![("items", vec_of(udt("Leaf")))]),
-            make_struct("Leaf", vec![("field", ScSpecTypeDef::U32)]),
-            make_struct("Unused", vec![("field", ScSpecTypeDef::U32)]),
-        ];
+        let foo = make_function("foo", vec![udt("Root")]);
+        let root = make_struct("Root", vec![("items", vec_of(udt("Leaf")))]);
+        let leaf = make_struct("Leaf", vec![("field", ScSpecTypeDef::U32)]);
+        let unused = make_struct("Unused", vec![("field", ScSpecTypeDef::U32)]);
+
+        let entries = vec![foo.clone(), root.clone(), leaf.clone(), unused.clone()];
+        let graph = SpecGraph::from_records([
+            (&foo, SpecGraphEntryKind::Function, vec![&root]),
+            (&root, SpecGraphEntryKind::Udt, vec![&leaf]),
+            (&leaf, SpecGraphEntryKind::Udt, vec![]),
+            (&unused, SpecGraphEntryKind::Udt, vec![]),
+        ]);
 
         let markers = HashSet::new();
-        let filtered: Vec<_> = filter(entries, &markers).collect();
+        let filtered: Vec<_> = filter(entries, &markers, &graph).unwrap().collect();
         let struct_names: Vec<_> = filtered
             .iter()
             .filter_map(|e| {
@@ -994,15 +1288,26 @@ mod tests {
 
     #[test]
     fn test_filter_keeps_union_case_refs() {
+        let foo = make_function("foo", vec![udt("RootUnion")]);
+        let root_union = make_union("RootUnion", vec![udt("Leaf")]);
+        let leaf = make_struct("Leaf", vec![("field", ScSpecTypeDef::U32)]);
+        let unused = make_struct("Unused", vec![("field", ScSpecTypeDef::U32)]);
+
         let entries = vec![
-            make_function("foo", vec![udt("RootUnion")]),
-            make_union("RootUnion", vec![udt("Leaf")]),
-            make_struct("Leaf", vec![("field", ScSpecTypeDef::U32)]),
-            make_struct("Unused", vec![("field", ScSpecTypeDef::U32)]),
+            foo.clone(),
+            root_union.clone(),
+            leaf.clone(),
+            unused.clone(),
         ];
+        let graph = SpecGraph::from_records([
+            (&foo, SpecGraphEntryKind::Function, vec![&root_union]),
+            (&root_union, SpecGraphEntryKind::Udt, vec![&leaf]),
+            (&leaf, SpecGraphEntryKind::Udt, vec![]),
+            (&unused, SpecGraphEntryKind::Udt, vec![]),
+        ]);
 
         let markers = HashSet::new();
-        let filtered: Vec<_> = filter(entries, &markers).collect();
+        let filtered: Vec<_> = filter(entries, &markers, &graph).unwrap().collect();
 
         assert!(filtered.iter().any(|e| matches!(e, ScSpecEntry::UdtUnionV0(u) if u.name.to_utf8_string_lossy() == "RootUnion")));
         assert!(filtered.iter().any(
@@ -1012,47 +1317,28 @@ mod tests {
     }
 
     #[test]
-    fn test_filter_keeps_duplicate_udt_names_conservatively() {
-        let entries = vec![
-            make_function("foo", vec![udt("Duplicate")]),
-            make_struct("Duplicate", vec![("field", udt("Child"))]),
-            make_enum("Duplicate"),
-            make_struct("Child", vec![("field", ScSpecTypeDef::U32)]),
-            make_struct("Unused", vec![("field", ScSpecTypeDef::U32)]),
-        ];
-
-        let markers = HashSet::new();
-        let filtered: Vec<_> = filter(entries, &markers).collect();
-
-        let duplicate_count = filtered
-            .iter()
-            .filter(|e| match e {
-                ScSpecEntry::UdtStructV0(s) => s.name.to_utf8_string_lossy() == "Duplicate",
-                ScSpecEntry::UdtEnumV0(e) => e.name.to_utf8_string_lossy() == "Duplicate",
-                _ => false,
-            })
-            .count();
-
-        assert_eq!(duplicate_count, 2);
-        assert!(filtered.iter().any(
-            |e| matches!(e, ScSpecEntry::UdtStructV0(s) if s.name.to_utf8_string_lossy() == "Child")
-        ));
-        assert!(!filtered.iter().any(|e| matches!(e, ScSpecEntry::UdtStructV0(s) if s.name.to_utf8_string_lossy() == "Unused")));
-    }
-
-    #[test]
     fn test_filter_removes_exact_duplicate_entries() {
+        let foo = make_function("foo", vec![udt("Duplicate")]);
         let duplicate = make_struct("Duplicate", vec![("field", udt("Child"))]);
+        let child = make_struct("Child", vec![("field", ScSpecTypeDef::U32)]);
+        let unused = make_struct("Unused", vec![("field", ScSpecTypeDef::U32)]);
+
         let entries = vec![
-            make_function("foo", vec![udt("Duplicate")]),
+            foo.clone(),
             duplicate.clone(),
-            duplicate,
-            make_struct("Child", vec![("field", ScSpecTypeDef::U32)]),
-            make_struct("Unused", vec![("field", ScSpecTypeDef::U32)]),
+            duplicate.clone(),
+            child.clone(),
+            unused.clone(),
         ];
+        let graph = SpecGraph::from_records([
+            (&foo, SpecGraphEntryKind::Function, vec![&duplicate]),
+            (&duplicate, SpecGraphEntryKind::Udt, vec![&child]),
+            (&child, SpecGraphEntryKind::Udt, vec![]),
+            (&unused, SpecGraphEntryKind::Udt, vec![]),
+        ]);
 
         let markers = HashSet::new();
-        let filtered: Vec<_> = filter(entries, &markers).collect();
+        let filtered: Vec<_> = filter(entries, &markers, &graph).unwrap().collect();
 
         let duplicate_count = filtered
             .iter()
@@ -1067,46 +1353,30 @@ mod tests {
     }
 
     #[test]
-    fn test_filter_with_graph_disambiguates_duplicate_udt_names() {
-        let function = make_function("foo", vec![udt("Duplicate")]);
+    fn test_filter_disambiguates_duplicate_udt_names() {
+        let foo = make_function("foo", vec![udt("Duplicate")]);
         let duplicate_struct = make_struct("Duplicate", vec![("field", udt("Child"))]);
         let duplicate_enum = make_enum("Duplicate");
         let child = make_struct("Child", vec![("field", ScSpecTypeDef::U32)]);
         let unused = make_struct("Unused", vec![("field", ScSpecTypeDef::U32)]);
 
-        let mut graph = SpecGraph::default();
-        graph.insert(
-            generate_spec_id_for_entry(&function),
-            SpecGraphEntry {
-                kind: SpecGraphEntryKind::Function,
-                refs: vec![generate_spec_id_for_entry(&duplicate_struct)],
-            },
-        );
-        graph.insert(
-            generate_spec_id_for_entry(&duplicate_struct),
-            SpecGraphEntry {
-                kind: SpecGraphEntryKind::Udt,
-                refs: vec![generate_spec_id_for_entry(&child)],
-            },
-        );
-        graph.insert(
-            generate_spec_id_for_entry(&duplicate_enum),
-            SpecGraphEntry {
-                kind: SpecGraphEntryKind::Udt,
-                refs: vec![],
-            },
-        );
-        graph.insert(
-            generate_spec_id_for_entry(&child),
-            SpecGraphEntry {
-                kind: SpecGraphEntryKind::Udt,
-                refs: vec![],
-            },
-        );
+        let entries = vec![
+            foo.clone(),
+            duplicate_struct.clone(),
+            duplicate_enum.clone(),
+            child.clone(),
+            unused.clone(),
+        ];
+        let graph = SpecGraph::from_records([
+            (&foo, SpecGraphEntryKind::Function, vec![&duplicate_struct]),
+            (&duplicate_struct, SpecGraphEntryKind::Udt, vec![&child]),
+            (&duplicate_enum, SpecGraphEntryKind::Udt, vec![]),
+            (&child, SpecGraphEntryKind::Udt, vec![]),
+            (&unused, SpecGraphEntryKind::Udt, vec![]),
+        ]);
 
-        let entries = vec![function, duplicate_struct, duplicate_enum, child, unused];
         let markers = HashSet::new();
-        let filtered: Vec<_> = filter_with_graph(entries, &markers, &graph).collect();
+        let filtered: Vec<_> = filter(entries, &markers, &graph).unwrap().collect();
 
         assert!(filtered.iter().any(
             |e| matches!(e, ScSpecEntry::UdtStructV0(s) if s.name.to_utf8_string_lossy() == "Duplicate")
