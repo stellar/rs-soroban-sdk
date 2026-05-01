@@ -3,8 +3,8 @@
 /// ## Meta
 ///
 /// The `contractmetav0` section of a WASM may contain an [`ScMetaV0`] entry
-/// with key [`META_KEY`] (`rssdk_spec_shaking`). The value indicates the spec
-/// shaking version:
+/// with key [`soroban_spec_markers::META_KEY`] (`rssdk_spec_shaking`). The value indicates the
+/// spec shaking version:
 ///
 /// - Absent or `"1"` — version 1 (no markers, no shaking possible).
 /// - `"2"` — version 2, extra-root markers are embedded in the data section.
@@ -47,53 +47,15 @@ use std::{
     fmt::Write as _,
 };
 
-use sha2::{Digest, Sha256};
+use soroban_spec_markers::{
+    decode_graph_record, generate_marker_for_xdr, generate_spec_id_for_xdr, DecodeGraphRecordError,
+    GRAPH_SECTION, MARKER_LEN, MARKER_MAGIC, META_KEY, META_VALUE_V2,
+};
+pub use soroban_spec_markers::{Marker, SpecGraphEntryKind, SpecId};
 use stellar_xdr::curr::{
     Limits, ScMetaEntry, ScSpecEntry, ScSpecTypeDef, ScSpecUdtUnionCaseV0, WriteXdr,
 };
 use wasmparser::BinaryReaderError;
-
-/// The contract meta key that indicates the spec shaking version.
-///
-/// Stored in the `contractmetav0` section as an [`ScMetaV0`] entry.
-pub const META_KEY: &str = "rssdk_spec_shaking";
-
-/// The meta value for spec shaking version 2.
-pub const META_VALUE_V2: &str = "2";
-
-/// The custom section containing removable spec graph records.
-pub const GRAPH_SECTION: &str = "contractspecv0.rssdk.graphv0";
-
-/// Magic bytes at the start of each removable spec graph record.
-const GRAPH_RECORD_MAGIC: &[u8; 5] = b"SpGrV";
-
-/// Version of the removable spec graph record format.
-const GRAPH_RECORD_VERSION: u8 = 1;
-
-/// Length of a spec graph record header before referenced spec IDs.
-const GRAPH_RECORD_HEADER_LEN: usize = 42;
-
-/// A stable identity for a spec entry.
-pub type SpecId = [u8; 32];
-
-/// The kind of spec entry represented by a spec graph record.
-#[derive(Clone, Copy, Debug, Eq, PartialEq)]
-pub enum SpecGraphEntryKind {
-    Function,
-    Event,
-    Udt,
-}
-
-impl SpecGraphEntryKind {
-    fn from_u16(value: u16) -> Option<Self> {
-        match value {
-            0 => Some(Self::Function),
-            1 => Some(Self::Event),
-            2 => Some(Self::Udt),
-            _ => None,
-        }
-    }
-}
 
 /// A removable sidecar graph record for one spec entry.
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -189,7 +151,7 @@ pub enum SpecShakingError {
 /// Returns the spec shaking version indicated by the contract meta entries.
 ///
 /// Looks for an [`ScMetaV0`] entry with key [`META_KEY`]. Returns:
-/// - `2` if the value is [`META_VALUE_V2`] (`"2"`).
+/// - `2` if the value is [`soroban_spec_markers::META_VALUE_V2`] (`"2"`).
 /// - `1` otherwise (absent or any other value).
 pub fn spec_shaking_version_for_meta(meta: &[ScMetaEntry]) -> u32 {
     for entry in meta {
@@ -203,31 +165,6 @@ pub fn spec_shaking_version_for_meta(meta: &[ScMetaEntry]) -> u32 {
         }
     }
     1
-}
-
-/// Magic bytes that identify a spec marker: `SpEcV1`
-const MAGIC: &[u8; 6] = b"SpEcV1";
-
-/// Total length of a spec marker (6-byte prefix + 8-byte hash).
-const LEN: usize = 14;
-
-/// A spec marker that identifies a spec entry.
-///
-/// Format: "SpEcV1" prefix (6 bytes) + first 8 bytes of SHA256 hash = 14 bytes total.
-pub type Marker = [u8; LEN];
-
-/// Generates a spec marker for spec entry XDR bytes.
-pub fn generate_marker_for_xdr(spec_entry_xdr: &[u8]) -> Marker {
-    let hash = generate_spec_id_for_xdr(spec_entry_xdr);
-    [
-        MAGIC[0], MAGIC[1], MAGIC[2], MAGIC[3], MAGIC[4], MAGIC[5], hash[0], hash[1], hash[2],
-        hash[3], hash[4], hash[5], hash[6], hash[7],
-    ]
-}
-
-/// Generates a stable identity for spec entry XDR bytes.
-pub fn generate_spec_id_for_xdr(spec_entry_xdr: &[u8]) -> SpecId {
-    Sha256::digest(spec_entry_xdr).into()
 }
 
 /// Generates a stable identity for a spec entry.
@@ -304,66 +241,47 @@ pub fn find_graph(wasm_bytes: &[u8]) -> Result<SpecGraph, SpecShakingError> {
 fn find_graph_in_data(data: &[u8], graph: &mut SpecGraph) -> Result<(), SpecShakingError> {
     let mut offset = 0;
     while offset < data.len() {
-        if offset + GRAPH_RECORD_HEADER_LEN > data.len() {
-            return Err(SpecShakingError::TruncatedRecord { offset });
-        }
-
-        if !data[offset..].starts_with(GRAPH_RECORD_MAGIC) {
-            return Err(SpecShakingError::InvalidMagic { offset });
-        }
-
-        if data[offset + 5] != GRAPH_RECORD_VERSION {
-            return Err(SpecShakingError::UnsupportedVersion {
-                offset,
-                version: data[offset + 5],
-            });
-        }
-
-        let kind = u16::from_be_bytes([data[offset + 6], data[offset + 7]]);
-        let Some(kind) = SpecGraphEntryKind::from_u16(kind) else {
-            return Err(SpecShakingError::InvalidKind { offset, kind });
-        };
-
-        let mut spec_id = [0u8; 32];
-        spec_id.copy_from_slice(&data[offset + 8..offset + 40]);
-
-        let ref_count = u16::from_be_bytes([data[offset + 40], data[offset + 41]]) as usize;
-        let Some(refs_len) = ref_count.checked_mul(32) else {
-            return Err(SpecShakingError::TruncatedRecord { offset });
-        };
-        let Some(record_len) = GRAPH_RECORD_HEADER_LEN.checked_add(refs_len) else {
-            return Err(SpecShakingError::TruncatedRecord { offset });
-        };
-        if offset + record_len > data.len() {
-            return Err(SpecShakingError::TruncatedRecord { offset });
-        }
-
-        let mut refs = Vec::with_capacity(ref_count);
-        for i in 0..ref_count {
-            let ref_start = offset + GRAPH_RECORD_HEADER_LEN + i * 32;
-            let mut ref_id = [0u8; 32];
-            ref_id.copy_from_slice(&data[ref_start..ref_start + 32]);
-            refs.push(ref_id);
-        }
-
-        graph.insert(spec_id, SpecGraphEntry { kind, refs });
-        offset += record_len;
+        let record = decode_graph_record(&data[offset..])
+            .map_err(|err| spec_graph_decode_error(offset, err))?;
+        graph.insert(
+            record.spec_id,
+            SpecGraphEntry {
+                kind: record.kind,
+                refs: record.refs().collect(),
+            },
+        );
+        offset += record.encoded_len();
     }
     Ok(())
+}
+
+fn spec_graph_decode_error(offset: usize, err: DecodeGraphRecordError) -> SpecShakingError {
+    match err {
+        DecodeGraphRecordError::TruncatedHeader | DecodeGraphRecordError::TruncatedRefs => {
+            SpecShakingError::TruncatedRecord { offset }
+        }
+        DecodeGraphRecordError::InvalidMagic => SpecShakingError::InvalidMagic { offset },
+        DecodeGraphRecordError::UnsupportedVersion { version } => {
+            SpecShakingError::UnsupportedVersion { offset, version }
+        }
+        DecodeGraphRecordError::InvalidKind { kind } => {
+            SpecShakingError::InvalidKind { offset, kind }
+        }
+    }
 }
 
 /// Finds spec markers in a data segment.
 fn find_all_in_data(data: &[u8], markers: &mut HashSet<Marker>) {
     // Marker size is exactly 14 bytes: 6 (magic) + 8 (hash)
-    if data.len() < LEN {
+    if data.len() < MARKER_LEN {
         return;
     }
 
-    for i in 0..=data.len() - LEN {
+    for i in 0..=data.len() - MARKER_LEN {
         // Look for magic bytes
-        if data[i..].starts_with(MAGIC) {
-            let marker_end = i + LEN;
-            let mut marker_bytes = [0u8; LEN];
+        if data[i..].starts_with(&MARKER_MAGIC) {
+            let marker_end = i + MARKER_LEN;
+            let mut marker_bytes = [0u8; MARKER_LEN];
             marker_bytes.copy_from_slice(&data[i..marker_end]);
             markers.insert(marker_bytes);
         }
@@ -679,6 +597,10 @@ fn add_type_def_udt_names(type_: &ScSpecTypeDef, names: &mut Vec<String>) {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use soroban_spec_markers::{
+        generate_graph_record, graph_record_len, GRAPH_RECORD_KIND_EVENT, GRAPH_RECORD_MAGIC,
+        GRAPH_RECORD_VERSION,
+    };
     use stellar_xdr::curr::{
         ScMetaV0, ScSpecEntry, ScSpecEventDataFormat, ScSpecEventParamLocationV0,
         ScSpecEventParamV0, ScSpecEventV0, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef,
@@ -810,19 +732,6 @@ mod tests {
         })
     }
 
-    fn graph_record_bytes(kind: u16, spec_id: SpecId, refs: &[SpecId]) -> Vec<u8> {
-        let mut bytes = Vec::new();
-        bytes.extend_from_slice(GRAPH_RECORD_MAGIC);
-        bytes.push(GRAPH_RECORD_VERSION);
-        bytes.extend_from_slice(&kind.to_be_bytes());
-        bytes.extend_from_slice(&spec_id);
-        bytes.extend_from_slice(&(refs.len() as u16).to_be_bytes());
-        for ref_id in refs {
-            bytes.extend_from_slice(ref_id);
-        }
-        bytes
-    }
-
     #[test]
     fn test_generate_marker_for_xdr() {
         let spec_xdr = b"some spec xdr bytes";
@@ -839,7 +748,7 @@ mod tests {
         // Different input produces different marker
         let different_xdr = b"different spec xdr bytes";
         let different_marker = generate_marker_for_xdr(different_xdr);
-        assert_eq!(&different_marker[..6], MAGIC.as_slice());
+        assert_eq!(&different_marker[..6], MARKER_MAGIC.as_slice());
         assert_ne!(marker, different_marker);
     }
 
@@ -855,10 +764,10 @@ mod tests {
         let marker = generate_marker_for_entry(&entry);
 
         // Marker should be 14 bytes (6-byte prefix + 8-byte hash)
-        assert_eq!(marker.len(), LEN);
+        assert_eq!(marker.len(), MARKER_LEN);
 
         // First 6 bytes should be magic
-        assert_eq!(&marker[..6], MAGIC.as_slice());
+        assert_eq!(&marker[..6], MARKER_MAGIC.as_slice());
 
         // Same entry produces same marker
         let marker2 = generate_marker_for_entry(&entry);
@@ -881,10 +790,10 @@ mod tests {
         let marker = generate_marker_for_entry(&entry);
 
         // Marker should be 14 bytes (6-byte prefix + 8-byte hash)
-        assert_eq!(marker.len(), LEN);
+        assert_eq!(marker.len(), MARKER_LEN);
 
         // First 6 bytes should be magic
-        assert_eq!(&marker[..6], MAGIC.as_slice());
+        assert_eq!(&marker[..6], MARKER_MAGIC.as_slice());
 
         // Same entry produces same marker
         let marker2 = generate_marker_for_entry(&entry);
@@ -924,7 +833,7 @@ mod tests {
     fn test_find_graph_in_data() {
         let spec_id = [1u8; 32];
         let ref_id = [2u8; 32];
-        let data = graph_record_bytes(0, spec_id, &[ref_id]);
+        let data = generate_graph_record(SpecGraphEntryKind::Function, spec_id, &[ref_id]);
 
         let mut graph = SpecGraph::default();
         find_graph_in_data(&data, &mut graph).unwrap();
@@ -934,6 +843,47 @@ mod tests {
             Some(&SpecGraphEntry {
                 kind: SpecGraphEntryKind::Function,
                 refs: vec![ref_id],
+            })
+        );
+    }
+
+    #[test]
+    fn test_generate_graph_record_exact_bytes() {
+        let spec_id = [1u8; 32];
+        let refs = [[2u8; 32], [3u8; 32]];
+
+        let record = generate_graph_record(SpecGraphEntryKind::Event, spec_id, &refs);
+
+        assert_eq!(record.len(), graph_record_len(refs.len()));
+        assert_eq!(&record[0..5], &GRAPH_RECORD_MAGIC);
+        assert_eq!(record[5], GRAPH_RECORD_VERSION);
+        assert_eq!(
+            u16::from_be_bytes([record[6], record[7]]),
+            GRAPH_RECORD_KIND_EVENT
+        );
+        assert_eq!(&record[8..40], &spec_id);
+        assert_eq!(
+            u16::from_be_bytes([record[40], record[41]]),
+            refs.len() as u16
+        );
+        assert_eq!(&record[42..74], &refs[0]);
+        assert_eq!(&record[74..106], &refs[1]);
+    }
+
+    #[test]
+    fn test_generate_graph_record_roundtrip() {
+        let spec_id = [4u8; 32];
+        let refs = [[5u8; 32], [6u8; 32], [7u8; 32]];
+        let data = generate_graph_record(SpecGraphEntryKind::Udt, spec_id, &refs);
+
+        let mut graph = SpecGraph::default();
+        find_graph_in_data(&data, &mut graph).unwrap();
+
+        assert_eq!(
+            graph.entries.get(&spec_id),
+            Some(&SpecGraphEntry {
+                kind: SpecGraphEntryKind::Udt,
+                refs: refs.to_vec(),
             })
         );
     }

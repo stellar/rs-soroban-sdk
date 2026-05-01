@@ -173,7 +173,7 @@ pub fn derive_type_enum(
             let graph_record = shaking::generate_graph_record(
                 path,
                 &graph_ident,
-                quote! { #path::spec_shaking::GRAPH_RECORD_KIND_UDT },
+                soroban_spec_markers::SpecGraphEntryKind::Udt,
                 &spec_xdr,
                 case_type_id_refs.into_iter().flatten().collect(),
             );

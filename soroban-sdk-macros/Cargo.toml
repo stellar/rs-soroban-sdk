@@ -16,6 +16,7 @@ doctest = false
 
 [dependencies]
 soroban-spec = { workspace = true }
+soroban-spec-markers = { workspace = true, features = ["alloc", "hash"] }
 soroban-spec-rust = { workspace = true }
 soroban-env-common = { workspace = true }
 stellar-xdr = { workspace = true, features = ["curr", "std"] }

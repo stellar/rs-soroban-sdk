@@ -6,6 +6,7 @@ members = [
     "soroban-sdk-macros",
     "soroban-meta",
     "soroban-spec",
+    "soroban-spec-markers",
     "soroban-spec-rust",
     "soroban-ledger-snapshot",
     "soroban-token-sdk",
@@ -23,6 +24,7 @@ soroban-sdk = { version = "26.0.0-rc.1", path = "soroban-sdk" }
 soroban-sdk-macros = { version = "26.0.0-rc.1", path = "soroban-sdk-macros" }
 soroban-meta = { version = "26.0.0-rc.1", path = "soroban-meta" }
 soroban-spec = { version = "26.0.0-rc.1", path = "soroban-spec" }
+soroban-spec-markers = { version = "26.0.0-rc.1", path = "soroban-spec-markers", default-features = false }
 soroban-spec-rust = { version = "26.0.0-rc.1", path = "soroban-spec-rust" }
 soroban-ledger-snapshot = { version = "26.0.0-rc.1", path = "soroban-ledger-snapshot" }
 soroban-token-sdk = { version = "26.0.0-rc.1", path = "soroban-token-sdk" }

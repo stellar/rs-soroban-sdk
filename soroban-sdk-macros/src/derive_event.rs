@@ -214,7 +214,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         Some(shaking::generate_graph_record(
             path,
             &graph_ident,
-            quote! { #path::spec_shaking::GRAPH_RECORD_KIND_EVENT },
+            soroban_spec_markers::SpecGraphEntryKind::Event,
             &spec_xdr,
             params_with_idents
                 .iter()

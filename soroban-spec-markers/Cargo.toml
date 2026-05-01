@@ -1,0 +1,19 @@
+[package]
+name = "soroban-spec-markers"
+description = "Soroban contract spec marker wire-format helpers."
+homepage = "https://github.com/stellar/rs-soroban-sdk"
+repository = "https://github.com/stellar/rs-soroban-sdk"
+authors = ["Stellar Development Foundation <info@stellar.org>"]
+readme = "../README.md"
+license = "Apache-2.0"
+version.workspace = true
+edition = "2021"
+rust-version.workspace = true
+
+[dependencies]
+sha2 = { version = "0.10.7", default-features = false, optional = true }
+
+[features]
+default = ["alloc", "hash"]
+alloc = []
+hash = ["dep:sha2"]

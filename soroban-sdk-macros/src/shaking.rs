@@ -31,7 +31,7 @@ use crate::map_type::map_type;
 ///
 /// A `TokenStream2` containing a marker static and volatile read.
 pub fn generate_marker_block(spec_xdr: &[u8]) -> TokenStream2 {
-    let marker = soroban_spec::shaking::generate_marker_for_xdr(spec_xdr);
+    let marker = soroban_spec_markers::generate_marker_for_xdr(spec_xdr);
     let marker_lit = proc_macro2::Literal::byte_string(&marker);
     let marker_len = marker.len();
 
@@ -64,7 +64,7 @@ pub fn generate_error_marker_impl(path: &Path, ident: &Ident, spec_xdr: &[u8]) -
 
 /// Generates an implementation of the hidden exact spec identity trait for a UDT.
 pub fn generate_type_id_impl(path: &Path, ident: &Ident, spec_xdr: &[u8]) -> TokenStream2 {
-    let spec_id = soroban_spec::shaking::generate_spec_id_for_xdr(spec_xdr);
+    let spec_id = soroban_spec_markers::generate_spec_id_for_xdr(spec_xdr);
     let spec_id_lit = proc_macro2::Literal::byte_string(&spec_id);
 
     quote! {
@@ -74,29 +74,39 @@ pub fn generate_type_id_impl(path: &Path, ident: &Ident, spec_xdr: &[u8]) -> Tok
     }
 }
 
-/// Generates one removable graph record in `contractspecv0.rssdk.graphv0`.
+/// Generates one removable graph record in `contractspecv0.rssdk.graphv0` at compile time.
+///
+/// This exists as a `const fn` rather than a fully baked byte literal because of how
+/// the SDK macros emit graph records. When `derive_*` expands for type `Foo`,
+/// it knows `Foo`'s own spec XDR and can hash it — but `Foo`'s referenced
+/// UDTs (`Bar`, `Baz`, …) are defined elsewhere, possibly in another crate,
+/// and the macro has no visibility into their tokens. So the macro emits each ref as a
+/// trait-associated constant expression `<Bar as SpecTypeId>::SPEC_TYPE_ID` and lets
+/// const-eval resolve the 32 bytes after all impls are in scope.
 pub fn generate_graph_record(
     path: &Path,
     ident: &Ident,
-    kind: TokenStream2,
+    kind: soroban_spec_markers::SpecGraphEntryKind,
     spec_xdr: &[u8],
     refs: Vec<TokenStream2>,
 ) -> TokenStream2 {
-    let spec_id = soroban_spec::shaking::generate_spec_id_for_xdr(spec_xdr);
+    let spec_id = soroban_spec_markers::generate_spec_id_for_xdr(spec_xdr);
     let spec_id_lit = proc_macro2::Literal::byte_string(&spec_id);
+    let section_lit = proc_macro2::Literal::string(soroban_spec_markers::GRAPH_SECTION);
+    let kind_lit = proc_macro2::Literal::u16_unsuffixed(kind.to_u16());
     let ref_count = refs.len();
     assert!(
         ref_count <= u16::MAX as usize,
         "spec graph record cannot encode more than u16::MAX refs"
     );
-    let record_len = 42 + ref_count * 32;
+    let record_len = soroban_spec_markers::graph_record_len(ref_count);
 
     quote! {
-        #[cfg_attr(target_family = "wasm", link_section = "contractspecv0.rssdk.graphv0")]
+        #[cfg_attr(target_family = "wasm", link_section = #section_lit)]
         #[allow(non_upper_case_globals)]
         pub static #ident: [u8; #record_len] =
-            #path::spec_shaking::spec_graph_record::<#record_len, #ref_count>(
-                #kind,
+            #path::spec_shaking::encode_graph_record::<#record_len, #ref_count>(
+                #kind_lit,
                 *#spec_id_lit,
                 [#(#refs),*],
             );

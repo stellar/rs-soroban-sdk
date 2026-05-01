@@ -7,6 +7,7 @@ use stellar_xdr::{Limited, Limits, ReadXdr, ScMetaEntry, WriteXdr};
 use wasmparser::{BinaryReaderError, Parser, Payload};
 
 use crate::{read, shaking};
+use soroban_spec_markers::GRAPH_SECTION;
 
 const WASM_HEADER: &[u8; 8] = b"\0asm\x01\0\0\0";
 const CUSTOM_SECTION_ID: u8 = 0;
@@ -146,7 +147,7 @@ fn rewrite_contract_spec(wasm: &[u8], spec_xdr: &[u8]) -> Result<Vec<u8>, Rewrit
                     wrote_spec = true;
                 }
             }
-            shaking::GRAPH_SECTION => {}
+            GRAPH_SECTION => {}
             _ => out.extend_from_slice(&wasm[section_start..payload_end]),
         }
     }
@@ -231,6 +232,9 @@ mod tests {
         CONTRACT_SPEC_SECTION, WASM_HEADER,
     };
     use crate::{read, shaking};
+    use soroban_spec_markers::{
+        generate_graph_record, SpecGraphEntryKind, GRAPH_SECTION, META_KEY, META_VALUE_V2,
+    };
     use stellar_xdr::curr::{
         Limits, ScMetaEntry, ScMetaV0, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0,
         ScSpecTypeDef, ScSpecTypeUdt, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, StringM, WriteXdr,
@@ -285,7 +289,7 @@ mod tests {
 
     fn meta_xdr(value: &str) -> Vec<u8> {
         ScMetaEntry::ScMetaV0(ScMetaV0 {
-            key: shaking::META_KEY.try_into().unwrap(),
+            key: META_KEY.try_into().unwrap(),
             val: value.try_into().unwrap(),
         })
         .to_xdr(Limits::none())
@@ -293,20 +297,19 @@ mod tests {
     }
 
     fn v2_meta_xdr() -> Vec<u8> {
-        meta_xdr(shaking::META_VALUE_V2)
+        meta_xdr(META_VALUE_V2)
     }
 
-    fn graph_record(kind: u16, entry: &ScSpecEntry, refs: &[ScSpecEntry]) -> Vec<u8> {
-        let mut record = Vec::new();
-        record.extend_from_slice(b"SpGrV");
-        record.push(1);
-        record.extend_from_slice(&kind.to_be_bytes());
-        record.extend_from_slice(&shaking::generate_spec_id_for_entry(entry));
-        record.extend_from_slice(&(refs.len() as u16).to_be_bytes());
-        for ref_entry in refs {
-            record.extend_from_slice(&shaking::generate_spec_id_for_entry(ref_entry));
-        }
-        record
+    fn graph_record(entry: &ScSpecEntry, refs: &[ScSpecEntry]) -> Vec<u8> {
+        let ref_ids: Vec<_> = refs
+            .iter()
+            .map(shaking::generate_spec_id_for_entry)
+            .collect();
+        generate_graph_record(
+            SpecGraphEntryKind::Function,
+            shaking::generate_spec_id_for_entry(entry),
+            &ref_ids,
+        )
     }
 
     fn minimal_wasm(custom_sections: &[(&str, &[u8])]) -> Vec<u8> {
@@ -326,11 +329,11 @@ mod tests {
 
         let spec = spec_xdr(&entries);
         let meta = v2_meta_xdr();
-        let graph = graph_record(0, &function, std::slice::from_ref(&used));
+        let graph = graph_record(&function, std::slice::from_ref(&used));
         let wasm = minimal_wasm(&[
             (CONTRACT_META_SECTION, &meta),
             (CONTRACT_SPEC_SECTION, &spec),
-            (shaking::GRAPH_SECTION, &graph),
+            (GRAPH_SECTION, &graph),
         ]);
 
         let shaken = shake_contract_spec(&wasm).unwrap();
@@ -339,8 +342,8 @@ mod tests {
         assert_eq!(filtered, vec![function, used]);
         assert!(shaking::find_graph(&shaken).unwrap().entries.is_empty());
         assert!(!shaken
-            .windows(shaking::GRAPH_SECTION.len())
-            .any(|bytes| bytes == shaking::GRAPH_SECTION.as_bytes()));
+            .windows(GRAPH_SECTION.len())
+            .any(|bytes| bytes == GRAPH_SECTION.as_bytes()));
     }
 
     #[test]
@@ -349,13 +352,13 @@ mod tests {
         let used = struct_entry("Shared", "used", ScSpecTypeDef::I32);
         let spec = spec_xdr(&[function.clone(), used.clone()]);
         let meta = v2_meta_xdr();
-        let graph = graph_record(0, &function, &[used]);
+        let graph = graph_record(&function, &[used]);
         let other = b"kept";
         let wasm = minimal_wasm(&[
             ("before", other.as_slice()),
             (CONTRACT_META_SECTION, &meta),
             (CONTRACT_SPEC_SECTION, &spec),
-            (shaking::GRAPH_SECTION, &graph),
+            (GRAPH_SECTION, &graph),
             ("after", other.as_slice()),
         ]);
 
@@ -373,11 +376,8 @@ mod tests {
         let function = function_with_udt("run", "Shared");
         let used = struct_entry("Shared", "used", ScSpecTypeDef::I32);
         let spec = spec_xdr(&[function.clone(), used.clone()]);
-        let graph = graph_record(0, &function, &[used]);
-        let wasm = minimal_wasm(&[
-            (CONTRACT_SPEC_SECTION, &spec),
-            (shaking::GRAPH_SECTION, &graph),
-        ]);
+        let graph = graph_record(&function, &[used]);
+        let wasm = minimal_wasm(&[(CONTRACT_SPEC_SECTION, &spec), (GRAPH_SECTION, &graph)]);
 
         let err = shake_contract_spec(&wasm).unwrap_err();
 
@@ -390,11 +390,11 @@ mod tests {
         let used = struct_entry("Shared", "used", ScSpecTypeDef::I32);
         let spec = spec_xdr(&[function.clone(), used.clone()]);
         let meta = meta_xdr("1");
-        let graph = graph_record(0, &function, &[used]);
+        let graph = graph_record(&function, &[used]);
         let wasm = minimal_wasm(&[
             (CONTRACT_META_SECTION, &meta),
             (CONTRACT_SPEC_SECTION, &spec),
-            (shaking::GRAPH_SECTION, &graph),
+            (GRAPH_SECTION, &graph),
         ]);
 
         let err = shake_contract_spec(&wasm).unwrap_err();
@@ -447,7 +447,7 @@ mod tests {
         let wasm = minimal_wasm(&[
             (CONTRACT_META_SECTION, &meta),
             (CONTRACT_SPEC_SECTION, &spec),
-            (shaking::GRAPH_SECTION, truncated_graph),
+            (GRAPH_SECTION, truncated_graph),
         ]);
 
         let err = shake_contract_spec(&wasm).unwrap_err();
