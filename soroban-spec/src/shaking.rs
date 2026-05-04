@@ -450,29 +450,33 @@ fn add_graph_refs(
         });
     }
 
+    let expected_name_set = expected_names.iter().cloned().collect::<HashSet<_>>();
+    let mut covered_names = HashSet::<String>::new();
     let mut matched_ref_ids = HashSet::<SpecId>::new();
-    for expected_name in expected_names {
-        let mut matched = false;
-        let mut missing_ref_id = None;
-        let mut non_udt_ref = None;
-        for ref_id in record.refs.iter().copied() {
-            if let Some(names) = udt_names_by_id.get(&ref_id) {
-                if names.contains(&expected_name) {
+    let mut missing_ref_id = None;
+    let mut non_udt_ref = None;
+
+    for ref_id in record.refs.iter().copied() {
+        if let Some(names) = udt_names_by_id.get(&ref_id) {
+            for name in names {
+                if expected_name_set.contains(name) {
+                    covered_names.insert(name.clone());
                     matched_ref_ids.insert(ref_id);
-                    matched = true;
-                    break;
                 }
-            } else if !entry_indexes_by_id.contains_key(&ref_id) {
-                missing_ref_id.get_or_insert(ref_id);
-            } else if non_udt_ref.is_none() {
-                let ref_entry = entry_descriptions_by_id
-                    .get(&ref_id)
-                    .cloned()
-                    .expect("referenced spec entry should have a description");
-                non_udt_ref = Some((ref_id, ref_entry));
             }
+        } else if !entry_indexes_by_id.contains_key(&ref_id) {
+            missing_ref_id.get_or_insert(ref_id);
+        } else if non_udt_ref.is_none() {
+            let ref_entry = entry_descriptions_by_id
+                .get(&ref_id)
+                .cloned()
+                .expect("referenced spec entry should have a description");
+            non_udt_ref = Some((ref_id, ref_entry));
         }
-        if matched {
+    }
+
+    for expected_name in expected_names {
+        if covered_names.contains(&expected_name) {
             continue;
         }
         if let Some(ref_id) = missing_ref_id {
@@ -500,8 +504,8 @@ fn add_graph_refs(
         });
     }
 
-    // Only traverse refs that satisfied an expected UDT name. Extra graph refs are tolerated and
-    // intentionally not rooted because reachability is defined by public spec coverage.
+    // Traverse exact refs whose public UDT names are referenced by this entry. Extra graph refs to
+    // unrelated names are tolerated and intentionally not rooted.
     pending_spec_ids.extend(matched_ref_ids);
     Ok(())
 }
@@ -1255,6 +1259,44 @@ mod tests {
         ));
         assert!(filtered.iter().any(
             |e| matches!(e, ScSpecEntry::UdtStructV0(s) if s.name.to_utf8_string_lossy() == "Child")
+        ));
+        assert!(!filtered.iter().any(
+            |e| matches!(e, ScSpecEntry::UdtStructV0(s) if s.name.to_utf8_string_lossy() == "Unused")
+        ));
+    }
+
+    #[test]
+    fn test_filter_keeps_multiple_same_name_refs_from_one_entry() {
+        let foo = make_function("foo", vec![udt("Duplicate"), udt("Duplicate")]);
+        let duplicate_struct = make_struct("Duplicate", vec![("field", ScSpecTypeDef::U32)]);
+        let duplicate_enum = make_enum("Duplicate");
+        let unused = make_struct("Unused", vec![("field", ScSpecTypeDef::U32)]);
+
+        let entries = vec![
+            foo.clone(),
+            duplicate_struct.clone(),
+            duplicate_enum.clone(),
+            unused.clone(),
+        ];
+        let graph = SpecGraph::from_records([
+            (
+                &foo,
+                SpecGraphEntryKind::Function,
+                vec![&duplicate_struct, &duplicate_enum],
+            ),
+            (&duplicate_struct, SpecGraphEntryKind::Udt, vec![]),
+            (&duplicate_enum, SpecGraphEntryKind::Udt, vec![]),
+            (&unused, SpecGraphEntryKind::Udt, vec![]),
+        ]);
+
+        let markers = HashSet::new();
+        let filtered: Vec<_> = filter(entries, &markers, &graph).unwrap().collect();
+
+        assert!(filtered.iter().any(
+            |e| matches!(e, ScSpecEntry::UdtStructV0(s) if s.name.to_utf8_string_lossy() == "Duplicate")
+        ));
+        assert!(filtered.iter().any(
+            |e| matches!(e, ScSpecEntry::UdtEnumV0(s) if s.name.to_utf8_string_lossy() == "Duplicate")
         ));
         assert!(!filtered.iter().any(
             |e| matches!(e, ScSpecEntry::UdtStructV0(s) if s.name.to_utf8_string_lossy() == "Unused")

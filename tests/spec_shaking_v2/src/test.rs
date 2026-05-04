@@ -175,7 +175,6 @@ fn test_spec_shaking_v2() {
         "User-defined Context should be retained as a reachable contract spec UDT"
     );
 
-
     // Function input/output types are rooted from contractspecv0. Events and
     // panic/assert-only errors need markers because their reachability is not in the spec.
     assert_eq!(markers.len(), 9);
