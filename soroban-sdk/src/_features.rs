@@ -113,6 +113,10 @@
 //! `export = false` is explicitly set. Error enums with `export = false` still
 //! get the hidden `SpecTypeId` helper for exact graph references, but cannot be
 //! the target of a reachable graph edge in a valid shaken v2 spec.
+//! They also do not implement the hidden `SpecShakingMarker` hook required by
+//! `panic_with_error!` and `assert_with_error!` when this feature is enabled;
+//! remove `export = false` for typed error enums that may be thrown through those
+//! macros, or throw a raw `Error` value instead.
 //!
 //! #### [`contractevent`]
 //!

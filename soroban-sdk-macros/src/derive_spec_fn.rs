@@ -197,6 +197,7 @@ pub fn derive_fn_spec(
         Some(shaking::generate_graph_record(
             path,
             &graph_ident,
+            ident.span(),
             soroban_spec_markers::SpecGraphEntryKind::Function,
             &spec_xdr,
             spec_arg_type_id_refs

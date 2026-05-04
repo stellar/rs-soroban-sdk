@@ -171,8 +171,8 @@ pub const fn encode_graph_record<const LEN: usize, const N: usize>(
     spec_id: SpecId,
     refs: [SpecId; N],
 ) -> [u8; LEN] {
-    assert!(LEN == graph_record_len(N));
     assert!(N <= u16::MAX as usize);
+    assert!(LEN == graph_record_len(N));
 
     let mut record = [0; LEN];
 

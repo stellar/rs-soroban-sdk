@@ -7,7 +7,7 @@
 //! See `soroban-spec-markers` for the marker and graph wire formats, and
 //! `soroban-spec` for the post-build reachability filter and Wasm rewriting.
 
-use proc_macro2::TokenStream as TokenStream2;
+use proc_macro2::{Span, TokenStream as TokenStream2};
 use quote::format_ident;
 use quote::quote;
 use stellar_xdr::curr::ScSpecTypeDef;
@@ -91,6 +91,7 @@ pub fn generate_udt_shaking(
     let graph_record = generate_graph_record(
         path,
         &graph_ident,
+        ident.span(),
         soroban_spec_markers::SpecGraphEntryKind::Udt,
         spec_xdr,
         refs,
@@ -110,6 +111,7 @@ pub fn generate_udt_shaking(
 pub fn generate_graph_record(
     path: &Path,
     ident: &Ident,
+    error_span: Span,
     kind: soroban_spec_markers::SpecGraphEntryKind,
     spec_xdr: &[u8],
     refs: Vec<TokenStream2>,
@@ -119,10 +121,13 @@ pub fn generate_graph_record(
     let section_lit = proc_macro2::Literal::string(soroban_spec_markers::GRAPH_SECTION);
     let kind_lit = proc_macro2::Literal::u16_unsuffixed(kind.to_u16());
     let ref_count = refs.len();
-    assert!(
-        ref_count <= u16::MAX as usize,
-        "spec graph record cannot encode more than u16::MAX refs"
-    );
+    if ref_count > u16::MAX as usize {
+        return syn::Error::new(
+            error_span,
+            "spec graph record cannot encode more than u16::MAX refs",
+        )
+        .to_compile_error();
+    }
     let record_len = soroban_spec_markers::graph_record_len(ref_count);
 
     quote! {
@@ -224,6 +229,26 @@ mod test {
             .into_iter()
             .map(|tokens| tokens.to_string())
             .collect()
+    }
+
+    #[test]
+    fn generate_graph_record_rejects_too_many_refs_with_compile_error() {
+        let path: Path = parse_quote!(soroban_sdk);
+        let ident = format_ident!("__SPEC_GRAPH_TOO_MANY_REFS");
+        let refs = vec![TokenStream2::new(); u16::MAX as usize + 1];
+
+        let tokens = generate_graph_record(
+            &path,
+            &ident,
+            ident.span(),
+            soroban_spec_markers::SpecGraphEntryKind::Udt,
+            b"spec",
+            refs,
+        )
+        .to_string();
+
+        assert!(tokens.contains("compile_error"));
+        assert!(tokens.contains("spec graph record cannot encode more than u16::MAX refs"));
     }
 
     #[test]

@@ -53,13 +53,13 @@ pub enum RewriteError {
 /// and complete. Passing a v1, non-Rust, or corrupted v2 contract would make marker scanning or
 /// graph traversal ambiguous, so those inputs are rejected before rewriting.
 pub fn shake_contract_spec(wasm: &[u8]) -> Result<Vec<u8>, ShakeError> {
-    let entries = read::from_wasm(wasm).map_err(ShakeError::ReadSpec)?;
     let meta = contract_meta_from_wasm(wasm)?;
     let version = shaking::spec_shaking_version_for_meta(&meta);
     if version != 2 {
         return Err(ShakeError::UnsupportedSpecShakingVersion(version));
     }
 
+    let entries = read::from_wasm(wasm).map_err(ShakeError::ReadSpec)?;
     let markers = shaking::find_all(wasm);
     let graph = shaking::find_graph(wasm)?;
     let filtered = shaking::filter(entries, &markers, &graph)?;
