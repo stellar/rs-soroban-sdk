@@ -53,6 +53,8 @@ fn test_spec_shaking_v1() {
         "with_non_pub_error",
         "with_tuple",
         "with_tuple_return",
+        "__check_auth",
+        "__constructor",
     ] {
         assert!(
             fn_names.contains(&expected_fn.into()),
@@ -99,6 +101,7 @@ fn test_spec_shaking_v1() {
         "UnusedEnum",
         "UnusedIntEnum",
         "UnusedEvent",
+        "Context"
     ];
     for name in pub_types {
         assert!(
@@ -148,6 +151,32 @@ fn test_spec_shaking_v1() {
             "lib-imported type {name} should have a spec entry (rlib statics linked into cdylib)"
         );
     }
+
+    // sdk contract types are not in the WASM spec
+    let sdk_types = [
+        "Executable",
+        "InvokerContractAuthEntry",
+        "SubContractInvocation",
+        "ContractContext",
+        "CreateContractHostFnContext",
+        "CreateContractWithConstructorHostFnContext",
+        "ContractExecutable",
+    ];
+    for name in sdk_types {
+        assert!(
+            !all_names.contains(name),
+            "sdk contract type {name} should NOT have a spec entry"
+        );
+    }
+    // ensure the `Context` is the user-defined context
+    assert!(
+        entries.iter().any(|e| matches!(
+            e,
+            ScSpecEntry::UdtStructV0(s) if s.name.to_utf8_string_lossy() == "Context"
+        )),
+        "User-defined Context should be retained as a reachable contract spec UDT"
+    );
+
 
     // WASM-imported types have export = false without the feature, so they do
     // not contribute additional spec entries. (Their names overlap with

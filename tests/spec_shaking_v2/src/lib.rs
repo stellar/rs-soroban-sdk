@@ -1,7 +1,7 @@
 #![no_std]
 use soroban_sdk::{
-    assert_with_error, contract, contracterror, contractevent, contractimpl, contracttype,
-    panic_with_error, Env, Map, Symbol, Vec,
+    assert_with_error, auth::CustomAccountInterface, contract, contracterror, contractevent,
+    contractimpl, contracttype, crypto::Hash, panic_with_error, Env, Map, Symbol, Vec,
 };
 
 #[contract]
@@ -51,6 +51,14 @@ pub enum UsedParamIntEnum {
 #[contracterror]
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UsedErrorEnum {
+    NotFound = 1,
+    Invalid = 2,
+}
+
+// Used as custom account error return.
+#[contracterror]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum UsedAuthErrorEnum {
     NotFound = 1,
     Invalid = 2,
 }
@@ -117,6 +125,13 @@ pub struct UsedOptionElement {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct UsedResultOk {
     pub data: u32,
+}
+
+// Used as custom account signature type in __check_auth.
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct CustomSignature {
+    pub nonce: u32,
 }
 
 // Used as published event (simple, primitive fields only)
@@ -512,6 +527,21 @@ impl Contract {
             payload: &payload,
         }
         .publish(&env);
+    }
+}
+
+#[contractimpl]
+impl CustomAccountInterface for Contract {
+    type Error = UsedAuthErrorEnum;
+    type Signature = CustomSignature;
+
+    fn __check_auth(
+        _env: Env,
+        _signature_payload: Hash<32>,
+        _signatures: Self::Signature,
+        _auth_contexts: Vec<soroban_sdk::auth::Context>,
+    ) -> Result<(), UsedAuthErrorEnum> {
+        Ok(())
     }
 }
 

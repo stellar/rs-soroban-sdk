@@ -183,9 +183,8 @@ pub fn type_id_refs(path: &Path, ty: &Type) -> Vec<TokenStream2> {
 fn should_emit_type_id_ref(ty: &Type) -> bool {
     // `map_type` is the canonical Rust-type-to-spec-type mapper. Only UDT-shaped
     // spec types need an exact graph ref; all SDK/builtin mappings return a
-    // concrete non-UDT spec type. Under v2, even `export = false` contract types
-    // get a hidden `SpecTypeId`, so SDK boundary types such as `auth::Context`
-    // and user-defined UDTs named `Context` can be handled uniformly.
+    // concrete non-UDT spec type. UDT refs require a SpecTypeId impl even when
+    // the referenced type is intentionally hidden from `contractspecv0`.
     matches!(map_type(ty, true, true), Ok(ScSpecTypeDef::Udt(_)))
 }
 

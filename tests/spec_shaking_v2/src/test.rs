@@ -1,6 +1,6 @@
 extern crate std;
 
-use soroban_sdk::xdr::ScSpecEntry;
+use soroban_sdk::xdr::{ScSpecEntry, ScSpecTypeDef};
 use std::collections::HashSet;
 use std::vec::Vec;
 
@@ -16,7 +16,7 @@ fn test_spec_shaking_v2() {
     let markers = soroban_spec::shaking::find_all(WASM);
     let graph = soroban_spec::shaking::find_graph(WASM).unwrap();
 
-    // Filter entries using function roots, event-root markers, and exact sidecar graph refs.
+    // Filter entries using function roots, event-root markers, and sidecar graph refs.
     assert!(!graph.entries.is_empty());
     let filtered: Vec<_> = soroban_spec::shaking::filter(entries.iter().cloned(), &markers, &graph)
         .unwrap()
@@ -72,6 +72,7 @@ fn test_spec_shaking_v2() {
         "with_non_pub_error",
         "with_tuple",
         "with_tuple_return",
+        "__check_auth",
     ] {
         assert!(
             fn_names.contains(&expected_fn.into()),
@@ -88,6 +89,7 @@ fn test_spec_shaking_v2() {
         "UsedReturnEnum",
         "UsedParamIntEnum",
         "UsedErrorEnum",
+        "UsedAuthErrorEnum",
         // error types used only via panic_with_error! / assert_with_error!
         "UsedPanicErrorEnum",
         "UsedPanicErrorEnumRef",
@@ -106,6 +108,13 @@ fn test_spec_shaking_v2() {
         "UsedOptionElement",
         // Result Ok type in fn return
         "UsedResultOk",
+        // custom account signature type
+        "CustomSignature",
+        // SDK auth types used by custom account auth context
+        "ContractContext",
+        "CreateContractHostFnContext",
+        "CreateContractWithConstructorHostFnContext",
+        "ContractExecutable",
         // simple event
         "UsedEventSimple",
         // event with custom type in topic
@@ -149,6 +158,24 @@ fn test_spec_shaking_v2() {
             "used type/event {name} should be present in filtered entries, but was not found"
         );
     }
+
+    // If two types with the same name are included, retain both
+    assert!(
+        filtered.iter().any(|e| matches!(
+            e,
+            ScSpecEntry::UdtUnionV0(u) if u.name.to_utf8_string_lossy() == "Context"
+        )),
+        "SDK auth Context should be retained as a reachable contract spec UDT"
+    );
+    assert!(
+        filtered.iter().any(|e| matches!(
+            e,
+            ScSpecEntry::UdtStructV0(s) if s.name.to_utf8_string_lossy() == "Context"
+        )),
+        "User-defined Context should be retained as a reachable contract spec UDT"
+    );
+
+
     // Function input/output types are rooted from contractspecv0. Events and
     // panic/assert-only errors need markers because their reachability is not in the spec.
     assert_eq!(markers.len(), 9);
@@ -183,6 +210,10 @@ fn test_spec_shaking_v2() {
         "EventA",
         "EventB",
         "EventC",
+        // SDK-owned types emitted as v2 spec candidates but not reachable here
+        "Executable",
+        "InvokerContractAuthEntry",
+        "SubContractInvocation",
     ];
     let all_names: HashSet<std::string::String> = entries.iter().filter_map(entry_name).collect();
     for name in unused {

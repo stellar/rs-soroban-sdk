@@ -64,6 +64,8 @@
 //! but they do not emit public spec entries or UDT graph records of their own.
 //! A reachable graph reference to such a type is invalid for post-build
 //! shaking because there is no matching spec entry in `contractspecv0` to keep.
+//! SDK-owned types used at canonical contract boundaries are configured to emit
+//! normally under v2; see [`contracttype`] below.
 //!
 //! Events and errors thrown through `panic_with_error!` or
 //! `assert_with_error!` need one extra reachability signal because those use
@@ -96,6 +98,12 @@
 //! them exactly. A reachable graph edge to one of these hidden-only types is
 //! rejected during strict post-build validation because the referenced spec
 //! entry is absent.
+//!
+//! SDK-owned types that appear at canonical contract boundaries, such as
+//! `auth::Context` in `__check_auth` no longer use `export = false` under v2.
+//! As a result, they behave like ordinary public UDTs in v2, and without v2 they
+//! remain hidden. This keeps specs complete and without ambiguities between
+//! SDK-owned types and user-defined types with the same name.
 //!
 //! #### [`contracterror`]
 //!
@@ -136,6 +144,10 @@
 //! This ensures that a contract importing a large interface only includes spec
 //! entries for the types it actually uses, while still producing a
 //! self-contained spec.
+//! Raw Wasm built without post-build shaking can still contain pre-shake
+//! candidates, including SDK-owned boundary types or duplicate UDT names that
+//! would otherwise be stripped. Prefer importing Wasms produced by
+//! `stellar contract build` or another pipeline that runs `shake_contract_spec`.
 //!
 //! ### Build Requirements
 //!
