@@ -424,12 +424,15 @@ impl Contract {
         }
     }
 
+<<<<<<< HEAD
     pub fn with_panic_error_ref(env: Env, fail: bool) {
         if fail {
             panic_with_error!(&env, &UsedPanicErrorEnumRef::Boom);
         }
     }
 
+=======
+>>>>>>> origin/main
     pub fn with_assert_error(env: Env, ok: bool) {
         assert_with_error!(&env, ok, UsedAssertErrorEnum::Bad);
     }

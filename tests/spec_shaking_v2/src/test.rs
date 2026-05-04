@@ -51,7 +51,10 @@ fn test_spec_shaking_v2() {
         "with_return",
         "with_error",
         "with_panic_error",
+<<<<<<< HEAD
         "with_panic_error_ref",
+=======
+>>>>>>> origin/main
         "with_assert_error",
         "with_panic_raw_error",
         "with_vec",
