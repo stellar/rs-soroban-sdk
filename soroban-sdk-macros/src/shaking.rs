@@ -219,8 +219,9 @@ mod test {
     use syn::{parse_quote, Type};
 
     use stellar_xdr::curr::{
-        ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeMap, ScSpecTypeResult,
-        ScSpecTypeUdt, ScSpecTypeVec, ScSpecUdtStructV0, StringM, VecM,
+        ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeMap, ScSpecTypeOption,
+        ScSpecTypeResult, ScSpecTypeTuple, ScSpecTypeUdt, ScSpecTypeVec, ScSpecUdtStructV0,
+        StringM, VecM,
     };
 
     fn refs_for(ty: Type) -> Vec<String> {
@@ -316,47 +317,88 @@ mod test {
     #[test]
     fn type_id_refs_match_strict_spec_graph_validation() {
         let path: Path = parse_quote!(soroban_sdk);
-        let rust_ty: Type = parse_quote!(Result<Vec<Foo>, Map<u32, Bar>>);
-        let macro_ref_names = type_id_refs(&path, &rust_ty)
-            .into_iter()
-            .map(type_id_ref_name)
-            .collect::<Vec<_>>();
-        assert_eq!(macro_ref_names, vec!["Foo", "Bar"]);
+        let cases = vec![
+            ("udt", parse_quote!(Foo), udt("Foo"), vec!["Foo"]),
+            ("reference", parse_quote!(&Foo), udt("Foo"), vec!["Foo"]),
+            (
+                "option",
+                parse_quote!(Option<Foo>),
+                option(udt("Foo")),
+                vec!["Foo"],
+            ),
+            (
+                "result",
+                parse_quote!(Result<Foo, Bar>),
+                result(udt("Foo"), udt("Bar")),
+                vec!["Foo", "Bar"],
+            ),
+            (
+                "vec",
+                parse_quote!(Vec<Foo>),
+                vec_type(udt("Foo")),
+                vec!["Foo"],
+            ),
+            (
+                "map",
+                parse_quote!(Map<Foo, Bar>),
+                map(udt("Foo"), udt("Bar")),
+                vec!["Foo", "Bar"],
+            ),
+            (
+                "tuple",
+                parse_quote!((Foo, Bar)),
+                tuple(vec![udt("Foo"), udt("Bar")]),
+                vec!["Foo", "Bar"],
+            ),
+            (
+                "nested",
+                parse_quote!(Result<Vec<Foo>, Map<u32, Bar>>),
+                result(vec_type(udt("Foo")), map(ScSpecTypeDef::U32, udt("Bar"))),
+                vec!["Foo", "Bar"],
+            ),
+        ];
 
-        let function = make_function(
-            "foo",
-            ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
-                ok_type: Box::new(ScSpecTypeDef::Vec(Box::new(ScSpecTypeVec {
-                    element_type: Box::new(udt("Foo")),
-                }))),
-                error_type: Box::new(ScSpecTypeDef::Map(Box::new(ScSpecTypeMap {
-                    key_type: Box::new(ScSpecTypeDef::U32),
-                    value_type: Box::new(udt("Bar")),
-                }))),
-            })),
-        );
-        let foo = make_struct("Foo");
-        let bar = make_struct("Bar");
-        let entries = vec![function.clone(), foo.clone(), bar.clone()];
-        let graph_refs = macro_ref_names
-            .iter()
-            .map(|name| match name.as_str() {
-                "Foo" => &foo,
-                "Bar" => &bar,
-                _ => panic!("unexpected macro ref {name}"),
-            })
-            .collect::<Vec<_>>();
-        let graph = SpecGraph::from_records([
-            (&function, SpecGraphEntryKind::Function, graph_refs),
-            (&foo, SpecGraphEntryKind::Udt, vec![]),
-            (&bar, SpecGraphEntryKind::Udt, vec![]),
-        ]);
+        for (case, rust_ty, spec_ty, expected_names) in cases {
+            let macro_ref_names = type_id_refs(&path, &rust_ty)
+                .into_iter()
+                .map(type_id_ref_name)
+                .collect::<Vec<_>>();
+            assert_eq!(macro_ref_names, expected_names, "{case}");
 
-        let filtered = filter(entries.clone(), &HashSet::new(), &graph)
+            let function = make_function("foo", spec_ty);
+            let foo = make_struct("Foo");
+            let bar = make_struct("Bar");
+            let graph_refs = macro_ref_names
+                .iter()
+                .map(|name| match name.as_str() {
+                    "Foo" => &foo,
+                    "Bar" => &bar,
+                    _ => panic!("unexpected macro ref {name}"),
+                })
+                .collect::<Vec<_>>();
+            let graph = SpecGraph::from_records([
+                (&function, SpecGraphEntryKind::Function, graph_refs),
+                (&foo, SpecGraphEntryKind::Udt, vec![]),
+                (&bar, SpecGraphEntryKind::Udt, vec![]),
+            ]);
+
+            let filtered = filter(
+                vec![function.clone(), foo.clone(), bar.clone()],
+                &HashSet::new(),
+                &graph,
+            )
             .unwrap()
             .collect::<Vec<_>>();
-
-        assert_eq!(filtered, entries);
+            let mut expected_entries = vec![function.clone()];
+            for name in expected_names {
+                match name {
+                    "Foo" if !expected_entries.contains(&foo) => expected_entries.push(foo.clone()),
+                    "Bar" if !expected_entries.contains(&bar) => expected_entries.push(bar.clone()),
+                    _ => {}
+                }
+            }
+            assert_eq!(filtered, expected_entries, "{case}");
+        }
     }
 
     fn type_id_ref_name(tokens: TokenStream2) -> String {
@@ -375,6 +417,38 @@ mod test {
         ScSpecTypeDef::Udt(ScSpecTypeUdt {
             name: name.try_into().unwrap(),
         })
+    }
+
+    fn option(value_type: ScSpecTypeDef) -> ScSpecTypeDef {
+        ScSpecTypeDef::Option(Box::new(ScSpecTypeOption {
+            value_type: Box::new(value_type),
+        }))
+    }
+
+    fn result(ok_type: ScSpecTypeDef, error_type: ScSpecTypeDef) -> ScSpecTypeDef {
+        ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
+            ok_type: Box::new(ok_type),
+            error_type: Box::new(error_type),
+        }))
+    }
+
+    fn vec_type(element_type: ScSpecTypeDef) -> ScSpecTypeDef {
+        ScSpecTypeDef::Vec(Box::new(ScSpecTypeVec {
+            element_type: Box::new(element_type),
+        }))
+    }
+
+    fn map(key_type: ScSpecTypeDef, value_type: ScSpecTypeDef) -> ScSpecTypeDef {
+        ScSpecTypeDef::Map(Box::new(ScSpecTypeMap {
+            key_type: Box::new(key_type),
+            value_type: Box::new(value_type),
+        }))
+    }
+
+    fn tuple(value_types: Vec<ScSpecTypeDef>) -> ScSpecTypeDef {
+        ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
+            value_types: value_types.try_into().unwrap(),
+        }))
     }
 
     fn make_function(name: &str, input_type: ScSpecTypeDef) -> ScSpecEntry {

@@ -479,15 +479,6 @@ fn add_graph_refs(
         if covered_names.contains(&expected_name) {
             continue;
         }
-        if let Some(ref_id) = missing_ref_id {
-            return Err(SpecShakingError::MissingReferencedSpecEntry {
-                spec_id,
-                entry: entry_description,
-                type_name: expected_name,
-                ref_id,
-                ref_spec_id: spec_id_hex(ref_id),
-            });
-        }
         if let Some((ref_id, ref_entry)) = non_udt_ref {
             return Err(SpecShakingError::ReferencedSpecEntryNotUdt {
                 spec_id,
@@ -495,6 +486,15 @@ fn add_graph_refs(
                 type_name: expected_name,
                 ref_id,
                 ref_entry,
+            });
+        }
+        if let Some(ref_id) = missing_ref_id {
+            return Err(SpecShakingError::MissingReferencedSpecEntry {
+                spec_id,
+                entry: entry_description,
+                type_name: expected_name,
+                ref_id,
+                ref_spec_id: spec_id_hex(ref_id),
             });
         }
         return Err(SpecShakingError::MissingGraphReference {

@@ -46,12 +46,12 @@ impl FromMeta for DataFormat {
     }
 }
 
-impl Into<ScSpecEventDataFormat> for DataFormat {
-    fn into(self) -> ScSpecEventDataFormat {
-        match self {
-            Self::SingleValue => ScSpecEventDataFormat::SingleValue,
-            Self::Vec => ScSpecEventDataFormat::Vec,
-            Self::Map => ScSpecEventDataFormat::Map,
+impl From<DataFormat> for ScSpecEventDataFormat {
+    fn from(data_format: DataFormat) -> Self {
+        match data_format {
+            DataFormat::SingleValue => ScSpecEventDataFormat::SingleValue,
+            DataFormat::Vec => ScSpecEventDataFormat::Vec,
+            DataFormat::Map => ScSpecEventDataFormat::Map,
         }
     }
 }
@@ -201,7 +201,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         "__SPEC_XDR_EVENT_{}",
         input.ident.unraw().to_string().to_uppercase()
     );
-    let spec_shaking_call = if export && cfg!(feature = "experimental_spec_shaking_v2") {
+    let spec_shaking_marker = if export && cfg!(feature = "experimental_spec_shaking_v2") {
         Some(shaking::generate_marker_block(&spec_xdr))
     } else {
         None
@@ -336,7 +336,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
 
         impl #gen_impl #ident #gen_types #gen_where {
             pub fn publish(&self, env: &#path::Env) {
-                #spec_shaking_call
+                #spec_shaking_marker
                 <_ as #path::Event>::publish(self, env);
             }
         }
