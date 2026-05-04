@@ -23671,51 +23671,6 @@ pub static __SPEC_GRAPH_FN_CONTRACT_WITH_PANIC_RAW_ERROR: [u8; 42usize] =
     );
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_panic_error__spec {
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_WITH_PANIC_ERROR: [u8; 52usize] =
-        super::Contract::spec_xdr_with_panic_error();
-}
-impl Contract {
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_panic_error() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x10with_panic_error\0\0\0\x01\0\0\0\0\0\0\0\x04fail\0\0\0\x01\0\0\0\0"
-    }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub mod __Contract__with_assert_error__spec {
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_WITH_ASSERT_ERROR: [u8; 56usize] =
-        super::Contract::spec_xdr_with_assert_error();
-}
-impl Contract {
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_assert_error() -> [u8; 56usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x11with_assert_error\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02ok\0\0\0\0\0\x01\0\0\0\0"
-    }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub mod __Contract__with_panic_raw_error__spec {
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_WITH_PANIC_RAW_ERROR: [u8; 56usize] =
-        super::Contract::spec_xdr_with_panic_raw_error();
-}
-impl Contract {
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_panic_raw_error() -> [u8; 56usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x14with_panic_raw_error\0\0\0\x01\0\0\0\0\0\0\0\x04fail\0\0\0\x01\0\0\0\0"
-    }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
 pub mod __Contract__with_vec__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
@@ -27789,37 +27744,6 @@ mod test {
                 }
             }
         }
-        let check_auth = filtered
-            .iter()
-            .find_map(|e| match e {
-                ScSpecEntry::FunctionV0(f) if f.name.to_utf8_string_lossy() == "__check_auth" => {
-                    Some(f)
-                }
-                _ => None,
-            })
-            .expect("__check_auth should be present");
-        let auth_contexts = check_auth
-            .inputs
-            .iter()
-            .find(|input| input.name.to_utf8_string_lossy() == "auth_contexts")
-            .expect("__check_auth auth_contexts input should be present");
-        if !#[allow(non_exhaustive_omitted_patterns)]
-        match &auth_contexts.type_ {
-            ScSpecTypeDef::Vec(vec)
-                if #[allow(non_exhaustive_omitted_patterns)]
-                match &*vec.element_type {
-                    ScSpecTypeDef::Udt(udt) if udt.name.to_utf8_string_lossy() == "Context" => true,
-                    _ => false,
-                } =>
-            {
-                true
-            }
-            _ => false,
-        } {
-            ::core::panicking::panic(
-                "assertion failed: matches!(&auth_contexts.type_, ScSpecTypeDef::Vec(vec) if\n    matches!(&*vec.element_type, ScSpecTypeDef::Udt(udt) if\n    udt.name.to_utf8_string_lossy() == \"Context\"))",
-            )
-        }
         let used = [
             "UsedConstructorMeta",
             "Context",
@@ -27893,6 +27817,19 @@ mod test {
             {
                 ::core::panicking::panic_fmt(format_args!(
                     "SDK auth Context should be retained as a reachable contract spec UDT",
+                ));
+            }
+        }
+        if !filtered.iter().any(|e| {
+            #[allow(non_exhaustive_omitted_patterns)]
+            match e {
+                ScSpecEntry::UdtStructV0(s) if s.name.to_utf8_string_lossy() == "Context" => true,
+                _ => false,
+            }
+        }) {
+            {
+                ::core::panicking::panic_fmt(format_args!(
+                    "User-defined Context should be retained as a reachable contract spec UDT",
                 ));
             }
         }

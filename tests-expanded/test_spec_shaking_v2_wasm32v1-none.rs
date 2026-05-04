@@ -9481,54 +9481,6 @@ pub static __SPEC_GRAPH_FN_CONTRACT_WITH_PANIC_RAW_ERROR: [u8; 42usize] =
     );
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_panic_error__spec {
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(non_upper_case_globals)]
-    #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_PANIC_ERROR: [u8; 52usize] =
-        super::Contract::spec_xdr_with_panic_error();
-}
-impl Contract {
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_panic_error() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x10with_panic_error\0\0\0\x01\0\0\0\0\0\0\0\x04fail\0\0\0\x01\0\0\0\0"
-    }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub mod __Contract__with_assert_error__spec {
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(non_upper_case_globals)]
-    #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_ASSERT_ERROR: [u8; 56usize] =
-        super::Contract::spec_xdr_with_assert_error();
-}
-impl Contract {
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_assert_error() -> [u8; 56usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x11with_assert_error\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02ok\0\0\0\0\0\x01\0\0\0\0"
-    }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub mod __Contract__with_panic_raw_error__spec {
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(non_upper_case_globals)]
-    #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_PANIC_RAW_ERROR: [u8; 56usize] =
-        super::Contract::spec_xdr_with_panic_raw_error();
-}
-impl Contract {
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_panic_raw_error() -> [u8; 56usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x14with_panic_raw_error\0\0\0\x01\0\0\0\0\0\0\0\x04fail\0\0\0\x01\0\0\0\0"
-    }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
 pub mod __Contract__with_vec__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]

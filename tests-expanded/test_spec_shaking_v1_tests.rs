@@ -26485,6 +26485,8 @@ mod test {
             "with_non_pub_error",
             "with_tuple",
             "with_tuple_return",
+            "__check_auth",
+            "__constructor",
         ] {
             if !fn_names.contains(&expected_fn.into()) {
                 {
@@ -26530,6 +26532,7 @@ mod test {
             "UnusedEnum",
             "UnusedIntEnum",
             "UnusedEvent",
+            "Context",
         ];
         for name in pub_types {
             if !all_names.contains(name) {
@@ -26587,6 +26590,38 @@ mod test {
                         ),
                     );
                 }
+            }
+        }
+        let sdk_types = [
+            "Executable",
+            "InvokerContractAuthEntry",
+            "SubContractInvocation",
+            "ContractContext",
+            "CreateContractHostFnContext",
+            "CreateContractWithConstructorHostFnContext",
+            "ContractExecutable",
+        ];
+        for name in sdk_types {
+            if !!all_names.contains(name) {
+                {
+                    ::core::panicking::panic_fmt(format_args!(
+                        "sdk contract type {0} should NOT have a spec entry",
+                        name,
+                    ));
+                }
+            }
+        }
+        if !entries.iter().any(|e| {
+            #[allow(non_exhaustive_omitted_patterns)]
+            match e {
+                ScSpecEntry::UdtStructV0(s) if s.name.to_utf8_string_lossy() == "Context" => true,
+                _ => false,
+            }
+        }) {
+            {
+                ::core::panicking::panic_fmt(format_args!(
+                    "User-defined Context should be retained as a reachable contract spec UDT",
+                ));
             }
         }
     }
