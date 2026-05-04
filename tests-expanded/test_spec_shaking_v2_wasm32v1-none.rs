@@ -5,8 +5,8 @@ extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
 use soroban_sdk::{
-    assert_with_error, contract, contracterror, contractevent, contractimpl, contracttype,
-    panic_with_error, Env, Map, Symbol, Vec,
+    assert_with_error, auth::CustomAccountInterface, contract, contracterror, contractevent,
+    contractimpl, contracttype, crypto::Hash, panic_with_error, Env, Map, Symbol, Vec,
 };
 pub struct Contract;
 ///ContractArgs is a type for building arg lists for functions defined in "Contract".
@@ -790,6 +790,186 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedErrorEnum> for soroban_sdk::
         val: &&UsedErrorEnum,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedErrorEnum>>::try_from_val(env, *val)
+    }
+}
+pub enum UsedAuthErrorEnum {
+    NotFound = 1,
+    Invalid = 2,
+}
+#[automatically_derived]
+impl ::core::marker::Copy for UsedAuthErrorEnum {}
+#[automatically_derived]
+impl ::core::clone::Clone for UsedAuthErrorEnum {
+    #[inline]
+    fn clone(&self) -> UsedAuthErrorEnum {
+        *self
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UsedAuthErrorEnum {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::write_str(
+            f,
+            match self {
+                UsedAuthErrorEnum::NotFound => "NotFound",
+                UsedAuthErrorEnum::Invalid => "Invalid",
+            },
+        )
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UsedAuthErrorEnum {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {}
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UsedAuthErrorEnum {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UsedAuthErrorEnum {
+    #[inline]
+    fn eq(&self, other: &UsedAuthErrorEnum) -> bool {
+        let __self_discr = ::core::intrinsics::discriminant_value(self);
+        let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+        __self_discr == __arg1_discr
+    }
+}
+#[link_section = "contractspecv0"]
+pub static __SPEC_XDR_TYPE_USEDAUTHERRORENUM: [u8; 80usize] = UsedAuthErrorEnum::spec_xdr();
+impl UsedAuthErrorEnum {
+    pub const fn spec_xdr() -> [u8; 80usize] {
+        *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x11UsedAuthErrorEnum\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x08NotFound\0\0\0\x01\0\0\0\0\0\0\0\x07Invalid\0\0\0\0\x02"
+    }
+}
+impl soroban_sdk::spec_shaking::SpecTypeId for UsedAuthErrorEnum {
+    const SPEC_TYPE_ID: [u8; 32] =
+        *b"=V\x92A(\x981\x88\xf58\xbe\x9e5*+\xf5>J\x9c\x88&\x1a\xd7\x86S\xdc\xf8\xffz'\xf5\xd3";
+}
+impl soroban_sdk::spec_shaking::SpecShakingMarker for UsedAuthErrorEnum {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1=V\x92A(\x981\x88";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_TYPE_USEDAUTHERRORENUM: [u8; 42usize] =
+    soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+        2,
+        *b"=V\x92A(\x981\x88\xf58\xbe\x9e5*+\xf5>J\x9c\x88&\x1a\xd7\x86S\xdc\xf8\xffz'\xf5\xd3",
+        [],
+    );
+impl TryFrom<soroban_sdk::Error> for UsedAuthErrorEnum {
+    type Error = soroban_sdk::Error;
+    #[inline(always)]
+    fn try_from(error: soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
+        if error.is_type(soroban_sdk::xdr::ScErrorType::Contract) {
+            let discriminant = error.get_code();
+            Ok(match discriminant {
+                1u32 => Self::NotFound,
+                2u32 => Self::Invalid,
+                _ => return Err(error),
+            })
+        } else {
+            Err(error)
+        }
+    }
+}
+impl TryFrom<&soroban_sdk::Error> for UsedAuthErrorEnum {
+    type Error = soroban_sdk::Error;
+    #[inline(always)]
+    fn try_from(error: &soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
+        <_ as TryFrom<soroban_sdk::Error>>::try_from(*error)
+    }
+}
+impl From<UsedAuthErrorEnum> for soroban_sdk::Error {
+    #[inline(always)]
+    fn from(val: UsedAuthErrorEnum) -> soroban_sdk::Error {
+        <_ as From<&UsedAuthErrorEnum>>::from(&val)
+    }
+}
+impl From<&UsedAuthErrorEnum> for soroban_sdk::Error {
+    #[inline(always)]
+    fn from(val: &UsedAuthErrorEnum) -> soroban_sdk::Error {
+        match val {
+            UsedAuthErrorEnum::NotFound => soroban_sdk::Error::from_contract_error(1u32),
+            UsedAuthErrorEnum::Invalid => soroban_sdk::Error::from_contract_error(2u32),
+        }
+    }
+}
+impl TryFrom<soroban_sdk::InvokeError> for UsedAuthErrorEnum {
+    type Error = soroban_sdk::InvokeError;
+    #[inline(always)]
+    fn try_from(error: soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
+        match error {
+            soroban_sdk::InvokeError::Abort => Err(error),
+            soroban_sdk::InvokeError::Contract(code) => Ok(match code {
+                1u32 => Self::NotFound,
+                2u32 => Self::Invalid,
+                _ => return Err(error),
+            }),
+        }
+    }
+}
+impl TryFrom<&soroban_sdk::InvokeError> for UsedAuthErrorEnum {
+    type Error = soroban_sdk::InvokeError;
+    #[inline(always)]
+    fn try_from(error: &soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
+        <_ as TryFrom<soroban_sdk::InvokeError>>::try_from(*error)
+    }
+}
+impl From<UsedAuthErrorEnum> for soroban_sdk::InvokeError {
+    #[inline(always)]
+    fn from(val: UsedAuthErrorEnum) -> soroban_sdk::InvokeError {
+        <_ as From<&UsedAuthErrorEnum>>::from(&val)
+    }
+}
+impl From<&UsedAuthErrorEnum> for soroban_sdk::InvokeError {
+    #[inline(always)]
+    fn from(val: &UsedAuthErrorEnum) -> soroban_sdk::InvokeError {
+        match val {
+            UsedAuthErrorEnum::NotFound => soroban_sdk::InvokeError::Contract(1u32),
+            UsedAuthErrorEnum::Invalid => soroban_sdk::InvokeError::Contract(2u32),
+        }
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedAuthErrorEnum {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::TryIntoVal;
+        let error: soroban_sdk::Error = val.try_into_val(env)?;
+        error.try_into().map_err(|_| soroban_sdk::ConversionError)
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedAuthErrorEnum> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UsedAuthErrorEnum,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        let error: soroban_sdk::Error = val.into();
+        Ok(error.into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedAuthErrorEnum> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UsedAuthErrorEnum,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedAuthErrorEnum>>::try_from_val(env, *val)
     }
 }
 pub enum UsedPanicErrorEnum {
@@ -1918,6 +2098,114 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedResultOk> for soroban_sdk::V
         val: &&UsedResultOk,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedResultOk>>::try_from_val(env, *val)
+    }
+}
+pub struct CustomSignature {
+    pub nonce: u32,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for CustomSignature {
+    #[inline]
+    fn clone(&self) -> CustomSignature {
+        CustomSignature {
+            nonce: ::core::clone::Clone::clone(&self.nonce),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for CustomSignature {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field1_finish(
+            f,
+            "CustomSignature",
+            "nonce",
+            &&self.nonce,
+        )
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for CustomSignature {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<u32>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for CustomSignature {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for CustomSignature {
+    #[inline]
+    fn eq(&self, other: &CustomSignature) -> bool {
+        self.nonce == other.nonce
+    }
+}
+#[link_section = "contractspecv0"]
+pub static __SPEC_XDR_TYPE_CUSTOMSIGNATURE: [u8; 56usize] = CustomSignature::spec_xdr();
+impl CustomSignature {
+    pub const fn spec_xdr() -> [u8; 56usize] {
+        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0fCustomSignature\0\0\0\0\x01\0\0\0\0\0\0\0\x05nonce\0\0\0\0\0\0\x04"
+    }
+}
+impl soroban_sdk::spec_shaking::SpecTypeId for CustomSignature {
+    const SPEC_TYPE_ID: [u8; 32] = *b"6\xb3\x0f\xc2\xa9\r\x8a\xe1\xb2\xd9\x87Gc\x0ed\x89\xe7i\\\xef\x88\x07\xfc\"\xd8\x10\x97*$\xbc]&";
+}
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_TYPE_CUSTOMSIGNATURE: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
+    42usize,
+    0usize,
+>(
+    2,
+    *b"6\xb3\x0f\xc2\xa9\r\x8a\xe1\xb2\xd9\x87Gc\x0ed\x89\xe7i\\\xef\x88\x07\xfc\"\xd8\x10\x97*$\xbc]&",
+    [],
+);
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for CustomSignature {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["nonce"];
+        let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
+        let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+            .map_err(|_| ConversionError)?;
+        Ok(Self {
+            nonce: vals[0]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, CustomSignature> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &CustomSignature,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["nonce"];
+        let vals: [Val; 1usize] = [(&val.nonce)
+            .try_into_val(env)
+            .map_err(|_| ConversionError)?];
+        Ok(env
+            .map_new_from_slices(&KEYS, &vals)
+            .map_err(|_| ConversionError)?
+            .into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &CustomSignature> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&CustomSignature,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, CustomSignature>>::try_from_val(env, *val)
     }
 }
 pub struct UsedEventSimple {
@@ -11168,6 +11456,109 @@ pub fn __Contract__publish_ref_event__invoke_raw(env: soroban_sdk::Env) -> sorob
 pub extern "C" fn __Contract__publish_ref_event__invoke_raw_extern() -> soroban_sdk::Val {
     #[allow(deprecated)]
     __Contract__publish_ref_event__invoke_raw(soroban_sdk::Env::default())
+}
+impl CustomAccountInterface for Contract {
+    type Error = UsedAuthErrorEnum;
+    type Signature = CustomSignature;
+    fn __check_auth(
+        _env: Env,
+        _signature_payload: Hash<32>,
+        _signatures: Self::Signature,
+        _auth_contexts: Vec<soroban_sdk::auth::Context>,
+    ) -> Result<(), UsedAuthErrorEnum> {
+        Ok(())
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract____check_auth__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_FN___CHECK_AUTH: [u8; 192usize] =
+        super::Contract::spec_xdr___check_auth();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr___check_auth() -> [u8; 192usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x0c__check_auth\0\0\0\x03\0\0\0\0\0\0\0\x11signature_payload\0\0\0\0\0\x03\xee\0\0\0 \0\0\0\0\0\0\0\nsignatures\0\0\0\0\x07\xd0\0\0\0\x0fCustomSignature\0\0\0\0\0\0\0\0\rauth_contexts\0\0\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x07Context\0\0\0\0\x01\0\0\x03\xe9\0\0\0\x02\0\0\x07\xd0\0\0\0\x11UsedAuthErrorEnum\0\0\0"
+    }
+}
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT___CHECK_AUTH: [u8; 138usize] =
+    soroban_sdk::spec_shaking::encode_graph_record::<138usize, 3usize>(
+        0,
+        *b"d0\x1d$\nPH\x95\xf0\xbc\xe3\xae\xb2\xd6QK\xe9\x92\xc4\xf3$S\xb9\xff\xd9\xafR4JZ\x9c\x83",
+        [
+            <CustomSignature as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID,
+            <soroban_sdk::auth::Context as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID,
+            <UsedAuthErrorEnum as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID,
+        ],
+    );
+impl<'a> ContractClient<'a> {}
+impl ContractArgs {
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn __check_auth<'i>(
+        _signature_payload: &'i Hash<32>,
+        _signatures: &'i CustomSignature,
+        _auth_contexts: &'i Vec<soroban_sdk::auth::Context>,
+    ) -> (
+        &'i Hash<32>,
+        &'i CustomSignature,
+        &'i Vec<soroban_sdk::auth::Context>,
+    ) {
+        (_signature_payload, _signatures, _auth_contexts)
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).__check_auth` instead")]
+#[allow(deprecated)]
+pub fn __Contract____check_auth__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+    arg_2: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract as CustomAccountInterface>::__check_auth(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_1),
+            ),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_2),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).__check_auth` instead")]
+#[export_name = "__check_auth"]
+pub extern "C" fn __Contract____check_auth__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+    arg_2: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract____check_auth__invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1, arg_2)
 }
 #[allow(dead_code)]
 fn non_contract_fn(_s: UnusedNonContractFnParam) -> UnusedNonContractFnReturn {
