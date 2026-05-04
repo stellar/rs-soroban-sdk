@@ -126,17 +126,19 @@ pub enum SpecShakingError {
         entry: String,
         type_name: String,
     },
-    #[error("graph reference from {entry} to unknown spec id {ref_spec_id} does not match any spec entry")]
+    #[error("graph reference from {entry} to UDT {type_name} has unknown spec id {ref_spec_id} and does not match any spec entry")]
     MissingReferencedSpecEntry {
         spec_id: SpecId,
         entry: String,
+        type_name: String,
         ref_id: SpecId,
         ref_spec_id: String,
     },
-    #[error("graph reference from {entry} to {ref_entry} does not point to a UDT spec entry")]
+    #[error("graph reference from {entry} to UDT {type_name} resolved to {ref_entry}, which is not a UDT spec entry")]
     ReferencedSpecEntryNotUdt {
         spec_id: SpecId,
         entry: String,
+        type_name: String,
         ref_id: SpecId,
         ref_entry: String,
     },
@@ -448,45 +450,59 @@ fn add_graph_refs(
         });
     }
 
-    for ref_id in record.refs.iter().copied() {
-        if !entry_indexes_by_id.contains_key(&ref_id) {
+    let mut matched_ref_ids = HashSet::<SpecId>::new();
+    for expected_name in expected_names {
+        let mut matched = false;
+        let mut missing_ref_id = None;
+        let mut non_udt_ref = None;
+        for ref_id in record.refs.iter().copied() {
+            if let Some(names) = udt_names_by_id.get(&ref_id) {
+                if names.contains(&expected_name) {
+                    matched_ref_ids.insert(ref_id);
+                    matched = true;
+                    break;
+                }
+            } else if !entry_indexes_by_id.contains_key(&ref_id) {
+                missing_ref_id.get_or_insert(ref_id);
+            } else if non_udt_ref.is_none() {
+                let ref_entry = entry_descriptions_by_id
+                    .get(&ref_id)
+                    .cloned()
+                    .expect("referenced spec entry should have a description");
+                non_udt_ref = Some((ref_id, ref_entry));
+            }
+        }
+        if matched {
+            continue;
+        }
+        if let Some(ref_id) = missing_ref_id {
             return Err(SpecShakingError::MissingReferencedSpecEntry {
                 spec_id,
                 entry: entry_description,
+                type_name: expected_name,
                 ref_id,
                 ref_spec_id: spec_id_hex(ref_id),
             });
         }
-        if !udt_names_by_id.contains_key(&ref_id) {
-            let ref_entry = entry_descriptions_by_id
-                .get(&ref_id)
-                .cloned()
-                .expect("referenced spec entry should have a description");
+        if let Some((ref_id, ref_entry)) = non_udt_ref {
             return Err(SpecShakingError::ReferencedSpecEntryNotUdt {
                 spec_id,
                 entry: entry_description,
+                type_name: expected_name,
                 ref_id,
                 ref_entry,
             });
         }
-    }
-
-    for expected_name in expected_names {
-        let has_ref = record.refs.iter().any(|ref_id| {
-            udt_names_by_id
-                .get(ref_id)
-                .is_some_and(|names| names.contains(&expected_name))
+        return Err(SpecShakingError::MissingGraphReference {
+            spec_id,
+            entry: entry_description,
+            type_name: expected_name,
         });
-        if !has_ref {
-            return Err(SpecShakingError::MissingGraphReference {
-                spec_id,
-                entry: entry_description,
-                type_name: expected_name,
-            });
-        }
     }
 
-    pending_spec_ids.extend(record.refs.iter().copied());
+    // Only traverse refs that satisfied an expected UDT name. Extra graph refs are tolerated and
+    // intentionally not rooted because reachability is defined by public spec coverage.
+    pending_spec_ids.extend(matched_ref_ids);
     Ok(())
 }
 
@@ -975,8 +991,8 @@ mod tests {
     #[test]
     fn test_filter_rejects_missing_referenced_spec_entry() {
         let foo = make_function("foo", vec![udt("Hidden")]);
-        // This mirrors a reachable boundary UDT with `export = false`: the macro can refer to
-        // the exact type ID, but no matching UDT entry is exported in contractspecv0.
+        // This mirrors a malformed graph record that refers to an exact type ID without a
+        // matching exported UDT entry in contractspecv0.
         let hidden = make_struct("Hidden", vec![("field", ScSpecTypeDef::U32)]);
         let hidden_id = generate_spec_id_for_entry(&hidden);
         let graph = SpecGraph::from_records([(&foo, SpecGraphEntryKind::Function, vec![&hidden])]);
@@ -988,9 +1004,9 @@ mod tests {
 
         assert!(err
             .to_string()
-            .starts_with("graph reference from function foo to unknown spec id"));
+            .starts_with("graph reference from function foo to UDT Hidden has unknown spec id"));
         assert!(
-            matches!(&err, SpecShakingError::MissingReferencedSpecEntry { entry, ref_id, .. } if entry == "function foo" && ref_id == &hidden_id)
+            matches!(&err, SpecShakingError::MissingReferencedSpecEntry { entry, type_name, ref_id, .. } if entry == "function foo" && type_name == "Hidden" && ref_id == &hidden_id)
         );
     }
 
@@ -1008,10 +1024,10 @@ mod tests {
 
         assert_eq!(
             err.to_string(),
-            "graph reference from function foo to function bar does not point to a UDT spec entry"
+            "graph reference from function foo to UDT Input resolved to function bar, which is not a UDT spec entry"
         );
         assert!(
-            matches!(&err, SpecShakingError::ReferencedSpecEntryNotUdt { entry, ref_entry, .. } if entry == "function foo" && ref_entry == "function bar")
+            matches!(&err, SpecShakingError::ReferencedSpecEntryNotUdt { entry, type_name, ref_entry, .. } if entry == "function foo" && type_name == "Input" && ref_entry == "function bar")
         );
     }
 
