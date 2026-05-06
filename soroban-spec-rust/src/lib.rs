@@ -200,6 +200,12 @@ mod test {
 #[soroban_sdk::contractclient(name = "Client")]
 pub trait Contract {
     fn add(env: soroban_sdk::Env, a: UdtEnum, b: UdtEnum) -> i64;
+    fn recursive(env: soroban_sdk::Env, a: UdtRecursive) -> Option<UdtRecursive>;
+    fn recursive_enum(
+        env: soroban_sdk::Env,
+        a: RecursiveEnum,
+        key: u32,
+    ) -> Result<Option<RecursiveEnum>, soroban_sdk::Error>;
 }
 #[soroban_sdk::contracttype(export = false)]
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
@@ -213,11 +219,29 @@ pub struct UdtStruct {
 }
 #[soroban_sdk::contracttype(export = false)]
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub struct UdtRecursive {
+    pub a: soroban_sdk::Symbol,
+    pub b: soroban_sdk::Vec<UdtRecursive>,
+}
+#[soroban_sdk::contracttype(export = false)]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub struct RecursiveToEnum {
+    pub a: soroban_sdk::Symbol,
+    pub b: soroban_sdk::Map<u32, RecursiveEnum>,
+}
+#[soroban_sdk::contracttype(export = false)]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub enum UdtEnum {
     UdtA,
     UdtB(UdtStruct),
     UdtC(UdtEnum2),
     UdtD(UdtTuple),
+}
+#[soroban_sdk::contracttype(export = false)]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub enum RecursiveEnum {
+    NotRecursive,
+    Recursive(RecursiveToEnum),
 }
 #[soroban_sdk::contracttype(export = false)]
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
