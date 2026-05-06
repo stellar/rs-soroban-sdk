@@ -49,8 +49,9 @@ pub trait SpecShakingMarker {
 /// byte statics alive (see `soroban-sdk-macros/src/shaking.rs`).
 #[doc(hidden)]
 #[inline(always)]
-fn keep_reachable(f: fn()) {
-    let _ = unsafe { core::ptr::read_volatile(&f) };
+fn keep_reachable(_f: fn()) {
+    #[cfg(target_family = "wasm")]
+    let _ = unsafe { core::ptr::read_volatile(&_f) };
 }
 
 // Primitive type implementations (no-op)
