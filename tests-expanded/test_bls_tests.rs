@@ -22,17 +22,18 @@ impl DummyProof {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\nDummyProof\0\0\0\0\0\x05\0\0\0\0\0\0\0\x02fp\0\0\0\0\x03\xee\0\0\00\0\0\0\0\0\0\0\x03fp2\0\0\0\x03\xee\0\0\0`\0\0\0\0\0\0\0\x02fr\0\0\0\0\0\x0c\0\0\0\0\0\0\0\x02g1\0\0\0\0\x03\xee\0\0\0`\0\0\0\0\0\0\0\x02g2\0\0\0\0\x03\xee\0\0\0\xc0"
     }
 }
-impl soroban_sdk::SpecShakingMarker for DummyProof {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <Bls12381Fp as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Bls12381Fp2 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Bls12381Fr as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Bls12381G1Affine as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Bls12381G2Affine as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-    }
+impl soroban_sdk::spec_shaking::SpecTypeId for DummyProof {
+    const SPEC_TYPE_ID: [u8; 32] = *b"\x85W\0A\xdc~\xb7\"pt\xb6\xb4\x08\x9f\x17\xa7\xb3\xb0\xdf1\xfe\xd6\xc3\xbe]\xce\xe2,\xc0\x95\xa2\xc0";
 }
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_TYPE_DUMMYPROOF: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
+    42usize,
+    0usize,
+>(
+    2,
+    *b"\x85W\0A\xdc~\xb7\"pt\xb6\xb4\x08\x9f\x17\xa7\xb3\xb0\xdf1\xfe\xd6\xc3\xbe]\xce\xe2,\xc0\x95\xa2\xc0",
+    [],
+);
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for DummyProof {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
@@ -752,6 +753,15 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x06g1_mul\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01p\0\0\0\0\0\x03\xee\0\0\0`\0\0\0\0\0\0\0\x01s\0\0\0\0\0\0\x0c\0\0\0\x01\0\0\x03\xee\0\0\0`"
     }
 }
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_G1_MUL: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
+    42usize,
+    0usize,
+>(
+    0,
+    *b"\x1a\xaa\xb3\xc2\x90~\x9f\xa9\x1b\xc8\xd5(\xdd%D\xf6\xaf6c}QT\xfe\x0f\xc1\xafO\r\x8e\x1c\xd0\xfb",
+    [],
+);
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__g2_mul__spec {
@@ -766,6 +776,15 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x06g2_mul\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01p\0\0\0\0\0\x03\xee\0\0\0\xc0\0\0\0\0\0\0\0\x01s\0\0\0\0\0\0\x0c\0\0\0\x01\0\0\x03\xee\0\0\0\xc0"
     }
 }
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_G2_MUL: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
+    42usize,
+    0usize,
+>(
+    0,
+    *b"\xbf\x0fjK\xa3\t\x1f\xc8|\xb7\xb8{:2\xa78\x1a\x18\x89\xc4a\xabm!R\x93\x14\x8b\xb7v\x8f\xe1",
+    [],
+);
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__dummy_verify__spec {
@@ -780,6 +799,15 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0cdummy_verify\0\0\0\x01\0\0\0\0\0\0\0\x05proof\0\0\0\0\0\x07\xd0\0\0\0\nDummyProof\0\0\0\0\0\x01\0\0\0\x01"
     }
 }
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_DUMMY_VERIFY: [u8; 74usize] = soroban_sdk::spec_shaking::encode_graph_record::<
+    74usize,
+    1usize,
+>(
+    0,
+    *b"\x94q\xb5i\x852\x1fZM0\x8f\xb3\xfaF\xf6J\xf3\xaa\x1e\xeer\x87\xa1\xd6\x89\xae\xb5\xdf\x15U@\xfe",
+    [<DummyProof as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID],
+);
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__fr_vec_get__spec {
@@ -794,6 +822,13 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\nfr_vec_get\0\0\0\0\0\x02\0\0\0\0\0\0\0\x06values\0\0\0\0\x03\xea\0\0\0\x0c\0\0\0\0\0\0\0\x05index\0\0\0\0\0\0\x04\0\0\0\x01\0\0\0\x0c"
     }
 }
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_FR_VEC_GET: [u8; 42usize] =
+    soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+        0,
+        *b"\xefy\x1dH\xc0j@N\xca\x03J\x07yA&=\x12\x9ff\xaa\\:\xb8HF\x93[\x06\xeef]\x84",
+        [],
+    );
 impl<'a> ContractClient<'a> {
     pub fn g1_mul(&self, p: &Bls12381G1Affine, s: &Bls12381Fr) -> Bls12381G1Affine {
         use core::ops::Not;

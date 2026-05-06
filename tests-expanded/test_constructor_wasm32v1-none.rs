@@ -36,17 +36,19 @@ impl DataKey {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x07DataKey\0\0\0\0\x03\0\0\0\x01\0\0\0\0\0\0\0\nPersistent\0\0\0\0\0\x01\0\0\0\x04\0\0\0\x01\0\0\0\0\0\0\0\x04Temp\0\0\0\x01\0\0\0\x04\0\0\0\x01\0\0\0\0\0\0\0\x08Instance\0\0\0\x01\0\0\0\x04"
     }
 }
-impl soroban_sdk::SpecShakingMarker for DataKey {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x14\x94}~\xec\x15\x94\x84";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
-    }
+impl soroban_sdk::spec_shaking::SpecTypeId for DataKey {
+    const SPEC_TYPE_ID: [u8; 32] = *b"\x14\x94}~\xec\x15\x94\x84\xa9\xeb\xe4{6pmG_RP\xb5I\xaf\x83\xfe\x13\xf9%d\xed\x80\x08\x8f";
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_TYPE_DATAKEY: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
+    42usize,
+    0usize,
+>(
+    2,
+    *b"\x14\x94}~\xec\x15\x94\x84\xa9\xeb\xe4{6pmG_RP\xb5I\xaf\x83\xfe\x13\xf9%d\xed\x80\x08\x8f",
+    [],
+);
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for DataKey {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -180,6 +182,14 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\r__constructor\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x08init_key\0\0\0\x04\0\0\0\0\0\0\0\ninit_value\0\0\0\0\0\x07\0\0\0\0"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT___CONSTRUCTOR: [u8; 42usize] =
+    soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+        0,
+        *b"\xd7\xe3\xea\xaf?P\xf2_&\xa2=8B\xbf\x8enr\xd80\xaf\x051\"_\xc7Z\xde3\xa6k\x11\xdb",
+        [],
+    );
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__get_data__spec {
@@ -195,6 +205,16 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x08get_data\0\0\0\x01\0\0\0\0\0\0\0\x03key\0\0\0\x07\xd0\0\0\0\x07DataKey\0\0\0\0\x01\0\0\x03\xe8\0\0\0\x07"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_GET_DATA: [u8; 74usize] = soroban_sdk::spec_shaking::encode_graph_record::<
+    74usize,
+    1usize,
+>(
+    0,
+    *b"\xd1\xaa_\xdb\x070x\xa1~~k\xa3y\xc70\xe5\xd8u^Gi\xf0\\\xb4\xc7\x89\xa1\x7f\xb5\xe2\x1c\x16",
+    [<DataKey as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID],
+);
 impl<'a> ContractClient<'a> {
     pub fn get_data(&self, key: &DataKey) -> Option<i64> {
         use core::ops::Not;

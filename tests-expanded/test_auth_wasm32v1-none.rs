@@ -45,6 +45,16 @@ impl ContractA {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x03fn1\0\0\0\0\x01\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x13\0\0\0\x01\0\0\0\x06"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACTA_FN1: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
+    42usize,
+    0usize,
+>(
+    0,
+    *b"U#\xb4\xa8;\n\xa3\x17\x06\x11\xa7P\x8dz\x1a4\x12\xd0\xde\xa4y\xa3\xc1VQ\x94G\x01\xd5\x14|(",
+    [],
+);
 impl<'a> ContractAClient<'a> {
     pub fn fn1(&self, a: &Address) -> u64 {
         use core::ops::Not;
@@ -156,6 +166,16 @@ impl ContractB {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x03fn2\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x13\0\0\0\0\0\0\0\x03sub\0\0\0\0\x13\0\0\0\x01\0\0\0\x06"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACTB_FN2: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
+    42usize,
+    0usize,
+>(
+    0,
+    *b"\x9e\x03\x9b\x84@\xae\x95\xa0\xb5\x02h`(l\xc1\xde\x0bf\xce}\x9d\x04\xba\xffL\xad\x99}m\x9cmI",
+    [],
+);
 impl<'a> ContractBClient<'a> {
     pub fn fn2(&self, a: &Address, sub: &Address) -> u64 {
         use core::ops::Not;

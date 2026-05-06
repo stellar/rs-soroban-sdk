@@ -57,7 +57,10 @@ impl Error {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x05Error\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04Fail\0\0\0\x01"
     }
 }
-impl soroban_sdk::SpecShakingMarker for Error {
+impl soroban_sdk::spec_shaking::SpecTypeId for Error {
+    const SPEC_TYPE_ID: [u8; 32] = *b"\xa8\x1f\xc4#\x9c\x8f\xeb\x88\xeb \xbbr!pt\x83\xce\xbdLr\"\xde\xe9\xc0\x04\xae\xb1\xf5\xa6dr\x8a";
+}
+impl soroban_sdk::spec_shaking::SpecShakingMarker for Error {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
@@ -67,6 +70,16 @@ impl soroban_sdk::SpecShakingMarker for Error {
         }
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_TYPE_ERROR: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
+    42usize,
+    0usize,
+>(
+    2,
+    *b"\xa8\x1f\xc4#\x9c\x8f\xeb\x88\xeb \xbbr!pt\x83\xce\xbdLr\"\xde\xe9\xc0\x04\xae\xb1\xf5\xa6dr\x8a",
+    [],
+);
 impl TryFrom<soroban_sdk::Error> for Error {
     type Error = soroban_sdk::Error;
     #[inline(always)]
@@ -221,6 +234,16 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0c__check_auth\0\0\0\x03\0\0\0\0\0\0\0\x11signature_payload\0\0\0\0\0\x03\xee\0\0\0 \0\0\0\0\0\0\0\nsignatures\0\0\0\0\0\x02\0\0\0\0\0\0\0\rauth_contexts\0\0\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x07Context\0\0\0\0\x01\0\0\x03\xe9\0\0\0\x02\0\0\0\x03"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT___CHECK_AUTH: [u8; 74usize] = soroban_sdk::spec_shaking::encode_graph_record::<
+    74usize,
+    1usize,
+>(
+    0,
+    *b",\x10\xd9\xc4i\xd1;\xac\xbd\x1c\xeaT.\xc8$\xf0@\0\xd4/\xca\x1c\xa2I\x86\x88\xb5|]A\xb3\x1e",
+    [<Context as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID],
+);
 impl<'a> ContractClient<'a> {}
 impl ContractArgs {
     #[inline(always)]

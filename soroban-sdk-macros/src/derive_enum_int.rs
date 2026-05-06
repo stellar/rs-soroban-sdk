@@ -68,21 +68,24 @@ pub fn derive_type_enum_int(
         return quote! { #(#compile_errors)* };
     }
 
-    // Compute spec XDR once if spec is enabled.
-    let spec_xdr = if spec {
-        let spec_entry = ScSpecEntry::UdtEnumV0(ScSpecUdtEnumV0 {
-            doc: docs_from_attrs(attrs),
-            lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
-            name: enum_ident.unraw().to_string().try_into().unwrap(),
-            cases: spec_cases.try_into().unwrap(),
-        });
-        Some(spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap())
+    // Compute spec XDR once. Spec shaking v2 emits SpecTypeId even for
+    // `export = false` types so graph records can be built without exporting
+    // those types to `contractspecv0`.
+    let spec_entry = ScSpecEntry::UdtEnumV0(ScSpecUdtEnumV0 {
+        doc: docs_from_attrs(attrs),
+        lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
+        name: enum_ident.unraw().to_string().try_into().unwrap(),
+        cases: spec_cases.try_into().unwrap(),
+    });
+    let spec_xdr = spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap();
+    let spec_shaking_gen = if cfg!(feature = "experimental_spec_shaking_v2") {
+        shaking::generate_udt_shaking(path, enum_ident, &spec_xdr, Vec::new(), spec, false)
     } else {
         None
     };
 
     // Generated code spec.
-    let spec_gen = if let Some(ref spec_xdr) = spec_xdr {
+    let spec_gen = if spec {
         let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
         let spec_xdr_len = spec_xdr.len();
         let spec_ident = format_ident!(
@@ -98,34 +101,16 @@ pub fn derive_type_enum_int(
                     *#spec_xdr_lit
                 }
             }
-        })
-    } else {
-        None
-    };
 
-    // SpecShakingMarker impl - only generated when spec is true and the
-    // experimental_spec_shaking_v2 feature is enabled.
-    let spec_shaking_impl = if cfg!(feature = "experimental_spec_shaking_v2") {
-        spec_xdr.as_ref().map(|spec_xdr| {
-            shaking::generate_marker_impl(
-                path,
-                quote!(#enum_ident),
-                spec_xdr,
-                std::iter::empty(),
-                None,
-                None,
-                None,
-            )
+            #spec_shaking_gen
         })
     } else {
-        None
+        spec_shaking_gen
     };
 
     // Output.
     let mut output = quote! {
         #spec_gen
-
-        #spec_shaking_impl
 
         impl #path::TryFromVal<#path::Env, #path::Val> for #enum_ident {
             type Error = #path::ConversionError;

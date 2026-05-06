@@ -50,6 +50,16 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x03put\0\0\0\0\x02\0\0\0\0\0\0\0\x03key\0\0\0\0\x11\0\0\0\0\0\0\0\x03val\0\0\0\0\x11\0\0\0\0"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_PUT: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
+    42usize,
+    0usize,
+>(
+    0,
+    *b"e\x0c\0\x05\x14x\xd8\xa1\xf6a@`\xca\xaa\x92\xe3\x86C9J\xb4\xfd\xaa\xac,\t\xe3Y\x93\x9e\x03\xed",
+    [],
+);
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__get__spec {
@@ -65,6 +75,16 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x03get\0\0\0\0\x01\0\0\0\0\0\0\0\x03key\0\0\0\0\x11\0\0\0\x01\0\0\x03\xe8\0\0\0\x11"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_GET: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
+    42usize,
+    0usize,
+>(
+    0,
+    *b"y\r\xaa\xcd\xc6b\xde\xa54\tZ3\xeen<6\x0f\xa9\xbf\x1e\xea\xf3\x1axp\x9d\xab\xc34\xe6F\xe7",
+    [],
+);
 #[doc(hidden)]
 #[allow(non_snake_case)]
 pub mod __Contract__del__spec {
@@ -80,6 +100,16 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x03del\0\0\0\0\x01\0\0\0\0\0\0\0\x03key\0\0\0\0\x11\0\0\0\0"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_DEL: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
+    42usize,
+    0usize,
+>(
+    0,
+    *b"\xff\xef\x99?\x06NE\xf9\x0f\x99z\xf6'\xe9@\x9ah\x8ch\xae\xff\xe8\xa3\xfa\xd6[=\x1f+W\xa8<",
+    [],
+);
 impl<'a> ContractClient<'a> {
     pub fn put(&self, key: &Symbol, val: &Symbol) -> () {
         use core::ops::Not;

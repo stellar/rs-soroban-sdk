@@ -1520,6 +1520,7 @@ dependencies = [
  "soroban-ledger-snapshot",
  "soroban-sdk-macros",
  "soroban-spec",
+ "soroban-spec-markers",
  "stellar-strkey 0.0.16",
  "stellar-xdr",
  "visibility",
@@ -1538,6 +1539,7 @@ dependencies = [
  "sha2",
  "soroban-env-common",
  "soroban-spec",
+ "soroban-spec-markers",
  "soroban-spec-rust",
  "stellar-xdr",
  "syn",
@@ -1549,10 +1551,17 @@ version = "26.0.0-rc.1"
 dependencies = [
  "base64",
  "pretty_assertions",
- "sha2",
+ "soroban-spec-markers",
  "stellar-xdr",
  "thiserror",
  "wasmparser",
+]
+
+[[package]]
+name = "soroban-spec-markers"
+version = "26.0.0-rc.1"
+dependencies = [
+ "sha2",
 ]
 
 [[package]]

@@ -25,7 +25,7 @@ pub fn derive_type_struct_tuple(
     let fields = &data.fields;
     let field_count_usize: usize = fields.len();
 
-    let (field_specs, field_idx_lits, field_types, try_from_xdrs, try_into_xdrs): (Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>) = fields
+    let (field_specs, field_idx_lits, try_from_xdrs, try_into_xdrs, field_type_id_refs): (Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>) = fields
         .iter()
         .enumerate()
         .map(|(field_idx, field)| {
@@ -33,7 +33,6 @@ pub fn derive_type_struct_tuple(
             // as the token to reference the field.
             let field_idx_lit = Literal::usize_unsuffixed(field_idx);
             let field_name = format!("{}", field_idx);
-            let field_type = &field.ty;
             let field_spec = ScSpecUdtStructFieldV0 {
                 doc: docs_from_attrs(&field.attrs),
                 name: field_name.try_into().unwrap_or_else(|_| StringM::default()),
@@ -54,7 +53,12 @@ pub fn derive_type_struct_tuple(
             let try_into_xdr = quote! {
                 (&val.#field_idx_lit).try_into().map_err(|_| #path::xdr::Error::Invalid)?
             };
-            (field_spec, field_idx_lit, field_type, try_from_xdr, try_into_xdr)
+            let field_type_id_refs = if cfg!(feature = "experimental_spec_shaking_v2") {
+                shaking::type_id_refs(path, &field.ty)
+            } else {
+                Vec::new()
+            };
+            (field_spec, field_idx_lit, try_from_xdr, try_into_xdr, field_type_id_refs)
         })
         .multiunzip();
 
@@ -64,21 +68,31 @@ pub fn derive_type_struct_tuple(
         return quote! { #(#compile_errors)* };
     }
 
-    // Compute spec XDR once if spec is enabled.
-    let spec_xdr = if spec {
-        let spec_entry = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
-            doc: docs_from_attrs(attrs),
-            lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
-            name: ident.unraw().to_string().try_into().unwrap(),
-            fields: field_specs.try_into().unwrap(),
-        });
-        Some(spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap())
+    // Compute spec XDR once. Spec shaking v2 emits SpecTypeId even for
+    // `export = false` types so graph records can be built without exporting
+    // those types to `contractspecv0`.
+    let spec_entry = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
+        doc: docs_from_attrs(attrs),
+        lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
+        name: ident.unraw().to_string().try_into().unwrap(),
+        fields: field_specs.try_into().unwrap(),
+    });
+    let spec_xdr = spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap();
+    let spec_shaking_gen = if cfg!(feature = "experimental_spec_shaking_v2") {
+        shaking::generate_udt_shaking(
+            path,
+            ident,
+            &spec_xdr,
+            field_type_id_refs.into_iter().flatten().collect(),
+            spec,
+            false,
+        )
     } else {
         None
     };
 
     // Generated code spec.
-    let spec_gen = if let Some(ref spec_xdr) = spec_xdr {
+    let spec_gen = if spec {
         let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
         let spec_xdr_len = spec_xdr.len();
         let spec_ident = format_ident!(
@@ -94,34 +108,16 @@ pub fn derive_type_struct_tuple(
                     *#spec_xdr_lit
                 }
             }
-        })
-    } else {
-        None
-    };
 
-    // SpecShakingMarker impl - only generated when spec is true and the
-    // experimental_spec_shaking_v2 feature is enabled.
-    let spec_shaking_impl = if cfg!(feature = "experimental_spec_shaking_v2") {
-        spec_xdr.as_ref().map(|spec_xdr| {
-            shaking::generate_marker_impl(
-                path,
-                quote!(#ident),
-                spec_xdr,
-                field_types.iter().cloned(),
-                None,
-                None,
-                None,
-            )
+            #spec_shaking_gen
         })
     } else {
-        None
+        spec_shaking_gen
     };
 
     // Output.
     let mut output = quote! {
         #spec_gen
-
-        #spec_shaking_impl
 
         impl #path::TryFromVal<#path::Env, #path::Val> for #ident {
             type Error = #path::ConversionError;

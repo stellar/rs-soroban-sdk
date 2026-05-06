@@ -386,6 +386,13 @@ impl ContractSelfPath {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x10self_path_method\0\0\0\0\0\0\0\x01\0\0\0\x04"
     }
 }
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACTSELFPATH_SELF_PATH_METHOD: [u8; 42usize] =
+    soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+        0,
+        *b"\xc3\xcb5,\xd0\r\x1a^JIu\x0b=\xf2\xad\0\x16y\xc5LJm\xba\xfa,\xfd\xbe\xfb\x87\xa4X\xbb",
+        [],
+    );
 impl<'a> ContractSelfPathClient<'a> {
     pub fn self_path_method(&self) -> u32 {
         use core::ops::Not;

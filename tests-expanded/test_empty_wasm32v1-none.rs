@@ -42,6 +42,16 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x05empty\0\0\0\0\0\0\0\0\0\0\0"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_EMPTY: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
+    42usize,
+    0usize,
+>(
+    0,
+    *b"\x02\xe7\xd0\x8a\xd9\x1eRo\x96A\x9b\x0b~\x9b\xdd\x94/\xdc\x8ai\xe5:\xd7\x8b\x93(h\x18\x84\xac\x95\x98",
+    [],
+);
 impl<'a> ContractClient<'a> {
     pub fn empty(&self) -> () {
         use core::ops::Not;

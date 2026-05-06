@@ -12,12 +12,22 @@ fn test_spec_shaking_v2() {
     // Read all spec entries from the WASM.
     let entries = soroban_spec::read::from_wasm(WASM).unwrap();
 
-    // Find markers embedded in the WASM data section.
+    // Find event-root markers embedded in the WASM data section.
     let markers = soroban_spec::shaking::find_all(WASM);
+    let graph = soroban_spec::shaking::find_graph(WASM).unwrap();
 
-    // Filter entries using markers.
-    let filtered: Vec<_> =
-        soroban_spec::shaking::filter(entries.iter().cloned(), &markers).collect();
+    // Filter entries using function roots, event-root markers, and sidecar graph refs.
+    assert!(!graph.entries.is_empty());
+    let filtered: Vec<_> = soroban_spec::shaking::filter(entries.iter().cloned(), &markers, &graph)
+        .unwrap()
+        .collect();
+
+    let shaken = soroban_spec::strip::shake_contract_spec(WASM).unwrap();
+    assert_eq!(soroban_spec::read::from_wasm(&shaken).unwrap(), filtered);
+    assert!(soroban_spec::shaking::find_graph(&shaken)
+        .unwrap()
+        .entries
+        .is_empty());
 
     // Collect names of filtered entries by kind for assertions.
     let filtered_names: HashSet<std::string::String> =
@@ -35,14 +45,19 @@ fn test_spec_shaking_v2() {
         })
         .collect();
     for expected_fn in [
+        "__constructor",
         "with_param",
+        "with_context",
         "with_return",
         "with_error",
         "with_panic_error",
+        "with_panic_error_ref",
         "with_assert_error",
         "with_panic_raw_error",
         "with_vec",
+        "with_vec_nested",
         "with_map",
+        "with_recursion",
         "publish_simple",
         "publish_topic_type",
         "publish_data_type",
@@ -57,6 +72,7 @@ fn test_spec_shaking_v2() {
         "with_non_pub_error",
         "with_tuple",
         "with_tuple_return",
+        "__check_auth",
     ] {
         assert!(
             fn_names.contains(&expected_fn.into()),
@@ -67,12 +83,16 @@ fn test_spec_shaking_v2() {
     // Used types/events should be present.
     let used = [
         // fn param/return/error types
+        "UsedConstructorMeta",
+        "Context",
         "UsedParamStruct",
         "UsedReturnEnum",
         "UsedParamIntEnum",
         "UsedErrorEnum",
+        "UsedAuthErrorEnum",
         // error types used only via panic_with_error! / assert_with_error!
         "UsedPanicErrorEnum",
+        "UsedPanicErrorEnumRef",
         "UsedAssertErrorEnum",
         // nested in fn param struct
         "UsedNestedInStruct",
@@ -80,10 +100,21 @@ fn test_spec_shaking_v2() {
         "UsedVecElement",
         "UsedMapKey",
         "UsedMapVal",
+        // vec element with nested custom types in data
+        "UsedVecInnerVecElement",
+        "UsedVecInnerElement",
+        "UsedVecElementNested",
         // Option element type in fn param
         "UsedOptionElement",
         // Result Ok type in fn return
         "UsedResultOk",
+        // custom account signature type
+        "CustomSignature",
+        // SDK auth types used by custom account auth context
+        "ContractContext",
+        "CreateContractHostFnContext",
+        "CreateContractWithConstructorHostFnContext",
+        "ContractExecutable",
         // simple event
         "UsedEventSimple",
         // event with custom type in topic
@@ -115,6 +146,11 @@ fn test_spec_shaking_v2() {
         "StructC",
         // wasm-imported type used as fn param
         "StructA",
+        // recursive type used as fn param
+        "UsedRecursiveRoot",
+        "UsedRecursiveNode",
+        "UsedRecursiveLeaf",
+        "UsedLeaf",
     ];
     for name in used {
         assert!(
@@ -123,7 +159,27 @@ fn test_spec_shaking_v2() {
         );
     }
 
-    // Unused types/events should exist in unfiltered entries (they have spec entries, just no markers).
+    // If two types with the same name are included, retain both
+    assert!(
+        filtered.iter().any(|e| matches!(
+            e,
+            ScSpecEntry::UdtUnionV0(u) if u.name.to_utf8_string_lossy() == "Context"
+        )),
+        "SDK auth Context should be retained as a reachable contract spec UDT"
+    );
+    assert!(
+        filtered.iter().any(|e| matches!(
+            e,
+            ScSpecEntry::UdtStructV0(s) if s.name.to_utf8_string_lossy() == "Context"
+        )),
+        "User-defined Context should be retained as a reachable contract spec UDT"
+    );
+
+    // Function input/output types are rooted from contractspecv0. Events and
+    // panic/assert-only errors need markers because their reachability is not in the spec.
+    assert_eq!(markers.len(), 9);
+
+    // Unused types/events should exist in unfiltered entries.
     let unused = [
         "UnusedStruct",
         "UnusedEnum",
@@ -133,7 +189,7 @@ fn test_spec_shaking_v2() {
         // Types used only in non-contractimpl fns (not at contract boundary)
         "UnusedNonContractFnParam",
         "UnusedNonContractFnReturn",
-        // Non-pub unused types (spec entries generated by feature, but no markers)
+        // Non-pub unused types (spec entries generated by feature)
         "UnusedNonPubStruct",
         "UnusedNonPubError",
         // Lib-imported types not used in any contract fn (rlib statics linked into cdylib)
@@ -153,6 +209,10 @@ fn test_spec_shaking_v2() {
         "EventA",
         "EventB",
         "EventC",
+        // SDK-owned types emitted as v2 spec candidates but not reachable here
+        "Executable",
+        "InvokerContractAuthEntry",
+        "SubContractInvocation",
     ];
     let all_names: HashSet<std::string::String> = entries.iter().filter_map(entry_name).collect();
     for name in unused {
@@ -169,6 +229,7 @@ fn test_spec_shaking_v2() {
             "unused type/event {name} should be absent from filtered entries, but was found"
         );
     }
+    assert_eq!(all_names.len() - filtered_names.len(), unused.len());
 }
 
 /// Extract the name from a non-function spec entry.

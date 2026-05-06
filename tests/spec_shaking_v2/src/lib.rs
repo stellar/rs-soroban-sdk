@@ -1,13 +1,13 @@
 #![no_std]
 use soroban_sdk::{
-    assert_with_error, contract, contracterror, contractevent, contractimpl, contracttype,
-    panic_with_error, Env, Map, Symbol, Vec,
+    assert_with_error, auth::CustomAccountInterface, contract, contracterror, contractevent,
+    contractimpl, contracttype, crypto::Hash, panic_with_error, Env, Map, Symbol, Vec,
 };
 
 #[contract]
 pub struct Contract;
 
-// --- Used types: markers expected ---
+// --- Used types: reachable from function specs or event-root markers ---
 
 // Used as fn param (struct with nested type)
 #[contracttype]
@@ -15,6 +15,20 @@ pub struct Contract;
 pub struct UsedParamStruct {
     pub a: u32,
     pub nested: UsedNestedInStruct,
+}
+
+// Used only as constructor param
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedConstructorMeta {
+    pub val: u32,
+}
+
+// Used as fn param with the same name as soroban_sdk::auth::Context.
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct Context {
+    pub val: u32,
 }
 
 // Used as fn return (union enum)
@@ -41,10 +55,25 @@ pub enum UsedErrorEnum {
     Invalid = 2,
 }
 
+// Used as custom account error return.
+#[contracterror]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum UsedAuthErrorEnum {
+    NotFound = 1,
+    Invalid = 2,
+}
+
 // Used only via panic_with_error! (never appears in a Result return).
 #[contracterror]
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UsedPanicErrorEnum {
+    Boom = 1,
+}
+
+// Used only via panic_with_error! as a reference (never appears in a Result return).
+#[contracterror]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum UsedPanicErrorEnumRef {
     Boom = 1,
 }
 
@@ -96,6 +125,13 @@ pub struct UsedOptionElement {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct UsedResultOk {
     pub data: u32,
+}
+
+// Used as custom account signature type in __check_auth.
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct CustomSignature {
+    pub nonce: u32,
 }
 
 // Used as published event (simple, primitive fields only)
@@ -223,7 +259,30 @@ pub struct UsedTupleReturnElement {
     pub val: u32,
 }
 
-// --- Non-pub used types: spec entries + markers expected with feature ---
+// Used as nested type in Vec element in fn param
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedVecInnerVecElement {
+    pub val: u32,
+}
+
+// Used as nested type in Vec element in fn param
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedVecInnerElement {
+    pub val: u32,
+}
+
+// Used as type in Vec element in fn param containing custom types
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedVecElementNested {
+    pub val: u32,
+    pub inner: UsedVecInnerElement,
+    pub vec_inner: Vec<UsedVecInnerVecElement>,
+}
+
+// --- Non-pub used types: spec entries expected with feature ---
 
 // Non-pub struct used as fn param
 #[contracttype]
@@ -239,17 +298,44 @@ enum UsedNonPubError {
     Fail = 1,
 }
 
+// --- Recursive types: graph pruning should include all reachable entries ---
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedRecursiveRoot {
+    pub val: UsedRecursiveNode,
+}
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum UsedRecursiveNode {
+    NotRecursive(UsedLeaf),
+    Recursive(UsedRecursiveLeaf),
+}
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedRecursiveLeaf {
+    pub val: Vec<UsedRecursiveRoot>,
+}
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedLeaf {
+    pub val: u32,
+}
+
 // --- Lib-imported types (Rust crate dep): rlib statics linked into cdylib ---
 // Only StructC is used in a contract fn; other spec_lib types have spec entries
-// but no markers.
+// but are not rooted by any function or published event.
 
-// --- WASM-imported types (contractimport!): only used ones should have markers ---
+// --- WASM-imported types (contractimport!): only used ones should survive pruning ---
 
 mod wasm_imported {
     soroban_sdk::contractimport!(file = "../../target/wasm32v1-none/release/test_spec_import.wasm");
 }
 
-// --- Unused types: no markers expected ---
+// --- Unused types: not rooted by function specs or published events ---
 
 #[contracttype]
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -301,14 +387,14 @@ pub struct UnusedNonContractFnReturn {
     pub x: u32,
 }
 
-// Non-pub unused struct: spec entry exists but no marker
+// Non-pub unused struct: spec entry exists but is not rooted.
 #[contracttype]
 #[derive(Clone, Debug, Eq, PartialEq)]
 struct UnusedNonPubStruct {
     pub x: u32,
 }
 
-// Non-pub unused error: spec entry exists but no marker
+// Non-pub unused error: spec entry exists but is not rooted.
 #[contracterror]
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 enum UnusedNonPubError {
@@ -318,7 +404,11 @@ enum UnusedNonPubError {
 #[allow(private_interfaces)]
 #[contractimpl]
 impl Contract {
+    pub fn __constructor(_env: Env, _meta: UsedConstructorMeta) {}
+
     pub fn with_param(_env: Env, _s: UsedParamStruct, _ie: UsedParamIntEnum) {}
+
+    pub fn with_context(_env: Env, _context: Context) {}
 
     pub fn with_return(_env: Env) -> UsedReturnEnum {
         UsedReturnEnum::A(1)
@@ -331,6 +421,12 @@ impl Contract {
     pub fn with_panic_error(env: Env, fail: bool) {
         if fail {
             panic_with_error!(&env, UsedPanicErrorEnum::Boom);
+        }
+    }
+
+    pub fn with_panic_error_ref(env: Env, fail: bool) {
+        if fail {
+            panic_with_error!(&env, &UsedPanicErrorEnumRef::Boom);
         }
     }
 
@@ -349,6 +445,8 @@ impl Contract {
 
     pub fn with_vec(_env: Env, _v: Vec<UsedVecElement>) {}
 
+    pub fn with_vec_nested(_env: Env, _v: Vec<UsedVecElementNested>) {}
+
     pub fn with_map(_env: Env, _m: Map<UsedMapKey, UsedMapVal>) {}
 
     pub fn with_option(_env: Env, _o: Option<UsedOptionElement>) {}
@@ -356,6 +454,8 @@ impl Contract {
     pub fn with_result(_env: Env) -> Result<UsedResultOk, UsedErrorEnum> {
         Ok(UsedResultOk { data: 1 })
     }
+
+    pub fn with_recursion(_env: Env, _r: UsedRecursiveRoot) {}
 
     pub fn publish_simple(env: Env) {
         UsedEventSimple {
@@ -430,8 +530,23 @@ impl Contract {
     }
 }
 
-// Non-contractimpl function: types used here should NOT have markers since
-// they are not at a contract boundary.
+#[contractimpl]
+impl CustomAccountInterface for Contract {
+    type Error = UsedAuthErrorEnum;
+    type Signature = CustomSignature;
+
+    fn __check_auth(
+        _env: Env,
+        _signature_payload: Hash<32>,
+        _signatures: Self::Signature,
+        _auth_contexts: Vec<soroban_sdk::auth::Context>,
+    ) -> Result<(), UsedAuthErrorEnum> {
+        Ok(())
+    }
+}
+
+// Non-contractimpl function: types used here should not be kept since they are
+// not at a contract boundary.
 #[allow(dead_code)]
 fn non_contract_fn(_s: UnusedNonContractFnParam) -> UnusedNonContractFnReturn {
     UnusedNonContractFnReturn { x: 1 }

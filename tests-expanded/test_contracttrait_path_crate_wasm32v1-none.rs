@@ -139,6 +139,14 @@ impl ContractCratePath {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x11crate_path_method\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACTCRATEPATH_CRATE_PATH_METHOD: [u8; 42usize] =
+    soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+        0,
+        *b"\x8e\xe3\xb7e\r\x17b\xb7\xc7\xc1\t\xa8l\x9f\xdevGZ46\x1a\xe1\x87\x8a\xf6O=\xa4.j\x03I",
+        [],
+    );
 impl<'a> ContractCratePathClient<'a> {
     pub fn crate_path_method(&self) -> u32 {
         use core::ops::Not;

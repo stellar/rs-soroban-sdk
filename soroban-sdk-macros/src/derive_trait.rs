@@ -52,7 +52,7 @@ fn derive_or_err(metadata: TokenStream2, input: TokenStream2) -> Result<TokenStr
 
     Ok(quote! {
         pub struct #spec_ident;
-        #[#path::contractspecfn(name = #spec_name, export = #spec_export)]
+        #[#path::contractspecfn(crate_path = #path, name = #spec_name, export = #spec_export)]
         #[#path::contractargs(name = #args_name)]
         #[#path::contractclient(crate_path = #path, name = #client_name)]
         #[#path::contractimpl_trait_macro(crate_path = #path)]

@@ -52,6 +52,16 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x08add_with\0\0\0\x03\0\0\0\0\0\0\0\x01x\0\0\0\0\0\0\x05\0\0\0\0\0\0\0\x01y\0\0\0\0\0\0\x05\0\0\0\0\0\0\0\x0bcontract_id\0\0\0\0\x13\0\0\0\x01\0\0\0\x05"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_ADD_WITH: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
+    42usize,
+    0usize,
+>(
+    0,
+    *b"\xa2\0%\xfe\xd2\xa1\xa3\x9b\x17\x14\xe0Z\x92\xfbz\x18,\xa67P\xe7\xccc\x08:\x18\x10\\IA \x11",
+    [],
+);
 impl<'a> ContractClient<'a> {
     pub fn add_with(&self, x: &i32, y: &i32, contract_id: &Address) -> i32 {
         use core::ops::Not;
@@ -200,6 +210,16 @@ impl AddContract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x03add\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x05\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x05\0\0\0\x01\0\0\0\x05"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_ADDCONTRACT_ADD: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
+    42usize,
+    0usize,
+>(
+    0,
+    *b"8\xdb\x90\x03q[#*\x9c\xe0\xb6&\xc3\xd6\xb6\xe7h\xdf\x81\xbfG\x1a\x05dRg\x18\xd7\x93b\xa2F",
+    [],
+);
 impl<'a> AddContractClient<'a> {
     pub fn add(&self, a: &i32, b: &i32) -> i32 {
         use core::ops::Not;

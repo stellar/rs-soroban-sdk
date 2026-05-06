@@ -214,7 +214,14 @@ impl TryFrom<Address> for AccountId {
     }
 }
 
-#[contracttype(crate_path = "crate", export = false)]
+#[cfg_attr(
+    feature = "experimental_spec_shaking_v2",
+    contracttype(crate_path = "crate")
+)]
+#[cfg_attr(
+    not(feature = "experimental_spec_shaking_v2"),
+    contracttype(crate_path = "crate", export = false)
+)]
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Executable {
     Wasm(BytesN<32>),

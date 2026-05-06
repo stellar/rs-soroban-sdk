@@ -140,6 +140,16 @@ impl ContractRelativePath {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x14relative_path_method\0\0\0\0\0\0\0\x01\0\0\0\x04"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACTRELATIVEPATH_RELATIVE_PATH_METHOD: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
+    42usize,
+    0usize,
+>(
+    0,
+    *b"\x1fS\x17\x85\xd9qx\x14\0S\xce1\xd8\x05\x93\xa8\xc1\x94\x8f\x9e\x13\x0b\xa9\xdf\xe3\xddG8\xce+\x91!",
+    [],
+);
 impl<'a> ContractRelativePathClient<'a> {
     pub fn relative_path_method(&self) -> u32 {
         use core::ops::Not;

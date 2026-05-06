@@ -5,8 +5,8 @@ extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
 use soroban_sdk::{
-    assert_with_error, contract, contracterror, contractevent, contractimpl, contracttype,
-    panic_with_error, Env, Map, Symbol, Vec,
+    assert_with_error, auth::CustomAccountInterface, contract, contracterror, contractevent,
+    contractimpl, contracttype, crypto::Hash, panic_with_error, Env, Map, Symbol, Vec,
 };
 pub struct Contract;
 ///ContractArgs is a type for building arg lists for functions defined in "Contract".
@@ -131,6 +131,189 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedParamStruct> for soroban_sdk
         val: &&UsedParamStruct,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedParamStruct>>::try_from_val(env, *val)
+    }
+}
+pub struct UsedConstructorMeta {
+    pub val: u32,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UsedConstructorMeta {
+    #[inline]
+    fn clone(&self) -> UsedConstructorMeta {
+        UsedConstructorMeta {
+            val: ::core::clone::Clone::clone(&self.val),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UsedConstructorMeta {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field1_finish(
+            f,
+            "UsedConstructorMeta",
+            "val",
+            &&self.val,
+        )
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UsedConstructorMeta {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<u32>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UsedConstructorMeta {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UsedConstructorMeta {
+    #[inline]
+    fn eq(&self, other: &UsedConstructorMeta) -> bool {
+        self.val == other.val
+    }
+}
+#[link_section = "contractspecv0"]
+pub static __SPEC_XDR_TYPE_USEDCONSTRUCTORMETA: [u8; 56usize] = UsedConstructorMeta::spec_xdr();
+impl UsedConstructorMeta {
+    pub const fn spec_xdr() -> [u8; 56usize] {
+        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x13UsedConstructorMeta\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedConstructorMeta {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
+        let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+            .map_err(|_| ConversionError)?;
+        Ok(Self {
+            val: vals[0]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedConstructorMeta> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UsedConstructorMeta,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let vals: [Val; 1usize] = [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
+        Ok(env
+            .map_new_from_slices(&KEYS, &vals)
+            .map_err(|_| ConversionError)?
+            .into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedConstructorMeta> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UsedConstructorMeta,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedConstructorMeta>>::try_from_val(
+            env, *val,
+        )
+    }
+}
+pub struct Context {
+    pub val: u32,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for Context {
+    #[inline]
+    fn clone(&self) -> Context {
+        Context {
+            val: ::core::clone::Clone::clone(&self.val),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for Context {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field1_finish(f, "Context", "val", &&self.val)
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for Context {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<u32>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for Context {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for Context {
+    #[inline]
+    fn eq(&self, other: &Context) -> bool {
+        self.val == other.val
+    }
+}
+#[link_section = "contractspecv0"]
+pub static __SPEC_XDR_TYPE_CONTEXT: [u8; 44usize] = Context::spec_xdr();
+impl Context {
+    pub const fn spec_xdr() -> [u8; 44usize] {
+        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07Context\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Context {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
+        let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+            .map_err(|_| ConversionError)?;
+        Ok(Self {
+            val: vals[0]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, Context> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &Context,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let vals: [Val; 1usize] = [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
+        Ok(env
+            .map_new_from_slices(&KEYS, &vals)
+            .map_err(|_| ConversionError)?
+            .into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &Context> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&Context,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, Context>>::try_from_val(env, *val)
     }
 }
 pub enum UsedReturnEnum {
@@ -522,6 +705,164 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedErrorEnum> for soroban_sdk::
         <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedErrorEnum>>::try_from_val(env, *val)
     }
 }
+pub enum UsedAuthErrorEnum {
+    NotFound = 1,
+    Invalid = 2,
+}
+#[automatically_derived]
+impl ::core::marker::Copy for UsedAuthErrorEnum {}
+#[automatically_derived]
+impl ::core::clone::Clone for UsedAuthErrorEnum {
+    #[inline]
+    fn clone(&self) -> UsedAuthErrorEnum {
+        *self
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UsedAuthErrorEnum {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::write_str(
+            f,
+            match self {
+                UsedAuthErrorEnum::NotFound => "NotFound",
+                UsedAuthErrorEnum::Invalid => "Invalid",
+            },
+        )
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UsedAuthErrorEnum {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {}
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UsedAuthErrorEnum {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UsedAuthErrorEnum {
+    #[inline]
+    fn eq(&self, other: &UsedAuthErrorEnum) -> bool {
+        let __self_discr = ::core::intrinsics::discriminant_value(self);
+        let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+        __self_discr == __arg1_discr
+    }
+}
+#[link_section = "contractspecv0"]
+pub static __SPEC_XDR_TYPE_USEDAUTHERRORENUM: [u8; 80usize] = UsedAuthErrorEnum::spec_xdr();
+impl UsedAuthErrorEnum {
+    pub const fn spec_xdr() -> [u8; 80usize] {
+        *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x11UsedAuthErrorEnum\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x08NotFound\0\0\0\x01\0\0\0\0\0\0\0\x07Invalid\0\0\0\0\x02"
+    }
+}
+impl TryFrom<soroban_sdk::Error> for UsedAuthErrorEnum {
+    type Error = soroban_sdk::Error;
+    #[inline(always)]
+    fn try_from(error: soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
+        if error.is_type(soroban_sdk::xdr::ScErrorType::Contract) {
+            let discriminant = error.get_code();
+            Ok(match discriminant {
+                1u32 => Self::NotFound,
+                2u32 => Self::Invalid,
+                _ => return Err(error),
+            })
+        } else {
+            Err(error)
+        }
+    }
+}
+impl TryFrom<&soroban_sdk::Error> for UsedAuthErrorEnum {
+    type Error = soroban_sdk::Error;
+    #[inline(always)]
+    fn try_from(error: &soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
+        <_ as TryFrom<soroban_sdk::Error>>::try_from(*error)
+    }
+}
+impl From<UsedAuthErrorEnum> for soroban_sdk::Error {
+    #[inline(always)]
+    fn from(val: UsedAuthErrorEnum) -> soroban_sdk::Error {
+        <_ as From<&UsedAuthErrorEnum>>::from(&val)
+    }
+}
+impl From<&UsedAuthErrorEnum> for soroban_sdk::Error {
+    #[inline(always)]
+    fn from(val: &UsedAuthErrorEnum) -> soroban_sdk::Error {
+        match val {
+            UsedAuthErrorEnum::NotFound => soroban_sdk::Error::from_contract_error(1u32),
+            UsedAuthErrorEnum::Invalid => soroban_sdk::Error::from_contract_error(2u32),
+        }
+    }
+}
+impl TryFrom<soroban_sdk::InvokeError> for UsedAuthErrorEnum {
+    type Error = soroban_sdk::InvokeError;
+    #[inline(always)]
+    fn try_from(error: soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
+        match error {
+            soroban_sdk::InvokeError::Abort => Err(error),
+            soroban_sdk::InvokeError::Contract(code) => Ok(match code {
+                1u32 => Self::NotFound,
+                2u32 => Self::Invalid,
+                _ => return Err(error),
+            }),
+        }
+    }
+}
+impl TryFrom<&soroban_sdk::InvokeError> for UsedAuthErrorEnum {
+    type Error = soroban_sdk::InvokeError;
+    #[inline(always)]
+    fn try_from(error: &soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
+        <_ as TryFrom<soroban_sdk::InvokeError>>::try_from(*error)
+    }
+}
+impl From<UsedAuthErrorEnum> for soroban_sdk::InvokeError {
+    #[inline(always)]
+    fn from(val: UsedAuthErrorEnum) -> soroban_sdk::InvokeError {
+        <_ as From<&UsedAuthErrorEnum>>::from(&val)
+    }
+}
+impl From<&UsedAuthErrorEnum> for soroban_sdk::InvokeError {
+    #[inline(always)]
+    fn from(val: &UsedAuthErrorEnum) -> soroban_sdk::InvokeError {
+        match val {
+            UsedAuthErrorEnum::NotFound => soroban_sdk::InvokeError::Contract(1u32),
+            UsedAuthErrorEnum::Invalid => soroban_sdk::InvokeError::Contract(2u32),
+        }
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedAuthErrorEnum {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::TryIntoVal;
+        let error: soroban_sdk::Error = val.try_into_val(env)?;
+        error.try_into().map_err(|_| soroban_sdk::ConversionError)
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedAuthErrorEnum> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UsedAuthErrorEnum,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        let error: soroban_sdk::Error = val.into();
+        Ok(error.into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedAuthErrorEnum> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UsedAuthErrorEnum,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedAuthErrorEnum>>::try_from_val(env, *val)
+    }
+}
 pub enum UsedPanicErrorEnum {
     Boom = 1,
 }
@@ -665,6 +1006,153 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedPanicErrorEnum> for soroban_
         val: &&UsedPanicErrorEnum,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedPanicErrorEnum>>::try_from_val(
+            env, *val,
+        )
+    }
+}
+pub enum UsedPanicErrorEnumRef {
+    Boom = 1,
+}
+#[automatically_derived]
+impl ::core::marker::Copy for UsedPanicErrorEnumRef {}
+#[automatically_derived]
+impl ::core::clone::Clone for UsedPanicErrorEnumRef {
+    #[inline]
+    fn clone(&self) -> UsedPanicErrorEnumRef {
+        *self
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UsedPanicErrorEnumRef {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::write_str(f, "Boom")
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UsedPanicErrorEnumRef {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {}
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UsedPanicErrorEnumRef {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UsedPanicErrorEnumRef {
+    #[inline]
+    fn eq(&self, other: &UsedPanicErrorEnumRef) -> bool {
+        true
+    }
+}
+#[link_section = "contractspecv0"]
+pub static __SPEC_XDR_TYPE_USEDPANICERRORENUMREF: [u8; 60usize] = UsedPanicErrorEnumRef::spec_xdr();
+impl UsedPanicErrorEnumRef {
+    pub const fn spec_xdr() -> [u8; 60usize] {
+        *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x15UsedPanicErrorEnumRef\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04Boom\0\0\0\x01"
+    }
+}
+impl TryFrom<soroban_sdk::Error> for UsedPanicErrorEnumRef {
+    type Error = soroban_sdk::Error;
+    #[inline(always)]
+    fn try_from(error: soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
+        if error.is_type(soroban_sdk::xdr::ScErrorType::Contract) {
+            let discriminant = error.get_code();
+            Ok(match discriminant {
+                1u32 => Self::Boom,
+                _ => return Err(error),
+            })
+        } else {
+            Err(error)
+        }
+    }
+}
+impl TryFrom<&soroban_sdk::Error> for UsedPanicErrorEnumRef {
+    type Error = soroban_sdk::Error;
+    #[inline(always)]
+    fn try_from(error: &soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
+        <_ as TryFrom<soroban_sdk::Error>>::try_from(*error)
+    }
+}
+impl From<UsedPanicErrorEnumRef> for soroban_sdk::Error {
+    #[inline(always)]
+    fn from(val: UsedPanicErrorEnumRef) -> soroban_sdk::Error {
+        <_ as From<&UsedPanicErrorEnumRef>>::from(&val)
+    }
+}
+impl From<&UsedPanicErrorEnumRef> for soroban_sdk::Error {
+    #[inline(always)]
+    fn from(val: &UsedPanicErrorEnumRef) -> soroban_sdk::Error {
+        match val {
+            UsedPanicErrorEnumRef::Boom => soroban_sdk::Error::from_contract_error(1u32),
+        }
+    }
+}
+impl TryFrom<soroban_sdk::InvokeError> for UsedPanicErrorEnumRef {
+    type Error = soroban_sdk::InvokeError;
+    #[inline(always)]
+    fn try_from(error: soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
+        match error {
+            soroban_sdk::InvokeError::Abort => Err(error),
+            soroban_sdk::InvokeError::Contract(code) => Ok(match code {
+                1u32 => Self::Boom,
+                _ => return Err(error),
+            }),
+        }
+    }
+}
+impl TryFrom<&soroban_sdk::InvokeError> for UsedPanicErrorEnumRef {
+    type Error = soroban_sdk::InvokeError;
+    #[inline(always)]
+    fn try_from(error: &soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
+        <_ as TryFrom<soroban_sdk::InvokeError>>::try_from(*error)
+    }
+}
+impl From<UsedPanicErrorEnumRef> for soroban_sdk::InvokeError {
+    #[inline(always)]
+    fn from(val: UsedPanicErrorEnumRef) -> soroban_sdk::InvokeError {
+        <_ as From<&UsedPanicErrorEnumRef>>::from(&val)
+    }
+}
+impl From<&UsedPanicErrorEnumRef> for soroban_sdk::InvokeError {
+    #[inline(always)]
+    fn from(val: &UsedPanicErrorEnumRef) -> soroban_sdk::InvokeError {
+        match val {
+            UsedPanicErrorEnumRef::Boom => soroban_sdk::InvokeError::Contract(1u32),
+        }
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedPanicErrorEnumRef {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::TryIntoVal;
+        let error: soroban_sdk::Error = val.try_into_val(env)?;
+        error.try_into().map_err(|_| soroban_sdk::ConversionError)
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedPanicErrorEnumRef> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UsedPanicErrorEnumRef,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        let error: soroban_sdk::Error = val.into();
+        Ok(error.into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedPanicErrorEnumRef> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UsedPanicErrorEnumRef,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedPanicErrorEnumRef>>::try_from_val(
             env, *val,
         )
     }
@@ -1356,6 +1844,101 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedResultOk> for soroban_sdk::V
         val: &&UsedResultOk,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedResultOk>>::try_from_val(env, *val)
+    }
+}
+pub struct CustomSignature {
+    pub nonce: u32,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for CustomSignature {
+    #[inline]
+    fn clone(&self) -> CustomSignature {
+        CustomSignature {
+            nonce: ::core::clone::Clone::clone(&self.nonce),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for CustomSignature {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field1_finish(
+            f,
+            "CustomSignature",
+            "nonce",
+            &&self.nonce,
+        )
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for CustomSignature {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<u32>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for CustomSignature {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for CustomSignature {
+    #[inline]
+    fn eq(&self, other: &CustomSignature) -> bool {
+        self.nonce == other.nonce
+    }
+}
+#[link_section = "contractspecv0"]
+pub static __SPEC_XDR_TYPE_CUSTOMSIGNATURE: [u8; 56usize] = CustomSignature::spec_xdr();
+impl CustomSignature {
+    pub const fn spec_xdr() -> [u8; 56usize] {
+        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0fCustomSignature\0\0\0\0\x01\0\0\0\0\0\0\0\x05nonce\0\0\0\0\0\0\x04"
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for CustomSignature {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["nonce"];
+        let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
+        let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+            .map_err(|_| ConversionError)?;
+        Ok(Self {
+            nonce: vals[0]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, CustomSignature> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &CustomSignature,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["nonce"];
+        let vals: [Val; 1usize] = [(&val.nonce)
+            .try_into_val(env)
+            .map_err(|_| ConversionError)?];
+        Ok(env
+            .map_new_from_slices(&KEYS, &vals)
+            .map_err(|_| ConversionError)?
+            .into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &CustomSignature> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&CustomSignature,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, CustomSignature>>::try_from_val(env, *val)
     }
 }
 pub struct UsedEventSimple {
@@ -2875,6 +3458,316 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedTupleReturnElement> for soro
         )
     }
 }
+pub struct UsedVecInnerVecElement {
+    pub val: u32,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UsedVecInnerVecElement {
+    #[inline]
+    fn clone(&self) -> UsedVecInnerVecElement {
+        UsedVecInnerVecElement {
+            val: ::core::clone::Clone::clone(&self.val),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UsedVecInnerVecElement {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field1_finish(
+            f,
+            "UsedVecInnerVecElement",
+            "val",
+            &&self.val,
+        )
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UsedVecInnerVecElement {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<u32>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UsedVecInnerVecElement {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UsedVecInnerVecElement {
+    #[inline]
+    fn eq(&self, other: &UsedVecInnerVecElement) -> bool {
+        self.val == other.val
+    }
+}
+#[link_section = "contractspecv0"]
+pub static __SPEC_XDR_TYPE_USEDVECINNERVECELEMENT: [u8; 60usize] =
+    UsedVecInnerVecElement::spec_xdr();
+impl UsedVecInnerVecElement {
+    pub const fn spec_xdr() -> [u8; 60usize] {
+        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x16UsedVecInnerVecElement\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedVecInnerVecElement {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
+        let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+            .map_err(|_| ConversionError)?;
+        Ok(Self {
+            val: vals[0]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedVecInnerVecElement> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UsedVecInnerVecElement,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let vals: [Val; 1usize] = [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
+        Ok(env
+            .map_new_from_slices(&KEYS, &vals)
+            .map_err(|_| ConversionError)?
+            .into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedVecInnerVecElement> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UsedVecInnerVecElement,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedVecInnerVecElement>>::try_from_val(
+            env, *val,
+        )
+    }
+}
+pub struct UsedVecInnerElement {
+    pub val: u32,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UsedVecInnerElement {
+    #[inline]
+    fn clone(&self) -> UsedVecInnerElement {
+        UsedVecInnerElement {
+            val: ::core::clone::Clone::clone(&self.val),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UsedVecInnerElement {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field1_finish(
+            f,
+            "UsedVecInnerElement",
+            "val",
+            &&self.val,
+        )
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UsedVecInnerElement {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<u32>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UsedVecInnerElement {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UsedVecInnerElement {
+    #[inline]
+    fn eq(&self, other: &UsedVecInnerElement) -> bool {
+        self.val == other.val
+    }
+}
+#[link_section = "contractspecv0"]
+pub static __SPEC_XDR_TYPE_USEDVECINNERELEMENT: [u8; 56usize] = UsedVecInnerElement::spec_xdr();
+impl UsedVecInnerElement {
+    pub const fn spec_xdr() -> [u8; 56usize] {
+        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x13UsedVecInnerElement\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedVecInnerElement {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
+        let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+            .map_err(|_| ConversionError)?;
+        Ok(Self {
+            val: vals[0]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedVecInnerElement> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UsedVecInnerElement,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let vals: [Val; 1usize] = [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
+        Ok(env
+            .map_new_from_slices(&KEYS, &vals)
+            .map_err(|_| ConversionError)?
+            .into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedVecInnerElement> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UsedVecInnerElement,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedVecInnerElement>>::try_from_val(
+            env, *val,
+        )
+    }
+}
+pub struct UsedVecElementNested {
+    pub val: u32,
+    pub inner: UsedVecInnerElement,
+    pub vec_inner: Vec<UsedVecInnerVecElement>,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UsedVecElementNested {
+    #[inline]
+    fn clone(&self) -> UsedVecElementNested {
+        UsedVecElementNested {
+            val: ::core::clone::Clone::clone(&self.val),
+            inner: ::core::clone::Clone::clone(&self.inner),
+            vec_inner: ::core::clone::Clone::clone(&self.vec_inner),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UsedVecElementNested {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field3_finish(
+            f,
+            "UsedVecElementNested",
+            "val",
+            &self.val,
+            "inner",
+            &self.inner,
+            "vec_inner",
+            &&self.vec_inner,
+        )
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UsedVecElementNested {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<u32>;
+        let _: ::core::cmp::AssertParamIsEq<UsedVecInnerElement>;
+        let _: ::core::cmp::AssertParamIsEq<Vec<UsedVecInnerVecElement>>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UsedVecElementNested {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UsedVecElementNested {
+    #[inline]
+    fn eq(&self, other: &UsedVecElementNested) -> bool {
+        self.val == other.val && self.inner == other.inner && self.vec_inner == other.vec_inner
+    }
+}
+#[link_section = "contractspecv0"]
+pub static __SPEC_XDR_TYPE_USEDVECELEMENTNESTED: [u8; 156usize] = UsedVecElementNested::spec_xdr();
+impl UsedVecElementNested {
+    pub const fn spec_xdr() -> [u8; 156usize] {
+        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x14UsedVecElementNested\0\0\0\x03\0\0\0\0\0\0\0\x05inner\0\0\0\0\0\x07\xd0\0\0\0\x13UsedVecInnerElement\0\0\0\0\0\0\0\0\x03val\0\0\0\0\x04\0\0\0\0\0\0\0\tvec_inner\0\0\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x16UsedVecInnerVecElement\0\0"
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedVecElementNested {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+        const KEYS: [&'static str; 3usize] = ["inner", "val", "vec_inner"];
+        let mut vals: [Val; 3usize] = [Val::VOID.to_val(); 3usize];
+        let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+            .map_err(|_| ConversionError)?;
+        Ok(Self {
+            inner: vals[0]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+            val: vals[1]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+            vec_inner: vals[2]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedVecElementNested> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UsedVecElementNested,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+        const KEYS: [&'static str; 3usize] = ["inner", "val", "vec_inner"];
+        let vals: [Val; 3usize] = [
+            (&val.inner)
+                .try_into_val(env)
+                .map_err(|_| ConversionError)?,
+            (&val.val).try_into_val(env).map_err(|_| ConversionError)?,
+            (&val.vec_inner)
+                .try_into_val(env)
+                .map_err(|_| ConversionError)?,
+        ];
+        Ok(env
+            .map_new_from_slices(&KEYS, &vals)
+            .map_err(|_| ConversionError)?
+            .into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedVecElementNested> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UsedVecElementNested,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedVecElementNested>>::try_from_val(
+            env, *val,
+        )
+    }
+}
 struct UsedNonPubStruct {
     pub val: u32,
 }
@@ -3092,6 +3985,431 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedNonPubError> for soroban_sdk
         val: &&UsedNonPubError,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedNonPubError>>::try_from_val(env, *val)
+    }
+}
+pub struct UsedRecursiveRoot {
+    pub val: UsedRecursiveNode,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UsedRecursiveRoot {
+    #[inline]
+    fn clone(&self) -> UsedRecursiveRoot {
+        UsedRecursiveRoot {
+            val: ::core::clone::Clone::clone(&self.val),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UsedRecursiveRoot {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field1_finish(
+            f,
+            "UsedRecursiveRoot",
+            "val",
+            &&self.val,
+        )
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UsedRecursiveRoot {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<UsedRecursiveNode>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UsedRecursiveRoot {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UsedRecursiveRoot {
+    #[inline]
+    fn eq(&self, other: &UsedRecursiveRoot) -> bool {
+        self.val == other.val
+    }
+}
+#[link_section = "contractspecv0"]
+pub static __SPEC_XDR_TYPE_USEDRECURSIVEROOT: [u8; 80usize] = UsedRecursiveRoot::spec_xdr();
+impl UsedRecursiveRoot {
+    pub const fn spec_xdr() -> [u8; 80usize] {
+        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x11UsedRecursiveRoot\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\x07\xd0\0\0\0\x11UsedRecursiveNode\0\0\0"
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRecursiveRoot {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
+        let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+            .map_err(|_| ConversionError)?;
+        Ok(Self {
+            val: vals[0]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedRecursiveRoot> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UsedRecursiveRoot,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let vals: [Val; 1usize] = [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
+        Ok(env
+            .map_new_from_slices(&KEYS, &vals)
+            .map_err(|_| ConversionError)?
+            .into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedRecursiveRoot> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UsedRecursiveRoot,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedRecursiveRoot>>::try_from_val(env, *val)
+    }
+}
+pub enum UsedRecursiveNode {
+    NotRecursive(UsedLeaf),
+    Recursive(UsedRecursiveLeaf),
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UsedRecursiveNode {
+    #[inline]
+    fn clone(&self) -> UsedRecursiveNode {
+        match self {
+            UsedRecursiveNode::NotRecursive(__self_0) => {
+                UsedRecursiveNode::NotRecursive(::core::clone::Clone::clone(__self_0))
+            }
+            UsedRecursiveNode::Recursive(__self_0) => {
+                UsedRecursiveNode::Recursive(::core::clone::Clone::clone(__self_0))
+            }
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UsedRecursiveNode {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        match self {
+            UsedRecursiveNode::NotRecursive(__self_0) => {
+                ::core::fmt::Formatter::debug_tuple_field1_finish(f, "NotRecursive", &__self_0)
+            }
+            UsedRecursiveNode::Recursive(__self_0) => {
+                ::core::fmt::Formatter::debug_tuple_field1_finish(f, "Recursive", &__self_0)
+            }
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UsedRecursiveNode {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<UsedLeaf>;
+        let _: ::core::cmp::AssertParamIsEq<UsedRecursiveLeaf>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UsedRecursiveNode {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UsedRecursiveNode {
+    #[inline]
+    fn eq(&self, other: &UsedRecursiveNode) -> bool {
+        let __self_discr = ::core::intrinsics::discriminant_value(self);
+        let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+        __self_discr == __arg1_discr
+            && match (self, other) {
+                (
+                    UsedRecursiveNode::NotRecursive(__self_0),
+                    UsedRecursiveNode::NotRecursive(__arg1_0),
+                ) => __self_0 == __arg1_0,
+                (
+                    UsedRecursiveNode::Recursive(__self_0),
+                    UsedRecursiveNode::Recursive(__arg1_0),
+                ) => __self_0 == __arg1_0,
+                _ => unsafe { ::core::intrinsics::unreachable() },
+            }
+    }
+}
+#[link_section = "contractspecv0"]
+pub static __SPEC_XDR_TYPE_USEDRECURSIVENODE: [u8; 140usize] = UsedRecursiveNode::spec_xdr();
+impl UsedRecursiveNode {
+    pub const fn spec_xdr() -> [u8; 140usize] {
+        *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x11UsedRecursiveNode\0\0\0\0\0\0\x02\0\0\0\x01\0\0\0\0\0\0\0\x0cNotRecursive\0\0\0\x01\0\0\x07\xd0\0\0\0\x08UsedLeaf\0\0\0\x01\0\0\0\0\0\0\0\tRecursive\0\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x11UsedRecursiveLeaf\0\0\0"
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRecursiveNode {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
+        const CASES: &'static [&'static str] = &["NotRecursive", "Recursive"];
+        let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
+        let mut iter = vec.try_iter();
+        let discriminant: soroban_sdk::Symbol = iter
+            .next()
+            .ok_or(soroban_sdk::ConversionError)??
+            .try_into_val(env)
+            .map_err(|_| soroban_sdk::ConversionError)?;
+        Ok(
+            match u32::from(env.symbol_index_in_strs(discriminant.to_symbol_val(), CASES)?) as usize
+            {
+                0 => {
+                    if iter.len() > 1usize {
+                        return Err(soroban_sdk::ConversionError);
+                    }
+                    Self::NotRecursive(
+                        iter.next()
+                            .ok_or(soroban_sdk::ConversionError)??
+                            .try_into_val(env)?,
+                    )
+                }
+                1 => {
+                    if iter.len() > 1usize {
+                        return Err(soroban_sdk::ConversionError);
+                    }
+                    Self::Recursive(
+                        iter.next()
+                            .ok_or(soroban_sdk::ConversionError)??
+                            .try_into_val(env)?,
+                    )
+                }
+                _ => Err(soroban_sdk::ConversionError {})?,
+            },
+        )
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedRecursiveNode> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UsedRecursiveNode,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{TryFromVal, TryIntoVal};
+        match val {
+            UsedRecursiveNode::NotRecursive(ref value0) => {
+                let tup: (soroban_sdk::Val, soroban_sdk::Val) = (
+                    soroban_sdk::Symbol::try_from_val(env, &"NotRecursive")?.to_val(),
+                    value0.try_into_val(env)?,
+                );
+                tup.try_into_val(env).map_err(Into::into)
+            }
+            UsedRecursiveNode::Recursive(ref value0) => {
+                let tup: (soroban_sdk::Val, soroban_sdk::Val) = (
+                    soroban_sdk::Symbol::try_from_val(env, &"Recursive")?.to_val(),
+                    value0.try_into_val(env)?,
+                );
+                tup.try_into_val(env).map_err(Into::into)
+            }
+        }
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedRecursiveNode> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UsedRecursiveNode,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedRecursiveNode>>::try_from_val(env, *val)
+    }
+}
+pub struct UsedRecursiveLeaf {
+    pub val: Vec<UsedRecursiveRoot>,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UsedRecursiveLeaf {
+    #[inline]
+    fn clone(&self) -> UsedRecursiveLeaf {
+        UsedRecursiveLeaf {
+            val: ::core::clone::Clone::clone(&self.val),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UsedRecursiveLeaf {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field1_finish(
+            f,
+            "UsedRecursiveLeaf",
+            "val",
+            &&self.val,
+        )
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UsedRecursiveLeaf {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<Vec<UsedRecursiveRoot>>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UsedRecursiveLeaf {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UsedRecursiveLeaf {
+    #[inline]
+    fn eq(&self, other: &UsedRecursiveLeaf) -> bool {
+        self.val == other.val
+    }
+}
+#[link_section = "contractspecv0"]
+pub static __SPEC_XDR_TYPE_USEDRECURSIVELEAF: [u8; 84usize] = UsedRecursiveLeaf::spec_xdr();
+impl UsedRecursiveLeaf {
+    pub const fn spec_xdr() -> [u8; 84usize] {
+        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x11UsedRecursiveLeaf\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x11UsedRecursiveRoot\0\0\0"
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRecursiveLeaf {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
+        let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+            .map_err(|_| ConversionError)?;
+        Ok(Self {
+            val: vals[0]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedRecursiveLeaf> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UsedRecursiveLeaf,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let vals: [Val; 1usize] = [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
+        Ok(env
+            .map_new_from_slices(&KEYS, &vals)
+            .map_err(|_| ConversionError)?
+            .into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedRecursiveLeaf> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UsedRecursiveLeaf,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedRecursiveLeaf>>::try_from_val(env, *val)
+    }
+}
+pub struct UsedLeaf {
+    pub val: u32,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UsedLeaf {
+    #[inline]
+    fn clone(&self) -> UsedLeaf {
+        UsedLeaf {
+            val: ::core::clone::Clone::clone(&self.val),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UsedLeaf {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field1_finish(f, "UsedLeaf", "val", &&self.val)
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UsedLeaf {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<u32>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UsedLeaf {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UsedLeaf {
+    #[inline]
+    fn eq(&self, other: &UsedLeaf) -> bool {
+        self.val == other.val
+    }
+}
+#[link_section = "contractspecv0"]
+pub static __SPEC_XDR_TYPE_USEDLEAF: [u8; 44usize] = UsedLeaf::spec_xdr();
+impl UsedLeaf {
+    pub const fn spec_xdr() -> [u8; 44usize] {
+        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x08UsedLeaf\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedLeaf {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
+        let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+            .map_err(|_| ConversionError)?;
+        Ok(Self {
+            val: vals[0]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedLeaf> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UsedLeaf,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let vals: [Val; 1usize] = [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
+        Ok(env
+            .map_new_from_slices(&KEYS, &vals)
+            .map_err(|_| ConversionError)?
+            .into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedLeaf> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UsedLeaf,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedLeaf>>::try_from_val(env, *val)
     }
 }
 mod wasm_imported {
@@ -6666,7 +7984,9 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UnusedNonPubError> for soroban_s
 }
 #[allow(private_interfaces)]
 impl Contract {
+    pub fn __constructor(_env: Env, _meta: UsedConstructorMeta) {}
     pub fn with_param(_env: Env, _s: UsedParamStruct, _ie: UsedParamIntEnum) {}
+    pub fn with_context(_env: Env, _context: Context) {}
     pub fn with_return(_env: Env) -> UsedReturnEnum {
         UsedReturnEnum::A(1)
     }
@@ -6677,6 +7997,13 @@ impl Contract {
         if fail {
             {
                 (&env).panic_with_error(UsedPanicErrorEnum::Boom);
+            };
+        }
+    }
+    pub fn with_panic_error_ref(env: Env, fail: bool) {
+        if fail {
+            {
+                (&env).panic_with_error(&UsedPanicErrorEnumRef::Boom);
             };
         }
     }
@@ -6697,11 +8024,13 @@ impl Contract {
         }
     }
     pub fn with_vec(_env: Env, _v: Vec<UsedVecElement>) {}
+    pub fn with_vec_nested(_env: Env, _v: Vec<UsedVecElementNested>) {}
     pub fn with_map(_env: Env, _m: Map<UsedMapKey, UsedMapVal>) {}
     pub fn with_option(_env: Env, _o: Option<UsedOptionElement>) {}
     pub fn with_result(_env: Env) -> Result<UsedResultOk, UsedErrorEnum> {
         Ok(UsedResultOk { data: 1 })
     }
+    pub fn with_recursion(_env: Env, _r: UsedRecursiveRoot) {}
     pub fn publish_simple(env: Env) {
         UsedEventSimple {
             kind: Symbol::new(&env, "transfer"),
@@ -6765,6 +8094,22 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
+pub mod __Contract____constructor__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_FN___CONSTRUCTOR: [u8; 76usize] =
+        super::Contract::spec_xdr___constructor();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr___constructor() -> [u8; 76usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\r__constructor\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04meta\0\0\x07\xd0\0\0\0\x13UsedConstructorMeta\0\0\0\0\0"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
 pub mod __Contract__with_param__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
@@ -6776,6 +8121,21 @@ impl Contract {
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_param() -> [u8; 104usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\nwith_param\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01s\0\0\0\0\0\x07\xd0\0\0\0\x0fUsedParamStruct\0\0\0\0\0\0\0\0\x02ie\0\0\0\0\x07\xd0\0\0\0\x10UsedParamIntEnum\0\0\0\0"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__with_context__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_FN_WITH_CONTEXT: [u8; 64usize] = super::Contract::spec_xdr_with_context();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_with_context() -> [u8; 64usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x0cwith_context\0\0\0\x01\0\0\0\0\0\0\0\x07context\0\0\0\x07\xd0\0\0\0\x07Context\0\0\0\0\0"
     }
 }
 #[doc(hidden)]
@@ -6822,6 +8182,22 @@ impl Contract {
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_panic_error() -> [u8; 52usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x10with_panic_error\0\0\0\x01\0\0\0\0\0\0\0\x04fail\0\0\0\x01\0\0\0\0"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__with_panic_error_ref__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_FN_WITH_PANIC_ERROR_REF: [u8; 56usize] =
+        super::Contract::spec_xdr_with_panic_error_ref();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_with_panic_error_ref() -> [u8; 56usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x14with_panic_error_ref\0\0\0\x01\0\0\0\0\0\0\0\x04fail\0\0\0\x01\0\0\0\0"
     }
 }
 #[doc(hidden)]
@@ -6873,6 +8249,22 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
+pub mod __Contract__with_vec_nested__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_FN_WITH_VEC_NESTED: [u8; 80usize] =
+        super::Contract::spec_xdr_with_vec_nested();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_with_vec_nested() -> [u8; 80usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x0fwith_vec_nested\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x14UsedVecElementNested\0\0\0\0"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
 pub mod __Contract__with_map__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
@@ -6914,6 +8306,22 @@ impl Contract {
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_result() -> [u8; 80usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0bwith_result\0\0\0\0\0\0\0\0\x01\0\0\x03\xe9\0\0\x07\xd0\0\0\0\x0cUsedResultOk\0\0\x07\xd0\0\0\0\rUsedErrorEnum\0\0\0"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__with_recursion__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_FN_WITH_RECURSION: [u8; 76usize] =
+        super::Contract::spec_xdr_with_recursion();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_with_recursion() -> [u8; 76usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x0ewith_recursion\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01r\0\0\0\0\0\x07\xd0\0\0\0\x11UsedRecursiveRoot\0\0\0\0\0\0\0"
     }
 }
 #[doc(hidden)]
@@ -7139,6 +8547,31 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    pub fn with_context(&self, _context: &Context) -> () {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "with_context") },
+            ::soroban_sdk::Vec::from_array(&self.env, [_context.into_val(&self.env)]),
+        );
+        res
+    }
+    pub fn try_with_context(
+        &self,
+        _context: &Context,
+    ) -> Result<
+        Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "with_context") },
+            ::soroban_sdk::Vec::from_array(&self.env, [_context.into_val(&self.env)]),
+        );
+        res
+    }
     pub fn with_return(&self) -> UsedReturnEnum {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -7211,6 +8644,31 @@ impl<'a> ContractClient<'a> {
         let res = self.env.try_invoke_contract(
             &self.address,
             &{ soroban_sdk::Symbol::new(&self.env, "with_panic_error") },
+            ::soroban_sdk::Vec::from_array(&self.env, [fail.into_val(&self.env)]),
+        );
+        res
+    }
+    pub fn with_panic_error_ref(&self, fail: &bool) -> () {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "with_panic_error_ref") },
+            ::soroban_sdk::Vec::from_array(&self.env, [fail.into_val(&self.env)]),
+        );
+        res
+    }
+    pub fn try_with_panic_error_ref(
+        &self,
+        fail: &bool,
+    ) -> Result<
+        Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "with_panic_error_ref") },
             ::soroban_sdk::Vec::from_array(&self.env, [fail.into_val(&self.env)]),
         );
         res
@@ -7298,6 +8756,31 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    pub fn with_vec_nested(&self, _v: &Vec<UsedVecElementNested>) -> () {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "with_vec_nested") },
+            ::soroban_sdk::Vec::from_array(&self.env, [_v.into_val(&self.env)]),
+        );
+        res
+    }
+    pub fn try_with_vec_nested(
+        &self,
+        _v: &Vec<UsedVecElementNested>,
+    ) -> Result<
+        Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "with_vec_nested") },
+            ::soroban_sdk::Vec::from_array(&self.env, [_v.into_val(&self.env)]),
+        );
+        res
+    }
     pub fn with_map(&self, _m: &Map<UsedMapKey, UsedMapVal>) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -7380,6 +8863,31 @@ impl<'a> ContractClient<'a> {
             &self.address,
             &{ soroban_sdk::Symbol::new(&self.env, "with_result") },
             ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
+    pub fn with_recursion(&self, _r: &UsedRecursiveRoot) -> () {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "with_recursion") },
+            ::soroban_sdk::Vec::from_array(&self.env, [_r.into_val(&self.env)]),
+        );
+        res
+    }
+    pub fn try_with_recursion(
+        &self,
+        _r: &UsedRecursiveRoot,
+    ) -> Result<
+        Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "with_recursion") },
+            ::soroban_sdk::Vec::from_array(&self.env, [_r.into_val(&self.env)]),
         );
         res
     }
@@ -7685,11 +9193,21 @@ impl<'a> ContractClient<'a> {
 impl ContractArgs {
     #[inline(always)]
     #[allow(clippy::unused_unit)]
+    pub fn __constructor<'i>(_meta: &'i UsedConstructorMeta) -> (&'i UsedConstructorMeta,) {
+        (_meta,)
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
     pub fn with_param<'i>(
         _s: &'i UsedParamStruct,
         _ie: &'i UsedParamIntEnum,
     ) -> (&'i UsedParamStruct, &'i UsedParamIntEnum) {
         (_s, _ie)
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn with_context<'i>(_context: &'i Context) -> (&'i Context,) {
+        (_context,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
@@ -7704,6 +9222,11 @@ impl ContractArgs {
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn with_panic_error<'i>(fail: &'i bool) -> (&'i bool,) {
+        (fail,)
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn with_panic_error_ref<'i>(fail: &'i bool) -> (&'i bool,) {
         (fail,)
     }
     #[inline(always)]
@@ -7723,6 +9246,13 @@ impl ContractArgs {
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
+    pub fn with_vec_nested<'i>(
+        _v: &'i Vec<UsedVecElementNested>,
+    ) -> (&'i Vec<UsedVecElementNested>,) {
+        (_v,)
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
     pub fn with_map<'i>(_m: &'i Map<UsedMapKey, UsedMapVal>) -> (&'i Map<UsedMapKey, UsedMapVal>,) {
         (_m,)
     }
@@ -7735,6 +9265,11 @@ impl ContractArgs {
     #[allow(clippy::unused_unit)]
     pub fn with_result<'i>() -> () {
         ()
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn with_recursion<'i>(_r: &'i UsedRecursiveRoot) -> (&'i UsedRecursiveRoot,) {
+        (_r,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
@@ -7799,6 +9334,37 @@ impl ContractArgs {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).__constructor` instead")]
+#[allow(deprecated)]
+pub fn __Contract____constructor__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::__constructor(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).__constructor` instead")]
+#[export_name = "__constructor"]
+pub extern "C" fn __Contract____constructor__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract____constructor__invoke_raw(soroban_sdk::Env::default(), arg_0)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).with_param` instead")]
 #[allow(deprecated)]
 pub fn __Contract__with_param__invoke_raw(
@@ -7835,6 +9401,37 @@ pub extern "C" fn __Contract__with_param__invoke_raw_extern(
 ) -> soroban_sdk::Val {
     #[allow(deprecated)]
     __Contract__with_param__invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).with_context` instead")]
+#[allow(deprecated)]
+pub fn __Contract__with_context__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::with_context(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).with_context` instead")]
+#[export_name = "with_context"]
+pub extern "C" fn __Contract__with_context__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__with_context__invoke_raw(soroban_sdk::Env::default(), arg_0)
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
@@ -7902,6 +9499,37 @@ pub extern "C" fn __Contract__with_panic_error__invoke_raw_extern(
 ) -> soroban_sdk::Val {
     #[allow(deprecated)]
     __Contract__with_panic_error__invoke_raw(soroban_sdk::Env::default(), arg_0)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).with_panic_error_ref` instead")]
+#[allow(deprecated)]
+pub fn __Contract__with_panic_error_ref__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::with_panic_error_ref(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).with_panic_error_ref` instead")]
+#[export_name = "with_panic_error_ref"]
+pub extern "C" fn __Contract__with_panic_error_ref__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__with_panic_error_ref__invoke_raw(soroban_sdk::Env::default(), arg_0)
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
@@ -7998,6 +9626,37 @@ pub extern "C" fn __Contract__with_vec__invoke_raw_extern(
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).with_vec_nested` instead")]
+#[allow(deprecated)]
+pub fn __Contract__with_vec_nested__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::with_vec_nested(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).with_vec_nested` instead")]
+#[export_name = "with_vec_nested"]
+pub extern "C" fn __Contract__with_vec_nested__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__with_vec_nested__invoke_raw(soroban_sdk::Env::default(), arg_0)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).with_map` instead")]
 #[allow(deprecated)]
 pub fn __Contract__with_map__invoke_raw(
@@ -8075,6 +9734,37 @@ pub fn __Contract__with_result__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk
 pub extern "C" fn __Contract__with_result__invoke_raw_extern() -> soroban_sdk::Val {
     #[allow(deprecated)]
     __Contract__with_result__invoke_raw(soroban_sdk::Env::default())
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).with_recursion` instead")]
+#[allow(deprecated)]
+pub fn __Contract__with_recursion__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::with_recursion(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).with_recursion` instead")]
+#[export_name = "with_recursion"]
+pub extern "C" fn __Contract__with_recursion__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__with_recursion__invoke_raw(soroban_sdk::Env::default(), arg_0)
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
@@ -8343,6 +10033,97 @@ pub fn __Contract__publish_ref_event__invoke_raw(env: soroban_sdk::Env) -> sorob
 pub extern "C" fn __Contract__publish_ref_event__invoke_raw_extern() -> soroban_sdk::Val {
     #[allow(deprecated)]
     __Contract__publish_ref_event__invoke_raw(soroban_sdk::Env::default())
+}
+impl CustomAccountInterface for Contract {
+    type Error = UsedAuthErrorEnum;
+    type Signature = CustomSignature;
+    fn __check_auth(
+        _env: Env,
+        _signature_payload: Hash<32>,
+        _signatures: Self::Signature,
+        _auth_contexts: Vec<soroban_sdk::auth::Context>,
+    ) -> Result<(), UsedAuthErrorEnum> {
+        Ok(())
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract____check_auth__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_FN___CHECK_AUTH: [u8; 192usize] =
+        super::Contract::spec_xdr___check_auth();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr___check_auth() -> [u8; 192usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x0c__check_auth\0\0\0\x03\0\0\0\0\0\0\0\x11signature_payload\0\0\0\0\0\x03\xee\0\0\0 \0\0\0\0\0\0\0\nsignatures\0\0\0\0\x07\xd0\0\0\0\x0fCustomSignature\0\0\0\0\0\0\0\0\rauth_contexts\0\0\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x07Context\0\0\0\0\x01\0\0\x03\xe9\0\0\0\x02\0\0\x07\xd0\0\0\0\x11UsedAuthErrorEnum\0\0\0"
+    }
+}
+impl<'a> ContractClient<'a> {}
+impl ContractArgs {
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn __check_auth<'i>(
+        _signature_payload: &'i Hash<32>,
+        _signatures: &'i CustomSignature,
+        _auth_contexts: &'i Vec<soroban_sdk::auth::Context>,
+    ) -> (
+        &'i Hash<32>,
+        &'i CustomSignature,
+        &'i Vec<soroban_sdk::auth::Context>,
+    ) {
+        (_signature_payload, _signatures, _auth_contexts)
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).__check_auth` instead")]
+#[allow(deprecated)]
+pub fn __Contract____check_auth__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+    arg_2: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract as CustomAccountInterface>::__check_auth(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_1),
+            ),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_2),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).__check_auth` instead")]
+#[export_name = "__check_auth"]
+pub extern "C" fn __Contract____check_auth__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+    arg_1: soroban_sdk::Val,
+    arg_2: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract____check_auth__invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1, arg_2)
 }
 #[allow(dead_code)]
 fn non_contract_fn(_s: UnusedNonContractFnParam) -> UnusedNonContractFnReturn {

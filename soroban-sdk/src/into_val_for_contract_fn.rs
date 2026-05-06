@@ -5,10 +5,8 @@
 //! The trait has a blanket implementation for all types that already implement
 //! IntoVal<Env, Val>.
 //!
-//! When the `experimental_spec_shaking_v2` feature is enabled, this trait also
-//! calls `SpecShakingMarker::spec_shaking_marker()` to ensure that type specs
-//! are included in the WASM when types are used at external boundaries
-//! (function return values).
+//! Spec shaking roots function return types from the `contractspecv0` function
+//! entries, so this conversion path does not need to emit marker code.
 
 use crate::{Env, IntoVal, Val};
 
@@ -20,20 +18,6 @@ pub trait IntoValForContractFn {
     fn into_val_for_contract_fn(self, env: &Env) -> Val;
 }
 
-#[cfg(feature = "experimental_spec_shaking_v2")]
-#[doc(hidden)]
-#[allow(deprecated)]
-impl<T> IntoValForContractFn for T
-where
-    T: IntoVal<Env, Val> + crate::SpecShakingMarker,
-{
-    fn into_val_for_contract_fn(self, env: &Env) -> Val {
-        T::spec_shaking_marker();
-        self.into_val(env)
-    }
-}
-
-#[cfg(not(feature = "experimental_spec_shaking_v2"))]
 #[doc(hidden)]
 #[allow(deprecated)]
 impl<T> IntoValForContractFn for T

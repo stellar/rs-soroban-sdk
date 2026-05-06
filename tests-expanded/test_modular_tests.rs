@@ -29,6 +29,15 @@ mod feat1 {
             *b"\0\0\0\0\0\0\0\0\0\0\0\x03one\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
         }
     }
+    #[allow(non_upper_case_globals)]
+    pub static __SPEC_GRAPH_FN_CONTRACT_ONE: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
+        42usize,
+        0usize,
+    >(
+        0,
+        *b"\xb8\xd7L_V@\0\xd6\xb9\xea.\xe1\x0e\x8c\xfa\x84Q\xd0IY6\x9d\xc3\xfe\x9f\x82\xcf\x0fT\xeetP",
+        [],
+    );
     impl<'a> ContractClient<'a> {
         pub fn one(&self) -> u32 {
             use core::ops::Not;
@@ -207,6 +216,15 @@ mod feat2 {
             *b"\0\0\0\0\0\0\0\0\0\0\0\x03two\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
         }
     }
+    #[allow(non_upper_case_globals)]
+    pub static __SPEC_GRAPH_FN_SUPER__CONTRACT_TWO: [u8; 42usize] = soroban_sdk::spec_shaking::encode_graph_record::<
+        42usize,
+        0usize,
+    >(
+        0,
+        *b"\x1a\xea\xe7\xc9\x84\x9bIy2\x86\xe7\xad\\\x98\xc8\xd6\xc7\x99\xb94\xe4\xc4n\xcd\xcb9Yj`\xe7c\x94",
+        [],
+    );
     impl<'a> ContractClient<'a> {
         pub fn two(&self) -> u32 {
             use core::ops::Not;
@@ -584,6 +602,13 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x04zero\0\0\0\0\0\0\0\x01\0\0\0\x04"
     }
 }
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_ZERO: [u8; 42usize] =
+    soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+        0,
+        *b"\xdc&X\xc4\xdd\x8c\xe3\x97v,\xa4t\x07\xb2\x8a>5f\x90\\V2\xa9\xbb4\xee\xd88P\x140\x0f",
+        [],
+    );
 impl<'a> ContractClient<'a> {
     pub fn zero(&self) -> u32 {
         use core::ops::Not;

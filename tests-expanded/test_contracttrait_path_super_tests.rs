@@ -391,6 +391,13 @@ pub mod submodule {
             *b"\0\0\0\0\0\0\0\0\0\0\0\x11super_path_method\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
         }
     }
+    #[allow(non_upper_case_globals)]
+    pub static __SPEC_GRAPH_FN_CONTRACTSUPERPATH_SUPER_PATH_METHOD: [u8; 42usize] =
+        soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+            0,
+            *b"\xb8\x10'J9fl\xe7\x96\x84u\xc89\xa8\xedN6d\xe8F\0\x8ccz\xb00\xe7t\xde\x0b:\xc1",
+            [],
+        );
     impl<'a> ContractSuperPathClient<'a> {
         pub fn super_path_method(&self) -> u32 {
             use core::ops::Not;

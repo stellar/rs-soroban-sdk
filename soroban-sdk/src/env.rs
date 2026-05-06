@@ -294,7 +294,7 @@ impl Env {
     #[inline(always)]
     pub fn panic_with_error<I>(&self, error: I) -> !
     where
-        I: Into<internal::Error> + crate::SpecShakingMarker,
+        I: Into<internal::Error> + crate::spec_shaking::SpecShakingMarker,
     {
         I::spec_shaking_marker();
         self.panic_with_error_inner(error.into())

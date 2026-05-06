@@ -56,18 +56,18 @@ impl MyStruct {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x08MyStruct\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x07"
     }
 }
-impl soroban_sdk::SpecShakingMarker for MyStruct {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x08\xd4\xa7b\xae1|\xdd";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
-    }
+impl soroban_sdk::spec_shaking::SpecTypeId for MyStruct {
+    const SPEC_TYPE_ID: [u8; 32] =
+        *b"\x08\xd4\xa7b\xae1|\xdd\xd3\xf5\xf9rU\xe4{\xebN\tY\xa4$\xc2\x93I\x94F*R\xe2\x0cwp";
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_TYPE_MYSTRUCT: [u8; 42usize] =
+    soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+        2,
+        *b"\x08\xd4\xa7b\xae1|\xdd\xd3\xf5\xf9rU\xe4{\xebN\tY\xa4$\xc2\x93I\x94F*R\xe2\x0cwp",
+        [],
+    );
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MyStruct {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
@@ -169,16 +169,18 @@ impl MyEnumUnit {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\nMyEnumUnit\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01A\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01B\0\0\0\0\0\0\x02"
     }
 }
-impl soroban_sdk::SpecShakingMarker for MyEnumUnit {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        {
-            static MARKER: [u8; 14usize] = *b"SpEcV12E\x1b4\x1c\x83\xab\xeb";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
-    }
+impl soroban_sdk::spec_shaking::SpecTypeId for MyEnumUnit {
+    const SPEC_TYPE_ID: [u8; 32] =
+        *b"2E\x1b4\x1c\x83\xab\xeb\"\xdf!\x80\x95D/G\xbf\xc6\xcb\x8f_>\xdcR\xf8W\xf5T\x90\xee\xb4m";
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_TYPE_MYENUMUNIT: [u8; 42usize] =
+    soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+        2,
+        *b"2E\x1b4\x1c\x83\xab\xeb\"\xdf!\x80\x95D/G\xbf\xc6\xcb\x8f_>\xdcR\xf8W\xf5T\x90\xee\xb4m",
+        [],
+    );
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MyEnumUnit {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -290,18 +292,21 @@ impl MyEnumVariants {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x0eMyEnumVariants\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x04VarA\0\0\0\x01\0\0\0\0\0\0\0\x04VarB\0\0\0\x01\0\0\x07\xd0\0\0\0\x08MyStruct\0\0\0\x01\0\0\0\0\0\0\0\x04VarC\0\0\0\x01\0\0\x07\xd0\0\0\0\nMyEnumUnit\0\0"
     }
 }
-impl soroban_sdk::SpecShakingMarker for MyEnumVariants {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <MyStruct as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <MyEnumUnit as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xceHo\xd4mpUm";
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
-    }
+impl soroban_sdk::spec_shaking::SpecTypeId for MyEnumVariants {
+    const SPEC_TYPE_ID: [u8; 32] =
+        *b"\xceHo\xd4mpUm\xc4G\xbc%\xc9j\x1b\xb7\x82R\xb3e\xb5\x10\x9b\xa0\x05\xe2_I:G^B";
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_TYPE_MYENUMVARIANTS: [u8; 106usize] =
+    soroban_sdk::spec_shaking::encode_graph_record::<106usize, 2usize>(
+        2,
+        *b"\xceHo\xd4mpUm\xc4G\xbc%\xc9j\x1b\xb7\x82R\xb3e\xb5\x10\x9b\xa0\x05\xe2_I:G^B",
+        [
+            <MyStruct as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID,
+            <MyEnumUnit as soroban_sdk::spec_shaking::SpecTypeId>::SPEC_TYPE_ID,
+        ],
+    );
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MyEnumVariants {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]

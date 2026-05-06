@@ -146,6 +146,14 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x04exec\0\0\0\0\0\0\0\x01\0\0\0\x10"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_EXEC: [u8; 42usize] =
+    soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+        0,
+        *b"\xa5 5J;P\x91\x10g\xe9\x0eC967\xc5\x13\xe6#\xb2\xa0Wtv\xeeL\xed\xa1\x96]z\xf2",
+        [],
+    );
 impl<'a> ContractClient<'a> {
     pub fn exec(&self) -> String {
         use core::ops::Not;
@@ -223,6 +231,14 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x05exec2\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\x10"
     }
 }
+#[link_section = "contractspecv0.rssdk.graphv0"]
+#[allow(non_upper_case_globals)]
+pub static __SPEC_GRAPH_FN_CONTRACT_EXEC2: [u8; 42usize] =
+    soroban_sdk::spec_shaking::encode_graph_record::<42usize, 0usize>(
+        0,
+        *b"\xd36\xb8\x8ccHo\x01\x9cik\xcf)Di6HNGLxS\x0f\xbc\xf2\x14\xfd\x15j\x94F\xf0",
+        [],
+    );
 impl<'a> ContractClient<'a> {
     pub fn exec2(&self) -> String {
         use core::ops::Not;
