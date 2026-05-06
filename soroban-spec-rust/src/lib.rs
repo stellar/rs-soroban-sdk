@@ -537,4 +537,61 @@ pub enum Error {
 "#,
         );
     }
+
+    /// When the `Error` override applies, nested `ScSpecTypeDef::Error`
+    /// references must be rewritten too.
+    #[test]
+    fn test_error_udt_override_rewrites_nested_vec() {
+        use super::ScSpecEntry;
+        use stellar_xdr::curr::{
+            ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeVec, ScSpecUdtErrorEnumCaseV0,
+            ScSpecUdtErrorEnumV0,
+        };
+
+        let func = ScSpecFunctionV0 {
+            doc: "".try_into().unwrap(),
+            name: "errors".try_into().unwrap(),
+            inputs: [].try_into().unwrap(),
+            outputs: [ScSpecTypeDef::Vec(Box::new(ScSpecTypeVec {
+                element_type: Box::new(ScSpecTypeDef::Error),
+            }))]
+            .try_into()
+            .unwrap(),
+        };
+        let error_enum = ScSpecUdtErrorEnumV0 {
+            doc: "".try_into().unwrap(),
+            lib: "".try_into().unwrap(),
+            name: "Error".try_into().unwrap(),
+            cases: [ScSpecUdtErrorEnumCaseV0 {
+                doc: "".try_into().unwrap(),
+                name: "Overflow".try_into().unwrap(),
+                value: 1,
+            }]
+            .try_into()
+            .unwrap(),
+        };
+        let entries = [
+            ScSpecEntry::FunctionV0(func),
+            ScSpecEntry::UdtErrorEnumV0(error_enum),
+        ];
+        let rust = generate(&entries, "<file>", "<sha256>")
+            .unwrap()
+            .to_formatted_string()
+            .unwrap();
+        assert_eq!(
+            rust,
+            r#"pub const WASM: &[u8] = soroban_sdk::contractfile!(file = "<file>", sha256 = "<sha256>");
+#[soroban_sdk::contractargs(name = "Args")]
+#[soroban_sdk::contractclient(name = "Client")]
+pub trait Contract {
+    fn errors(env: soroban_sdk::Env) -> soroban_sdk::Vec<Error>;
+}
+#[soroban_sdk::contracterror(export = false)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub enum Error {
+    Overflow = 1,
+}
+"#,
+        );
+    }
 }

@@ -31,8 +31,6 @@ impl Contract {
 
 #[cfg(test)]
 mod test {
-    use core::u64;
-
     use soroban_sdk::Env;
 
     use crate::{Contract, ContractClient, Error};
