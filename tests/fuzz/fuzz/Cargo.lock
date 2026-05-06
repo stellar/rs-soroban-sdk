@@ -1289,7 +1289,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-ledger-snapshot"
-version = "26.0.0-rc.1"
+version = "26.0.0"
 dependencies = [
  "serde",
  "serde_json",
@@ -1301,7 +1301,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-sdk"
-version = "26.0.0-rc.1"
+version = "26.0.0"
 dependencies = [
  "arbitrary",
  "bytes-lit",
@@ -1323,7 +1323,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-sdk-macros"
-version = "26.0.0-rc.1"
+version = "26.0.0"
 dependencies = [
  "darling",
  "heck",
@@ -1341,7 +1341,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-spec"
-version = "26.0.0-rc.1"
+version = "26.0.0"
 dependencies = [
  "base64",
  "sha2",
@@ -1352,7 +1352,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-spec-rust"
-version = "26.0.0-rc.1"
+version = "26.0.0"
 dependencies = [
  "prettyplease",
  "proc-macro2",
@@ -1470,7 +1470,7 @@ dependencies = [
 
 [[package]]
 name = "test_fuzz"
-version = "26.0.0-rc.1"
+version = "26.0.0"
 dependencies = [
  "soroban-sdk",
 ]
