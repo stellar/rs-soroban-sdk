@@ -8396,6 +8396,1229 @@ const _: () = {
         }
     }
 };
+pub struct UsedVecInnerVecElement {
+    pub val: u32,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UsedVecInnerVecElement {
+    #[inline]
+    fn clone(&self) -> UsedVecInnerVecElement {
+        UsedVecInnerVecElement {
+            val: ::core::clone::Clone::clone(&self.val),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UsedVecInnerVecElement {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field1_finish(
+            f,
+            "UsedVecInnerVecElement",
+            "val",
+            &&self.val,
+        )
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UsedVecInnerVecElement {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<u32>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UsedVecInnerVecElement {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UsedVecInnerVecElement {
+    #[inline]
+    fn eq(&self, other: &UsedVecInnerVecElement) -> bool {
+        self.val == other.val
+    }
+}
+pub static __SPEC_XDR_TYPE_USEDVECINNERVECELEMENT: [u8; 60usize] =
+    UsedVecInnerVecElement::spec_xdr();
+impl UsedVecInnerVecElement {
+    pub const fn spec_xdr() -> [u8; 60usize] {
+        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x16UsedVecInnerVecElement\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedVecInnerVecElement {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
+        let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+            .map_err(|_| ConversionError)?;
+        Ok(Self {
+            val: vals[0]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedVecInnerVecElement> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UsedVecInnerVecElement,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let vals: [Val; 1usize] = [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
+        Ok(env
+            .map_new_from_slices(&KEYS, &vals)
+            .map_err(|_| ConversionError)?
+            .into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedVecInnerVecElement> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UsedVecInnerVecElement,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedVecInnerVecElement>>::try_from_val(
+            env, *val,
+        )
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for UsedVecInnerVecElement {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::xdr::ScMap,
+    ) -> Result<Self, soroban_sdk::xdr::Error> {
+        use soroban_sdk::xdr::Validate;
+        use soroban_sdk::TryIntoVal;
+        let map = val;
+        if map.len() != 1usize {
+            return Err(soroban_sdk::xdr::Error::Invalid);
+        }
+        map.validate()?;
+        Ok(Self {
+            val: {
+                let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
+                    "val"
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                )
+                .into();
+                let idx = map
+                    .binary_search_by_key(&key, |entry| entry.key.clone())
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                rv.try_into_val(env)
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?
+            },
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVal> for UsedVecInnerVecElement {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::xdr::ScVal,
+    ) -> Result<Self, soroban_sdk::xdr::Error> {
+        if let soroban_sdk::xdr::ScVal::Map(Some(map)) = val {
+            <_ as soroban_sdk::TryFromVal<_, _>>::try_from_val(env, map)
+        } else {
+            Err(soroban_sdk::xdr::Error::Invalid)
+        }
+    }
+}
+impl TryFrom<&UsedVecInnerVecElement> for soroban_sdk::xdr::ScMap {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from(val: &UsedVecInnerVecElement) -> Result<Self, soroban_sdk::xdr::Error> {
+        extern crate alloc;
+        use soroban_sdk::TryFromVal;
+        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
+            soroban_sdk::xdr::ScMapEntry {
+                key: soroban_sdk::xdr::ScSymbol(
+                    "val"
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                )
+                .into(),
+                val: (&val.val)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            },
+        ])))
+    }
+}
+impl TryFrom<UsedVecInnerVecElement> for soroban_sdk::xdr::ScMap {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from(val: UsedVecInnerVecElement) -> Result<Self, soroban_sdk::xdr::Error> {
+        (&val).try_into()
+    }
+}
+impl TryFrom<&UsedVecInnerVecElement> for soroban_sdk::xdr::ScVal {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from(val: &UsedVecInnerVecElement) -> Result<Self, soroban_sdk::xdr::Error> {
+        Ok(soroban_sdk::xdr::ScVal::Map(Some(val.try_into()?)))
+    }
+}
+impl TryFrom<UsedVecInnerVecElement> for soroban_sdk::xdr::ScVal {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from(val: UsedVecInnerVecElement) -> Result<Self, soroban_sdk::xdr::Error> {
+        (&val).try_into()
+    }
+}
+const _: () = {
+    use soroban_sdk::testutils::arbitrary::arbitrary;
+    use soroban_sdk::testutils::arbitrary::std;
+    pub struct ArbitraryUsedVecInnerVecElement {
+        val: <u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for ArbitraryUsedVecInnerVecElement {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            ::core::fmt::Formatter::debug_struct_field1_finish(
+                f,
+                "ArbitraryUsedVecInnerVecElement",
+                "val",
+                &&self.val,
+            )
+        }
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for ArbitraryUsedVecInnerVecElement {
+        #[inline]
+        fn clone(&self) -> ArbitraryUsedVecInnerVecElement {
+            ArbitraryUsedVecInnerVecElement {
+                val: ::core::clone::Clone::clone(&self.val),
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for ArbitraryUsedVecInnerVecElement {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {
+            let _: ::core::cmp::AssertParamIsEq<
+                <u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+            >;
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for ArbitraryUsedVecInnerVecElement {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for ArbitraryUsedVecInnerVecElement {
+        #[inline]
+        fn eq(&self, other: &ArbitraryUsedVecInnerVecElement) -> bool {
+            self.val == other.val
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for ArbitraryUsedVecInnerVecElement {
+        #[inline]
+        fn cmp(&self, other: &ArbitraryUsedVecInnerVecElement) -> ::core::cmp::Ordering {
+            ::core::cmp::Ord::cmp(&self.val, &other.val)
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for ArbitraryUsedVecInnerVecElement {
+        #[inline]
+        fn partial_cmp(
+            &self,
+            other: &ArbitraryUsedVecInnerVecElement,
+        ) -> ::core::option::Option<::core::cmp::Ordering> {
+            ::core::cmp::PartialOrd::partial_cmp(&self.val, &other.val)
+        }
+    }
+    const _: () = {
+        #[allow(non_upper_case_globals)]
+        const RECURSIVE_COUNT_ArbitraryUsedVecInnerVecElement: ::std::thread::LocalKey<
+            std::cell::Cell<u32>,
+        > = {
+            #[inline]
+            fn __init() -> std::cell::Cell<u32> {
+                std::cell::Cell::new(0)
+            }
+            unsafe {
+                ::std::thread::LocalKey::new(
+                    const {
+                        if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
+                            |init| {
+                                #[thread_local]
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    (),
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
+                            }
+                        } else {
+                            |init| {
+                                #[thread_local]
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    !,
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
+                            }
+                        }
+                    },
+                )
+            }
+        };
+        #[automatically_derived]
+        impl<'arbitrary> arbitrary::Arbitrary<'arbitrary> for ArbitraryUsedVecInnerVecElement {
+            fn arbitrary(u: &mut arbitrary::Unstructured<'arbitrary>) -> arbitrary::Result<Self> {
+                let guard_against_recursion = u.is_empty();
+                if guard_against_recursion {
+                    RECURSIVE_COUNT_ArbitraryUsedVecInnerVecElement.with(|count| {
+                        if count.get() > 0 {
+                            return Err(arbitrary::Error::NotEnoughData);
+                        }
+                        count.set(count.get() + 1);
+                        Ok(())
+                    })?;
+                }
+                let result = (|| {
+                    Ok(ArbitraryUsedVecInnerVecElement {
+                        val: arbitrary::Arbitrary::arbitrary(u)?,
+                    })
+                })();
+                if guard_against_recursion {
+                    RECURSIVE_COUNT_ArbitraryUsedVecInnerVecElement.with(|count| {
+                        count.set(count.get() - 1);
+                    });
+                }
+                result
+            }
+            fn arbitrary_take_rest(
+                mut u: arbitrary::Unstructured<'arbitrary>,
+            ) -> arbitrary::Result<Self> {
+                let guard_against_recursion = u.is_empty();
+                if guard_against_recursion {
+                    RECURSIVE_COUNT_ArbitraryUsedVecInnerVecElement.with(|count| {
+                        if count.get() > 0 {
+                            return Err(arbitrary::Error::NotEnoughData);
+                        }
+                        count.set(count.get() + 1);
+                        Ok(())
+                    })?;
+                }
+                let result = (|| {
+                    Ok(ArbitraryUsedVecInnerVecElement {
+                        val: arbitrary::Arbitrary::arbitrary_take_rest(u)?,
+                    })
+                })();
+                if guard_against_recursion {
+                    RECURSIVE_COUNT_ArbitraryUsedVecInnerVecElement.with(|count| {
+                        count.set(count.get() - 1);
+                    });
+                }
+                result
+            }
+            #[inline]
+            fn size_hint(depth: usize) -> (usize, Option<usize>) {
+                arbitrary::size_hint::recursion_guard(depth, |depth| {
+                    arbitrary::size_hint::and_all(
+                        &[
+                            <<u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                depth,
+                            ),
+                        ],
+                    )
+                })
+            }
+        }
+    };
+    impl soroban_sdk::testutils::arbitrary::SorobanArbitrary for UsedVecInnerVecElement {
+        type Prototype = ArbitraryUsedVecInnerVecElement;
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, ArbitraryUsedVecInnerVecElement>
+        for UsedVecInnerVecElement
+    {
+        type Error = soroban_sdk::ConversionError;
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            v: &ArbitraryUsedVecInnerVecElement,
+        ) -> std::result::Result<Self, Self::Error> {
+            Ok(UsedVecInnerVecElement {
+                val: soroban_sdk::IntoVal::into_val(&v.val, env),
+            })
+        }
+    }
+};
+pub struct UsedVecInnerElement {
+    pub val: u32,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UsedVecInnerElement {
+    #[inline]
+    fn clone(&self) -> UsedVecInnerElement {
+        UsedVecInnerElement {
+            val: ::core::clone::Clone::clone(&self.val),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UsedVecInnerElement {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field1_finish(
+            f,
+            "UsedVecInnerElement",
+            "val",
+            &&self.val,
+        )
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UsedVecInnerElement {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<u32>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UsedVecInnerElement {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UsedVecInnerElement {
+    #[inline]
+    fn eq(&self, other: &UsedVecInnerElement) -> bool {
+        self.val == other.val
+    }
+}
+pub static __SPEC_XDR_TYPE_USEDVECINNERELEMENT: [u8; 56usize] = UsedVecInnerElement::spec_xdr();
+impl UsedVecInnerElement {
+    pub const fn spec_xdr() -> [u8; 56usize] {
+        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x13UsedVecInnerElement\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedVecInnerElement {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
+        let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+            .map_err(|_| ConversionError)?;
+        Ok(Self {
+            val: vals[0]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedVecInnerElement> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UsedVecInnerElement,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let vals: [Val; 1usize] = [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
+        Ok(env
+            .map_new_from_slices(&KEYS, &vals)
+            .map_err(|_| ConversionError)?
+            .into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedVecInnerElement> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UsedVecInnerElement,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedVecInnerElement>>::try_from_val(
+            env, *val,
+        )
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for UsedVecInnerElement {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::xdr::ScMap,
+    ) -> Result<Self, soroban_sdk::xdr::Error> {
+        use soroban_sdk::xdr::Validate;
+        use soroban_sdk::TryIntoVal;
+        let map = val;
+        if map.len() != 1usize {
+            return Err(soroban_sdk::xdr::Error::Invalid);
+        }
+        map.validate()?;
+        Ok(Self {
+            val: {
+                let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
+                    "val"
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                )
+                .into();
+                let idx = map
+                    .binary_search_by_key(&key, |entry| entry.key.clone())
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                rv.try_into_val(env)
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?
+            },
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVal> for UsedVecInnerElement {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::xdr::ScVal,
+    ) -> Result<Self, soroban_sdk::xdr::Error> {
+        if let soroban_sdk::xdr::ScVal::Map(Some(map)) = val {
+            <_ as soroban_sdk::TryFromVal<_, _>>::try_from_val(env, map)
+        } else {
+            Err(soroban_sdk::xdr::Error::Invalid)
+        }
+    }
+}
+impl TryFrom<&UsedVecInnerElement> for soroban_sdk::xdr::ScMap {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from(val: &UsedVecInnerElement) -> Result<Self, soroban_sdk::xdr::Error> {
+        extern crate alloc;
+        use soroban_sdk::TryFromVal;
+        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
+            soroban_sdk::xdr::ScMapEntry {
+                key: soroban_sdk::xdr::ScSymbol(
+                    "val"
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                )
+                .into(),
+                val: (&val.val)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            },
+        ])))
+    }
+}
+impl TryFrom<UsedVecInnerElement> for soroban_sdk::xdr::ScMap {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from(val: UsedVecInnerElement) -> Result<Self, soroban_sdk::xdr::Error> {
+        (&val).try_into()
+    }
+}
+impl TryFrom<&UsedVecInnerElement> for soroban_sdk::xdr::ScVal {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from(val: &UsedVecInnerElement) -> Result<Self, soroban_sdk::xdr::Error> {
+        Ok(soroban_sdk::xdr::ScVal::Map(Some(val.try_into()?)))
+    }
+}
+impl TryFrom<UsedVecInnerElement> for soroban_sdk::xdr::ScVal {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from(val: UsedVecInnerElement) -> Result<Self, soroban_sdk::xdr::Error> {
+        (&val).try_into()
+    }
+}
+const _: () = {
+    use soroban_sdk::testutils::arbitrary::arbitrary;
+    use soroban_sdk::testutils::arbitrary::std;
+    pub struct ArbitraryUsedVecInnerElement {
+        val: <u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for ArbitraryUsedVecInnerElement {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            ::core::fmt::Formatter::debug_struct_field1_finish(
+                f,
+                "ArbitraryUsedVecInnerElement",
+                "val",
+                &&self.val,
+            )
+        }
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for ArbitraryUsedVecInnerElement {
+        #[inline]
+        fn clone(&self) -> ArbitraryUsedVecInnerElement {
+            ArbitraryUsedVecInnerElement {
+                val: ::core::clone::Clone::clone(&self.val),
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for ArbitraryUsedVecInnerElement {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {
+            let _: ::core::cmp::AssertParamIsEq<
+                <u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+            >;
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for ArbitraryUsedVecInnerElement {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for ArbitraryUsedVecInnerElement {
+        #[inline]
+        fn eq(&self, other: &ArbitraryUsedVecInnerElement) -> bool {
+            self.val == other.val
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for ArbitraryUsedVecInnerElement {
+        #[inline]
+        fn cmp(&self, other: &ArbitraryUsedVecInnerElement) -> ::core::cmp::Ordering {
+            ::core::cmp::Ord::cmp(&self.val, &other.val)
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for ArbitraryUsedVecInnerElement {
+        #[inline]
+        fn partial_cmp(
+            &self,
+            other: &ArbitraryUsedVecInnerElement,
+        ) -> ::core::option::Option<::core::cmp::Ordering> {
+            ::core::cmp::PartialOrd::partial_cmp(&self.val, &other.val)
+        }
+    }
+    const _: () = {
+        #[allow(non_upper_case_globals)]
+        const RECURSIVE_COUNT_ArbitraryUsedVecInnerElement: ::std::thread::LocalKey<
+            std::cell::Cell<u32>,
+        > = {
+            #[inline]
+            fn __init() -> std::cell::Cell<u32> {
+                std::cell::Cell::new(0)
+            }
+            unsafe {
+                ::std::thread::LocalKey::new(
+                    const {
+                        if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
+                            |init| {
+                                #[thread_local]
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    (),
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
+                            }
+                        } else {
+                            |init| {
+                                #[thread_local]
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    !,
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
+                            }
+                        }
+                    },
+                )
+            }
+        };
+        #[automatically_derived]
+        impl<'arbitrary> arbitrary::Arbitrary<'arbitrary> for ArbitraryUsedVecInnerElement {
+            fn arbitrary(u: &mut arbitrary::Unstructured<'arbitrary>) -> arbitrary::Result<Self> {
+                let guard_against_recursion = u.is_empty();
+                if guard_against_recursion {
+                    RECURSIVE_COUNT_ArbitraryUsedVecInnerElement.with(|count| {
+                        if count.get() > 0 {
+                            return Err(arbitrary::Error::NotEnoughData);
+                        }
+                        count.set(count.get() + 1);
+                        Ok(())
+                    })?;
+                }
+                let result = (|| {
+                    Ok(ArbitraryUsedVecInnerElement {
+                        val: arbitrary::Arbitrary::arbitrary(u)?,
+                    })
+                })();
+                if guard_against_recursion {
+                    RECURSIVE_COUNT_ArbitraryUsedVecInnerElement.with(|count| {
+                        count.set(count.get() - 1);
+                    });
+                }
+                result
+            }
+            fn arbitrary_take_rest(
+                mut u: arbitrary::Unstructured<'arbitrary>,
+            ) -> arbitrary::Result<Self> {
+                let guard_against_recursion = u.is_empty();
+                if guard_against_recursion {
+                    RECURSIVE_COUNT_ArbitraryUsedVecInnerElement.with(|count| {
+                        if count.get() > 0 {
+                            return Err(arbitrary::Error::NotEnoughData);
+                        }
+                        count.set(count.get() + 1);
+                        Ok(())
+                    })?;
+                }
+                let result = (|| {
+                    Ok(ArbitraryUsedVecInnerElement {
+                        val: arbitrary::Arbitrary::arbitrary_take_rest(u)?,
+                    })
+                })();
+                if guard_against_recursion {
+                    RECURSIVE_COUNT_ArbitraryUsedVecInnerElement.with(|count| {
+                        count.set(count.get() - 1);
+                    });
+                }
+                result
+            }
+            #[inline]
+            fn size_hint(depth: usize) -> (usize, Option<usize>) {
+                arbitrary::size_hint::recursion_guard(depth, |depth| {
+                    arbitrary::size_hint::and_all(
+                        &[
+                            <<u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                depth,
+                            ),
+                        ],
+                    )
+                })
+            }
+        }
+    };
+    impl soroban_sdk::testutils::arbitrary::SorobanArbitrary for UsedVecInnerElement {
+        type Prototype = ArbitraryUsedVecInnerElement;
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, ArbitraryUsedVecInnerElement>
+        for UsedVecInnerElement
+    {
+        type Error = soroban_sdk::ConversionError;
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            v: &ArbitraryUsedVecInnerElement,
+        ) -> std::result::Result<Self, Self::Error> {
+            Ok(UsedVecInnerElement {
+                val: soroban_sdk::IntoVal::into_val(&v.val, env),
+            })
+        }
+    }
+};
+pub struct UsedVecElementNested {
+    pub val: u32,
+    pub inner: UsedVecInnerElement,
+    pub vec_inner: Vec<UsedVecInnerVecElement>,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UsedVecElementNested {
+    #[inline]
+    fn clone(&self) -> UsedVecElementNested {
+        UsedVecElementNested {
+            val: ::core::clone::Clone::clone(&self.val),
+            inner: ::core::clone::Clone::clone(&self.inner),
+            vec_inner: ::core::clone::Clone::clone(&self.vec_inner),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UsedVecElementNested {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field3_finish(
+            f,
+            "UsedVecElementNested",
+            "val",
+            &self.val,
+            "inner",
+            &self.inner,
+            "vec_inner",
+            &&self.vec_inner,
+        )
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UsedVecElementNested {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<u32>;
+        let _: ::core::cmp::AssertParamIsEq<UsedVecInnerElement>;
+        let _: ::core::cmp::AssertParamIsEq<Vec<UsedVecInnerVecElement>>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UsedVecElementNested {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UsedVecElementNested {
+    #[inline]
+    fn eq(&self, other: &UsedVecElementNested) -> bool {
+        self.val == other.val && self.inner == other.inner && self.vec_inner == other.vec_inner
+    }
+}
+pub static __SPEC_XDR_TYPE_USEDVECELEMENTNESTED: [u8; 156usize] = UsedVecElementNested::spec_xdr();
+impl UsedVecElementNested {
+    pub const fn spec_xdr() -> [u8; 156usize] {
+        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x14UsedVecElementNested\0\0\0\x03\0\0\0\0\0\0\0\x05inner\0\0\0\0\0\x07\xd0\0\0\0\x13UsedVecInnerElement\0\0\0\0\0\0\0\0\x03val\0\0\0\0\x04\0\0\0\0\0\0\0\tvec_inner\0\0\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x16UsedVecInnerVecElement\0\0"
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedVecElementNested {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+        const KEYS: [&'static str; 3usize] = ["inner", "val", "vec_inner"];
+        let mut vals: [Val; 3usize] = [Val::VOID.to_val(); 3usize];
+        let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+            .map_err(|_| ConversionError)?;
+        Ok(Self {
+            inner: vals[0]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+            val: vals[1]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+            vec_inner: vals[2]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedVecElementNested> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UsedVecElementNested,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+        const KEYS: [&'static str; 3usize] = ["inner", "val", "vec_inner"];
+        let vals: [Val; 3usize] = [
+            (&val.inner)
+                .try_into_val(env)
+                .map_err(|_| ConversionError)?,
+            (&val.val).try_into_val(env).map_err(|_| ConversionError)?,
+            (&val.vec_inner)
+                .try_into_val(env)
+                .map_err(|_| ConversionError)?,
+        ];
+        Ok(env
+            .map_new_from_slices(&KEYS, &vals)
+            .map_err(|_| ConversionError)?
+            .into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedVecElementNested> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UsedVecElementNested,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedVecElementNested>>::try_from_val(
+            env, *val,
+        )
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for UsedVecElementNested {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::xdr::ScMap,
+    ) -> Result<Self, soroban_sdk::xdr::Error> {
+        use soroban_sdk::xdr::Validate;
+        use soroban_sdk::TryIntoVal;
+        let map = val;
+        if map.len() != 3usize {
+            return Err(soroban_sdk::xdr::Error::Invalid);
+        }
+        map.validate()?;
+        Ok(Self {
+            inner: {
+                let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
+                    "inner"
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                )
+                .into();
+                let idx = map
+                    .binary_search_by_key(&key, |entry| entry.key.clone())
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                rv.try_into_val(env)
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?
+            },
+            val: {
+                let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
+                    "val"
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                )
+                .into();
+                let idx = map
+                    .binary_search_by_key(&key, |entry| entry.key.clone())
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                rv.try_into_val(env)
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?
+            },
+            vec_inner: {
+                let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
+                    "vec_inner"
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                )
+                .into();
+                let idx = map
+                    .binary_search_by_key(&key, |entry| entry.key.clone())
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                rv.try_into_val(env)
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?
+            },
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVal> for UsedVecElementNested {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::xdr::ScVal,
+    ) -> Result<Self, soroban_sdk::xdr::Error> {
+        if let soroban_sdk::xdr::ScVal::Map(Some(map)) = val {
+            <_ as soroban_sdk::TryFromVal<_, _>>::try_from_val(env, map)
+        } else {
+            Err(soroban_sdk::xdr::Error::Invalid)
+        }
+    }
+}
+impl TryFrom<&UsedVecElementNested> for soroban_sdk::xdr::ScMap {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from(val: &UsedVecElementNested) -> Result<Self, soroban_sdk::xdr::Error> {
+        extern crate alloc;
+        use soroban_sdk::TryFromVal;
+        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
+            soroban_sdk::xdr::ScMapEntry {
+                key: soroban_sdk::xdr::ScSymbol(
+                    "inner"
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                )
+                .into(),
+                val: (&val.inner)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            },
+            soroban_sdk::xdr::ScMapEntry {
+                key: soroban_sdk::xdr::ScSymbol(
+                    "val"
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                )
+                .into(),
+                val: (&val.val)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            },
+            soroban_sdk::xdr::ScMapEntry {
+                key: soroban_sdk::xdr::ScSymbol(
+                    "vec_inner"
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                )
+                .into(),
+                val: (&val.vec_inner)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            },
+        ])))
+    }
+}
+impl TryFrom<UsedVecElementNested> for soroban_sdk::xdr::ScMap {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from(val: UsedVecElementNested) -> Result<Self, soroban_sdk::xdr::Error> {
+        (&val).try_into()
+    }
+}
+impl TryFrom<&UsedVecElementNested> for soroban_sdk::xdr::ScVal {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from(val: &UsedVecElementNested) -> Result<Self, soroban_sdk::xdr::Error> {
+        Ok(soroban_sdk::xdr::ScVal::Map(Some(val.try_into()?)))
+    }
+}
+impl TryFrom<UsedVecElementNested> for soroban_sdk::xdr::ScVal {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from(val: UsedVecElementNested) -> Result<Self, soroban_sdk::xdr::Error> {
+        (&val).try_into()
+    }
+}
+const _: () = {
+    use soroban_sdk::testutils::arbitrary::arbitrary;
+    use soroban_sdk::testutils::arbitrary::std;
+    pub struct ArbitraryUsedVecElementNested {
+        val: <u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+        inner: <UsedVecInnerElement as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+        vec_inner: <Vec<
+            UsedVecInnerVecElement,
+        > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for ArbitraryUsedVecElementNested {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            ::core::fmt::Formatter::debug_struct_field3_finish(
+                f,
+                "ArbitraryUsedVecElementNested",
+                "val",
+                &self.val,
+                "inner",
+                &self.inner,
+                "vec_inner",
+                &&self.vec_inner,
+            )
+        }
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for ArbitraryUsedVecElementNested {
+        #[inline]
+        fn clone(&self) -> ArbitraryUsedVecElementNested {
+            ArbitraryUsedVecElementNested {
+                val: ::core::clone::Clone::clone(&self.val),
+                inner: ::core::clone::Clone::clone(&self.inner),
+                vec_inner: ::core::clone::Clone::clone(&self.vec_inner),
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for ArbitraryUsedVecElementNested {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {
+            let _: ::core::cmp::AssertParamIsEq<
+                <u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+            >;
+            let _: ::core::cmp::AssertParamIsEq<
+                <UsedVecInnerElement as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+            >;
+            let _: ::core::cmp::AssertParamIsEq<
+                <Vec<
+                    UsedVecInnerVecElement,
+                > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+            >;
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for ArbitraryUsedVecElementNested {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for ArbitraryUsedVecElementNested {
+        #[inline]
+        fn eq(&self, other: &ArbitraryUsedVecElementNested) -> bool {
+            self.val == other.val && self.inner == other.inner && self.vec_inner == other.vec_inner
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for ArbitraryUsedVecElementNested {
+        #[inline]
+        fn cmp(&self, other: &ArbitraryUsedVecElementNested) -> ::core::cmp::Ordering {
+            match ::core::cmp::Ord::cmp(&self.val, &other.val) {
+                ::core::cmp::Ordering::Equal => {
+                    match ::core::cmp::Ord::cmp(&self.inner, &other.inner) {
+                        ::core::cmp::Ordering::Equal => {
+                            ::core::cmp::Ord::cmp(&self.vec_inner, &other.vec_inner)
+                        }
+                        cmp => cmp,
+                    }
+                }
+                cmp => cmp,
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for ArbitraryUsedVecElementNested {
+        #[inline]
+        fn partial_cmp(
+            &self,
+            other: &ArbitraryUsedVecElementNested,
+        ) -> ::core::option::Option<::core::cmp::Ordering> {
+            match ::core::cmp::PartialOrd::partial_cmp(&self.val, &other.val) {
+                ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                    match ::core::cmp::PartialOrd::partial_cmp(&self.inner, &other.inner) {
+                        ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                            ::core::cmp::PartialOrd::partial_cmp(&self.vec_inner, &other.vec_inner)
+                        }
+                        cmp => cmp,
+                    }
+                }
+                cmp => cmp,
+            }
+        }
+    }
+    const _: () = {
+        #[allow(non_upper_case_globals)]
+        const RECURSIVE_COUNT_ArbitraryUsedVecElementNested: ::std::thread::LocalKey<
+            std::cell::Cell<u32>,
+        > = {
+            #[inline]
+            fn __init() -> std::cell::Cell<u32> {
+                std::cell::Cell::new(0)
+            }
+            unsafe {
+                ::std::thread::LocalKey::new(
+                    const {
+                        if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
+                            |init| {
+                                #[thread_local]
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    (),
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
+                            }
+                        } else {
+                            |init| {
+                                #[thread_local]
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    !,
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
+                            }
+                        }
+                    },
+                )
+            }
+        };
+        #[automatically_derived]
+        impl<'arbitrary> arbitrary::Arbitrary<'arbitrary> for ArbitraryUsedVecElementNested {
+            fn arbitrary(u: &mut arbitrary::Unstructured<'arbitrary>) -> arbitrary::Result<Self> {
+                let guard_against_recursion = u.is_empty();
+                if guard_against_recursion {
+                    RECURSIVE_COUNT_ArbitraryUsedVecElementNested.with(|count| {
+                        if count.get() > 0 {
+                            return Err(arbitrary::Error::NotEnoughData);
+                        }
+                        count.set(count.get() + 1);
+                        Ok(())
+                    })?;
+                }
+                let result = (|| {
+                    Ok(ArbitraryUsedVecElementNested {
+                        val: arbitrary::Arbitrary::arbitrary(u)?,
+                        inner: arbitrary::Arbitrary::arbitrary(u)?,
+                        vec_inner: arbitrary::Arbitrary::arbitrary(u)?,
+                    })
+                })();
+                if guard_against_recursion {
+                    RECURSIVE_COUNT_ArbitraryUsedVecElementNested.with(|count| {
+                        count.set(count.get() - 1);
+                    });
+                }
+                result
+            }
+            fn arbitrary_take_rest(
+                mut u: arbitrary::Unstructured<'arbitrary>,
+            ) -> arbitrary::Result<Self> {
+                let guard_against_recursion = u.is_empty();
+                if guard_against_recursion {
+                    RECURSIVE_COUNT_ArbitraryUsedVecElementNested.with(|count| {
+                        if count.get() > 0 {
+                            return Err(arbitrary::Error::NotEnoughData);
+                        }
+                        count.set(count.get() + 1);
+                        Ok(())
+                    })?;
+                }
+                let result = (|| {
+                    Ok(ArbitraryUsedVecElementNested {
+                        val: arbitrary::Arbitrary::arbitrary(&mut u)?,
+                        inner: arbitrary::Arbitrary::arbitrary(&mut u)?,
+                        vec_inner: arbitrary::Arbitrary::arbitrary_take_rest(u)?,
+                    })
+                })();
+                if guard_against_recursion {
+                    RECURSIVE_COUNT_ArbitraryUsedVecElementNested.with(|count| {
+                        count.set(count.get() - 1);
+                    });
+                }
+                result
+            }
+            #[inline]
+            fn size_hint(depth: usize) -> (usize, Option<usize>) {
+                arbitrary::size_hint::recursion_guard(depth, |depth| {
+                    arbitrary::size_hint::and_all(
+                        &[
+                            <<u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                depth,
+                            ),
+                            <<UsedVecInnerElement as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                depth,
+                            ),
+                            <<Vec<
+                                UsedVecInnerVecElement,
+                            > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                depth,
+                            ),
+                        ],
+                    )
+                })
+            }
+        }
+    };
+    impl soroban_sdk::testutils::arbitrary::SorobanArbitrary for UsedVecElementNested {
+        type Prototype = ArbitraryUsedVecElementNested;
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, ArbitraryUsedVecElementNested>
+        for UsedVecElementNested
+    {
+        type Error = soroban_sdk::ConversionError;
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            v: &ArbitraryUsedVecElementNested,
+        ) -> std::result::Result<Self, Self::Error> {
+            Ok(UsedVecElementNested {
+                val: soroban_sdk::IntoVal::into_val(&v.val, env),
+                inner: soroban_sdk::IntoVal::into_val(&v.inner, env),
+                vec_inner: soroban_sdk::IntoVal::into_val(&v.vec_inner, env),
+            })
+        }
+    }
+};
 struct UsedNonPubStruct {
     pub val: u32,
 }
@@ -8883,6 +10106,1623 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedNonPubError> for soroban_sdk
         <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedNonPubError>>::try_from_val(env, *val)
     }
 }
+pub struct UsedRecursiveRoot {
+    pub val: UsedRecursiveNode,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UsedRecursiveRoot {
+    #[inline]
+    fn clone(&self) -> UsedRecursiveRoot {
+        UsedRecursiveRoot {
+            val: ::core::clone::Clone::clone(&self.val),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UsedRecursiveRoot {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field1_finish(
+            f,
+            "UsedRecursiveRoot",
+            "val",
+            &&self.val,
+        )
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UsedRecursiveRoot {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<UsedRecursiveNode>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UsedRecursiveRoot {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UsedRecursiveRoot {
+    #[inline]
+    fn eq(&self, other: &UsedRecursiveRoot) -> bool {
+        self.val == other.val
+    }
+}
+pub static __SPEC_XDR_TYPE_USEDRECURSIVEROOT: [u8; 80usize] = UsedRecursiveRoot::spec_xdr();
+impl UsedRecursiveRoot {
+    pub const fn spec_xdr() -> [u8; 80usize] {
+        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x11UsedRecursiveRoot\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\x07\xd0\0\0\0\x11UsedRecursiveNode\0\0\0"
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRecursiveRoot {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
+        let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+            .map_err(|_| ConversionError)?;
+        Ok(Self {
+            val: vals[0]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedRecursiveRoot> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UsedRecursiveRoot,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let vals: [Val; 1usize] = [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
+        Ok(env
+            .map_new_from_slices(&KEYS, &vals)
+            .map_err(|_| ConversionError)?
+            .into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedRecursiveRoot> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UsedRecursiveRoot,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedRecursiveRoot>>::try_from_val(env, *val)
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for UsedRecursiveRoot {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::xdr::ScMap,
+    ) -> Result<Self, soroban_sdk::xdr::Error> {
+        use soroban_sdk::xdr::Validate;
+        use soroban_sdk::TryIntoVal;
+        let map = val;
+        if map.len() != 1usize {
+            return Err(soroban_sdk::xdr::Error::Invalid);
+        }
+        map.validate()?;
+        Ok(Self {
+            val: {
+                let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
+                    "val"
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                )
+                .into();
+                let idx = map
+                    .binary_search_by_key(&key, |entry| entry.key.clone())
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                rv.try_into_val(env)
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?
+            },
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVal> for UsedRecursiveRoot {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::xdr::ScVal,
+    ) -> Result<Self, soroban_sdk::xdr::Error> {
+        if let soroban_sdk::xdr::ScVal::Map(Some(map)) = val {
+            <_ as soroban_sdk::TryFromVal<_, _>>::try_from_val(env, map)
+        } else {
+            Err(soroban_sdk::xdr::Error::Invalid)
+        }
+    }
+}
+impl TryFrom<&UsedRecursiveRoot> for soroban_sdk::xdr::ScMap {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from(val: &UsedRecursiveRoot) -> Result<Self, soroban_sdk::xdr::Error> {
+        extern crate alloc;
+        use soroban_sdk::TryFromVal;
+        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
+            soroban_sdk::xdr::ScMapEntry {
+                key: soroban_sdk::xdr::ScSymbol(
+                    "val"
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                )
+                .into(),
+                val: (&val.val)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            },
+        ])))
+    }
+}
+impl TryFrom<UsedRecursiveRoot> for soroban_sdk::xdr::ScMap {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from(val: UsedRecursiveRoot) -> Result<Self, soroban_sdk::xdr::Error> {
+        (&val).try_into()
+    }
+}
+impl TryFrom<&UsedRecursiveRoot> for soroban_sdk::xdr::ScVal {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from(val: &UsedRecursiveRoot) -> Result<Self, soroban_sdk::xdr::Error> {
+        Ok(soroban_sdk::xdr::ScVal::Map(Some(val.try_into()?)))
+    }
+}
+impl TryFrom<UsedRecursiveRoot> for soroban_sdk::xdr::ScVal {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from(val: UsedRecursiveRoot) -> Result<Self, soroban_sdk::xdr::Error> {
+        (&val).try_into()
+    }
+}
+const _: () = {
+    use soroban_sdk::testutils::arbitrary::arbitrary;
+    use soroban_sdk::testutils::arbitrary::std;
+    pub struct ArbitraryUsedRecursiveRoot {
+        val: <UsedRecursiveNode as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for ArbitraryUsedRecursiveRoot {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            ::core::fmt::Formatter::debug_struct_field1_finish(
+                f,
+                "ArbitraryUsedRecursiveRoot",
+                "val",
+                &&self.val,
+            )
+        }
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for ArbitraryUsedRecursiveRoot {
+        #[inline]
+        fn clone(&self) -> ArbitraryUsedRecursiveRoot {
+            ArbitraryUsedRecursiveRoot {
+                val: ::core::clone::Clone::clone(&self.val),
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for ArbitraryUsedRecursiveRoot {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {
+            let _: ::core::cmp::AssertParamIsEq<
+                <UsedRecursiveNode as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+            >;
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for ArbitraryUsedRecursiveRoot {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for ArbitraryUsedRecursiveRoot {
+        #[inline]
+        fn eq(&self, other: &ArbitraryUsedRecursiveRoot) -> bool {
+            self.val == other.val
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for ArbitraryUsedRecursiveRoot {
+        #[inline]
+        fn cmp(&self, other: &ArbitraryUsedRecursiveRoot) -> ::core::cmp::Ordering {
+            ::core::cmp::Ord::cmp(&self.val, &other.val)
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for ArbitraryUsedRecursiveRoot {
+        #[inline]
+        fn partial_cmp(
+            &self,
+            other: &ArbitraryUsedRecursiveRoot,
+        ) -> ::core::option::Option<::core::cmp::Ordering> {
+            ::core::cmp::PartialOrd::partial_cmp(&self.val, &other.val)
+        }
+    }
+    const _: () = {
+        #[allow(non_upper_case_globals)]
+        const RECURSIVE_COUNT_ArbitraryUsedRecursiveRoot: ::std::thread::LocalKey<
+            std::cell::Cell<u32>,
+        > = {
+            #[inline]
+            fn __init() -> std::cell::Cell<u32> {
+                std::cell::Cell::new(0)
+            }
+            unsafe {
+                ::std::thread::LocalKey::new(
+                    const {
+                        if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
+                            |init| {
+                                #[thread_local]
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    (),
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
+                            }
+                        } else {
+                            |init| {
+                                #[thread_local]
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    !,
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
+                            }
+                        }
+                    },
+                )
+            }
+        };
+        #[automatically_derived]
+        impl<'arbitrary> arbitrary::Arbitrary<'arbitrary> for ArbitraryUsedRecursiveRoot {
+            fn arbitrary(u: &mut arbitrary::Unstructured<'arbitrary>) -> arbitrary::Result<Self> {
+                let guard_against_recursion = u.is_empty();
+                if guard_against_recursion {
+                    RECURSIVE_COUNT_ArbitraryUsedRecursiveRoot.with(|count| {
+                        if count.get() > 0 {
+                            return Err(arbitrary::Error::NotEnoughData);
+                        }
+                        count.set(count.get() + 1);
+                        Ok(())
+                    })?;
+                }
+                let result = (|| {
+                    Ok(ArbitraryUsedRecursiveRoot {
+                        val: arbitrary::Arbitrary::arbitrary(u)?,
+                    })
+                })();
+                if guard_against_recursion {
+                    RECURSIVE_COUNT_ArbitraryUsedRecursiveRoot.with(|count| {
+                        count.set(count.get() - 1);
+                    });
+                }
+                result
+            }
+            fn arbitrary_take_rest(
+                mut u: arbitrary::Unstructured<'arbitrary>,
+            ) -> arbitrary::Result<Self> {
+                let guard_against_recursion = u.is_empty();
+                if guard_against_recursion {
+                    RECURSIVE_COUNT_ArbitraryUsedRecursiveRoot.with(|count| {
+                        if count.get() > 0 {
+                            return Err(arbitrary::Error::NotEnoughData);
+                        }
+                        count.set(count.get() + 1);
+                        Ok(())
+                    })?;
+                }
+                let result = (|| {
+                    Ok(ArbitraryUsedRecursiveRoot {
+                        val: arbitrary::Arbitrary::arbitrary_take_rest(u)?,
+                    })
+                })();
+                if guard_against_recursion {
+                    RECURSIVE_COUNT_ArbitraryUsedRecursiveRoot.with(|count| {
+                        count.set(count.get() - 1);
+                    });
+                }
+                result
+            }
+            #[inline]
+            fn size_hint(depth: usize) -> (usize, Option<usize>) {
+                arbitrary::size_hint::recursion_guard(depth, |depth| {
+                    arbitrary::size_hint::and_all(
+                        &[
+                            <<UsedRecursiveNode as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                depth,
+                            ),
+                        ],
+                    )
+                })
+            }
+        }
+    };
+    impl soroban_sdk::testutils::arbitrary::SorobanArbitrary for UsedRecursiveRoot {
+        type Prototype = ArbitraryUsedRecursiveRoot;
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, ArbitraryUsedRecursiveRoot> for UsedRecursiveRoot {
+        type Error = soroban_sdk::ConversionError;
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            v: &ArbitraryUsedRecursiveRoot,
+        ) -> std::result::Result<Self, Self::Error> {
+            Ok(UsedRecursiveRoot {
+                val: soroban_sdk::IntoVal::into_val(&v.val, env),
+            })
+        }
+    }
+};
+pub enum UsedRecursiveNode {
+    NotRecursive(UsedLeaf),
+    Recursive(UsedRecursiveLeaf),
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UsedRecursiveNode {
+    #[inline]
+    fn clone(&self) -> UsedRecursiveNode {
+        match self {
+            UsedRecursiveNode::NotRecursive(__self_0) => {
+                UsedRecursiveNode::NotRecursive(::core::clone::Clone::clone(__self_0))
+            }
+            UsedRecursiveNode::Recursive(__self_0) => {
+                UsedRecursiveNode::Recursive(::core::clone::Clone::clone(__self_0))
+            }
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UsedRecursiveNode {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        match self {
+            UsedRecursiveNode::NotRecursive(__self_0) => {
+                ::core::fmt::Formatter::debug_tuple_field1_finish(f, "NotRecursive", &__self_0)
+            }
+            UsedRecursiveNode::Recursive(__self_0) => {
+                ::core::fmt::Formatter::debug_tuple_field1_finish(f, "Recursive", &__self_0)
+            }
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UsedRecursiveNode {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<UsedLeaf>;
+        let _: ::core::cmp::AssertParamIsEq<UsedRecursiveLeaf>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UsedRecursiveNode {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UsedRecursiveNode {
+    #[inline]
+    fn eq(&self, other: &UsedRecursiveNode) -> bool {
+        let __self_discr = ::core::intrinsics::discriminant_value(self);
+        let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+        __self_discr == __arg1_discr
+            && match (self, other) {
+                (
+                    UsedRecursiveNode::NotRecursive(__self_0),
+                    UsedRecursiveNode::NotRecursive(__arg1_0),
+                ) => __self_0 == __arg1_0,
+                (
+                    UsedRecursiveNode::Recursive(__self_0),
+                    UsedRecursiveNode::Recursive(__arg1_0),
+                ) => __self_0 == __arg1_0,
+                _ => unsafe { ::core::intrinsics::unreachable() },
+            }
+    }
+}
+pub static __SPEC_XDR_TYPE_USEDRECURSIVENODE: [u8; 140usize] = UsedRecursiveNode::spec_xdr();
+impl UsedRecursiveNode {
+    pub const fn spec_xdr() -> [u8; 140usize] {
+        *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x11UsedRecursiveNode\0\0\0\0\0\0\x02\0\0\0\x01\0\0\0\0\0\0\0\x0cNotRecursive\0\0\0\x01\0\0\x07\xd0\0\0\0\x08UsedLeaf\0\0\0\x01\0\0\0\0\0\0\0\tRecursive\0\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x11UsedRecursiveLeaf\0\0\0"
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRecursiveNode {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
+        const CASES: &'static [&'static str] = &["NotRecursive", "Recursive"];
+        let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
+        let mut iter = vec.try_iter();
+        let discriminant: soroban_sdk::Symbol = iter
+            .next()
+            .ok_or(soroban_sdk::ConversionError)??
+            .try_into_val(env)
+            .map_err(|_| soroban_sdk::ConversionError)?;
+        Ok(
+            match u32::from(env.symbol_index_in_strs(discriminant.to_symbol_val(), CASES)?) as usize
+            {
+                0 => {
+                    if iter.len() > 1usize {
+                        return Err(soroban_sdk::ConversionError);
+                    }
+                    Self::NotRecursive(
+                        iter.next()
+                            .ok_or(soroban_sdk::ConversionError)??
+                            .try_into_val(env)?,
+                    )
+                }
+                1 => {
+                    if iter.len() > 1usize {
+                        return Err(soroban_sdk::ConversionError);
+                    }
+                    Self::Recursive(
+                        iter.next()
+                            .ok_or(soroban_sdk::ConversionError)??
+                            .try_into_val(env)?,
+                    )
+                }
+                _ => Err(soroban_sdk::ConversionError {})?,
+            },
+        )
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedRecursiveNode> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UsedRecursiveNode,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{TryFromVal, TryIntoVal};
+        match val {
+            UsedRecursiveNode::NotRecursive(ref value0) => {
+                let tup: (soroban_sdk::Val, soroban_sdk::Val) = (
+                    soroban_sdk::Symbol::try_from_val(env, &"NotRecursive")?.to_val(),
+                    value0.try_into_val(env)?,
+                );
+                tup.try_into_val(env).map_err(Into::into)
+            }
+            UsedRecursiveNode::Recursive(ref value0) => {
+                let tup: (soroban_sdk::Val, soroban_sdk::Val) = (
+                    soroban_sdk::Symbol::try_from_val(env, &"Recursive")?.to_val(),
+                    value0.try_into_val(env)?,
+                );
+                tup.try_into_val(env).map_err(Into::into)
+            }
+        }
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedRecursiveNode> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UsedRecursiveNode,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedRecursiveNode>>::try_from_val(env, *val)
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVec> for UsedRecursiveNode {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::xdr::ScVec,
+    ) -> Result<Self, soroban_sdk::xdr::Error> {
+        use soroban_sdk::xdr::Validate;
+        use soroban_sdk::TryIntoVal;
+        let vec = val;
+        let mut iter = vec.iter();
+        let discriminant: soroban_sdk::xdr::ScSymbol = iter
+            .next()
+            .ok_or(soroban_sdk::xdr::Error::Invalid)?
+            .clone()
+            .try_into()
+            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+        let discriminant_name: &str = &discriminant.to_utf8_string()?;
+        Ok(match discriminant_name {
+            "NotRecursive" => {
+                if iter.len() > 1usize {
+                    return Err(soroban_sdk::xdr::Error::Invalid);
+                }
+                let rv0: soroban_sdk::Val = iter
+                    .next()
+                    .ok_or(soroban_sdk::xdr::Error::Invalid)?
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                Self::NotRecursive(
+                    rv0.try_into_val(env)
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                )
+            }
+            "Recursive" => {
+                if iter.len() > 1usize {
+                    return Err(soroban_sdk::xdr::Error::Invalid);
+                }
+                let rv0: soroban_sdk::Val = iter
+                    .next()
+                    .ok_or(soroban_sdk::xdr::Error::Invalid)?
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                Self::Recursive(
+                    rv0.try_into_val(env)
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                )
+            }
+            _ => Err(soroban_sdk::xdr::Error::Invalid)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVal> for UsedRecursiveNode {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::xdr::ScVal,
+    ) -> Result<Self, soroban_sdk::xdr::Error> {
+        if let soroban_sdk::xdr::ScVal::Vec(Some(vec)) = val {
+            <_ as soroban_sdk::TryFromVal<_, _>>::try_from_val(env, vec)
+        } else {
+            Err(soroban_sdk::xdr::Error::Invalid)
+        }
+    }
+}
+impl TryFrom<&UsedRecursiveNode> for soroban_sdk::xdr::ScVec {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from(val: &UsedRecursiveNode) -> Result<Self, soroban_sdk::xdr::Error> {
+        extern crate alloc;
+        Ok(match val {
+            UsedRecursiveNode::NotRecursive(value0) => (
+                soroban_sdk::xdr::ScSymbol(
+                    "NotRecursive"
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                ),
+                value0,
+            )
+                .try_into()
+                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            UsedRecursiveNode::Recursive(value0) => (
+                soroban_sdk::xdr::ScSymbol(
+                    "Recursive"
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                ),
+                value0,
+            )
+                .try_into()
+                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+        })
+    }
+}
+impl TryFrom<UsedRecursiveNode> for soroban_sdk::xdr::ScVec {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from(val: UsedRecursiveNode) -> Result<Self, soroban_sdk::xdr::Error> {
+        (&val).try_into()
+    }
+}
+impl TryFrom<&UsedRecursiveNode> for soroban_sdk::xdr::ScVal {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from(val: &UsedRecursiveNode) -> Result<Self, soroban_sdk::xdr::Error> {
+        Ok(soroban_sdk::xdr::ScVal::Vec(Some(val.try_into()?)))
+    }
+}
+impl TryFrom<UsedRecursiveNode> for soroban_sdk::xdr::ScVal {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from(val: UsedRecursiveNode) -> Result<Self, soroban_sdk::xdr::Error> {
+        (&val).try_into()
+    }
+}
+const _: () = {
+    use soroban_sdk::testutils::arbitrary::arbitrary;
+    use soroban_sdk::testutils::arbitrary::std;
+    pub enum ArbitraryUsedRecursiveNode {
+        NotRecursive(<UsedLeaf as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype),
+        Recursive(
+            <UsedRecursiveLeaf as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+        ),
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for ArbitraryUsedRecursiveNode {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            match self {
+                ArbitraryUsedRecursiveNode::NotRecursive(__self_0) => {
+                    ::core::fmt::Formatter::debug_tuple_field1_finish(f, "NotRecursive", &__self_0)
+                }
+                ArbitraryUsedRecursiveNode::Recursive(__self_0) => {
+                    ::core::fmt::Formatter::debug_tuple_field1_finish(f, "Recursive", &__self_0)
+                }
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for ArbitraryUsedRecursiveNode {
+        #[inline]
+        fn clone(&self) -> ArbitraryUsedRecursiveNode {
+            match self {
+                ArbitraryUsedRecursiveNode::NotRecursive(__self_0) => {
+                    ArbitraryUsedRecursiveNode::NotRecursive(::core::clone::Clone::clone(__self_0))
+                }
+                ArbitraryUsedRecursiveNode::Recursive(__self_0) => {
+                    ArbitraryUsedRecursiveNode::Recursive(::core::clone::Clone::clone(__self_0))
+                }
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for ArbitraryUsedRecursiveNode {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {
+            let _: ::core::cmp::AssertParamIsEq<
+                <UsedLeaf as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+            >;
+            let _: ::core::cmp::AssertParamIsEq<
+                <UsedRecursiveLeaf as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+            >;
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for ArbitraryUsedRecursiveNode {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for ArbitraryUsedRecursiveNode {
+        #[inline]
+        fn eq(&self, other: &ArbitraryUsedRecursiveNode) -> bool {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            __self_discr == __arg1_discr
+                && match (self, other) {
+                    (
+                        ArbitraryUsedRecursiveNode::NotRecursive(__self_0),
+                        ArbitraryUsedRecursiveNode::NotRecursive(__arg1_0),
+                    ) => __self_0 == __arg1_0,
+                    (
+                        ArbitraryUsedRecursiveNode::Recursive(__self_0),
+                        ArbitraryUsedRecursiveNode::Recursive(__arg1_0),
+                    ) => __self_0 == __arg1_0,
+                    _ => unsafe { ::core::intrinsics::unreachable() },
+                }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for ArbitraryUsedRecursiveNode {
+        #[inline]
+        fn cmp(&self, other: &ArbitraryUsedRecursiveNode) -> ::core::cmp::Ordering {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            match ::core::cmp::Ord::cmp(&__self_discr, &__arg1_discr) {
+                ::core::cmp::Ordering::Equal => match (self, other) {
+                    (
+                        ArbitraryUsedRecursiveNode::NotRecursive(__self_0),
+                        ArbitraryUsedRecursiveNode::NotRecursive(__arg1_0),
+                    ) => ::core::cmp::Ord::cmp(__self_0, __arg1_0),
+                    (
+                        ArbitraryUsedRecursiveNode::Recursive(__self_0),
+                        ArbitraryUsedRecursiveNode::Recursive(__arg1_0),
+                    ) => ::core::cmp::Ord::cmp(__self_0, __arg1_0),
+                    _ => unsafe { ::core::intrinsics::unreachable() },
+                },
+                cmp => cmp,
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for ArbitraryUsedRecursiveNode {
+        #[inline]
+        fn partial_cmp(
+            &self,
+            other: &ArbitraryUsedRecursiveNode,
+        ) -> ::core::option::Option<::core::cmp::Ordering> {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            match (self, other) {
+                (
+                    ArbitraryUsedRecursiveNode::NotRecursive(__self_0),
+                    ArbitraryUsedRecursiveNode::NotRecursive(__arg1_0),
+                ) => ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0),
+                (
+                    ArbitraryUsedRecursiveNode::Recursive(__self_0),
+                    ArbitraryUsedRecursiveNode::Recursive(__arg1_0),
+                ) => ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0),
+                _ => ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr),
+            }
+        }
+    }
+    const _: () = {
+        #[allow(non_upper_case_globals)]
+        const RECURSIVE_COUNT_ArbitraryUsedRecursiveNode: ::std::thread::LocalKey<
+            std::cell::Cell<u32>,
+        > = {
+            #[inline]
+            fn __init() -> std::cell::Cell<u32> {
+                std::cell::Cell::new(0)
+            }
+            unsafe {
+                ::std::thread::LocalKey::new(
+                    const {
+                        if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
+                            |init| {
+                                #[thread_local]
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    (),
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
+                            }
+                        } else {
+                            |init| {
+                                #[thread_local]
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    !,
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
+                            }
+                        }
+                    },
+                )
+            }
+        };
+        #[automatically_derived]
+        impl<'arbitrary> arbitrary::Arbitrary<'arbitrary> for ArbitraryUsedRecursiveNode {
+            fn arbitrary(u: &mut arbitrary::Unstructured<'arbitrary>) -> arbitrary::Result<Self> {
+                let guard_against_recursion = u.is_empty();
+                if guard_against_recursion {
+                    RECURSIVE_COUNT_ArbitraryUsedRecursiveNode.with(|count| {
+                        if count.get() > 0 {
+                            return Err(arbitrary::Error::NotEnoughData);
+                        }
+                        count.set(count.get() + 1);
+                        Ok(())
+                    })?;
+                }
+                let result = (|| {
+                    Ok(
+                        match (u64::from(<u32 as arbitrary::Arbitrary>::arbitrary(u)?) * 2u64) >> 32
+                        {
+                            0u64 => ArbitraryUsedRecursiveNode::NotRecursive(
+                                arbitrary::Arbitrary::arbitrary(u)?,
+                            ),
+                            1u64 => ArbitraryUsedRecursiveNode::Recursive(
+                                arbitrary::Arbitrary::arbitrary(u)?,
+                            ),
+                            _ => {
+                                ::core::panicking::panic("internal error: entered unreachable code")
+                            }
+                        },
+                    )
+                })();
+                if guard_against_recursion {
+                    RECURSIVE_COUNT_ArbitraryUsedRecursiveNode.with(|count| {
+                        count.set(count.get() - 1);
+                    });
+                }
+                result
+            }
+            fn arbitrary_take_rest(
+                mut u: arbitrary::Unstructured<'arbitrary>,
+            ) -> arbitrary::Result<Self> {
+                let guard_against_recursion = u.is_empty();
+                if guard_against_recursion {
+                    RECURSIVE_COUNT_ArbitraryUsedRecursiveNode.with(|count| {
+                        if count.get() > 0 {
+                            return Err(arbitrary::Error::NotEnoughData);
+                        }
+                        count.set(count.get() + 1);
+                        Ok(())
+                    })?;
+                }
+                let result = (|| {
+                    Ok(
+                        match (u64::from(<u32 as arbitrary::Arbitrary>::arbitrary(&mut u)?) * 2u64)
+                            >> 32
+                        {
+                            0u64 => ArbitraryUsedRecursiveNode::NotRecursive(
+                                arbitrary::Arbitrary::arbitrary_take_rest(u)?,
+                            ),
+                            1u64 => ArbitraryUsedRecursiveNode::Recursive(
+                                arbitrary::Arbitrary::arbitrary_take_rest(u)?,
+                            ),
+                            _ => {
+                                ::core::panicking::panic("internal error: entered unreachable code")
+                            }
+                        },
+                    )
+                })();
+                if guard_against_recursion {
+                    RECURSIVE_COUNT_ArbitraryUsedRecursiveNode.with(|count| {
+                        count.set(count.get() - 1);
+                    });
+                }
+                result
+            }
+            #[inline]
+            fn size_hint(depth: usize) -> (usize, Option<usize>) {
+                arbitrary::size_hint::and(
+                    <u32 as arbitrary::Arbitrary>::size_hint(depth),
+                    arbitrary::size_hint::recursion_guard(depth, |depth| {
+                        arbitrary::size_hint::or_all(
+                                &[
+                                    arbitrary::size_hint::and_all(
+                                        &[
+                                            <<UsedLeaf as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                                depth,
+                                            ),
+                                        ],
+                                    ),
+                                    arbitrary::size_hint::and_all(
+                                        &[
+                                            <<UsedRecursiveLeaf as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                                depth,
+                                            ),
+                                        ],
+                                    ),
+                                ],
+                            )
+                    }),
+                )
+            }
+        }
+    };
+    impl soroban_sdk::testutils::arbitrary::SorobanArbitrary for UsedRecursiveNode {
+        type Prototype = ArbitraryUsedRecursiveNode;
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, ArbitraryUsedRecursiveNode> for UsedRecursiveNode {
+        type Error = soroban_sdk::ConversionError;
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            v: &ArbitraryUsedRecursiveNode,
+        ) -> std::result::Result<Self, Self::Error> {
+            Ok(match v {
+                ArbitraryUsedRecursiveNode::NotRecursive(field_0) => {
+                    UsedRecursiveNode::NotRecursive(soroban_sdk::IntoVal::into_val(field_0, env))
+                }
+                ArbitraryUsedRecursiveNode::Recursive(field_0) => {
+                    UsedRecursiveNode::Recursive(soroban_sdk::IntoVal::into_val(field_0, env))
+                }
+            })
+        }
+    }
+};
+pub struct UsedRecursiveLeaf {
+    pub val: Vec<UsedRecursiveRoot>,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UsedRecursiveLeaf {
+    #[inline]
+    fn clone(&self) -> UsedRecursiveLeaf {
+        UsedRecursiveLeaf {
+            val: ::core::clone::Clone::clone(&self.val),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UsedRecursiveLeaf {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field1_finish(
+            f,
+            "UsedRecursiveLeaf",
+            "val",
+            &&self.val,
+        )
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UsedRecursiveLeaf {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<Vec<UsedRecursiveRoot>>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UsedRecursiveLeaf {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UsedRecursiveLeaf {
+    #[inline]
+    fn eq(&self, other: &UsedRecursiveLeaf) -> bool {
+        self.val == other.val
+    }
+}
+pub static __SPEC_XDR_TYPE_USEDRECURSIVELEAF: [u8; 84usize] = UsedRecursiveLeaf::spec_xdr();
+impl UsedRecursiveLeaf {
+    pub const fn spec_xdr() -> [u8; 84usize] {
+        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x11UsedRecursiveLeaf\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x11UsedRecursiveRoot\0\0\0"
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRecursiveLeaf {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
+        let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+            .map_err(|_| ConversionError)?;
+        Ok(Self {
+            val: vals[0]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedRecursiveLeaf> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UsedRecursiveLeaf,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let vals: [Val; 1usize] = [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
+        Ok(env
+            .map_new_from_slices(&KEYS, &vals)
+            .map_err(|_| ConversionError)?
+            .into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedRecursiveLeaf> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UsedRecursiveLeaf,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedRecursiveLeaf>>::try_from_val(env, *val)
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for UsedRecursiveLeaf {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::xdr::ScMap,
+    ) -> Result<Self, soroban_sdk::xdr::Error> {
+        use soroban_sdk::xdr::Validate;
+        use soroban_sdk::TryIntoVal;
+        let map = val;
+        if map.len() != 1usize {
+            return Err(soroban_sdk::xdr::Error::Invalid);
+        }
+        map.validate()?;
+        Ok(Self {
+            val: {
+                let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
+                    "val"
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                )
+                .into();
+                let idx = map
+                    .binary_search_by_key(&key, |entry| entry.key.clone())
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                rv.try_into_val(env)
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?
+            },
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVal> for UsedRecursiveLeaf {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::xdr::ScVal,
+    ) -> Result<Self, soroban_sdk::xdr::Error> {
+        if let soroban_sdk::xdr::ScVal::Map(Some(map)) = val {
+            <_ as soroban_sdk::TryFromVal<_, _>>::try_from_val(env, map)
+        } else {
+            Err(soroban_sdk::xdr::Error::Invalid)
+        }
+    }
+}
+impl TryFrom<&UsedRecursiveLeaf> for soroban_sdk::xdr::ScMap {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from(val: &UsedRecursiveLeaf) -> Result<Self, soroban_sdk::xdr::Error> {
+        extern crate alloc;
+        use soroban_sdk::TryFromVal;
+        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
+            soroban_sdk::xdr::ScMapEntry {
+                key: soroban_sdk::xdr::ScSymbol(
+                    "val"
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                )
+                .into(),
+                val: (&val.val)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            },
+        ])))
+    }
+}
+impl TryFrom<UsedRecursiveLeaf> for soroban_sdk::xdr::ScMap {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from(val: UsedRecursiveLeaf) -> Result<Self, soroban_sdk::xdr::Error> {
+        (&val).try_into()
+    }
+}
+impl TryFrom<&UsedRecursiveLeaf> for soroban_sdk::xdr::ScVal {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from(val: &UsedRecursiveLeaf) -> Result<Self, soroban_sdk::xdr::Error> {
+        Ok(soroban_sdk::xdr::ScVal::Map(Some(val.try_into()?)))
+    }
+}
+impl TryFrom<UsedRecursiveLeaf> for soroban_sdk::xdr::ScVal {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from(val: UsedRecursiveLeaf) -> Result<Self, soroban_sdk::xdr::Error> {
+        (&val).try_into()
+    }
+}
+const _: () = {
+    use soroban_sdk::testutils::arbitrary::arbitrary;
+    use soroban_sdk::testutils::arbitrary::std;
+    pub struct ArbitraryUsedRecursiveLeaf {
+        val: <Vec<
+            UsedRecursiveRoot,
+        > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for ArbitraryUsedRecursiveLeaf {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            ::core::fmt::Formatter::debug_struct_field1_finish(
+                f,
+                "ArbitraryUsedRecursiveLeaf",
+                "val",
+                &&self.val,
+            )
+        }
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for ArbitraryUsedRecursiveLeaf {
+        #[inline]
+        fn clone(&self) -> ArbitraryUsedRecursiveLeaf {
+            ArbitraryUsedRecursiveLeaf {
+                val: ::core::clone::Clone::clone(&self.val),
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for ArbitraryUsedRecursiveLeaf {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {
+            let _: ::core::cmp::AssertParamIsEq<
+                <Vec<
+                    UsedRecursiveRoot,
+                > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+            >;
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for ArbitraryUsedRecursiveLeaf {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for ArbitraryUsedRecursiveLeaf {
+        #[inline]
+        fn eq(&self, other: &ArbitraryUsedRecursiveLeaf) -> bool {
+            self.val == other.val
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for ArbitraryUsedRecursiveLeaf {
+        #[inline]
+        fn cmp(&self, other: &ArbitraryUsedRecursiveLeaf) -> ::core::cmp::Ordering {
+            ::core::cmp::Ord::cmp(&self.val, &other.val)
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for ArbitraryUsedRecursiveLeaf {
+        #[inline]
+        fn partial_cmp(
+            &self,
+            other: &ArbitraryUsedRecursiveLeaf,
+        ) -> ::core::option::Option<::core::cmp::Ordering> {
+            ::core::cmp::PartialOrd::partial_cmp(&self.val, &other.val)
+        }
+    }
+    const _: () = {
+        #[allow(non_upper_case_globals)]
+        const RECURSIVE_COUNT_ArbitraryUsedRecursiveLeaf: ::std::thread::LocalKey<
+            std::cell::Cell<u32>,
+        > = {
+            #[inline]
+            fn __init() -> std::cell::Cell<u32> {
+                std::cell::Cell::new(0)
+            }
+            unsafe {
+                ::std::thread::LocalKey::new(
+                    const {
+                        if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
+                            |init| {
+                                #[thread_local]
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    (),
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
+                            }
+                        } else {
+                            |init| {
+                                #[thread_local]
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    !,
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
+                            }
+                        }
+                    },
+                )
+            }
+        };
+        #[automatically_derived]
+        impl<'arbitrary> arbitrary::Arbitrary<'arbitrary> for ArbitraryUsedRecursiveLeaf {
+            fn arbitrary(u: &mut arbitrary::Unstructured<'arbitrary>) -> arbitrary::Result<Self> {
+                let guard_against_recursion = u.is_empty();
+                if guard_against_recursion {
+                    RECURSIVE_COUNT_ArbitraryUsedRecursiveLeaf.with(|count| {
+                        if count.get() > 0 {
+                            return Err(arbitrary::Error::NotEnoughData);
+                        }
+                        count.set(count.get() + 1);
+                        Ok(())
+                    })?;
+                }
+                let result = (|| {
+                    Ok(ArbitraryUsedRecursiveLeaf {
+                        val: arbitrary::Arbitrary::arbitrary(u)?,
+                    })
+                })();
+                if guard_against_recursion {
+                    RECURSIVE_COUNT_ArbitraryUsedRecursiveLeaf.with(|count| {
+                        count.set(count.get() - 1);
+                    });
+                }
+                result
+            }
+            fn arbitrary_take_rest(
+                mut u: arbitrary::Unstructured<'arbitrary>,
+            ) -> arbitrary::Result<Self> {
+                let guard_against_recursion = u.is_empty();
+                if guard_against_recursion {
+                    RECURSIVE_COUNT_ArbitraryUsedRecursiveLeaf.with(|count| {
+                        if count.get() > 0 {
+                            return Err(arbitrary::Error::NotEnoughData);
+                        }
+                        count.set(count.get() + 1);
+                        Ok(())
+                    })?;
+                }
+                let result = (|| {
+                    Ok(ArbitraryUsedRecursiveLeaf {
+                        val: arbitrary::Arbitrary::arbitrary_take_rest(u)?,
+                    })
+                })();
+                if guard_against_recursion {
+                    RECURSIVE_COUNT_ArbitraryUsedRecursiveLeaf.with(|count| {
+                        count.set(count.get() - 1);
+                    });
+                }
+                result
+            }
+            #[inline]
+            fn size_hint(depth: usize) -> (usize, Option<usize>) {
+                arbitrary::size_hint::recursion_guard(depth, |depth| {
+                    arbitrary::size_hint::and_all(
+                        &[
+                            <<Vec<
+                                UsedRecursiveRoot,
+                            > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                depth,
+                            ),
+                        ],
+                    )
+                })
+            }
+        }
+    };
+    impl soroban_sdk::testutils::arbitrary::SorobanArbitrary for UsedRecursiveLeaf {
+        type Prototype = ArbitraryUsedRecursiveLeaf;
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, ArbitraryUsedRecursiveLeaf> for UsedRecursiveLeaf {
+        type Error = soroban_sdk::ConversionError;
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            v: &ArbitraryUsedRecursiveLeaf,
+        ) -> std::result::Result<Self, Self::Error> {
+            Ok(UsedRecursiveLeaf {
+                val: soroban_sdk::IntoVal::into_val(&v.val, env),
+            })
+        }
+    }
+};
+pub struct UsedLeaf {
+    pub val: u32,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UsedLeaf {
+    #[inline]
+    fn clone(&self) -> UsedLeaf {
+        UsedLeaf {
+            val: ::core::clone::Clone::clone(&self.val),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UsedLeaf {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field1_finish(f, "UsedLeaf", "val", &&self.val)
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UsedLeaf {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<u32>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UsedLeaf {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UsedLeaf {
+    #[inline]
+    fn eq(&self, other: &UsedLeaf) -> bool {
+        self.val == other.val
+    }
+}
+pub static __SPEC_XDR_TYPE_USEDLEAF: [u8; 44usize] = UsedLeaf::spec_xdr();
+impl UsedLeaf {
+    pub const fn spec_xdr() -> [u8; 44usize] {
+        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x08UsedLeaf\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedLeaf {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
+        let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+            .map_err(|_| ConversionError)?;
+        Ok(Self {
+            val: vals[0]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedLeaf> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UsedLeaf,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let vals: [Val; 1usize] = [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
+        Ok(env
+            .map_new_from_slices(&KEYS, &vals)
+            .map_err(|_| ConversionError)?
+            .into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedLeaf> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UsedLeaf,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedLeaf>>::try_from_val(env, *val)
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for UsedLeaf {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::xdr::ScMap,
+    ) -> Result<Self, soroban_sdk::xdr::Error> {
+        use soroban_sdk::xdr::Validate;
+        use soroban_sdk::TryIntoVal;
+        let map = val;
+        if map.len() != 1usize {
+            return Err(soroban_sdk::xdr::Error::Invalid);
+        }
+        map.validate()?;
+        Ok(Self {
+            val: {
+                let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
+                    "val"
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                )
+                .into();
+                let idx = map
+                    .binary_search_by_key(&key, |entry| entry.key.clone())
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                rv.try_into_val(env)
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?
+            },
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVal> for UsedLeaf {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::xdr::ScVal,
+    ) -> Result<Self, soroban_sdk::xdr::Error> {
+        if let soroban_sdk::xdr::ScVal::Map(Some(map)) = val {
+            <_ as soroban_sdk::TryFromVal<_, _>>::try_from_val(env, map)
+        } else {
+            Err(soroban_sdk::xdr::Error::Invalid)
+        }
+    }
+}
+impl TryFrom<&UsedLeaf> for soroban_sdk::xdr::ScMap {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from(val: &UsedLeaf) -> Result<Self, soroban_sdk::xdr::Error> {
+        extern crate alloc;
+        use soroban_sdk::TryFromVal;
+        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
+            soroban_sdk::xdr::ScMapEntry {
+                key: soroban_sdk::xdr::ScSymbol(
+                    "val"
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                )
+                .into(),
+                val: (&val.val)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            },
+        ])))
+    }
+}
+impl TryFrom<UsedLeaf> for soroban_sdk::xdr::ScMap {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from(val: UsedLeaf) -> Result<Self, soroban_sdk::xdr::Error> {
+        (&val).try_into()
+    }
+}
+impl TryFrom<&UsedLeaf> for soroban_sdk::xdr::ScVal {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from(val: &UsedLeaf) -> Result<Self, soroban_sdk::xdr::Error> {
+        Ok(soroban_sdk::xdr::ScVal::Map(Some(val.try_into()?)))
+    }
+}
+impl TryFrom<UsedLeaf> for soroban_sdk::xdr::ScVal {
+    type Error = soroban_sdk::xdr::Error;
+    #[inline(always)]
+    fn try_from(val: UsedLeaf) -> Result<Self, soroban_sdk::xdr::Error> {
+        (&val).try_into()
+    }
+}
+const _: () = {
+    use soroban_sdk::testutils::arbitrary::arbitrary;
+    use soroban_sdk::testutils::arbitrary::std;
+    pub struct ArbitraryUsedLeaf {
+        val: <u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for ArbitraryUsedLeaf {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            ::core::fmt::Formatter::debug_struct_field1_finish(
+                f,
+                "ArbitraryUsedLeaf",
+                "val",
+                &&self.val,
+            )
+        }
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for ArbitraryUsedLeaf {
+        #[inline]
+        fn clone(&self) -> ArbitraryUsedLeaf {
+            ArbitraryUsedLeaf {
+                val: ::core::clone::Clone::clone(&self.val),
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for ArbitraryUsedLeaf {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {
+            let _: ::core::cmp::AssertParamIsEq<
+                <u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+            >;
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for ArbitraryUsedLeaf {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for ArbitraryUsedLeaf {
+        #[inline]
+        fn eq(&self, other: &ArbitraryUsedLeaf) -> bool {
+            self.val == other.val
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for ArbitraryUsedLeaf {
+        #[inline]
+        fn cmp(&self, other: &ArbitraryUsedLeaf) -> ::core::cmp::Ordering {
+            ::core::cmp::Ord::cmp(&self.val, &other.val)
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for ArbitraryUsedLeaf {
+        #[inline]
+        fn partial_cmp(
+            &self,
+            other: &ArbitraryUsedLeaf,
+        ) -> ::core::option::Option<::core::cmp::Ordering> {
+            ::core::cmp::PartialOrd::partial_cmp(&self.val, &other.val)
+        }
+    }
+    const _: () = {
+        #[allow(non_upper_case_globals)]
+        const RECURSIVE_COUNT_ArbitraryUsedLeaf: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
+            #[inline]
+            fn __init() -> std::cell::Cell<u32> {
+                std::cell::Cell::new(0)
+            }
+            unsafe {
+                ::std::thread::LocalKey::new(
+                    const {
+                        if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
+                            |init| {
+                                #[thread_local]
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    (),
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
+                            }
+                        } else {
+                            |init| {
+                                #[thread_local]
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    !,
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
+                            }
+                        }
+                    },
+                )
+            }
+        };
+        #[automatically_derived]
+        impl<'arbitrary> arbitrary::Arbitrary<'arbitrary> for ArbitraryUsedLeaf {
+            fn arbitrary(u: &mut arbitrary::Unstructured<'arbitrary>) -> arbitrary::Result<Self> {
+                let guard_against_recursion = u.is_empty();
+                if guard_against_recursion {
+                    RECURSIVE_COUNT_ArbitraryUsedLeaf.with(|count| {
+                        if count.get() > 0 {
+                            return Err(arbitrary::Error::NotEnoughData);
+                        }
+                        count.set(count.get() + 1);
+                        Ok(())
+                    })?;
+                }
+                let result = (|| {
+                    Ok(ArbitraryUsedLeaf {
+                        val: arbitrary::Arbitrary::arbitrary(u)?,
+                    })
+                })();
+                if guard_against_recursion {
+                    RECURSIVE_COUNT_ArbitraryUsedLeaf.with(|count| {
+                        count.set(count.get() - 1);
+                    });
+                }
+                result
+            }
+            fn arbitrary_take_rest(
+                mut u: arbitrary::Unstructured<'arbitrary>,
+            ) -> arbitrary::Result<Self> {
+                let guard_against_recursion = u.is_empty();
+                if guard_against_recursion {
+                    RECURSIVE_COUNT_ArbitraryUsedLeaf.with(|count| {
+                        if count.get() > 0 {
+                            return Err(arbitrary::Error::NotEnoughData);
+                        }
+                        count.set(count.get() + 1);
+                        Ok(())
+                    })?;
+                }
+                let result = (|| {
+                    Ok(ArbitraryUsedLeaf {
+                        val: arbitrary::Arbitrary::arbitrary_take_rest(u)?,
+                    })
+                })();
+                if guard_against_recursion {
+                    RECURSIVE_COUNT_ArbitraryUsedLeaf.with(|count| {
+                        count.set(count.get() - 1);
+                    });
+                }
+                result
+            }
+            #[inline]
+            fn size_hint(depth: usize) -> (usize, Option<usize>) {
+                arbitrary::size_hint::recursion_guard(depth, |depth| {
+                    arbitrary::size_hint::and_all(
+                        &[
+                            <<u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                depth,
+                            ),
+                        ],
+                    )
+                })
+            }
+        }
+    };
+    impl soroban_sdk::testutils::arbitrary::SorobanArbitrary for UsedLeaf {
+        type Prototype = ArbitraryUsedLeaf;
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, ArbitraryUsedLeaf> for UsedLeaf {
+        type Error = soroban_sdk::ConversionError;
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            v: &ArbitraryUsedLeaf,
+        ) -> std::result::Result<Self, Self::Error> {
+            Ok(UsedLeaf {
+                val: soroban_sdk::IntoVal::into_val(&v.val, env),
+            })
+        }
+    }
+};
 mod wasm_imported {
     pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01*\x07`\x02~~\x01~`\x03~~~\x01~`\x01~\x01~`\x00\x01~`\x02\x7f\x7f\x01~`\x04\x7f\x7f\x7f\x7f\x01~`\x02\x7f~\x00\x02%\x06\x01b\x01j\x00\x00\x01x\x011\x00\x00\x01v\x01g\x00\x00\x01m\x019\x00\x01\x01i\x012\x00\x02\x01i\x011\x00\x02\x03\x0b\n\x03\x04\x03\x02\x00\x05\x00\x00\x06\x06\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x82\x80\xc0\x00\x0b\x7f\x00A\xa0\x80\xc0\x00\x0b\x7f\x00A\xa0\x80\xc0\x00\x0b\x07\x81\x01\n\x06memory\x02\x00\tfn_enum_a\x00\x06\rfn_enum_int_a\x00\x08\nfn_error_a\x00\t\nfn_event_a\x00\n\x0bfn_struct_a\x00\x0c\x11fn_struct_tuple_a\x00\r\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\xbd\x08\n\x8b\x02\x03\x01\x7f\x01~\x03\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00B\x00!\x01A~!\x02\x03~\x02@\x02@\x02@\x02@\x02@ \x02E\r\x00A\x01!\x03 \x02A\x82\x80\xc0\x80\x00j-\x00\x00\"\x04A\xdf\x00F\r\x04 \x04APjA\xff\x01qA\nI\r\x02 \x04A\xbf\x7fjA\xff\x01qA\x1aI\r\x03\x02@ \x04A\x9f\x7fjA\xff\x01qA\x1aO\r\x00 \x04AEj!\x03\x0c\x05\x0b \x00 \x04\xadB\x08\x86B\x01\x847\x03\x00A\x80\x80\xc0\x80\x00\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x80\x80\x80\x80\x00!\x01\x0c\x01\x0b \x00 \x01B\x08\x86B\x0e\x84\"\x017\x02\x04\x0b \x00 \x017\x03\x00 \x00A\x01\x10\x87\x80\x80\x80\x00!\x01 \x00A\x10j$\x80\x80\x80\x80\x00 \x01\x0f\x0b \x04ARj!\x03\x0c\x01\x0b \x04AKj!\x03\x0b \x01B\x06\x86 \x03\xadB\xff\x01\x83\x84!\x01 \x02A\x01j!\x02\x0c\x00\x0b\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x82\x80\x80\x80\x00\x0b\x08\x00B\x84\x80\x80\x800\x0b*\x00\x02@ \x00B\xff\x01\x83B\x04Q\r\x00\x00\x0bB\x83\x80\x80\x80  \x00B\x84\x80\x80\x80p\x83 \x00B\x80\x80\x80\x80\x10T\x1b\x0b\xdc\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcd\x00R\r\x00 \x01B\xff\x01\x83B\xc9\x00R\r\x00 \x02 \x007\x03\x08 \x02B\x8e\xcc\xc1\xfc\xac\xdd\xab\x017\x03\x00A\x00!\x03\x03@\x02@ \x03A\x10G\r\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02A\x10j \x03j \x02 \x03j)\x03\x007\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x02A\x10jA\x02\x10\x87\x80\x80\x80\x00!\x00 \x02 \x017\x03\x10 \x00A\x98\x80\xc0\x80\x00A\x01 \x02A\x10jA\x01\x10\x8b\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x02A j$\x80\x80\x80\x80\x00B\x02\x0f\x0b \x02A\x10j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b\x00\x0b.\x00\x02@ \x01 \x03F\r\x00\x00\x0b \x00\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x83\x80\x80\x80\x00\x0by\x01\x02\x7f#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\x04R\r\x00A\x01A\x02A\x00 \x01\xa7A\xff\x01q\"\x03\x1b \x03A\x01F\x1b\"\x03A\x02F\r\x00 \x02 \x03\xad7\x03\x08 \x02 \x00B\x84\x80\x80\x80p\x837\x03\x00A\x88\x80\xc0\x80\x00A\x02 \x02A\x02\x10\x8b\x80\x80\x80\x00!\x00 \x02A\x10j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b\xb2\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00 \x02A\x10j \x00\x10\x8e\x80\x80\x80\x00\x02@ \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x8e\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x01 \x02A\x10j \x00\x10\x8f\x80\x80\x80\x00 \x02(\x02\x10\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x8f\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02 \x02)\x03\x187\x03\x08 \x02 \x007\x03\x00 \x02A\x02\x10\x87\x80\x80\x80\x00!\x00 \x02A j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b]\x02\x01\x7f\x01~\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc1\x00F\r\x00\x02@ \x02A\x07F\r\x00B\x01!\x03B\x83\x90\x80\x80\x80\x01!\x01\x0c\x02\x0b \x01B\x08\x87!\x01B\x00!\x03\x0c\x01\x0bB\x00!\x03 \x01\x10\x84\x80\x80\x80\x00!\x01\x0b \x00 \x037\x03\x00 \x00 \x017\x03\x08\x0bF\x00\x02@\x02@ \x01B\x80\x80\x80\x80\x80\x80\x80\xc0\x00|B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x01B\x08\x86B\x07\x84!\x01\x0c\x01\x0b \x01\x10\x85\x80\x80\x80\x00!\x01\x0b \x00B\x007\x03\x00 \x00 \x017\x03\x08\x0b\x0b)\x01\x00A\x80\x80\xc0\x00\x0b V2f1f2\x00\x00\x02\x00\x10\x00\x02\x00\x00\x00\x04\x00\x10\x00\x02\x00\x00\x00\x04\x00\x10\x00\x02\x00\x00\x00\x00\xbf\x0e\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\tfn_enum_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_error_a\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05input\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd0\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_event_a\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bfn_struct_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rfn_enum_int_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x08EnumIntA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11fn_struct_tuple_a\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumB\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x07\x00\x00\x00\x07\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumC\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorB\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x0c\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorC\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00e\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00f\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventA\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventB\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_b\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventC\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_c\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructA\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructB\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructC\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x03\xea\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntA\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntB\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntC\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\xc8\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x01,\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleB\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleC\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x0b\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1a\x00\x00\x00\x00\x00+\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00";
     pub trait Contract {
@@ -18188,11 +21028,13 @@ impl Contract {
         }
     }
     pub fn with_vec(_env: Env, _v: Vec<UsedVecElement>) {}
+    pub fn with_vec_nested(_env: Env, _v: Vec<UsedVecElementNested>) {}
     pub fn with_map(_env: Env, _m: Map<UsedMapKey, UsedMapVal>) {}
     pub fn with_option(_env: Env, _o: Option<UsedOptionElement>) {}
     pub fn with_result(_env: Env) -> Result<UsedResultOk, UsedErrorEnum> {
         Ok(UsedResultOk { data: 1 })
     }
+    pub fn with_recursion(_env: Env, _r: UsedRecursiveRoot) {}
     pub fn publish_simple(env: Env) {
         UsedEventSimple {
             kind: Symbol::new(&env, "transfer"),
@@ -18357,6 +21199,21 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
+pub mod __Contract__with_vec_nested__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    pub static __SPEC_XDR_FN_WITH_VEC_NESTED: [u8; 80usize] =
+        super::Contract::spec_xdr_with_vec_nested();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_with_vec_nested() -> [u8; 80usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x0fwith_vec_nested\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x14UsedVecElementNested\0\0\0\0"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
 pub mod __Contract__with_map__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
@@ -18395,6 +21252,21 @@ impl Contract {
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_result() -> [u8; 80usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0bwith_result\0\0\0\0\0\0\0\0\x01\0\0\x03\xe9\0\0\x07\xd0\0\0\0\x0cUsedResultOk\0\0\x07\xd0\0\0\0\rUsedErrorEnum\0\0\0"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__with_recursion__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    pub static __SPEC_XDR_FN_WITH_RECURSION: [u8; 76usize] =
+        super::Contract::spec_xdr_with_recursion();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_with_recursion() -> [u8; 76usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x0ewith_recursion\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01r\0\0\0\0\0\x07\xd0\0\0\0\x11UsedRecursiveRoot\0\0\0\0\0\0\0"
     }
 }
 #[doc(hidden)]
@@ -19096,6 +21968,78 @@ impl<'a> ContractClient<'a> {
         }
         res
     }
+    pub fn with_vec_nested(&self, _v: &Vec<UsedVecElementNested>) -> () {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "with_vec_nested") },
+            ::soroban_sdk::Vec::from_array(&self.env, [_v.into_val(&self.env)]),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
+    pub fn try_with_vec_nested(
+        &self,
+        _v: &Vec<UsedVecElementNested>,
+    ) -> Result<
+        Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "with_vec_nested") },
+            ::soroban_sdk::Vec::from_array(&self.env, [_v.into_val(&self.env)]),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
     pub fn with_map(&self, _m: &Map<UsedMapKey, UsedMapVal>) -> () {
         use core::ops::Not;
         let old_auth_manager = self
@@ -19316,6 +22260,78 @@ impl<'a> ContractClient<'a> {
             &self.address,
             &{ soroban_sdk::Symbol::new(&self.env, "with_result") },
             ::soroban_sdk::Vec::new(&self.env),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
+    pub fn with_recursion(&self, _r: &UsedRecursiveRoot) -> () {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "with_recursion") },
+            ::soroban_sdk::Vec::from_array(&self.env, [_r.into_val(&self.env)]),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
+    pub fn try_with_recursion(
+        &self,
+        _r: &UsedRecursiveRoot,
+    ) -> Result<
+        Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "with_recursion") },
+            ::soroban_sdk::Vec::from_array(&self.env, [_r.into_val(&self.env)]),
         );
         if let Some(old_auth_manager) = old_auth_manager {
             self.env.host().set_auth_manager(old_auth_manager).unwrap();
@@ -20226,6 +23242,13 @@ impl ContractArgs {
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
+    pub fn with_vec_nested<'i>(
+        _v: &'i Vec<UsedVecElementNested>,
+    ) -> (&'i Vec<UsedVecElementNested>,) {
+        (_v,)
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
     pub fn with_map<'i>(_m: &'i Map<UsedMapKey, UsedMapVal>) -> (&'i Map<UsedMapKey, UsedMapVal>,) {
         (_m,)
     }
@@ -20238,6 +23261,11 @@ impl ContractArgs {
     #[allow(clippy::unused_unit)]
     pub fn with_result<'i>() -> () {
         ()
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn with_recursion<'i>(_r: &'i UsedRecursiveRoot) -> (&'i UsedRecursiveRoot,) {
+        (_r,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
@@ -20627,6 +23655,55 @@ pub extern "C" fn __Contract__with_vec__invoke_raw_extern(
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).with_vec_nested` instead")]
+#[allow(deprecated)]
+pub fn __Contract__with_vec_nested__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::with_vec_nested(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).with_vec_nested` instead")]
+pub fn __Contract__with_vec_nested__invoke_raw_slice(
+    env: soroban_sdk::Env,
+    args: &[soroban_sdk::Val],
+) -> soroban_sdk::Val {
+    if args.len() != 1usize {
+        {
+            ::core::panicking::panic_fmt(format_args!(
+                "invalid number of input arguments: {0} expected, got {1}",
+                1usize,
+                args.len(),
+            ));
+        };
+    }
+    #[allow(deprecated)]
+    __Contract__with_vec_nested__invoke_raw(env, args[0usize])
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).with_vec_nested` instead")]
+pub extern "C" fn __Contract__with_vec_nested__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__with_vec_nested__invoke_raw(soroban_sdk::Env::default(), arg_0)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).with_map` instead")]
 #[allow(deprecated)]
 pub fn __Contract__with_map__invoke_raw(
@@ -20758,6 +23835,55 @@ pub fn __Contract__with_result__invoke_raw_slice(
 pub extern "C" fn __Contract__with_result__invoke_raw_extern() -> soroban_sdk::Val {
     #[allow(deprecated)]
     __Contract__with_result__invoke_raw(soroban_sdk::Env::default())
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).with_recursion` instead")]
+#[allow(deprecated)]
+pub fn __Contract__with_recursion__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::with_recursion(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).with_recursion` instead")]
+pub fn __Contract__with_recursion__invoke_raw_slice(
+    env: soroban_sdk::Env,
+    args: &[soroban_sdk::Val],
+) -> soroban_sdk::Val {
+    if args.len() != 1usize {
+        {
+            ::core::panicking::panic_fmt(format_args!(
+                "invalid number of input arguments: {0} expected, got {1}",
+                1usize,
+                args.len(),
+            ));
+        };
+    }
+    #[allow(deprecated)]
+    __Contract__with_recursion__invoke_raw(env, args[0usize])
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).with_recursion` instead")]
+pub extern "C" fn __Contract__with_recursion__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__with_recursion__invoke_raw(soroban_sdk::Env::default(), arg_0)
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
@@ -21246,7 +24372,7 @@ pub extern "C" fn __Contract__publish_ref_event__invoke_raw_extern() -> soroban_
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract____72b5aebeb1af1dc083347284f3fd5e8bb48509c944bf8958f42d24678cfcd7a7_ctor() {
+fn __Contract____e2d4dfe024732e4cdeeeac2f5bc8fbebcb3aed9b64a15d5cdfc055258ca216d0_ctor() {
     #[allow(unsafe_code)]
     {
         #[link_section = ".init_array"]
@@ -21258,7 +24384,7 @@ fn __Contract____72b5aebeb1af1dc083347284f3fd5e8bb48509c944bf8958f42d24678cfcd7a
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract____72b5aebeb1af1dc083347284f3fd5e8bb48509c944bf8958f42d24678cfcd7a7_ctor();
+                    __Contract____e2d4dfe024732e4cdeeeac2f5bc8fbebcb3aed9b64a15d5cdfc055258ca216d0_ctor();
                 };
                 core::default::Default::default()
             }
@@ -21302,6 +24428,11 @@ fn __Contract____72b5aebeb1af1dc083347284f3fd5e8bb48509c944bf8958f42d24678cfcd7a
             &__Contract__with_vec__invoke_raw_slice,
         );
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "with_vec_nested",
+            #[allow(deprecated)]
+            &__Contract__with_vec_nested__invoke_raw_slice,
+        );
+        <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
             "with_map",
             #[allow(deprecated)]
             &__Contract__with_map__invoke_raw_slice,
@@ -21315,6 +24446,11 @@ fn __Contract____72b5aebeb1af1dc083347284f3fd5e8bb48509c944bf8958f42d24678cfcd7a
             "with_result",
             #[allow(deprecated)]
             &__Contract__with_result__invoke_raw_slice,
+        );
+        <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "with_recursion",
+            #[allow(deprecated)]
+            &__Contract__with_recursion__invoke_raw_slice,
         );
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
             "publish_simple",
@@ -21387,7 +24523,7 @@ mod test {
     use soroban_sdk::xdr::ScSpecEntry;
     use std::collections::HashSet;
     use std::vec::Vec;
-    const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01D\x0b`\x02~~\x01~`\x01~\x01~`\x03~~~\x01~`\x04~~~~\x01~`\x00\x01~`\x02\x7f\x7f\x01~`\x04\x7f\x7f\x7f\x7f\x01~`\x01~\x00`\x05~\x7f\x7f\x7f\x7f\x00`\x03\x7f\x7f\x7f\x00`\x01\x7f\x01~\x021\x08\x01x\x011\x00\x00\x01i\x012\x00\x01\x01v\x01h\x00\x02\x01v\x01g\x00\x00\x01b\x01j\x00\x00\x01x\x015\x00\x01\x01m\x019\x00\x02\x01m\x01a\x00\x03\x03\x1f\x1e\x04\x05\x00\x06\x04\x04\x04\x04\x04\x04\x01\x07\x04\x01\x08\x01\x01\x04\x01\x01\x01\x00\x04\x04\t\n\x01\x04\x01\x01\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x9a\x82\xc0\x00\x0b\x7f\x00A\xb0\x82\xc0\x00\x0b\x7f\x00A\xb0\x82\xc0\x00\x0b\x07\xa8\x03\x1a\x06memory\x02\x00\x11publish_data_type\x00\x08\x13publish_nested_data\x00\x0c\x14publish_nested_topic\x00\r\x11publish_ref_event\x00\x0f\x0epublish_simple\x00\x10\x12publish_topic_type\x00\x11\x11with_assert_error\x00\x12\nwith_error\x00\x14\x0fwith_lib_struct\x00\x15\x08with_map\x00\x17\x0cwith_non_pub\x00\x18\x12with_non_pub_error\x00\x19\x0bwith_option\x00\x1a\x10with_panic_error\x00\x1b\x14with_panic_raw_error\x00\x1c\nwith_param\x00\x1d\x0bwith_result\x00\x1e\x0bwith_return\x00\x1f\nwith_tuple\x00\"\x11with_tuple_return\x00#\x08with_vec\x00$\x12with_wasm_imported\x00%\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\xb4\x16\x1e\x9a\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A k\"\x00$\x80\x80\x80\x80\x00A\xe8\x80\xc0\x80\x00A\x06\x10\x89\x80\x80\x80\x00!\x01A\xb0\x81\xc0\x80\x00A\x19\x10\x89\x80\x80\x80\x00 \x01\x10\x8a\x80\x80\x80\x00!\x01 \x00B\x84\x80\x80\x80 7\x03\x18 \x00B\x84\x80\x80\x80\x107\x03\x10 \x00A\xc0\x80\xc0\x80\x00A\x02 \x00A\x10jA\x02\x10\x8b\x80\x80\x80\x007\x03\x08 \x01A\x94\x81\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x8b\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A j$\x80\x80\x80\x80\x00B\x02\x0bE\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00 \x02 \x00 \x01\x10\xa0\x80\x80\x80\x00\x02@ \x02(\x02\x00A\x01G\r\x00\x00\x0b \x02)\x03\x08!\x03 \x02A\x10j$\x80\x80\x80\x80\x00 \x03\x0b\x92\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00 \x02 \x017\x03\x08 \x02 \x007\x03\x00A\x00!\x03\x03~\x02@ \x03A\x10G\r\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02A\x10j \x03j \x02 \x03j)\x03\x007\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x02A\x10j\x10\xa1\x80\x80\x80\x00!\x01 \x02A j$\x80\x80\x80\x80\x00 \x01\x0f\x0b \x02A\x10j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b.\x00\x02@ \x01 \x03F\r\x00\x00\x0b \x00\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x86\x80\x80\x80\x00\x0b\xa7\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\x81\x80\xc0\x80\x00A\x06\x10\x89\x80\x80\x80\x00!\x01A\xe3\x81\xc0\x80\x00A\x1b\x10\x89\x80\x80\x80\x00 \x01\x10\x8a\x80\x80\x80\x00!\x01 \x00B\x84\x80\x80\x80\xa0\x057\x03\x08 \x00A\x9c\x80\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x8b\x80\x80\x80\x007\x03\x00 \x00A\xd8\x80\xc0\x80\x00A\x01 \x00A\x01\x10\x8b\x80\x80\x80\x007\x03\x08 \x01A\x94\x81\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x8b\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\x9f\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\xfe\x81\xc0\x80\x00A\x1c\x10\x89\x80\x80\x80\x00!\x01 \x00B\x84\x80\x80\x80\xa0\x057\x03\x08 \x00A\x9c\x80\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x8b\x80\x80\x80\x007\x03\x00 \x01A\xd8\x80\xc0\x80\x00A\x01 \x00A\x01\x10\x8b\x80\x80\x80\x00\x10\x8a\x80\x80\x80\x00!\x01 \x00\x10\x8e\x80\x80\x80\x007\x03\x08 \x01A\xf4\x80\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x8b\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\x06\x00B\x8b\xc8\x01\x0b\x9b\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\x9c\x81\xc0\x80\x00A\x14\x10\x89\x80\x80\x80\x00B\x84\x80\x80\x80\x10\x10\x8a\x80\x80\x80\x00!\x01 \x00B\x84\x80\x80\x80\xb0\x0c7\x03\x08 \x00A\x9c\x80\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x8b\x80\x80\x80\x007\x03\x00 \x00A\xb4\x80\xc0\x80\x00A\x01 \x00A\x01\x10\x8b\x80\x80\x80\x007\x03\x08 \x01A\x94\x81\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x8b\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0bu\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\xe0\x80\xc0\x80\x00A\x08\x10\x89\x80\x80\x80\x00!\x01A\xfc\x80\xc0\x80\x00A\x11\x10\x89\x80\x80\x80\x00 \x01\x10\x8a\x80\x80\x80\x00!\x01 \x00\x10\x8e\x80\x80\x80\x007\x03\x08 \x01A\xf4\x80\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x8b\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0bi\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\xc9\x81\xc0\x80\x00A\x1a\x10\x89\x80\x80\x80\x00B\x84\x80\x80\x80\x10\x10\x8a\x80\x80\x80\x00!\x01 \x00\x10\x8e\x80\x80\x80\x007\x03\x08 \x01A\xf4\x80\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x8b\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0b@\x01\x01\x7f\x02@\x02@A\x01A\x02A\x00 \x00\xa7A\xff\x01q\"\x01\x1b \x01A\x01F\x1b\"\x01A\x02F\r\x00 \x01A\x01qE\r\x01B\x02\x0f\x0b\x00\x0bB\x83\x80\x80\x80\x10\x10\x93\x80\x80\x80\x00\x00\x0b\x0b\x00 \x00\x10\x85\x80\x80\x80\x00\x1a\x0b\t\x00B\x84\x80\x80\x80\xa0\x05\x0b\x83\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00A\x00!\x02\x02@\x03@ \x02A\x10F\r\x01 \x01 \x02jB\x027\x03\x00 \x02A\x08j!\x02\x0c\x00\x0b\x0b\x02@\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xa0\x82\xc0\x80\x00A\x02 \x01A\x02\x10\x96\x80\x80\x80\x00 \x011\x00\x00B\xcb\x00R\r\x00 \x011\x00\x08B\xcd\x00Q\r\x01\x0b\x00\x0b \x01A\x10j$\x80\x80\x80\x80\x00B\x02\x0b1\x00\x02@ \x02 \x04F\r\x00\x00\x0b \x00 \x01\xadB \x86B\x04\x84 \x03\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x87\x80\x80\x80\x00\x1a\x0b\x14\x00\x02@ \x00B\xff\x01\x83B\xcc\x00Q\r\x00\x00\x0bB\x02\x0b]\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00 \x01B\x027\x03\x08\x02@\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\x9c\x80\xc0\x80\x00A\x01 \x01A\x08jA\x01\x10\x96\x80\x80\x80\x00 \x011\x00\x08B\x04Q\r\x01\x0b\x00\x0b \x01A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\x08\x00B\x84\x80\x80\x80\x10\x0bh\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00\x02@ \x00B\x02Q\r\x00 \x01B\x027\x03\x08\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xa8\x80\xc0\x80\x00A\x01 \x01A\x08jA\x01\x10\x96\x80\x80\x80\x00 \x01)\x03\x08B\xff\x01\x83B\x04Q\r\x01\x0b\x00\x0b \x01A\x10j$\x80\x80\x80\x80\x00B\x02\x0b?\x01\x01\x7f\x02@\x02@A\x01A\x02A\x00 \x00\xa7A\xff\x01q\"\x01\x1b \x01A\x01F\x1b\"\x01A\x02F\r\x00 \x01A\x01q\r\x01B\x02\x0f\x0b\x00\x0bB\x83\x80\x80\x80\x10\x10\x93\x80\x80\x80\x00\x00\x0b@\x01\x01\x7f\x02@\x02@A\x01A\x02A\x00 \x00\xa7A\xff\x01q\"\x01\x1b \x01A\x01F\x1b\"\x01A\x02F\r\x00 \x01A\x01q\r\x01B\x02\x0f\x0b\x00\x0bB\x83\x80\x80\x80\xf0\x00\x10\x93\x80\x80\x80\x00\x00\x0b\xec\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02A\x08j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b\x02@\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\x88\x80\xc0\x80\x00A\x02 \x02A\x08jA\x02\x10\x96\x80\x80\x80\x00 \x021\x00\x08B\x04R\r\x00 \x02B\x027\x03\x18 \x02)\x03\x10\"\x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\x9c\x80\xc0\x80\x00A\x01 \x02A\x18jA\x01\x10\x96\x80\x80\x80\x00\x02@ \x02)\x03\x18\"\x00\xa7A\xff\x01q\"\x03A\x07F\r\x00 \x03A\xc1\x00G\r\x01 \x00\x10\x81\x80\x80\x80\x00\x1a\x0b \x01B\xff\x01\x83B\x04R\r\x00 \x01B \x88\xa7A}jA}K\r\x01\x0b\x00\x0b \x02A j$\x80\x80\x80\x80\x00B\x02\x0bF\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00 \x00B\x84\x80\x80\x80\x107\x03\x08A\xa8\x80\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x8b\x80\x80\x80\x00!\x01 \x00A\x10j$\x80\x80\x80\x80\x00 \x01\x0be\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00 \x00A\xb0\x80\xc0\x80\x00A\x01\x10\xa0\x80\x80\x80\x00\x02@ \x00(\x02\x00A\x01G\r\x00\x00\x0b \x00)\x03\x08!\x01 \x00B\x84\x80\x80\x80\x107\x03\x08 \x00 \x017\x03\x00 \x00\x10\xa1\x80\x80\x80\x00!\x01 \x00A\x10j$\x80\x80\x80\x80\x00 \x01\x0b\xdb\x01\x02\x01~\x04\x7f\x02@\x02@ \x02A\tK\r\x00B\x00!\x03 \x02!\x04 \x01!\x05\x03@\x02@ \x04\r\x00 \x03B\x08\x86B\x0e\x84!\x03\x0c\x03\x0bA\x01!\x06\x02@ \x05-\x00\x00\"\x07A\xdf\x00F\r\x00\x02@\x02@ \x07APjA\xff\x01qA\nI\r\x00 \x07A\xbf\x7fjA\xff\x01qA\x1aI\r\x01 \x07A\x9f\x7fjA\xff\x01qA\x1aO\r\x04 \x07AEj!\x06\x0c\x02\x0b \x07ARj!\x06\x0c\x01\x0b \x07AKj!\x06\x0b \x03B\x06\x86 \x06\xadB\xff\x01\x83\x84!\x03 \x04A\x7fj!\x04 \x05A\x01j!\x05\x0c\x00\x0b\x0b \x01\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x84\x80\x80\x80\x00!\x03\x0b \x00B\x007\x03\x00 \x00 \x037\x03\x08\x0b\x17\x00 \x00\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x83\x80\x80\x80\x00\x0b\xba\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x01$\x80\x80\x80\x80\x00\x02@\x02@ \x00B\xff\x01\x83B\xcb\x00R\r\x00A\x00!\x02\x02@\x03@ \x02A\x10F\r\x01 \x01A\x08j \x02jB\x027\x03\x00 \x02A\x08j!\x02\x0c\x00\x0b\x0b \x00 \x01A\x08j\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x82\x80\x80\x80\x00\x1a \x01B\x027\x03\x18 \x01)\x03\x08\"\x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\x9c\x80\xc0\x80\x00A\x01 \x01A\x18jA\x01\x10\x96\x80\x80\x80\x00 \x011\x00\x18B\x04R\r\x00 \x011\x00\x10B\x04Q\r\x01\x0b\x00\x0b \x01A j$\x80\x80\x80\x80\x00B\x02\x0be\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A k\"\x00$\x80\x80\x80\x80\x00 \x00B\x84\x80\x80\x80\x107\x03\x18A\x9c\x80\xc0\x80\x00A\x01 \x00A\x18jA\x01\x10\x8b\x80\x80\x80\x00!\x01 \x00B\x84\x80\x80\x80 7\x03\x10 \x00 \x017\x03\x08 \x00A\x08j\x10\xa1\x80\x80\x80\x00!\x01 \x00A j$\x80\x80\x80\x80\x00 \x01\x0b\x14\x00\x02@ \x00B\xff\x01\x83B\xcb\x00Q\r\x00\x00\x0bB\x02\x0b\x83\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00A\x00!\x02\x02@\x03@ \x02A\x10F\r\x01 \x01 \x02jB\x027\x03\x00 \x02A\x08j!\x02\x0c\x00\x0b\x0b\x02@\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xa0\x82\xc0\x80\x00A\x02 \x01A\x02\x10\x96\x80\x80\x80\x00 \x011\x00\x00B\x04R\r\x00 \x01)\x03\x08B\xfe\x01\x83P\r\x01\x0b\x00\x0b \x01A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\x0b\xba\x02\x01\x00A\x80\x80\xc0\x00\x0b\xb0\x02anested\x00\x00\x00\x10\x00\x01\x00\x00\x00\x01\x00\x10\x00\x06\x00\x00\x00val\x00\x18\x00\x10\x00\x03\x00\x00\x00data$\x00\x10\x00\x04\x00\x00\x00A\x00\x00\x00\x01\x00\x10\x00\x06\x00\x00\x00xy\x00\x00<\x00\x10\x00\x01\x00\x00\x00=\x00\x10\x00\x01\x00\x00\x00inner\x00\x00\x00P\x00\x10\x00\x05\x00\x00\x00transfercoordsamountn\x00\x10\x00\x06\x00\x00\x00used_event_simplepayload\x8d\x00\x10\x00\x07\x00\x00\x00used_event_with_refsused_event_with_data_typeused_event_with_topic_typeused_event_with_nested_dataused_event_with_nested_topicf1f2\x00\x00\x1a\x01\x10\x00\x02\x00\x00\x00\x1c\x01\x10\x00\x02\x00\x00\x00\x00\x8b,\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08with_map\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01m\x00\x00\x00\x00\x00\x03\xec\x00\x00\x07\xd0\x00\x00\x00\nUsedMapKey\x00\x00\x00\x00\x07\xd0\x00\x00\x00\nUsedMapVal\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08with_vec\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01v\x00\x00\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00\x0eUsedVecElement\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nUnusedEnum\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01A\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01B\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nUsedMapKey\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02K1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02K2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nUsedMapVal\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01v\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nwith_error\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd0\x00\x00\x00\rUsedErrorEnum\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nwith_param\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01s\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x0fUsedParamStruct\x00\x00\x00\x00\x00\x00\x00\x00\x02ie\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x10UsedParamIntEnum\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nwith_tuple\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01t\x00\x00\x00\x00\x00\x03\xed\x00\x00\x00\x02\x00\x00\x07\xd0\x00\x00\x00\x10UsedTupleElement\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bUnusedEvent\x00\x00\x00\x00\x01\x00\x00\x00\x0cunused_event\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04data\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cUnusedStruct\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01x\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cUsedResultOk\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04data\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bwith_option\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01o\x00\x00\x00\x00\x00\x03\xe8\x00\x00\x07\xd0\x00\x00\x00\x11UsedOptionElement\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bwith_result\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x07\xd0\x00\x00\x00\x0cUsedResultOk\x00\x00\x07\xd0\x00\x00\x00\rUsedErrorEnum\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bwith_return\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0eUsedReturnEnum\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rUnusedIntEnum\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02U1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02U2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rUsedErrorEnum\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x08NotFound\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x07Invalid\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cwith_non_pub\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01s\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x10UsedNonPubStruct\x00\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0eUnusedPubError\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Nope\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0eUsedReturnEnum\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01A\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01B\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0eUsedVecElement\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04data\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fUsedParamStruct\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x06nested\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x12UsedNestedInStruct\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fUsedRefDataType\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x06nested\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x10UsedRefDataInner\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0epublish_simple\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fUsedEventSimple\x00\x00\x00\x00\x01\x00\x00\x00\x11used_event_simple\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x06amount\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10UsedParamIntEnum\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01X\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01Y\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10UsedRefDataInner\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10UsedRefTopicType\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04Send\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Recv\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10UsedTupleElement\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fwith_lib_struct\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01s\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x07StructC\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11UsedEventDataType\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01x\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x01y\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11UsedOptionElement\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04data\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10with_panic_error\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04fail\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11UsedEventWithRefs\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x14used_event_with_refs\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x07\xd0\x00\x00\x00\x10UsedRefTopicType\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x07payload\x00\x00\x00\x07\xd0\x00\x00\x00\x0fUsedRefDataType\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12UsedEventDataInner\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12UsedEventDataOuter\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05inner\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x12UsedEventDataInner\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12UsedEventTopicType\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x08Transfer\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Mint\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12UsedNestedInStruct\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x07\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12UsedPanicErrorEnum\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Boom\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11publish_data_type\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11publish_ref_event\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11with_assert_error\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02ok\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11with_tuple_return\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x03\xed\x00\x00\x00\x02\x00\x00\x07\xd0\x00\x00\x00\x16UsedTupleReturnElement\x00\x00\x00\x00\x00\x04\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13UsedAssertErrorEnum\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03Bad\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13UsedEventTopicInner\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13UsedEventTopicOuter\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05inner\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x13UsedEventTopicInner\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12publish_topic_type\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12with_non_pub_error\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd0\x00\x00\x00\x0fUsedNonPubError\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12with_wasm_imported\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01s\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13publish_nested_data\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14publish_nested_topic\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14with_panic_raw_error\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04fail\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x15UsedEventWithDataType\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x19used_event_with_data_type\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x07payload\x00\x00\x00\x07\xd0\x00\x00\x00\x11UsedEventDataType\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x16UsedTupleReturnElement\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x16UsedEventWithTopicType\x00\x00\x00\x00\x00\x01\x00\x00\x00\x1aused_event_with_topic_type\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x07\xd0\x00\x00\x00\x12UsedEventTopicType\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x06amount\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x17UsedEventWithNestedData\x00\x00\x00\x00\x01\x00\x00\x00\x1bused_event_with_nested_data\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x07payload\x00\x00\x00\x07\xd0\x00\x00\x00\x12UsedEventDataOuter\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x18UnusedNonContractFnParam\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01x\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x18UsedEventWithNestedTopic\x00\x00\x00\x01\x00\x00\x00\x1cused_event_with_nested_topic\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04info\x00\x00\x07\xd0\x00\x00\x00\x13UsedEventTopicOuter\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x06amount\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x19UnusedNonContractFnReturn\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01x\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumB\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x07\x00\x00\x00\x07\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumC\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorB\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x0c\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorC\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00e\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00f\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventA\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventB\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_b\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventC\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_c\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructA\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructB\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructC\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x03\xea\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntA\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntB\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntC\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\xc8\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x01,\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleB\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleC\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x0b\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1a\x00\x00\x00\x00\x00+\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00";
+    const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01R\x0e`\x02~~\x01~`\x01~\x01~`\x03~~~\x01~`\x04~~~~\x01~`\x00\x01~`\x02\x7f\x7f\x01~`\x04\x7f\x7f\x7f\x7f\x01~`\x01~\x00`\x05~\x7f\x7f\x7f\x7f\x00`\x02\x7f\x7f\x00`\x02\x7f\x7f\x01\x7f`\x03\x7f\x7f\x7f\x00`\x01\x7f\x01~`\x00\x00\x02C\x0b\x01x\x011\x00\x00\x01i\x012\x00\x01\x01v\x013\x00\x01\x01b\x01m\x00\x02\x01v\x01h\x00\x02\x01v\x01g\x00\x00\x01b\x01j\x00\x00\x01v\x011\x00\x00\x01x\x015\x00\x01\x01m\x019\x00\x02\x01m\x01a\x00\x03\x03$#\x04\x05\x00\x06\x04\x04\x04\x04\x04\x04\x01\x07\x04\x01\x08\x01\x01\x04\x01\x01\x01\x00\x01\t\n\x04\x04\x0b\x0c\x01\x04\x01\x01\r\r\x04\x05\x01p\x01\x01\x01\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\xc2\x82\xc0\x00\x0b\x7f\x00A\xd8\x82\xc0\x00\x0b\x7f\x00A\xe0\x82\xc0\x00\x0b\x07\xcb\x03\x1c\x06memory\x02\x00\x11publish_data_type\x00\x0b\x13publish_nested_data\x00\x0f\x14publish_nested_topic\x00\x10\x11publish_ref_event\x00\x12\x0epublish_simple\x00\x13\x12publish_topic_type\x00\x14\x11with_assert_error\x00\x15\nwith_error\x00\x17\x0fwith_lib_struct\x00\x18\x08with_map\x00\x1a\x0cwith_non_pub\x00\x1b\x12with_non_pub_error\x00\x1c\x0bwith_option\x00\x1d\x10with_panic_error\x00\x1e\x14with_panic_raw_error\x00\x1f\nwith_param\x00 \x0ewith_recursion\x00!\x0bwith_result\x00$\x0bwith_return\x00%\nwith_tuple\x00(\x11with_tuple_return\x00)\x08with_vec\x00*\x12with_wasm_imported\x00+\x01_\x03\x01\x0fwith_vec_nested\x00*\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\x8b\x1b#\x9a\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A k\"\x00$\x80\x80\x80\x80\x00A\x90\x81\xc0\x80\x00A\x06\x10\x8c\x80\x80\x80\x00!\x01A\xd8\x81\xc0\x80\x00A\x19\x10\x8c\x80\x80\x80\x00 \x01\x10\x8d\x80\x80\x80\x00!\x01 \x00B\x84\x80\x80\x80 7\x03\x18 \x00B\x84\x80\x80\x80\x107\x03\x10 \x00A\xe8\x80\xc0\x80\x00A\x02 \x00A\x10jA\x02\x10\x8e\x80\x80\x80\x007\x03\x08 \x01A\xbc\x81\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x8e\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A j$\x80\x80\x80\x80\x00B\x02\x0bE\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00 \x02 \x00 \x01\x10\xa6\x80\x80\x80\x00\x02@ \x02(\x02\x00A\x01G\r\x00\x00\x0b \x02)\x03\x08!\x03 \x02A\x10j$\x80\x80\x80\x80\x00 \x03\x0b\x92\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00 \x02 \x017\x03\x08 \x02 \x007\x03\x00A\x00!\x03\x03~\x02@ \x03A\x10G\r\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02A\x10j \x03j \x02 \x03j)\x03\x007\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x02A\x10j\x10\xa7\x80\x80\x80\x00!\x01 \x02A j$\x80\x80\x80\x80\x00 \x01\x0f\x0b \x02A\x10j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b.\x00\x02@ \x01 \x03F\r\x00\x00\x0b \x00\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x89\x80\x80\x80\x00\x0b\xa7\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\x8d\x80\xc0\x80\x00A\x06\x10\x8c\x80\x80\x80\x00!\x01A\x8b\x82\xc0\x80\x00A\x1b\x10\x8c\x80\x80\x80\x00 \x01\x10\x8d\x80\x80\x80\x00!\x01 \x00B\x84\x80\x80\x80\xa0\x057\x03\x08 \x00A\x84\x80\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x8e\x80\x80\x80\x007\x03\x00 \x00A\x80\x81\xc0\x80\x00A\x01 \x00A\x01\x10\x8e\x80\x80\x80\x007\x03\x08 \x01A\xbc\x81\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x8e\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\x9f\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\xa6\x82\xc0\x80\x00A\x1c\x10\x8c\x80\x80\x80\x00!\x01 \x00B\x84\x80\x80\x80\xa0\x057\x03\x08 \x00A\x84\x80\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x8e\x80\x80\x80\x007\x03\x00 \x01A\x80\x81\xc0\x80\x00A\x01 \x00A\x01\x10\x8e\x80\x80\x80\x00\x10\x8d\x80\x80\x80\x00!\x01 \x00\x10\x91\x80\x80\x80\x007\x03\x08 \x01A\x9c\x81\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x8e\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\x06\x00B\x8b\xc8\x01\x0b\x9b\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\xc4\x81\xc0\x80\x00A\x14\x10\x8c\x80\x80\x80\x00B\x84\x80\x80\x80\x10\x10\x8d\x80\x80\x80\x00!\x01 \x00B\x84\x80\x80\x80\xb0\x0c7\x03\x08 \x00A\x84\x80\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x8e\x80\x80\x80\x007\x03\x00 \x00A\xdc\x80\xc0\x80\x00A\x01 \x00A\x01\x10\x8e\x80\x80\x80\x007\x03\x08 \x01A\xbc\x81\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x8e\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0bu\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\x88\x81\xc0\x80\x00A\x08\x10\x8c\x80\x80\x80\x00!\x01A\xa4\x81\xc0\x80\x00A\x11\x10\x8c\x80\x80\x80\x00 \x01\x10\x8d\x80\x80\x80\x00!\x01 \x00\x10\x91\x80\x80\x80\x007\x03\x08 \x01A\x9c\x81\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x8e\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0bi\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\xf1\x81\xc0\x80\x00A\x1a\x10\x8c\x80\x80\x80\x00B\x84\x80\x80\x80\x10\x10\x8d\x80\x80\x80\x00!\x01 \x00\x10\x91\x80\x80\x80\x007\x03\x08 \x01A\x9c\x81\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x8e\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0b@\x01\x01\x7f\x02@\x02@A\x01A\x02A\x00 \x00\xa7A\xff\x01q\"\x01\x1b \x01A\x01F\x1b\"\x01A\x02F\r\x00 \x01A\x01qE\r\x01B\x02\x0f\x0b\x00\x0bB\x83\x80\x80\x80\x10\x10\x96\x80\x80\x80\x00\x00\x0b\x0b\x00 \x00\x10\x88\x80\x80\x80\x00\x1a\x0b\t\x00B\x84\x80\x80\x80\xa0\x05\x0b\x83\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00A\x00!\x02\x02@\x03@ \x02A\x10F\r\x01 \x01 \x02jB\x027\x03\x00 \x02A\x08j!\x02\x0c\x00\x0b\x0b\x02@\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xc8\x82\xc0\x80\x00A\x02 \x01A\x02\x10\x99\x80\x80\x80\x00 \x011\x00\x00B\xcb\x00R\r\x00 \x011\x00\x08B\xcd\x00Q\r\x01\x0b\x00\x0b \x01A\x10j$\x80\x80\x80\x80\x00B\x02\x0b1\x00\x02@ \x02 \x04F\r\x00\x00\x0b \x00 \x01\xadB \x86B\x04\x84 \x03\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x8a\x80\x80\x80\x00\x1a\x0b\x14\x00\x02@ \x00B\xff\x01\x83B\xcc\x00Q\r\x00\x00\x0bB\x02\x0b]\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00 \x01B\x027\x03\x08\x02@\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\x84\x80\xc0\x80\x00A\x01 \x01A\x08jA\x01\x10\x99\x80\x80\x80\x00 \x011\x00\x08B\x04Q\r\x01\x0b\x00\x0b \x01A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\x08\x00B\x84\x80\x80\x80\x10\x0bh\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00\x02@ \x00B\x02Q\r\x00 \x01B\x027\x03\x08\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xa8\x80\xc0\x80\x00A\x01 \x01A\x08jA\x01\x10\x99\x80\x80\x80\x00 \x01)\x03\x08B\xff\x01\x83B\x04Q\r\x01\x0b\x00\x0b \x01A\x10j$\x80\x80\x80\x80\x00B\x02\x0b?\x01\x01\x7f\x02@\x02@A\x01A\x02A\x00 \x00\xa7A\xff\x01q\"\x01\x1b \x01A\x01F\x1b\"\x01A\x02F\r\x00 \x01A\x01q\r\x01B\x02\x0f\x0b\x00\x0bB\x83\x80\x80\x80\x10\x10\x96\x80\x80\x80\x00\x00\x0b@\x01\x01\x7f\x02@\x02@A\x01A\x02A\x00 \x00\xa7A\xff\x01q\"\x01\x1b \x01A\x01F\x1b\"\x01A\x02F\r\x00 \x01A\x01q\r\x01B\x02\x0f\x0b\x00\x0bB\x83\x80\x80\x80\xf0\x00\x10\x96\x80\x80\x80\x00\x00\x0b\xec\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02A\x08j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b\x02@\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\x94\x80\xc0\x80\x00A\x02 \x02A\x08jA\x02\x10\x99\x80\x80\x80\x00 \x021\x00\x08B\x04R\r\x00 \x02B\x027\x03\x18 \x02)\x03\x10\"\x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\x84\x80\xc0\x80\x00A\x01 \x02A\x18jA\x01\x10\x99\x80\x80\x80\x00\x02@ \x02)\x03\x18\"\x00\xa7A\xff\x01q\"\x03A\x07F\r\x00 \x03A\xc1\x00G\r\x01 \x00\x10\x81\x80\x80\x80\x00\x1a\x0b \x01B\xff\x01\x83B\x04R\r\x00 \x01B \x88\xa7A}jA}K\r\x01\x0b\x00\x0b \x02A j$\x80\x80\x80\x80\x00B\x02\x0b\xe2\x03\x03\x01\x7f\x01~\x01\x7f#\x80\x80\x80\x80\x00A0k\"\x01$\x80\x80\x80\x80\x00 \x01B\x027\x03\x08\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\x84\x80\xc0\x80\x00A\x01 \x01A\x08jA\x01\x10\x99\x80\x80\x80\x00 \x01)\x03\x08\"\x00B\xff\x01\x83B\xcb\x00R\r\x00 \x00\x10\x82\x80\x80\x80\x00!\x02 \x01A\x006\x02\x18 \x01 \x007\x03\x10 \x01 \x02B \x88>\x02\x1c \x01A j \x01A\x10j\x10\xa2\x80\x80\x80\x00 \x01)\x03 \"\x00B\x02Q\r\x00 \x00\xa7A\x01q\r\x00\x02@ \x01)\x03(\"\x00\xa7A\xff\x01q\"\x03A\xca\x00F\r\x00 \x03A\x0eG\r\x01\x0b\x02@\x02@\x02@ \x00A\xc8\x80\xc0\x80\x00\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x83\x80\x80\x80\x00B \x88\xa7\x0e\x02\x01\x00\x03\x0b \x01(\x02\x18 \x01(\x02\x1c\x10\xa3\x80\x80\x80\x00A\x01K\r\x02 \x01A j \x01A\x10j\x10\xa2\x80\x80\x80\x00 \x01)\x03 \"\x00B\x02Q\r\x02 \x00\xa7A\x01q\r\x02 \x01)\x03(!\x00 \x01B\x027\x03  \x00B\xff\x01\x83B\xcc\x00R\r\x02 \x00A\x84\x80\xc0\x80\x00A\x01 \x01A jA\x01\x10\x99\x80\x80\x80\x00 \x011\x00 B\xcb\x00Q\r\x01\x0c\x02\x0b \x01(\x02\x18 \x01(\x02\x1c\x10\xa3\x80\x80\x80\x00A\x01K\r\x01 \x01A j \x01A\x10j\x10\xa2\x80\x80\x80\x00 \x01)\x03 \"\x00B\x02Q\r\x01 \x00\xa7A\x01q\r\x01 \x01)\x03(!\x00 \x01B\x027\x03  \x00B\xff\x01\x83B\xcc\x00R\r\x01 \x00A\x84\x80\xc0\x80\x00A\x01 \x01A jA\x01\x10\x99\x80\x80\x80\x00 \x011\x00 B\x04R\r\x01\x0b \x01A0j$\x80\x80\x80\x80\x00B\x02\x0f\x0b\x00\x0bJ\x02\x01~\x01\x7fB\x02!\x02\x02@ \x01(\x02\x08\"\x03 \x01(\x02\x0cO\r\x00 \x00 \x01)\x03\x00 \x03\xadB \x86B\x04\x84\x10\x87\x80\x80\x80\x007\x03\x08 \x01 \x03A\x01j6\x02\x08B\x00!\x02\x0b \x00 \x027\x03\x00\x0b\x19\x00\x02@ \x01 \x00I\r\x00 \x01 \x00k\x0f\x0b\x10\xad\x80\x80\x80\x00\x00\x0bF\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00 \x00B\x84\x80\x80\x80\x107\x03\x08A\xa8\x80\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x8e\x80\x80\x80\x00!\x01 \x00A\x10j$\x80\x80\x80\x80\x00 \x01\x0be\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00 \x00A\xd8\x80\xc0\x80\x00A\x01\x10\xa6\x80\x80\x80\x00\x02@ \x00(\x02\x00A\x01G\r\x00\x00\x0b \x00)\x03\x08!\x01 \x00B\x84\x80\x80\x80\x107\x03\x08 \x00 \x017\x03\x00 \x00\x10\xa7\x80\x80\x80\x00!\x01 \x00A\x10j$\x80\x80\x80\x80\x00 \x01\x0b\xdb\x01\x02\x01~\x04\x7f\x02@\x02@ \x02A\tK\r\x00B\x00!\x03 \x02!\x04 \x01!\x05\x03@\x02@ \x04\r\x00 \x03B\x08\x86B\x0e\x84!\x03\x0c\x03\x0bA\x01!\x06\x02@ \x05-\x00\x00\"\x07A\xdf\x00F\r\x00\x02@\x02@ \x07APjA\xff\x01qA\nI\r\x00 \x07A\xbf\x7fjA\xff\x01qA\x1aI\r\x01 \x07A\x9f\x7fjA\xff\x01qA\x1aO\r\x04 \x07AEj!\x06\x0c\x02\x0b \x07ARj!\x06\x0c\x01\x0b \x07AKj!\x06\x0b \x03B\x06\x86 \x06\xadB\xff\x01\x83\x84!\x03 \x04A\x7fj!\x04 \x05A\x01j!\x05\x0c\x00\x0b\x0b \x01\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x86\x80\x80\x80\x00!\x03\x0b \x00B\x007\x03\x00 \x00 \x037\x03\x08\x0b\x17\x00 \x00\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x85\x80\x80\x80\x00\x0b\xba\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x01$\x80\x80\x80\x80\x00\x02@\x02@ \x00B\xff\x01\x83B\xcb\x00R\r\x00A\x00!\x02\x02@\x03@ \x02A\x10F\r\x01 \x01A\x08j \x02jB\x027\x03\x00 \x02A\x08j!\x02\x0c\x00\x0b\x0b \x00 \x01A\x08j\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x84\x80\x80\x80\x00\x1a \x01B\x027\x03\x18 \x01)\x03\x08\"\x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\x84\x80\xc0\x80\x00A\x01 \x01A\x18jA\x01\x10\x99\x80\x80\x80\x00 \x011\x00\x18B\x04R\r\x00 \x011\x00\x10B\x04Q\r\x01\x0b\x00\x0b \x01A j$\x80\x80\x80\x80\x00B\x02\x0be\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A k\"\x00$\x80\x80\x80\x80\x00 \x00B\x84\x80\x80\x80\x107\x03\x18A\x84\x80\xc0\x80\x00A\x01 \x00A\x18jA\x01\x10\x8e\x80\x80\x80\x00!\x01 \x00B\x84\x80\x80\x80 7\x03\x10 \x00 \x017\x03\x08 \x00A\x08j\x10\xa7\x80\x80\x80\x00!\x01 \x00A j$\x80\x80\x80\x80\x00 \x01\x0b\x14\x00\x02@ \x00B\xff\x01\x83B\xcb\x00Q\r\x00\x00\x0bB\x02\x0b\x83\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00A\x00!\x02\x02@\x03@ \x02A\x10F\r\x01 \x01 \x02jB\x027\x03\x00 \x02A\x08j!\x02\x0c\x00\x0b\x0b\x02@\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xc8\x82\xc0\x80\x00A\x02 \x01A\x02\x10\x99\x80\x80\x80\x00 \x011\x00\x00B\x04R\r\x00 \x01)\x03\x08B\xfe\x01\x83P\r\x01\x0b\x00\x0b \x01A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\x03\x00\x00\x0b\t\x00\x10\xac\x80\x80\x80\x00\x00\x0b\x0b\xe2\x02\x01\x00A\x80\x80\xc0\x00\x0b\xd8\x02val\x00\x00\x00\x10\x00\x03\x00\x00\x00anested\x00\x0c\x00\x10\x00\x01\x00\x00\x00\r\x00\x10\x00\x06\x00\x00\x00data$\x00\x10\x00\x04\x00\x00\x00NotRecursiveRecursive\x00\x00\x000\x00\x10\x00\x0c\x00\x00\x00<\x00\x10\x00\t\x00\x00\x00A\x00\x00\x00\r\x00\x10\x00\x06\x00\x00\x00xy\x00\x00d\x00\x10\x00\x01\x00\x00\x00e\x00\x10\x00\x01\x00\x00\x00inner\x00\x00\x00x\x00\x10\x00\x05\x00\x00\x00transfercoordsamount\x96\x00\x10\x00\x06\x00\x00\x00used_event_simplepayload\xb5\x00\x10\x00\x07\x00\x00\x00used_event_with_refsused_event_with_data_typeused_event_with_topic_typeused_event_with_nested_dataused_event_with_nested_topicf1f2\x00\x00B\x01\x10\x00\x02\x00\x00\x00D\x01\x10\x00\x02\x00\x00\x00\x00\x932\x0econtractspecv0\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08UsedLeaf\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08with_map\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01m\x00\x00\x00\x00\x00\x03\xec\x00\x00\x07\xd0\x00\x00\x00\nUsedMapKey\x00\x00\x00\x00\x07\xd0\x00\x00\x00\nUsedMapVal\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08with_vec\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01v\x00\x00\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00\x0eUsedVecElement\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nUnusedEnum\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01A\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01B\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nUsedMapKey\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02K1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02K2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nUsedMapVal\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01v\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nwith_error\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd0\x00\x00\x00\rUsedErrorEnum\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nwith_param\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01s\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x0fUsedParamStruct\x00\x00\x00\x00\x00\x00\x00\x00\x02ie\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x10UsedParamIntEnum\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nwith_tuple\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01t\x00\x00\x00\x00\x00\x03\xed\x00\x00\x00\x02\x00\x00\x07\xd0\x00\x00\x00\x10UsedTupleElement\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bUnusedEvent\x00\x00\x00\x00\x01\x00\x00\x00\x0cunused_event\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04data\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cUnusedStruct\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01x\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cUsedResultOk\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04data\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bwith_option\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01o\x00\x00\x00\x00\x00\x03\xe8\x00\x00\x07\xd0\x00\x00\x00\x11UsedOptionElement\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bwith_result\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x07\xd0\x00\x00\x00\x0cUsedResultOk\x00\x00\x07\xd0\x00\x00\x00\rUsedErrorEnum\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bwith_return\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0eUsedReturnEnum\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rUnusedIntEnum\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02U1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02U2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rUsedErrorEnum\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x08NotFound\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x07Invalid\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cwith_non_pub\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01s\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x10UsedNonPubStruct\x00\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0eUnusedPubError\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Nope\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0eUsedReturnEnum\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01A\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01B\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0eUsedVecElement\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04data\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fUsedParamStruct\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x06nested\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x12UsedNestedInStruct\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fUsedRefDataType\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x06nested\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x10UsedRefDataInner\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0epublish_simple\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0ewith_recursion\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01r\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x11UsedRecursiveRoot\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fUsedEventSimple\x00\x00\x00\x00\x01\x00\x00\x00\x11used_event_simple\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x06amount\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10UsedParamIntEnum\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01X\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01Y\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10UsedRefDataInner\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10UsedRefTopicType\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04Send\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Recv\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10UsedTupleElement\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fwith_lib_struct\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01s\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x07StructC\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fwith_vec_nested\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01v\x00\x00\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00\x14UsedVecElementNested\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11UsedEventDataType\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01x\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x01y\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11UsedOptionElement\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04data\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11UsedRecursiveLeaf\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00\x11UsedRecursiveRoot\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11UsedRecursiveNode\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x0cNotRecursive\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x08UsedLeaf\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\tRecursive\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x11UsedRecursiveLeaf\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11UsedRecursiveRoot\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x07\xd0\x00\x00\x00\x11UsedRecursiveNode\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10with_panic_error\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04fail\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11UsedEventWithRefs\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x14used_event_with_refs\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x07\xd0\x00\x00\x00\x10UsedRefTopicType\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x07payload\x00\x00\x00\x07\xd0\x00\x00\x00\x0fUsedRefDataType\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12UsedEventDataInner\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12UsedEventDataOuter\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05inner\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x12UsedEventDataInner\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12UsedEventTopicType\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x08Transfer\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Mint\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12UsedNestedInStruct\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x07\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12UsedPanicErrorEnum\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Boom\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11publish_data_type\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11publish_ref_event\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11with_assert_error\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02ok\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11with_tuple_return\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x03\xed\x00\x00\x00\x02\x00\x00\x07\xd0\x00\x00\x00\x16UsedTupleReturnElement\x00\x00\x00\x00\x00\x04\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13UsedAssertErrorEnum\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03Bad\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13UsedEventTopicInner\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13UsedEventTopicOuter\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05inner\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x13UsedEventTopicInner\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13UsedVecInnerElement\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12publish_topic_type\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12with_non_pub_error\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd0\x00\x00\x00\x0fUsedNonPubError\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12with_wasm_imported\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01s\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14UsedVecElementNested\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x05inner\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x13UsedVecInnerElement\x00\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\tvec_inner\x00\x00\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00\x16UsedVecInnerVecElement\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13publish_nested_data\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14publish_nested_topic\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14with_panic_raw_error\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04fail\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x15UsedEventWithDataType\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x19used_event_with_data_type\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x07payload\x00\x00\x00\x07\xd0\x00\x00\x00\x11UsedEventDataType\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x16UsedTupleReturnElement\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x16UsedVecInnerVecElement\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x16UsedEventWithTopicType\x00\x00\x00\x00\x00\x01\x00\x00\x00\x1aused_event_with_topic_type\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x07\xd0\x00\x00\x00\x12UsedEventTopicType\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x06amount\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x17UsedEventWithNestedData\x00\x00\x00\x00\x01\x00\x00\x00\x1bused_event_with_nested_data\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x07payload\x00\x00\x00\x07\xd0\x00\x00\x00\x12UsedEventDataOuter\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x18UnusedNonContractFnParam\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01x\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x18UsedEventWithNestedTopic\x00\x00\x00\x01\x00\x00\x00\x1cused_event_with_nested_topic\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04info\x00\x00\x07\xd0\x00\x00\x00\x13UsedEventTopicOuter\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x06amount\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x19UnusedNonContractFnReturn\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01x\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumB\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x07\x00\x00\x00\x07\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumC\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorB\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x0c\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorC\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00e\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00f\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventA\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventB\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_b\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventC\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_c\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructA\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructB\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructC\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x03\xea\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntA\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntB\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntC\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\xc8\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x01,\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleB\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleC\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x0b\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1a\x00\x00\x00\x00\x00+\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00";
     extern crate test;
     #[rustc_test_marker = "test::test_spec_shaking_v1"]
     #[doc(hidden)]
@@ -21489,6 +24625,10 @@ mod test {
             "UsedResultOk",
             "UsedTupleElement",
             "UsedTupleReturnElement",
+            "UsedRecursiveRoot",
+            "UsedRecursiveNode",
+            "UsedRecursiveLeaf",
+            "UsedLeaf",
             "UnusedNonContractFnParam",
             "UnusedNonContractFnReturn",
             "UnusedStruct",
