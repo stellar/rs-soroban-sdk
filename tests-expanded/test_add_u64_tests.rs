@@ -937,7 +937,6 @@ fn __Contract____6ecf4b81a1826b186b96027a980a40b74ef0e4056b0b7fa44cfd522125765f3
 }
 mod test {
     use crate::{Contract, ContractClient, Error};
-    use core::u64;
     use soroban_sdk::Env;
     extern crate test;
     #[rustc_test_marker = "test::test_add"]
@@ -948,9 +947,9 @@ mod test {
             ignore: false,
             ignore_message: ::core::option::Option::None,
             source_file: "tests/add_u64/src/lib.rs",
-            start_line: 41usize,
+            start_line: 39usize,
             start_col: 8usize,
-            end_line: 41usize,
+            end_line: 39usize,
             end_col: 16usize,
             compile_fail: false,
             no_run: false,
@@ -982,9 +981,9 @@ mod test {
             ignore: false,
             ignore_message: ::core::option::Option::None,
             source_file: "tests/add_u64/src/lib.rs",
-            start_line: 52usize,
+            start_line: 50usize,
             start_col: 8usize,
-            end_line: 52usize,
+            end_line: 50usize,
             end_col: 21usize,
             compile_fail: false,
             no_run: false,
