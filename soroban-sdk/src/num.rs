@@ -482,16 +482,14 @@ impl I256 {
     }
 
     pub fn from_i128(env: &Env, i: i128) -> Self {
-        let lo: Bytes = Bytes::from_array(env, &i.to_be_bytes());
-        if i < 0 {
-            let mut i256_bytes: Bytes = Bytes::from_array(env, &[255_u8; 16]);
-            i256_bytes.append(&lo);
-            Self::from_be_bytes(env, &i256_bytes)
+        let lo_hi = (i >> 64) as u64;
+        let lo_lo = i as u64;
+        let (hi_hi, hi_lo) = if i < 0 {
+            (-1_i64, u64::MAX) // sign extend 1 bit
         } else {
-            let mut i256_bytes: Bytes = Bytes::from_array(env, &[0_u8; 16]);
-            i256_bytes.append(&lo);
-            Self::from_be_bytes(env, &i256_bytes)
-        }
+            (0_i64, 0_u64) // sign extend 0 bit
+        };
+        I256::from_parts(env, hi_hi, hi_lo, lo_hi, lo_lo)
     }
 
     pub fn from_parts(env: &Env, hi_hi: i64, hi_lo: u64, lo_hi: u64, lo_lo: u64) -> Self {
