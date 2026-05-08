@@ -3,7 +3,7 @@ use core::{cmp::Ordering, convert::Infallible, fmt::Debug};
 use super::{
     env::internal::{
         DurationSmall, DurationVal, Env as _, I256Small, I256Val, TimepointSmall, TimepointVal,
-        U256Small, U256Val,
+        U256Object, U256Small, U256Val,
     },
     Bytes, ConversionError, Env, TryFromVal, TryIntoVal, Val,
 };
@@ -253,14 +253,23 @@ impl U256 {
     }
 
     pub fn to_u128(&self) -> Option<u128> {
-        let be_bytes = self.to_be_bytes();
-        let be_bytes_hi: [u8; 16] = be_bytes.slice(0..16).try_into().unwrap();
-        let be_bytes_lo: [u8; 16] = be_bytes.slice(16..32).try_into().unwrap();
-        if u128::from_be_bytes(be_bytes_hi) == 0 {
-            Some(u128::from_be_bytes(be_bytes_lo))
-        } else {
-            None
+        let v = *self.val.as_val();
+
+        // If v is U256Small it can be converted directly
+        if let Ok(small) = U256Small::try_from(v) {
+            return Some(u64::from(small) as u128);
         }
+
+        // Otherwise use U256Object and take low sections if high are empty
+        let obj: U256Object = v.try_into().ok()?;
+        let hi_hi = self.env.obj_to_u256_hi_hi(obj).unwrap_infallible();
+        let hi_lo = self.env.obj_to_u256_hi_lo(obj).unwrap_infallible();
+        if hi_hi != 0 || hi_lo != 0 {
+            return None;
+        }
+        let lo_hi = self.env.obj_to_u256_lo_hi(obj).unwrap_infallible();
+        let lo_lo = self.env.obj_to_u256_lo_lo(obj).unwrap_infallible();
+        Some(((lo_hi as u128) << 64) | (lo_lo as u128))
     }
 
     pub fn to_be_bytes(&self) -> Bytes {
