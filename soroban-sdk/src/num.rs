@@ -2,8 +2,8 @@ use core::{cmp::Ordering, convert::Infallible, fmt::Debug};
 
 use super::{
     env::internal::{
-        DurationSmall, DurationVal, Env as _, I256Small, I256Val, TimepointSmall, TimepointVal,
-        U256Object, U256Small, U256Val,
+        DurationSmall, DurationVal, Env as _, I256Object, I256Small, I256Val, TimepointSmall,
+        TimepointVal, U256Object, U256Small, U256Val,
     },
     Bytes, ConversionError, Env, TryFromVal, TryIntoVal, Val,
 };
@@ -513,13 +513,27 @@ impl I256 {
     }
 
     pub fn to_i128(&self) -> Option<i128> {
-        let be_bytes = self.to_be_bytes();
-        let be_bytes_hi: [u8; 16] = be_bytes.slice(0..16).try_into().unwrap();
-        let be_bytes_lo: [u8; 16] = be_bytes.slice(16..32).try_into().unwrap();
-        let i128_hi = i128::from_be_bytes(be_bytes_hi);
-        let i128_lo = i128::from_be_bytes(be_bytes_lo);
-        if (i128_hi == 0 && i128_lo >= 0) || (i128_hi == -1 && i128_lo < 0) {
-            Some(i128_lo)
+        let v = *self.val.as_val();
+
+        // If v is I256Small it can be converted directly
+        if let Ok(small) = I256Small::try_from(v) {
+            return Some(i64::from(small) as i128);
+        }
+
+        // Otherwise use I256Object and take low sections if high are either
+        // all 1 bits or all 0 bits (negative and positive respectively)
+        let obj: I256Object = v.try_into().ok()?;
+        let hi_hi = self.env.obj_to_i256_hi_hi(obj).unwrap_infallible();
+        let hi_lo = self.env.obj_to_i256_hi_lo(obj).unwrap_infallible();
+        let lo_hi = self.env.obj_to_i256_lo_hi(obj).unwrap_infallible();
+        let lo_lo = self.env.obj_to_i256_lo_lo(obj).unwrap_infallible();
+        // The low 128 bits as an i128
+        let lo = (((lo_hi as u128) << 64) | (lo_lo as u128)) as i128;
+
+        if lo < 0 && hi_hi == -1 && hi_lo == u64::MAX {
+            Some(lo) // if negative low, then high must be all 1 bit
+        } else if 0 <= lo && hi_hi == 0 && hi_lo == 0 {
+            Some(lo) // if non-negative low, then high must be all 0 bit
         } else {
             None
         }
