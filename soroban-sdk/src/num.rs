@@ -227,10 +227,9 @@ impl U256 {
     }
 
     pub fn from_u128(env: &Env, u: u128) -> Self {
-        let lo: Bytes = Bytes::from_array(env, &u.to_be_bytes());
-        let mut bytes: Bytes = Bytes::from_array(env, &[0u8; 16]);
-        bytes.append(&lo);
-        Self::from_be_bytes(env, &bytes)
+        let lo_hi = (u >> 64) as u64;
+        let lo_lo = u as u64;
+        Self::from_parts(env, 0, 0, lo_hi, lo_lo)
     }
 
     pub fn from_parts(env: &Env, hi_hi: u64, hi_lo: u64, lo_hi: u64, lo_lo: u64) -> Self {
