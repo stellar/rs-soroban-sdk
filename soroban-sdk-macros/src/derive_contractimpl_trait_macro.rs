@@ -1,10 +1,13 @@
-use crate::{attribute::is_attr_doc, default_crate_path, syn_ext};
+use crate::{attribute::pass_through_attr_to_gen_code, default_crate_path, syn_ext};
 use darling::{ast::NestedMeta, Error, FromMeta};
 use heck::ToSnakeCase;
 use proc_macro2::{Ident, TokenStream as TokenStream2};
 use quote::ToTokens;
 use quote::{format_ident, quote};
-use syn::{ext::IdentExt as _, parse2, ImplItemFn, ItemTrait, Path, TraitItem, TraitItemFn, Type};
+use syn::{
+    ext::IdentExt as _, parse2, Attribute, ImplItemFn, ItemTrait, Path, TraitItem, TraitItemFn,
+    Type,
+};
 
 // See soroban-sdk/docs/contracttrait.md for documentation on how this works.
 
@@ -49,10 +52,7 @@ fn derive(args: &Args, input: &ItemTrait) -> Result<TokenStream2, Error> {
             sig,
             attrs,
             ..
-        }) => {
-            let doc_attrs: Vec<_> = attrs.iter().filter(|a| is_attr_doc(a)).collect();
-            Some(quote!(#(#doc_attrs)* #sig).to_token_stream().to_string())
-        }
+        }) => Some(fn_string(sig, attrs)),
         _ => None,
     });
 
@@ -90,6 +90,11 @@ fn derive(args: &Args, input: &ItemTrait) -> Result<TokenStream2, Error> {
     Ok(output)
 }
 
+fn fn_string(sig: &syn::Signature, attrs: &[Attribute]) -> String {
+    let attrs = attrs.iter().filter(|a| pass_through_attr_to_gen_code(a));
+    quote!(#(#attrs)* #sig).to_token_stream().to_string()
+}
+
 pub fn generate_call_to_contractimpl_for_trait(
     trait_ident: &Path,
     impl_ident: &Type,
@@ -98,17 +103,24 @@ pub fn generate_call_to_contractimpl_for_trait(
     args_ident: &str,
     spec_ident: &str,
 ) -> TokenStream2 {
-    let impl_fn_idents = pub_methods.iter().map(|f| f.sig.ident.unraw().to_string());
+    let impl_fns = pub_methods.iter().map(impl_fn_string);
     quote! {
         #trait_ident!(
             #trait_ident,
             #impl_ident,
-            [#(#impl_fn_idents),*],
+            [#(#impl_fns),*],
             #client_ident,
             #args_ident,
             #spec_ident,
         );
     }
+}
+
+fn impl_fn_string(f: &ImplItemFn) -> String {
+    let attrs = f.attrs.iter().filter(|a| pass_through_attr_to_gen_code(a));
+    let ident = &f.sig.ident;
+    // Args and return type are stripped; the receiver only needs attrs and ident for override matching.
+    quote!(#(#attrs)* fn #ident()).to_token_stream().to_string()
 }
 
 fn macro_ident(trait_ident: &Ident) -> Ident {

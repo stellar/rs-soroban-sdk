@@ -11,6 +11,10 @@ rust-version.workspace = true
 crate-type = ["lib"]
 doctest = false
 
+[features]
+default = ["cfg-gated-fn"]
+cfg-gated-fn = []
+
 [dependencies]
 soroban-sdk = {path = "../../soroban-sdk", features = ["experimental_spec_shaking_v2"]}
 

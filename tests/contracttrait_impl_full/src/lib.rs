@@ -3,13 +3,19 @@ use soroban_sdk::{
     contract, contractimpl, Address, Bytes, BytesN, Duration, Map, String, Symbol, Timepoint, Vec,
     I256, U256,
 };
-use test_contracttrait_trait::{AllTypes, MyEnumUnit, MyEnumVariants, MyStruct};
+use test_contracttrait_trait::{AllTypes, CfgGated, MyEnumUnit, MyEnumVariants, MyStruct};
 
 #[contract]
 pub struct Contract;
 
 #[contractimpl(contracttrait)]
 impl AllTypes for Contract {}
+
+#[contract]
+pub struct CfgGatedContract;
+
+#[contractimpl(contracttrait)]
+impl CfgGated for CfgGatedContract {}
 
 #[cfg(test)]
 mod test {
@@ -77,5 +83,14 @@ mod test {
 
         let my_enum = MyEnumVariants::VarB(MyStruct { a: 1, b: 2 });
         assert_eq!(client.test_enum_variants(&my_enum), my_enum);
+    }
+
+    #[test]
+    fn test_cross_crate_cfg_gated_default_fn() {
+        let e = Env::default();
+        let contract_id = e.register(CfgGatedContract, ());
+        let client = CfgGatedContractClient::new(&e, &contract_id);
+
+        assert_eq!(client.shown(), 8);
     }
 }

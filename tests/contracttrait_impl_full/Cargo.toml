@@ -11,6 +11,9 @@ rust-version.workspace = true
 crate-type = ["cdylib"]
 doctest = false
 
+[features]
+cfg-gated-fn = []
+
 [dependencies]
 soroban-sdk = {path = "../../soroban-sdk", features = ["experimental_spec_shaking_v2"]}
 test_contracttrait_trait = {path = "../contracttrait_trait"}

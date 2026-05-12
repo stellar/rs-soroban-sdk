@@ -238,21 +238,13 @@ pub fn derive_contract_function_registration_ctor<'a>(
     crate_path: &Path,
     ty: &Type,
     trait_ident: Option<&Path>,
-    method_idents: impl Iterator<Item = &'a Ident>,
+    fns: impl IntoIterator<Item = &'a syn_ext::Fn>,
 ) -> TokenStream2 {
     if cfg!(not(feature = "testutils")) {
         return quote!();
     }
 
     let ty_str = ty_to_safe_ident_str(ty);
-    let (idents, wrap_idents): (Vec<_>, Vec<_>) = method_idents
-        .map(|ident| {
-            let ident_str = ident.unraw().to_string();
-            let wrap_ident = format_ident!("__{}__{}__invoke_raw_slice", ty_str, ident_str);
-            (ident_str, wrap_ident)
-        })
-        .multiunzip();
-
     let trait_str = trait_ident
         .map(|p| {
             p.segments
@@ -262,21 +254,37 @@ pub fn derive_contract_function_registration_ctor<'a>(
                 .join("_")
         })
         .unwrap_or_else(|| "".to_string());
-    let methods_hash = format!("{:x}", Sha256::digest(idents.join(",").as_bytes()));
-    let ctor_ident = format_ident!("__{ty_str}__{trait_str}__{methods_hash}_ctor");
+
+    let ctors = fns
+        .into_iter()
+        .map(|f| {
+            let ident = f.ident.unraw().to_string();
+            let wrap_ident = format_ident!("__{}__{}__invoke_raw_slice", ty_str, ident);
+            let attrs = f
+                .attrs
+                .iter()
+                .filter(|attr| pass_through_attr_to_gen_code(attr) && !attr.path().is_ident("doc"))
+                .collect::<Vec<_>>();
+            let methods_hash =
+                format!("{:x}", Sha256::digest(quote!(#ident #(#attrs)*).to_string()));
+            let ctor_ident = format_ident!("__{ty_str}__{trait_str}__{methods_hash}_ctor");
+            quote! {
+                #[doc(hidden)]
+                #(#attrs)*
+                #[#crate_path::reexports_for_macros::ctor::ctor(crate_path=#crate_path::reexports_for_macros::ctor)]
+                #[allow(non_snake_case)]
+                fn #ctor_ident() {
+                    <#ty as #crate_path::testutils::ContractFunctionRegister>::register(
+                        #ident,
+                        #[allow(deprecated)]
+                        &#wrap_ident,
+                    );
+                }
+            }
+        })
+        .collect::<Vec<_>>();
 
     quote! {
-        #[doc(hidden)]
-        #[#crate_path::reexports_for_macros::ctor::ctor(crate_path=#crate_path::reexports_for_macros::ctor)]
-        #[allow(non_snake_case)]
-        fn #ctor_ident() {
-            #(
-                <#ty as #crate_path::testutils::ContractFunctionRegister>::register(
-                    #idents,
-                    #[allow(deprecated)]
-                    &#wrap_idents,
-                );
-            )*
-        }
+        #(#ctors)*
     }
 }

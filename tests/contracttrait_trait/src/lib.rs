@@ -109,6 +109,26 @@ pub trait AllTypes {
     }
 }
 
+#[contracttrait]
+pub trait CfgGated {
+    #[cfg(any())]
+    fn hidden(env: Env) -> u32 {
+        let _ = env;
+        7
+    }
+
+    fn shown(env: Env) -> u32 {
+        let _ = env;
+        8
+    }
+
+    #[cfg(feature = "cfg-gated-fn")]
+    fn feature_enabled(env: Env) -> u32 {
+        let _ = env;
+        9
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -121,6 +141,66 @@ mod test {
 
     #[contractimpl(contracttrait)]
     impl AllTypes for Contract {}
+
+    #[contract]
+    pub struct CfgGatedContract;
+
+    #[contractimpl(contracttrait)]
+    impl CfgGated for CfgGatedContract {}
+
+    #[contract]
+    pub struct CfgGatedOverrideContract;
+
+    #[contractimpl(contracttrait)]
+    impl CfgGated for CfgGatedOverrideContract {
+        #[cfg(any())]
+        fn shown(env: Env) -> u32 {
+            let _ = env;
+            99
+        }
+
+        #[cfg(feature = "cfg-gated-fn")]
+        fn feature_enabled(env: Env) -> u32 {
+            let _ = env;
+            99
+        }
+    }
+
+    #[cfg(feature = "cfg-gated-fn")]
+    #[contract]
+    pub struct CfgGatedUnconditionalOverrideContract;
+
+    #[cfg(feature = "cfg-gated-fn")]
+    #[contractimpl(contracttrait)]
+    impl CfgGated for CfgGatedUnconditionalOverrideContract {
+        fn feature_enabled(env: Env) -> u32 {
+            let _ = env;
+            100
+        }
+    }
+
+    #[contract]
+    pub struct CfgGatedImplContract;
+
+    #[contractimpl]
+    impl CfgGatedImplContract {
+        #[cfg(any())]
+        pub fn hidden(env: Env) -> u32 {
+            let _ = env;
+            7
+        }
+
+        pub fn shown(env: Env) -> u32 {
+            let _ = env;
+            8
+        }
+
+        #[cfg(feature = "cfg-gated-fn")]
+        pub fn feature_enabled(env: Env) -> u32 {
+            let _ = env;
+            9
+        }
+    }
 
     #[test]
     fn test_types() {
@@ -183,6 +263,50 @@ mod test {
 
         let my_enum = MyEnumVariants::VarB(MyStruct { a: 1, b: 2 });
         assert_eq!(client.test_enum_variants(&my_enum), my_enum);
+    }
+
+    #[test]
+    fn test_cfg_gated_contracttrait_default_fn() {
+        let e = Env::default();
+        let contract_id = e.register(CfgGatedContract, ());
+        let client = CfgGatedContractClient::new(&e, &contract_id);
+
+        assert_eq!(client.shown(), 8);
+        #[cfg(feature = "cfg-gated-fn")]
+        assert_eq!(client.feature_enabled(), 9);
+    }
+
+    #[test]
+    fn test_cfg_gated_disabled_override_uses_default_fn() {
+        let e = Env::default();
+        let contract_id = e.register(CfgGatedOverrideContract, ());
+        let client = CfgGatedOverrideContractClient::new(&e, &contract_id);
+
+        assert_eq!(client.shown(), 8);
+        #[cfg(feature = "cfg-gated-fn")]
+        assert_eq!(client.feature_enabled(), 99);
+    }
+
+    #[cfg(feature = "cfg-gated-fn")]
+    #[test]
+    fn test_cfg_gated_default_with_unconditional_override() {
+        let e = Env::default();
+        let contract_id = e.register(CfgGatedUnconditionalOverrideContract, ());
+        let client = CfgGatedUnconditionalOverrideContractClient::new(&e, &contract_id);
+
+        assert_eq!(client.shown(), 8);
+        assert_eq!(client.feature_enabled(), 100);
+    }
+
+    #[test]
+    fn test_cfg_gated_contractimpl_fn() {
+        let e = Env::default();
+        let contract_id = e.register(CfgGatedImplContract, ());
+        let client = CfgGatedImplContractClient::new(&e, &contract_id);
+
+        assert_eq!(client.shown(), 8);
+        #[cfg(feature = "cfg-gated-fn")]
+        assert_eq!(client.feature_enabled(), 9);
     }
 
     #[test]

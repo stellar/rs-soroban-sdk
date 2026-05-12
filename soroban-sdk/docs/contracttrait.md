@@ -87,7 +87,11 @@ macro_rules! __contractimpl_for_pause {
 pub use __contractimpl_for_pause as Pause;
 ```
 
-The `trait_default_fns` contains stringified signatures (and documentation) of all functions with default implementations. We serialize function signatures and their documentation into strings because the tooling used to parse macros and values doesn't handle raw tokens well as parameters. This information is "remembered" by the declarative macro for later comparison.
+The `trait_default_fns` contains stringified signatures and pass-through attributes of all functions with default implementations. We serialize function signatures and supported attributes into strings because the tooling used to parse macros and values doesn't handle raw tokens well as parameters. This information is "remembered" by the declarative macro for later comparison.
+
+Direct `#[cfg(...)]` attributes on default functions are preserved in the generated code. For cross-crate traits, function-level cfgs inside a `#[contracttrait]` are evaluated in the implementing contract crate's configuration context when generating wrappers. Shared trait crates should prefer applying cfg to the whole trait item, or require implementing contracts to define matching features when function-level cfgs are needed.
+
+`cfg_attr` is not interpreted by the bridge. Avoid using `cfg_attr` to conditionally add `cfg` to `#[contracttrait]` default functions or `#[contractimpl]` functions, because generated wrappers may not agree with whether Rust compiles the original function. Use direct `#[cfg(...)]` instead.
 
 ### Stage 3: `#[contractimpl(contracttrait)]` calls the trait macro
 
@@ -114,6 +118,8 @@ Pause!(
     //...
 );
 ```
+
+Direct `#[cfg(...)]` attributes on overriding impl functions are preserved, so a cfg-disabled override does not suppress the trait default function.
 
 ### Stage 4: The trait macro calls `contractimpl_trait_default_fns_not_overridden`
 
