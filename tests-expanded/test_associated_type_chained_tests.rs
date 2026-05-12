@@ -1372,7 +1372,7 @@ pub extern "C" fn __Contract__valref__invoke_raw_extern(
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract__AssociatedType__43ee96751c899ff0e1a286858793b710aeacd1f5d72c118904d14312012a0923_ctor(
+fn __Contract__AssociatedType__043c3d7722d3bf11133b7c59f0762088dd24e872b8f205012c43694389734000_ctor(
 ) {
     #[allow(unsafe_code)]
     {
@@ -1385,7 +1385,7 @@ fn __Contract__AssociatedType__43ee96751c899ff0e1a286858793b710aeacd1f5d72c11890
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract__AssociatedType__43ee96751c899ff0e1a286858793b710aeacd1f5d72c118904d14312012a0923_ctor();
+                    __Contract__AssociatedType__043c3d7722d3bf11133b7c59f0762088dd24e872b8f205012c43694389734000_ctor();
                 };
                 core::default::Default::default()
             }
@@ -1398,36 +1398,218 @@ fn __Contract__AssociatedType__43ee96751c899ff0e1a286858793b710aeacd1f5d72c11890
             #[allow(deprecated)]
             &__Contract__set_val__invoke_raw_slice,
         );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __Contract__AssociatedType__046f11281157e6161f86c17a4fd81c73d4a1850f61644945dce482cbfed55104_ctor(
+) {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __Contract__AssociatedType__046f11281157e6161f86c17a4fd81c73d4a1850f61644945dce482cbfed55104_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
             "get_val",
             #[allow(deprecated)]
             &__Contract__get_val__invoke_raw_slice,
         );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __Contract__AssociatedType__6a4adbca11192a326f61110cda055762eb10de529ff037da568d56e23724242d_ctor(
+) {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __Contract__AssociatedType__6a4adbca11192a326f61110cda055762eb10de529ff037da568d56e23724242d_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
             "both",
             #[allow(deprecated)]
             &__Contract__both__invoke_raw_slice,
         );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __Contract__AssociatedType__90670cd5403f9fb2b5808b5ec7b86a35ca487c545db8b4811d7ecfa3ed865b0e_ctor(
+) {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __Contract__AssociatedType__90670cd5403f9fb2b5808b5ec7b86a35ca487c545db8b4811d7ecfa3ed865b0e_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
             "wrapped",
             #[allow(deprecated)]
             &__Contract__wrapped__invoke_raw_slice,
         );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __Contract__AssociatedType__0a6346b590ec54ae0ea2c12e8434f4b54754a90e5014cb1c3e7d34114e12bf06_ctor(
+) {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __Contract__AssociatedType__0a6346b590ec54ae0ea2c12e8434f4b54754a90e5014cb1c3e7d34114e12bf06_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
             "double_wrapped",
             #[allow(deprecated)]
             &__Contract__double_wrapped__invoke_raw_slice,
         );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __Contract__AssociatedType__0340c9867947c79320688763a69ddbf0216e7ee101c4dc188f98ae5d9f506623_ctor(
+) {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __Contract__AssociatedType__0340c9867947c79320688763a69ddbf0216e7ee101c4dc188f98ae5d9f506623_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
             "valval",
             #[allow(deprecated)]
             &__Contract__valval__invoke_raw_slice,
         );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __Contract__AssociatedType__f614f097777ac2441e247db87db9301019e86205ddff588b16dca24ea5560240_ctor(
+) {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __Contract__AssociatedType__f614f097777ac2441e247db87db9301019e86205ddff588b16dca24ea5560240_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
             "tuple",
             #[allow(deprecated)]
             &__Contract__tuple__invoke_raw_slice,
         );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __Contract__AssociatedType__4a93da409cb3081e4ff7ba10a0aca0c1fd9ab13110aae4b03e5b0010226be89a_ctor(
+) {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __Contract__AssociatedType__4a93da409cb3081e4ff7ba10a0aca0c1fd9ab13110aae4b03e5b0010226be89a_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
             "valref",
             #[allow(deprecated)]

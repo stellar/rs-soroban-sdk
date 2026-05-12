@@ -3826,7 +3826,7 @@ pub extern "C" fn __Contract__recursive_enum__invoke_raw_extern(
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract____ca538446cb58e8272191ab7091913766c05361045f91847da7c92c7de8846af4_ctor() {
+fn __Contract____7b8a6f33b43ca26a3f2aa73e408748f9ceb391ac21dfe746c94563016ab72f85_ctor() {
     #[allow(unsafe_code)]
     {
         #[link_section = ".init_array"]
@@ -3838,7 +3838,7 @@ fn __Contract____ca538446cb58e8272191ab7091913766c05361045f91847da7c92c7de8846af
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract____ca538446cb58e8272191ab7091913766c05361045f91847da7c92c7de8846af4_ctor();
+                    __Contract____7b8a6f33b43ca26a3f2aa73e408748f9ceb391ac21dfe746c94563016ab72f85_ctor();
                 };
                 core::default::Default::default()
             }
@@ -3851,11 +3851,61 @@ fn __Contract____ca538446cb58e8272191ab7091913766c05361045f91847da7c92c7de8846af
             #[allow(deprecated)]
             &__Contract__add__invoke_raw_slice,
         );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __Contract____3b6dd7419a2a779da57ff13e20217e378a2501df160cd17e6982604b8707a37d_ctor() {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __Contract____3b6dd7419a2a779da57ff13e20217e378a2501df160cd17e6982604b8707a37d_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
             "recursive",
             #[allow(deprecated)]
             &__Contract__recursive__invoke_raw_slice,
         );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __Contract____26f892f950609ba9f96abbf8e2a939b7f5154579798718ea18f2febdf9c659bb_ctor() {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __Contract____26f892f950609ba9f96abbf8e2a939b7f5154579798718ea18f2febdf9c659bb_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
             "recursive_enum",
             #[allow(deprecated)]

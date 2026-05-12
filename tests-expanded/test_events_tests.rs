@@ -585,7 +585,7 @@ pub extern "C" fn __Contract__failed_transfer__invoke_raw_extern(
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract____a60968eb9ff75bf813738a9007ab5bbea9f174011ab4092819ed57e87eb6b301_ctor() {
+fn __Contract____7708079517f101c8daa66f7e425488fc59e1ffde88e2f5a8d081e90ef7983664_ctor() {
     #[allow(unsafe_code)]
     {
         #[link_section = ".init_array"]
@@ -597,7 +597,7 @@ fn __Contract____a60968eb9ff75bf813738a9007ab5bbea9f174011ab4092819ed57e87eb6b30
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract____a60968eb9ff75bf813738a9007ab5bbea9f174011ab4092819ed57e87eb6b301_ctor();
+                    __Contract____7708079517f101c8daa66f7e425488fc59e1ffde88e2f5a8d081e90ef7983664_ctor();
                 };
                 core::default::Default::default()
             }
@@ -610,6 +610,31 @@ fn __Contract____a60968eb9ff75bf813738a9007ab5bbea9f174011ab4092819ed57e87eb6b30
             #[allow(deprecated)]
             &__Contract__transfer__invoke_raw_slice,
         );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __Contract____160dea745e1d3ebda006b1e49d8d6962b3bbe3424b0642c794f94574753fac58_ctor() {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __Contract____160dea745e1d3ebda006b1e49d8d6962b3bbe3424b0642c794f94574753fac58_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
             "failed_transfer",
             #[allow(deprecated)]

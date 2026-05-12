@@ -1168,11 +1168,14 @@ impl<'a> AllTypesClient<'a> {
 ///AllTypesArgs is a type for building arg lists for functions defined in "AllTypes".
 pub struct AllTypesArgs;
 impl AllTypesArgs {
+    /// Test u32 values.
+    /// Returns the input unchanged.
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn test_u32<'i>(v: &'i u32) -> (&'i u32,) {
         (v,)
     }
+    /// Test i32 values.
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn test_i32<'i>(v: &'i i32) -> (&'i i32,) {
@@ -1412,5 +1415,119 @@ impl AllTypesSpec {
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_enum_variants() -> [u8; 100usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x12test_enum_variants\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd0\0\0\0\x0eMyEnumVariants\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x0eMyEnumVariants\0\0"
+    }
+}
+pub struct CfgGatedSpec;
+/// Macro for `contractimpl`ing the default functions of the trait that are not overridden.
+pub use __contractimpl_for_cfg_gated as CfgGated;
+pub trait CfgGated {
+    fn shown(env: Env) -> u32 {
+        let _ = env;
+        8
+    }
+    fn feature_enabled(env: Env) -> u32 {
+        let _ = env;
+        9
+    }
+}
+///CfgGatedClient is a client for calling the contract defined in "CfgGated".
+pub struct CfgGatedClient<'a> {
+    pub env: soroban_sdk::Env,
+    pub address: soroban_sdk::Address,
+    #[doc(hidden)]
+    _phantom: core::marker::PhantomData<&'a ()>,
+}
+impl<'a> CfgGatedClient<'a> {
+    pub fn new(env: &soroban_sdk::Env, address: &soroban_sdk::Address) -> Self {
+        Self {
+            env: env.clone(),
+            address: address.clone(),
+            _phantom: core::marker::PhantomData,
+        }
+    }
+}
+impl<'a> CfgGatedClient<'a> {
+    pub fn shown(&self) -> u32 {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("shown");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
+    pub fn try_shown(
+        &self,
+    ) -> Result<
+        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("shown");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
+    pub fn feature_enabled(&self) -> u32 {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "feature_enabled") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
+    pub fn try_feature_enabled(
+        &self,
+    ) -> Result<
+        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "feature_enabled") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
+}
+///CfgGatedArgs is a type for building arg lists for functions defined in "CfgGated".
+pub struct CfgGatedArgs;
+impl CfgGatedArgs {
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn shown<'i>() -> () {
+        ()
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn feature_enabled<'i>() -> () {
+        ()
+    }
+}
+impl CfgGatedSpec {}
+impl CfgGatedSpec {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_shown() -> [u8; 32usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x05shown\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
+    }
+}
+impl CfgGatedSpec {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_feature_enabled() -> [u8; 40usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x0ffeature_enabled\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
     }
 }

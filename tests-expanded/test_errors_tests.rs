@@ -955,7 +955,7 @@ pub extern "C" fn __Contract__persisted__invoke_raw_extern() -> soroban_sdk::Val
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract____dc66cfa30fdb08b17ba29ed3da0a0be599deef8db57bfb9cd9b3dcbf8c3be498_ctor() {
+fn __Contract____5aa762ae383fbb727af3c7a36d4940a5b8c40a989452d2304fc958ff3f354e7a_ctor() {
     #[allow(unsafe_code)]
     {
         #[link_section = ".init_array"]
@@ -967,7 +967,7 @@ fn __Contract____dc66cfa30fdb08b17ba29ed3da0a0be599deef8db57bfb9cd9b3dcbf8c3be49
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract____dc66cfa30fdb08b17ba29ed3da0a0be599deef8db57bfb9cd9b3dcbf8c3be498_ctor();
+                    __Contract____5aa762ae383fbb727af3c7a36d4940a5b8c40a989452d2304fc958ff3f354e7a_ctor();
                 };
                 core::default::Default::default()
             }
@@ -980,6 +980,31 @@ fn __Contract____dc66cfa30fdb08b17ba29ed3da0a0be599deef8db57bfb9cd9b3dcbf8c3be49
             #[allow(deprecated)]
             &__Contract__hello__invoke_raw_slice,
         );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __Contract____0c532c591830f77adb3d009e7dd886994c502c98e15a136eb5c2b42ef24dd4d8_ctor() {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __Contract____0c532c591830f77adb3d009e7dd886994c502c98e15a136eb5c2b42ef24dd4d8_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
             "persisted",
             #[allow(deprecated)]

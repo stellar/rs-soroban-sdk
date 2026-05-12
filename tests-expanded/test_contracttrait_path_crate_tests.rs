@@ -477,7 +477,7 @@ impl ContractCratePathArgs {
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __ContractCratePath__crate_traits_CratePathTrait__1eead55085fa77445f5d7af954169483008ff4874e183c7854e538dc896fb975_ctor(
+fn __ContractCratePath__crate_traits_CratePathTrait__bb56e4f980d333c8ac8c90e324dc9deff7747ee2354dd96432316232a5bcb9b6_ctor(
 ) {
     #[allow(unsafe_code)]
     {
@@ -490,7 +490,7 @@ fn __ContractCratePath__crate_traits_CratePathTrait__1eead55085fa77445f5d7af9541
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __ContractCratePath__crate_traits_CratePathTrait__1eead55085fa77445f5d7af954169483008ff4874e183c7854e538dc896fb975_ctor();
+                    __ContractCratePath__crate_traits_CratePathTrait__bb56e4f980d333c8ac8c90e324dc9deff7747ee2354dd96432316232a5bcb9b6_ctor();
                 };
                 core::default::Default::default()
             }
@@ -504,31 +504,6 @@ fn __ContractCratePath__crate_traits_CratePathTrait__1eead55085fa77445f5d7af9541
             &__ContractCratePath__crate_path_method__invoke_raw_slice,
         );
     }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-#[allow(unused)]
-fn __ContractCratePath__crate_traits_CratePathTrait__e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor(
-) {
-    #[allow(unsafe_code)]
-    {
-        #[link_section = ".init_array"]
-        #[used]
-        #[allow(non_upper_case_globals, non_snake_case)]
-        #[doc(hidden)]
-        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
-            #[link_section = ".text.startup"]
-            #[allow(non_snake_case)]
-            extern "C" fn f() -> ::ctor::__support::CtorRetType {
-                unsafe {
-                    __ContractCratePath__crate_traits_CratePathTrait__e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor();
-                };
-                core::default::Default::default()
-            }
-            f
-        };
-    }
-    {}
 }
 mod test {
     use super::*;

@@ -1390,7 +1390,7 @@ pub extern "C" fn __Contract__fr_vec_get__invoke_raw_extern(
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract____9d5f96fce19df1a5d4c4527aba1995b76016454af03e47b778c4fa6ece8e5b9c_ctor() {
+fn __Contract____b10987513f5f289c00c1fa940eefae15ed515f17a01abaa2e239e3baec02e07c_ctor() {
     #[allow(unsafe_code)]
     {
         #[link_section = ".init_array"]
@@ -1402,7 +1402,7 @@ fn __Contract____9d5f96fce19df1a5d4c4527aba1995b76016454af03e47b778c4fa6ece8e5b9
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract____9d5f96fce19df1a5d4c4527aba1995b76016454af03e47b778c4fa6ece8e5b9c_ctor();
+                    __Contract____b10987513f5f289c00c1fa940eefae15ed515f17a01abaa2e239e3baec02e07c_ctor();
                 };
                 core::default::Default::default()
             }
@@ -1415,16 +1415,91 @@ fn __Contract____9d5f96fce19df1a5d4c4527aba1995b76016454af03e47b778c4fa6ece8e5b9
             #[allow(deprecated)]
             &__Contract__g1_mul__invoke_raw_slice,
         );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __Contract____73ebb0f786bcc1e173e57bf24b866a057e03f9195497e4871925a5a2870dda0e_ctor() {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __Contract____73ebb0f786bcc1e173e57bf24b866a057e03f9195497e4871925a5a2870dda0e_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
             "g2_mul",
             #[allow(deprecated)]
             &__Contract__g2_mul__invoke_raw_slice,
         );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __Contract____3a30246396cd1073f0d8225163c8f745aeb73b84289f3d8dc0351eefa7c6067b_ctor() {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __Contract____3a30246396cd1073f0d8225163c8f745aeb73b84289f3d8dc0351eefa7c6067b_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
             "dummy_verify",
             #[allow(deprecated)]
             &__Contract__dummy_verify__invoke_raw_slice,
         );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __Contract____9e3ade73ce788482ef84cd70cd45cedcef549f87a320b687c5994af7c34c4303_ctor() {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __Contract____9e3ade73ce788482ef84cd70cd45cedcef549f87a320b687c5994af7c34c4303_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
             "fr_vec_get",
             #[allow(deprecated)]

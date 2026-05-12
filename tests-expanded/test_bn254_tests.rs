@@ -1189,7 +1189,7 @@ pub extern "C" fn __Contract__fr_vec_get__invoke_raw_extern(
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract____791f30cbe20fdd8dd82fcdc2b6465e800581173658019a4bee49e2305925f4e0_ctor() {
+fn __Contract____f69211349cf2de87142804f4ac6227eb957692ae7546be6b71d31056efe84dfd_ctor() {
     #[allow(unsafe_code)]
     {
         #[link_section = ".init_array"]
@@ -1201,7 +1201,7 @@ fn __Contract____791f30cbe20fdd8dd82fcdc2b6465e800581173658019a4bee49e2305925f4e
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract____791f30cbe20fdd8dd82fcdc2b6465e800581173658019a4bee49e2305925f4e0_ctor();
+                    __Contract____f69211349cf2de87142804f4ac6227eb957692ae7546be6b71d31056efe84dfd_ctor();
                 };
                 core::default::Default::default()
             }
@@ -1214,16 +1214,91 @@ fn __Contract____791f30cbe20fdd8dd82fcdc2b6465e800581173658019a4bee49e2305925f4e
             #[allow(deprecated)]
             &__Contract__verify_pairing__invoke_raw_slice,
         );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __Contract____a856e59ee4bfca9be0abaf00e3db6a350099780034adb12c8c5f5e97e9a71180_ctor() {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __Contract____a856e59ee4bfca9be0abaf00e3db6a350099780034adb12c8c5f5e97e9a71180_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
             "g1_add",
             #[allow(deprecated)]
             &__Contract__g1_add__invoke_raw_slice,
         );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __Contract____b10987513f5f289c00c1fa940eefae15ed515f17a01abaa2e239e3baec02e07c_ctor() {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __Contract____b10987513f5f289c00c1fa940eefae15ed515f17a01abaa2e239e3baec02e07c_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
             "g1_mul",
             #[allow(deprecated)]
             &__Contract__g1_mul__invoke_raw_slice,
         );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __Contract____9e3ade73ce788482ef84cd70cd45cedcef549f87a320b687c5994af7c34c4303_ctor() {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __Contract____9e3ade73ce788482ef84cd70cd45cedcef549f87a320b687c5994af7c34c4303_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
             "fr_vec_get",
             #[allow(deprecated)]

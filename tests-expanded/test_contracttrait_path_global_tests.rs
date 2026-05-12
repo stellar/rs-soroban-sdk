@@ -3281,11 +3281,14 @@ impl<'a> ContractGlobalPathClient<'a> {
     }
 }
 impl ContractGlobalPathArgs {
+    /// Test u32 values.
+    /// Returns the input unchanged.
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn test_u32<'i>(v: &'i u32) -> (&'i u32,) {
         (v,)
     }
+    /// Test i32 values.
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn test_i32<'i>(v: &'i i32) -> (&'i i32,) {
@@ -3395,7 +3398,7 @@ impl ContractGlobalPathArgs {
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __ContractGlobalPath__test_contracttrait_trait_AllTypes__959aee9d42336ade92416504111dfbb4e37b0472bbb1e487310c05a170c39d28_ctor(
+fn __ContractGlobalPath__test_contracttrait_trait_AllTypes__53d758cb364e30212244bac7f86701cb2cd52ec2d1e81aa422edf52088793ca1_ctor(
 ) {
     #[allow(unsafe_code)]
     {
@@ -3408,7 +3411,7 @@ fn __ContractGlobalPath__test_contracttrait_trait_AllTypes__959aee9d42336ade9241
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __ContractGlobalPath__test_contracttrait_trait_AllTypes__959aee9d42336ade92416504111dfbb4e37b0472bbb1e487310c05a170c39d28_ctor();
+                    __ContractGlobalPath__test_contracttrait_trait_AllTypes__53d758cb364e30212244bac7f86701cb2cd52ec2d1e81aa422edf52088793ca1_ctor();
                 };
                 core::default::Default::default()
             }
@@ -3421,117 +3424,12 @@ fn __ContractGlobalPath__test_contracttrait_trait_AllTypes__959aee9d42336ade9241
             #[allow(deprecated)]
             &__ContractGlobalPath__test_u32__invoke_raw_slice,
         );
-        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
-            "test_i32",
-            #[allow(deprecated)]
-            &__ContractGlobalPath__test_i32__invoke_raw_slice,
-        );
-        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
-            "test_u64",
-            #[allow(deprecated)]
-            &__ContractGlobalPath__test_u64__invoke_raw_slice,
-        );
-        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
-            "test_i64",
-            #[allow(deprecated)]
-            &__ContractGlobalPath__test_i64__invoke_raw_slice,
-        );
-        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
-            "test_u128",
-            #[allow(deprecated)]
-            &__ContractGlobalPath__test_u128__invoke_raw_slice,
-        );
-        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
-            "test_i128",
-            #[allow(deprecated)]
-            &__ContractGlobalPath__test_i128__invoke_raw_slice,
-        );
-        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
-            "test_bool",
-            #[allow(deprecated)]
-            &__ContractGlobalPath__test_bool__invoke_raw_slice,
-        );
-        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
-            "test_address",
-            #[allow(deprecated)]
-            &__ContractGlobalPath__test_address__invoke_raw_slice,
-        );
-        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
-            "test_bytes",
-            #[allow(deprecated)]
-            &__ContractGlobalPath__test_bytes__invoke_raw_slice,
-        );
-        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
-            "test_bytes_n",
-            #[allow(deprecated)]
-            &__ContractGlobalPath__test_bytes_n__invoke_raw_slice,
-        );
-        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
-            "test_string",
-            #[allow(deprecated)]
-            &__ContractGlobalPath__test_string__invoke_raw_slice,
-        );
-        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
-            "test_symbol",
-            #[allow(deprecated)]
-            &__ContractGlobalPath__test_symbol__invoke_raw_slice,
-        );
-        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
-            "test_vec",
-            #[allow(deprecated)]
-            &__ContractGlobalPath__test_vec__invoke_raw_slice,
-        );
-        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
-            "test_map",
-            #[allow(deprecated)]
-            &__ContractGlobalPath__test_map__invoke_raw_slice,
-        );
-        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
-            "test_duration",
-            #[allow(deprecated)]
-            &__ContractGlobalPath__test_duration__invoke_raw_slice,
-        );
-        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
-            "test_timepoint",
-            #[allow(deprecated)]
-            &__ContractGlobalPath__test_timepoint__invoke_raw_slice,
-        );
-        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
-            "test_i256",
-            #[allow(deprecated)]
-            &__ContractGlobalPath__test_i256__invoke_raw_slice,
-        );
-        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
-            "test_u256",
-            #[allow(deprecated)]
-            &__ContractGlobalPath__test_u256__invoke_raw_slice,
-        );
-        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
-            "test_env_param",
-            #[allow(deprecated)]
-            &__ContractGlobalPath__test_env_param__invoke_raw_slice,
-        );
-        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
-            "test_struct",
-            #[allow(deprecated)]
-            &__ContractGlobalPath__test_struct__invoke_raw_slice,
-        );
-        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
-            "test_enum_unit",
-            #[allow(deprecated)]
-            &__ContractGlobalPath__test_enum_unit__invoke_raw_slice,
-        );
-        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
-            "test_enum_variants",
-            #[allow(deprecated)]
-            &__ContractGlobalPath__test_enum_variants__invoke_raw_slice,
-        );
     }
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __ContractGlobalPath__test_contracttrait_trait_AllTypes__e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor(
+fn __ContractGlobalPath__test_contracttrait_trait_AllTypes__fc0e53ecfa4163838da8f2017151f32594d5d3960028ec820f6052edb4a84059_ctor(
 ) {
     #[allow(unsafe_code)]
     {
@@ -3544,14 +3442,640 @@ fn __ContractGlobalPath__test_contracttrait_trait_AllTypes__e3b0c44298fc1c149afb
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __ContractGlobalPath__test_contracttrait_trait_AllTypes__e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor();
+                    __ContractGlobalPath__test_contracttrait_trait_AllTypes__fc0e53ecfa4163838da8f2017151f32594d5d3960028ec820f6052edb4a84059_ctor();
                 };
                 core::default::Default::default()
             }
             f
         };
     }
-    {}
+    {
+        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "test_i32",
+            #[allow(deprecated)]
+            &__ContractGlobalPath__test_i32__invoke_raw_slice,
+        );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __ContractGlobalPath__test_contracttrait_trait_AllTypes__b770dfe9b2adeb806c45d6b5ef3d31c7b9c987740d9a583ed8e1683b5debdb75_ctor(
+) {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __ContractGlobalPath__test_contracttrait_trait_AllTypes__b770dfe9b2adeb806c45d6b5ef3d31c7b9c987740d9a583ed8e1683b5debdb75_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
+        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "test_u64",
+            #[allow(deprecated)]
+            &__ContractGlobalPath__test_u64__invoke_raw_slice,
+        );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __ContractGlobalPath__test_contracttrait_trait_AllTypes__c7e2f7ef9f571dc3460d8b374883a38011169cfe419aa02ad69ddbff73b746d7_ctor(
+) {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __ContractGlobalPath__test_contracttrait_trait_AllTypes__c7e2f7ef9f571dc3460d8b374883a38011169cfe419aa02ad69ddbff73b746d7_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
+        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "test_i64",
+            #[allow(deprecated)]
+            &__ContractGlobalPath__test_i64__invoke_raw_slice,
+        );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __ContractGlobalPath__test_contracttrait_trait_AllTypes__1f04aa8787240d34edecbbf647ed2ed836655df078df79a8b7d5840e300aae9d_ctor(
+) {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __ContractGlobalPath__test_contracttrait_trait_AllTypes__1f04aa8787240d34edecbbf647ed2ed836655df078df79a8b7d5840e300aae9d_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
+        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "test_u128",
+            #[allow(deprecated)]
+            &__ContractGlobalPath__test_u128__invoke_raw_slice,
+        );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __ContractGlobalPath__test_contracttrait_trait_AllTypes__21c197ddff91b560d684eefa2ec923ac1edb7ba246d887790999555f1f1082b4_ctor(
+) {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __ContractGlobalPath__test_contracttrait_trait_AllTypes__21c197ddff91b560d684eefa2ec923ac1edb7ba246d887790999555f1f1082b4_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
+        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "test_i128",
+            #[allow(deprecated)]
+            &__ContractGlobalPath__test_i128__invoke_raw_slice,
+        );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __ContractGlobalPath__test_contracttrait_trait_AllTypes__4b66c68c88167c0df99dce45fb5157ceb3781fd75f46e2d96e1313a46c234164_ctor(
+) {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __ContractGlobalPath__test_contracttrait_trait_AllTypes__4b66c68c88167c0df99dce45fb5157ceb3781fd75f46e2d96e1313a46c234164_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
+        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "test_bool",
+            #[allow(deprecated)]
+            &__ContractGlobalPath__test_bool__invoke_raw_slice,
+        );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __ContractGlobalPath__test_contracttrait_trait_AllTypes__d78659c68ad1cfce2ad440653013d25977b451539dd6f219c8e1e8b875d23c14_ctor(
+) {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __ContractGlobalPath__test_contracttrait_trait_AllTypes__d78659c68ad1cfce2ad440653013d25977b451539dd6f219c8e1e8b875d23c14_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
+        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "test_address",
+            #[allow(deprecated)]
+            &__ContractGlobalPath__test_address__invoke_raw_slice,
+        );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __ContractGlobalPath__test_contracttrait_trait_AllTypes__d8369e1d7eccf342204ebd3114d6abb3261652c93b0722901964ebc9a2b869ac_ctor(
+) {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __ContractGlobalPath__test_contracttrait_trait_AllTypes__d8369e1d7eccf342204ebd3114d6abb3261652c93b0722901964ebc9a2b869ac_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
+        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "test_bytes",
+            #[allow(deprecated)]
+            &__ContractGlobalPath__test_bytes__invoke_raw_slice,
+        );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __ContractGlobalPath__test_contracttrait_trait_AllTypes__4263283d1487792fb25a9666db2bcf4b7cb85d1596eddd530b28e3dea11ca98e_ctor(
+) {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __ContractGlobalPath__test_contracttrait_trait_AllTypes__4263283d1487792fb25a9666db2bcf4b7cb85d1596eddd530b28e3dea11ca98e_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
+        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "test_bytes_n",
+            #[allow(deprecated)]
+            &__ContractGlobalPath__test_bytes_n__invoke_raw_slice,
+        );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __ContractGlobalPath__test_contracttrait_trait_AllTypes__a1a211ad36b73f745fe11cbbe5a3b7111710436824119d305f34af1842e457c4_ctor(
+) {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __ContractGlobalPath__test_contracttrait_trait_AllTypes__a1a211ad36b73f745fe11cbbe5a3b7111710436824119d305f34af1842e457c4_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
+        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "test_string",
+            #[allow(deprecated)]
+            &__ContractGlobalPath__test_string__invoke_raw_slice,
+        );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __ContractGlobalPath__test_contracttrait_trait_AllTypes__d218b946ac71446987caada5b1ddd9a88071593dc7947a9b5e0c9684f58016d1_ctor(
+) {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __ContractGlobalPath__test_contracttrait_trait_AllTypes__d218b946ac71446987caada5b1ddd9a88071593dc7947a9b5e0c9684f58016d1_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
+        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "test_symbol",
+            #[allow(deprecated)]
+            &__ContractGlobalPath__test_symbol__invoke_raw_slice,
+        );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __ContractGlobalPath__test_contracttrait_trait_AllTypes__3dab3b2e67a5258edc6046d3b3cb677c43a508a69de5786d8a34361ad5c12e80_ctor(
+) {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __ContractGlobalPath__test_contracttrait_trait_AllTypes__3dab3b2e67a5258edc6046d3b3cb677c43a508a69de5786d8a34361ad5c12e80_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
+        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "test_vec",
+            #[allow(deprecated)]
+            &__ContractGlobalPath__test_vec__invoke_raw_slice,
+        );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __ContractGlobalPath__test_contracttrait_trait_AllTypes__26529164027f0c953c7b3a907b09c5e144a82b6430185ad98603b636b4b3b349_ctor(
+) {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __ContractGlobalPath__test_contracttrait_trait_AllTypes__26529164027f0c953c7b3a907b09c5e144a82b6430185ad98603b636b4b3b349_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
+        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "test_map",
+            #[allow(deprecated)]
+            &__ContractGlobalPath__test_map__invoke_raw_slice,
+        );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __ContractGlobalPath__test_contracttrait_trait_AllTypes__152e048563476cac8dd28938f3c41518456072e651f690c6b1ea6814466aea27_ctor(
+) {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __ContractGlobalPath__test_contracttrait_trait_AllTypes__152e048563476cac8dd28938f3c41518456072e651f690c6b1ea6814466aea27_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
+        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "test_duration",
+            #[allow(deprecated)]
+            &__ContractGlobalPath__test_duration__invoke_raw_slice,
+        );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __ContractGlobalPath__test_contracttrait_trait_AllTypes__6ab993c9945db4a3067443e6b98939664c9b314387f62bdaaccf83a79f172330_ctor(
+) {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __ContractGlobalPath__test_contracttrait_trait_AllTypes__6ab993c9945db4a3067443e6b98939664c9b314387f62bdaaccf83a79f172330_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
+        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "test_timepoint",
+            #[allow(deprecated)]
+            &__ContractGlobalPath__test_timepoint__invoke_raw_slice,
+        );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __ContractGlobalPath__test_contracttrait_trait_AllTypes__720f8551818518259a0743a812712dcfb905b3c817117e017891bbf6229633f2_ctor(
+) {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __ContractGlobalPath__test_contracttrait_trait_AllTypes__720f8551818518259a0743a812712dcfb905b3c817117e017891bbf6229633f2_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
+        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "test_i256",
+            #[allow(deprecated)]
+            &__ContractGlobalPath__test_i256__invoke_raw_slice,
+        );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __ContractGlobalPath__test_contracttrait_trait_AllTypes__c11a38375965f06d3e70c95d14652a94d7d10c85964c69ff29449fd1fdd684df_ctor(
+) {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __ContractGlobalPath__test_contracttrait_trait_AllTypes__c11a38375965f06d3e70c95d14652a94d7d10c85964c69ff29449fd1fdd684df_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
+        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "test_u256",
+            #[allow(deprecated)]
+            &__ContractGlobalPath__test_u256__invoke_raw_slice,
+        );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __ContractGlobalPath__test_contracttrait_trait_AllTypes__d66789a1d5c62b2e13ce77eb51642b42a21d817718902956ded0ca9720c4f2c2_ctor(
+) {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __ContractGlobalPath__test_contracttrait_trait_AllTypes__d66789a1d5c62b2e13ce77eb51642b42a21d817718902956ded0ca9720c4f2c2_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
+        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "test_env_param",
+            #[allow(deprecated)]
+            &__ContractGlobalPath__test_env_param__invoke_raw_slice,
+        );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __ContractGlobalPath__test_contracttrait_trait_AllTypes__8eddde8d361a1a64147292e9556cb28d1efeec7df66b8064c5cc8af95e9b9bad_ctor(
+) {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __ContractGlobalPath__test_contracttrait_trait_AllTypes__8eddde8d361a1a64147292e9556cb28d1efeec7df66b8064c5cc8af95e9b9bad_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
+        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "test_struct",
+            #[allow(deprecated)]
+            &__ContractGlobalPath__test_struct__invoke_raw_slice,
+        );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __ContractGlobalPath__test_contracttrait_trait_AllTypes__4a069ddc7591bc91505072ab63fbb531eadd377db8acb22014e849a66a1e26e0_ctor(
+) {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __ContractGlobalPath__test_contracttrait_trait_AllTypes__4a069ddc7591bc91505072ab63fbb531eadd377db8acb22014e849a66a1e26e0_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
+        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "test_enum_unit",
+            #[allow(deprecated)]
+            &__ContractGlobalPath__test_enum_unit__invoke_raw_slice,
+        );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __ContractGlobalPath__test_contracttrait_trait_AllTypes__d2b0ba6d429ff899ab7fa1f5126ecddb66bdaec3f51d9aabaa916af14c3079a8_ctor(
+) {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __ContractGlobalPath__test_contracttrait_trait_AllTypes__d2b0ba6d429ff899ab7fa1f5126ecddb66bdaec3f51d9aabaa916af14c3079a8_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
+        <ContractGlobalPath as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "test_enum_variants",
+            #[allow(deprecated)]
+            &__ContractGlobalPath__test_enum_variants__invoke_raw_slice,
+        );
+    }
 }
 mod test {
     use super::*;

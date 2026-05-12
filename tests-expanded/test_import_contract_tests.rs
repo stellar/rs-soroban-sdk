@@ -1556,7 +1556,7 @@ pub extern "C" fn __Contract__safe_add_with_two__invoke_raw_extern(
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract____7f4ee4d361d09b9f0b349441853c9c2507e71fb15e4ddfe088d43fd41f0e1d27_ctor() {
+fn __Contract____a65401bbc7b9c746c39c9a9e22087a96ad048be784b0c2c6eb05243a85b227bb_ctor() {
     #[allow(unsafe_code)]
     {
         #[link_section = ".init_array"]
@@ -1568,7 +1568,7 @@ fn __Contract____7f4ee4d361d09b9f0b349441853c9c2507e71fb15e4ddfe088d43fd41f0e1d2
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract____7f4ee4d361d09b9f0b349441853c9c2507e71fb15e4ddfe088d43fd41f0e1d27_ctor();
+                    __Contract____a65401bbc7b9c746c39c9a9e22087a96ad048be784b0c2c6eb05243a85b227bb_ctor();
                 };
                 core::default::Default::default()
             }
@@ -1581,11 +1581,61 @@ fn __Contract____7f4ee4d361d09b9f0b349441853c9c2507e71fb15e4ddfe088d43fd41f0e1d2
             #[allow(deprecated)]
             &__Contract__add_with__invoke_raw_slice,
         );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __Contract____ef00c9e592aaad2132e9664718d0f5a7d157016f0b6e2bfabf7cc7ee9a9343ac_ctor() {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __Contract____ef00c9e592aaad2132e9664718d0f5a7d157016f0b6e2bfabf7cc7ee9a9343ac_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
             "safe_add_with",
             #[allow(deprecated)]
             &__Contract__safe_add_with__invoke_raw_slice,
         );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __Contract____cf95a266dc51de2574c4c58e7aa871cea0e723db7bf26d912a6c802c6148e966_ctor() {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __Contract____cf95a266dc51de2574c4c58e7aa871cea0e723db7bf26d912a6c802c6148e966_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
             "safe_add_with_two",
             #[allow(deprecated)]

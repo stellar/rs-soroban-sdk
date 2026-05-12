@@ -944,7 +944,7 @@ pub extern "C" fn __Contract__get_data__invoke_raw_extern(
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract____99dc7227b32e52c8d11ead5dec3dd80bafdad62d74493e7341c782fd8cb13593_ctor() {
+fn __Contract____61fe4c71dfe26cd6b323dcd34e237c382eb546b841486cb4f1cfe9d81adf2047_ctor() {
     #[allow(unsafe_code)]
     {
         #[link_section = ".init_array"]
@@ -956,7 +956,7 @@ fn __Contract____99dc7227b32e52c8d11ead5dec3dd80bafdad62d74493e7341c782fd8cb1359
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract____99dc7227b32e52c8d11ead5dec3dd80bafdad62d74493e7341c782fd8cb13593_ctor();
+                    __Contract____61fe4c71dfe26cd6b323dcd34e237c382eb546b841486cb4f1cfe9d81adf2047_ctor();
                 };
                 core::default::Default::default()
             }
@@ -969,6 +969,31 @@ fn __Contract____99dc7227b32e52c8d11ead5dec3dd80bafdad62d74493e7341c782fd8cb1359
             #[allow(deprecated)]
             &__Contract____constructor__invoke_raw_slice,
         );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __Contract____400134394a744d5eba8572e931ffe5685eeeef6f0a23dc3398f205a1915e2b4f_ctor() {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __Contract____400134394a744d5eba8572e931ffe5685eeeef6f0a23dc3398f205a1915e2b4f_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
             "get_data",
             #[allow(deprecated)]

@@ -412,7 +412,7 @@ pub extern "C" fn __Contract__empty2__invoke_raw_extern() -> soroban_sdk::Val {
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract____3d3f4e42d091a0f5587b8b2342b95a9ce7a0f5074262f199c972d2b2f43f23c1_ctor() {
+fn __Contract____e6845188b1d2aebdf19d13c1613d7a49b5806a7fe336ec775fa182b36719bbc1_ctor() {
     #[allow(unsafe_code)]
     {
         #[link_section = ".init_array"]
@@ -424,7 +424,7 @@ fn __Contract____3d3f4e42d091a0f5587b8b2342b95a9ce7a0f5074262f199c972d2b2f43f23c
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract____3d3f4e42d091a0f5587b8b2342b95a9ce7a0f5074262f199c972d2b2f43f23c1_ctor();
+                    __Contract____e6845188b1d2aebdf19d13c1613d7a49b5806a7fe336ec775fa182b36719bbc1_ctor();
                 };
                 core::default::Default::default()
             }
@@ -437,6 +437,31 @@ fn __Contract____3d3f4e42d091a0f5587b8b2342b95a9ce7a0f5074262f199c972d2b2f43f23c
             #[allow(deprecated)]
             &__Contract__empty__invoke_raw_slice,
         );
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(unused)]
+fn __Contract____fbc93c891fb42ed6490478fb2d34720c5af09a9af4372d682454f701d5125956_ctor() {
+    #[allow(unsafe_code)]
+    {
+        #[link_section = ".init_array"]
+        #[used]
+        #[allow(non_upper_case_globals, non_snake_case)]
+        #[doc(hidden)]
+        static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
+            #[link_section = ".text.startup"]
+            #[allow(non_snake_case)]
+            extern "C" fn f() -> ::ctor::__support::CtorRetType {
+                unsafe {
+                    __Contract____fbc93c891fb42ed6490478fb2d34720c5af09a9af4372d682454f701d5125956_ctor();
+                };
+                core::default::Default::default()
+            }
+            f
+        };
+    }
+    {
         <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
             "empty2",
             #[allow(deprecated)]

@@ -477,7 +477,7 @@ pub mod submodule {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(unused)]
-    fn __ContractSuperPath__super_SuperPathTrait__027cbc237c9f13b03e39d11891fd87f1aacbf08c9bcea0bcd8a3a5a7226d3ade_ctor(
+    fn __ContractSuperPath__super_SuperPathTrait__a7ea99188db0ce23ed33cf6b3a90f45b4a9d59de6133f0c5b6c8b55fb24f89f0_ctor(
     ) {
         #[allow(unsafe_code)]
         {
@@ -490,7 +490,7 @@ pub mod submodule {
                 #[allow(non_snake_case)]
                 extern "C" fn f() -> ::ctor::__support::CtorRetType {
                     unsafe {
-                        __ContractSuperPath__super_SuperPathTrait__027cbc237c9f13b03e39d11891fd87f1aacbf08c9bcea0bcd8a3a5a7226d3ade_ctor();
+                        __ContractSuperPath__super_SuperPathTrait__a7ea99188db0ce23ed33cf6b3a90f45b4a9d59de6133f0c5b6c8b55fb24f89f0_ctor();
                     };
                     core::default::Default::default()
                 }
@@ -504,31 +504,6 @@ pub mod submodule {
                 &__ContractSuperPath__super_path_method__invoke_raw_slice,
             );
         }
-    }
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(unused)]
-    fn __ContractSuperPath__super_SuperPathTrait__e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor(
-    ) {
-        #[allow(unsafe_code)]
-        {
-            #[link_section = ".init_array"]
-            #[used]
-            #[allow(non_upper_case_globals, non_snake_case)]
-            #[doc(hidden)]
-            static f: extern "C" fn() -> ::ctor::__support::CtorRetType = {
-                #[link_section = ".text.startup"]
-                #[allow(non_snake_case)]
-                extern "C" fn f() -> ::ctor::__support::CtorRetType {
-                    unsafe {
-                        __ContractSuperPath__super_SuperPathTrait__e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855_ctor();
-                    };
-                    core::default::Default::default()
-                }
-                f
-            };
-        }
-        {}
     }
 }
 mod test {

@@ -8,7 +8,7 @@ use soroban_sdk::{
     contract, contractimpl, Address, Bytes, BytesN, Duration, Map, String, Symbol, Timepoint, Vec,
     I256, U256,
 };
-use test_contracttrait_trait::{AllTypes, MyEnumUnit, MyEnumVariants, MyStruct};
+use test_contracttrait_trait::{AllTypes, CfgGated, MyEnumUnit, MyEnumVariants, MyStruct};
 pub struct Contract;
 ///ContractArgs is a type for building arg lists for functions defined in "Contract".
 pub struct ContractArgs;
@@ -1711,11 +1711,14 @@ impl<'a> ContractClient<'a> {
     }
 }
 impl ContractArgs {
+    /// Test u32 values.
+    /// Returns the input unchanged.
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn test_u32<'i>(v: &'i u32) -> (&'i u32,) {
         (v,)
     }
+    /// Test i32 values.
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn test_i32<'i>(v: &'i i32) -> (&'i i32,) {
@@ -1820,5 +1823,103 @@ impl ContractArgs {
     #[allow(clippy::unused_unit)]
     pub fn test_enum_variants<'i>(v: &'i MyEnumVariants) -> (&'i MyEnumVariants,) {
         (v,)
+    }
+}
+pub struct CfgGatedContract;
+///CfgGatedContractArgs is a type for building arg lists for functions defined in "CfgGatedContract".
+pub struct CfgGatedContractArgs;
+///CfgGatedContractClient is a client for calling the contract defined in "CfgGatedContract".
+pub struct CfgGatedContractClient<'a> {
+    pub env: soroban_sdk::Env,
+    pub address: soroban_sdk::Address,
+    #[doc(hidden)]
+    _phantom: core::marker::PhantomData<&'a ()>,
+}
+impl<'a> CfgGatedContractClient<'a> {
+    pub fn new(env: &soroban_sdk::Env, address: &soroban_sdk::Address) -> Self {
+        Self {
+            env: env.clone(),
+            address: address.clone(),
+            _phantom: core::marker::PhantomData,
+        }
+    }
+}
+impl CfgGated for CfgGatedContract {}
+impl<'a> CfgGatedContractClient<'a> {}
+impl CfgGatedContractArgs {}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `CfgGatedContractClient::new(&env, &contract_id).shown` instead")]
+#[allow(deprecated)]
+pub fn __CfgGatedContract__shown__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <CfgGatedContract as CfgGated>::shown(env.clone()),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `CfgGatedContractClient::new(&env, &contract_id).shown` instead")]
+#[export_name = "shown"]
+pub extern "C" fn __CfgGatedContract__shown__invoke_raw_extern() -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __CfgGatedContract__shown__invoke_raw(soroban_sdk::Env::default())
+}
+impl CfgGatedContract {}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __CfgGatedContract__shown__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_FN_SHOWN: [u8; 32usize] = super::CfgGatedContract::spec_xdr_shown();
+}
+impl CfgGatedContract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_shown() -> [u8; 32usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x05shown\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
+    }
+}
+impl CfgGatedContract {}
+impl<'a> CfgGatedContractClient<'a> {
+    pub fn shown(&self) -> u32 {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("shown");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
+    pub fn try_shown(
+        &self,
+    ) -> Result<
+        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("shown");
+                SYMBOL
+            },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
+}
+impl CfgGatedContractArgs {
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn shown<'i>() -> () {
+        ()
     }
 }
