@@ -26,8 +26,7 @@ pub use bn254::Bn254Fr as BnScalar;
 /// `Hash<N>` is represented at contract boundaries as `BytesN<N>`, so accepting
 /// it as a general contract entrypoint argument does not prove that the caller
 /// supplied bytes were produced by a secure cryptographic hash function. Use
-/// `BytesN<N>` for externally supplied digests unless the calling context
-/// provides an explicit provenance guarantee.
+/// `BytesN<N>` for externally supplied digests.
 ///
 /// **__Note:_** A Hash should not be used with storage, since no guarantee can
 /// be made about the Bytes stored as to whether they were in fact from a secure
