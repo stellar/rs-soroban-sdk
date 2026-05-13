@@ -802,6 +802,13 @@ mod test {
         let from = U256::from_u128(&env, start);
         let end = from.to_u128().unwrap();
         assert_eq!(start, end);
+
+        // small (exercises the U256Small fast-path in to_u128)
+        let from_small = U256::from_u32(&env, 0);
+        assert_eq!(from_small.to_u128(), Some(0_u128));
+
+        let from_small = U256::from_u32(&env, u32::MAX);
+        assert_eq!(from_small.to_u128(), Some(u32::MAX as u128));
     }
 
     #[test]
@@ -843,6 +850,16 @@ mod test {
         let from = I256::from_i128(&env, start);
         let end = from.to_i128().unwrap();
         assert_eq!(start, end);
+
+        // small (exercises the I256Small fast-path in to_i128)
+        let from_small = I256::from_i32(&env, 0);
+        assert_eq!(from_small.to_i128(), Some(0_i128));
+
+        let from_small = I256::from_i32(&env, i32::MAX);
+        assert_eq!(from_small.to_i128(), Some(i32::MAX as i128));
+
+        let from_small = I256::from_i32(&env, i32::MIN);
+        assert_eq!(from_small.to_i128(), Some(i32::MIN as i128));
     }
 
     #[test]
