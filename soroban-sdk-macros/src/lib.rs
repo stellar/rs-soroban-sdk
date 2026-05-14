@@ -348,8 +348,8 @@ pub fn contractmeta(metadata: TokenStream) -> TokenStream {
             }
         };
 
-        let val_tokens: TokenStream = args.val.to_token_stream().into();
-        let MacroString(val) = parse_macro_input!(val_tokens);
+        let val = args.val.to_token_stream().into();
+        let MacroString(val) = parse_macro_input!(val);
         let val: StringM = match val.try_into() {
             Ok(k) => k,
             Err(e) => {
