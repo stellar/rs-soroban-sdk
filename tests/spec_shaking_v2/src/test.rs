@@ -55,6 +55,9 @@ fn test_spec_shaking_v2() {
         "with_wasm_imported",
         "with_option",
         "with_result",
+        "with_auth_contexts",
+        "with_invoker_auth",
+        "with_executable",
         "with_non_pub",
         "with_non_pub_error",
         "with_tuple",
@@ -126,6 +129,16 @@ fn test_spec_shaking_v2() {
         "UsedRecursiveNode",
         "UsedRecursiveLeaf",
         "UsedLeaf",
+        // SDK internal types that use export=false without the feature, but
+        // participate in normal v2 shaking when they are reachable.
+        "Context",
+        "ContractContext",
+        "CreateContractHostFnContext",
+        "CreateContractWithConstructorHostFnContext",
+        "ContractExecutable",
+        "InvokerContractAuthEntry",
+        "SubContractInvocation",
+        "Executable",
     ];
     for name in used {
         assert!(

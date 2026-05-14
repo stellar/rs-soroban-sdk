@@ -411,6 +411,12 @@ impl Contract {
 
     pub fn with_recursion(_env: Env, _r: UsedRecursiveRoot) {}
 
+    pub fn with_auth_contexts(_env: Env, _c: Vec<soroban_sdk::auth::Context>) {}
+
+    pub fn with_invoker_auth(_env: Env, _i: soroban_sdk::auth::InvokerContractAuthEntry) {}
+
+    pub fn with_executable(_env: Env, _e: soroban_sdk::Executable) {}
+
     pub fn publish_simple(env: Env) {
         UsedEventSimple {
             kind: Symbol::new(&env, "transfer"),

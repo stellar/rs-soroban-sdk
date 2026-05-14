@@ -330,6 +330,32 @@ pub struct RecursiveToEnum {
 }
 #[soroban_sdk::contracttype(export = false)]
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub struct ContractContext {
+    pub args: soroban_sdk::Vec<soroban_sdk::Val>,
+    pub contract: soroban_sdk::Address,
+    pub fn_name: soroban_sdk::Symbol,
+}
+#[soroban_sdk::contracttype(export = false)]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub struct SubContractInvocation {
+    pub context: ContractContext,
+    pub sub_invocations: soroban_sdk::Vec<InvokerContractAuthEntry>,
+}
+#[soroban_sdk::contracttype(export = false)]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub struct CreateContractHostFnContext {
+    pub executable: ContractExecutable,
+    pub salt: soroban_sdk::BytesN<32>,
+}
+#[soroban_sdk::contracttype(export = false)]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub struct CreateContractWithConstructorHostFnContext {
+    pub constructor_args: soroban_sdk::Vec<soroban_sdk::Val>,
+    pub executable: ContractExecutable,
+    pub salt: soroban_sdk::BytesN<32>,
+}
+#[soroban_sdk::contracttype(export = false)]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub enum UdtEnum {
     UdtA,
     UdtB(UdtStruct),
@@ -341,6 +367,32 @@ pub enum UdtEnum {
 pub enum RecursiveEnum {
     NotRecursive,
     Recursive(RecursiveToEnum),
+}
+#[soroban_sdk::contracttype(export = false)]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub enum Context {
+    Contract(ContractContext),
+    CreateContractHostFn(CreateContractHostFnContext),
+    CreateContractWithCtorHostFn(CreateContractWithConstructorHostFnContext),
+}
+#[soroban_sdk::contracttype(export = false)]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub enum ContractExecutable {
+    Wasm(soroban_sdk::BytesN<32>),
+}
+#[soroban_sdk::contracttype(export = false)]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub enum InvokerContractAuthEntry {
+    Contract(SubContractInvocation),
+    CreateContractHostFn(CreateContractHostFnContext),
+    CreateContractWithCtorHostFn(CreateContractWithConstructorHostFnContext),
+}
+#[soroban_sdk::contracttype(export = false)]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub enum Executable {
+    Wasm(soroban_sdk::BytesN<32>),
+    StellarAsset,
+    Account,
 }
 #[soroban_sdk::contracttype(export = false)]
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
@@ -375,6 +427,58 @@ pub trait Contract {
     fn add(env: soroban_sdk::Env, a: u64, b: u64) -> u64;
     fn safe_add(env: soroban_sdk::Env, a: u64, b: u64) -> Result<u64, Error>;
     fn safe_add_two(env: soroban_sdk::Env, a: u64, b: u64) -> Result<u64, MyError>;
+}
+#[soroban_sdk::contracttype(export = false)]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub struct ContractContext {
+    pub args: soroban_sdk::Vec<soroban_sdk::Val>,
+    pub contract: soroban_sdk::Address,
+    pub fn_name: soroban_sdk::Symbol,
+}
+#[soroban_sdk::contracttype(export = false)]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub struct SubContractInvocation {
+    pub context: ContractContext,
+    pub sub_invocations: soroban_sdk::Vec<InvokerContractAuthEntry>,
+}
+#[soroban_sdk::contracttype(export = false)]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub struct CreateContractHostFnContext {
+    pub executable: ContractExecutable,
+    pub salt: soroban_sdk::BytesN<32>,
+}
+#[soroban_sdk::contracttype(export = false)]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub struct CreateContractWithConstructorHostFnContext {
+    pub constructor_args: soroban_sdk::Vec<soroban_sdk::Val>,
+    pub executable: ContractExecutable,
+    pub salt: soroban_sdk::BytesN<32>,
+}
+#[soroban_sdk::contracttype(export = false)]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub enum Context {
+    Contract(ContractContext),
+    CreateContractHostFn(CreateContractHostFnContext),
+    CreateContractWithCtorHostFn(CreateContractWithConstructorHostFnContext),
+}
+#[soroban_sdk::contracttype(export = false)]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub enum ContractExecutable {
+    Wasm(soroban_sdk::BytesN<32>),
+}
+#[soroban_sdk::contracttype(export = false)]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub enum InvokerContractAuthEntry {
+    Contract(SubContractInvocation),
+    CreateContractHostFn(CreateContractHostFnContext),
+    CreateContractWithCtorHostFn(CreateContractWithConstructorHostFnContext),
+}
+#[soroban_sdk::contracttype(export = false)]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub enum Executable {
+    Wasm(soroban_sdk::BytesN<32>),
+    StellarAsset,
+    Account,
 }
 #[soroban_sdk::contracterror(export = false)]
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
