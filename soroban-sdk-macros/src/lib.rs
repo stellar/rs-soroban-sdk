@@ -62,6 +62,17 @@ pub(crate) const DEFAULT_XDR_RW_LIMITS: Limits = Limits {
     len: 0x1000000,
 };
 
+pub(crate) fn validate_export_arg_unsupported_with_spec_shaking_v2(
+    export: &Option<bool>,
+    span: &impl Spanned,
+) -> Result<(), darling::Error> {
+    if cfg!(feature = "experimental_spec_shaking_v2") && export.is_some() {
+        Err(darling::Error::custom("`export` is unsupported with `experimental_spec_shaking_v2`; specs are determined by reachability").with_span(span))
+    } else {
+        Ok(())
+    }
+}
+
 #[proc_macro]
 pub fn internal_symbol_short(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
@@ -426,6 +437,9 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
         Ok(()) => {}
         Err(e) => return e.to_compile_error().into(),
     }
+    if let Err(e) = validate_export_arg_unsupported_with_spec_shaking_v2(&args.export, &input) {
+        return e.write_errors().into();
+    }
     // If the export argument has a value, do as it instructs regarding
     // exporting. If it does not have a value, export if the type is pub,
     // or always export when spec shaking is enabled.
@@ -500,6 +514,9 @@ pub fn contracterror(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
     let ident = &input.ident;
     let attrs = &input.attrs;
+    if let Err(e) = validate_export_arg_unsupported_with_spec_shaking_v2(&args.export, &input) {
+        return e.write_errors().into();
+    }
     // If the export argument has a value, do as it instructs regarding
     // exporting. If it does not have a value, export if the type is pub,
     // or always export when spec shaking is enabled.

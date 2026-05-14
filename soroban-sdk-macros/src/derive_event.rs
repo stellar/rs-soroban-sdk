@@ -1,6 +1,7 @@
 use crate::{
     attribute::remove_attributes_from_item, default_crate_path, doc::docs_from_attrs,
-    map_type::map_type, shaking, symbol, DEFAULT_XDR_RW_LIMITS,
+    map_type::map_type, shaking, symbol, validate_export_arg_unsupported_with_spec_shaking_v2,
+    DEFAULT_XDR_RW_LIMITS,
 };
 use darling::{ast::NestedMeta, Error, FromMeta};
 use heck::ToSnakeCase;
@@ -67,6 +68,7 @@ fn derive_event_or_err(metadata: TokenStream2, input: TokenStream2) -> Result<To
     let args = NestedMeta::parse_meta_list(metadata.into())?;
     let args = ContractEventArgs::from_list(&args)?;
     let input = parse2::<DeriveInput>(input)?;
+    validate_export_arg_unsupported_with_spec_shaking_v2(&args.export, &input)?;
     let derived = derive_impls(&args, &input)?;
     let mut input = input;
     remove_attributes_from_item(&mut input.data, &["topic", "data"]);
