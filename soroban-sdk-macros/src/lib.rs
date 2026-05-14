@@ -348,9 +348,8 @@ pub fn contractmeta(metadata: TokenStream) -> TokenStream {
             }
         };
 
-        let val_as_tokens: TokenStream2 = args.val.to_token_stream();
-        let val_as_tokens_for_parse = val_as_tokens.clone().into();
-        let MacroString(val) = parse_macro_input!(val_as_tokens_for_parse);
+        let val_tokens: TokenStream = args.val.to_token_stream().into();
+        let MacroString(val) = parse_macro_input!(val_tokens);
         let val: StringM = match val.try_into() {
             Ok(k) => k,
             Err(e) => {
@@ -381,14 +380,15 @@ pub fn contractmeta(metadata: TokenStream) -> TokenStream {
                 s
             })
         );
+        let val_expr = &args.val;
         quote! {
             // Required to ensure that any env!, include!, and include_str! usage within the val
             // parameter that get evaluated by the MacroString above, also get surfaced to rustc and
             // included in dep-info for the build artifact so that changes to the environment
-            // variable or included file update the artifacts dep-info and invalidate artifacts that
+            // variable or included file update the artifact's dep-info and invalidate artifacts that
             // get stored in caches like sccache.
             // See https://github.com/dtolnay/macro-string/issues/29
-            const _: () = { let _ = { #val_as_tokens }; };
+            const _: () = { let _ = { #val_expr }; };
 
             #[doc(hidden)]
             #[cfg_attr(target_family = "wasm", link_section = "contractmetav0")]
