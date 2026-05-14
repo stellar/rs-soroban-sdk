@@ -212,8 +212,10 @@ pub use soroban_sdk_macros::symbol_short;
 /// When the [`experimental_spec_shaking_v2`][_features#experimental_spec_shaking_v2]
 /// feature is enabled, spec entries are generated for all types regardless of
 /// visibility, and markers are embedded that allow post-build tools to strip
-/// entries for types that are not used at a contract boundary. See
-/// [`_features`] for details.
+/// entries for errors that are neither used at a contract boundary nor thrown
+/// at one. The `export = ...` argument is not supported and results in a
+/// compiler error. It should be omitted to allow spec shaking v2 to manage spec
+/// inclusion. See [`_features`] for details.
 ///
 /// ### Examples
 ///
@@ -626,7 +628,9 @@ pub use soroban_sdk_macros::contractmeta;
 /// When the [`experimental_spec_shaking_v2`][_features#experimental_spec_shaking_v2]
 /// feature is enabled, spec entries are generated for all types regardless of
 /// visibility, and markers are embedded that allow post-build tools to strip
-/// entries for types that are not used at a contract boundary. See
+/// entries for types that are not used at a contract boundary. The
+/// `export = ...` argument is not supported and results in a compiler error. It
+/// should be omitted to allow spec shaking v2 to manage spec inclusion. See
 /// [`_features`] for details.
 ///
 /// ### Examples
@@ -780,7 +784,9 @@ pub use soroban_sdk_macros::contracttype;
 ///
 /// When the [`experimental_spec_shaking_v2`][_features#experimental_spec_shaking_v2]
 /// feature is enabled, markers are embedded that allow post-build tools to strip
-/// spec entries for events that are never published at a contract boundary. See
+/// spec entries for events that are never published at a contract boundary. The
+/// `export = ...` argument is not supported and results in a compiler error. It
+/// should be omitted to allow spec shaking v2 to manage spec inclusion. See
 /// [`_features`] for details.
 ///
 /// ### Examples

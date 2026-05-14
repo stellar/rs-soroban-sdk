@@ -83,22 +83,26 @@
 //! #### [`contracttype`]
 //!
 //! Without this feature, spec entries are only generated for `pub` types (or
-//! when `export = true` is explicitly set). With this feature, spec entries
-//! and markers are generated for all types regardless of visibility, unless
-//! `export = false` is explicitly set. This ensures all types can participate
-//! in spec shaking.
+//! when `export = true` is explicitly set). With this feature, the legacy
+//! `export` argument is unsupported: spec entries and markers are generated for
+//! all types regardless of visibility, and post-build tooling removes entries
+//! that are not reachable from the contract interface. Passing `export = ...`
+//! under this feature is a compile error; remove it.
 //!
 //! #### [`contracterror`]
 //!
 //! Same as [`contracttype`]: without this feature, spec entries are only
-//! generated for `pub` types. With this feature, spec entries and markers are
-//! generated for all error enums regardless of visibility, unless
-//! `export = false` is explicitly set.
+//! generated for `pub` types. With this feature, the legacy `export` argument
+//! is unsupported and post-build tooling removes unreachable error enum
+//! entries. Passing `export = ...` under this feature is a compile error;
+//! remove it.
 //!
 //! #### [`contractevent`]
 //!
-//! Markers are embedded for all events, allowing post-build tools to strip
-//! spec entries for events that are never published at a contract boundary.
+//! The legacy `export` argument is unsupported. Markers are embedded for all
+//! events, allowing post-build tools to strip spec entries for events that are
+//! never published at a contract boundary. Passing `export = ...` under this
+//! feature is a compile error; remove it.
 //!
 //! #### [`contractimport!`]
 //!
@@ -109,9 +113,9 @@
 //! definitions, and callers must look at the imported contract's spec to find
 //! the type definitions.
 //!
-//! With this feature, [`contractimport!`] generates imported types with
-//! `export = true`. Imported types produce spec entries and markers in the
-//! importing contract, just like locally defined types. This changes the
+//! With this feature, [`contractimport!`] generates imported types without
+//! legacy `export` controls. Imported types produce spec entries and markers in
+//! the importing contract, just like locally defined types. This changes the
 //! contract's spec to be self-contained — it includes the type definitions for
 //! all types used at the contract boundary, regardless of where those types
 //! were originally defined. Specifically:
