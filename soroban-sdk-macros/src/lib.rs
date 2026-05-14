@@ -383,7 +383,7 @@ pub fn contractmeta(metadata: TokenStream) -> TokenStream {
         let val_expr = &args.val;
         quote! {
             // Required to ensure that any env!, include!, and include_str! usage within the val
-            // parameter that get evaluated by the MacroString above, also get surfaced to rustc and
+            // parameter that gets evaluated by the MacroString above, also gets surfaced to rustc and
             // included in dep-info for the build artifact so that changes to the environment
             // variable or included file update the artifact's dep-info and invalidate artifacts that
             // get stored in caches like sccache.
