@@ -89,6 +89,8 @@ pub use __contractimpl_for_pause as Pause;
 
 The `trait_default_fns` contains stringified signatures (and documentation) of all functions with default implementations. We serialize function signatures and their documentation into strings because the tooling used to parse macros and values doesn't handle raw tokens well as parameters. This information is "remembered" by the declarative macro for later comparison.
 
+`cfg` and `cfg_attr` attributes are rejected on default functions. Default-function metadata is captured in the generated helper macro when the trait is defined, but wrappers for non-overridden defaults are generated later at the `#[contractimpl(contracttrait)]` site. Carrying cfgs through this path would cause those cfgs to be evaluated in the implementing crate's cfg context, which may differ from the trait-defining crate's context.
+
 ### Stage 3: `#[contractimpl(contracttrait)]` calls the trait macro
 
 **Source:** `soroban-sdk-macros/src/lib.rs:268-280`
@@ -106,6 +108,8 @@ The `contractimpl` macro:
 1. Processes the impl block normally (generating specs, client, etc. for implemented functions like `f1`)
 2. If the attribute `contracttrait` is included, knows that it should call the trait's macro `Pause!`
 3. Generates a call to the `Pause!` macro with the list of implemented function names
+
+Direct `cfg` attributes are supported on methods in `#[contractimpl(contracttrait)]` impls. If a cfg-gated override is inactive, generated code for the trait default is emitted under the inverse cfg. `cfg_attr` is rejected because it can conditionally affect default-vs-override matching and is not normalized by this handoff.
 
 ```rust
 Pause!(
@@ -134,9 +138,9 @@ This proc macro:
    - **Args variants:** Enum variants for function arguments via `derive_args_impl`
    - **Test hooks:** Function registration for test environment via `derive_contract_function_registration_ctor`
 
-## Why the `macro_rules!` Bridge?
+## Why the `macro_rules!` Generated Helper Macro?
 
-The two-stage approach with a declarative macro bridge is necessary because:
+The two-stage approach with a declarative generated helper macro is necessary because:
 
 1. **Proc macros can't see across items:** When `#[contractimpl]` runs, it can't access the original trait definition to know which functions have defaults.
 
@@ -144,7 +148,7 @@ The two-stage approach with a declarative macro bridge is necessary because:
 
 3. **Comparison happens late:** The list of overridden functions is only known when `#[contractimpl]` runs.
 
-The `macro_rules!` macro acts as a data carrier, embedding the trait's default function information at definition time and making it available at impl time.
+The generated `macro_rules!` macro acts as a data carrier, embedding the trait's default function information at definition time and making it available at impl time.
 
 ## Source Files
 
