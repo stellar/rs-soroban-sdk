@@ -36,7 +36,9 @@ fn test_meta_include_str_macro_support() {
     let entry = ScMetaEntry::from_xdr(__CONTRACT_KEY_696e63, Limits::none()).unwrap();
     let expect = ScMetaEntry::ScMetaV0(ScMetaV0 {
         key: "inc".try_into().unwrap(),
-        val: include_str!("contract_meta_include.txt").try_into().unwrap(),
+        val: include_str!("contract_meta_include.txt")
+            .try_into()
+            .unwrap(),
     });
 
     assert_eq!(entry, expect);
