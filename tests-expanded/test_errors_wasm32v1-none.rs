@@ -348,11 +348,6 @@ impl ContractArgs {
     pub fn hello<'i>(flag: &'i Flag) -> (&'i Flag,) {
         (flag,)
     }
-    #[inline(always)]
-    #[allow(clippy::unused_unit)]
-    pub fn persisted<'i>() -> () {
-        ()
-    }
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]

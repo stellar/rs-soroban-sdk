@@ -294,7 +294,7 @@ pub extern "C" fn __ContractA__fn1__invoke_raw_extern(arg_0: soroban_sdk::Val) -
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __ContractA____7c3764b58a7ababbe8a6b452f6a400d8ae3704b80f8c5ea1b251eebbc8698020_ctor() {
+fn __ContractA____24d525105ae50e25bf56fee614149028cd5fe74524b7274b058a180444f2778a_ctor() {
     #[allow(unsafe_code)]
     {
         #[link_section = ".init_array"]
@@ -306,7 +306,7 @@ fn __ContractA____7c3764b58a7ababbe8a6b452f6a400d8ae3704b80f8c5ea1b251eebbc86980
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __ContractA____7c3764b58a7ababbe8a6b452f6a400d8ae3704b80f8c5ea1b251eebbc8698020_ctor();
+                    __ContractA____24d525105ae50e25bf56fee614149028cd5fe74524b7274b058a180444f2778a_ctor();
                 };
                 core::default::Default::default()
             }
@@ -821,6 +821,7 @@ mod test_a {
         }
         impl<'a> ContractClient<'a> {}
         impl ContractArgs {
+            #[allow(non_snake_case)]
             #[inline(always)]
             #[allow(clippy::unused_unit)]
             pub fn __check_auth<'i>(
@@ -901,7 +902,7 @@ mod test_a {
         #[doc(hidden)]
         #[allow(non_snake_case)]
         #[allow(unused)]
-        fn __Contract____d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor() {
+        fn __Contract____09dd3443ce67e639dfa44e117074682bdd2df413c8e199c92bd655921b74b27b_ctor() {
             #[allow(unsafe_code)]
             {
                 #[link_section = ".init_array"]
@@ -913,7 +914,7 @@ mod test_a {
                     #[allow(non_snake_case)]
                     extern "C" fn f() -> ::ctor::__support::CtorRetType {
                         unsafe {
-                            __Contract____d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor();
+                            __Contract____09dd3443ce67e639dfa44e117074682bdd2df413c8e199c92bd655921b74b27b_ctor();
                         };
                         core::default::Default::default()
                     }
@@ -1264,6 +1265,7 @@ mod test_a {
         }
         impl<'a> ContractClient<'a> {}
         impl ContractArgs {
+            #[allow(non_snake_case)]
             #[inline(always)]
             #[allow(clippy::unused_unit)]
             pub fn __check_auth<'i>(
@@ -1344,7 +1346,7 @@ mod test_a {
         #[doc(hidden)]
         #[allow(non_snake_case)]
         #[allow(unused)]
-        fn __Contract____d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor() {
+        fn __Contract____09dd3443ce67e639dfa44e117074682bdd2df413c8e199c92bd655921b74b27b_ctor() {
             #[allow(unsafe_code)]
             {
                 #[link_section = ".init_array"]
@@ -1356,7 +1358,7 @@ mod test_a {
                     #[allow(non_snake_case)]
                     extern "C" fn f() -> ::ctor::__support::CtorRetType {
                         unsafe {
-                            __Contract____d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor();
+                            __Contract____09dd3443ce67e639dfa44e117074682bdd2df413c8e199c92bd655921b74b27b_ctor();
                         };
                         core::default::Default::default()
                     }
@@ -1681,7 +1683,7 @@ pub extern "C" fn __ContractB__fn2__invoke_raw_extern(
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __ContractB____389cfcb1cb10680376b4cd5cf632e6b11c3e59494c10e1d42514faf6c4c21b84_ctor() {
+fn __ContractB____278958ee50661aa4b4af9b0b91a68df2da10001cf396d44f9b886953ed383cb1_ctor() {
     #[allow(unsafe_code)]
     {
         #[link_section = ".init_array"]
@@ -1693,7 +1695,7 @@ fn __ContractB____389cfcb1cb10680376b4cd5cf632e6b11c3e59494c10e1d42514faf6c4c21b
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __ContractB____389cfcb1cb10680376b4cd5cf632e6b11c3e59494c10e1d42514faf6c4c21b84_ctor();
+                    __ContractB____278958ee50661aa4b4af9b0b91a68df2da10001cf396d44f9b886953ed383cb1_ctor();
                 };
                 core::default::Default::default()
             }
@@ -2303,6 +2305,7 @@ mod test_b {
         }
         impl<'a> ContractClient<'a> {}
         impl ContractArgs {
+            #[allow(non_snake_case)]
             #[inline(always)]
             #[allow(clippy::unused_unit)]
             pub fn __check_auth<'i>(
@@ -2383,7 +2386,7 @@ mod test_b {
         #[doc(hidden)]
         #[allow(non_snake_case)]
         #[allow(unused)]
-        fn __Contract____d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor() {
+        fn __Contract____09dd3443ce67e639dfa44e117074682bdd2df413c8e199c92bd655921b74b27b_ctor() {
             #[allow(unsafe_code)]
             {
                 #[link_section = ".init_array"]
@@ -2395,7 +2398,7 @@ mod test_b {
                     #[allow(non_snake_case)]
                     extern "C" fn f() -> ::ctor::__support::CtorRetType {
                         unsafe {
-                            __Contract____d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor();
+                            __Contract____09dd3443ce67e639dfa44e117074682bdd2df413c8e199c92bd655921b74b27b_ctor();
                         };
                         core::default::Default::default()
                     }
@@ -2746,6 +2749,7 @@ mod test_b {
         }
         impl<'a> ContractClient<'a> {}
         impl ContractArgs {
+            #[allow(non_snake_case)]
             #[inline(always)]
             #[allow(clippy::unused_unit)]
             pub fn __check_auth<'i>(
@@ -2826,7 +2830,7 @@ mod test_b {
         #[doc(hidden)]
         #[allow(non_snake_case)]
         #[allow(unused)]
-        fn __Contract____d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor() {
+        fn __Contract____09dd3443ce67e639dfa44e117074682bdd2df413c8e199c92bd655921b74b27b_ctor() {
             #[allow(unsafe_code)]
             {
                 #[link_section = ".init_array"]
@@ -2838,7 +2842,7 @@ mod test_b {
                     #[allow(non_snake_case)]
                     extern "C" fn f() -> ::ctor::__support::CtorRetType {
                         unsafe {
-                            __Contract____d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor();
+                            __Contract____09dd3443ce67e639dfa44e117074682bdd2df413c8e199c92bd655921b74b27b_ctor();
                         };
                         core::default::Default::default()
                     }

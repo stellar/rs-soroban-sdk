@@ -3234,11 +3234,14 @@ impl<'a> ContractClient<'a> {
     }
 }
 impl ContractArgs {
+    /// Test u32 values.
+    /// Returns the input unchanged.
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn test_u32<'i>(v: &'i u32) -> (&'i u32,) {
         (v,)
     }
+    /// Test i32 values.
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn test_i32<'i>(v: &'i i32) -> (&'i i32,) {
@@ -3348,7 +3351,7 @@ impl ContractArgs {
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract__AllTypes__959aee9d42336ade92416504111dfbb4e37b0472bbb1e487310c05a170c39d28_ctor() {
+fn __Contract__AllTypes__b0e2b90da95b9610a770db73349e9f3a594b599297639fe1f647524a90f3515b_ctor() {
     #[allow(unsafe_code)]
     {
         #[link_section = ".init_array"]
@@ -3360,7 +3363,7 @@ fn __Contract__AllTypes__959aee9d42336ade92416504111dfbb4e37b0472bbb1e487310c05a
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract__AllTypes__959aee9d42336ade92416504111dfbb4e37b0472bbb1e487310c05a170c39d28_ctor();
+                    __Contract__AllTypes__b0e2b90da95b9610a770db73349e9f3a594b599297639fe1f647524a90f3515b_ctor();
                 };
                 core::default::Default::default()
             }

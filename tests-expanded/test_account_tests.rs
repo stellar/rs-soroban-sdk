@@ -328,6 +328,7 @@ impl Contract {
 }
 impl<'a> ContractClient<'a> {}
 impl ContractArgs {
+    #[allow(non_snake_case)]
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn __check_auth<'i>(
@@ -409,7 +410,7 @@ pub extern "C" fn __Contract____check_auth__invoke_raw_extern(
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract__CustomAccountInterface__d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor(
+fn __Contract__CustomAccountInterface__09dd3443ce67e639dfa44e117074682bdd2df413c8e199c92bd655921b74b27b_ctor(
 ) {
     #[allow(unsafe_code)]
     {
@@ -422,7 +423,7 @@ fn __Contract__CustomAccountInterface__d465b6861ce11142d9f64c1622e1ad88ae003d910
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract__CustomAccountInterface__d465b6861ce11142d9f64c1622e1ad88ae003d910de0a8493889a96a23449736_ctor();
+                    __Contract__CustomAccountInterface__09dd3443ce67e639dfa44e117074682bdd2df413c8e199c92bd655921b74b27b_ctor();
                 };
                 core::default::Default::default()
             }

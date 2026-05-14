@@ -478,7 +478,7 @@ impl ContractRelativePathArgs {
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __ContractRelativePath__traits_RelativePathTrait__4ac15b461ebbdd4a76eab36b99dba87aec581768e17fd8b229f6bd4a5800d478_ctor(
+fn __ContractRelativePath__traits_RelativePathTrait__fcb4031a6cb55f06cb6f3c867344eb9d83a0bcfacb20de3f7d24390d36908673_ctor(
 ) {
     #[allow(unsafe_code)]
     {
@@ -491,7 +491,7 @@ fn __ContractRelativePath__traits_RelativePathTrait__4ac15b461ebbdd4a76eab36b99d
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __ContractRelativePath__traits_RelativePathTrait__4ac15b461ebbdd4a76eab36b99dba87aec581768e17fd8b229f6bd4a5800d478_ctor();
+                    __ContractRelativePath__traits_RelativePathTrait__fcb4031a6cb55f06cb6f3c867344eb9d83a0bcfacb20de3f7d24390d36908673_ctor();
                 };
                 core::default::Default::default()
             }
