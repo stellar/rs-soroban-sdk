@@ -7,14 +7,14 @@ use soroban_sdk::{contractevent, Address};
 // Events that are unique to the Stellar Asset Contract and not part of SEP-41 are defined here
 // privately only for the purpose of generating the complete contract spec.
 
-#[contractevent(topics = ["set_admin"], data_format = "single-value")]
+#[contractevent(topics = ["set_admin"], data_format = "single-value", export = false)]
 pub(crate) struct SetAdmin {
     #[topic]
     pub admin: Address,
     pub new_admin: Address,
 }
 
-#[contractevent(topics = ["set_authorized"], data_format = "single-value")]
+#[contractevent(topics = ["set_authorized"], data_format = "single-value", export = false)]
 pub(crate) struct SetAuthorized {
     #[topic]
     pub id: Address,

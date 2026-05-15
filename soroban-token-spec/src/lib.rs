@@ -9,7 +9,7 @@ use soroban_sdk::{contractevent, Address, BytesN, String};
 // purpose of generating the complete contract spec.
 
 /// Transfer event published when a classic payment uses the MEMO_TEXT memo type.
-#[contractevent(topics = ["transfer"], data_format = "map")]
+#[contractevent(topics = ["transfer"], data_format = "map", export = false)]
 #[doc(hidden)]
 pub struct TransferWithMuxedString {
     #[topic]
@@ -21,7 +21,7 @@ pub struct TransferWithMuxedString {
 }
 
 /// Transfer event published when a classic payment uses the MEMO_HASH or MEMO_RETURN memo type.
-#[contractevent(topics = ["transfer"], data_format = "map")]
+#[contractevent(topics = ["transfer"], data_format = "map", export = false)]
 #[doc(hidden)]
 pub struct TransferWithMuxedBytes {
     #[topic]
@@ -33,7 +33,7 @@ pub struct TransferWithMuxedBytes {
 }
 
 /// Mint event published when a classic payment uses the MEMO_TEXT memo type.
-#[contractevent(topics = ["mint"], data_format = "map")]
+#[contractevent(topics = ["mint"], data_format = "map", export = false)]
 #[doc(hidden)]
 pub struct MintWithMuxedString {
     #[topic]
@@ -43,7 +43,7 @@ pub struct MintWithMuxedString {
 }
 
 /// Mint event published when a classic payment uses the MEMO_HASH or MEMO_RETURN memo type.
-#[contractevent(topics = ["mint"], data_format = "map")]
+#[contractevent(topics = ["mint"], data_format = "map", export = false)]
 #[doc(hidden)]
 pub struct MintWithMuxedBytes {
     #[topic]
