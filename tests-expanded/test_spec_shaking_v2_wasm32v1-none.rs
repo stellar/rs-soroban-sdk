@@ -3547,6 +3547,385 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedVecElementNested> for soroba
         )
     }
 }
+#[allow(deprecated)]
+mod export_false_used {
+    use soroban_sdk::{contracterror, contractevent, contracttype, Symbol};
+    pub struct UsedExportFalseStruct {
+        pub val: u32,
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for UsedExportFalseStruct {
+        #[inline]
+        fn clone(&self) -> UsedExportFalseStruct {
+            UsedExportFalseStruct {
+                val: ::core::clone::Clone::clone(&self.val),
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for UsedExportFalseStruct {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            ::core::fmt::Formatter::debug_struct_field1_finish(
+                f,
+                "UsedExportFalseStruct",
+                "val",
+                &&self.val,
+            )
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for UsedExportFalseStruct {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {
+            let _: ::core::cmp::AssertParamIsEq<u32>;
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for UsedExportFalseStruct {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for UsedExportFalseStruct {
+        #[inline]
+        fn eq(&self, other: &UsedExportFalseStruct) -> bool {
+            self.val == other.val
+        }
+    }
+    #[doc(hidden)]
+    #[allow(non_upper_case_globals)]
+    #[deprecated = "`export` is a no-op under `experimental_spec_shaking_v2` (specs are determined by reachability) and will be removed in a future release"]
+    const __SOROBAN_EXPORT_ARG_DEPRECATED_FOR_UsedExportFalseStruct: () = ();
+    const _: () = __SOROBAN_EXPORT_ARG_DEPRECATED_FOR_UsedExportFalseStruct;
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_TYPE_USEDEXPORTFALSESTRUCT: [u8; 60usize] =
+        UsedExportFalseStruct::spec_xdr();
+    impl UsedExportFalseStruct {
+        pub const fn spec_xdr() -> [u8; 60usize] {
+            *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x15UsedExportFalseStruct\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
+        }
+    }
+    impl soroban_sdk::SpecShakingMarker for UsedExportFalseStruct {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {
+            <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            {
+                static MARKER: [u8; 14usize] = *b"SpEcV1\x7f\xc5\xceo\xc3ST\x08";
+                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            }
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedExportFalseStruct {
+        type Error = soroban_sdk::ConversionError;
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::Val,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+            const KEYS: [&'static str; 1usize] = ["val"];
+            let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
+            let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+            env.map_unpack_to_slice(map, &KEYS, &mut vals)
+                .map_err(|_| ConversionError)?;
+            Ok(Self {
+                val: vals[0]
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::ConversionError)?,
+            })
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedExportFalseStruct> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &UsedExportFalseStruct,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+            const KEYS: [&'static str; 1usize] = ["val"];
+            let vals: [Val; 1usize] =
+                [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
+            Ok(env
+                .map_new_from_slices(&KEYS, &vals)
+                .map_err(|_| ConversionError)?
+                .into())
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedExportFalseStruct> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &&UsedExportFalseStruct,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedExportFalseStruct>>::try_from_val(
+                env, *val,
+            )
+        }
+    }
+    pub enum UsedExportFalseError {
+        Fail = 1,
+    }
+    #[automatically_derived]
+    impl ::core::marker::Copy for UsedExportFalseError {}
+    #[automatically_derived]
+    impl ::core::clone::Clone for UsedExportFalseError {
+        #[inline]
+        fn clone(&self) -> UsedExportFalseError {
+            *self
+        }
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for UsedExportFalseError {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            ::core::fmt::Formatter::write_str(f, "Fail")
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for UsedExportFalseError {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {}
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for UsedExportFalseError {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for UsedExportFalseError {
+        #[inline]
+        fn eq(&self, other: &UsedExportFalseError) -> bool {
+            true
+        }
+    }
+    #[doc(hidden)]
+    #[allow(non_upper_case_globals)]
+    #[deprecated = "`export` is a no-op under `experimental_spec_shaking_v2` (specs are determined by reachability) and will be removed in a future release"]
+    const __SOROBAN_EXPORT_ARG_DEPRECATED_FOR_UsedExportFalseError: () = ();
+    const _: () = __SOROBAN_EXPORT_ARG_DEPRECATED_FOR_UsedExportFalseError;
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_TYPE_USEDEXPORTFALSEERROR: [u8; 56usize] =
+        UsedExportFalseError::spec_xdr();
+    impl UsedExportFalseError {
+        pub const fn spec_xdr() -> [u8; 56usize] {
+            *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x14UsedExportFalseError\0\0\0\x01\0\0\0\0\0\0\0\x04Fail\0\0\0\x01"
+        }
+    }
+    impl soroban_sdk::SpecShakingMarker for UsedExportFalseError {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {
+            {
+                static MARKER: [u8; 14usize] = *b"SpEcV1\r\xd6\r \xfc\xdb\xea\xf3";
+                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            }
+        }
+    }
+    impl TryFrom<soroban_sdk::Error> for UsedExportFalseError {
+        type Error = soroban_sdk::Error;
+        #[inline(always)]
+        fn try_from(error: soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
+            if error.is_type(soroban_sdk::xdr::ScErrorType::Contract) {
+                let discriminant = error.get_code();
+                Ok(match discriminant {
+                    1u32 => Self::Fail,
+                    _ => return Err(error),
+                })
+            } else {
+                Err(error)
+            }
+        }
+    }
+    impl TryFrom<&soroban_sdk::Error> for UsedExportFalseError {
+        type Error = soroban_sdk::Error;
+        #[inline(always)]
+        fn try_from(error: &soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
+            <_ as TryFrom<soroban_sdk::Error>>::try_from(*error)
+        }
+    }
+    impl From<UsedExportFalseError> for soroban_sdk::Error {
+        #[inline(always)]
+        fn from(val: UsedExportFalseError) -> soroban_sdk::Error {
+            <_ as From<&UsedExportFalseError>>::from(&val)
+        }
+    }
+    impl From<&UsedExportFalseError> for soroban_sdk::Error {
+        #[inline(always)]
+        fn from(val: &UsedExportFalseError) -> soroban_sdk::Error {
+            match val {
+                UsedExportFalseError::Fail => soroban_sdk::Error::from_contract_error(1u32),
+            }
+        }
+    }
+    impl TryFrom<soroban_sdk::InvokeError> for UsedExportFalseError {
+        type Error = soroban_sdk::InvokeError;
+        #[inline(always)]
+        fn try_from(error: soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
+            match error {
+                soroban_sdk::InvokeError::Abort => Err(error),
+                soroban_sdk::InvokeError::Contract(code) => Ok(match code {
+                    1u32 => Self::Fail,
+                    _ => return Err(error),
+                }),
+            }
+        }
+    }
+    impl TryFrom<&soroban_sdk::InvokeError> for UsedExportFalseError {
+        type Error = soroban_sdk::InvokeError;
+        #[inline(always)]
+        fn try_from(error: &soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
+            <_ as TryFrom<soroban_sdk::InvokeError>>::try_from(*error)
+        }
+    }
+    impl From<UsedExportFalseError> for soroban_sdk::InvokeError {
+        #[inline(always)]
+        fn from(val: UsedExportFalseError) -> soroban_sdk::InvokeError {
+            <_ as From<&UsedExportFalseError>>::from(&val)
+        }
+    }
+    impl From<&UsedExportFalseError> for soroban_sdk::InvokeError {
+        #[inline(always)]
+        fn from(val: &UsedExportFalseError) -> soroban_sdk::InvokeError {
+            match val {
+                UsedExportFalseError::Fail => soroban_sdk::InvokeError::Contract(1u32),
+            }
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedExportFalseError {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::Val,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::TryIntoVal;
+            let error: soroban_sdk::Error = val.try_into_val(env)?;
+            error.try_into().map_err(|_| soroban_sdk::ConversionError)
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedExportFalseError> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &UsedExportFalseError,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            let error: soroban_sdk::Error = val.into();
+            Ok(error.into())
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedExportFalseError> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &&UsedExportFalseError,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedExportFalseError>>::try_from_val(
+                env, *val,
+            )
+        }
+    }
+    pub struct UsedExportFalseEvent {
+        pub kind: Symbol,
+        pub amount: i128,
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for UsedExportFalseEvent {
+        #[inline]
+        fn clone(&self) -> UsedExportFalseEvent {
+            UsedExportFalseEvent {
+                kind: ::core::clone::Clone::clone(&self.kind),
+                amount: ::core::clone::Clone::clone(&self.amount),
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for UsedExportFalseEvent {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            ::core::fmt::Formatter::debug_struct_field2_finish(
+                f,
+                "UsedExportFalseEvent",
+                "kind",
+                &self.kind,
+                "amount",
+                &&self.amount,
+            )
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for UsedExportFalseEvent {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {
+            let _: ::core::cmp::AssertParamIsEq<Symbol>;
+            let _: ::core::cmp::AssertParamIsEq<i128>;
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for UsedExportFalseEvent {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for UsedExportFalseEvent {
+        #[inline]
+        fn eq(&self, other: &UsedExportFalseEvent) -> bool {
+            self.amount == other.amount && self.kind == other.kind
+        }
+    }
+    #[doc(hidden)]
+    #[allow(non_upper_case_globals)]
+    #[deprecated = "`export` is a no-op under `experimental_spec_shaking_v2` (specs are determined by reachability) and will be removed in a future release"]
+    const __SOROBAN_EXPORT_ARG_DEPRECATED_FOR_UsedExportFalseEvent: () = ();
+    const _: () = __SOROBAN_EXPORT_ARG_DEPRECATED_FOR_UsedExportFalseEvent;
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_EVENT_USEDEXPORTFALSEEVENT: [u8; 120usize] =
+        UsedExportFalseEvent::spec_xdr();
+    impl UsedExportFalseEvent {
+        pub const fn spec_xdr() -> [u8; 120usize] {
+            *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x14UsedExportFalseEvent\0\0\0\x01\0\0\0\x17used_export_false_event\0\0\0\0\x02\0\0\0\0\0\0\0\x04kind\0\0\0\x11\0\0\0\x01\0\0\0\0\0\0\0\x06amount\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02"
+        }
+    }
+    impl soroban_sdk::SpecShakingMarker for UsedExportFalseEvent {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {
+            <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            {
+                static MARKER: [u8; 14usize] = *b"SpEcV1\x9a\x14*\xbc\x82a\x08X";
+                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            }
+        }
+    }
+    impl soroban_sdk::Event for UsedExportFalseEvent {
+        fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+            use soroban_sdk::IntoVal;
+            (
+                &{ soroban_sdk::Symbol::new(env, "used_export_false_event") },
+                {
+                    let v: soroban_sdk::Val = self.kind.into_val(env);
+                    v
+                },
+            )
+                .into_val(env)
+        }
+        fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
+            use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
+            const KEYS: [&'static str; 1usize] = ["amount"];
+            let vals: [soroban_sdk::Val; 1usize] = [self.amount.into_val(env)];
+            env.map_new_from_slices(&KEYS, &vals)
+                .unwrap_infallible()
+                .into()
+        }
+    }
+    impl UsedExportFalseEvent {
+        pub fn publish(&self, env: &soroban_sdk::Env) {
+            <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            <_ as soroban_sdk::Event>::publish(self, env);
+        }
+    }
+}
 struct UsedNonPubStruct {
     pub val: u32,
 }
@@ -8359,6 +8738,19 @@ impl Contract {
     pub fn with_tuple_return(_env: Env) -> (UsedTupleReturnElement, u32) {
         (UsedTupleReturnElement { val: 1 }, 2)
     }
+    pub fn with_export_false_struct(_env: Env, _s: export_false_used::UsedExportFalseStruct) {}
+    pub fn with_export_false_error(
+        _env: Env,
+    ) -> Result<u32, export_false_used::UsedExportFalseError> {
+        Ok(1)
+    }
+    pub fn publish_export_false_event(env: Env) {
+        export_false_used::UsedExportFalseEvent {
+            kind: Symbol::new(&env, "ef"),
+            amount: 1,
+        }
+        .publish(&env);
+    }
     pub fn publish_ref_event(env: Env) {
         let kind = UsedRefTopicType::Send;
         let payload = UsedRefDataType {
@@ -8776,6 +9168,54 @@ impl Contract {
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_tuple_return() -> [u8; 84usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x11with_tuple_return\0\0\0\0\0\0\0\0\0\0\x01\0\0\x03\xed\0\0\0\x02\0\0\x07\xd0\0\0\0\x16UsedTupleReturnElement\0\0\0\0\0\x04"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__with_export_false_struct__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_FN_WITH_EXPORT_FALSE_STRUCT: [u8; 88usize] =
+        super::Contract::spec_xdr_with_export_false_struct();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_with_export_false_struct() -> [u8; 88usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x18with_export_false_struct\0\0\0\x01\0\0\0\0\0\0\0\x01s\0\0\0\0\0\x07\xd0\0\0\0\x15UsedExportFalseStruct\0\0\0\0\0\0\0"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__with_export_false_error__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_FN_WITH_EXPORT_FALSE_ERROR: [u8; 80usize] =
+        super::Contract::spec_xdr_with_export_false_error();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_with_export_false_error() -> [u8; 80usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x17with_export_false_error\0\0\0\0\0\0\0\0\x01\0\0\x03\xe9\0\0\0\x04\0\0\x07\xd0\0\0\0\x14UsedExportFalseError"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__publish_export_false_event__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_FN_PUBLISH_EXPORT_FALSE_EVENT: [u8; 48usize] =
+        super::Contract::spec_xdr_publish_export_false_event();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_publish_export_false_event() -> [u8; 48usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x1apublish_export_false_event\0\0\0\0\0\0\0\0\0\0"
     }
 }
 #[doc(hidden)]
@@ -9470,6 +9910,79 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    pub fn with_export_false_struct(&self, _s: &export_false_used::UsedExportFalseStruct) -> () {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "with_export_false_struct") },
+            ::soroban_sdk::Vec::from_array(&self.env, [_s.into_val(&self.env)]),
+        );
+        res
+    }
+    pub fn try_with_export_false_struct(
+        &self,
+        _s: &export_false_used::UsedExportFalseStruct,
+    ) -> Result<
+        Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "with_export_false_struct") },
+            ::soroban_sdk::Vec::from_array(&self.env, [_s.into_val(&self.env)]),
+        );
+        res
+    }
+    pub fn with_export_false_error(&self) -> u32 {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "with_export_false_error") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
+    pub fn try_with_export_false_error(
+        &self,
+    ) -> Result<
+        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<export_false_used::UsedExportFalseError, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "with_export_false_error") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
+    pub fn publish_export_false_event(&self) -> () {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "publish_export_false_event") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
+    pub fn try_publish_export_false_event(
+        &self,
+    ) -> Result<
+        Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "publish_export_false_event") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
     pub fn publish_ref_event(&self) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -9633,6 +10146,23 @@ impl ContractArgs {
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn with_tuple_return<'i>() -> () {
+        ()
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn with_export_false_struct<'i>(
+        _s: &'i export_false_used::UsedExportFalseStruct,
+    ) -> (&'i export_false_used::UsedExportFalseStruct,) {
+        (_s,)
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn with_export_false_error<'i>() -> () {
+        ()
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn publish_export_false_event<'i>() -> () {
         ()
     }
     #[inline(always)]
@@ -10324,6 +10854,87 @@ pub fn __Contract__with_tuple_return__invoke_raw(env: soroban_sdk::Env) -> sorob
 pub extern "C" fn __Contract__with_tuple_return__invoke_raw_extern() -> soroban_sdk::Val {
     #[allow(deprecated)]
     __Contract__with_tuple_return__invoke_raw(soroban_sdk::Env::default())
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(
+    note = "use `ContractClient::new(&env, &contract_id).with_export_false_struct` instead"
+)]
+#[allow(deprecated)]
+pub fn __Contract__with_export_false_struct__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::with_export_false_struct(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(
+    note = "use `ContractClient::new(&env, &contract_id).with_export_false_struct` instead"
+)]
+#[export_name = "with_export_false_struct"]
+pub extern "C" fn __Contract__with_export_false_struct__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__with_export_false_struct__invoke_raw(soroban_sdk::Env::default(), arg_0)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(
+    note = "use `ContractClient::new(&env, &contract_id).with_export_false_error` instead"
+)]
+#[allow(deprecated)]
+pub fn __Contract__with_export_false_error__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::with_export_false_error(env.clone()),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(
+    note = "use `ContractClient::new(&env, &contract_id).with_export_false_error` instead"
+)]
+#[export_name = "with_export_false_error"]
+pub extern "C" fn __Contract__with_export_false_error__invoke_raw_extern() -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__with_export_false_error__invoke_raw(soroban_sdk::Env::default())
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(
+    note = "use `ContractClient::new(&env, &contract_id).publish_export_false_event` instead"
+)]
+#[allow(deprecated)]
+pub fn __Contract__publish_export_false_event__invoke_raw(
+    env: soroban_sdk::Env,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::publish_export_false_event(env.clone()),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(
+    note = "use `ContractClient::new(&env, &contract_id).publish_export_false_event` instead"
+)]
+#[export_name = "publish_export_false_event"]
+pub extern "C" fn __Contract__publish_export_false_event__invoke_raw_extern() -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__publish_export_false_event__invoke_raw(soroban_sdk::Env::default())
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
