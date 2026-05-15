@@ -26126,6 +26126,9 @@ mod test {
             "UsedNonPubError",
             "UnusedNonPubStruct",
             "UnusedNonPubError",
+            "UsedExportFalseStruct",
+            "UsedExportFalseError",
+            "UsedExportFalseEvent",
         ];
         for name in non_pub_types {
             if !!all_names.contains(name) {

@@ -83,26 +83,26 @@
 //! #### [`contracttype`]
 //!
 //! Without this feature, spec entries are only generated for `pub` types (or
-//! when `export = true` is explicitly set). With this feature, the legacy
-//! `export` argument is unsupported: spec entries and markers are generated for
-//! all types regardless of visibility, and post-build tooling removes entries
-//! that are not reachable from the contract interface. Passing `export = ...`
-//! under this feature is a compile error; remove it.
+//! when `export = true` is explicitly set). With this feature, spec entries and
+//! markers are generated for all types regardless of visibility, and post-build
+//! tooling removes entries that are not reachable from the contract interface.
+//! The `export` argument is a no-op under this feature and emits a deprecation
+//! warning at the macro call site; it will be removed in a future release.
 //!
 //! #### [`contracterror`]
 //!
 //! Same as [`contracttype`]: without this feature, spec entries are only
-//! generated for `pub` types. With this feature, the legacy `export` argument
-//! is unsupported and post-build tooling removes unreachable error enum
-//! entries. Passing `export = ...` under this feature is a compile error;
-//! remove it.
+//! generated for `pub` types. With this feature, post-build tooling removes
+//! unreachable error enum entries. The `export` argument is a no-op under this
+//! feature and emits a deprecation warning; it will be removed in a future
+//! release.
 //!
 //! #### [`contractevent`]
 //!
-//! The legacy `export` argument is unsupported. Markers are embedded for all
-//! events, allowing post-build tools to strip spec entries for events that are
-//! never published at a contract boundary. Passing `export = ...` under this
-//! feature is a compile error; remove it.
+//! Markers are embedded for all events, allowing post-build tools to strip
+//! spec entries for events that are never published at a contract boundary.
+//! The `export` argument is a no-op under this feature and emits a deprecation
+//! warning; it will be removed in a future release.
 //!
 //! #### [`contractimport!`]
 //!
@@ -114,7 +114,7 @@
 //! the type definitions.
 //!
 //! With this feature, [`contractimport!`] generates imported types without
-//! legacy `export` controls. Imported types produce spec entries and markers in
+//! `export` controls. Imported types produce spec entries and markers in
 //! the importing contract, just like locally defined types. This changes the
 //! contract's spec to be self-contained — it includes the type definitions for
 //! all types used at the contract boundary, regardless of where those types
