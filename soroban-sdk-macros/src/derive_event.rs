@@ -1,6 +1,6 @@
 use crate::{
     attribute::remove_attributes_from_item, default_crate_path, doc::docs_from_attrs,
-    map_type::map_type, shaking, symbol, DEFAULT_XDR_RW_LIMITS,
+    export_arg_v2_deprecation, map_type::map_type, shaking, symbol, DEFAULT_XDR_RW_LIMITS,
 };
 use darling::{ast::NestedMeta, Error, FromMeta};
 use heck::ToSnakeCase;
@@ -67,11 +67,13 @@ fn derive_event_or_err(metadata: TokenStream2, input: TokenStream2) -> Result<To
     let args = NestedMeta::parse_meta_list(metadata.into())?;
     let args = ContractEventArgs::from_list(&args)?;
     let input = parse2::<DeriveInput>(input)?;
+    let export_deprecation = export_arg_v2_deprecation(&args.export, &input.ident);
     let derived = derive_impls(&args, &input)?;
     let mut input = input;
     remove_attributes_from_item(&mut input.data, &["topic", "data"]);
     Ok(quote! {
         #input
+        #export_deprecation
         #derived
     }
     .into())
@@ -170,8 +172,11 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     // If errors have occurred, return them.
     let mut errors = errors.checkpoint()?;
 
-    // Generated code spec.
-    let export = args.export.unwrap_or(true);
+    // Generated code spec. Under `experimental_spec_shaking_v2` the spec is
+    // always emitted and reachability determines what is retained, so an
+    // explicit `export = false` is ignored (a deprecation warning is emitted
+    // separately).
+    let export = cfg!(feature = "experimental_spec_shaking_v2") || args.export.unwrap_or(true);
     let export_gen = if export {
         Some(quote! { #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")] })
     } else {

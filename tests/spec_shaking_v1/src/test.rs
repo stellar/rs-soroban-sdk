@@ -107,12 +107,16 @@ fn test_spec_shaking_v1() {
         );
     }
 
-    // Non-pub types should NOT have spec entries without the feature.
+    // Non-pub types and export=false types should NOT have spec entries 
+    // without the feature.
     let non_pub_types = [
         "UsedNonPubStruct",
         "UsedNonPubError",
         "UnusedNonPubStruct",
         "UnusedNonPubError",
+        "UsedExportFalseStruct",
+        "UsedExportFalseError",
+        "UsedExportFalseEvent",
     ];
     for name in non_pub_types {
         assert!(
