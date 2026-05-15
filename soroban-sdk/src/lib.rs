@@ -504,6 +504,14 @@ pub use soroban_sdk_macros::contractimpl;
 /// default functions will not be exported by contracts that implement the
 /// trait.
 ///
+/// `cfg` and `cfg_attr` attributes are not supported on `#[contracttrait]`
+/// default functions. Direct `cfg` attributes are supported on overriding
+/// methods in `#[contractimpl(contracttrait)]` impls, but `cfg_attr` is not.
+/// Default-function metadata is captured when the trait is defined, but wrappers
+/// for non-overridden defaults are generated later where the trait is
+/// implemented, so carrying cfgs through that handoff could evaluate them in a
+/// different crate's cfg context.
+///
 /// ### Macro Arguments
 ///
 /// - `crate_path` - The path to the soroban-sdk crate. Defaults to `soroban_sdk`.

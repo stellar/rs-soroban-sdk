@@ -1,5 +1,6 @@
 use syn::{
-    ext::IdentExt as _, punctuated::Punctuated, Attribute, Data, Fields, FieldsNamed, FieldsUnnamed,
+    ext::IdentExt as _, punctuated::Punctuated, Attribute, Data, Error, Fields, FieldsNamed,
+    FieldsUnnamed, Result,
 };
 
 /// Returns true if the attribute is a doc attribute.
@@ -14,6 +15,56 @@ pub fn pass_through_attr_to_gen_code(attr: &Attribute) -> bool {
         || attr.path().is_ident("cfg")
         || attr.path().is_ident("allow")
         || attr.path().is_ident("deny")
+}
+
+/// Returns true if the attribute is a cfg attribute.
+pub fn is_attr_cfg(attr: &Attribute) -> bool {
+    attr.path().is_ident("cfg")
+}
+
+/// Returns true if the attribute is a cfg_attr attribute.
+pub fn is_attr_cfg_attr(attr: &Attribute) -> bool {
+    attr.path().is_ident("cfg_attr")
+}
+
+/// Rejects cfg attributes in the `#[contracttrait]` default-function handoff.
+pub fn reject_cfg_attrs_on_contracttrait_default_fn(attrs: &[Attribute]) -> Result<()> {
+    reject_cfg_attrs(
+        attrs,
+        "`cfg` and `cfg_attr` are not supported on `#[contracttrait]` default functions because they would be evaluated where the default implementation is generated, not where the trait is defined",
+    )
+}
+
+/// Rejects cfg_attr attributes in the `#[contractimpl(contracttrait)]` override handoff.
+pub fn reject_cfg_attr_on_contracttrait_impl_fn(attrs: &[Attribute]) -> Result<()> {
+    reject_attrs(
+        attrs,
+        is_attr_cfg_attr,
+        "`cfg_attr` is not supported on `#[contractimpl(contracttrait)]` methods because the generated helper only supports direct `cfg` attrs for default override matching",
+    )
+}
+
+fn reject_cfg_attrs(attrs: &[Attribute], message: &'static str) -> Result<()> {
+    reject_attrs(
+        attrs,
+        |attr| is_attr_cfg(attr) || is_attr_cfg_attr(attr),
+        message,
+    )
+}
+
+fn reject_attrs(
+    attrs: &[Attribute],
+    reject: fn(&Attribute) -> bool,
+    message: &'static str,
+) -> Result<()> {
+    let mut error: Option<Error> = None;
+    for attr in attrs.iter().filter(|attr| reject(attr)) {
+        match &mut error {
+            Some(error) => error.combine(Error::new_spanned(attr, message)),
+            None => error = Some(Error::new_spanned(attr, message)),
+        }
+    }
+    error.map_or(Ok(()), Err)
 }
 
 /// Modifies the input, removing any attributes on struct fields that match the attrs name list.

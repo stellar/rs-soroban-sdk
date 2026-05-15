@@ -3826,7 +3826,7 @@ pub extern "C" fn __Contract__recursive_enum__invoke_raw_extern(
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract____ca538446cb58e8272191ab7091913766c05361045f91847da7c92c7de8846af4_ctor() {
+fn __Contract____c735eb60ac9524e1cf3b3ad06f47c0e4c2de8411cf2ef11610c08cf9d93b301d_ctor() {
     #[allow(unsafe_code)]
     {
         #[link_section = ".init_array"]
@@ -3838,7 +3838,7 @@ fn __Contract____ca538446cb58e8272191ab7091913766c05361045f91847da7c92c7de8846af
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract____ca538446cb58e8272191ab7091913766c05361045f91847da7c92c7de8846af4_ctor();
+                    __Contract____c735eb60ac9524e1cf3b3ad06f47c0e4c2de8411cf2ef11610c08cf9d93b301d_ctor();
                 };
                 core::default::Default::default()
             }

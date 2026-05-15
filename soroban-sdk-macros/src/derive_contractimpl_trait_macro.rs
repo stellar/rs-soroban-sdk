@@ -1,4 +1,10 @@
-use crate::{attribute::is_attr_doc, default_crate_path, syn_ext};
+use crate::{
+    attribute::{
+        is_attr_cfg, is_attr_doc, reject_cfg_attr_on_contracttrait_impl_fn,
+        reject_cfg_attrs_on_contracttrait_default_fn,
+    },
+    default_crate_path, syn_ext,
+};
 use darling::{ast::NestedMeta, Error, FromMeta};
 use heck::ToSnakeCase;
 use proc_macro2::{Ident, TokenStream as TokenStream2};
@@ -43,18 +49,20 @@ fn derive(args: &Args, input: &ItemTrait) -> Result<TokenStream2, Error> {
 
     let trait_ident = &input.ident;
 
-    let fns = input.items.iter().filter_map(|i| match i {
-        TraitItem::Fn(TraitItemFn {
+    let mut fns = Vec::new();
+    for i in &input.items {
+        if let TraitItem::Fn(TraitItemFn {
             default: Some(_),
             sig,
             attrs,
             ..
-        }) => {
+        }) = i
+        {
+            reject_cfg_attrs_on_contracttrait_default_fn(attrs).map_err(Error::from)?;
             let doc_attrs: Vec<_> = attrs.iter().filter(|a| is_attr_doc(a)).collect();
-            Some(quote!(#(#doc_attrs)* #sig).to_token_stream().to_string())
+            fns.push(quote!(#(#doc_attrs)* #sig).to_token_stream().to_string());
         }
-        _ => None,
-    });
+    }
 
     let macro_ident = macro_ident(&input.ident);
 
@@ -97,18 +105,30 @@ pub fn generate_call_to_contractimpl_for_trait(
     client_ident: &str,
     args_ident: &str,
     spec_ident: &str,
-) -> TokenStream2 {
-    let impl_fn_idents = pub_methods.iter().map(|f| f.sig.ident.unraw().to_string());
-    quote! {
+) -> Result<TokenStream2, syn::Error> {
+    for method in pub_methods {
+        reject_cfg_attr_on_contracttrait_impl_fn(&method.attrs)?;
+    }
+    let impl_fns = pub_methods.iter().map(|f| {
+        let cfg_attrs = f.attrs.iter().filter(|attr| is_attr_cfg(attr));
+        let ident = &f.sig.ident;
+        // Serialize only the cfg attrs and method name. The generated
+        // `contractimpl_trait_default_fns_not_overridden!` helper parses this as
+        // function-shaped metadata for override matching.
+        quote!(#(#cfg_attrs)* fn #ident())
+            .to_token_stream()
+            .to_string()
+    });
+    Ok(quote! {
         #trait_ident!(
             #trait_ident,
             #impl_ident,
-            [#(#impl_fn_idents),*],
+            [#(#impl_fns),*],
             #client_ident,
             #args_ident,
             #spec_ident,
         );
-    }
+    })
 }
 
 fn macro_ident(trait_ident: &Ident) -> Ident {

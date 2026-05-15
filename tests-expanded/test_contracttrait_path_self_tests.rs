@@ -469,7 +469,7 @@ impl ContractSelfPathArgs {
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __ContractSelfPath__self_SelfPathTrait__dc5f37562c93d76ec88b95b8afc4265e99af33ca688eed9a0b515ee0a60c5b8d_ctor(
+fn __ContractSelfPath__self_SelfPathTrait__43099aea02c82fab4ba8f114379a580a4e002e6dca61c881d9dd8daaaccac1a6_ctor(
 ) {
     #[allow(unsafe_code)]
     {
@@ -482,7 +482,7 @@ fn __ContractSelfPath__self_SelfPathTrait__dc5f37562c93d76ec88b95b8afc4265e99af3
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __ContractSelfPath__self_SelfPathTrait__dc5f37562c93d76ec88b95b8afc4265e99af33ca688eed9a0b515ee0a60c5b8d_ctor();
+                    __ContractSelfPath__self_SelfPathTrait__43099aea02c82fab4ba8f114379a580a4e002e6dca61c881d9dd8daaaccac1a6_ctor();
                 };
                 core::default::Default::default()
             }
