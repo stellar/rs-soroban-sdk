@@ -381,7 +381,16 @@ pub fn contractmeta(metadata: TokenStream) -> TokenStream {
                 s
             })
         );
+        let val_expr = &args.val;
         quote! {
+            // Required to ensure that any env!, include!, and include_str! usage within the val
+            // parameter that gets evaluated by the MacroString above, also gets surfaced to rustc and
+            // included in dep-info for the build artifact so that changes to the environment
+            // variable or included file update the artifact's dep-info and invalidate artifacts that
+            // get stored in caches like sccache.
+            // See https://github.com/dtolnay/macro-string/issues/29
+            const _: () = { let _ = { #val_expr }; };
+
             #[doc(hidden)]
             #[cfg_attr(target_family = "wasm", link_section = "contractmetav0")]
             static #ident: [u8; #metadata_xdr_len] = *#metadata_xdr_lit;
