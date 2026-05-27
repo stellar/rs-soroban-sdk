@@ -34,8 +34,7 @@ fn derive_or_err(metadata: TokenStream2, input: TokenStream2) -> Result<TokenStr
     let args = NestedMeta::parse_meta_list(metadata.into())?;
     let args = Args::from_list(&args)?;
     let input = parse2(input)?;
-
-    let trait_macro = derive(&args, &input)?;
+    let trait_macro = derive(&args, &input);
 
     Ok(quote! {
         #trait_macro
@@ -44,11 +43,15 @@ fn derive_or_err(metadata: TokenStream2, input: TokenStream2) -> Result<TokenStr
     .into())
 }
 
-fn derive(args: &Args, input: &ItemTrait) -> Result<TokenStream2, Error> {
+/// Generates the trait machinery unconditionally, rolling any errors into the
+/// generated code rather than emitting them in place of it, so that downstream
+/// impls still resolve against the trait and its macro.
+fn derive(args: &Args, input: &ItemTrait) -> TokenStream2 {
     let path = syn_ext::path_in_macro_rules(&args.crate_path);
 
     let trait_ident = &input.ident;
 
+    let mut errors: Option<syn::Error> = None;
     let mut fns = Vec::new();
     for i in &input.items {
         if let TraitItem::Fn(TraitItemFn {
@@ -58,7 +61,12 @@ fn derive(args: &Args, input: &ItemTrait) -> Result<TokenStream2, Error> {
             ..
         }) = i
         {
-            reject_cfg_attrs_on_contracttrait_default_fn(attrs).map_err(Error::from)?;
+            if let Err(err) = reject_cfg_attrs_on_contracttrait_default_fn(attrs) {
+                match errors {
+                    Some(ref mut acc) => acc.combine(err),
+                    None => errors = Some(err),
+                }
+            }
             let doc_attrs: Vec<_> = attrs.iter().filter(|a| is_attr_doc(a)).collect();
             fns.push(quote!(#(#doc_attrs)* #sig).to_token_stream().to_string());
         }
@@ -95,7 +103,11 @@ fn derive(args: &Args, input: &ItemTrait) -> Result<TokenStream2, Error> {
         pub use #macro_ident as #trait_ident;
     };
 
-    Ok(output)
+    let error_tokens = errors.map(|err| err.to_compile_error());
+    quote! {
+        #output
+        #error_tokens
+    }
 }
 
 pub fn generate_call_to_contractimpl_for_trait(
