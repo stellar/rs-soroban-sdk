@@ -3398,7 +3398,7 @@ impl ContractGlobalPathArgs {
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __ContractGlobalPath__test_contracttrait_trait_AllTypes__b0e2b90da95b9610a770db73349e9f3a594b599297639fe1f647524a90f3515b_ctor(
+fn __ContractGlobalPath__test_contracttrait_trait_AllTypes__959aee9d42336ade92416504111dfbb4e37b0472bbb1e487310c05a170c39d28_ctor(
 ) {
     #[allow(unsafe_code)]
     {
@@ -3411,7 +3411,7 @@ fn __ContractGlobalPath__test_contracttrait_trait_AllTypes__b0e2b90da95b9610a770
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __ContractGlobalPath__test_contracttrait_trait_AllTypes__b0e2b90da95b9610a770db73349e9f3a594b599297639fe1f647524a90f3515b_ctor();
+                    __ContractGlobalPath__test_contracttrait_trait_AllTypes__959aee9d42336ade92416504111dfbb4e37b0472bbb1e487310c05a170c39d28_ctor();
                 };
                 core::default::Default::default()
             }

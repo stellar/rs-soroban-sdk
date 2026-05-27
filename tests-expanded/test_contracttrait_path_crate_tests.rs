@@ -477,7 +477,7 @@ impl ContractCratePathArgs {
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __ContractCratePath__crate_traits_CratePathTrait__bb56e4f980d333c8ac8c90e324dc9deff7747ee2354dd96432316232a5bcb9b6_ctor(
+fn __ContractCratePath__crate_traits_CratePathTrait__1eead55085fa77445f5d7af954169483008ff4874e183c7854e538dc896fb975_ctor(
 ) {
     #[allow(unsafe_code)]
     {
@@ -490,7 +490,7 @@ fn __ContractCratePath__crate_traits_CratePathTrait__bb56e4f980d333c8ac8c90e324d
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __ContractCratePath__crate_traits_CratePathTrait__bb56e4f980d333c8ac8c90e324dc9deff7747ee2354dd96432316232a5bcb9b6_ctor();
+                    __ContractCratePath__crate_traits_CratePathTrait__1eead55085fa77445f5d7af954169483008ff4874e183c7854e538dc896fb975_ctor();
                 };
                 core::default::Default::default()
             }

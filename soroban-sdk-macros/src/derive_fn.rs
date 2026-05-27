@@ -255,9 +255,13 @@ pub fn derive_contract_function_registration_ctor(
                 .collect::<Vec<_>>();
             let ident_str = f.ident.unraw().to_string();
             let wrap_ident = format_ident!("__{}__{}__invoke_raw_slice", ty_str, ident_str);
-            // Include cfg attrs so cfg-gated registrations and their inverse-cfg
-            // defaults do not collide on the same internal ctor symbol.
-            let hash_part = quote!(#(#attrs)* #ident_str).to_string();
+            // Prefix the cfg attrs so cfg-gated registrations and their inverse-cfg
+            // defaults do not collide on the same internal ctor symbol. The ident
+            // is concatenated as a bare string (not interpolated through `quote!`,
+            // which would render it as a quoted string literal) so methods without
+            // cfg attrs are unchanged.
+            let cfg_prefix = quote!(#(#attrs)*).to_string();
+            let hash_part = format!("{cfg_prefix}{ident_str}");
             (ident_str, wrap_ident, attrs, hash_part)
         })
         .multiunzip();

@@ -340,7 +340,7 @@ pub extern "C" fn __Contract__add_with__invoke_raw_extern(
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract____a65401bbc7b9c746c39c9a9e22087a96ad048be784b0c2c6eb05243a85b227bb_ctor() {
+fn __Contract____70a46203e4054de1ddff57b7a47699d47775f2dc3cd806328562e85117ee9756_ctor() {
     #[allow(unsafe_code)]
     {
         #[link_section = ".init_array"]
@@ -352,7 +352,7 @@ fn __Contract____a65401bbc7b9c746c39c9a9e22087a96ad048be784b0c2c6eb05243a85b227b
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract____a65401bbc7b9c746c39c9a9e22087a96ad048be784b0c2c6eb05243a85b227bb_ctor();
+                    __Contract____70a46203e4054de1ddff57b7a47699d47775f2dc3cd806328562e85117ee9756_ctor();
                 };
                 core::default::Default::default()
             }
@@ -673,7 +673,7 @@ pub extern "C" fn __AddContract__add__invoke_raw_extern(
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __AddContract____7b8a6f33b43ca26a3f2aa73e408748f9ceb391ac21dfe746c94563016ab72f85_ctor() {
+fn __AddContract____7e9e5ac30f2216fd0fd6f5faed316f2d5983361a4203c3330cfa46ef65bb4767_ctor() {
     #[allow(unsafe_code)]
     {
         #[link_section = ".init_array"]
@@ -685,7 +685,7 @@ fn __AddContract____7b8a6f33b43ca26a3f2aa73e408748f9ceb391ac21dfe746c94563016ab7
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __AddContract____7b8a6f33b43ca26a3f2aa73e408748f9ceb391ac21dfe746c94563016ab72f85_ctor();
+                    __AddContract____7e9e5ac30f2216fd0fd6f5faed316f2d5983361a4203c3330cfa46ef65bb4767_ctor();
                 };
                 core::default::Default::default()
             }

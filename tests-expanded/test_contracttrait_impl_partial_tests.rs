@@ -3351,7 +3351,7 @@ impl ContractArgs {
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract__AllTypes__3fb63cbc1ac6676c60e8163afad7792d6f7f3ece4625da1f97cf8f3414c17ecc_ctor() {
+fn __Contract__AllTypes__447a3d427d821f62365afd21ac9b6fa9597c9d71324b5cba7631f732f3b74d84_ctor() {
     #[allow(unsafe_code)]
     {
         #[link_section = ".init_array"]
@@ -3363,7 +3363,7 @@ fn __Contract__AllTypes__3fb63cbc1ac6676c60e8163afad7792d6f7f3ece4625da1f97cf8f3
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract__AllTypes__3fb63cbc1ac6676c60e8163afad7792d6f7f3ece4625da1f97cf8f3414c17ecc_ctor();
+                    __Contract__AllTypes__447a3d427d821f62365afd21ac9b6fa9597c9d71324b5cba7631f732f3b74d84_ctor();
                 };
                 core::default::Default::default()
             }
@@ -3466,7 +3466,7 @@ fn __Contract__AllTypes__3fb63cbc1ac6676c60e8163afad7792d6f7f3ece4625da1f97cf8f3
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract__AllTypes__e8d4e66bc2638949cbaa9f9678a750ffb724dcc5f74f0267f736cca8abb16a85_ctor() {
+fn __Contract__AllTypes__1eb9a6a69c5f732bd78e03e0fa5ea9d0a5c925757f7a5e53cd10ccd57b3e027d_ctor() {
     #[allow(unsafe_code)]
     {
         #[link_section = ".init_array"]
@@ -3478,7 +3478,7 @@ fn __Contract__AllTypes__e8d4e66bc2638949cbaa9f9678a750ffb724dcc5f74f0267f736cca
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract__AllTypes__e8d4e66bc2638949cbaa9f9678a750ffb724dcc5f74f0267f736cca8abb16a85_ctor();
+                    __Contract__AllTypes__1eb9a6a69c5f732bd78e03e0fa5ea9d0a5c925757f7a5e53cd10ccd57b3e027d_ctor();
                 };
                 core::default::Default::default()
             }

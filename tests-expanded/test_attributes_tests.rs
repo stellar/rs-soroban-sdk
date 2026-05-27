@@ -1374,7 +1374,7 @@ pub extern "C" fn __Contract__publish__invoke_raw_extern(
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract____cb7b94468921424ae1defd4d98a8c5819e799dcf09baf5992b8baca84fd1bf15_ctor() {
+fn __Contract____2246acd8c5a7d7a27c1bbb827466a98b2233215f0f3fdd39122db001505b94ef_ctor() {
     #[allow(unsafe_code)]
     {
         #[link_section = ".init_array"]
@@ -1386,7 +1386,7 @@ fn __Contract____cb7b94468921424ae1defd4d98a8c5819e799dcf09baf5992b8baca84fd1bf1
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract____cb7b94468921424ae1defd4d98a8c5819e799dcf09baf5992b8baca84fd1bf15_ctor();
+                    __Contract____2246acd8c5a7d7a27c1bbb827466a98b2233215f0f3fdd39122db001505b94ef_ctor();
                 };
                 core::default::Default::default()
             }
@@ -1819,7 +1819,7 @@ impl ContractArgs {
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract__AttributeTrait__29afd2f5f74e7323129e3e851a05be209702bb619bd8f59068135705650fe85f_ctor(
+fn __Contract__AttributeTrait__5c3dc6ba0d711665380c5f56dcc72fd5dd342c89561cb9e2302a58b4f4cac9dd_ctor(
 ) {
     #[allow(unsafe_code)]
     {
@@ -1832,7 +1832,7 @@ fn __Contract__AttributeTrait__29afd2f5f74e7323129e3e851a05be209702bb619bd8f5906
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract__AttributeTrait__29afd2f5f74e7323129e3e851a05be209702bb619bd8f59068135705650fe85f_ctor();
+                    __Contract__AttributeTrait__5c3dc6ba0d711665380c5f56dcc72fd5dd342c89561cb9e2302a58b4f4cac9dd_ctor();
                 };
                 core::default::Default::default()
             }
@@ -1855,7 +1855,7 @@ fn __Contract__AttributeTrait__29afd2f5f74e7323129e3e851a05be209702bb619bd8f5906
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract__AttributeTrait__e343c82e75a221384c6ad23e0130b07ba288591bccf7217fd293cc1893cc1780_ctor(
+fn __Contract__AttributeTrait__969988e5ad11b5d89373fc419647b603f4e9508cb73e2783cdc5572a30929b70_ctor(
 ) {
     #[allow(unsafe_code)]
     {
@@ -1868,7 +1868,7 @@ fn __Contract__AttributeTrait__e343c82e75a221384c6ad23e0130b07ba288591bccf7217fd
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract__AttributeTrait__e343c82e75a221384c6ad23e0130b07ba288591bccf7217fd293cc1893cc1780_ctor();
+                    __Contract__AttributeTrait__969988e5ad11b5d89373fc419647b603f4e9508cb73e2783cdc5572a30929b70_ctor();
                 };
                 core::default::Default::default()
             }

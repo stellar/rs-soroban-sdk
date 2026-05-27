@@ -493,7 +493,7 @@ impl ContractArgs {
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract__Trait__37c9a5bba64484ff1971b80862a96916501e4624e59e717e16e7686f6f41be73_ctor() {
+fn __Contract__Trait__2706c619fe73f0cf112473c6ee02e66c04e1c01c110b0c37b88d8eb509630c9f_ctor() {
     #[allow(unsafe_code)]
     {
         #[link_section = ".init_array"]
@@ -505,7 +505,7 @@ fn __Contract__Trait__37c9a5bba64484ff1971b80862a96916501e4624e59e717e16e7686f6f
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract__Trait__37c9a5bba64484ff1971b80862a96916501e4624e59e717e16e7686f6f41be73_ctor();
+                    __Contract__Trait__2706c619fe73f0cf112473c6ee02e66c04e1c01c110b0c37b88d8eb509630c9f_ctor();
                 };
                 core::default::Default::default()
             }
@@ -706,7 +706,7 @@ pub extern "C" fn __Contract__exec2__invoke_raw_extern() -> soroban_sdk::Val {
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract__TraitWithoutContractTrait__942987ac160acf81de596b765a56290d5629304f9b57083258d78e8ba633ab49_ctor(
+fn __Contract__TraitWithoutContractTrait__b85cb430838ad2be2940af63cd34aab7c962ea8738ef61b7759fbac5a916bc1c_ctor(
 ) {
     #[allow(unsafe_code)]
     {
@@ -719,7 +719,7 @@ fn __Contract__TraitWithoutContractTrait__942987ac160acf81de596b765a56290d562930
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract__TraitWithoutContractTrait__942987ac160acf81de596b765a56290d5629304f9b57083258d78e8ba633ab49_ctor();
+                    __Contract__TraitWithoutContractTrait__b85cb430838ad2be2940af63cd34aab7c962ea8738ef61b7759fbac5a916bc1c_ctor();
                 };
                 core::default::Default::default()
             }
