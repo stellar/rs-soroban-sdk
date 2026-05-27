@@ -1,17 +1,17 @@
 error: `cfg` and `cfg_attr` are not supported on `#[contracttrait]` default functions because they would be evaluated where the default implementation is generated, not where the trait is defined
- --> tests/ui/contracttrait_cfg_errors.rs:5:5
+ --> tests/compile_fails/contracttrait_cfg_errors.rs:5:5
   |
 5 |     #[cfg(any())]
   |     ^
 
 error: `cfg` and `cfg_attr` are not supported on `#[contracttrait]` default functions because they would be evaluated where the default implementation is generated, not where the trait is defined
-  --> tests/ui/contracttrait_cfg_errors.rs:14:5
+  --> tests/compile_fails/contracttrait_cfg_errors.rs:14:5
    |
 14 |     #[cfg_attr(any(), allow(dead_code))]
    |     ^
 
 error: `cfg_attr` is not supported on `#[contractimpl(contracttrait)]` methods because the generated helper only supports direct `cfg` attrs for default override matching
-  --> tests/ui/contracttrait_cfg_errors.rs:34:5
+  --> tests/compile_fails/contracttrait_cfg_errors.rs:34:5
    |
 34 |     #[cfg_attr(any(), allow(dead_code))]
    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
