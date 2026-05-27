@@ -1,8 +1,5 @@
 use crate::{
-    attribute::{
-        is_attr_cfg, is_attr_doc, reject_cfg_attr_on_contracttrait_impl_fn,
-        reject_cfg_attrs_on_contracttrait_default_fn,
-    },
+    attribute::{is_attr_cfg, is_attr_cfg_attr, is_attr_doc, reject_items},
     default_crate_path, syn_ext,
 };
 use darling::{ast::NestedMeta, Error, FromMeta};
@@ -61,7 +58,10 @@ fn derive(args: &Args, input: &ItemTrait) -> TokenStream2 {
             ..
         }) = i
         {
-            if let Err(err) = reject_cfg_attrs_on_contracttrait_default_fn(attrs) {
+            if let Err(err) = reject_items(
+                attrs.iter().filter(|a| is_attr_cfg(a) || is_attr_cfg_attr(a)),
+                "`cfg` and `cfg_attr` are not supported on `#[contracttrait]` default functions because they would be evaluated where the default implementation is generated, not where the trait is defined",
+            ) {
                 match errors {
                     Some(ref mut acc) => acc.combine(err),
                     None => errors = Some(err),
@@ -119,7 +119,10 @@ pub fn generate_call_to_contractimpl_for_trait(
     spec_ident: &str,
 ) -> Result<TokenStream2, syn::Error> {
     for method in pub_methods {
-        reject_cfg_attr_on_contracttrait_impl_fn(&method.attrs)?;
+        reject_items(
+            method.attrs.iter().filter(|a| is_attr_cfg_attr(a)),
+            "`cfg_attr` is not supported on `#[contractimpl(contracttrait)]` methods because the generated helper only supports direct `cfg` attrs for default override matching",
+        )?;
     }
     let impl_fns = pub_methods.iter().map(|f| {
         let cfg_attrs = f.attrs.iter().filter(|attr| is_attr_cfg(attr));

@@ -1,3 +1,4 @@
+use quote::ToTokens;
 use syn::{
     ext::IdentExt as _, punctuated::Punctuated, Attribute, Data, Error, Fields, FieldsNamed,
     FieldsUnnamed, Result,
@@ -27,41 +28,18 @@ pub fn is_attr_cfg_attr(attr: &Attribute) -> bool {
     attr.path().is_ident("cfg_attr")
 }
 
-/// Rejects cfg attributes in the `#[contracttrait]` default-function handoff.
-pub fn reject_cfg_attrs_on_contracttrait_default_fn(attrs: &[Attribute]) -> Result<()> {
-    reject_cfg_attrs(
-        attrs,
-        "`cfg` and `cfg_attr` are not supported on `#[contracttrait]` default functions because they would be evaluated where the default implementation is generated, not where the trait is defined",
-    )
-}
-
-/// Rejects cfg_attr attributes in the `#[contractimpl(contracttrait)]` override handoff.
-pub fn reject_cfg_attr_on_contracttrait_impl_fn(attrs: &[Attribute]) -> Result<()> {
-    reject_attrs(
-        attrs,
-        is_attr_cfg_attr,
-        "`cfg_attr` is not supported on `#[contractimpl(contracttrait)]` methods because the generated helper only supports direct `cfg` attrs for default override matching",
-    )
-}
-
-fn reject_cfg_attrs(attrs: &[Attribute], message: &'static str) -> Result<()> {
-    reject_attrs(
-        attrs,
-        |attr| is_attr_cfg(attr) || is_attr_cfg_attr(attr),
-        message,
-    )
-}
-
-fn reject_attrs(
-    attrs: &[Attribute],
-    reject: fn(&Attribute) -> bool,
-    message: &'static str,
-) -> Result<()> {
+/// Combines an error spanned on each item with the given message into a single
+/// `Result`, returning `Ok(())` if the iterator is empty.
+pub fn reject_items<I>(items: I, message: &str) -> Result<()>
+where
+    I: IntoIterator,
+    I::Item: ToTokens,
+{
     let mut error: Option<Error> = None;
-    for attr in attrs.iter().filter(|attr| reject(attr)) {
+    for item in items {
         match &mut error {
-            Some(error) => error.combine(Error::new_spanned(attr, message)),
-            None => error = Some(Error::new_spanned(attr, message)),
+            Some(error) => error.combine(Error::new_spanned(item, message)),
+            None => error = Some(Error::new_spanned(item, message)),
         }
     }
     error.map_or(Ok(()), Err)
