@@ -43,13 +43,7 @@ pub fn main() {
             );
             std::process::exit(1);
         } else {
-            println!("cargo::warning=stellar-cli will be required in a future version of soroban-sdk to build contracts");
-            println!("cargo::warning=");
-            println!("cargo::warning=Building contracts with `cargo build` directly will not be supported in a");
-            println!("cargo::warning=future version of soroban-sdk.");
-            println!("cargo::warning=");
-            println!("cargo::warning=To prepare, build with `stellar contract build` from stellar-cli now in");
-            println!("cargo::warning=preparation for when it becomes required.");
+            println!("cargo::warning=stellar-cli will be required in a future version of soroban-sdk to build contracts, build with `stellar contract build` from stellar-cli now in preparation for when it becomes required");
         }
     }
 
