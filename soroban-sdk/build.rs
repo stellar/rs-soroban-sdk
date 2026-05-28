@@ -28,22 +28,9 @@ pub fn main() {
         && std::env::var("CARGO_CFG_TARGET_FAMILY").unwrap_or_default() == "wasm"
     {
         if std::env::var("CARGO_FEATURE_EXPERIMENTAL_SPEC_SHAKING_V2").is_ok() {
-            eprintln!(
-                "\
-\nerror: soroban-sdk feature 'experimental_spec_shaking_v2' requires stellar-cli v25.2.0+\
-\n\
-\nThe soroban-sdk 'experimental_spec_shaking_v2' feature requires building\
-\nwith `stellar contract build` from stellar-cli v25.2.0 or newer.\
-\n\
-\nTo fix, either:\
-\n  - Build with `stellar contract build` using stellar-cli v25.2.0+\
-\n  - Disable the feature by removing 'experimental_spec_shaking_v2' from\
-\n    the soroban-sdk import features list in Cargo.toml.\
-"
-            );
-            std::process::exit(1);
+            println!("cargo::error=The soroban-sdk feature 'experimental_spec_shaking_v2' requires building with `stellar contract build` from stellar-cli v25.2.0 or newer. Either build with stellar-cli v25.2.0+, or remove 'experimental_spec_shaking_v2' from the soroban-sdk features in Cargo.toml");
         } else {
-            println!("cargo::warning=stellar-cli will be required in a future version of soroban-sdk to build contracts, build with `stellar contract build` from stellar-cli now in preparation for when it becomes required");
+            println!("cargo::warning=Building contracts that use the soroban-sdk will require the stellar-cli in a future version of soroban-sdk. Build with `stellar contract build` from stellar-cli now in preparation for when it becomes required");
         }
     }
 
