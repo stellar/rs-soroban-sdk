@@ -7,7 +7,7 @@ use heck::ToSnakeCase;
 use proc_macro2::Span;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
-use stellar_xdr::curr::{
+use stellar_xdr::{
     ScSpecEntry, ScSpecEventDataFormat, ScSpecEventParamLocationV0, ScSpecEventParamV0,
     ScSpecEventV0, ScSymbol, StringM, WriteXdr,
 };

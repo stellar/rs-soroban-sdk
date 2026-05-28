@@ -187,8 +187,7 @@ mod test {
 
     #[test]
     fn test_spec_docs() {
-        use stellar_xdr::curr as stellar_xdr;
-        use stellar_xdr::{Limits, ReadXdr, ScSpecEntry};
+                use stellar_xdr::{Limits, ReadXdr, ScSpecEntry};
 
         // Verify that doc strings from trait default functions appear in the spec
         let entry = ScSpecEntry::from_xdr(Contract::spec_xdr_test_u32(), Limits::none()).unwrap();

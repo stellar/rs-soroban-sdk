@@ -30,29 +30,30 @@ soroban-token-spec = { version = "26.0.1", path = "soroban-token-spec" }
 stellar-asset-spec = { version = "26.0.1", path = "stellar-asset-spec" }
 
 [workspace.dependencies.soroban-env-common]
-version = "=26.1.3"
-# git = "https://github.com/stellar/rs-soroban-env"
-# rev = "c0e58f94ff2983a09440cef6a54253349fd3c4db"
+version = "=26.1.2"
+git = "https://github.com/stellar/rs-soroban-env"
+rev = "7fb0a840812fe8921bb48bebf7b4aa7160467ec8"
 
 [workspace.dependencies.soroban-env-guest]
-version = "=26.1.3"
-# git = "https://github.com/stellar/rs-soroban-env"
-# rev = "c0e58f94ff2983a09440cef6a54253349fd3c4db"
+version = "=26.1.2"
+git = "https://github.com/stellar/rs-soroban-env"
+rev = "7fb0a840812fe8921bb48bebf7b4aa7160467ec8"
 
 [workspace.dependencies.soroban-env-host]
-version = "=26.1.3"
-# git = "https://github.com/stellar/rs-soroban-env"
-# rev = "c0e58f94ff2983a09440cef6a54253349fd3c4db"
+version = "=26.1.2"
+git = "https://github.com/stellar/rs-soroban-env"
+rev = "7fb0a840812fe8921bb48bebf7b4aa7160467ec8"
 
 [workspace.dependencies.stellar-strkey]
 version = "=0.0.16"
 
+# CAP-71 pre-release pin: per-cap-feature layout; "curr" feature no longer exists.
 [workspace.dependencies.stellar-xdr]
-version = "=26.0.1"
-# git = "https://github.com/stellar/rs-stellar-xdr"
-# rev = "dd7a165a193126fd37a751d867bee1cb8f3b55a6"
+version = "=26.0.0"
+git = "https://github.com/stellar/rs-stellar-xdr"
+rev = "a749b69b3471aec0c20ec431b0297f3414d66421"
 default-features = false
-features = ["curr"]
+features = ["cap_0071"]
 
 #[patch.crates-io]
 #soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }

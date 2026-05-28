@@ -8,7 +8,6 @@ use std::{fs, io};
 use proc_macro2::TokenStream;
 use quote::quote;
 use sha2::{Digest, Sha256};
-use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{ScSpecEntry, ScSpecTypeDef, ScSpecTypeUdt, ScSpecUdtUnionCaseV0};
 use syn::Error;
 
@@ -399,7 +398,7 @@ pub enum MyError {
     #[test]
     fn test_add_u64_spec_entries() {
         use super::ScSpecEntry;
-        use stellar_xdr::curr::ScSpecTypeDef;
+        use stellar_xdr::ScSpecTypeDef;
 
         let entries = from_wasm(ADD_U64_WASM).unwrap();
 
@@ -473,7 +472,7 @@ pub enum MyError {
     #[test]
     fn test_missing_error_udt_falls_back_to_sdk_error() {
         use super::ScSpecEntry;
-        use stellar_xdr::curr::{ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeResult};
+        use stellar_xdr::{ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeResult};
 
         let func = ScSpecFunctionV0 {
             doc: "".try_into().unwrap(),
@@ -509,7 +508,7 @@ pub trait Contract {
     #[test]
     fn test_error_udt_overrides_sdk_error() {
         use super::ScSpecEntry;
-        use stellar_xdr::curr::{
+        use stellar_xdr::{
             ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeResult, ScSpecUdtErrorEnumCaseV0,
             ScSpecUdtErrorEnumV0,
         };
@@ -567,7 +566,7 @@ pub enum Error {
     #[test]
     fn test_error_udt_override_rewrites_nested_vec() {
         use super::ScSpecEntry;
-        use stellar_xdr::curr::{
+        use stellar_xdr::{
             ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeVec, ScSpecUdtErrorEnumCaseV0,
             ScSpecUdtErrorEnumV0,
         };

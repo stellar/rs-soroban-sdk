@@ -3,7 +3,6 @@ use soroban_sdk::{
     contract, contracterror, contractevent, contractimpl, contracttrait, contracttype,
     testutils::Events as _, Env,
 };
-use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{
     Limits, ReadXdr, ScSpecEntry, ScSpecEventDataFormat, ScSpecEventParamLocationV0,
     ScSpecEventParamV0, ScSpecEventV0, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef,
