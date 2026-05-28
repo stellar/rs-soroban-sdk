@@ -20,15 +20,14 @@ pub fn main() {
         println!("cargo:rustc-env=RUSTC_VERSION={rustc_version}");
     }
 
-    // When the experimental_spec_shaking_v2 feature is enabled on a wasm target, check for an
-    // env var from the build system (Stellar CLI) that indicates it supports spec optimization
-    // using markers.
-    if std::env::var("CARGO_FEATURE_EXPERIMENTAL_SPEC_SHAKING_V2").is_ok() {
-        let env_name = "SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2";
-        println!("cargo::rerun-if-env-changed={env_name}");
-        if std::env::var(env_name).is_err()
-            && std::env::var("CARGO_CFG_TARGET_FAMILY").unwrap_or_default() == "wasm"
-        {
+    // Check for an env var from the build system (Stellar CLI) that indicates the contract is
+    // being built with the Stellar CLI, which supports spec optimization using markers.
+    let env_name = "SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2";
+    println!("cargo::rerun-if-env-changed={env_name}");
+    if std::env::var(env_name).is_err()
+        && std::env::var("CARGO_CFG_TARGET_FAMILY").unwrap_or_default() == "wasm"
+    {
+        if std::env::var("CARGO_FEATURE_EXPERIMENTAL_SPEC_SHAKING_V2").is_ok() {
             eprintln!(
                 "\
 \nerror: soroban-sdk feature 'experimental_spec_shaking_v2' requires stellar-cli v25.2.0+\
@@ -43,6 +42,18 @@ pub fn main() {
 "
             );
             std::process::exit(1);
+        } else {
+            eprintln!(
+                "\
+\nwarning: stellar-cli will be required in a future version of soroban-sdk to build contracts\
+\n\
+\nBuilding contracts with `cargo build` directly will not be supported in a\
+\nfuture version of soroban-sdk.\
+\n\
+\nTo prepare, build with `stellar contract build` from stellar-cli now in\
+\npreparation for when it becomes required.\
+"
+            );
         }
     }
 
