@@ -16,10 +16,7 @@
 //! stellar contract build
 //! ```
 //!
-//! `stellar contract build` sets the
-//! `SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2` environment variable
-//! that the soroban-sdk's build script checks for. No further changes to the
-//! contract crate or its `Cargo.toml` are required.
+//! No further changes to the contract crate or its `Cargo.toml` are required.
 //!
 //! [stellar-cli]: https://github.com/stellar/stellar-cli
 //!
@@ -33,8 +30,9 @@
 //! ```
 //!
 //! This escape hatch is provided for the transition and will be removed in a
-//! near future version of soroban-sdk. Contracts built with the escape hatch
-//! may be missing post-build steps and should not be deployed to mainnet.
+//! near future version of soroban-sdk once support for building without the
+//! stellar-cli is completely removed. Contracts built with the escape hatch may
+//! be missing post-build steps and should not be deployed to mainnet.
 //!
 //! ## Non-Wasm Builds
 //!
