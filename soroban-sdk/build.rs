@@ -60,7 +60,7 @@ pub fn main() {
 \nBuild with `stellar contract build` from stellar-cli v25.2.0 or newer.\
 \n\
 \nTo temporarily allow building without stellar-cli, set the env var:\
-\n  {allow_env}=1\
+\n  SOROBAN_SDK_ALLOW_BUILD_WITHOUT_STELLAR_CLI=1\
 \nThis escape hatch will be removed in a near future version of soroban-sdk.\
 "
             );

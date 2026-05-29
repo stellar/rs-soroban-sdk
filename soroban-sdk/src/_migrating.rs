@@ -1,3 +1,13 @@
+//! # Migrating from v26 to v27
+//!
+//! 1. [Building contracts for wasm targets now requires the stellar-cli][v27_stellar_cli].
+//!    Builds that do not use `stellar contract build` from stellar-cli v25.2.0 or newer
+//!    will fail with a compile error. A temporary escape hatch env var
+//!    `SOROBAN_SDK_ALLOW_BUILD_WITHOUT_STELLAR_CLI=1` is provided for the transition
+//!    and will be removed in a near future version of soroban-sdk.
+//!
+//! [v27_stellar_cli]: v27_stellar_cli
+//!
 //! # Migrating from v25 to v26
 //!
 //! 1. Add support for [CAP-78: Host functions for performing limited TTL extensions](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0078.md).
@@ -322,3 +332,4 @@ pub mod v25_contracttrait;
 pub mod v25_event_testing;
 pub mod v25_poseidon;
 pub mod v25_resource_limits;
+pub mod v27_stellar_cli;
