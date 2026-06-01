@@ -40,28 +40,6 @@
 //! # assert_eq!(b, bytes!(&env, [1]));
 //! ```
 //!
-//! ## Building bytes from a decimal value
-//!
-//! To build bytes from a value you have in mind in decimal, write the value as a hex literal
-//! instead. For a single byte, write the decimal value's hex equivalent (e.g. `255` is `0xff`).
-//! Note that hex makes the byte width explicit, so left-pad with zeros to get the byte count you
-//! want (e.g. `0x00ff` for two bytes). Alternatively, use an array literal, which still accepts
-//! decimal values for each byte.
-//!
-//! ```
-//! use soroban_sdk::{bytes, Env};
-//!
-//! let env = Env::default();
-//!
-//! // The decimal value 255 written as a single-byte hex literal.
-//! let b = bytes!(&env, 0xff);
-//! assert_eq!(b, bytes!(&env, [255]));
-//!
-//! // Or as an array literal, where decimal values are still accepted per byte.
-//! let b = bytes!(&env, [255]);
-//! assert_eq!(b, bytes!(&env, 0xff));
-//! ```
-//!
 //! [`bytes!`]: crate::bytes
 //! [`bytesn!`]: crate::bytesn
 //! [`Bytes`]: crate::Bytes
