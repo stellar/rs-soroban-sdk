@@ -221,6 +221,12 @@ deny = [
 skip = [
     { name = "hashbrown", version = "=0.14.5" },
     { name = "stellar-strkey", version = "=0.0.13" },
+    # thiserror 1.x is pulled in transitively by soroban-ledger-snapshot and by
+    # stellar-rpc-client (via jsonrpsee 0.20), while
+    # soroban-ledger-snapshot-source-tx and cargo_metadata 0.19 use thiserror 2.x.
+    # No single shared version exists yet.
+    { name = "thiserror", version = "=1.0.63" },
+    { name = "thiserror-impl", version = "=1.0.63" },
 ]
 # Similarly to `skip` allows you to skip certain crates during duplicate
 # detection. Unlike skip, it also includes the entire tree of transitive
