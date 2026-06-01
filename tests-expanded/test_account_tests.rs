@@ -1,10 +1,9 @@
 #![feature(prelude_import)]
 #![no_std]
-#[prelude_import]
-use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
-extern crate compiler_builtins as _;
+#[prelude_import]
+use core::prelude::rust_2021::*;
 use soroban_sdk::{
     auth::Context, auth::CustomAccountInterface, contract, contracterror, contractimpl,
     crypto::Hash, Env, Vec,
@@ -56,6 +55,11 @@ impl Error {
     pub const fn spec_xdr() -> [u8; 44usize] {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x05Error\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04Fail\0\0\0\x01"
     }
+}
+impl soroban_sdk::SpecShakingMarker for Error {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {}
 }
 impl TryFrom<soroban_sdk::Error> for Error {
     type Error = soroban_sdk::Error;
@@ -433,7 +437,6 @@ fn __Contract__CustomAccountInterface__d465b6861ce11142d9f64c1622e1ad88ae003d910
         );
     }
 }
-#[cfg(test)]
 mod test {
     use crate::Contract;
     use soroban_sdk::{
@@ -573,7 +576,6 @@ mod test {
         }
     }
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test"]
     #[doc(hidden)]
     pub const test: test::TestDescAndFn = test::TestDescAndFn {

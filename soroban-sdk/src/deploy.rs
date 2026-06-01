@@ -124,8 +124,9 @@
 //! ```
 
 use crate::{
-    env::internal::Env as _, unwrap::UnwrapInfallible, Address, Bytes, BytesN, ConstructorArgs,
-    Env, IntoVal,
+    env::internal::{ContractTtlExtension, Env as _},
+    unwrap::UnwrapInfallible,
+    Address, Bytes, BytesN, ConstructorArgs, Env, IntoVal,
 };
 
 /// Deployer provides access to deploying contracts.
@@ -269,6 +270,77 @@ impl Deployer {
                 contract_address.to_object(),
                 threshold.into(),
                 extend_to.into(),
+            )
+            .unwrap_infallible();
+    }
+
+    /// Extend the TTL of the contract instance and code with limits on the extension.
+    ///
+    /// Extends the TTL of the instance and code to be up to `extend_to` ledgers.
+    /// The extension only happens if it exceeds `min_extension` ledgers, otherwise
+    /// this is a no-op. The amount of extension will not exceed `max_extension` ledgers.
+    ///
+    /// Note that the extension is applied to both the contract code and contract instance,
+    /// so it's possible that one is extended but not the other depending on their current TTLs.
+    ///
+    /// The TTL is the number of ledgers between the current ledger and the final ledger
+    /// the data can still be accessed.
+    pub fn extend_ttl_with_limits(
+        &self,
+        contract_address: Address,
+        extend_to: u32,
+        min_extension: u32,
+        max_extension: u32,
+    ) {
+        self.env
+            .extend_contract_instance_and_code_ttl_v2(
+                contract_address.to_object(),
+                ContractTtlExtension::InstanceAndCode,
+                extend_to.into(),
+                min_extension.into(),
+                max_extension.into(),
+            )
+            .unwrap_infallible();
+    }
+
+    /// Extend the TTL of the contract instance with limits on the extension.
+    ///
+    /// Same as [`extend_ttl_with_limits`](Self::extend_ttl_with_limits) but only for contract instance.
+    pub fn extend_ttl_for_contract_instance_with_limits(
+        &self,
+        contract_address: Address,
+        extend_to: u32,
+        min_extension: u32,
+        max_extension: u32,
+    ) {
+        self.env
+            .extend_contract_instance_and_code_ttl_v2(
+                contract_address.to_object(),
+                ContractTtlExtension::Instance,
+                extend_to.into(),
+                min_extension.into(),
+                max_extension.into(),
+            )
+            .unwrap_infallible();
+    }
+
+    /// Extend the TTL of the contract code with limits on the extension.
+    ///
+    /// Same as [`extend_ttl_with_limits`](Self::extend_ttl_with_limits) but only for contract code.
+    pub fn extend_ttl_for_code_with_limits(
+        &self,
+        contract_address: Address,
+        extend_to: u32,
+        min_extension: u32,
+        max_extension: u32,
+    ) {
+        self.env
+            .extend_contract_instance_and_code_ttl_v2(
+                contract_address.to_object(),
+                ContractTtlExtension::Code,
+                extend_to.into(),
+                min_extension.into(),
+                max_extension.into(),
             )
             .unwrap_infallible();
     }

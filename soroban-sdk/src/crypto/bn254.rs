@@ -2,15 +2,14 @@
 use crate::xdr::ScVal;
 use crate::{
     crypto::utils::BigInt,
-    env::internal::{self, BytesObject, U256Val},
-    impl_bytesn_repr_without_from_bytes,
+    env::internal::{self, BytesObject, U256Val, U64Val},
     unwrap::{UnwrapInfallible, UnwrapOptimized},
     Bytes, BytesN, ConversionError, Env, IntoVal, TryFromVal, Val, Vec, U256,
 };
 use core::{
     cmp::Ordering,
     fmt::Debug,
-    ops::{Add, Mul, Neg},
+    ops::{Add, Mul, Neg, Sub},
 };
 
 pub const BN254_FP_SERIALIZED_SIZE: usize = 32; // Size in bytes of a serialized Bn254Fp element in BN254. The field modulus is 254 bits, requiring 32 bytes (256 bits).
@@ -26,7 +25,13 @@ pub struct Bn254 {
 /// `Bn254G1Affine` is a point in the G1 group (subgroup defined over the base field
 /// `Fq` with prime order `q =
 /// 0x30644e72e131a029b85045b68181585d97816a916871ca8d3c208c16d87cfd47`) of the
-/// BN254 elliptic curve
+/// BN254 elliptic curve.
+///
+/// This type is a thin wrapper around `BytesN<64>`. The [`from_bytes`](Self::from_bytes)
+/// constructor does **not** validate the contents — it accepts any 64 bytes.
+/// The serialization requirements below are enforced by the Soroban host when
+/// the value is passed to a host function (e.g. `g1_add`, `g1_mul`, `pairing`).
+/// Invalid bytes will cause the host call to trap, not construction.
 ///
 /// # Serialization (Ethereum-compatible format):
 /// - The 64 bytes represent the **uncompressed encoding** of a point in G1
@@ -40,7 +45,13 @@ pub struct Bn254 {
 pub struct Bn254G1Affine(BytesN<BN254_G1_SERIALIZED_SIZE>);
 
 /// `Bn254G2Affine` is a point in the G2 group (subgroup defined over the quadratic
-/// extension field `Fq2`) of the BN254 elliptic curve
+/// extension field `Fq2`) of the BN254 elliptic curve.
+///
+/// This type is a thin wrapper around `BytesN<128>`. The [`from_bytes`](Self::from_bytes)
+/// constructor does **not** validate the contents — it accepts any 128 bytes.
+/// The serialization requirements below are enforced by the Soroban host when
+/// the value is passed to a host function (e.g. `g2_add`, `g2_mul`, `pairing`).
+/// Invalid bytes will cause the host call to trap, not construction.
 ///
 /// # Serialization (Ethereum-compatible format):
 /// - The 128 bytes represent the **uncompressed encoding** of a point in G2
@@ -56,14 +67,19 @@ pub struct Bn254G1Affine(BytesN<BN254_G1_SERIALIZED_SIZE>);
 #[repr(transparent)]
 pub struct Bn254G2Affine(BytesN<BN254_G2_SERIALIZED_SIZE>);
 
-/// `Fr` represents an element in the BN254 scalar field, which is a prime field
-/// of order `r =
+/// `Bn254Fr` represents an element in the BN254 scalar field, which is a prime
+/// field of order `r =
 /// 0x30644e72e131a029b85045b68181585d2833e84879b9709143e1f593f0000001`. The
 /// struct is internally represented with a `U256`, all arithmetic operations
 /// follow modulo `r`.
 #[derive(Clone)]
 #[repr(transparent)]
-pub struct Fr(U256);
+pub struct Bn254Fr(U256);
+
+/// Deprecated type alias for `Bn254Fr`.
+/// Use `Bn254Fr` to avoid ambiguity with `Bls12381Fr`.
+#[deprecated(note = "use `Bn254Fr` instead to avoid ambiguity with `Bls12381Fr`")]
+pub type Fr = Bn254Fr;
 
 /// `Bn254Fp` represents an element of the base field `Bn254Fp` of the BN254 elliptic curve
 ///
@@ -74,9 +90,9 @@ pub struct Fr(U256);
 #[repr(transparent)]
 pub struct Bn254Fp(BytesN<BN254_FP_SERIALIZED_SIZE>);
 
-impl_bytesn_repr_without_from_bytes!(Bn254G1Affine, BN254_G1_SERIALIZED_SIZE);
-impl_bytesn_repr_without_from_bytes!(Bn254G2Affine, BN254_G2_SERIALIZED_SIZE);
-impl_bytesn_repr_without_from_bytes!(Bn254Fp, BN254_FP_SERIALIZED_SIZE);
+impl_bytesn_repr!(Bn254G1Affine, BN254_G1_SERIALIZED_SIZE);
+impl_bytesn_repr!(Bn254G2Affine, BN254_G2_SERIALIZED_SIZE);
+impl_bytesn_repr!(Bn254Fp, BN254_FP_SERIALIZED_SIZE);
 
 // BN254 base field modulus p in big-endian bytes.
 // p = 0x30644e72e131a029b85045b68181585d97816a916871ca8d3c208c16d87cfd47
@@ -92,12 +108,16 @@ fn validate_bn254_fp(bytes: &[u8; BN254_FP_SERIALIZED_SIZE]) {
 }
 
 impl Bn254G1Affine {
+    /// Wraps raw bytes as a G1 point without validation.
+    /// See [`Bn254G1Affine`] for serialization requirements enforced by the host.
     pub fn from_bytes(bytes: BytesN<BN254_G1_SERIALIZED_SIZE>) -> Self {
         Self(bytes)
     }
 }
 
 impl Bn254G2Affine {
+    /// Wraps raw bytes as a G2 point without validation.
+    /// See [`Bn254G2Affine`] for serialization requirements enforced by the host.
     pub fn from_bytes(bytes: BytesN<BN254_G2_SERIALIZED_SIZE>) -> Self {
         Self(bytes)
     }
@@ -180,15 +200,15 @@ impl Add for Bn254G1Affine {
     }
 }
 
-impl Mul<Fr> for Bn254G1Affine {
+impl Mul<Bn254Fr> for Bn254G1Affine {
     type Output = Bn254G1Affine;
 
-    fn mul(self, rhs: Fr) -> Self::Output {
+    fn mul(self, rhs: Bn254Fr) -> Self::Output {
         self.env().crypto().bn254().g1_mul(&self, &rhs)
     }
 }
 
-// Bn254G1Affine represents a point (X, Y) on the BN254 curve where X, Y ∈ Fr
+// Bn254G1Affine represents a point (X, Y) on the BN254 curve where X, Y ∈ Bn254Fp
 // Negation of (X, Y) is defined as (X, -Y)
 impl Neg for &Bn254G1Affine {
     type Output = Bn254G1Affine;
@@ -222,7 +242,7 @@ impl Bn254G2Affine {
     }
 }
 
-impl Fr {
+impl Bn254Fr {
     pub fn env(&self) -> &Env {
         self.0.env()
     }
@@ -254,6 +274,38 @@ impl Fr {
     pub fn to_val(&self) -> Val {
         self.0.to_val()
     }
+
+    pub fn pow(&self, rhs: u64) -> Self {
+        self.env().crypto().bn254().fr_pow(self, rhs)
+    }
+
+    pub fn inv(&self) -> Self {
+        self.env().crypto().bn254().fr_inv(self)
+    }
+}
+
+impl Add for Bn254Fr {
+    type Output = Bn254Fr;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        self.env().crypto().bn254().fr_add(&self, &rhs)
+    }
+}
+
+impl Sub for Bn254Fr {
+    type Output = Bn254Fr;
+
+    fn sub(self, rhs: Self) -> Self::Output {
+        self.env().crypto().bn254().fr_sub(&self, &rhs)
+    }
+}
+
+impl Mul for Bn254Fr {
+    type Output = Bn254Fr;
+
+    fn mul(self, rhs: Self) -> Self::Output {
+        self.env().crypto().bn254().fr_mul(&self, &rhs)
+    }
 }
 
 // BN254 scalar field modulus r in big-endian bytes.
@@ -267,9 +319,9 @@ fn fr_modulus(env: &Env) -> U256 {
     U256::from_be_bytes(env, &Bytes::from_array(env, &BN254_FR_MODULUS_BE))
 }
 
-impl From<U256> for Fr {
+impl From<U256> for Bn254Fr {
     fn from(value: U256) -> Self {
-        // Keep all Fr construction paths canonical by reducing modulo r here.
+        // Keep all Bn254Fr construction paths canonical by reducing modulo r here.
         // Constructors and deserialization paths should route through this impl.
         // Skip the expensive rem_euclid when value is already canonical (< r),
         // which is always the case for host-returned arithmetic results.
@@ -282,13 +334,13 @@ impl From<U256> for Fr {
     }
 }
 
-impl From<&Fr> for U256Val {
-    fn from(value: &Fr) -> Self {
+impl From<&Bn254Fr> for U256Val {
+    fn from(value: &Bn254Fr) -> Self {
         value.as_u256().into()
     }
 }
 
-impl TryFromVal<Env, Val> for Fr {
+impl TryFromVal<Env, Val> for Bn254Fr {
     type Error = ConversionError;
 
     fn try_from_val(env: &Env, val: &Val) -> Result<Self, Self::Error> {
@@ -297,47 +349,47 @@ impl TryFromVal<Env, Val> for Fr {
     }
 }
 
-impl TryFromVal<Env, Fr> for Val {
+impl TryFromVal<Env, Bn254Fr> for Val {
     type Error = ConversionError;
 
-    fn try_from_val(_env: &Env, fr: &Fr) -> Result<Self, Self::Error> {
+    fn try_from_val(_env: &Env, fr: &Bn254Fr) -> Result<Self, Self::Error> {
         Ok(fr.to_val())
     }
 }
 
-impl TryFromVal<Env, &Fr> for Val {
+impl TryFromVal<Env, &Bn254Fr> for Val {
     type Error = ConversionError;
 
-    fn try_from_val(_env: &Env, fr: &&Fr) -> Result<Self, Self::Error> {
+    fn try_from_val(_env: &Env, fr: &&Bn254Fr) -> Result<Self, Self::Error> {
         Ok(fr.to_val())
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl From<&Fr> for ScVal {
-    fn from(v: &Fr) -> Self {
+impl From<&Bn254Fr> for ScVal {
+    fn from(v: &Bn254Fr) -> Self {
         Self::from(&v.0)
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl From<Fr> for ScVal {
-    fn from(v: Fr) -> Self {
+impl From<Bn254Fr> for ScVal {
+    fn from(v: Bn254Fr) -> Self {
         (&v).into()
     }
 }
 
-impl Eq for Fr {}
+impl Eq for Bn254Fr {}
 
-impl PartialEq for Fr {
+impl PartialEq for Bn254Fr {
     fn eq(&self, other: &Self) -> bool {
         self.as_u256().partial_cmp(other.as_u256()) == Some(core::cmp::Ordering::Equal)
     }
 }
 
-impl Debug for Fr {
+impl Debug for Bn254Fr {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        write!(f, "Fr({:?})", self.as_u256())
+        write!(f, "Bn254Fr({:?})", self.as_u256())
     }
 }
 
@@ -359,7 +411,7 @@ impl Bn254 {
     }
 
     /// Multiplies a point `p0` in G1 by a scalar.
-    pub fn g1_mul(&self, p0: &Bn254G1Affine, scalar: &Fr) -> Bn254G1Affine {
+    pub fn g1_mul(&self, p0: &Bn254G1Affine, scalar: &Bn254Fr) -> Bn254G1Affine {
         let env = self.env();
         let bin =
             internal::Env::bn254_g1_mul(env, p0.to_object(), scalar.into()).unwrap_infallible();
@@ -386,12 +438,64 @@ impl Bn254 {
             .unwrap_infallible()
             .into()
     }
+
+    /// Performs a multi-scalar multiplication (MSM) operation in G1.
+    pub fn g1_msm(&self, vp: Vec<Bn254G1Affine>, vs: Vec<Bn254Fr>) -> Bn254G1Affine {
+        let env = self.env();
+        let bin = internal::Env::bn254_g1_msm(env, vp.into(), vs.into()).unwrap_infallible();
+        unsafe { Bn254G1Affine::from_bytes(BytesN::unchecked_new(env.clone(), bin)) }
+    }
+
+    /// Checks if a G1 point is on the BN254 curve.
+    pub fn g1_is_on_curve(&self, point: &Bn254G1Affine) -> bool {
+        let env = self.env();
+        internal::Env::bn254_g1_is_on_curve(env, point.to_object())
+            .unwrap_infallible()
+            .into()
+    }
+
+    // scalar arithmetic
+
+    /// Adds two scalars in the BN254 scalar field `Bn254Fr`.
+    pub fn fr_add(&self, lhs: &Bn254Fr, rhs: &Bn254Fr) -> Bn254Fr {
+        let env = self.env();
+        let v = internal::Env::bn254_fr_add(env, lhs.into(), rhs.into()).unwrap_infallible();
+        U256::try_from_val(env, &v).unwrap_infallible().into()
+    }
+
+    /// Subtracts one scalar from another in the BN254 scalar field `Bn254Fr`.
+    pub fn fr_sub(&self, lhs: &Bn254Fr, rhs: &Bn254Fr) -> Bn254Fr {
+        let env = self.env();
+        let v = internal::Env::bn254_fr_sub(env, lhs.into(), rhs.into()).unwrap_infallible();
+        U256::try_from_val(env, &v).unwrap_infallible().into()
+    }
+
+    /// Multiplies two scalars in the BN254 scalar field `Bn254Fr`.
+    pub fn fr_mul(&self, lhs: &Bn254Fr, rhs: &Bn254Fr) -> Bn254Fr {
+        let env = self.env();
+        let v = internal::Env::bn254_fr_mul(env, lhs.into(), rhs.into()).unwrap_infallible();
+        U256::try_from_val(env, &v).unwrap_infallible().into()
+    }
+
+    /// Raises a scalar to the power of a given exponent in the BN254 scalar field `Bn254Fr`.
+    pub fn fr_pow(&self, lhs: &Bn254Fr, rhs: u64) -> Bn254Fr {
+        let env = self.env();
+        let rhs = U64Val::try_from_val(env, &rhs).unwrap_optimized();
+        let v = internal::Env::bn254_fr_pow(env, lhs.into(), rhs).unwrap_infallible();
+        U256::try_from_val(env, &v).unwrap_infallible().into()
+    }
+
+    /// Computes the multiplicative inverse of a scalar in the BN254 scalar field `Bn254Fr`.
+    pub fn fr_inv(&self, lhs: &Bn254Fr) -> Bn254Fr {
+        let env = self.env();
+        let v = internal::Env::bn254_fr_inv(env, lhs.into()).unwrap_infallible();
+        U256::try_from_val(env, &v).unwrap_infallible().into()
+    }
 }
 
 #[cfg(test)]
 mod test {
     use super::*;
-    use crate::bytesn;
 
     #[test]
     fn test_g1affine_to_val() {
@@ -430,9 +534,9 @@ mod test {
     fn test_fr_to_val() {
         let env = Env::default();
 
-        let fr = Fr::from_bytes(BytesN::from_array(&env, &[1; 32]));
+        let fr = Bn254Fr::from_bytes(BytesN::from_array(&env, &[1; 32]));
         let val: Val = fr.clone().into_val(&env);
-        let rt: Fr = val.into_val(&env);
+        let rt: Bn254Fr = val.into_val(&env);
 
         assert_eq!(fr, rt);
     }
@@ -441,9 +545,9 @@ mod test {
     fn test_ref_fr_to_val() {
         let env = Env::default();
 
-        let fr = Fr::from_bytes(BytesN::from_array(&env, &[1; 32]));
+        let fr = Bn254Fr::from_bytes(BytesN::from_array(&env, &[1; 32]));
         let val: Val = (&fr).into_val(&env);
-        let rt: Fr = val.into_val(&env);
+        let rt: Bn254Fr = val.into_val(&env);
 
         assert_eq!(fr, rt);
     }
@@ -452,9 +556,9 @@ mod test {
     fn test_double_ref_fr_to_val() {
         let env = Env::default();
 
-        let fr = Fr::from_bytes(BytesN::from_array(&env, &[1; 32]));
+        let fr = Bn254Fr::from_bytes(BytesN::from_array(&env, &[1; 32]));
         let val: Val = (&&fr).into_val(&env);
-        let rt: Fr = val.into_val(&env);
+        let rt: Bn254Fr = val.into_val(&env);
 
         assert_eq!(fr, rt);
     }
@@ -466,13 +570,13 @@ mod test {
         let r = fr_modulus(&env);
         let one = U256::from_u32(&env, 1);
 
-        let a = Fr::from_u256(r.add(&one)); // r+1 ≡ 1 (mod r)
-        let b = Fr::from_u256(one.clone()); // 1
+        let a = Bn254Fr::from_u256(r.add(&one)); // r+1 ≡ 1 (mod r)
+        let b = Bn254Fr::from_u256(one.clone()); // 1
         assert_eq!(a, b);
 
         // Both unreduced by different multiples of r
         let two_r_plus_one = r.add(&r).add(&one);
-        let c = Fr::from_u256(two_r_plus_one); // 2r+1 ≡ 1 (mod r)
+        let c = Bn254Fr::from_u256(two_r_plus_one); // 2r+1 ≡ 1 (mod r)
         assert_eq!(a, c);
         assert_eq!(b, c);
     }
@@ -484,8 +588,8 @@ mod test {
         let r = fr_modulus(&env);
         let zero = U256::from_u32(&env, 0);
 
-        let a = Fr::from_u256(r);
-        let b = Fr::from_u256(zero);
+        let a = Bn254Fr::from_u256(r);
+        let b = Bn254Fr::from_u256(zero);
         assert_eq!(a, b);
     }
 
@@ -496,11 +600,11 @@ mod test {
         let r = fr_modulus(&env);
         let val = r.sub(&U256::from_u32(&env, 1)); // r-1
 
-        let fr = Fr::from_u256(val.clone());
+        let fr = Bn254Fr::from_u256(val.clone());
         assert_eq!(fr.to_u256(), val);
 
         // small values
-        let fr42 = Fr::from_u256(U256::from_u32(&env, 42));
+        let fr42 = Bn254Fr::from_u256(U256::from_u32(&env, 42));
         assert_eq!(fr42.to_u256(), U256::from_u32(&env, 42));
     }
 
@@ -508,10 +612,10 @@ mod test {
     fn test_fr_from_bytes_reduces() {
         // from_bytes should also reduce since it goes through From<U256>
         let env = Env::default();
-        let one_fr = Fr::from_u256(U256::from_u32(&env, 1));
+        let one_fr = Bn254Fr::from_u256(U256::from_u32(&env, 1));
 
         // BN254 r+1 as big-endian bytes
-        let fr_from_bytes = Fr::from_bytes(bytesn!(
+        let fr_from_bytes = Bn254Fr::from_bytes(bytesn!(
             &env,
             0x30644e72e131a029b85045b68181585d2833e84879b9709143e1f593f0000002
         ));
@@ -528,8 +632,8 @@ mod test {
         // Create an unreduced U256 value (r+1), convert to Val, then to Fr
         let unreduced_u256 = r.add(&one);
         let val: Val = unreduced_u256.into_val(&env);
-        let fr_from_val: Fr = val.into_val(&env);
-        let fr_one = Fr::from_u256(one);
+        let fr_from_val: Bn254Fr = val.into_val(&env);
+        let fr_one = Bn254Fr::from_u256(one);
         assert_eq!(fr_from_val, fr_one);
     }
 
@@ -540,8 +644,8 @@ mod test {
         let r = fr_modulus(&env);
         let one = U256::from_u32(&env, 1);
 
-        let fr: Fr = r.add(&one).into(); // r+1 via .into()
-        let fr_one: Fr = one.into();
+        let fr: Bn254Fr = r.add(&one).into(); // r+1 via .into()
+        let fr_one: Bn254Fr = one.into();
         assert_eq!(fr, fr_one);
     }
 

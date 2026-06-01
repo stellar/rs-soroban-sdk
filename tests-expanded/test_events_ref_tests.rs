@@ -1,10 +1,9 @@
 #![feature(prelude_import)]
 #![no_std]
-#[prelude_import]
-use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
-extern crate compiler_builtins as _;
+#[prelude_import]
+use core::prelude::rust_2021::*;
 use soroban_sdk::{contract, contractevent, contractimpl, Address, Env, MuxedAddress};
 pub struct Contract;
 ///ContractArgs is a type for building arg lists for functions defined in "Contract".
@@ -149,6 +148,16 @@ impl<'a> Transfer<'a> {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x08Transfer\0\0\0\x01\0\0\0\x08transfer\0\0\0\x04\0\0\0\0\0\0\0\x04from\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02to\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x06amount\0\0\0\0\0\x0b\0\0\0\0\0\0\0\0\0\0\0\x0bto_muxed_id\0\0\0\x03\xe8\0\0\0\x06\0\0\0\0\0\0\0\x02"
     }
 }
+impl<'a> soroban_sdk::SpecShakingMarker for Transfer<'a> {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <&'a Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <&'a Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <&'a i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <Option<&'a u64> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+    }
+}
 impl<'a> soroban_sdk::Event for Transfer<'a> {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
         use soroban_sdk::IntoVal;
@@ -181,6 +190,7 @@ impl<'a> soroban_sdk::Event for Transfer<'a> {
 }
 impl<'a> Transfer<'a> {
     pub fn publish(&self, env: &soroban_sdk::Env) {
+        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
@@ -304,7 +314,11 @@ impl<'a> ContractClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -392,7 +406,11 @@ impl<'a> ContractClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -599,7 +617,6 @@ fn __Contract____a60968eb9ff75bf813738a9007ab5bbea9f174011ab4092819ed57e87eb6b30
         );
     }
 }
-#[cfg(test)]
 mod test {
     extern crate alloc;
     use crate::{Contract, ContractClient, Transfer};
@@ -609,7 +626,6 @@ mod test {
         vec, Address, Env, Event, IntoVal, MuxedAddress, Symbol, Val,
     };
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test_event"]
     #[doc(hidden)]
     pub const test_event: test::TestDescAndFn = test::TestDescAndFn {
@@ -705,7 +721,6 @@ mod test {
         };
     }
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test_event_with_option_none"]
     #[doc(hidden)]
     pub const test_event_with_option_none: test::TestDescAndFn = test::TestDescAndFn {
@@ -798,7 +813,6 @@ mod test {
         };
     }
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test_no_events_recorded_for_failed_call"]
     #[doc(hidden)]
     pub const test_no_events_recorded_for_failed_call: test::TestDescAndFn = test::TestDescAndFn {

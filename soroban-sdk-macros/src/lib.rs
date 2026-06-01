@@ -40,14 +40,15 @@ use derive_trait::derive_trait;
 
 use darling::{ast::NestedMeta, FromMeta};
 use macro_string::MacroString;
+use map_type::is_mapped_type_udt;
 use proc_macro::TokenStream;
 use proc_macro2::{Span, TokenStream as TokenStream2};
 use quote::{format_ident, quote, ToTokens};
 use sha2::{Digest, Sha256};
 use std::{fmt::Write, fs};
 use syn::{
-    parse_macro_input, parse_str, spanned::Spanned, Data, DeriveInput, Error, Expr, Fields,
-    ItemImpl, ItemStruct, LitStr, Path, Type, Visibility,
+    ext::IdentExt as _, parse_macro_input, parse_str, spanned::Spanned, Data, DeriveInput, Error,
+    Expr, Fields, ItemImpl, ItemStruct, LitStr, Path, Type, Visibility,
 };
 use syn_ext::HasFnsItem;
 
@@ -142,7 +143,7 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let item = parse_macro_input!(input as ItemStruct);
 
     let ty = &item.ident;
-    let ty_str = quote!(#ty).to_string();
+    let ty_str = ty.unraw().to_string();
 
     let client_ident = format!("{ty_str}Client");
     let fn_set_registry_ident = format_ident!("__{}_fn_set_registry", ty_str.to_lowercase());
@@ -229,7 +230,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
         path.path
             .segments
             .last()
-            .map(|name| format!("{}Args", name.ident))
+            .map(|name| format!("{}Args", name.ident.unraw()))
     } else {
         None
     }
@@ -241,7 +242,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
         path.path
             .segments
             .last()
-            .map(|name| format!("{}Client", name.ident))
+            .map(|name| format!("{}Client", name.ident.unraw()))
     } else {
         None
     }
@@ -379,7 +380,16 @@ pub fn contractmeta(metadata: TokenStream) -> TokenStream {
                 s
             })
         );
+        let val_expr = &args.val;
         quote! {
+            // Required to ensure that any env!, include!, and include_str! usage within the val
+            // parameter that gets evaluated by the MacroString above, also gets surfaced to rustc and
+            // included in dep-info for the build artifact so that changes to the environment
+            // variable or included file update the artifact's dep-info and invalidate artifacts that
+            // get stored in caches like sccache.
+            // See https://github.com/dtolnay/macro-string/issues/29
+            const _: () = { let _ = { #val_expr }; };
+
             #[doc(hidden)]
             #[cfg_attr(target_family = "wasm", link_section = "contractmetav0")]
             static #ident: [u8; #metadata_xdr_len] = *#metadata_xdr_lit;
@@ -421,6 +431,10 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let vis = &input.vis;
     let ident = &input.ident;
     let attrs = &input.attrs;
+    match is_mapped_type_udt(ident, &input.generics) {
+        Ok(()) => {}
+        Err(e) => return e.to_compile_error().into(),
+    }
     // If the export argument has a value, do as it instructs regarding
     // exporting. If it does not have a value, export if the type is pub,
     // or always export when spec shaking is enabled.

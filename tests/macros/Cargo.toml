@@ -13,7 +13,7 @@ crate-type = ["cdylib"]
 doctest = false
 
 [dependencies]
-soroban-sdk = {path = "../../soroban-sdk"}
+soroban-sdk = {path = "../../soroban-sdk", features = ["experimental_spec_shaking_v2"]}
 proc_macros = {path = "./proc_macros"}
 
 [dev-dependencies]

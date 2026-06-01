@@ -7,8 +7,8 @@ use stellar_xdr::{
 };
 use syn::TypeReference;
 use syn::{
-    punctuated::Punctuated, spanned::Spanned, token::Comma, Attribute, Error, FnArg, Ident, Pat,
-    ReturnType, Type, TypePath,
+    ext::IdentExt as _, punctuated::Punctuated, spanned::Spanned, token::Comma, Attribute, Error,
+    FnArg, Ident, Pat, ReturnType, Type, TypePath,
 };
 
 use crate::attribute::pass_through_attr_to_gen_code;
@@ -69,7 +69,7 @@ pub fn derive_fn_spec(
         .map(|(i, a)| match a {
             FnArg::Typed(pat_type) => {
                 let name = if let Pat::Ident(pat_ident) = *pat_type.pat.clone() {
-                    pat_ident.ident.to_string()
+                    pat_ident.ident.unraw().to_string()
                 } else {
                     errors.push(Error::new(a.span(), "argument not supported"));
                     "".to_string()
@@ -86,8 +86,11 @@ pub fn derive_fn_spec(
                 let name = name.trim_start_matches("_");
 
                 // If fn is a __check_auth implementation, allow the first argument,
-                // signature_payload of type Bytes (32 size), to be a Hash.
-                let allow_hash = ident == "__check_auth" && i == 0;
+                // signature_payload of type Bytes (32 size), to be a Hash. Compare on
+                // the Soroban-facing name so a raw-identifier spelling like
+                // `r#__check_auth` can't bypass this special-case and then still export
+                // as `__check_auth`.
+                let allow_hash = ident.unraw().to_string() == "__check_auth" && i == 0;
 
                 match map_type(&pat_type.ty, true, allow_hash) {
                     Ok(type_) => {
@@ -139,7 +142,7 @@ pub fn derive_fn_spec(
     };
 
     // Generated code spec.
-    let name = &format!("{}", ident);
+    let name = &ident.unraw().to_string();
     let spec_entry = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
         doc: docs_from_attrs(attrs),
         name: name.try_into().unwrap_or_else(|_| {
@@ -159,8 +162,8 @@ pub fn derive_fn_spec(
     let spec_xdr = spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap();
     let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
     let spec_xdr_len = spec_xdr.len();
-    let spec_ident = format_ident!("__SPEC_XDR_FN_{}", ident.to_string().to_uppercase());
-    let spec_fn_ident = format_ident!("spec_xdr_{}", ident.to_string());
+    let spec_ident = format_ident!("__SPEC_XDR_FN_{}", ident.unraw().to_string().to_uppercase());
+    let spec_fn_ident = format_ident!("spec_xdr_{}", ident);
 
     // If errors have occurred, render them instead.
     if !errors.is_empty() {

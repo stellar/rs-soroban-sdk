@@ -110,6 +110,31 @@ fn test_mock_all_auth() {
     );
 
     assert_eq!(client.allowance(&from, &spender), 20);
+
+    // Also test `try_` with `mock_all_auths_allowing_non_root_auth` succeeds.
+    let from2 = Address::generate(&env);
+    assert!(client
+        .mock_all_auths_allowing_non_root_auth()
+        .try_approve(&from2, &spender, &30, &200)
+        .is_ok());
+
+    let auths = env.auths();
+    assert_eq!(
+        auths,
+        std::vec![(
+            from2.clone(),
+            AuthorizedInvocation {
+                function: AuthorizedFunction::Contract((
+                    token_contract_id.clone(),
+                    Symbol::new(&env, "approve"),
+                    (&from2, &spender, 30_i128, 200_u32).into_val(&env)
+                )),
+                sub_invocations: std::vec![]
+            }
+        )]
+    );
+
+    assert_eq!(client.allowance(&from2, &spender), 30);
 }
 
 #[test]

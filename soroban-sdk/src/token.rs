@@ -469,4 +469,23 @@ pub trait StellarAssetInterface {
     /// Emits an event with topics `["clawback", admin: Address, to: Address],
     /// data = amount: i128`
     fn clawback(env: Env, from: Address, amount: i128);
+
+    /// Creates this contract asset's unlimited trustline for the provided
+    /// address.
+    ///
+    /// This is a no-op if the input address is a C-address, or if the
+    /// provided G-address already has the respective trustline.
+    ///
+    /// If the trustline is actually created, this will require authorization
+    /// from `addr` (i.e. `addr.require_auth` will be called).
+    ///
+    /// # Arguments
+    ///
+    /// * `addr` - The address for which a trustline will be created.
+    ///
+    /// # Panics
+    ///
+    /// Panics during trustline creation if the asset issuer does not exist,
+    /// or when a new trustline cannot be created.
+    fn trust(env: Env, addr: Address);
 }

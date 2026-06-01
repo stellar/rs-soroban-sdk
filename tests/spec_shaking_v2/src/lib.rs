@@ -1,6 +1,7 @@
 #![no_std]
 use soroban_sdk::{
-    contract, contracterror, contractevent, contractimpl, contracttype, Env, Map, Symbol, Vec,
+    assert_with_error, contract, contracterror, contractevent, contractimpl, contracttype,
+    panic_with_error, Env, Map, Symbol, Vec,
 };
 
 #[contract]
@@ -38,6 +39,20 @@ pub enum UsedParamIntEnum {
 pub enum UsedErrorEnum {
     NotFound = 1,
     Invalid = 2,
+}
+
+// Used only via panic_with_error! (never appears in a Result return).
+#[contracterror]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum UsedPanicErrorEnum {
+    Boom = 1,
+}
+
+// Used only via assert_with_error! (never appears in a Result return).
+#[contracterror]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum UsedAssertErrorEnum {
+    Bad = 1,
 }
 
 // Used as nested field of UsedParamStruct
@@ -208,6 +223,29 @@ pub struct UsedTupleReturnElement {
     pub val: u32,
 }
 
+// Used as nested type in Vec element in fn param
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedVecInnerVecElement {
+    pub val: u32,
+}
+
+// Used as nested type in Vec element in fn param
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedVecInnerElement {
+    pub val: u32,
+}
+
+// Used as type in Vec element in fn param containing custom types
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedVecElementNested {
+    pub val: u32,
+    pub inner: UsedVecInnerElement,
+    pub vec_inner: Vec<UsedVecInnerVecElement>,
+}
+
 // --- Non-pub used types: spec entries + markers expected with feature ---
 
 // Non-pub struct used as fn param
@@ -222,6 +260,33 @@ struct UsedNonPubStruct {
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 enum UsedNonPubError {
     Fail = 1,
+}
+
+// --- Recursive types: nested type with recursive reference safely includes all markers ---
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedRecursiveRoot {
+    pub val: UsedRecursiveNode,
+}
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum UsedRecursiveNode {
+    NotRecursive(UsedLeaf),
+    Recursive(UsedRecursiveLeaf),
+}
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedRecursiveLeaf {
+    pub val: Vec<UsedRecursiveRoot>,
+}
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedLeaf {
+    pub val: u32,
 }
 
 // --- Lib-imported types (Rust crate dep): rlib statics linked into cdylib ---
@@ -264,6 +329,15 @@ pub struct UnusedEvent {
     pub data: u32,
 }
 
+// A pub #[contracterror] enum that is never referenced anywhere — neither in a
+// Result return type, nor in panic_with_error! / assert_with_error!. Confirms
+// that an error enum that is not actually used is shaken out of the spec.
+#[contracterror]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+pub enum UnusedPubError {
+    Nope = 1,
+}
+
 // Used only in a non-contractimpl fn: spec entry exists but no marker
 #[contracttype]
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -304,7 +378,28 @@ impl Contract {
         Ok(42)
     }
 
+    pub fn with_panic_error(env: Env, fail: bool) {
+        if fail {
+            panic_with_error!(&env, UsedPanicErrorEnum::Boom);
+        }
+    }
+
+    pub fn with_assert_error(env: Env, ok: bool) {
+        assert_with_error!(&env, ok, UsedAssertErrorEnum::Bad);
+    }
+
+    // Confirms that a raw soroban_sdk::Error still works as the argument to
+    // panic_with_error! after the SpecShakingMarker bound was added to
+    // Env::panic_with_error.
+    pub fn with_panic_raw_error(env: Env, fail: bool) {
+        if fail {
+            panic_with_error!(&env, soroban_sdk::Error::from_contract_error(7));
+        }
+    }
+
     pub fn with_vec(_env: Env, _v: Vec<UsedVecElement>) {}
+
+    pub fn with_vec_nested(_env: Env, _v: Vec<UsedVecElementNested>) {}
 
     pub fn with_map(_env: Env, _m: Map<UsedMapKey, UsedMapVal>) {}
 
@@ -313,6 +408,8 @@ impl Contract {
     pub fn with_result(_env: Env) -> Result<UsedResultOk, UsedErrorEnum> {
         Ok(UsedResultOk { data: 1 })
     }
+
+    pub fn with_recursion(_env: Env, _r: UsedRecursiveRoot) {}
 
     pub fn publish_simple(env: Env) {
         UsedEventSimple {

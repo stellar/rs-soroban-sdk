@@ -1,4 +1,4 @@
-use crate::{bytes, bytesn, BytesN, Env};
+use crate::{BytesN, Env};
 
 #[test]
 fn test_sha256() {
