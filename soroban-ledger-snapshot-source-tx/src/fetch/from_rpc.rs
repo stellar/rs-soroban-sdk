@@ -103,3 +103,60 @@ struct GetLedgerEntriesResponseEntry {
     last_modified_ledger_seq: u32,
     live_until_ledger_seq: Option<u32>,
 }
+
+#[cfg(test)]
+mod test {
+    use super::{parse_ledger_entry, Error};
+    use std::io::Cursor;
+    use stellar_xdr::curr::{Hash, LedgerEntryData, LedgerEntryExt, Limits, TtlEntry, WriteXdr};
+
+    fn sample_entry_xdr() -> String {
+        // A small, fully-deterministic LedgerEntryData to base64-encode into a
+        // simulated RPC response.
+        LedgerEntryData::Ttl(TtlEntry {
+            key_hash: Hash([7u8; 32]),
+            live_until_ledger_seq: 123,
+        })
+        .to_xdr_base64(Limits::none())
+        .unwrap()
+    }
+
+    #[test]
+    fn parses_entry_with_ttl() {
+        let xdr = sample_entry_xdr();
+        let body = format!(
+            r#"{{"jsonrpc":"2.0","id":1,"result":{{"entries":[{{"xdr":"{xdr}","lastModifiedLedgerSeq":42,"liveUntilLedgerSeq":99}}]}}}}"#,
+        );
+        let (entry, ttl) = parse_ledger_entry(Cursor::new(body)).unwrap().unwrap();
+        assert_eq!(entry.last_modified_ledger_seq, 42);
+        assert_eq!(ttl, Some(99));
+        // The RPC does not expose extension info, so it is always V0.
+        assert!(matches!(entry.ext, LedgerEntryExt::V0));
+        assert!(matches!(entry.data, LedgerEntryData::Ttl(_)));
+    }
+
+    #[test]
+    fn missing_live_until_yields_none_ttl() {
+        let xdr = sample_entry_xdr();
+        let body =
+            format!(r#"{{"result":{{"entries":[{{"xdr":"{xdr}","lastModifiedLedgerSeq":7}}]}}}}"#,);
+        let (_, ttl) = parse_ledger_entry(Cursor::new(body)).unwrap().unwrap();
+        assert_eq!(ttl, None);
+    }
+
+    #[test]
+    fn empty_entries_yields_none() {
+        let body = r#"{"result":{"entries":[]}}"#;
+        assert!(parse_ledger_entry(Cursor::new(body)).unwrap().is_none());
+    }
+
+    #[test]
+    fn rpc_error_is_surfaced() {
+        let body = r#"{"error":{"message":"boom"}}"#;
+        let err = parse_ledger_entry(Cursor::new(body)).unwrap_err();
+        match err {
+            Error::Rpc(msg) => assert_eq!(msg, "boom"),
+            other => panic!("expected Rpc error, got {other:?}"),
+        }
+    }
+}

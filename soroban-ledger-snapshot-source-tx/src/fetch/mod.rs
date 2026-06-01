@@ -410,3 +410,76 @@ impl LedgerEntryFetcher {
         Ok(None)
     }
 }
+
+#[cfg(test)]
+mod test_network {
+    use super::Network;
+
+    // The network id is the SHA-256 of the network passphrase and is used to
+    // derive the on-disk cache directory. These values are pinned because a
+    // change would silently move (and effectively invalidate) every cache, and
+    // they must match the committed fixture directories under
+    // `tests-snapshot-source/`.
+    #[test]
+    fn network_id_hex_is_stable() {
+        assert_eq!(
+            Network::mainnet(None).network_id_hex(),
+            "7ac33997544e3175d266bd022439b22cdb16508c01163f26e5cb2a3e1045a979",
+        );
+        assert_eq!(
+            Network::testnet().network_id_hex(),
+            "cee0302d59844d32bdca915c8203dd44b33fbb7edc19051ea37abedf28ecd472",
+        );
+        assert_eq!(
+            Network::local().network_id_hex(),
+            "baefd734b8d3e48472cff83912375fedbc7573701912fe308af730180f97d74a",
+        );
+    }
+
+    #[test]
+    fn network_id_hex_matches_network_id_bytes() {
+        let n = Network::mainnet(None);
+        assert_eq!(hex::encode(n.network_id()), n.network_id_hex());
+        assert_eq!(n.network_id().len(), 32);
+    }
+
+    #[test]
+    fn mainnet_defaults() {
+        let n = Network::mainnet(None);
+        assert_eq!(
+            n.passphrase,
+            "Public Global Stellar Network ; September 2015"
+        );
+        assert_eq!(n.rpc_url, None);
+        assert_eq!(n.archive_checkpoint_ledger_count, 64);
+        assert!(n.meta_url.starts_with("https://"));
+        assert!(n.archive_url.starts_with("https://history.stellar.org"));
+    }
+
+    #[test]
+    fn mainnet_rpc_url_is_passed_through() {
+        let n = Network::mainnet(Some("https://example.com/rpc".to_string()));
+        assert_eq!(n.rpc_url.as_deref(), Some("https://example.com/rpc"));
+    }
+
+    #[test]
+    fn testnet_defaults() {
+        let n = Network::testnet();
+        assert_eq!(n.passphrase, "Test SDF Network ; September 2015");
+        assert_eq!(
+            n.rpc_url.as_deref(),
+            Some("https://soroban-testnet.stellar.org"),
+        );
+        assert_eq!(n.archive_checkpoint_ledger_count, 64);
+    }
+
+    #[test]
+    fn local_defaults() {
+        let n = Network::local();
+        assert_eq!(n.passphrase, "Standalone Network ; February 2017");
+        assert_eq!(n.rpc_url.as_deref(), Some("http://localhost:8000/rpc"));
+        assert_eq!(n.meta_url, "http://localhost:8000/meta-archive");
+        assert_eq!(n.archive_url, "http://localhost:8000/archive");
+        assert_eq!(n.archive_checkpoint_ledger_count, 8);
+    }
+}

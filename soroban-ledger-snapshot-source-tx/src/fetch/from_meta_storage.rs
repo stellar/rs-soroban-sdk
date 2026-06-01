@@ -117,3 +117,47 @@ fn path_for_ledger(ledger_sequence: u32) -> String {
 
     format!("{}/{}", partition_dir, batch_file)
 }
+
+#[cfg(test)]
+mod test {
+    use super::path_for_ledger;
+
+    // SEP-54 object paths use inverted (descending) hex prefixes so that the
+    // newest ledgers sort first. These are pinned against values computed from
+    // the documented partition (64000) and batch (1) sizes, and the 61292152
+    // case anchors the path actually fetched by the mainnet fork tests.
+    #[test]
+    fn path_for_ledger_known_values() {
+        assert_eq!(path_for_ledger(0), "FFFFFFFF--0-63999/FFFFFFFF--0.xdr.zst",);
+        assert_eq!(
+            path_for_ledger(128),
+            "FFFFFFFF--0-63999/FFFFFF7F--128.xdr.zst",
+        );
+        assert_eq!(
+            path_for_ledger(63999),
+            "FFFFFFFF--0-63999/FFFF0600--63999.xdr.zst",
+        );
+        // Crossing the partition boundary moves into the next partition dir.
+        assert_eq!(
+            path_for_ledger(64000),
+            "FFFF05FF--64000-127999/FFFF05FF--64000.xdr.zst",
+        );
+        assert_eq!(
+            path_for_ledger(61292152),
+            "FC596DFF--61248000-61311999/FC58C187--61292152.xdr.zst",
+        );
+    }
+
+    #[test]
+    fn path_for_ledger_partition_alignment() {
+        // First ledger of a partition: the batch prefix equals the partition
+        // prefix and the batch number equals the partition start.
+        for partition in 0u32..3 {
+            let start = partition * 64000;
+            let path = path_for_ledger(start);
+            let (dir, file) = path.split_once('/').unwrap();
+            assert!(dir.ends_with(&format!("--{}-{}", start, start + 63999)));
+            assert!(file.ends_with(&format!("--{}.xdr.zst", start)));
+        }
+    }
+}

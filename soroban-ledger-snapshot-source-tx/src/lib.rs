@@ -142,3 +142,41 @@ fn ttl_for_key(key: &LedgerKey) -> Option<u32> {
         _ => None,
     }
 }
+
+#[cfg(test)]
+mod test_ttl {
+    use super::ttl_for_key;
+    use soroban_sdk::xdr::{
+        AccountId, ContractDataDurability, ContractId, Hash, LedgerKey, LedgerKeyAccount,
+        LedgerKeyContractCode, LedgerKeyContractData, LedgerKeyTtl, PublicKey, ScAddress, ScVal,
+        Uint256,
+    };
+
+    #[test]
+    fn contract_code_and_data_get_max_ttl() {
+        let code = LedgerKey::ContractCode(LedgerKeyContractCode {
+            hash: Hash([0u8; 32]),
+        });
+        assert_eq!(ttl_for_key(&code), Some(u32::MAX));
+
+        let data = LedgerKey::ContractData(LedgerKeyContractData {
+            contract: ScAddress::Contract(ContractId(Hash([0u8; 32]))),
+            key: ScVal::I32(0),
+            durability: ContractDataDurability::Persistent,
+        });
+        assert_eq!(ttl_for_key(&data), Some(u32::MAX));
+    }
+
+    #[test]
+    fn non_contract_keys_have_no_ttl() {
+        let account = LedgerKey::Account(LedgerKeyAccount {
+            account_id: AccountId(PublicKey::PublicKeyTypeEd25519(Uint256([0u8; 32]))),
+        });
+        assert_eq!(ttl_for_key(&account), None);
+
+        let ttl = LedgerKey::Ttl(LedgerKeyTtl {
+            key_hash: Hash([0u8; 32]),
+        });
+        assert_eq!(ttl_for_key(&ttl), None);
+    }
+}
