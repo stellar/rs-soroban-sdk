@@ -132,7 +132,7 @@ mod mainnet {
       let addr = Address::from_str(&e, "GBLKX4UPDM7CC4UUG2FXBLOCXOTQ6ARHOQYVL4RD6A4AQVB6TPTLIUYN");
       let res = client.balance(&addr);
       let t1 = Instant::now();
-      std::println!("\x1b[32m{ledger} {} bal = {res} (t={:?})\x1b[0m", tx.map(|t| hex::encode(t)).unwrap_or_default(), t1-t0);
+      std::println!("\x1b[32m{ledger} {} bal = {res} (t={:?})\x1b[0m", tx.map(hex::encode).unwrap_or_default(), t1-t0);
       res
     }
 

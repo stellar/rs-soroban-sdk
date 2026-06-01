@@ -183,7 +183,7 @@ impl LedgerEntryFetcher {
             ledger_cache_dir.join(format!("{:x}.json", key_hash)),
             |write| {
                 // Fetch the data
-                let result = self.fetch_with_dl_cache(key, &cache_path)?;
+                let result = self.fetch_with_dl_cache(key, cache_path)?;
 
                 // Serialize to JSON
                 serde_json::to_writer_pretty(write, &result)?;
@@ -232,24 +232,24 @@ impl LedgerEntryFetcher {
         });
 
         // Phase 1: Check the starting ledger
-        if let Some(result) = self.fetch_from_meta(&cache_path, self.ledger, key)? {
+        if let Some(result) = self.fetch_from_meta(cache_path, self.ledger, key)? {
             return Ok(result);
         }
 
         // Optimization: Try RPC for all ledger entries
-        if let Some(result) = self.fetch_from_rpc(&cache_path, self.ledger, key)? {
+        if let Some(result) = self.fetch_from_rpc(cache_path, self.ledger, key)? {
             return Ok(result);
         }
 
         // Phase 2: Search through previous ledgers down to the previous checkpoint
         for ledger in (prev_checkpoint + 1..self.ledger).rev() {
-            if let Some(result) = self.fetch_from_meta(&cache_path, ledger, key)? {
+            if let Some(result) = self.fetch_from_meta(cache_path, ledger, key)? {
                 return Ok(result);
             }
         }
 
         // Phase 3: Fetch from history archive at the previous checkpoint
-        self.fetch_from_archive(&cache_path, prev_checkpoint, key)
+        self.fetch_from_archive(cache_path, prev_checkpoint, key)
     }
 
     fn prefetch_meta(meta_url: &str, cache_path: &Path, ledgers: &[u32]) {
