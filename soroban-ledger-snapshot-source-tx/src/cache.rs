@@ -45,3 +45,76 @@ pub enum CacheError<CE> {
     #[allow(dead_code)]
     Io(#[from] std::io::Error),
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::sync::atomic::{AtomicU32, Ordering};
+
+    static COUNTER: AtomicU32 = AtomicU32::new(0);
+
+    /// A self-cleaning unique temp directory (avoids pulling in a dev-dependency).
+    struct TempDir(std::path::PathBuf);
+
+    impl TempDir {
+        fn new() -> Self {
+            let n = COUNTER.fetch_add(1, Ordering::SeqCst);
+            let p = std::env::temp_dir().join(format!("sst-cache-test-{}-{n}", std::process::id()));
+            fs::create_dir_all(&p).unwrap();
+            TempDir(p)
+        }
+
+        fn join(&self, name: &str) -> std::path::PathBuf {
+            self.0.join(name)
+        }
+    }
+
+    impl Drop for TempDir {
+        fn drop(&mut self) {
+            let _ = fs::remove_dir_all(&self.0);
+        }
+    }
+
+    #[test]
+    fn cache_miss_invokes_collector_and_persists() {
+        let dir = TempDir::new();
+        let path = dir.join("entry");
+        let mut reader = cache(&path, |w| -> Result<(), std::io::Error> {
+            w.write_all(b"hello")?;
+            Ok(())
+        })
+        .unwrap();
+        let mut s = String::new();
+        reader.read_to_string(&mut s).unwrap();
+        assert_eq!(s, "hello");
+        // The data file is persisted with the collected bytes.
+        assert_eq!(fs::read(&path).unwrap(), b"hello");
+    }
+
+    #[test]
+    fn cache_hit_does_not_invoke_collector() {
+        let dir = TempDir::new();
+        let path = dir.join("entry");
+        fs::write(&path, b"existing").unwrap();
+        let mut reader = cache(&path, |_w| -> Result<(), std::io::Error> {
+            panic!("collector must not run on a cache hit");
+        })
+        .unwrap();
+        let mut s = String::new();
+        reader.read_to_string(&mut s).unwrap();
+        assert_eq!(s, "existing");
+    }
+
+    #[test]
+    fn cache_collector_error_does_not_persist() {
+        let dir = TempDir::new();
+        let path = dir.join("entry");
+        let res = cache(&path, |_w| -> Result<(), std::io::Error> {
+            Err(std::io::Error::other("boom"))
+        });
+        // A failed fetch surfaces as a collector error...
+        assert!(matches!(res.err(), Some(CacheError::Collector(_))));
+        // ...and must NOT leave a populated cache file (rename never happens).
+        assert!(!path.exists());
+    }
+}

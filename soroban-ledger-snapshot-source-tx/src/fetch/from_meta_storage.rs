@@ -117,3 +117,21 @@ fn path_for_ledger(ledger_sequence: u32) -> String {
 
     format!("{}/{}", partition_dir, batch_file)
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn path_for_ledger_known_values() {
+        // Ledger 0: first partition, first batch; inverted hex prefixes are all-Fs.
+        assert_eq!(path_for_ledger(0), "FFFFFFFF--0-63999/FFFFFFFF--0.xdr.zst");
+        // Ledger 1: same partition, batch start advances by one (inverted hex -1).
+        assert_eq!(path_for_ledger(1), "FFFFFFFF--0-63999/FFFFFFFE--1.xdr.zst");
+        // Ledger 64000: start of the second partition (boundary).
+        assert_eq!(
+            path_for_ledger(64000),
+            "FFFF05FF--64000-127999/FFFF05FF--64000.xdr.zst"
+        );
+    }
+}
