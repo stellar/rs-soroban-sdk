@@ -752,12 +752,13 @@ dependencies = [
 
 [[package]]
 name = "heapless"
-version = "0.8.0"
+version = "0.9.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0bfb9eb618601c89945a70e254898da93b13be0388091d42117462b265bb3fad"
+checksum = "25ba4bd83f9415b58b4ed8dc5714c76e626a105be4646c02630ad730ad3b5aa4"
 dependencies = [
  "hash32",
  "stable_deref_trait",
+ "zeroize",
 ]
 
 [[package]]
@@ -1520,7 +1521,7 @@ dependencies = [
  "soroban-ledger-snapshot",
  "soroban-sdk-macros",
  "soroban-spec",
- "stellar-strkey 0.0.16",
+ "stellar-strkey 0.0.17",
  "stellar-xdr",
  "visibility",
 ]
@@ -1647,13 +1648,13 @@ dependencies = [
 
 [[package]]
 name = "stellar-strkey"
-version = "0.0.16"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "084afcb0d458c3d5d5baa2d294b18f881e62cc258ef539d8fdf68be7dbe45520"
+version = "0.0.17"
+source = "git+https://github.com/stellar/rs-stellar-strkey?rev=d16561c672b950d7af05939817df19f3a1f63299#d16561c672b950d7af05939817df19f3a1f63299"
 dependencies = [
  "crate-git-revision",
  "data-encoding",
  "heapless",
+ "zeroize",
 ]
 
 [[package]]
