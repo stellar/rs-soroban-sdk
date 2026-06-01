@@ -24,6 +24,11 @@
 //!    Update the [`StellarAssetInterface`] to include the new method [`StellarAssetInterface::trust`]. This method creates
 //!    an unlimited trustline for the contract's asset, if applicable.
 //!
+//! 6. [`bytes!` and `bytesn!` no longer accept base10 (decimal) integer literals][v26_bytes_literals].
+//!    Only hex (`0x`) and binary (`0b`) integer literals are supported. Rewrite any decimal literal
+//!    passed to [`bytes!`] or [`bytesn!`] in hex or binary form (e.g. `bytes!(&env, 1)` becomes
+//!    `bytes!(&env, 0x1)`). Array literals such as `bytes!(&env, [3, 2, 1])` are unaffected.
+//!
 //! [`Persistent`]: crate::storage::Persistent
 //! [`Instance`]: crate::storage::Instance
 //! [`Deployer`]: crate::deploy::Deployer
@@ -34,6 +39,8 @@
 //! [`StellarAssetInterface::trust`]: crate::token::StellarAssetInterface::trust
 //! [`BN254`]: crate::crypto::bn254
 //! [`BLS12381`]: crate::crypto::bls12_381
+//! [`bytes!`]: crate::bytes
+//! [`bytesn!`]: crate::bytesn
 //!
 //! # Migrating from v23 to v25
 //!
@@ -322,3 +329,4 @@ pub mod v25_contracttrait;
 pub mod v25_event_testing;
 pub mod v25_poseidon;
 pub mod v25_resource_limits;
+pub mod v26_bytes_literals;
