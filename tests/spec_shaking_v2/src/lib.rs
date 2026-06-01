@@ -246,6 +246,34 @@ pub struct UsedVecElementNested {
     pub vec_inner: Vec<UsedVecInnerVecElement>,
 }
 
+// Used types declared with `export = false`: the argument is a no-op under
+// `experimental_spec_shaking_v2` (a deprecation warning is emitted by the
+// macro).
+#[allow(deprecated)]
+mod export_false_used {
+    use soroban_sdk::{contracterror, contractevent, contracttype, Symbol};
+
+    #[contracttype(export = false)]
+    #[derive(Clone, Debug, Eq, PartialEq)]
+    pub struct UsedExportFalseStruct {
+        pub val: u32,
+    }
+
+    #[contracterror(export = false)]
+    #[derive(Copy, Clone, Debug, Eq, PartialEq)]
+    pub enum UsedExportFalseError {
+        Fail = 1,
+    }
+
+    #[contractevent(export = false)]
+    #[derive(Clone, Debug, Eq, PartialEq)]
+    pub struct UsedExportFalseEvent {
+        #[topic]
+        pub kind: Symbol,
+        pub amount: i128,
+    }
+}
+
 // --- Non-pub used types: spec entries + markers expected with feature ---
 
 // Non-pub struct used as fn param
@@ -411,6 +439,12 @@ impl Contract {
 
     pub fn with_recursion(_env: Env, _r: UsedRecursiveRoot) {}
 
+    pub fn with_auth_contexts(_env: Env, _c: Vec<soroban_sdk::auth::Context>) {}
+
+    pub fn with_invoker_auth(_env: Env, _i: soroban_sdk::auth::InvokerContractAuthEntry) {}
+
+    pub fn with_executable(_env: Env, _e: soroban_sdk::Executable) {}
+
     pub fn publish_simple(env: Env) {
         UsedEventSimple {
             kind: Symbol::new(&env, "transfer"),
@@ -469,6 +503,22 @@ impl Contract {
 
     pub fn with_tuple_return(_env: Env) -> (UsedTupleReturnElement, u32) {
         (UsedTupleReturnElement { val: 1 }, 2)
+    }
+
+    pub fn with_export_false_struct(_env: Env, _s: export_false_used::UsedExportFalseStruct) {}
+
+    pub fn with_export_false_error(
+        _env: Env,
+    ) -> Result<u32, export_false_used::UsedExportFalseError> {
+        Ok(1)
+    }
+
+    pub fn publish_export_false_event(env: Env) {
+        export_false_used::UsedExportFalseEvent {
+            kind: Symbol::new(&env, "ef"),
+            amount: 1,
+        }
+        .publish(&env);
     }
 
     pub fn publish_ref_event(env: Env) {
