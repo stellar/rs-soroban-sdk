@@ -38,6 +38,11 @@ pub fn get_ledger_entry<W: Write + ?Sized>(
     let client = reqwest::blocking::Client::new();
     let response = client.post(rpc_url).json(&request).send()?;
 
+    // Reject non-success responses before writing, so a transient error body
+    // (e.g. a 429/5xx error page) is never persisted into the cache and then
+    // replayed as a permanent parse failure on every subsequent run.
+    let response = response.error_for_status()?;
+
     copy(&mut response.bytes()?.as_ref(), write)?;
 
     Ok(())

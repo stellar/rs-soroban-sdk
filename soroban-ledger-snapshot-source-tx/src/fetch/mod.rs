@@ -112,6 +112,23 @@ impl Network {
     }
 }
 
+/// Compute the bounds of the per-ledger meta search for a target ledger.
+///
+/// Returns `(prev_checkpoint, ledgers_to_checkpoint)` where `prev_checkpoint`
+/// is the checkpoint ledger at or below `ledger` (checkpoints fall on
+/// `k * count - 1`), and `ledgers_to_checkpoint` is how many ledgers back the
+/// meta search walks before falling back to the history archive.
+///
+/// Saturating arithmetic is used so that ledgers in the first checkpoint
+/// window (`ledger < count`), where no previous checkpoint exists, degrade to
+/// a search down to ledger 0 instead of underflowing `u32` (which would panic
+/// under the crate's `overflow-checks = true`).
+fn checkpoint_search_bounds(ledger: u32, count: u32) -> (u32, u32) {
+    let prev_checkpoint = ((ledger / count) * count).saturating_sub(1);
+    let ledgers_to_checkpoint = ledger.saturating_sub(prev_checkpoint);
+    (prev_checkpoint, ledgers_to_checkpoint)
+}
+
 /// Fetcher for ledger entries that downloads ledger meta and searches for entries
 pub struct LedgerEntryFetcher {
     network: Network,
@@ -212,8 +229,8 @@ impl LedgerEntryFetcher {
 
         // Calculate checkpoint boundaries
         let checkpoint_count = self.network.archive_checkpoint_ledger_count;
-        let prev_checkpoint = (self.ledger / checkpoint_count) * checkpoint_count - 1;
-        let ledgers_to_checkpoint = self.ledger - prev_checkpoint;
+        let (prev_checkpoint, ledgers_to_checkpoint) =
+            checkpoint_search_bounds(self.ledger, checkpoint_count);
 
         // Prefetch all meta for ledgers from starting ledger down to the checkpoint (in background)
         let prefetch_meta_url = self.network.meta_url.clone();
@@ -413,7 +430,29 @@ impl LedgerEntryFetcher {
 
 #[cfg(test)]
 mod test_network {
-    use super::Network;
+    use super::{checkpoint_search_bounds, Network};
+
+    #[test]
+    fn checkpoint_bounds_typical() {
+        // Mainnet checkpoint frequency is 64; checkpoints fall on k*64 - 1.
+        // For 61292152 the enclosing checkpoint is 61292096 - 1 = 61292095.
+        assert_eq!(checkpoint_search_bounds(61292152, 64), (61292095, 57));
+        // A ledger exactly on a 64-aligned boundary.
+        assert_eq!(checkpoint_search_bounds(128, 64), (127, 1));
+        // Local network uses a checkpoint frequency of 8.
+        assert_eq!(checkpoint_search_bounds(1845, 8), (1839, 6));
+    }
+
+    #[test]
+    fn checkpoint_bounds_first_window_does_not_underflow() {
+        // Ledgers below the checkpoint count have no previous checkpoint; the
+        // bounds must degrade to a search down to ledger 0 rather than
+        // panicking on u32 underflow (overflow-checks is on for this crate).
+        assert_eq!(checkpoint_search_bounds(10, 64), (0, 10));
+        assert_eq!(checkpoint_search_bounds(63, 64), (0, 63));
+        assert_eq!(checkpoint_search_bounds(0, 64), (0, 0));
+        assert_eq!(checkpoint_search_bounds(7, 8), (0, 7));
+    }
 
     // The network id is the SHA-256 of the network passphrase and is used to
     // derive the on-disk cache directory. These values are pinned because a

@@ -22,10 +22,18 @@ where
         if !path.exists() {
             // Write atomically via temp file and rename.
             let temp_path = path.with_extension("dl");
-            {
+            let write_result = (|| {
                 let mut temp = File::create(&temp_path).map_err(CacheError::Io)?;
                 collect(&mut temp).map_err(CacheError::Collector)?;
                 temp.sync_all().map_err(CacheError::Io)?;
+                Ok(())
+            })();
+            if let Err(e) = write_result {
+                // Don't leave a partial temp file behind on failure; otherwise a
+                // transient collector/IO error would litter the cache directory
+                // (and potentially the committed fixtures) with stray `.dl` files.
+                let _ = fs::remove_file(&temp_path);
+                return Err(e);
             }
             fs::rename(&temp_path, path).map_err(CacheError::Io)?;
         }
@@ -112,5 +120,7 @@ mod test {
         // On collector failure the data file must not be created (the rename
         // only happens after a successful collect).
         assert!(!path.exists());
+        // The partial temp file must be cleaned up rather than left behind.
+        assert!(!path.with_extension("dl").exists());
     }
 }
