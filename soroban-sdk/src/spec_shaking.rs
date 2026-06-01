@@ -420,14 +420,3 @@ impl SpecShakingMarker for crate::crypto::bn254::Bn254G1Affine {}
 impl SpecShakingMarker for crate::crypto::bn254::Bn254G2Affine {}
 impl SpecShakingMarker for crate::crypto::bn254::Bn254Fp {}
 impl SpecShakingMarker for crate::crypto::bn254::Bn254Fr {}
-
-// Auth types - these have export=false but are legitimately used at external
-// boundaries (as inputs to __check_auth in custom account contracts).
-// They don't emit specs themselves because they're internal SDK types.
-impl SpecShakingMarker for crate::auth::Context {}
-impl SpecShakingMarker for crate::auth::ContractContext {}
-impl SpecShakingMarker for crate::auth::CreateContractHostFnContext {}
-impl SpecShakingMarker for crate::auth::CreateContractWithConstructorHostFnContext {}
-impl SpecShakingMarker for crate::auth::ContractExecutable {}
-impl SpecShakingMarker for crate::auth::InvokerContractAuthEntry {}
-impl SpecShakingMarker for crate::auth::SubContractInvocation {}
