@@ -1,10 +1,9 @@
 #![feature(prelude_import)]
 #![no_std]
-#[prelude_import]
-use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
-extern crate compiler_builtins as _;
+#[prelude_import]
+use core::prelude::rust_2021::*;
 use soroban_sdk::{contract, contractimpl};
 mod feat1 {
     use crate::Contract;
@@ -91,7 +90,11 @@ mod feat1 {
                     self.env.mock_auths(mock_auths);
                 }
                 if self.mock_all_auths {
-                    self.env.mock_all_auths();
+                    if self.allow_non_root_auth {
+                        self.env.mock_all_auths_allowing_non_root_auth();
+                    } else {
+                        self.env.mock_all_auths();
+                    }
                 }
             }
             use soroban_sdk::{FromVal, IntoVal};
@@ -265,7 +268,11 @@ mod feat2 {
                     self.env.mock_auths(mock_auths);
                 }
                 if self.mock_all_auths {
-                    self.env.mock_all_auths();
+                    if self.allow_non_root_auth {
+                        self.env.mock_all_auths_allowing_non_root_auth();
+                    } else {
+                        self.env.mock_all_auths();
+                    }
                 }
             }
             use soroban_sdk::{FromVal, IntoVal};
@@ -357,11 +364,9 @@ mod feat2 {
     }
 }
 mod test {
-    #![cfg(test)]
     use crate::{Contract, ContractClient};
     use soroban_sdk::Env;
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test"]
     #[doc(hidden)]
     pub const test: test::TestDescAndFn = test::TestDescAndFn {
@@ -637,7 +642,11 @@ impl<'a> ContractClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};

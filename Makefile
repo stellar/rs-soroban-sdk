@@ -19,11 +19,12 @@ test: fmt build-test-wasms test-only
 # hazmat granular features are excluded because all hazmat features are tested
 # together with the umbrella hazmat feature.
 test-only:
-	cargo hack --feature-powerset --ignore-unknown-features --features testutils \
-		--exclude-features docs \
-		--exclude-features hazmat-crypto \
-		--exclude-features hazmat-address \
-		test
+	SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2=1 \
+		cargo hack --feature-powerset --ignore-unknown-features --features testutils \
+			--exclude-features docs \
+			--exclude-features hazmat-crypto \
+			--exclude-features hazmat-address \
+			test
 
 build: build-libs build-test-wasms
 

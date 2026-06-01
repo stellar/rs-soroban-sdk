@@ -1,4 +1,4 @@
-use crate::{bytesn, crypto::Hash, Env};
+use crate::{crypto::Hash, Env};
 
 #[test]
 fn test_verify_sig_ecdsa_secp256r1() {

@@ -129,10 +129,11 @@
 //! ### Build Requirements
 //!
 //! This feature requires building with `stellar contract build` from
-//! `stellar-cli` v25.2.0 or newer. Building directly with `cargo build` will
-//! produce a build error unless the
+//! `stellar-cli` v25.2.0 or newer. Building a contract for wasm (e.g. with
+//! `cargo build --target wasm32v1-none`) will produce a build error unless the
 //! `SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2` environment variable is
-//! set.
+//! set. The check only fires for wasm targets; native builds (e.g. unit tests)
+//! are unaffected.
 //!
 //! [`contracttype`]: crate::contracttype
 //! [`contracterror`]: crate::contracterror

@@ -1,10 +1,9 @@
 #![feature(prelude_import)]
 #![no_std]
-#[prelude_import]
-use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
-extern crate compiler_builtins as _;
+#[prelude_import]
+use core::prelude::rust_2021::*;
 use soroban_sdk::{contracterror, contractevent, contracttype, Address, Vec};
 pub struct StructA {
     pub f1: u32,
@@ -515,7 +514,7 @@ impl ::core::marker::StructuralPartialEq for StructTupleC {}
 impl ::core::cmp::PartialEq for StructTupleC {
     #[inline]
     fn eq(&self, other: &StructTupleC) -> bool {
-        self.0 == other.0 && self.1 == other.1
+        self.1 == other.1 && self.0 == other.0
     }
 }
 #[link_section = "contractspecv0"]
@@ -1917,7 +1916,7 @@ impl ::core::marker::StructuralPartialEq for EventB {}
 impl ::core::cmp::PartialEq for EventB {
     #[inline]
     fn eq(&self, other: &EventB) -> bool {
-        self.f1 == other.f1 && self.f2 == other.f2 && self.f3 == other.f3
+        self.f3 == other.f3 && self.f1 == other.f1 && self.f2 == other.f2
     }
 }
 #[link_section = "contractspecv0"]
@@ -2002,7 +2001,7 @@ impl ::core::marker::StructuralPartialEq for EventC {}
 impl ::core::cmp::PartialEq for EventC {
     #[inline]
     fn eq(&self, other: &EventC) -> bool {
-        self.f1 == other.f1 && self.f2 == other.f2 && self.f3 == other.f3
+        self.f2 == other.f2 && self.f3 == other.f3 && self.f1 == other.f1
     }
 }
 #[link_section = "contractspecv0"]

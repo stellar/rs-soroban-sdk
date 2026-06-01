@@ -38,8 +38,13 @@ fn test_spec_shaking_v2() {
         "with_param",
         "with_return",
         "with_error",
+        "with_panic_error",
+        "with_assert_error",
+        "with_panic_raw_error",
         "with_vec",
+        "with_vec_nested",
         "with_map",
+        "with_recursion",
         "publish_simple",
         "publish_topic_type",
         "publish_data_type",
@@ -68,12 +73,19 @@ fn test_spec_shaking_v2() {
         "UsedReturnEnum",
         "UsedParamIntEnum",
         "UsedErrorEnum",
+        // error types used only via panic_with_error! / assert_with_error!
+        "UsedPanicErrorEnum",
+        "UsedAssertErrorEnum",
         // nested in fn param struct
         "UsedNestedInStruct",
         // container element types in fn params
         "UsedVecElement",
         "UsedMapKey",
         "UsedMapVal",
+        // vec element with nested custom types in data
+        "UsedVecInnerVecElement",
+        "UsedVecInnerElement",
+        "UsedVecElementNested",
         // Option element type in fn param
         "UsedOptionElement",
         // Result Ok type in fn return
@@ -109,6 +121,11 @@ fn test_spec_shaking_v2() {
         "StructC",
         // wasm-imported type used as fn param
         "StructA",
+        // recursive type used as fn param
+        "UsedRecursiveRoot",
+        "UsedRecursiveNode",
+        "UsedRecursiveLeaf",
+        "UsedLeaf",
     ];
     for name in used {
         assert!(
@@ -116,6 +133,7 @@ fn test_spec_shaking_v2() {
             "used type/event {name} should be present in filtered entries, but was not found"
         );
     }
+    assert_eq!(markers.len(), used.len());
 
     // Unused types/events should exist in unfiltered entries (they have spec entries, just no markers).
     let unused = [
@@ -123,6 +141,7 @@ fn test_spec_shaking_v2() {
         "UnusedEnum",
         "UnusedIntEnum",
         "UnusedEvent",
+        "UnusedPubError",
         // Types used only in non-contractimpl fns (not at contract boundary)
         "UnusedNonContractFnParam",
         "UnusedNonContractFnReturn",
@@ -162,6 +181,7 @@ fn test_spec_shaking_v2() {
             "unused type/event {name} should be absent from filtered entries, but was found"
         );
     }
+    assert_eq!(all_names.len() - filtered_names.len(), unused.len());
 }
 
 /// Extract the name from a non-function spec entry.

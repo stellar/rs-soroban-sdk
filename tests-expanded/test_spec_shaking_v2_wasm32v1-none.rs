@@ -1,12 +1,12 @@
 #![feature(prelude_import)]
 #![no_std]
-#[prelude_import]
-use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
-extern crate compiler_builtins as _;
+#[prelude_import]
+use core::prelude::rust_2021::*;
 use soroban_sdk::{
-    contract, contracterror, contractevent, contractimpl, contracttype, Env, Map, Symbol, Vec,
+    assert_with_error, contract, contracterror, contractevent, contractimpl, contracttype,
+    panic_with_error, Env, Map, Symbol, Vec,
 };
 pub struct Contract;
 ///ContractArgs is a type for building arg lists for functions defined in "Contract".
@@ -87,7 +87,6 @@ impl soroban_sdk::SpecShakingMarker for UsedParamStruct {
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <UsedNestedInStruct as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1X\x03\xf6t\xc7\xd0\x01\"";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -213,7 +212,6 @@ impl soroban_sdk::SpecShakingMarker for UsedReturnEnum {
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\xe7\xcf\x9b1n\x15\x13\xfe";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -355,7 +353,6 @@ impl soroban_sdk::SpecShakingMarker for UsedParamIntEnum {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\xc2\xf4N\xbf\xebqvp";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -456,7 +453,6 @@ impl soroban_sdk::SpecShakingMarker for UsedErrorEnum {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1Hh\xdc\xaaa\x8d\xf7\r";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -570,6 +566,320 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedErrorEnum> for soroban_sdk::
         <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedErrorEnum>>::try_from_val(env, *val)
     }
 }
+pub enum UsedPanicErrorEnum {
+    Boom = 1,
+}
+#[automatically_derived]
+impl ::core::marker::Copy for UsedPanicErrorEnum {}
+#[automatically_derived]
+impl ::core::clone::Clone for UsedPanicErrorEnum {
+    #[inline]
+    fn clone(&self) -> UsedPanicErrorEnum {
+        *self
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UsedPanicErrorEnum {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::write_str(f, "Boom")
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UsedPanicErrorEnum {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {}
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UsedPanicErrorEnum {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UsedPanicErrorEnum {
+    #[inline]
+    fn eq(&self, other: &UsedPanicErrorEnum) -> bool {
+        true
+    }
+}
+#[link_section = "contractspecv0"]
+pub static __SPEC_XDR_TYPE_USEDPANICERRORENUM: [u8; 56usize] = UsedPanicErrorEnum::spec_xdr();
+impl UsedPanicErrorEnum {
+    pub const fn spec_xdr() -> [u8; 56usize] {
+        *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x12UsedPanicErrorEnum\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04Boom\0\0\0\x01"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UsedPanicErrorEnum {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1\r\xb76\xae\x93D\xef\x1a";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
+impl TryFrom<soroban_sdk::Error> for UsedPanicErrorEnum {
+    type Error = soroban_sdk::Error;
+    #[inline(always)]
+    fn try_from(error: soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
+        if error.is_type(soroban_sdk::xdr::ScErrorType::Contract) {
+            let discriminant = error.get_code();
+            Ok(match discriminant {
+                1u32 => Self::Boom,
+                _ => return Err(error),
+            })
+        } else {
+            Err(error)
+        }
+    }
+}
+impl TryFrom<&soroban_sdk::Error> for UsedPanicErrorEnum {
+    type Error = soroban_sdk::Error;
+    #[inline(always)]
+    fn try_from(error: &soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
+        <_ as TryFrom<soroban_sdk::Error>>::try_from(*error)
+    }
+}
+impl From<UsedPanicErrorEnum> for soroban_sdk::Error {
+    #[inline(always)]
+    fn from(val: UsedPanicErrorEnum) -> soroban_sdk::Error {
+        <_ as From<&UsedPanicErrorEnum>>::from(&val)
+    }
+}
+impl From<&UsedPanicErrorEnum> for soroban_sdk::Error {
+    #[inline(always)]
+    fn from(val: &UsedPanicErrorEnum) -> soroban_sdk::Error {
+        match val {
+            UsedPanicErrorEnum::Boom => soroban_sdk::Error::from_contract_error(1u32),
+        }
+    }
+}
+impl TryFrom<soroban_sdk::InvokeError> for UsedPanicErrorEnum {
+    type Error = soroban_sdk::InvokeError;
+    #[inline(always)]
+    fn try_from(error: soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
+        match error {
+            soroban_sdk::InvokeError::Abort => Err(error),
+            soroban_sdk::InvokeError::Contract(code) => Ok(match code {
+                1u32 => Self::Boom,
+                _ => return Err(error),
+            }),
+        }
+    }
+}
+impl TryFrom<&soroban_sdk::InvokeError> for UsedPanicErrorEnum {
+    type Error = soroban_sdk::InvokeError;
+    #[inline(always)]
+    fn try_from(error: &soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
+        <_ as TryFrom<soroban_sdk::InvokeError>>::try_from(*error)
+    }
+}
+impl From<UsedPanicErrorEnum> for soroban_sdk::InvokeError {
+    #[inline(always)]
+    fn from(val: UsedPanicErrorEnum) -> soroban_sdk::InvokeError {
+        <_ as From<&UsedPanicErrorEnum>>::from(&val)
+    }
+}
+impl From<&UsedPanicErrorEnum> for soroban_sdk::InvokeError {
+    #[inline(always)]
+    fn from(val: &UsedPanicErrorEnum) -> soroban_sdk::InvokeError {
+        match val {
+            UsedPanicErrorEnum::Boom => soroban_sdk::InvokeError::Contract(1u32),
+        }
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedPanicErrorEnum {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::TryIntoVal;
+        let error: soroban_sdk::Error = val.try_into_val(env)?;
+        error.try_into().map_err(|_| soroban_sdk::ConversionError)
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedPanicErrorEnum> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UsedPanicErrorEnum,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        let error: soroban_sdk::Error = val.into();
+        Ok(error.into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedPanicErrorEnum> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UsedPanicErrorEnum,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedPanicErrorEnum>>::try_from_val(
+            env, *val,
+        )
+    }
+}
+pub enum UsedAssertErrorEnum {
+    Bad = 1,
+}
+#[automatically_derived]
+impl ::core::marker::Copy for UsedAssertErrorEnum {}
+#[automatically_derived]
+impl ::core::clone::Clone for UsedAssertErrorEnum {
+    #[inline]
+    fn clone(&self) -> UsedAssertErrorEnum {
+        *self
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UsedAssertErrorEnum {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::write_str(f, "Bad")
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UsedAssertErrorEnum {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {}
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UsedAssertErrorEnum {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UsedAssertErrorEnum {
+    #[inline]
+    fn eq(&self, other: &UsedAssertErrorEnum) -> bool {
+        true
+    }
+}
+#[link_section = "contractspecv0"]
+pub static __SPEC_XDR_TYPE_USEDASSERTERRORENUM: [u8; 56usize] = UsedAssertErrorEnum::spec_xdr();
+impl UsedAssertErrorEnum {
+    pub const fn spec_xdr() -> [u8; 56usize] {
+        *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x13UsedAssertErrorEnum\0\0\0\0\x01\0\0\0\0\0\0\0\x03Bad\0\0\0\0\x01"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UsedAssertErrorEnum {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1\x8b\x89\x1f#\xbd\x157\xf4";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
+impl TryFrom<soroban_sdk::Error> for UsedAssertErrorEnum {
+    type Error = soroban_sdk::Error;
+    #[inline(always)]
+    fn try_from(error: soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
+        if error.is_type(soroban_sdk::xdr::ScErrorType::Contract) {
+            let discriminant = error.get_code();
+            Ok(match discriminant {
+                1u32 => Self::Bad,
+                _ => return Err(error),
+            })
+        } else {
+            Err(error)
+        }
+    }
+}
+impl TryFrom<&soroban_sdk::Error> for UsedAssertErrorEnum {
+    type Error = soroban_sdk::Error;
+    #[inline(always)]
+    fn try_from(error: &soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
+        <_ as TryFrom<soroban_sdk::Error>>::try_from(*error)
+    }
+}
+impl From<UsedAssertErrorEnum> for soroban_sdk::Error {
+    #[inline(always)]
+    fn from(val: UsedAssertErrorEnum) -> soroban_sdk::Error {
+        <_ as From<&UsedAssertErrorEnum>>::from(&val)
+    }
+}
+impl From<&UsedAssertErrorEnum> for soroban_sdk::Error {
+    #[inline(always)]
+    fn from(val: &UsedAssertErrorEnum) -> soroban_sdk::Error {
+        match val {
+            UsedAssertErrorEnum::Bad => soroban_sdk::Error::from_contract_error(1u32),
+        }
+    }
+}
+impl TryFrom<soroban_sdk::InvokeError> for UsedAssertErrorEnum {
+    type Error = soroban_sdk::InvokeError;
+    #[inline(always)]
+    fn try_from(error: soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
+        match error {
+            soroban_sdk::InvokeError::Abort => Err(error),
+            soroban_sdk::InvokeError::Contract(code) => Ok(match code {
+                1u32 => Self::Bad,
+                _ => return Err(error),
+            }),
+        }
+    }
+}
+impl TryFrom<&soroban_sdk::InvokeError> for UsedAssertErrorEnum {
+    type Error = soroban_sdk::InvokeError;
+    #[inline(always)]
+    fn try_from(error: &soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
+        <_ as TryFrom<soroban_sdk::InvokeError>>::try_from(*error)
+    }
+}
+impl From<UsedAssertErrorEnum> for soroban_sdk::InvokeError {
+    #[inline(always)]
+    fn from(val: UsedAssertErrorEnum) -> soroban_sdk::InvokeError {
+        <_ as From<&UsedAssertErrorEnum>>::from(&val)
+    }
+}
+impl From<&UsedAssertErrorEnum> for soroban_sdk::InvokeError {
+    #[inline(always)]
+    fn from(val: &UsedAssertErrorEnum) -> soroban_sdk::InvokeError {
+        match val {
+            UsedAssertErrorEnum::Bad => soroban_sdk::InvokeError::Contract(1u32),
+        }
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedAssertErrorEnum {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::TryIntoVal;
+        let error: soroban_sdk::Error = val.try_into_val(env)?;
+        error.try_into().map_err(|_| soroban_sdk::ConversionError)
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedAssertErrorEnum> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UsedAssertErrorEnum,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        let error: soroban_sdk::Error = val.into();
+        Ok(error.into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedAssertErrorEnum> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UsedAssertErrorEnum,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedAssertErrorEnum>>::try_from_val(
+            env, *val,
+        )
+    }
+}
 pub struct UsedNestedInStruct {
     pub val: i64,
 }
@@ -624,7 +934,6 @@ impl soroban_sdk::SpecShakingMarker for UsedNestedInStruct {
     #[inline(always)]
     fn spec_shaking_marker() {
         <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\x84\x08Y\xae\xa0\xf128";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -726,7 +1035,6 @@ impl soroban_sdk::SpecShakingMarker for UsedVecElement {
     #[inline(always)]
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\xe2\x01y\xc9\x9a\xf8\xedt";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -832,7 +1140,6 @@ impl soroban_sdk::SpecShakingMarker for UsedMapKey {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1[\xf4R\xdf\xdd\xb4\xb0\xbc";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -927,7 +1234,6 @@ impl soroban_sdk::SpecShakingMarker for UsedMapVal {
     #[inline(always)]
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\xaaX8\xde\xef\xbb6%";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -1032,7 +1338,6 @@ impl soroban_sdk::SpecShakingMarker for UsedOptionElement {
     #[inline(always)]
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\xb3/\x97\xd5\x06\xbd3B";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -1132,7 +1437,6 @@ impl soroban_sdk::SpecShakingMarker for UsedResultOk {
     #[inline(always)]
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1k\xe4zxB\xd1+\x02";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -1227,7 +1531,7 @@ impl ::core::marker::StructuralPartialEq for UsedEventSimple {}
 impl ::core::cmp::PartialEq for UsedEventSimple {
     #[inline]
     fn eq(&self, other: &UsedEventSimple) -> bool {
-        self.kind == other.kind && self.amount == other.amount
+        self.amount == other.amount && self.kind == other.kind
     }
 }
 #[link_section = "contractspecv0"]
@@ -1243,7 +1547,6 @@ impl soroban_sdk::SpecShakingMarker for UsedEventSimple {
     fn spec_shaking_marker() {
         <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1v1\x0eP\xa9C\xc7*";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -1329,7 +1632,6 @@ impl soroban_sdk::SpecShakingMarker for UsedEventTopicType {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\xf5\xd4\x9b\xa3\xccI\x13\xf7";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -1421,7 +1723,7 @@ impl ::core::marker::StructuralPartialEq for UsedEventWithTopicType {}
 impl ::core::cmp::PartialEq for UsedEventWithTopicType {
     #[inline]
     fn eq(&self, other: &UsedEventWithTopicType) -> bool {
-        self.kind == other.kind && self.amount == other.amount
+        self.amount == other.amount && self.kind == other.kind
     }
 }
 #[link_section = "contractspecv0"]
@@ -1438,7 +1740,6 @@ impl soroban_sdk::SpecShakingMarker for UsedEventWithTopicType {
     fn spec_shaking_marker() {
         <UsedEventTopicType as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1q^\xe2&\x9di\x9d\x0e";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -1531,7 +1832,6 @@ impl soroban_sdk::SpecShakingMarker for UsedEventDataType {
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\xc2 \x1b\xdc\xc8gxZ";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -1649,7 +1949,6 @@ impl soroban_sdk::SpecShakingMarker for UsedEventWithDataType {
     fn spec_shaking_marker() {
         <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <UsedEventDataType as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1q\xa3z;6\xa6R\x01";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -1737,7 +2036,6 @@ impl soroban_sdk::SpecShakingMarker for UsedEventTopicOuter {
     #[inline(always)]
     fn spec_shaking_marker() {
         <UsedEventTopicInner as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\x94\xc7w/_\xebXc";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -1846,7 +2144,6 @@ impl soroban_sdk::SpecShakingMarker for UsedEventTopicInner {
     #[inline(always)]
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV16\x83?\xf0\xcdW\xb1/";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -1943,7 +2240,7 @@ impl ::core::marker::StructuralPartialEq for UsedEventWithNestedTopic {}
 impl ::core::cmp::PartialEq for UsedEventWithNestedTopic {
     #[inline]
     fn eq(&self, other: &UsedEventWithNestedTopic) -> bool {
-        self.info == other.info && self.amount == other.amount
+        self.amount == other.amount && self.info == other.info
     }
 }
 #[link_section = "contractspecv0"]
@@ -1960,7 +2257,6 @@ impl soroban_sdk::SpecShakingMarker for UsedEventWithNestedTopic {
     fn spec_shaking_marker() {
         <UsedEventTopicOuter as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\xe3\xf2\x9b5%a\xfb\xd6";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -2048,7 +2344,6 @@ impl soroban_sdk::SpecShakingMarker for UsedEventDataOuter {
     #[inline(always)]
     fn spec_shaking_marker() {
         <UsedEventDataInner as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1'\xf2\xa2\xb9\xd0)\xc0u";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -2157,7 +2452,6 @@ impl soroban_sdk::SpecShakingMarker for UsedEventDataInner {
     #[inline(always)]
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\x0c\xf0\xf6w\xfd\x1a\x1b\x94";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -2271,7 +2565,6 @@ impl soroban_sdk::SpecShakingMarker for UsedEventWithNestedData {
     fn spec_shaking_marker() {
         <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <UsedEventDataOuter as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1 \xfbl\x04B\x82\xc0\xb4";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -2360,7 +2653,6 @@ impl soroban_sdk::SpecShakingMarker for UsedRefTopicType {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1@\xb9LO\xf9\xd1\xe8\xe2";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -2460,7 +2752,6 @@ impl soroban_sdk::SpecShakingMarker for UsedRefDataType {
     #[inline(always)]
     fn spec_shaking_marker() {
         <UsedRefDataInner as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1'\xbd_A\r\x9a\x89\x02";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -2562,7 +2853,6 @@ impl soroban_sdk::SpecShakingMarker for UsedRefDataInner {
     #[inline(always)]
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1K\xdf'8m/\xe8\x1d";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -2673,7 +2963,6 @@ impl<'a> soroban_sdk::SpecShakingMarker for UsedEventWithRefs<'a> {
     fn spec_shaking_marker() {
         <&'a UsedRefTopicType as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <&'a UsedRefDataType as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1[Q+\xe9\xde\xd5\xf2>";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -2756,7 +3045,6 @@ impl soroban_sdk::SpecShakingMarker for UsedTupleElement {
     #[inline(always)]
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\xde\x1dMa\x01\xec\xb0A";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -2862,7 +3150,6 @@ impl soroban_sdk::SpecShakingMarker for UsedTupleReturnElement {
     #[inline(always)]
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1Y\xa66\xb3\xecxE\x13";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -2911,6 +3198,351 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedTupleReturnElement> for soro
         val: &&UsedTupleReturnElement,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedTupleReturnElement>>::try_from_val(
+            env, *val,
+        )
+    }
+}
+pub struct UsedVecInnerVecElement {
+    pub val: u32,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UsedVecInnerVecElement {
+    #[inline]
+    fn clone(&self) -> UsedVecInnerVecElement {
+        UsedVecInnerVecElement {
+            val: ::core::clone::Clone::clone(&self.val),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UsedVecInnerVecElement {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field1_finish(
+            f,
+            "UsedVecInnerVecElement",
+            "val",
+            &&self.val,
+        )
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UsedVecInnerVecElement {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<u32>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UsedVecInnerVecElement {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UsedVecInnerVecElement {
+    #[inline]
+    fn eq(&self, other: &UsedVecInnerVecElement) -> bool {
+        self.val == other.val
+    }
+}
+#[link_section = "contractspecv0"]
+pub static __SPEC_XDR_TYPE_USEDVECINNERVECELEMENT: [u8; 60usize] =
+    UsedVecInnerVecElement::spec_xdr();
+impl UsedVecInnerVecElement {
+    pub const fn spec_xdr() -> [u8; 60usize] {
+        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x16UsedVecInnerVecElement\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UsedVecInnerVecElement {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1\xcf@%X\xde+J@";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedVecInnerVecElement {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
+        let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+            .map_err(|_| ConversionError)?;
+        Ok(Self {
+            val: vals[0]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedVecInnerVecElement> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UsedVecInnerVecElement,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let vals: [Val; 1usize] = [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
+        Ok(env
+            .map_new_from_slices(&KEYS, &vals)
+            .map_err(|_| ConversionError)?
+            .into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedVecInnerVecElement> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UsedVecInnerVecElement,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedVecInnerVecElement>>::try_from_val(
+            env, *val,
+        )
+    }
+}
+pub struct UsedVecInnerElement {
+    pub val: u32,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UsedVecInnerElement {
+    #[inline]
+    fn clone(&self) -> UsedVecInnerElement {
+        UsedVecInnerElement {
+            val: ::core::clone::Clone::clone(&self.val),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UsedVecInnerElement {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field1_finish(
+            f,
+            "UsedVecInnerElement",
+            "val",
+            &&self.val,
+        )
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UsedVecInnerElement {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<u32>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UsedVecInnerElement {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UsedVecInnerElement {
+    #[inline]
+    fn eq(&self, other: &UsedVecInnerElement) -> bool {
+        self.val == other.val
+    }
+}
+#[link_section = "contractspecv0"]
+pub static __SPEC_XDR_TYPE_USEDVECINNERELEMENT: [u8; 56usize] = UsedVecInnerElement::spec_xdr();
+impl UsedVecInnerElement {
+    pub const fn spec_xdr() -> [u8; 56usize] {
+        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x13UsedVecInnerElement\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UsedVecInnerElement {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1\xb4\xabN]\xe3\xeaA\xd6";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedVecInnerElement {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
+        let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+            .map_err(|_| ConversionError)?;
+        Ok(Self {
+            val: vals[0]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedVecInnerElement> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UsedVecInnerElement,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let vals: [Val; 1usize] = [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
+        Ok(env
+            .map_new_from_slices(&KEYS, &vals)
+            .map_err(|_| ConversionError)?
+            .into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedVecInnerElement> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UsedVecInnerElement,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedVecInnerElement>>::try_from_val(
+            env, *val,
+        )
+    }
+}
+pub struct UsedVecElementNested {
+    pub val: u32,
+    pub inner: UsedVecInnerElement,
+    pub vec_inner: Vec<UsedVecInnerVecElement>,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UsedVecElementNested {
+    #[inline]
+    fn clone(&self) -> UsedVecElementNested {
+        UsedVecElementNested {
+            val: ::core::clone::Clone::clone(&self.val),
+            inner: ::core::clone::Clone::clone(&self.inner),
+            vec_inner: ::core::clone::Clone::clone(&self.vec_inner),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UsedVecElementNested {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field3_finish(
+            f,
+            "UsedVecElementNested",
+            "val",
+            &self.val,
+            "inner",
+            &self.inner,
+            "vec_inner",
+            &&self.vec_inner,
+        )
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UsedVecElementNested {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<u32>;
+        let _: ::core::cmp::AssertParamIsEq<UsedVecInnerElement>;
+        let _: ::core::cmp::AssertParamIsEq<Vec<UsedVecInnerVecElement>>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UsedVecElementNested {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UsedVecElementNested {
+    #[inline]
+    fn eq(&self, other: &UsedVecElementNested) -> bool {
+        self.val == other.val && self.inner == other.inner && self.vec_inner == other.vec_inner
+    }
+}
+#[link_section = "contractspecv0"]
+pub static __SPEC_XDR_TYPE_USEDVECELEMENTNESTED: [u8; 156usize] = UsedVecElementNested::spec_xdr();
+impl UsedVecElementNested {
+    pub const fn spec_xdr() -> [u8; 156usize] {
+        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x14UsedVecElementNested\0\0\0\x03\0\0\0\0\0\0\0\x05inner\0\0\0\0\0\x07\xd0\0\0\0\x13UsedVecInnerElement\0\0\0\0\0\0\0\0\x03val\0\0\0\0\x04\0\0\0\0\0\0\0\tvec_inner\0\0\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x16UsedVecInnerVecElement\0\0"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UsedVecElementNested {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <UsedVecInnerElement as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <Vec<UsedVecInnerVecElement> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1\x13?J\x12d\xden|";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedVecElementNested {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+        const KEYS: [&'static str; 3usize] = ["inner", "val", "vec_inner"];
+        let mut vals: [Val; 3usize] = [Val::VOID.to_val(); 3usize];
+        let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+            .map_err(|_| ConversionError)?;
+        Ok(Self {
+            inner: vals[0]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+            val: vals[1]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+            vec_inner: vals[2]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedVecElementNested> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UsedVecElementNested,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+        const KEYS: [&'static str; 3usize] = ["inner", "val", "vec_inner"];
+        let vals: [Val; 3usize] = [
+            (&val.inner)
+                .try_into_val(env)
+                .map_err(|_| ConversionError)?,
+            (&val.val).try_into_val(env).map_err(|_| ConversionError)?,
+            (&val.vec_inner)
+                .try_into_val(env)
+                .map_err(|_| ConversionError)?,
+        ];
+        Ok(env
+            .map_new_from_slices(&KEYS, &vals)
+            .map_err(|_| ConversionError)?
+            .into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedVecElementNested> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UsedVecElementNested,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedVecElementNested>>::try_from_val(
             env, *val,
         )
     }
@@ -2964,7 +3596,6 @@ impl soroban_sdk::SpecShakingMarker for UsedNonPubStruct {
     #[inline(always)]
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1p\x8c\x0fN!\x082\xd8";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -3061,7 +3692,6 @@ impl soroban_sdk::SpecShakingMarker for UsedNonPubError {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\xa9<\xd8+\xb7\xa7\r\x17";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -3171,15 +3801,485 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedNonPubError> for soroban_sdk
         <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedNonPubError>>::try_from_val(env, *val)
     }
 }
+pub struct UsedRecursiveRoot {
+    pub val: UsedRecursiveNode,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UsedRecursiveRoot {
+    #[inline]
+    fn clone(&self) -> UsedRecursiveRoot {
+        UsedRecursiveRoot {
+            val: ::core::clone::Clone::clone(&self.val),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UsedRecursiveRoot {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field1_finish(
+            f,
+            "UsedRecursiveRoot",
+            "val",
+            &&self.val,
+        )
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UsedRecursiveRoot {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<UsedRecursiveNode>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UsedRecursiveRoot {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UsedRecursiveRoot {
+    #[inline]
+    fn eq(&self, other: &UsedRecursiveRoot) -> bool {
+        self.val == other.val
+    }
+}
+#[link_section = "contractspecv0"]
+pub static __SPEC_XDR_TYPE_USEDRECURSIVEROOT: [u8; 80usize] = UsedRecursiveRoot::spec_xdr();
+impl UsedRecursiveRoot {
+    pub const fn spec_xdr() -> [u8; 80usize] {
+        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x11UsedRecursiveRoot\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\x07\xd0\0\0\0\x11UsedRecursiveNode\0\0\0"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UsedRecursiveRoot {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <UsedRecursiveNode as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1u2\x0b\x97\xae\xcd\x86\xbf";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRecursiveRoot {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
+        let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+            .map_err(|_| ConversionError)?;
+        Ok(Self {
+            val: vals[0]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedRecursiveRoot> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UsedRecursiveRoot,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let vals: [Val; 1usize] = [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
+        Ok(env
+            .map_new_from_slices(&KEYS, &vals)
+            .map_err(|_| ConversionError)?
+            .into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedRecursiveRoot> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UsedRecursiveRoot,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedRecursiveRoot>>::try_from_val(env, *val)
+    }
+}
+pub enum UsedRecursiveNode {
+    NotRecursive(UsedLeaf),
+    Recursive(UsedRecursiveLeaf),
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UsedRecursiveNode {
+    #[inline]
+    fn clone(&self) -> UsedRecursiveNode {
+        match self {
+            UsedRecursiveNode::NotRecursive(__self_0) => {
+                UsedRecursiveNode::NotRecursive(::core::clone::Clone::clone(__self_0))
+            }
+            UsedRecursiveNode::Recursive(__self_0) => {
+                UsedRecursiveNode::Recursive(::core::clone::Clone::clone(__self_0))
+            }
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UsedRecursiveNode {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        match self {
+            UsedRecursiveNode::NotRecursive(__self_0) => {
+                ::core::fmt::Formatter::debug_tuple_field1_finish(f, "NotRecursive", &__self_0)
+            }
+            UsedRecursiveNode::Recursive(__self_0) => {
+                ::core::fmt::Formatter::debug_tuple_field1_finish(f, "Recursive", &__self_0)
+            }
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UsedRecursiveNode {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<UsedLeaf>;
+        let _: ::core::cmp::AssertParamIsEq<UsedRecursiveLeaf>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UsedRecursiveNode {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UsedRecursiveNode {
+    #[inline]
+    fn eq(&self, other: &UsedRecursiveNode) -> bool {
+        let __self_discr = ::core::intrinsics::discriminant_value(self);
+        let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+        __self_discr == __arg1_discr
+            && match (self, other) {
+                (
+                    UsedRecursiveNode::NotRecursive(__self_0),
+                    UsedRecursiveNode::NotRecursive(__arg1_0),
+                ) => __self_0 == __arg1_0,
+                (
+                    UsedRecursiveNode::Recursive(__self_0),
+                    UsedRecursiveNode::Recursive(__arg1_0),
+                ) => __self_0 == __arg1_0,
+                _ => unsafe { ::core::intrinsics::unreachable() },
+            }
+    }
+}
+#[link_section = "contractspecv0"]
+pub static __SPEC_XDR_TYPE_USEDRECURSIVENODE: [u8; 140usize] = UsedRecursiveNode::spec_xdr();
+impl UsedRecursiveNode {
+    pub const fn spec_xdr() -> [u8; 140usize] {
+        *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x11UsedRecursiveNode\0\0\0\0\0\0\x02\0\0\0\x01\0\0\0\0\0\0\0\x0cNotRecursive\0\0\0\x01\0\0\x07\xd0\0\0\0\x08UsedLeaf\0\0\0\x01\0\0\0\0\0\0\0\tRecursive\0\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x11UsedRecursiveLeaf\0\0\0"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UsedRecursiveNode {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <UsedLeaf as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <UsedRecursiveLeaf as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1*\\\x9c\xf4e\xaa\x1e]";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRecursiveNode {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
+        const CASES: &'static [&'static str] = &["NotRecursive", "Recursive"];
+        let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
+        let mut iter = vec.try_iter();
+        let discriminant: soroban_sdk::Symbol = iter
+            .next()
+            .ok_or(soroban_sdk::ConversionError)??
+            .try_into_val(env)
+            .map_err(|_| soroban_sdk::ConversionError)?;
+        Ok(
+            match u32::from(env.symbol_index_in_strs(discriminant.to_symbol_val(), CASES)?) as usize
+            {
+                0 => {
+                    if iter.len() > 1usize {
+                        return Err(soroban_sdk::ConversionError);
+                    }
+                    Self::NotRecursive(
+                        iter.next()
+                            .ok_or(soroban_sdk::ConversionError)??
+                            .try_into_val(env)?,
+                    )
+                }
+                1 => {
+                    if iter.len() > 1usize {
+                        return Err(soroban_sdk::ConversionError);
+                    }
+                    Self::Recursive(
+                        iter.next()
+                            .ok_or(soroban_sdk::ConversionError)??
+                            .try_into_val(env)?,
+                    )
+                }
+                _ => Err(soroban_sdk::ConversionError {})?,
+            },
+        )
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedRecursiveNode> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UsedRecursiveNode,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{TryFromVal, TryIntoVal};
+        match val {
+            UsedRecursiveNode::NotRecursive(ref value0) => {
+                let tup: (soroban_sdk::Val, soroban_sdk::Val) = (
+                    soroban_sdk::Symbol::try_from_val(env, &"NotRecursive")?.to_val(),
+                    value0.try_into_val(env)?,
+                );
+                tup.try_into_val(env).map_err(Into::into)
+            }
+            UsedRecursiveNode::Recursive(ref value0) => {
+                let tup: (soroban_sdk::Val, soroban_sdk::Val) = (
+                    soroban_sdk::Symbol::try_from_val(env, &"Recursive")?.to_val(),
+                    value0.try_into_val(env)?,
+                );
+                tup.try_into_val(env).map_err(Into::into)
+            }
+        }
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedRecursiveNode> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UsedRecursiveNode,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedRecursiveNode>>::try_from_val(env, *val)
+    }
+}
+pub struct UsedRecursiveLeaf {
+    pub val: Vec<UsedRecursiveRoot>,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UsedRecursiveLeaf {
+    #[inline]
+    fn clone(&self) -> UsedRecursiveLeaf {
+        UsedRecursiveLeaf {
+            val: ::core::clone::Clone::clone(&self.val),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UsedRecursiveLeaf {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field1_finish(
+            f,
+            "UsedRecursiveLeaf",
+            "val",
+            &&self.val,
+        )
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UsedRecursiveLeaf {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<Vec<UsedRecursiveRoot>>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UsedRecursiveLeaf {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UsedRecursiveLeaf {
+    #[inline]
+    fn eq(&self, other: &UsedRecursiveLeaf) -> bool {
+        self.val == other.val
+    }
+}
+#[link_section = "contractspecv0"]
+pub static __SPEC_XDR_TYPE_USEDRECURSIVELEAF: [u8; 84usize] = UsedRecursiveLeaf::spec_xdr();
+impl UsedRecursiveLeaf {
+    pub const fn spec_xdr() -> [u8; 84usize] {
+        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x11UsedRecursiveLeaf\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x11UsedRecursiveRoot\0\0\0"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UsedRecursiveLeaf {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <Vec<UsedRecursiveRoot> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1?\xd9\xb3q\xdep>\xf3";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRecursiveLeaf {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
+        let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+            .map_err(|_| ConversionError)?;
+        Ok(Self {
+            val: vals[0]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedRecursiveLeaf> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UsedRecursiveLeaf,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let vals: [Val; 1usize] = [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
+        Ok(env
+            .map_new_from_slices(&KEYS, &vals)
+            .map_err(|_| ConversionError)?
+            .into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedRecursiveLeaf> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UsedRecursiveLeaf,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedRecursiveLeaf>>::try_from_val(env, *val)
+    }
+}
+pub struct UsedLeaf {
+    pub val: u32,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UsedLeaf {
+    #[inline]
+    fn clone(&self) -> UsedLeaf {
+        UsedLeaf {
+            val: ::core::clone::Clone::clone(&self.val),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UsedLeaf {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field1_finish(f, "UsedLeaf", "val", &&self.val)
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UsedLeaf {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<u32>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UsedLeaf {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UsedLeaf {
+    #[inline]
+    fn eq(&self, other: &UsedLeaf) -> bool {
+        self.val == other.val
+    }
+}
+#[link_section = "contractspecv0"]
+pub static __SPEC_XDR_TYPE_USEDLEAF: [u8; 44usize] = UsedLeaf::spec_xdr();
+impl UsedLeaf {
+    pub const fn spec_xdr() -> [u8; 44usize] {
+        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x08UsedLeaf\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UsedLeaf {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1\xe6Q\xd5T\x13\x8a\xb7l";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedLeaf {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
+        let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+            .map_err(|_| ConversionError)?;
+        Ok(Self {
+            val: vals[0]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedLeaf> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UsedLeaf,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let vals: [Val; 1usize] = [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
+        Ok(env
+            .map_new_from_slices(&KEYS, &vals)
+            .map_err(|_| ConversionError)?
+            .into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedLeaf> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UsedLeaf,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedLeaf>>::try_from_val(env, *val)
+    }
+}
 mod wasm_imported {
-    pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01*\x07`\x02~~\x01~`\x03~~~\x01~`\x01~\x01~`\x04\x7f\x7f\x7f\x7f\x01~`\x02\x7f~\x00`\x02\x7f\x7f\x01~`\x00\x01~\x02%\x06\x01b\x01j\x00\x00\x01x\x011\x00\x00\x01m\x019\x00\x01\x01v\x01g\x00\x00\x01i\x012\x00\x02\x01i\x011\x00\x02\x03\x0b\n\x00\x03\x00\x04\x04\x05\x06\x06\x02\x00\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x82\x80\xc0\x00\x0b\x7f\x00A\xa0\x80\xc0\x00\x0b\x7f\x00A\xa0\x80\xc0\x00\x0b\x07\x81\x01\n\x06memory\x02\x00\x0bfn_struct_a\x00\x06\x11fn_struct_tuple_a\x00\x08\tfn_enum_a\x00\x0c\rfn_enum_int_a\x00\r\nfn_error_a\x00\x0e\nfn_event_a\x00\x0f\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\xbd\x08\nz\x01\x02\x7f#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\x04R\r\x00A\x01 \x01\xa7A\xff\x01q\"\x03A\x00GA\x01t \x03A\x01F\x1b\"\x03A\x02F\r\x00 \x02 \x03\xad7\x03\x08 \x02 \x00B\x84\x80\x80\x80p\x837\x03\x00A\x88\x80\xc0\x80\x00A\x02 \x02A\x02\x10\x87\x80\x80\x80\x00!\x00 \x02A\x10j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b.\x00\x02@ \x01 \x03F\r\x00\x00\x0b \x00\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x82\x80\x80\x80\x00\x0b\xb2\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00 \x02A\x10j \x00\x10\x89\x80\x80\x80\x00\x02@ \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x89\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x01 \x02A\x10j \x00\x10\x8a\x80\x80\x80\x00 \x02(\x02\x10\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x8a\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02 \x02)\x03\x187\x03\x08 \x02 \x007\x03\x00 \x02A\x02\x10\x8b\x80\x80\x80\x00!\x00 \x02A j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b]\x02\x01\x7f\x01~\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc1\x00F\r\x00\x02@ \x02A\x07F\r\x00B\x01!\x03B\x83\x90\x80\x80\x80\x01!\x01\x0c\x02\x0b \x01B\x08\x87!\x01B\x00!\x03\x0c\x01\x0bB\x00!\x03 \x01\x10\x84\x80\x80\x80\x00!\x01\x0b \x00 \x037\x03\x00 \x00 \x017\x03\x08\x0bF\x00\x02@\x02@ \x01B\x80\x80\x80\x80\x80\x80\x80\xc0\x00|B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x01B\x08\x86B\x07\x84!\x01\x0c\x01\x0b \x01\x10\x85\x80\x80\x80\x00!\x01\x0b \x00B\x007\x03\x00 \x00 \x017\x03\x08\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x83\x80\x80\x80\x00\x0b\x8a\x02\x03\x01\x7f\x01~\x03\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00B\x00!\x01A~!\x02\x02@\x02@\x02@\x03@ \x02E\r\x01A\x01!\x03\x02@ \x02A\x82\x80\xc0\x80\x00j-\x00\x00\"\x04A\xdf\x00F\r\x00\x02@ \x04APjA\xff\x01qA\nI\r\x00\x02@ \x04A\xbf\x7fjA\xff\x01qA\x1aI\r\x00 \x04A\x9f\x7fjA\xff\x01qA\x19K\r\x05 \x04AEj!\x03\x0c\x02\x0b \x04AKj!\x03\x0c\x01\x0b \x04ARj!\x03\x0b \x01B\x06\x86 \x03\xadB\xff\x01\x83\x84!\x01 \x02A\x01j!\x02\x0c\x00\x0b\x0b \x00 \x01B\x08\x86B\x0e\x84\"\x017\x02\x04\x0c\x01\x0b \x00 \x04\xadB\x08\x86B\x01\x847\x03\x00A\x80\x80\xc0\x80\x00\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x80\x80\x80\x80\x00!\x01\x0b \x00 \x017\x03\x00 \x00A\x01\x10\x8b\x80\x80\x80\x00!\x01 \x00A\x10j$\x80\x80\x80\x80\x00 \x01\x0b\x08\x00B\x84\x80\x80\x800\x0b*\x00\x02@ \x00B\xff\x01\x83B\x04Q\r\x00\x00\x0bB\x83\x80\x80\x80  \x00B\x84\x80\x80\x80p\x83 \x00B\x80\x80\x80\x80\x10T\x1b\x0b\xdc\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcd\x00R\r\x00 \x01B\xff\x01\x83B\xc9\x00R\r\x00 \x02 \x007\x03\x08 \x02B\x8e\xcc\xc1\xfc\xac\xdd\xab\x017\x03\x00A\x00!\x03\x03@\x02@ \x03A\x10G\r\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02A\x10j \x03j \x02 \x03j)\x03\x007\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x02A\x10jA\x02\x10\x8b\x80\x80\x80\x00!\x00 \x02 \x017\x03\x10 \x00A\x98\x80\xc0\x80\x00A\x01 \x02A\x10jA\x01\x10\x87\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x02A j$\x80\x80\x80\x80\x00B\x02\x0f\x0b \x02A\x10j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b\x00\x0b\x0b)\x01\x00A\x80\x80\xc0\x00\x0b V2f1f2\x00\x00\x02\x00\x10\x00\x02\x00\x00\x00\x04\x00\x10\x00\x02\x00\x00\x00\x04\x00\x10\x00\x02\x00\x00\x00\x00\xbf\x0e\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bfn_struct_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11fn_struct_tuple_a\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\tfn_enum_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rfn_enum_int_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x08EnumIntA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_error_a\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05input\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd0\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_event_a\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructA\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructB\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructC\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x03\xea\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleB\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleC\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumB\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x07\x00\x00\x00\x07\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumC\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntA\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntB\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntC\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\xc8\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x01,\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorB\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x0c\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorC\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00e\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00f\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventA\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventB\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_b\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventC\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_c\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x19\x00\x00\x00\x00\x00+\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.84.0\x00\x00";
+    pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01*\x07`\x02~~\x01~`\x03~~~\x01~`\x01~\x01~`\x00\x01~`\x02\x7f\x7f\x01~`\x04\x7f\x7f\x7f\x7f\x01~`\x02\x7f~\x00\x02%\x06\x01b\x01j\x00\x00\x01x\x011\x00\x00\x01v\x01g\x00\x00\x01m\x019\x00\x01\x01i\x012\x00\x02\x01i\x011\x00\x02\x03\x0b\n\x03\x04\x03\x02\x00\x05\x00\x00\x06\x06\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x82\x80\xc0\x00\x0b\x7f\x00A\xa0\x80\xc0\x00\x0b\x7f\x00A\xa0\x80\xc0\x00\x0b\x07\x81\x01\n\x06memory\x02\x00\tfn_enum_a\x00\x06\rfn_enum_int_a\x00\x08\nfn_error_a\x00\t\nfn_event_a\x00\n\x0bfn_struct_a\x00\x0c\x11fn_struct_tuple_a\x00\r\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\xbd\x08\n\x8b\x02\x03\x01\x7f\x01~\x03\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00B\x00!\x01A~!\x02\x03~\x02@\x02@\x02@\x02@\x02@ \x02E\r\x00A\x01!\x03 \x02A\x82\x80\xc0\x80\x00j-\x00\x00\"\x04A\xdf\x00F\r\x04 \x04APjA\xff\x01qA\nI\r\x02 \x04A\xbf\x7fjA\xff\x01qA\x1aI\r\x03\x02@ \x04A\x9f\x7fjA\xff\x01qA\x1aO\r\x00 \x04AEj!\x03\x0c\x05\x0b \x00 \x04\xadB\x08\x86B\x01\x847\x03\x00A\x80\x80\xc0\x80\x00\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x80\x80\x80\x80\x00!\x01\x0c\x01\x0b \x00 \x01B\x08\x86B\x0e\x84\"\x017\x02\x04\x0b \x00 \x017\x03\x00 \x00A\x01\x10\x87\x80\x80\x80\x00!\x01 \x00A\x10j$\x80\x80\x80\x80\x00 \x01\x0f\x0b \x04ARj!\x03\x0c\x01\x0b \x04AKj!\x03\x0b \x01B\x06\x86 \x03\xadB\xff\x01\x83\x84!\x01 \x02A\x01j!\x02\x0c\x00\x0b\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x82\x80\x80\x80\x00\x0b\x08\x00B\x84\x80\x80\x800\x0b*\x00\x02@ \x00B\xff\x01\x83B\x04Q\r\x00\x00\x0bB\x83\x80\x80\x80  \x00B\x84\x80\x80\x80p\x83 \x00B\x80\x80\x80\x80\x10T\x1b\x0b\xdc\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcd\x00R\r\x00 \x01B\xff\x01\x83B\xc9\x00R\r\x00 \x02 \x007\x03\x08 \x02B\x8e\xcc\xc1\xfc\xac\xdd\xab\x017\x03\x00A\x00!\x03\x03@\x02@ \x03A\x10G\r\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02A\x10j \x03j \x02 \x03j)\x03\x007\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x02A\x10jA\x02\x10\x87\x80\x80\x80\x00!\x00 \x02 \x017\x03\x10 \x00A\x98\x80\xc0\x80\x00A\x01 \x02A\x10jA\x01\x10\x8b\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x02A j$\x80\x80\x80\x80\x00B\x02\x0f\x0b \x02A\x10j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b\x00\x0b.\x00\x02@ \x01 \x03F\r\x00\x00\x0b \x00\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x83\x80\x80\x80\x00\x0by\x01\x02\x7f#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\x04R\r\x00A\x01A\x02A\x00 \x01\xa7A\xff\x01q\"\x03\x1b \x03A\x01F\x1b\"\x03A\x02F\r\x00 \x02 \x03\xad7\x03\x08 \x02 \x00B\x84\x80\x80\x80p\x837\x03\x00A\x88\x80\xc0\x80\x00A\x02 \x02A\x02\x10\x8b\x80\x80\x80\x00!\x00 \x02A\x10j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b\xb2\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00 \x02A\x10j \x00\x10\x8e\x80\x80\x80\x00\x02@ \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x8e\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x01 \x02A\x10j \x00\x10\x8f\x80\x80\x80\x00 \x02(\x02\x10\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x8f\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02 \x02)\x03\x187\x03\x08 \x02 \x007\x03\x00 \x02A\x02\x10\x87\x80\x80\x80\x00!\x00 \x02A j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b]\x02\x01\x7f\x01~\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc1\x00F\r\x00\x02@ \x02A\x07F\r\x00B\x01!\x03B\x83\x90\x80\x80\x80\x01!\x01\x0c\x02\x0b \x01B\x08\x87!\x01B\x00!\x03\x0c\x01\x0bB\x00!\x03 \x01\x10\x84\x80\x80\x80\x00!\x01\x0b \x00 \x037\x03\x00 \x00 \x017\x03\x08\x0bF\x00\x02@\x02@ \x01B\x80\x80\x80\x80\x80\x80\x80\xc0\x00|B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x01B\x08\x86B\x07\x84!\x01\x0c\x01\x0b \x01\x10\x85\x80\x80\x80\x00!\x01\x0b \x00B\x007\x03\x00 \x00 \x017\x03\x08\x0b\x0b)\x01\x00A\x80\x80\xc0\x00\x0b V2f1f2\x00\x00\x02\x00\x10\x00\x02\x00\x00\x00\x04\x00\x10\x00\x02\x00\x00\x00\x04\x00\x10\x00\x02\x00\x00\x00\x00\xbf\x0e\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\tfn_enum_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_error_a\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05input\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd0\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_event_a\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bfn_struct_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rfn_enum_int_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x08EnumIntA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11fn_struct_tuple_a\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumB\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x07\x00\x00\x00\x07\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumC\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorB\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x0c\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorC\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00e\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00f\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventA\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventB\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_b\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventC\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_c\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructA\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructB\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructC\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x03\xea\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntA\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntB\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntC\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\xc8\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x01,\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleB\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleC\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x0b\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1a\x00\x00\x00\x00\x00+\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00";
     pub trait Contract {
-        fn fn_struct_a(env: soroban_sdk::Env, f1: u32, f2: bool) -> StructA;
-        fn fn_struct_tuple_a(env: soroban_sdk::Env, f1: i64, f2: i64) -> StructTupleA;
         fn fn_enum_a(env: soroban_sdk::Env) -> EnumA;
-        fn fn_enum_int_a(env: soroban_sdk::Env) -> EnumIntA;
         fn fn_error_a(env: soroban_sdk::Env, input: u32) -> Result<u32, ErrorA>;
         fn fn_event_a(env: soroban_sdk::Env, f1: soroban_sdk::Address, f2: soroban_sdk::String);
+        fn fn_struct_a(env: soroban_sdk::Env, f1: u32, f2: bool) -> StructA;
+        fn fn_enum_int_a(env: soroban_sdk::Env) -> EnumIntA;
+        fn fn_struct_tuple_a(env: soroban_sdk::Env, f1: i64, f2: i64) -> StructTupleA;
     }
     ///Client is a client for calling the contract defined in "Contract".
     pub struct Client<'a> {
@@ -3198,79 +4298,6 @@ mod wasm_imported {
         }
     }
     impl<'a> Client<'a> {
-        pub fn fn_struct_a(&self, f1: &u32, f2: &bool) -> StructA {
-            use core::ops::Not;
-            use soroban_sdk::{FromVal, IntoVal};
-            let res = self.env.invoke_contract(
-                &self.address,
-                &{ soroban_sdk::Symbol::new(&self.env, "fn_struct_a") },
-                ::soroban_sdk::Vec::from_array(
-                    &self.env,
-                    [f1.into_val(&self.env), f2.into_val(&self.env)],
-                ),
-            );
-            res
-        }
-        pub fn try_fn_struct_a(
-            &self,
-            f1: &u32,
-            f2: &bool,
-        ) -> Result<
-            Result<
-                StructA,
-                <StructA as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
-            >,
-            Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-        > {
-            use soroban_sdk::{FromVal, IntoVal};
-            let res = self.env.try_invoke_contract(
-                &self.address,
-                &{ soroban_sdk::Symbol::new(&self.env, "fn_struct_a") },
-                ::soroban_sdk::Vec::from_array(
-                    &self.env,
-                    [f1.into_val(&self.env), f2.into_val(&self.env)],
-                ),
-            );
-            res
-        }
-        pub fn fn_struct_tuple_a(&self, f1: &i64, f2: &i64) -> StructTupleA {
-            use core::ops::Not;
-            use soroban_sdk::{FromVal, IntoVal};
-            let res = self.env.invoke_contract(
-                &self.address,
-                &{ soroban_sdk::Symbol::new(&self.env, "fn_struct_tuple_a") },
-                ::soroban_sdk::Vec::from_array(
-                    &self.env,
-                    [f1.into_val(&self.env), f2.into_val(&self.env)],
-                ),
-            );
-            res
-        }
-        pub fn try_fn_struct_tuple_a(
-            &self,
-            f1: &i64,
-            f2: &i64,
-        ) -> Result<
-            Result<
-                StructTupleA,
-                <StructTupleA as soroban_sdk::TryFromVal<
-                    soroban_sdk::Env,
-                    soroban_sdk::Val,
-                >>::Error,
-            >,
-            Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-        >{
-            use soroban_sdk::{FromVal, IntoVal};
-            let res = self.env.try_invoke_contract(
-                &self.address,
-                &{ soroban_sdk::Symbol::new(&self.env, "fn_struct_tuple_a") },
-                ::soroban_sdk::Vec::from_array(
-                    &self.env,
-                    [f1.into_val(&self.env), f2.into_val(&self.env)],
-                ),
-            );
-            res
-        }
         pub fn fn_enum_a(&self) -> EnumA {
             use core::ops::Not;
             use soroban_sdk::{FromVal, IntoVal};
@@ -3302,33 +4329,6 @@ mod wasm_imported {
                     const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("fn_enum_a");
                     SYMBOL
                 },
-                ::soroban_sdk::Vec::new(&self.env),
-            );
-            res
-        }
-        pub fn fn_enum_int_a(&self) -> EnumIntA {
-            use core::ops::Not;
-            use soroban_sdk::{FromVal, IntoVal};
-            let res = self.env.invoke_contract(
-                &self.address,
-                &{ soroban_sdk::Symbol::new(&self.env, "fn_enum_int_a") },
-                ::soroban_sdk::Vec::new(&self.env),
-            );
-            res
-        }
-        pub fn try_fn_enum_int_a(
-            &self,
-        ) -> Result<
-            Result<
-                EnumIntA,
-                <EnumIntA as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
-            >,
-            Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-        > {
-            use soroban_sdk::{FromVal, IntoVal};
-            let res = self.env.try_invoke_contract(
-                &self.address,
-                &{ soroban_sdk::Symbol::new(&self.env, "fn_enum_int_a") },
                 ::soroban_sdk::Vec::new(&self.env),
             );
             res
@@ -3393,28 +4393,113 @@ mod wasm_imported {
             );
             res
         }
+        pub fn fn_struct_a(&self, f1: &u32, f2: &bool) -> StructA {
+            use core::ops::Not;
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "fn_struct_a") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [f1.into_val(&self.env), f2.into_val(&self.env)],
+                ),
+            );
+            res
+        }
+        pub fn try_fn_struct_a(
+            &self,
+            f1: &u32,
+            f2: &bool,
+        ) -> Result<
+            Result<
+                StructA,
+                <StructA as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            >,
+            Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+        > {
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.try_invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "fn_struct_a") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [f1.into_val(&self.env), f2.into_val(&self.env)],
+                ),
+            );
+            res
+        }
+        pub fn fn_enum_int_a(&self) -> EnumIntA {
+            use core::ops::Not;
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "fn_enum_int_a") },
+                ::soroban_sdk::Vec::new(&self.env),
+            );
+            res
+        }
+        pub fn try_fn_enum_int_a(
+            &self,
+        ) -> Result<
+            Result<
+                EnumIntA,
+                <EnumIntA as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+            >,
+            Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+        > {
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.try_invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "fn_enum_int_a") },
+                ::soroban_sdk::Vec::new(&self.env),
+            );
+            res
+        }
+        pub fn fn_struct_tuple_a(&self, f1: &i64, f2: &i64) -> StructTupleA {
+            use core::ops::Not;
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "fn_struct_tuple_a") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [f1.into_val(&self.env), f2.into_val(&self.env)],
+                ),
+            );
+            res
+        }
+        pub fn try_fn_struct_tuple_a(
+            &self,
+            f1: &i64,
+            f2: &i64,
+        ) -> Result<
+            Result<
+                StructTupleA,
+                <StructTupleA as soroban_sdk::TryFromVal<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::Error,
+            >,
+            Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+        >{
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.try_invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "fn_struct_tuple_a") },
+                ::soroban_sdk::Vec::from_array(
+                    &self.env,
+                    [f1.into_val(&self.env), f2.into_val(&self.env)],
+                ),
+            );
+            res
+        }
     }
     ///Args is a type for building arg lists for functions defined in "Contract".
     pub struct Args;
     impl Args {
         #[inline(always)]
         #[allow(clippy::unused_unit)]
-        pub fn fn_struct_a<'i>(f1: &'i u32, f2: &'i bool) -> (&'i u32, &'i bool) {
-            (f1, f2)
-        }
-        #[inline(always)]
-        #[allow(clippy::unused_unit)]
-        pub fn fn_struct_tuple_a<'i>(f1: &'i i64, f2: &'i i64) -> (&'i i64, &'i i64) {
-            (f1, f2)
-        }
-        #[inline(always)]
-        #[allow(clippy::unused_unit)]
         pub fn fn_enum_a<'i>() -> () {
-            ()
-        }
-        #[inline(always)]
-        #[allow(clippy::unused_unit)]
-        pub fn fn_enum_int_a<'i>() -> () {
             ()
         }
         #[inline(always)]
@@ -3428,6 +4513,21 @@ mod wasm_imported {
             f1: &'i soroban_sdk::Address,
             f2: &'i soroban_sdk::String,
         ) -> (&'i soroban_sdk::Address, &'i soroban_sdk::String) {
+            (f1, f2)
+        }
+        #[inline(always)]
+        #[allow(clippy::unused_unit)]
+        pub fn fn_struct_a<'i>(f1: &'i u32, f2: &'i bool) -> (&'i u32, &'i bool) {
+            (f1, f2)
+        }
+        #[inline(always)]
+        #[allow(clippy::unused_unit)]
+        pub fn fn_enum_int_a<'i>() -> () {
+            ()
+        }
+        #[inline(always)]
+        #[allow(clippy::unused_unit)]
+        pub fn fn_struct_tuple_a<'i>(f1: &'i i64, f2: &'i i64) -> (&'i i64, &'i i64) {
             (f1, f2)
         }
     }
@@ -3508,7 +4608,6 @@ mod wasm_imported {
         fn spec_shaking_marker() {
             <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <bool as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            #[cfg(target_family = "wasm")]
             {
                 static MARKER: [u8; 14usize] = *b"SpEcV1\xb6\x1c\xfd\xdfhY-d";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -3642,7 +4741,6 @@ mod wasm_imported {
         fn spec_shaking_marker() {
             <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <soroban_sdk::String as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            #[cfg(target_family = "wasm")]
             {
                 static MARKER: [u8; 14usize] = *b"SpEcV1\xf3\xc4\xd3\x8c\xc1w\xe9\x18";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -3776,7 +4874,6 @@ mod wasm_imported {
         fn spec_shaking_marker() {
             <soroban_sdk::Vec<u32> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            #[cfg(target_family = "wasm")]
             {
                 static MARKER: [u8; 14usize] = *b"SpEcV1\xa3\x16\n\x8f\xc9\x92\xd2\x11";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -3907,7 +5004,6 @@ mod wasm_imported {
         fn spec_shaking_marker() {
             <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            #[cfg(target_family = "wasm")]
             {
                 static MARKER: [u8; 14usize] = *b"SpEcV1\xcf)\x97]S\xb2\xfd)";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -4034,7 +5130,6 @@ mod wasm_imported {
         fn spec_shaking_marker() {
             <u128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <u128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            #[cfg(target_family = "wasm")]
             {
                 static MARKER: [u8; 14usize] = *b"SpEcV1x\xd98\x9c\x1ao\xac\x8c";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -4121,7 +5216,7 @@ mod wasm_imported {
     impl ::core::cmp::PartialEq for StructTupleC {
         #[inline]
         fn eq(&self, other: &StructTupleC) -> bool {
-            self.0 == other.0 && self.1 == other.1
+            self.1 == other.1 && self.0 == other.0
         }
     }
     #[automatically_derived]
@@ -4162,7 +5257,6 @@ mod wasm_imported {
         fn spec_shaking_marker() {
             <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            #[cfg(target_family = "wasm")]
             {
                 static MARKER: [u8; 14usize] = *b"SpEcV1\xc5=\x81\xc1\"\xafT\xd9";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -4292,7 +5386,6 @@ mod wasm_imported {
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
-            #[cfg(target_family = "wasm")]
             {
                 static MARKER: [u8; 14usize] = *b"SpEcV1\xa2=N\xc1p\x95\x90\xb2";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -4499,7 +5592,6 @@ mod wasm_imported {
         #[inline(always)]
         fn spec_shaking_marker() {
             <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            #[cfg(target_family = "wasm")]
             {
                 static MARKER: [u8; 14usize] = *b"SpEcV1'\x1b\0DSH^\xcc";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -4709,7 +5801,6 @@ mod wasm_imported {
         fn spec_shaking_marker() {
             <StructA as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <StructTupleA as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            #[cfg(target_family = "wasm")]
             {
                 static MARKER: [u8; 14usize] = *b"SpEcV1\xa0\xdd\x8f\xdc\xc9W\xbe\xc2";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -4883,7 +5974,6 @@ mod wasm_imported {
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
-            #[cfg(target_family = "wasm")]
             {
                 static MARKER: [u8; 14usize] = *b"SpEcV1V]\x80\\~\x1a\x08/";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -5006,7 +6096,6 @@ mod wasm_imported {
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
-            #[cfg(target_family = "wasm")]
             {
                 static MARKER: [u8; 14usize] = *b"SpEcV1,\x9c\xc0_\xed_)\x85";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -5129,7 +6218,6 @@ mod wasm_imported {
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
-            #[cfg(target_family = "wasm")]
             {
                 static MARKER: [u8; 14usize] = *b"SpEcV1`\xca\xda\x19\xb9c\xf0/";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -5252,7 +6340,6 @@ mod wasm_imported {
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
-            #[cfg(target_family = "wasm")]
             {
                 static MARKER: [u8; 14usize] = *b"SpEcV1\xe9R\xa7\xe8b\x99\xa2\xc3";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -5445,7 +6532,6 @@ mod wasm_imported {
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
-            #[cfg(target_family = "wasm")]
             {
                 static MARKER: [u8; 14usize] = *b"SpEcV1\x1d1\xd6\xfb\x88\xd2=\xe3";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -5638,7 +6724,6 @@ mod wasm_imported {
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
-            #[cfg(target_family = "wasm")]
             {
                 static MARKER: [u8; 14usize] = *b"SpEcV1\xb9\x01\xafj\xe0c\xa3\r";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -5833,7 +6918,6 @@ mod wasm_imported {
         fn spec_shaking_marker() {
             <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <soroban_sdk::String as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            #[cfg(target_family = "wasm")]
             {
                 static MARKER: [u8; 14usize] = *b"SpEcV1K\xe6\x8ej\x19\x9en\xbd";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -5913,7 +6997,7 @@ mod wasm_imported {
     impl ::core::cmp::PartialEq for EventB {
         #[inline]
         fn eq(&self, other: &EventB) -> bool {
-            self.f1 == other.f1 && self.f2 == other.f2 && self.f3 == other.f3
+            self.f3 == other.f3 && self.f1 == other.f1 && self.f2 == other.f2
         }
     }
     #[automatically_derived]
@@ -5960,7 +7044,6 @@ mod wasm_imported {
             <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            #[cfg(target_family = "wasm")]
             {
                 static MARKER: [u8; 14usize] = *b"SpEcV1\xe6\xaa\xefz\x17i$\x15";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -6043,7 +7126,7 @@ mod wasm_imported {
     impl ::core::cmp::PartialEq for EventC {
         #[inline]
         fn eq(&self, other: &EventC) -> bool {
-            self.f1 == other.f1 && self.f2 == other.f2 && self.f3 == other.f3
+            self.f2 == other.f2 && self.f3 == other.f3 && self.f1 == other.f1
         }
     }
     #[automatically_derived]
@@ -6090,7 +7173,6 @@ mod wasm_imported {
             <soroban_sdk::Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            #[cfg(target_family = "wasm")]
             {
                 static MARKER: [u8; 14usize] = *b"SpEcV1\x16\xd6\xdf\xe7\xdb\xb4W@";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -6178,7 +7260,6 @@ impl soroban_sdk::SpecShakingMarker for UnusedStruct {
     #[inline(always)]
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1|\x9c\t\x1e\xf5\xa8\x19\xa0";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -6291,7 +7372,6 @@ impl soroban_sdk::SpecShakingMarker for UnusedEnum {
     #[inline(always)]
     fn spec_shaking_marker() {
         <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1/\x82\x9a0\xbe@\x0eZ";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -6427,7 +7507,6 @@ impl soroban_sdk::SpecShakingMarker for UnusedIntEnum {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\x0c\xdd\xee~,\x83\xe4\x9c";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -6517,7 +7596,7 @@ impl ::core::marker::StructuralPartialEq for UnusedEvent {}
 impl ::core::cmp::PartialEq for UnusedEvent {
     #[inline]
     fn eq(&self, other: &UnusedEvent) -> bool {
-        self.kind == other.kind && self.data == other.data
+        self.data == other.data && self.kind == other.kind
     }
 }
 #[link_section = "contractspecv0"]
@@ -6533,7 +7612,6 @@ impl soroban_sdk::SpecShakingMarker for UnusedEvent {
     fn spec_shaking_marker() {
         <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\x10\xe8\xf6\xcc\xea\xc3Sb";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -6562,6 +7640,161 @@ impl UnusedEvent {
     pub fn publish(&self, env: &soroban_sdk::Env) {
         <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
+    }
+}
+pub enum UnusedPubError {
+    Nope = 1,
+}
+#[automatically_derived]
+impl ::core::marker::Copy for UnusedPubError {}
+#[automatically_derived]
+impl ::core::clone::Clone for UnusedPubError {
+    #[inline]
+    fn clone(&self) -> UnusedPubError {
+        *self
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UnusedPubError {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::write_str(f, "Nope")
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UnusedPubError {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {}
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UnusedPubError {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UnusedPubError {
+    #[inline]
+    fn eq(&self, other: &UnusedPubError) -> bool {
+        true
+    }
+}
+#[link_section = "contractspecv0"]
+pub static __SPEC_XDR_TYPE_UNUSEDPUBERROR: [u8; 52usize] = UnusedPubError::spec_xdr();
+impl UnusedPubError {
+    pub const fn spec_xdr() -> [u8; 52usize] {
+        *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x0eUnusedPubError\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04Nope\0\0\0\x01"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UnusedPubError {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1\xe7\xf0{7\xdd\x90z=";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
+impl TryFrom<soroban_sdk::Error> for UnusedPubError {
+    type Error = soroban_sdk::Error;
+    #[inline(always)]
+    fn try_from(error: soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
+        if error.is_type(soroban_sdk::xdr::ScErrorType::Contract) {
+            let discriminant = error.get_code();
+            Ok(match discriminant {
+                1u32 => Self::Nope,
+                _ => return Err(error),
+            })
+        } else {
+            Err(error)
+        }
+    }
+}
+impl TryFrom<&soroban_sdk::Error> for UnusedPubError {
+    type Error = soroban_sdk::Error;
+    #[inline(always)]
+    fn try_from(error: &soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
+        <_ as TryFrom<soroban_sdk::Error>>::try_from(*error)
+    }
+}
+impl From<UnusedPubError> for soroban_sdk::Error {
+    #[inline(always)]
+    fn from(val: UnusedPubError) -> soroban_sdk::Error {
+        <_ as From<&UnusedPubError>>::from(&val)
+    }
+}
+impl From<&UnusedPubError> for soroban_sdk::Error {
+    #[inline(always)]
+    fn from(val: &UnusedPubError) -> soroban_sdk::Error {
+        match val {
+            UnusedPubError::Nope => soroban_sdk::Error::from_contract_error(1u32),
+        }
+    }
+}
+impl TryFrom<soroban_sdk::InvokeError> for UnusedPubError {
+    type Error = soroban_sdk::InvokeError;
+    #[inline(always)]
+    fn try_from(error: soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
+        match error {
+            soroban_sdk::InvokeError::Abort => Err(error),
+            soroban_sdk::InvokeError::Contract(code) => Ok(match code {
+                1u32 => Self::Nope,
+                _ => return Err(error),
+            }),
+        }
+    }
+}
+impl TryFrom<&soroban_sdk::InvokeError> for UnusedPubError {
+    type Error = soroban_sdk::InvokeError;
+    #[inline(always)]
+    fn try_from(error: &soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
+        <_ as TryFrom<soroban_sdk::InvokeError>>::try_from(*error)
+    }
+}
+impl From<UnusedPubError> for soroban_sdk::InvokeError {
+    #[inline(always)]
+    fn from(val: UnusedPubError) -> soroban_sdk::InvokeError {
+        <_ as From<&UnusedPubError>>::from(&val)
+    }
+}
+impl From<&UnusedPubError> for soroban_sdk::InvokeError {
+    #[inline(always)]
+    fn from(val: &UnusedPubError) -> soroban_sdk::InvokeError {
+        match val {
+            UnusedPubError::Nope => soroban_sdk::InvokeError::Contract(1u32),
+        }
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedPubError {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::TryIntoVal;
+        let error: soroban_sdk::Error = val.try_into_val(env)?;
+        error.try_into().map_err(|_| soroban_sdk::ConversionError)
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UnusedPubError> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UnusedPubError,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        let error: soroban_sdk::Error = val.into();
+        Ok(error.into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UnusedPubError> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UnusedPubError,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UnusedPubError>>::try_from_val(env, *val)
     }
 }
 pub struct UnusedNonContractFnParam {
@@ -6619,7 +7852,6 @@ impl soroban_sdk::SpecShakingMarker for UnusedNonContractFnParam {
     #[inline(always)]
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\x81\xbc\xdb\xb4\xc1\xcb\xbd\xc5";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -6727,7 +7959,6 @@ impl soroban_sdk::SpecShakingMarker for UnusedNonContractFnReturn {
     #[inline(always)]
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\x7fe\x1c\n\x87g\x1d\xc0";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -6829,7 +8060,6 @@ impl soroban_sdk::SpecShakingMarker for UnusedNonPubStruct {
     #[inline(always)]
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\xa8;,%}]PA";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -6928,7 +8158,6 @@ impl soroban_sdk::SpecShakingMarker for UnusedNonPubError {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        #[cfg(target_family = "wasm")]
         {
             static MARKER: [u8; 14usize] = *b"SpEcV1\xd9_\x99\"=\xc6FM";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -7047,12 +8276,37 @@ impl Contract {
     pub fn with_error(_env: Env) -> Result<u32, UsedErrorEnum> {
         Ok(42)
     }
+    pub fn with_panic_error(env: Env, fail: bool) {
+        if fail {
+            {
+                (&env).panic_with_error(UsedPanicErrorEnum::Boom);
+            };
+        }
+    }
+    pub fn with_assert_error(env: Env, ok: bool) {
+        {
+            if !(ok) {
+                {
+                    (&env).panic_with_error(UsedAssertErrorEnum::Bad);
+                };
+            }
+        };
+    }
+    pub fn with_panic_raw_error(env: Env, fail: bool) {
+        if fail {
+            {
+                (&env).panic_with_error(soroban_sdk::Error::from_contract_error(7));
+            };
+        }
+    }
     pub fn with_vec(_env: Env, _v: Vec<UsedVecElement>) {}
+    pub fn with_vec_nested(_env: Env, _v: Vec<UsedVecElementNested>) {}
     pub fn with_map(_env: Env, _m: Map<UsedMapKey, UsedMapVal>) {}
     pub fn with_option(_env: Env, _o: Option<UsedOptionElement>) {}
     pub fn with_result(_env: Env) -> Result<UsedResultOk, UsedErrorEnum> {
         Ok(UsedResultOk { data: 1 })
     }
+    pub fn with_recursion(_env: Env, _r: UsedRecursiveRoot) {}
     pub fn publish_simple(env: Env) {
         UsedEventSimple {
             kind: Symbol::new(&env, "transfer"),
@@ -7161,6 +8415,54 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
+pub mod __Contract__with_panic_error__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_FN_WITH_PANIC_ERROR: [u8; 52usize] =
+        super::Contract::spec_xdr_with_panic_error();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_with_panic_error() -> [u8; 52usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x10with_panic_error\0\0\0\x01\0\0\0\0\0\0\0\x04fail\0\0\0\x01\0\0\0\0"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__with_assert_error__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_FN_WITH_ASSERT_ERROR: [u8; 56usize] =
+        super::Contract::spec_xdr_with_assert_error();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_with_assert_error() -> [u8; 56usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x11with_assert_error\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02ok\0\0\0\0\0\x01\0\0\0\0"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__with_panic_raw_error__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_FN_WITH_PANIC_RAW_ERROR: [u8; 56usize] =
+        super::Contract::spec_xdr_with_panic_raw_error();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_with_panic_raw_error() -> [u8; 56usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x14with_panic_raw_error\0\0\0\x01\0\0\0\0\0\0\0\x04fail\0\0\0\x01\0\0\0\0"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
 pub mod __Contract__with_vec__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
@@ -7172,6 +8474,22 @@ impl Contract {
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_vec() -> [u8; 68usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x08with_vec\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x0eUsedVecElement\0\0\0\0\0\0"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__with_vec_nested__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_FN_WITH_VEC_NESTED: [u8; 80usize] =
+        super::Contract::spec_xdr_with_vec_nested();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_with_vec_nested() -> [u8; 80usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x0fwith_vec_nested\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x14UsedVecElementNested\0\0\0\0"
     }
 }
 #[doc(hidden)]
@@ -7217,6 +8535,22 @@ impl Contract {
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_result() -> [u8; 80usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0bwith_result\0\0\0\0\0\0\0\0\x01\0\0\x03\xe9\0\0\x07\xd0\0\0\0\x0cUsedResultOk\0\0\x07\xd0\0\0\0\rUsedErrorEnum\0\0\0"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__with_recursion__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[link_section = "contractspecv0"]
+    pub static __SPEC_XDR_FN_WITH_RECURSION: [u8; 76usize] =
+        super::Contract::spec_xdr_with_recursion();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_with_recursion() -> [u8; 76usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x0ewith_recursion\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01r\0\0\0\0\0\x07\xd0\0\0\0\x11UsedRecursiveRoot\0\0\0\0\0\0\0"
     }
 }
 #[doc(hidden)]
@@ -7493,6 +8827,81 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    pub fn with_panic_error(&self, fail: &bool) -> () {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "with_panic_error") },
+            ::soroban_sdk::Vec::from_array(&self.env, [fail.into_val(&self.env)]),
+        );
+        res
+    }
+    pub fn try_with_panic_error(
+        &self,
+        fail: &bool,
+    ) -> Result<
+        Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "with_panic_error") },
+            ::soroban_sdk::Vec::from_array(&self.env, [fail.into_val(&self.env)]),
+        );
+        res
+    }
+    pub fn with_assert_error(&self, ok: &bool) -> () {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "with_assert_error") },
+            ::soroban_sdk::Vec::from_array(&self.env, [ok.into_val(&self.env)]),
+        );
+        res
+    }
+    pub fn try_with_assert_error(
+        &self,
+        ok: &bool,
+    ) -> Result<
+        Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "with_assert_error") },
+            ::soroban_sdk::Vec::from_array(&self.env, [ok.into_val(&self.env)]),
+        );
+        res
+    }
+    pub fn with_panic_raw_error(&self, fail: &bool) -> () {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "with_panic_raw_error") },
+            ::soroban_sdk::Vec::from_array(&self.env, [fail.into_val(&self.env)]),
+        );
+        res
+    }
+    pub fn try_with_panic_raw_error(
+        &self,
+        fail: &bool,
+    ) -> Result<
+        Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "with_panic_raw_error") },
+            ::soroban_sdk::Vec::from_array(&self.env, [fail.into_val(&self.env)]),
+        );
+        res
+    }
     pub fn with_vec(&self, _v: &Vec<UsedVecElement>) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -7522,6 +8931,31 @@ impl<'a> ContractClient<'a> {
                 const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("with_vec");
                 SYMBOL
             },
+            ::soroban_sdk::Vec::from_array(&self.env, [_v.into_val(&self.env)]),
+        );
+        res
+    }
+    pub fn with_vec_nested(&self, _v: &Vec<UsedVecElementNested>) -> () {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "with_vec_nested") },
+            ::soroban_sdk::Vec::from_array(&self.env, [_v.into_val(&self.env)]),
+        );
+        res
+    }
+    pub fn try_with_vec_nested(
+        &self,
+        _v: &Vec<UsedVecElementNested>,
+    ) -> Result<
+        Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "with_vec_nested") },
             ::soroban_sdk::Vec::from_array(&self.env, [_v.into_val(&self.env)]),
         );
         res
@@ -7608,6 +9042,31 @@ impl<'a> ContractClient<'a> {
             &self.address,
             &{ soroban_sdk::Symbol::new(&self.env, "with_result") },
             ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
+    pub fn with_recursion(&self, _r: &UsedRecursiveRoot) -> () {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "with_recursion") },
+            ::soroban_sdk::Vec::from_array(&self.env, [_r.into_val(&self.env)]),
+        );
+        res
+    }
+    pub fn try_with_recursion(
+        &self,
+        _r: &UsedRecursiveRoot,
+    ) -> Result<
+        Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "with_recursion") },
+            ::soroban_sdk::Vec::from_array(&self.env, [_r.into_val(&self.env)]),
         );
         res
     }
@@ -7931,7 +9390,29 @@ impl ContractArgs {
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
+    pub fn with_panic_error<'i>(fail: &'i bool) -> (&'i bool,) {
+        (fail,)
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn with_assert_error<'i>(ok: &'i bool) -> (&'i bool,) {
+        (ok,)
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn with_panic_raw_error<'i>(fail: &'i bool) -> (&'i bool,) {
+        (fail,)
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
     pub fn with_vec<'i>(_v: &'i Vec<UsedVecElement>) -> (&'i Vec<UsedVecElement>,) {
+        (_v,)
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn with_vec_nested<'i>(
+        _v: &'i Vec<UsedVecElementNested>,
+    ) -> (&'i Vec<UsedVecElementNested>,) {
         (_v,)
     }
     #[inline(always)]
@@ -7948,6 +9429,11 @@ impl ContractArgs {
     #[allow(clippy::unused_unit)]
     pub fn with_result<'i>() -> () {
         ()
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn with_recursion<'i>(_r: &'i UsedRecursiveRoot) -> (&'i UsedRecursiveRoot,) {
+        (_r,)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
@@ -8087,6 +9573,99 @@ pub extern "C" fn __Contract__with_error__invoke_raw_extern() -> soroban_sdk::Va
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).with_panic_error` instead")]
+#[allow(deprecated)]
+pub fn __Contract__with_panic_error__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::with_panic_error(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).with_panic_error` instead")]
+#[export_name = "with_panic_error"]
+pub extern "C" fn __Contract__with_panic_error__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__with_panic_error__invoke_raw(soroban_sdk::Env::default(), arg_0)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).with_assert_error` instead")]
+#[allow(deprecated)]
+pub fn __Contract__with_assert_error__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::with_assert_error(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).with_assert_error` instead")]
+#[export_name = "with_assert_error"]
+pub extern "C" fn __Contract__with_assert_error__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__with_assert_error__invoke_raw(soroban_sdk::Env::default(), arg_0)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).with_panic_raw_error` instead")]
+#[allow(deprecated)]
+pub fn __Contract__with_panic_raw_error__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::with_panic_raw_error(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).with_panic_raw_error` instead")]
+#[export_name = "with_panic_raw_error"]
+pub extern "C" fn __Contract__with_panic_raw_error__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__with_panic_raw_error__invoke_raw(soroban_sdk::Env::default(), arg_0)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).with_vec` instead")]
 #[allow(deprecated)]
 pub fn __Contract__with_vec__invoke_raw(
@@ -8115,6 +9694,37 @@ pub extern "C" fn __Contract__with_vec__invoke_raw_extern(
 ) -> soroban_sdk::Val {
     #[allow(deprecated)]
     __Contract__with_vec__invoke_raw(soroban_sdk::Env::default(), arg_0)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).with_vec_nested` instead")]
+#[allow(deprecated)]
+pub fn __Contract__with_vec_nested__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::with_vec_nested(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).with_vec_nested` instead")]
+#[export_name = "with_vec_nested"]
+pub extern "C" fn __Contract__with_vec_nested__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__with_vec_nested__invoke_raw(soroban_sdk::Env::default(), arg_0)
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
@@ -8195,6 +9805,37 @@ pub fn __Contract__with_result__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk
 pub extern "C" fn __Contract__with_result__invoke_raw_extern() -> soroban_sdk::Val {
     #[allow(deprecated)]
     __Contract__with_result__invoke_raw(soroban_sdk::Env::default())
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).with_recursion` instead")]
+#[allow(deprecated)]
+pub fn __Contract__with_recursion__invoke_raw(
+    env: soroban_sdk::Env,
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::with_recursion(
+            env.clone(),
+            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
+                <_ as soroban_sdk::TryFromValForContractFn<
+                    soroban_sdk::Env,
+                    soroban_sdk::Val,
+                >>::try_from_val_for_contract_fn(&env, &arg_0),
+            ),
+        ),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).with_recursion` instead")]
+#[export_name = "with_recursion"]
+pub extern "C" fn __Contract__with_recursion__invoke_raw_extern(
+    arg_0: soroban_sdk::Val,
+) -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__with_recursion__invoke_raw(soroban_sdk::Env::default(), arg_0)
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]

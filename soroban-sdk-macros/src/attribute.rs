@@ -1,4 +1,6 @@
-use syn::{punctuated::Punctuated, Attribute, Data, Fields, FieldsNamed, FieldsUnnamed};
+use syn::{
+    ext::IdentExt as _, punctuated::Punctuated, Attribute, Data, Fields, FieldsNamed, FieldsUnnamed,
+};
 
 /// Returns true if the attribute is a doc attribute.
 pub fn is_attr_doc(attr: &Attribute) -> bool {
@@ -31,7 +33,7 @@ pub fn remove_attributes_from_item(data: &mut Data, attrs: &[&str]) {
             !attr
                 .path()
                 .get_ident()
-                .is_some_and(|ident| attrs.contains(&ident.to_string().as_str()))
+                .is_some_and(|ident| attrs.contains(&ident.unraw().to_string().as_str()))
         });
     }
 }

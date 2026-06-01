@@ -1,13 +1,12 @@
 #![feature(prelude_import)]
 #![no_std]
-#[prelude_import]
-use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
-extern crate compiler_builtins as _;
+#[prelude_import]
+use core::prelude::rust_2021::*;
 use soroban_sdk::{
     contract, contractimpl, contracttype,
-    crypto::bn254::{Bn254G1Affine, Bn254G2Affine, Fr},
+    crypto::bn254::{Bn254Fr, Bn254G1Affine, Bn254G2Affine},
     Env, Vec,
 };
 pub struct MockProof {
@@ -18,6 +17,14 @@ pub static __SPEC_XDR_TYPE_MOCKPROOF: [u8; 80usize] = MockProof::spec_xdr();
 impl MockProof {
     pub const fn spec_xdr() -> [u8; 80usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\tMockProof\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02g1\0\0\0\0\x03\xea\0\0\x03\xee\0\0\0@\0\0\0\0\0\0\0\x02g2\0\0\0\0\x03\xea\0\0\x03\xee\0\0\0\x80"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for MockProof {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <Vec<Bn254G1Affine> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <Vec<Bn254G2Affine> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MockProof {
@@ -138,31 +145,28 @@ impl TryFrom<&MockProof> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &MockProof) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(
-            #[rustc_box]
-            ::alloc::boxed::Box::new([
-                soroban_sdk::xdr::ScMapEntry {
-                    key: soroban_sdk::xdr::ScSymbol(
-                        "g1".try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    )
-                    .into(),
-                    val: (&val.g1)
-                        .try_into()
+        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
+            soroban_sdk::xdr::ScMapEntry {
+                key: soroban_sdk::xdr::ScSymbol(
+                    "g1".try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                },
-                soroban_sdk::xdr::ScMapEntry {
-                    key: soroban_sdk::xdr::ScSymbol(
-                        "g2".try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    )
-                    .into(),
-                    val: (&val.g2)
-                        .try_into()
+                )
+                .into(),
+                val: (&val.g1)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            },
+            soroban_sdk::xdr::ScMapEntry {
+                key: soroban_sdk::xdr::ScSymbol(
+                    "g2".try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                },
-            ]),
-        ))
+                )
+                .into(),
+                val: (&val.g2)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            },
+        ])))
     }
 }
 impl TryFrom<MockProof> for soroban_sdk::xdr::ScMap {
@@ -539,10 +543,10 @@ impl Contract {
     pub fn g1_add(a: Bn254G1Affine, b: Bn254G1Affine) -> Bn254G1Affine {
         a + b
     }
-    pub fn g1_mul(p: Bn254G1Affine, s: Fr) -> Bn254G1Affine {
+    pub fn g1_mul(p: Bn254G1Affine, s: Bn254Fr) -> Bn254G1Affine {
         p * s
     }
-    pub fn fr_vec_get(_env: Env, values: Vec<Fr>, index: u32) -> Fr {
+    pub fn fr_vec_get(_env: Env, values: Vec<Bn254Fr>, index: u32) -> Bn254Fr {
         values.get(index).unwrap()
     }
 }
@@ -658,7 +662,11 @@ impl<'a> ContractClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -737,7 +745,11 @@ impl<'a> ContractClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -758,7 +770,7 @@ impl<'a> ContractClient<'a> {
         }
         res
     }
-    pub fn g1_mul(&self, p: &Bn254G1Affine, s: &Fr) -> Bn254G1Affine {
+    pub fn g1_mul(&self, p: &Bn254G1Affine, s: &Bn254Fr) -> Bn254G1Affine {
         use core::ops::Not;
         let old_auth_manager = self
             .env
@@ -801,7 +813,7 @@ impl<'a> ContractClient<'a> {
     pub fn try_g1_mul(
         &self,
         p: &Bn254G1Affine,
-        s: &Fr,
+        s: &Bn254Fr,
     ) -> Result<
         Result<
             Bn254G1Affine,
@@ -823,7 +835,11 @@ impl<'a> ContractClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -844,7 +860,7 @@ impl<'a> ContractClient<'a> {
         }
         res
     }
-    pub fn fr_vec_get(&self, values: &Vec<Fr>, index: &u32) -> Fr {
+    pub fn fr_vec_get(&self, values: &Vec<Bn254Fr>, index: &u32) -> Bn254Fr {
         use core::ops::Not;
         let old_auth_manager = self
             .env
@@ -882,10 +898,13 @@ impl<'a> ContractClient<'a> {
     }
     pub fn try_fr_vec_get(
         &self,
-        values: &Vec<Fr>,
+        values: &Vec<Bn254Fr>,
         index: &u32,
     ) -> Result<
-        Result<Fr, <Fr as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<
+            Bn254Fr,
+            <Bn254Fr as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error,
+        >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
         use core::ops::Not;
@@ -902,7 +921,11 @@ impl<'a> ContractClient<'a> {
                 self.env.mock_auths(mock_auths);
             }
             if self.mock_all_auths {
-                self.env.mock_all_auths();
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
             }
         }
         use soroban_sdk::{FromVal, IntoVal};
@@ -936,12 +959,12 @@ impl ContractArgs {
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn g1_mul<'i>(p: &'i Bn254G1Affine, s: &'i Fr) -> (&'i Bn254G1Affine, &'i Fr) {
+    pub fn g1_mul<'i>(p: &'i Bn254G1Affine, s: &'i Bn254Fr) -> (&'i Bn254G1Affine, &'i Bn254Fr) {
         (p, s)
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn fr_vec_get<'i>(values: &'i Vec<Fr>, index: &'i u32) -> (&'i Vec<Fr>, &'i u32) {
+    pub fn fr_vec_get<'i>(values: &'i Vec<Bn254Fr>, index: &'i u32) -> (&'i Vec<Bn254Fr>, &'i u32) {
         (values, index)
     }
 }
@@ -1208,7 +1231,6 @@ fn __Contract____791f30cbe20fdd8dd82fcdc2b6465e800581173658019a4bee49e2305925f4e
         );
     }
 }
-#[cfg(test)]
 mod test {
     use super::*;
     use soroban_sdk::{bytesn, vec, Env, IntoVal, Symbol, Val, U256};
@@ -1261,7 +1283,6 @@ mod test {
         (g1_points, g2_points)
     }
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test_add_and_mul"]
     #[doc(hidden)]
     pub const test_add_and_mul: test::TestDescAndFn = test::TestDescAndFn {
@@ -1312,7 +1333,7 @@ mod test {
                 }
             }
         };
-        let scalar: Fr = U256::from_u32(&env, 2).into();
+        let scalar: Bn254Fr = U256::from_u32(&env, 2).into();
         match (
             &client.g1_add(&x_bn254, &x_bn254),
             &client.g1_mul(&x_bn254, &scalar),
@@ -1331,7 +1352,6 @@ mod test {
         };
     }
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test_pairing"]
     #[doc(hidden)]
     pub const test_pairing: test::TestDescAndFn = test::TestDescAndFn {
@@ -1383,7 +1403,6 @@ mod test {
         }
     }
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test_g1_negation"]
     #[doc(hidden)]
     pub const test_g1_negation: test::TestDescAndFn = test::TestDescAndFn {
@@ -1442,7 +1461,6 @@ mod test {
         };
     }
     extern crate test;
-    #[cfg(test)]
     #[rustc_test_marker = "test::test_fr_decode_reduces_unreduced_scalar_and_vec_elements"]
     #[doc(hidden)]
     pub const test_fr_decode_reduces_unreduced_scalar_and_vec_elements: test::TestDescAndFn =
@@ -1496,7 +1514,7 @@ mod test {
                 modulus.add(&seven).into_val(&env),
             ],
         );
-        let first: Fr = env.invoke_contract(
+        let first: Bn254Fr = env.invoke_contract(
             &contract_id,
             &Symbol::new(&env, "fr_vec_get"),
             ::soroban_sdk::Vec::from_array(
@@ -1504,12 +1522,12 @@ mod test {
                 [raw_vals.clone().into_val(&env), 0_u32.into_val(&env)],
             ),
         );
-        let second: Fr = env.invoke_contract(
+        let second: Bn254Fr = env.invoke_contract(
             &contract_id,
             &Symbol::new(&env, "fr_vec_get"),
             ::soroban_sdk::Vec::from_array(&env, [raw_vals.into_val(&env), 1_u32.into_val(&env)]),
         );
-        match (&first, &Fr::from_u256(three)) {
+        match (&first, &Bn254Fr::from_u256(three)) {
             (left_val, right_val) => {
                 if !(*left_val == *right_val) {
                     let kind = ::core::panicking::AssertKind::Eq;
@@ -1522,7 +1540,7 @@ mod test {
                 }
             }
         };
-        match (&second, &Fr::from_u256(seven)) {
+        match (&second, &Bn254Fr::from_u256(seven)) {
             (left_val, right_val) => {
                 if !(*left_val == *right_val) {
                     let kind = ::core::panicking::AssertKind::Eq;

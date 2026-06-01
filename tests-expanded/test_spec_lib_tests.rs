@@ -1,10 +1,9 @@
 #![feature(prelude_import)]
 #![no_std]
-#[prelude_import]
-use core::prelude::rust_2021::*;
 #[macro_use]
 extern crate core;
-extern crate compiler_builtins as _;
+#[prelude_import]
+use core::prelude::rust_2021::*;
 use soroban_sdk::{contracterror, contractevent, contracttype, Address, Vec};
 pub struct StructA {
     pub f1: u32,
@@ -172,31 +171,28 @@ impl TryFrom<&StructA> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &StructA) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(
-            #[rustc_box]
-            ::alloc::boxed::Box::new([
-                soroban_sdk::xdr::ScMapEntry {
-                    key: soroban_sdk::xdr::ScSymbol(
-                        "f1".try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    )
-                    .into(),
-                    val: (&val.f1)
-                        .try_into()
+        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
+            soroban_sdk::xdr::ScMapEntry {
+                key: soroban_sdk::xdr::ScSymbol(
+                    "f1".try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                },
-                soroban_sdk::xdr::ScMapEntry {
-                    key: soroban_sdk::xdr::ScSymbol(
-                        "f2".try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    )
-                    .into(),
-                    val: (&val.f2)
-                        .try_into()
+                )
+                .into(),
+                val: (&val.f1)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            },
+            soroban_sdk::xdr::ScMapEntry {
+                key: soroban_sdk::xdr::ScSymbol(
+                    "f2".try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                },
-            ]),
-        ))
+                )
+                .into(),
+                val: (&val.f2)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            },
+        ])))
     }
 }
 impl TryFrom<StructA> for soroban_sdk::xdr::ScMap {
@@ -583,31 +579,28 @@ impl TryFrom<&StructB> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &StructB) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(
-            #[rustc_box]
-            ::alloc::boxed::Box::new([
-                soroban_sdk::xdr::ScMapEntry {
-                    key: soroban_sdk::xdr::ScSymbol(
-                        "f1".try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    )
-                    .into(),
-                    val: (&val.f1)
-                        .try_into()
+        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
+            soroban_sdk::xdr::ScMapEntry {
+                key: soroban_sdk::xdr::ScSymbol(
+                    "f1".try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                },
-                soroban_sdk::xdr::ScMapEntry {
-                    key: soroban_sdk::xdr::ScSymbol(
-                        "f2".try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    )
-                    .into(),
-                    val: (&val.f2)
-                        .try_into()
+                )
+                .into(),
+                val: (&val.f1)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            },
+            soroban_sdk::xdr::ScMapEntry {
+                key: soroban_sdk::xdr::ScSymbol(
+                    "f2".try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                },
-            ]),
-        ))
+                )
+                .into(),
+                val: (&val.f2)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            },
+        ])))
     }
 }
 impl TryFrom<StructB> for soroban_sdk::xdr::ScMap {
@@ -994,31 +987,28 @@ impl TryFrom<&StructC> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &StructC) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(
-            #[rustc_box]
-            ::alloc::boxed::Box::new([
-                soroban_sdk::xdr::ScMapEntry {
-                    key: soroban_sdk::xdr::ScSymbol(
-                        "f1".try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    )
-                    .into(),
-                    val: (&val.f1)
-                        .try_into()
+        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
+            soroban_sdk::xdr::ScMapEntry {
+                key: soroban_sdk::xdr::ScSymbol(
+                    "f1".try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                },
-                soroban_sdk::xdr::ScMapEntry {
-                    key: soroban_sdk::xdr::ScSymbol(
-                        "f2".try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    )
-                    .into(),
-                    val: (&val.f2)
-                        .try_into()
+                )
+                .into(),
+                val: (&val.f1)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            },
+            soroban_sdk::xdr::ScMapEntry {
+                key: soroban_sdk::xdr::ScSymbol(
+                    "f2".try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                },
-            ]),
-        ))
+                )
+                .into(),
+                val: (&val.f2)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            },
+        ])))
     }
 }
 impl TryFrom<StructC> for soroban_sdk::xdr::ScMap {
@@ -1381,17 +1371,14 @@ impl TryFrom<&StructTupleA> for soroban_sdk::xdr::ScVec {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
         Ok(soroban_sdk::xdr::ScVec(
-            <[_]>::into_vec(
-                #[rustc_box]
-                ::alloc::boxed::Box::new([
-                    (&val.0)
-                        .try_into()
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    (&val.1)
-                        .try_into()
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                ]),
-            )
+            <[_]>::into_vec(::alloc::boxed::box_new([
+                (&val.0)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                (&val.1)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            ]))
             .try_into()?,
         ))
     }
@@ -1752,17 +1739,14 @@ impl TryFrom<&StructTupleB> for soroban_sdk::xdr::ScVec {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
         Ok(soroban_sdk::xdr::ScVec(
-            <[_]>::into_vec(
-                #[rustc_box]
-                ::alloc::boxed::Box::new([
-                    (&val.0)
-                        .try_into()
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    (&val.1)
-                        .try_into()
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                ]),
-            )
+            <[_]>::into_vec(::alloc::boxed::box_new([
+                (&val.0)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                (&val.1)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            ]))
             .try_into()?,
         ))
     }
@@ -2017,7 +2001,7 @@ impl ::core::marker::StructuralPartialEq for StructTupleC {}
 impl ::core::cmp::PartialEq for StructTupleC {
     #[inline]
     fn eq(&self, other: &StructTupleC) -> bool {
-        self.0 == other.0 && self.1 == other.1
+        self.1 == other.1 && self.0 == other.0
     }
 }
 pub static __SPEC_XDR_TYPE_STRUCTTUPLEC: [u8; 64usize] = StructTupleC::spec_xdr();
@@ -2124,17 +2108,14 @@ impl TryFrom<&StructTupleC> for soroban_sdk::xdr::ScVec {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
         Ok(soroban_sdk::xdr::ScVec(
-            <[_]>::into_vec(
-                #[rustc_box]
-                ::alloc::boxed::Box::new([
-                    (&val.0)
-                        .try_into()
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    (&val.1)
-                        .try_into()
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                ]),
-            )
+            <[_]>::into_vec(::alloc::boxed::box_new([
+                (&val.0)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                (&val.1)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            ]))
             .try_into()?,
         ))
     }
@@ -5569,7 +5550,7 @@ impl ::core::marker::StructuralPartialEq for EventB {}
 impl ::core::cmp::PartialEq for EventB {
     #[inline]
     fn eq(&self, other: &EventB) -> bool {
-        self.f1 == other.f1 && self.f2 == other.f2 && self.f3 == other.f3
+        self.f3 == other.f3 && self.f1 == other.f1 && self.f2 == other.f2
     }
 }
 pub static __SPEC_XDR_EVENT_EVENTB: [u8; 108usize] = EventB::spec_xdr();
@@ -5653,7 +5634,7 @@ impl ::core::marker::StructuralPartialEq for EventC {}
 impl ::core::cmp::PartialEq for EventC {
     #[inline]
     fn eq(&self, other: &EventC) -> bool {
-        self.f1 == other.f1 && self.f2 == other.f2 && self.f3 == other.f3
+        self.f2 == other.f2 && self.f3 == other.f3 && self.f1 == other.f1
     }
 }
 pub static __SPEC_XDR_EVENT_EVENTC: [u8; 108usize] = EventC::spec_xdr();

@@ -9,6 +9,12 @@
 //! [Stellar]: https://stellar.org
 //! [Soroban]: https://stellar.org/soroban
 //!
+//! ### Support
+//!
+//! The two most recent soroban-sdk major releases are supported with critical security fixes.
+//! Critical security issues may be backported to earlier versions if practical, but not guaranteed.
+//! General bugs are only fixed on, and new features are only added to, the latest major release.
+//!
 //! ### Features
 //!
 //! See [_features] for a list of all Cargo features and what they do.
@@ -134,9 +140,28 @@ pub mod reexports_for_macros {
     pub use ctor;
 }
 
+/// `debug_assert_in_contract!` asserts that the contract is currently executing within a
+/// contract. The macro expands to an assertion when testutils are enabled or in tests,
+/// otherwise it expands to nothing.
+macro_rules! debug_assert_in_contract {
+    ($env:expr $(,)?) => {{
+        {
+            #[cfg(any(test, feature = "testutils"))]
+            assert!(
+                ($env).in_contract(),
+                "this function is not accessible outside of a contract, wrap \
+                the call with `env.as_contract()` to access it from a \
+                particular contract"
+            );
+        }
+    }};
+}
+
+// For internal use, use `debug_assert_in_contract!` instead.
 /// Assert in contract asserts that the contract is currently executing within a
 /// contract. The macro maps to code when testutils are enabled or in tests,
 /// otherwise maps to nothing.
+#[deprecated(note = "this macro is deprecated and will be removed in a future release")]
 #[macro_export]
 macro_rules! assert_in_contract {
     ($env:expr $(,)?) => {{
@@ -305,6 +330,23 @@ pub use soroban_sdk_macros::contracterror;
 /// `export = false` and do not produce spec entries. See [`_features`] for
 /// details.
 ///
+/// ### SHA-256 Verification
+///
+/// An optional `sha256` parameter can be provided to verify the integrity of
+/// the WASM file at compile time. When provided, the macro computes the
+/// SHA-256 hash of the WASM file at compile time and produces a compile error
+/// if it does not match the provided value. The `sha256` argument must
+/// be a hex-encoded SHA-256 digest (64 hex chars, no 0x prefix).
+///
+/// ```ignore
+/// mod contract_a {
+///     soroban_sdk::contractimport!(
+///         file = "contract_a.wasm",
+///         sha256 = "d5bc0a5b4...",
+///     );
+/// }
+/// ```
+///
 /// ### Examples
 ///
 /// ```ignore
@@ -394,6 +436,22 @@ pub use soroban_sdk_macros::contract;
 ///
 /// Functions that are publicly accessible in the implementation are invocable
 /// by other contracts, or directly by transactions, when deployed.
+///
+/// ### Notes
+///
+/// Each public function's export name is derived from the function name alone,
+/// without any type prefix or namespace. This means:
+///
+/// - **Function names must be unique across all `#[contractimpl]` blocks in a
+///   crate.** If two impl blocks define a function with the same name, their
+///   Wasm exports will collide, producing build or linker errors.
+///
+/// - **Importing a crate that contains `#[contractimpl]` blocks will pull its
+///   exported functions into the importing crate's Wasm binary.** This is a
+///   limitation of Rust — any `#[export_name = "..."]` function in a dependency
+///   is included in the final binary. This can cause unexpected exports or name
+///   collisions that are hard to diagnose. For this reason it is usually
+///   inadvisable to import dependencies that use `#[contractimpl]`.
 ///
 /// ### Examples
 ///
@@ -1008,6 +1066,20 @@ pub use soroban_sdk_macros::contractspecfn;
 /// into a constant, and so it is usually unnecessary to use [`contractfile`]
 /// directly, unless you specifically want to only load the contract file
 /// without generating a client for it.
+///
+/// ### SHA-256 Verification
+///
+/// Unlike [`contractimport`], `contractfile` **requires** a `sha256`
+/// parameter. The macro computes the SHA-256 hash of the WASM file at compile
+/// time and produces a compile error if it does not match the provided value.
+/// The `sha256` argument must be a hex-encoded SHA-256 digest (64 hex chars, no 0x prefix).
+///
+/// ```ignore
+/// soroban_sdk::contractfile!(
+///     file = "contract_a.wasm",
+///     sha256 = "d5bc0a5b4...",
+/// );
+/// ```
 pub use soroban_sdk_macros::contractfile;
 
 /// Panic with the given error.
@@ -1143,6 +1215,7 @@ pub mod data {
     pub use super::storage::Storage as Data;
 }
 pub mod auth;
+#[macro_use]
 mod bytes;
 pub mod crypto;
 pub mod deploy;
