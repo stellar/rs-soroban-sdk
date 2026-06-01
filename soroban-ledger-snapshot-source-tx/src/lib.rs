@@ -82,10 +82,7 @@ impl TxSnapshotSource {
         let key_hash = Sha256::digest(&key_xdr);
         let ledger_cache_dir = self.cache_path.join(
             self.tx_hash
-                .map(|h| {
-                    let tx_hash_str: String = h.iter().map(|b| format!("{b:02x}")).collect();
-                    format!("{}-{}-before", self.fetcher.ledger(), tx_hash_str)
-                })
+                .map(|h| format!("{}-{}-before", self.fetcher.ledger(), hex::encode(h)))
                 .unwrap_or_else(|| format!("{}-after", self.fetcher.ledger())),
         );
 
@@ -140,5 +137,27 @@ fn ttl_for_key(key: &LedgerKey) -> Option<u32> {
     match key {
         LedgerKey::ContractCode(_) | LedgerKey::ContractData(_) => Some(u32::MAX),
         _ => None,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use soroban_sdk::xdr::{Hash, LedgerKeyContractCode, LedgerKeyTtl};
+
+    #[test]
+    fn ttl_for_key_code_gets_max() {
+        let code = LedgerKey::ContractCode(LedgerKeyContractCode {
+            hash: Hash([0; 32]),
+        });
+        assert_eq!(ttl_for_key(&code), Some(u32::MAX));
+    }
+
+    #[test]
+    fn ttl_for_key_other_is_none() {
+        let ttl = LedgerKey::Ttl(LedgerKeyTtl {
+            key_hash: Hash([0; 32]),
+        });
+        assert_eq!(ttl_for_key(&ttl), None);
     }
 }

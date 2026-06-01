@@ -13,6 +13,9 @@ pub enum Error {
     #[error("json decoding history: {0}")]
     JsonDecodingHistory(serde_json::Error),
 
+    #[error("invalid bucket hash {0:?}: expected at least 6 hex characters")]
+    InvalidBucketHash(String),
+
     #[error("getting bucket: {0}")]
     GettingBucket(reqwest::Error),
 
@@ -88,6 +91,11 @@ pub fn get_bucket<W: Write + ?Sized>(
     bucket: &str,
     writer: &mut W,
 ) -> Result<Option<u64>, Error> {
+    // The archive shards buckets into nested directories by the first three
+    // hex-byte prefixes, so the hash must be at least 6 characters long.
+    if bucket.len() < 6 {
+        return Err(Error::InvalidBucketHash(bucket.to_string()));
+    }
     let bucket_0 = &bucket[0..=1];
     let bucket_1 = &bucket[2..=3];
     let bucket_2 = &bucket[4..=5];
@@ -114,4 +122,20 @@ pub fn parse_bucket<'a, R: std::io::Read + 'a>(
     reader: &'a mut Limited<R>,
 ) -> impl Iterator<Item = Result<Frame<xdr::BucketEntry>, xdr::Error>> + 'a {
     Frame::<xdr::BucketEntry>::read_xdr_iter(reader)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn get_bucket_rejects_short_hash() {
+        // A bucket hash shorter than 6 characters would otherwise panic when
+        // slicing for the nested-directory prefix. It must return a typed error
+        // before attempting any network request.
+        let mut buf = Vec::new();
+        let err = get_bucket("http://example.invalid", "abc", &mut buf).unwrap_err();
+        assert!(matches!(err, Error::InvalidBucketHash(_)));
+        assert!(buf.is_empty());
+    }
 }

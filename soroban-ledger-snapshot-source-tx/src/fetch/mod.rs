@@ -32,6 +32,20 @@ pub enum Error {
     HistoryArchive(#[from] from_history_archive::Error),
 }
 
+/// Compute the previous checkpoint ledger (the last ledger of the prior
+/// checkpoint period) and the number of ledgers from that checkpoint up to and
+/// including `ledger`.
+///
+/// Uses saturating subtraction so that ledgers within the first checkpoint
+/// period (`ledger < count`) do not underflow; in that case the previous
+/// checkpoint is clamped to ledger 0. For `ledger >= count` this is identical
+/// to `(ledger / count) * count - 1`.
+fn checkpoint_boundaries(ledger: u32, count: u32) -> (u32, u32) {
+    let prev_checkpoint = ((ledger / count) * count).saturating_sub(1);
+    let ledgers_to_checkpoint = ledger.saturating_sub(prev_checkpoint);
+    (prev_checkpoint, ledgers_to_checkpoint)
+}
+
 /// Network configuration for fetching ledger data
 ///
 /// Contains URLs for SEP-54 meta storage, RPC, and history archive,
@@ -168,10 +182,7 @@ impl LedgerEntryFetcher {
         let key_hash = Sha256::digest(&key_xdr);
         let ledger_cache_dir = cache_path.join(
             self.tx_hash
-                .map(|h| {
-                    let tx_hash_str: String = h.iter().map(|b| format!("{b:02x}")).collect();
-                    format!("{}-{}-before", self.ledger, tx_hash_str)
-                })
+                .map(|h| format!("{}-{}-before", self.ledger, hex::encode(h)))
                 .unwrap_or_else(|| format!("{}-after", self.ledger)),
         );
 
@@ -212,8 +223,8 @@ impl LedgerEntryFetcher {
 
         // Calculate checkpoint boundaries
         let checkpoint_count = self.network.archive_checkpoint_ledger_count;
-        let prev_checkpoint = (self.ledger / checkpoint_count) * checkpoint_count - 1;
-        let ledgers_to_checkpoint = self.ledger - prev_checkpoint;
+        let (prev_checkpoint, ledgers_to_checkpoint) =
+            checkpoint_boundaries(self.ledger, checkpoint_count);
 
         // Prefetch all meta for ledgers from starting ledger down to the checkpoint (in background)
         let prefetch_meta_url = self.network.meta_url.clone();
@@ -408,5 +419,38 @@ impl LedgerEntryFetcher {
         // over time.
 
         Ok(None)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn checkpoint_boundaries_typical() {
+        // For ledger >= count, identical to `(ledger / count) * count - 1`.
+        assert_eq!(checkpoint_boundaries(100, 64), (63, 37));
+        assert_eq!(checkpoint_boundaries(64, 64), (63, 1));
+        assert_eq!(checkpoint_boundaries(64000, 64), (63999, 1));
+        assert_eq!(checkpoint_boundaries(8, 8), (7, 1));
+    }
+
+    #[test]
+    fn checkpoint_boundaries_low_ledger_does_not_underflow() {
+        // Regression: ledgers in the first checkpoint period previously
+        // computed `0 * count - 1`, which panicked (debug) or wrapped to
+        // u32::MAX (release).
+        assert_eq!(checkpoint_boundaries(5, 8), (0, 5));
+        assert_eq!(checkpoint_boundaries(0, 8), (0, 0));
+        assert_eq!(checkpoint_boundaries(63, 64), (0, 63));
+    }
+
+    #[test]
+    fn network_id_hex_matches_known_mainnet_id() {
+        // The well-known SHA256 of the mainnet passphrase.
+        assert_eq!(
+            Network::mainnet(None).network_id_hex(),
+            "7ac33997544e3175d266bd022439b22cdb16508c01163f26e5cb2a3e1045a979"
+        );
     }
 }
