@@ -14,18 +14,14 @@
 //!    these annotations when the feature is enabled; the argument will be
 //!    removed entirely in a future release. This affects only builds that opt
 //!    in to the experimental feature — default builds are unchanged. See
-//!    [`_features`][crate::_features] for details.
+//!    [`_features`][crate::_features#changed-behaviour] for details.
 //!
 //! 3. [`cfg` and `cfg_attr` are no longer accepted on `#[contracttrait]` default
-//!    functions][v25_contracttrait]. Default-function metadata is captured where
-//!    the trait is defined, but the wrappers for non-overridden defaults are
-//!    generated later at the `#[contractimpl(contracttrait)]` site, so a `cfg`
-//!    there would be evaluated in the implementing crate's context rather than
-//!    the trait-defining crate's. Direct `cfg` attributes on
-//!    `#[contractimpl(contracttrait)]` override methods are now supported, but
-//!    `cfg_attr` on those methods is rejected because it is not normalized by the
-//!    handoff. Move conditional configuration to the impl site, or gate the whole
-//!    trait.
+//!    functions, and `cfg_attr` is no longer accepted on
+//!    `#[contractimpl(contracttrait)]` override methods][v27_contracttrait]. A
+//!    direct `cfg` on an override method remains supported. Gate the whole trait
+//!    or impl block, or replace a rejected `cfg_attr` with a direct `cfg` or the
+//!    attribute(s) it applies.
 //!
 //! [`bytes!`]: crate::bytes
 //! [`bytesn!`]: crate::bytesn
@@ -358,3 +354,4 @@ pub mod v25_event_testing;
 pub mod v25_poseidon;
 pub mod v25_resource_limits;
 pub mod v27_bytes_literals;
+pub mod v27_contracttrait;
