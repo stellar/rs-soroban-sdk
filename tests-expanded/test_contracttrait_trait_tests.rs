@@ -3218,11 +3218,14 @@ impl<'a> AllTypesClient<'a> {
 ///AllTypesArgs is a type for building arg lists for functions defined in "AllTypes".
 pub struct AllTypesArgs;
 impl AllTypesArgs {
+    /// Test u32 values.
+    /// Returns the input unchanged.
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn test_u32<'i>(v: &'i u32) -> (&'i u32,) {
         (v,)
     }
+    /// Test i32 values.
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn test_i32<'i>(v: &'i i32) -> (&'i i32,) {
@@ -6735,11 +6738,14 @@ mod test {
         }
     }
     impl ContractArgs {
+        /// Test u32 values.
+        /// Returns the input unchanged.
         #[inline(always)]
         #[allow(clippy::unused_unit)]
         pub fn test_u32<'i>(v: &'i u32) -> (&'i u32,) {
             (v,)
         }
+        /// Test i32 values.
         #[inline(always)]
         #[allow(clippy::unused_unit)]
         pub fn test_i32<'i>(v: &'i i32) -> (&'i i32,) {

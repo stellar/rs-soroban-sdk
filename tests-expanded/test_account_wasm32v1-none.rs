@@ -223,6 +223,7 @@ impl Contract {
 }
 impl<'a> ContractClient<'a> {}
 impl ContractArgs {
+    #[allow(non_snake_case)]
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn __check_auth<'i>(
