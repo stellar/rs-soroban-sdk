@@ -110,7 +110,6 @@ allow = [
     "Unicode-DFS-2016",
     "Unicode-3.0",
     "ISC",
-    "Apache-2.0 AND ISC",
     "CDLA-Permissive-2.0",
     "MPL-2.0",
 ]
