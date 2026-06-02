@@ -108,7 +108,16 @@ allow = [
     "BSD-3-Clause",
     "Apache-2.0 WITH LLVM-exception",
     "Unicode-DFS-2016",
-    # "MPL-2.0"
+    # Required by dependencies of soroban-ledger-snapshot-source-tx:
+    # Unicode-3.0: icu_* crates via url/idna (reqwest). Successor to Unicode-DFS-2016.
+    "Unicode-3.0",
+    # ISC: ring/untrusted (reqwest rustls-tls). Also satisfies the "Apache-2.0 AND
+    # ISC" expression together with the Apache-2.0 entry above.
+    "ISC",
+    # CDLA-Permissive-2.0: webpki-roots (reqwest rustls-tls).
+    "CDLA-Permissive-2.0",
+    # MPL-2.0: option-ext via the directories crate.
+    "MPL-2.0",
 ]
 # The confidence threshold for detecting a license from license text.
 # The higher the value, the more closely the license text must be to the
