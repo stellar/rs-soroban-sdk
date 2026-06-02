@@ -19,7 +19,7 @@ members = [
 
 [workspace.package]
 version = "26.0.1"
-rust-version = "1.91.0"
+rust-version = "1.93.0"
 
 [workspace.dependencies]
 soroban-sdk = { version = "26.0.1", path = "soroban-sdk" }

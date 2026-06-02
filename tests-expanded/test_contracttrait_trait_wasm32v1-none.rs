@@ -125,6 +125,9 @@ pub enum MyEnumUnit {
 #[automatically_derived]
 impl ::core::marker::Copy for MyEnumUnit {}
 #[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for MyEnumUnit {}
+#[automatically_derived]
 impl ::core::clone::Clone for MyEnumUnit {
     #[inline]
     fn clone(&self) -> MyEnumUnit {
