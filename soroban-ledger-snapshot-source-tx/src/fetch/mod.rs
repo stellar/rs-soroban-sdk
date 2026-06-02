@@ -76,15 +76,17 @@ impl Network {
     /// - History archive: history.stellar.org
     ///
     /// # Arguments
-    /// * `meta_url` - URL to the SEP-54 meta storage. Testnet meta on the AWS
-    ///   public dataset is partitioned by reset epoch (e.g.
-    ///   `.../stellar/ledgers/testnet/2025-12-17`), and testnet is periodically
-    ///   reset, so there is no stable default; the caller must supply the URL
-    ///   for the epoch containing the ledgers under test.
-    pub fn testnet(meta_url: String) -> Self {
+    /// * `testnet_start_date` - The reset-epoch start date, formatted
+    ///   `YYYY-MM-DD`, identifying the testnet meta partition on the AWS public
+    ///   dataset (e.g. `2025-12-17`). Testnet is periodically reset and the meta
+    ///   is partitioned by epoch, so there is no stable default; the caller must
+    ///   supply the start date for the epoch containing the ledgers under test.
+    pub fn testnet(testnet_start_date: String) -> Self {
         Self {
             passphrase: "Test SDF Network ; September 2015".to_string(),
-            meta_url,
+            meta_url: format!(
+                "https://aws-public-blockchain.s3.us-east-2.amazonaws.com/v1.1/stellar/ledgers/testnet/{testnet_start_date}"
+            ),
             rpc_url: Some("https://soroban-testnet.stellar.org".to_string()),
             archive_url: "https://history.stellar.org/prd/core-testnet/core_testnet_001"
                 .to_string(),
@@ -489,9 +491,9 @@ mod test_network {
             "7ac33997544e3175d266bd022439b22cdb16508c01163f26e5cb2a3e1045a979",
         );
         assert_eq!(
-            // network_id depends only on the passphrase, so the meta_url here is
-            // irrelevant to the hash.
-            Network::testnet("https://example.com/testnet/epoch".to_string()).network_id_hex(),
+            // network_id depends only on the passphrase, so the start date here
+            // is irrelevant to the hash.
+            Network::testnet("2025-12-17".to_string()).network_id_hex(),
             "cee0302d59844d32bdca915c8203dd44b33fbb7edc19051ea37abedf28ecd472",
         );
         assert_eq!(
@@ -528,12 +530,13 @@ mod test_network {
 
     #[test]
     fn testnet_defaults() {
-        let meta_url =
-            "https://aws-public-blockchain.s3.us-east-2.amazonaws.com/v1.1/stellar/ledgers/testnet/2025-12-17";
-        let n = Network::testnet(meta_url.to_string());
+        let n = Network::testnet("2025-12-17".to_string());
         assert_eq!(n.passphrase, "Test SDF Network ; September 2015");
-        // The caller-supplied meta_url is stored verbatim.
-        assert_eq!(n.meta_url, meta_url);
+        // The start date is appended to the AWS testnet meta partition path.
+        assert_eq!(
+            n.meta_url,
+            "https://aws-public-blockchain.s3.us-east-2.amazonaws.com/v1.1/stellar/ledgers/testnet/2025-12-17",
+        );
         assert_eq!(
             n.rpc_url.as_deref(),
             Some("https://soroban-testnet.stellar.org"),
