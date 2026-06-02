@@ -67,16 +67,20 @@ jobs:
         is_a_contract=$(cargo metadata --no-deps --format-version 1 | jq -r --arg pwd "$(pwd)" '.packages[] | select(.manifest_path == "\($pwd)/Cargo.toml") | (any(.dependencies[]; .name == "soroban-sdk") and any(.targets[]; any(.crate_types[]; . == "cdylib")))')
         echo "is-a-contract=$is_a_contract" | tee -a $GITHUB_OUTPUT
 
-    - name: Patch workspace dependencies
+    - name: Collect publishable rs-soroban-sdk crates
       working-directory: stellar-contracts
       run: |
         # Collect the publishable rs-soroban-sdk crates and their directories once,
         # from the authoritative cargo metadata, deriving the path from manifest_path
         # rather than assuming the package name matches the directory name. The list is
-        # reused by the "Patch transitive crates.io dependencies" step below.
+        # reused by the patching steps below.
         (cd ../rs-soroban-sdk && cargo metadata --format-version 1 --no-deps) \
           | jq -r '.packages[] | select(.publish != []) | "\(.name)\t\(.manifest_path | sub("/Cargo.toml$"; ""))"' \
           > "$RUNNER_TEMP/sdk-crates.tsv"
+
+    - name: Patch workspace dependencies
+      working-directory: stellar-contracts
+      run: |
         while IFS=$'\t' read -r crate dir; do
           rel_path=$(realpath --relative-to="." "$dir")
           sed -i 's|'"$crate"' = "\([^"]*\)"|'"$crate"' = { path = "'"$rel_path"'" }|g' Cargo.toml

@@ -72,17 +72,19 @@ jobs:
 
     - uses: stellar/actions/rust-cache@main
 
-    - name: Patch SDK versions
+    - name: Collect publishable rs-soroban-sdk crates
       run: |
-        # TODO: Update this patch logic to use `cargo add` once this issue is resolved: https://github.com/rust-lang/cargo/issues/16101
         # Collect the publishable rs-soroban-sdk crates and their directories once, from
         # the authoritative cargo metadata, deriving the path from manifest_path rather
         # than assuming the package name matches the directory name. The list is reused
-        # by the "Patch transitive crates.io dependencies" step below.
+        # by the patching steps below.
         (cd ${{ github.workspace }}/rs-soroban-sdk && cargo metadata --format-version 1 --no-deps) \
           | jq -r '.packages[] | select(.publish != []) | "\(.name)\t\(.manifest_path | sub("/Cargo.toml$"; ""))"' \
           > "$RUNNER_TEMP/sdk-crates.tsv"
 
+    - name: Patch SDK versions
+      run: |
+        # TODO: Update this patch logic to use `cargo add` once this issue is resolved: https://github.com/rust-lang/cargo/issues/16101
         # Find Cargo.toml files to patch
         local_files=$(find . -name Cargo.toml)
         workspace_root=$(cargo metadata --format-version 1 --no-deps | jq -r '.workspace_root')
