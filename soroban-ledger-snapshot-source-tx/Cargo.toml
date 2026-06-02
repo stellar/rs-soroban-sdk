@@ -9,9 +9,6 @@ license = "Apache-2.0"
 version.workspace = true
 edition = "2021"
 rust-version.workspace = true
-# Not published: this crate is a test-only fork-testing helper and is excluded
-# from the semver-checks and publish-dry-run CI jobs.
-publish = false
 
 [dependencies]
 soroban-sdk = { workspace = true, features = ["testutils"] }
