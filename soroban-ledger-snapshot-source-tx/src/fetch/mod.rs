@@ -72,15 +72,22 @@ impl Network {
     /// Create a Network configuration for Stellar testnet with default URLs
     ///
     /// Uses default testnet URLs:
-    /// - SEP-54 meta storage: AWS public blockchain
     /// - RPC: soroban-testnet.stellar.org
     /// - History archive: history.stellar.org
-    pub fn testnet() -> Self {
+    ///
+    /// # Arguments
+    /// * `meta_url` - URL to the SEP-54 meta storage. Testnet meta on the AWS
+    ///   public dataset is partitioned by reset epoch (e.g.
+    ///   `.../stellar/ledgers/testnet/2025-12-17`), and testnet is periodically
+    ///   reset, so there is no stable default; the caller must supply the URL
+    ///   for the epoch containing the ledgers under test.
+    pub fn testnet(meta_url: String) -> Self {
         Self {
             passphrase: "Test SDF Network ; September 2015".to_string(),
-            meta_url: "https://aws-public-blockchain.s3.us-east-2.amazonaws.com/v1.1/stellar/ledgers/testnet/2025-12-17".to_string(),
+            meta_url,
             rpc_url: Some("https://soroban-testnet.stellar.org".to_string()),
-            archive_url: "https://history.stellar.org/prd/core-testnet/core_testnet_001".to_string(),
+            archive_url: "https://history.stellar.org/prd/core-testnet/core_testnet_001"
+                .to_string(),
             archive_checkpoint_ledger_count: 64,
         }
     }
@@ -354,10 +361,17 @@ impl LedgerEntryFetcher {
                     .map_err(|e| Box::new(e) as Box<dyn std::error::Error>)
             },
         )?;
-        if let Some((entry, _ttl)) = parse_ledger_entry(rpc_read)? {
-            let usable = entry.last_modified_ledger_seq < ledger;
+        if let Some((entry, _ttl, latest_ledger)) = parse_ledger_entry(rpc_read)? {
+            // Only trust the RPC answer when the node has actually observed the
+            // target ledger (latest_ledger >= ledger). If the node is lagging,
+            // an entry whose last_modified is below `ledger` might still be
+            // modified at or after `ledger` once the node catches up, so the
+            // current response could be stale; fall back to meta/archive rather
+            // than persisting a potentially wrong answer.
+            let usable = entry.last_modified_ledger_seq < ledger && latest_ledger >= ledger;
             tracing::debug!(
                 last_modified = entry.last_modified_ledger_seq,
+                latest_ledger,
                 usable,
                 "found from rpc"
             );
@@ -475,7 +489,9 @@ mod test_network {
             "7ac33997544e3175d266bd022439b22cdb16508c01163f26e5cb2a3e1045a979",
         );
         assert_eq!(
-            Network::testnet().network_id_hex(),
+            // network_id depends only on the passphrase, so the meta_url here is
+            // irrelevant to the hash.
+            Network::testnet("https://example.com/testnet/epoch".to_string()).network_id_hex(),
             "cee0302d59844d32bdca915c8203dd44b33fbb7edc19051ea37abedf28ecd472",
         );
         assert_eq!(
@@ -512,8 +528,12 @@ mod test_network {
 
     #[test]
     fn testnet_defaults() {
-        let n = Network::testnet();
+        let meta_url =
+            "https://aws-public-blockchain.s3.us-east-2.amazonaws.com/v1.1/stellar/ledgers/testnet/2025-12-17";
+        let n = Network::testnet(meta_url.to_string());
         assert_eq!(n.passphrase, "Test SDF Network ; September 2015");
+        // The caller-supplied meta_url is stored verbatim.
+        assert_eq!(n.meta_url, meta_url);
         assert_eq!(
             n.rpc_url.as_deref(),
             Some("https://soroban-testnet.stellar.org"),
