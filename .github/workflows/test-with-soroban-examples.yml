@@ -42,6 +42,16 @@ jobs:
       matrix:
         working-directory: ${{ fromJSON(needs.collect-examples.outputs.dirs) }}
         experimental_spec_shaking_v2: [true, false]
+        # Exclude examples that depend on a crates.io package whose own soroban-sdk
+        # dependency is an incompatible major to the soroban-sdk under test. The
+        # [patch.crates-io] step below redirects transitive soroban-sdk copies to the
+        # local checkout, but Cargo only applies the patch when the local version
+        # satisfies the requirement. privacy-pools pulls soroban-poseidon 25.0.0
+        # (soroban-sdk ^25), which the local soroban-sdk (26.x) does not satisfy, so two
+        # soroban-sdk copies are compiled and linking fails with a duplicate lang item
+        # (panic_impl). https://github.com/stellar/rs-soroban-sdk/issues/1723
+        exclude:
+        - working-directory: privacy-pools
     defaults:
       run:
         working-directory: soroban-examples/${{ matrix.working-directory }}
