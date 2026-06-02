@@ -301,6 +301,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
                             &args_ident,
                             &ty_str,
                         )
+                        .unwrap_or_else(|err| err.to_compile_error())
                     });
             output.extend(quote! { #contractimpl_for_trait });
 
@@ -308,7 +309,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 crate_path,
                 ty,
                 trait_ident,
-                pub_methods.iter().map(|m| &m.sig.ident),
+                &pub_methods_fns,
             );
             output.extend(quote! { #cfs });
 
