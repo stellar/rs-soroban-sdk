@@ -12,9 +12,6 @@ pub enum UdtEnum2 {
 #[automatically_derived]
 impl ::core::marker::Copy for UdtEnum2 {}
 #[automatically_derived]
-#[doc(hidden)]
-unsafe impl ::core::clone::TrivialClone for UdtEnum2 {}
-#[automatically_derived]
 impl ::core::clone::Clone for UdtEnum2 {
     #[inline]
     fn clone(&self) -> UdtEnum2 {

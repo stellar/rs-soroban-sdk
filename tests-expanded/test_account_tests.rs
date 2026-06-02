@@ -14,9 +14,6 @@ pub enum Error {
 #[automatically_derived]
 impl ::core::marker::Copy for Error {}
 #[automatically_derived]
-#[doc(hidden)]
-unsafe impl ::core::clone::TrivialClone for Error {}
-#[automatically_derived]
 impl ::core::clone::Clone for Error {
     #[inline]
     fn clone(&self) -> Error {

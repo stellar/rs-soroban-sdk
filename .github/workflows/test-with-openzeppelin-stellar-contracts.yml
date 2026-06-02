@@ -14,14 +14,6 @@ concurrency:
 # repository does not gain access to anything in this repo.
 permissions: {}
 
-# Always build with the latest stable Rust, overriding any rust-toolchain.toml
-# pinned by this repo or the external contracts repo. A pinned/older toolchain
-# makes cargo's MSRV-aware resolver select an older soroban-sdk for transitive
-# dependencies (e.g. soroban-poseidon) than the path-patched local one, which
-# compiles two copies of soroban-sdk and fails with duplicate lang item errors.
-env:
-  RUSTUP_TOOLCHAIN: stable
-
 jobs:
   collect-crates:
     runs-on: ubuntu-latest

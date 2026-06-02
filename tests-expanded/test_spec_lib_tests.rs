@@ -299,33 +299,29 @@ const _: () = {
         #[allow(non_upper_case_globals)]
         const RECURSIVE_COUNT_ArbitraryStructA: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
             #[inline]
-            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
+            fn __init() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    (),
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         } else {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    !,
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         }
                     },
@@ -711,33 +707,29 @@ const _: () = {
         #[allow(non_upper_case_globals)]
         const RECURSIVE_COUNT_ArbitraryStructB: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
             #[inline]
-            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
+            fn __init() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    (),
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         } else {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    !,
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         }
                     },
@@ -1123,33 +1115,29 @@ const _: () = {
         #[allow(non_upper_case_globals)]
         const RECURSIVE_COUNT_ArbitraryStructC: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
             #[inline]
-            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
+            fn __init() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    (),
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         } else {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    !,
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         }
                     },
@@ -1497,33 +1485,29 @@ const _: () = {
         #[allow(non_upper_case_globals)]
         const RECURSIVE_COUNT_ArbitraryStructTupleA: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
             #[inline]
-            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
+            fn __init() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    (),
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         } else {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    !,
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         }
                     },
@@ -1869,33 +1853,29 @@ const _: () = {
         #[allow(non_upper_case_globals)]
         const RECURSIVE_COUNT_ArbitraryStructTupleB: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
             #[inline]
-            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
+            fn __init() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    (),
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         } else {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    !,
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         }
                     },
@@ -2242,33 +2222,29 @@ const _: () = {
         #[allow(non_upper_case_globals)]
         const RECURSIVE_COUNT_ArbitraryStructTupleC: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
             #[inline]
-            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
+            fn __init() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    (),
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         } else {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    !,
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         }
                     },
@@ -2684,33 +2660,29 @@ const _: () = {
         #[allow(non_upper_case_globals)]
         const RECURSIVE_COUNT_ArbitraryEnumA: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
             #[inline]
-            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
+            fn __init() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    (),
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         } else {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    !,
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         }
                     },
@@ -3249,33 +3221,29 @@ const _: () = {
         #[allow(non_upper_case_globals)]
         const RECURSIVE_COUNT_ArbitraryEnumB: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
             #[inline]
-            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
+            fn __init() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    (),
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         } else {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    !,
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         }
                     },
@@ -3810,33 +3778,29 @@ const _: () = {
         #[allow(non_upper_case_globals)]
         const RECURSIVE_COUNT_ArbitraryEnumC: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
             #[inline]
-            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
+            fn __init() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    (),
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         } else {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    !,
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         }
                     },
@@ -3971,9 +3935,6 @@ pub enum EnumIntA {
 }
 #[automatically_derived]
 impl ::core::marker::Copy for EnumIntA {}
-#[automatically_derived]
-#[doc(hidden)]
-unsafe impl ::core::clone::TrivialClone for EnumIntA {}
 #[automatically_derived]
 impl ::core::clone::Clone for EnumIntA {
     #[inline]
@@ -4177,33 +4138,29 @@ const _: () = {
         #[allow(non_upper_case_globals)]
         const RECURSIVE_COUNT_ArbitraryEnumIntA: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
             #[inline]
-            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
+            fn __init() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    (),
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         } else {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    !,
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         }
                     },
@@ -4316,9 +4273,6 @@ pub enum EnumIntB {
 }
 #[automatically_derived]
 impl ::core::marker::Copy for EnumIntB {}
-#[automatically_derived]
-#[doc(hidden)]
-unsafe impl ::core::clone::TrivialClone for EnumIntB {}
 #[automatically_derived]
 impl ::core::clone::Clone for EnumIntB {
     #[inline]
@@ -4522,33 +4476,29 @@ const _: () = {
         #[allow(non_upper_case_globals)]
         const RECURSIVE_COUNT_ArbitraryEnumIntB: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
             #[inline]
-            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
+            fn __init() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    (),
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         } else {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    !,
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         }
                     },
@@ -4661,9 +4611,6 @@ pub enum EnumIntC {
 }
 #[automatically_derived]
 impl ::core::marker::Copy for EnumIntC {}
-#[automatically_derived]
-#[doc(hidden)]
-unsafe impl ::core::clone::TrivialClone for EnumIntC {}
 #[automatically_derived]
 impl ::core::clone::Clone for EnumIntC {
     #[inline]
@@ -4867,33 +4814,29 @@ const _: () = {
         #[allow(non_upper_case_globals)]
         const RECURSIVE_COUNT_ArbitraryEnumIntC: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
             #[inline]
-            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
+            fn __init() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    (),
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         } else {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    !,
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         }
                     },
@@ -5006,9 +4949,6 @@ pub enum ErrorA {
 }
 #[automatically_derived]
 impl ::core::marker::Copy for ErrorA {}
-#[automatically_derived]
-#[doc(hidden)]
-unsafe impl ::core::clone::TrivialClone for ErrorA {}
 #[automatically_derived]
 impl ::core::clone::Clone for ErrorA {
     #[inline]
@@ -5173,9 +5113,6 @@ pub enum ErrorB {
 #[automatically_derived]
 impl ::core::marker::Copy for ErrorB {}
 #[automatically_derived]
-#[doc(hidden)]
-unsafe impl ::core::clone::TrivialClone for ErrorB {}
-#[automatically_derived]
 impl ::core::clone::Clone for ErrorB {
     #[inline]
     fn clone(&self) -> ErrorB {
@@ -5338,9 +5275,6 @@ pub enum ErrorC {
 }
 #[automatically_derived]
 impl ::core::marker::Copy for ErrorC {}
-#[automatically_derived]
-#[doc(hidden)]
-unsafe impl ::core::clone::TrivialClone for ErrorC {}
 #[automatically_derived]
 impl ::core::clone::Clone for ErrorC {
     #[inline]
