@@ -5,8 +5,33 @@
 //!    passed to [`bytes!`] or [`bytesn!`] in hex or binary form (e.g. `bytes!(&env, 1)` becomes
 //!    `bytes!(&env, 0x1)`). Array literals such as `bytes!(&env, [3, 2, 1])` are unaffected.
 //!
+//! 2. The `export` argument on [`contracttype`], [`contracterror`], and
+//!    [`contractevent`] is deprecated under the
+//!    [`experimental_spec_shaking_v2`][crate::_features#experimental_spec_shaking_v2]
+//!    feature. Under spec shaking v2 the final spec is determined by
+//!    reachability from the contract boundary, so `export` no longer has any
+//!    effect and now emits a deprecation warning. Remove `export = ...` from
+//!    these annotations when the feature is enabled; the argument will be
+//!    removed entirely in a future release. This affects only builds that opt
+//!    in to the experimental feature — default builds are unchanged. See
+//!    [`_features`][crate::_features] for details.
+//!
+//! 3. [`cfg` and `cfg_attr` are no longer accepted on `#[contracttrait]` default
+//!    functions][v25_contracttrait]. Default-function metadata is captured where
+//!    the trait is defined, but the wrappers for non-overridden defaults are
+//!    generated later at the `#[contractimpl(contracttrait)]` site, so a `cfg`
+//!    there would be evaluated in the implementing crate's context rather than
+//!    the trait-defining crate's. Direct `cfg` attributes on
+//!    `#[contractimpl(contracttrait)]` override methods are now supported, but
+//!    `cfg_attr` on those methods is rejected because it is not normalized by the
+//!    handoff. Move conditional configuration to the impl site, or gate the whole
+//!    trait.
+//!
 //! [`bytes!`]: crate::bytes
 //! [`bytesn!`]: crate::bytesn
+//! [`contracttype`]: crate::contracttype
+//! [`contracterror`]: crate::contracterror
+//! [`contractevent`]: crate::contractevent
 //!
 //! # Migrating from v25 to v26
 //!
