@@ -42,16 +42,6 @@ jobs:
       matrix:
         working-directory: ${{ fromJSON(needs.collect-examples.outputs.dirs) }}
         experimental_spec_shaking_v2: [true, false]
-        # Exclude examples that depend on crates.io packages that transitively
-        # depend on soroban-sdk (e.g. soroban-poseidon). Cargo does not provide
-        # a way to override the version of soroban-sdk required as a transitive
-        # dependency of another dependency where the version to override is a
-        # different major version or does not match the semver compatibility
-        # defined by the importer, causing two copies of soroban-sdk to be
-        # compiled and duplicate lang item (panic_impl) errors.
-        # https://github.com/stellar/rs-soroban-sdk/issues/1723
-        exclude:
-        - working-directory: privacy-pools
     defaults:
       run:
         working-directory: soroban-examples/${{ matrix.working-directory }}
@@ -85,7 +75,13 @@ jobs:
     - name: Patch SDK versions
       run: |
         # TODO: Update this patch logic to use `cargo add` once this issue is resolved: https://github.com/rust-lang/cargo/issues/16101
-        crates=$(cd ${{ github.workspace }}/rs-soroban-sdk && cargo metadata --format-version 1 --no-deps | jq -r '.packages[] | select(.publish != []) | .name')
+        # Collect the publishable rs-soroban-sdk crates and their directories once, from
+        # the authoritative cargo metadata, deriving the path from manifest_path rather
+        # than assuming the package name matches the directory name. The list is reused
+        # by the "Patch transitive crates.io dependencies" step below.
+        (cd ${{ github.workspace }}/rs-soroban-sdk && cargo metadata --format-version 1 --no-deps) \
+          | jq -r '.packages[] | select(.publish != []) | "\(.name)\t\(.manifest_path | sub("/Cargo.toml$"; ""))"' \
+          > "$RUNNER_TEMP/sdk-crates.tsv"
 
         # Find Cargo.toml files to patch
         local_files=$(find . -name Cargo.toml)
@@ -96,11 +92,11 @@ jobs:
         echo "$files" | sort -u | while read -r file; do
           echo Patching "$file" ...
           dir=$(dirname "$file")
-          for crate in $crates; do
-            rel_path=$(realpath --relative-to="$dir" ${{ github.workspace }}/rs-soroban-sdk/$crate)
+          while IFS=$'\t' read -r crate crate_dir; do
+            rel_path=$(realpath --relative-to="$dir" "$crate_dir")
             sed -i 's|'"$crate"' = "\([^"]*\)"|'"$crate"' = { path = "'"$rel_path"'" }|g' "$file"
             sed -i 's|'"$crate"' = {.*version = "[^"]*"\(.*\)|'"$crate"' = { path = "'"$rel_path"'" \1|g' "$file"
-          done
+          done < "$RUNNER_TEMP/sdk-crates.tsv"
         done
 
     - name: Enable experimental_spec_shaking_v2 feature
@@ -113,6 +109,25 @@ jobs:
           # Add features field to path-patched entries without features
           sed -i '/soroban-sdk = {.*path = /{/features/!s| }|, features = ["experimental_spec_shaking_v2"] }|}' "$file"
         done
+
+    - name: Patch transitive crates.io dependencies
+      run: |
+        # Crates such as soroban-poseidon are pulled from crates.io and depend on
+        # soroban-sdk from crates.io. The path rewrites above cannot redirect those
+        # transitive copies, so two soroban-sdk crates get linked, producing duplicate
+        # `panic_impl` lang item errors (E0152, #1723). A [patch.crates-io] table in
+        # the workspace root redirects transitive copies to the local checkout (valid
+        # while the local version is semver-compatible with the required one).
+        # Reuse the crate list collected in the "Patch SDK versions" step.
+        workspace_root=$(cargo metadata --format-version 1 --no-deps | jq -r '.workspace_root')
+        if [ -s "$RUNNER_TEMP/sdk-crates.tsv" ]; then
+          # Don't emit a second [patch.crates-io] header if one already exists upstream.
+          grep -q '^\[patch.crates-io\]' "$workspace_root/Cargo.toml" || printf '\n[patch.crates-io]\n' >> "$workspace_root/Cargo.toml"
+          while IFS=$'\t' read -r crate crate_dir; do
+            rel_path=$(realpath --relative-to="$workspace_root" "$crate_dir")
+            echo "$crate = { path = \"$rel_path\" }" >> "$workspace_root/Cargo.toml"
+          done < "$RUNNER_TEMP/sdk-crates.tsv"
+        fi
 
     - name: Diff
       run: (! git diff --exit-code) || (echo 'A diff is expected'; exit 1)
