@@ -104,7 +104,7 @@ jobs:
         # Reuse the crate list collected in the "Patch workspace dependencies" step.
         if [ -s "$RUNNER_TEMP/sdk-crates.tsv" ]; then
           # Don't emit a second [patch.crates-io] header if one already exists upstream.
-          grep -q '^\[patch.crates-io\]' Cargo.toml || printf '\n[patch.crates-io]\n' >> Cargo.toml
+          grep -q '^\[patch\.crates-io\]' Cargo.toml || printf '\n[patch.crates-io]\n' >> Cargo.toml
           while IFS=$'\t' read -r crate dir; do
             rel_path=$(realpath --relative-to="." "$dir")
             echo "$crate = { path = \"$rel_path\" }" >> Cargo.toml

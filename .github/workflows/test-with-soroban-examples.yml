@@ -122,7 +122,7 @@ jobs:
         workspace_root=$(cargo metadata --format-version 1 --no-deps | jq -r '.workspace_root')
         if [ -s "$RUNNER_TEMP/sdk-crates.tsv" ]; then
           # Don't emit a second [patch.crates-io] header if one already exists upstream.
-          grep -q '^\[patch.crates-io\]' "$workspace_root/Cargo.toml" || printf '\n[patch.crates-io]\n' >> "$workspace_root/Cargo.toml"
+          grep -q '^\[patch\.crates-io\]' "$workspace_root/Cargo.toml" || printf '\n[patch.crates-io]\n' >> "$workspace_root/Cargo.toml"
           while IFS=$'\t' read -r crate crate_dir; do
             rel_path=$(realpath --relative-to="$workspace_root" "$crate_dir")
             echo "$crate = { path = \"$rel_path\" }" >> "$workspace_root/Cargo.toml"
