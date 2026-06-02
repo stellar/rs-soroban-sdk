@@ -96,6 +96,10 @@ jobs:
         # Add features field to path-patched entries without features
         sed -i '/soroban-sdk = {.*path = /{/features/!s| }|, features = ["experimental_spec_shaking_v2"] }|}' Cargo.toml
 
+    # This step must run *after* "Enable experimental_spec_shaking_v2": that step's
+    # sed matches every `soroban-sdk = { ... path = ... }` line, so if the
+    # [patch.crates-io] entries below already existed it would add a `features` field
+    # to them, which Cargo ignores on patch entries and warns about.
     - name: Patch transitive crates.io dependencies
       working-directory: stellar-contracts
       run: |
