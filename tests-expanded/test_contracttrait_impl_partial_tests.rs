@@ -3256,6 +3256,7 @@ impl<'a> ContractClient<'a> {
     }
 }
 impl ContractArgs {
+    /// Test i32 values.
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn test_i32<'i>(v: &'i i32) -> (&'i i32,) {

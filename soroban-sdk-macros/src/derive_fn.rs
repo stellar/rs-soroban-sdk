@@ -1,5 +1,5 @@
 use crate::{
-    attribute::pass_through_attr_to_gen_code,
+    attribute::{is_attr_cfg, pass_through_attr_to_gen_code},
     map_type::map_type,
     syn_ext::{self, fn_arg_type_validate_no_mut, ty_to_safe_ident_str},
 };
@@ -234,22 +234,35 @@ pub fn derive_pub_fn(
 }
 
 #[allow(clippy::too_many_lines)]
-pub fn derive_contract_function_registration_ctor<'a>(
+pub fn derive_contract_function_registration_ctor(
     crate_path: &Path,
     ty: &Type,
     trait_ident: Option<&Path>,
-    method_idents: impl Iterator<Item = &'a Ident>,
+    fns: &[syn_ext::Fn],
 ) -> TokenStream2 {
     if cfg!(not(feature = "testutils")) {
         return quote!();
     }
 
     let ty_str = ty_to_safe_ident_str(ty);
-    let (idents, wrap_idents): (Vec<_>, Vec<_>) = method_idents
-        .map(|ident| {
-            let ident_str = ident.unraw().to_string();
+    let (idents, wrap_idents, attrs, hash_parts): (Vec<_>, Vec<_>, Vec<_>, Vec<_>) = fns
+        .iter()
+        .map(|f| {
+            let attrs = f
+                .attrs
+                .iter()
+                .filter(|attr| is_attr_cfg(attr))
+                .collect::<Vec<_>>();
+            let ident_str = f.ident.unraw().to_string();
             let wrap_ident = format_ident!("__{}__{}__invoke_raw_slice", ty_str, ident_str);
-            (ident_str, wrap_ident)
+            // Prefix the cfg attrs so cfg-gated registrations and their inverse-cfg
+            // defaults do not collide on the same internal ctor symbol. The ident
+            // is concatenated as a bare string (not interpolated through `quote!`,
+            // which would render it as a quoted string literal) so methods without
+            // cfg attrs are unchanged.
+            let cfg_prefix = quote!(#(#attrs)*).to_string();
+            let hash_part = format!("{cfg_prefix}{ident_str}");
+            (ident_str, wrap_ident, attrs, hash_part)
         })
         .multiunzip();
 
@@ -262,7 +275,7 @@ pub fn derive_contract_function_registration_ctor<'a>(
                 .join("_")
         })
         .unwrap_or_else(|| "".to_string());
-    let methods_hash = format!("{:x}", Sha256::digest(idents.join(",").as_bytes()));
+    let methods_hash = format!("{:x}", Sha256::digest(hash_parts.join(",").as_bytes()));
     let ctor_ident = format_ident!("__{ty_str}__{trait_str}__{methods_hash}_ctor");
 
     quote! {
@@ -271,6 +284,7 @@ pub fn derive_contract_function_registration_ctor<'a>(
         #[allow(non_snake_case)]
         fn #ctor_ident() {
             #(
+                #(#attrs)*
                 <#ty as #crate_path::testutils::ContractFunctionRegister>::register(
                     #idents,
                     #[allow(deprecated)]

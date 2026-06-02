@@ -1,5 +1,7 @@
+use quote::ToTokens;
 use syn::{
-    ext::IdentExt as _, punctuated::Punctuated, Attribute, Data, Fields, FieldsNamed, FieldsUnnamed,
+    ext::IdentExt as _, punctuated::Punctuated, Attribute, Data, Error, Fields, FieldsNamed,
+    FieldsUnnamed, Result,
 };
 
 /// Returns true if the attribute is a doc attribute.
@@ -14,6 +16,33 @@ pub fn pass_through_attr_to_gen_code(attr: &Attribute) -> bool {
         || attr.path().is_ident("cfg")
         || attr.path().is_ident("allow")
         || attr.path().is_ident("deny")
+}
+
+/// Returns true if the attribute is a cfg attribute.
+pub fn is_attr_cfg(attr: &Attribute) -> bool {
+    attr.path().is_ident("cfg")
+}
+
+/// Returns true if the attribute is a cfg_attr attribute.
+pub fn is_attr_cfg_attr(attr: &Attribute) -> bool {
+    attr.path().is_ident("cfg_attr")
+}
+
+/// Combines an error spanned on each item with the given message into a single
+/// `Result`, returning `Ok(())` if the iterator is empty.
+pub fn reject_items<I>(items: I, message: &str) -> Result<()>
+where
+    I: IntoIterator,
+    I::Item: ToTokens,
+{
+    let mut error: Option<Error> = None;
+    for item in items {
+        match &mut error {
+            Some(error) => error.combine(Error::new_spanned(item, message)),
+            None => error = Some(Error::new_spanned(item, message)),
+        }
+    }
+    error.map_or(Ok(()), Err)
 }
 
 /// Modifies the input, removing any attributes on struct fields that match the attrs name list.
