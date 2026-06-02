@@ -339,6 +339,10 @@ impl<'a> From<&'a LedgerCloseMeta> for TransactionResultMetasNormalized<'a> {
     fn from(meta: &'a LedgerCloseMeta) -> Self {
         match meta {
             LedgerCloseMeta::V0(meta_v0) => Self::V0(&meta_v0.tx_processing),
+            // LedgerCloseMetaV1.tx_processing is itself a slice of the V0-shaped
+            // `TransactionResultMeta` (only LedgerCloseMetaV2 carries the newer
+            // `TransactionResultMetaV1`), so mapping it to the V0 variant here is
+            // by type, not a lossy downcast.
             LedgerCloseMeta::V1(meta_v1) => Self::V0(&meta_v1.tx_processing),
             LedgerCloseMeta::V2(meta_v2) => Self::V1(&meta_v2.tx_processing),
         }

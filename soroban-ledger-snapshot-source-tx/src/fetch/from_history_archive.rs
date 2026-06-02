@@ -30,7 +30,7 @@ pub enum Error {
 }
 
 #[allow(dead_code)]
-pub fn history(archive_url: &str, ledger: u32) -> Result<History, Error> {
+pub(crate) fn history(archive_url: &str, ledger: u32) -> Result<History, Error> {
     let mut bytes = Vec::new();
     get_history(archive_url, ledger, &mut bytes)?;
     parse_history(Cursor::new(bytes))

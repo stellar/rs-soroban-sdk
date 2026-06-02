@@ -28,10 +28,10 @@ pub enum Error {
 /// # Returns
 /// The uncompressed LedgerCloseMeta for the specified ledger
 #[allow(dead_code)]
-pub fn ledger(meta_url: &str, sequence: u32) -> Result<LedgerCloseMeta, Error> {
+pub(crate) fn ledger(meta_url: &str, sequence: u32) -> Result<LedgerCloseMeta, Error> {
     let mut ledger = Vec::new();
     get_ledger(meta_url, sequence, &mut ledger)?;
-    parse_ledger(Cursor::new(ledger))
+    parse_ledger(sequence, Cursor::new(ledger))
 }
 
 /// Download compressed LedgerCloseMeta bytes for a specific ledger sequence from S3-compatible storage
@@ -69,11 +69,13 @@ pub fn get_ledger<W: Write + ?Sized>(
 /// Parse LedgerCloseMeta from compressed bytes reader
 ///
 /// # Arguments
+/// * `sequence` - The ledger sequence being parsed, used only to produce a
+///   meaningful `LedgerNotFound` error when the batch is empty
 /// * `reader` - Reader for the compressed bytes
 ///
 /// # Returns
 /// The uncompressed LedgerCloseMeta
-pub fn parse_ledger<R: std::io::Read>(reader: R) -> Result<LedgerCloseMeta, Error> {
+pub fn parse_ledger<R: std::io::Read>(sequence: u32, reader: R) -> Result<LedgerCloseMeta, Error> {
     // Parse as LedgerCloseMetaBatch first, then extract the single ledger
     let mut limited_reader = stellar_xdr::Limited::new(reader, Limits::none());
     let mut batch: LedgerCloseMetaBatch = ReadXdr::read_xdr(&mut limited_reader)?;
@@ -84,7 +86,7 @@ pub fn parse_ledger<R: std::io::Read>(reader: R) -> Result<LedgerCloseMeta, Erro
         .into_iter()
         .next()
         .cloned()
-        .ok_or_else(|| Error::LedgerNotFound(0)) // sequence not known here
+        .ok_or(Error::LedgerNotFound(sequence))
 }
 
 /// Calculate the S3 path for a given ledger sequence

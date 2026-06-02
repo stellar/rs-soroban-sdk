@@ -244,9 +244,18 @@ impl LedgerEntryFetcher {
             last = prefetch_ledgers.last(),
             "fetch from meta range"
         );
-        std::thread::spawn(move || {
-            Self::prefetch_meta(&prefetch_meta_url, &prefetch_cache_path, &prefetch_ledgers);
-        });
+        // Named so any panic inside the detached prefetch is attributable in the
+        // default panic output. The handle is intentionally dropped: prefetching
+        // is a best-effort warm-up of the meta cache, and the main thread's
+        // fetch_from_meta calls are correct (and file-locked) on their own.
+        if let Err(e) = std::thread::Builder::new()
+            .name("snapshot-source-prefetch-meta".to_string())
+            .spawn(move || {
+                Self::prefetch_meta(&prefetch_meta_url, &prefetch_cache_path, &prefetch_ledgers);
+            })
+        {
+            tracing::warn!(error = %e, "failed to spawn meta prefetch thread");
+        }
 
         // Phase 1: Check the starting ledger
         if let Some(result) = self.fetch_from_meta(&cache_path, self.ledger, key)? {
@@ -304,7 +313,7 @@ impl LedgerEntryFetcher {
             get_ledger(&self.network.meta_url, ledger, write)
                 .map_err(|e| Box::new(e) as Box<dyn std::error::Error>)
         })?;
-        let meta = parse_ledger(meta_read)?;
+        let meta = parse_ledger(ledger, meta_read)?;
 
         // Only pass tx_hash for the starting ledger; for earlier ledgers, iterate fully
         let tx_hash_filter = if ledger == self.ledger {
