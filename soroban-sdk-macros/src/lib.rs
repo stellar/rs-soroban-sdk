@@ -62,6 +62,25 @@ pub(crate) const DEFAULT_XDR_RW_LIMITS: Limits = Limits {
     len: 0x1000000,
 };
 
+/// Emit a deprecation warning when `export` is set with the
+/// `experimental_spec_shaking_v2` feature enabled. Under v2 the spec is
+/// determined by reachability, so the argument has no effect and will be
+/// removed in a future release.
+pub(crate) fn export_arg_v2_deprecation(export: &Option<bool>, ident: &syn::Ident) -> TokenStream2 {
+    if cfg!(feature = "experimental_spec_shaking_v2") && export.is_some() {
+        let marker = format_ident!("__SOROBAN_EXPORT_ARG_DEPRECATED_FOR_{}", ident);
+        quote! {
+            #[doc(hidden)]
+            #[allow(non_upper_case_globals)]
+            #[deprecated = "`export` is a no-op under `experimental_spec_shaking_v2` (specs are determined by reachability) and will be removed in a future release"]
+            const #marker: () = ();
+            const _: () = #marker;
+        }
+    } else {
+        TokenStream2::new()
+    }
+}
+
 #[proc_macro]
 pub fn internal_symbol_short(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
@@ -435,13 +454,15 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
         Ok(()) => {}
         Err(e) => return e.to_compile_error().into(),
     }
-    // If the export argument has a value, do as it instructs regarding
-    // exporting. If it does not have a value, export if the type is pub,
-    // or always export when spec shaking is enabled.
-    let gen_spec = if let Some(export) = args.export {
-        export
-    } else if cfg!(feature = "experimental_spec_shaking_v2") {
+    let export_deprecation = export_arg_v2_deprecation(&args.export, ident);
+    // Under `experimental_spec_shaking_v2` the spec is always emitted and
+    // reachability determines what is retained, so the `export` argument is
+    // ignored (a deprecation warning is emitted above). Otherwise, honor an
+    // explicit `export` value, falling back to exporting only `pub` types.
+    let gen_spec = if cfg!(feature = "experimental_spec_shaking_v2") {
         true
+    } else if let Some(export) = args.export {
+        export
     } else {
         matches!(input.vis, Visibility::Public(_))
     };
@@ -489,6 +510,7 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
     };
     quote! {
         #input
+        #export_deprecation
         #derived
     }
     .into()
@@ -509,13 +531,15 @@ pub fn contracterror(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
     let ident = &input.ident;
     let attrs = &input.attrs;
-    // If the export argument has a value, do as it instructs regarding
-    // exporting. If it does not have a value, export if the type is pub,
-    // or always export when spec shaking is enabled.
-    let gen_spec = if let Some(export) = args.export {
-        export
-    } else if cfg!(feature = "experimental_spec_shaking_v2") {
+    let export_deprecation = export_arg_v2_deprecation(&args.export, ident);
+    // Under `experimental_spec_shaking_v2` the spec is always emitted and
+    // reachability determines what is retained, so the `export` argument is
+    // ignored (a deprecation warning is emitted above). Otherwise, honor an
+    // explicit `export` value, falling back to exporting only `pub` types.
+    let gen_spec = if cfg!(feature = "experimental_spec_shaking_v2") {
         true
+    } else if let Some(export) = args.export {
+        export
     } else {
         matches!(input.vis, Visibility::Public(_))
     };
@@ -541,6 +565,7 @@ pub fn contracterror(metadata: TokenStream, input: TokenStream) -> TokenStream {
     };
     quote! {
         #input
+        #export_deprecation
         #derived
     }
     .into()
