@@ -86,6 +86,23 @@ jobs:
         # Add features field to path-patched entries without features
         sed -i '/soroban-sdk = {.*path = /{/features/!s| }|, features = ["experimental_spec_shaking_v2"] }|}' Cargo.toml
 
+    - name: Patch transitive crates.io dependencies
+      working-directory: stellar-contracts
+      run: |
+        # Crates such as soroban-poseidon are pulled from crates.io and depend on
+        # soroban-sdk from crates.io. The [workspace.dependencies] path rewrite above
+        # cannot redirect those transitive copies, so two soroban-sdk crates get
+        # linked, producing duplicate `panic_impl` lang item errors (E0152, #1723).
+        # A [patch.crates-io] table redirects transitive copies to the local checkout
+        # (valid while the local version is semver-compatible with the required one).
+        crates=$(cd ../rs-soroban-sdk && cargo metadata --format-version 1 --no-deps | jq -r '.packages[] | select(.publish != []) | .name')
+        echo "" >> Cargo.toml
+        echo "[patch.crates-io]" >> Cargo.toml
+        for crate in $crates; do
+          rel_path=$(realpath --relative-to="." ../rs-soroban-sdk/$crate)
+          echo "$crate = { path = \"$rel_path\" }" >> Cargo.toml
+        done
+
     - name: Diff
       run: (! git diff --exit-code) || (echo 'A diff is expected'; exit 1)
 
