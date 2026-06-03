@@ -1,3 +1,13 @@
+//! # Migrating from v26 to v27
+//!
+//! 1. [`bytes!` and `bytesn!` no longer accept base10 (decimal) integer literals][v27_bytes_literals].
+//!    Only hex (`0x`) and binary (`0b`) integer literals are supported. Rewrite any decimal literal
+//!    passed to [`bytes!`] or [`bytesn!`] in hex or binary form (e.g. `bytes!(&env, 1)` becomes
+//!    `bytes!(&env, 0x1)`). Array literals such as `bytes!(&env, [3, 2, 1])` are unaffected.
+//!
+//! [`bytes!`]: crate::bytes
+//! [`bytesn!`]: crate::bytesn
+//!
 //! # Migrating from v25 to v26
 //!
 //! 1. Add support for [CAP-78: Host functions for performing limited TTL extensions](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0078.md).
@@ -322,3 +332,4 @@ pub mod v25_contracttrait;
 pub mod v25_event_testing;
 pub mod v25_poseidon;
 pub mod v25_resource_limits;
+pub mod v27_bytes_literals;

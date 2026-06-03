@@ -3,7 +3,7 @@ use proc_macro2::{Span, TokenStream};
 use quote::{format_ident, quote};
 use syn::{Error, FnArg, Lifetime, Type, TypePath, TypeReference};
 
-use crate::syn_ext;
+use crate::{attribute::pass_through_attr_to_gen_code, syn_ext};
 
 pub fn derive_args_type(ty: &str, name: &str) -> TokenStream {
     let ty_str = quote!(#ty).to_string();
@@ -23,6 +23,11 @@ pub fn derive_args_impl(name: &str, fns: &[syn_ext::Fn]) -> TokenStream {
         .iter()
         .map(|f| {
             let fn_ident = &f.ident;
+            let fn_attrs = f
+                .attrs
+                .iter()
+                .filter(|attr| pass_through_attr_to_gen_code(attr))
+                .collect::<Vec<_>>();
 
             // Check for the Env argument.
             let env_input = f.inputs.first().and_then(|a| match a {
@@ -78,6 +83,7 @@ pub fn derive_args_impl(name: &str, fns: &[syn_ext::Fn]) -> TokenStream {
                 .multiunzip();
 
             quote! {
+                #(#fn_attrs)*
                 #[inline(always)]
                 #[allow(clippy::unused_unit)]
                 pub fn #fn_ident<#fn_input_lifetime>(#(#fn_input_fn_args),*)
