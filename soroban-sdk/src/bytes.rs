@@ -23,12 +23,12 @@ use crate::{storage::Storage, Map, Vec};
 #[cfg(not(target_family = "wasm"))]
 use super::xdr::ScVal;
 
-/// Create a [Bytes] with an array, or an integer or hex literal.
+/// Create a [Bytes] with an array, or a hex or binary integer literal.
 ///
 /// The first argument in the list must be a reference to an [Env].
 ///
 /// The second argument can be an [u8] array, or an integer literal of unbounded
-/// size in any form: base10, hex, etc.
+/// size in hex (`0x`) or binary (`0b`) form.
 ///
 /// ### Examples
 ///
@@ -68,12 +68,12 @@ macro_rules! bytes {
     };
 }
 
-/// Create a [BytesN] with an array, or an integer or hex literal.
+/// Create a [BytesN] with an array, or a hex or binary integer literal.
 ///
 /// The first argument in the list must be a reference to an [Env].
 ///
 /// The second argument can be an [u8] array, or an integer literal of unbounded
-/// size in any form: base10, hex, etc.
+/// size in hex (`0x`) or binary (`0b`) form.
 ///
 /// ### Examples
 ///
@@ -1403,12 +1403,12 @@ mod test {
     fn macro_bytes() {
         let env = Env::default();
         assert_eq!(bytes!(&env), Bytes::new(&env));
-        assert_eq!(bytes!(&env, 1), {
+        assert_eq!(bytes!(&env, 0x1), {
             let mut b = Bytes::new(&env);
             b.push_back(1);
             b
         });
-        assert_eq!(bytes!(&env, 1,), {
+        assert_eq!(bytes!(&env, 0x1,), {
             let mut b = Bytes::new(&env);
             b.push_back(1);
             b
@@ -1426,12 +1426,12 @@ mod test {
     fn macro_bytes_hex() {
         let env = Env::default();
         assert_eq!(bytes!(&env), Bytes::new(&env));
-        assert_eq!(bytes!(&env, 1), {
+        assert_eq!(bytes!(&env, 0x1), {
             let mut b = Bytes::new(&env);
             b.push_back(1);
             b
         });
-        assert_eq!(bytes!(&env, 1,), {
+        assert_eq!(bytes!(&env, 0x1,), {
             let mut b = Bytes::new(&env);
             b.push_back(1);
             b
@@ -1451,8 +1451,8 @@ mod test {
     #[test]
     fn macro_bytesn() {
         let env = Env::default();
-        assert_eq!(bytesn!(&env, 1), { BytesN::from_array(&env, &[1]) });
-        assert_eq!(bytesn!(&env, 1,), { BytesN::from_array(&env, &[1]) });
+        assert_eq!(bytesn!(&env, 0x1), { BytesN::from_array(&env, &[1]) });
+        assert_eq!(bytesn!(&env, 0x1,), { BytesN::from_array(&env, &[1]) });
         assert_eq!(bytesn!(&env, [3, 2, 1,]), {
             BytesN::from_array(&env, &[3, 2, 1])
         });
