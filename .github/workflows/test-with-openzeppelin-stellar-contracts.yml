@@ -14,6 +14,13 @@ concurrency:
 # repository does not gain access to anything in this repo.
 permissions: {}
 
+env:
+  # Raise cargo's built-in network retry on main/release (push) builds so
+  # transient registry/crate/git blips (e.g. 503s) are retried within the job.
+  # Covers cargo's own network calls only. PR builds keep cargo's default (3).
+  # (No merge_group trigger here, so this gates on push only.)
+  CARGO_NET_RETRY: ${{ github.event_name == 'push' && '10' || '3' }}
+
 jobs:
   collect-crates:
     runs-on: ubuntu-latest

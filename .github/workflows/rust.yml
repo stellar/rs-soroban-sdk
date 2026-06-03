@@ -13,6 +13,13 @@ concurrency:
 env:
   ARTIFACT_RETENTION_DAYS_FOR_TEST_WASMS: 7
   SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2: 1
+  # Raise cargo's built-in network retry on merge-queue (merge_group) and
+  # main/release (push) builds so transient registry/crate/git blips (e.g. 503s)
+  # are retried within the job — a failed required check here evicts the PR from
+  # the merge queue and forces a re-queue. Covers cargo's own network calls only
+  # (not rustup or action downloads). PR builds keep cargo's default (3) so
+  # genuine failures surface quickly.
+  CARGO_NET_RETRY: ${{ (github.event_name == 'merge_group' || github.event_name == 'push') && '10' || '3' }}
 
 defaults:
   run:
