@@ -766,8 +766,23 @@ where
     where
         T: Clone,
     {
-        for item in items {
-            self.push_back(item.clone());
+        // Build the new items in bulk using `vec_new_from_slice` host calls
+        // over fixed-size chunks and append each chunk, rather than making one
+        // `vec_push_back` host call per element (which also allocates a new
+        // intermediate vec object on the host every time). See the benches in
+        // `tests/bench_extend_from_slice` for the cost difference.
+        const CHUNK: usize = 32;
+        let env = self.env().clone();
+        let mut buf = [Val::VOID.to_val(); CHUNK];
+        for chunk in items.chunks(CHUNK) {
+            for (dst, src) in buf.iter_mut().zip(chunk) {
+                *dst = src.into_val(&env);
+            }
+            let obj = env
+                .vec_new_from_slice(&buf[..chunk.len()])
+                .unwrap_infallible();
+            let sub = unsafe { Self::unchecked_new(env.clone(), obj) };
+            self.append(&sub);
         }
     }
 }
@@ -1099,6 +1114,22 @@ mod test {
             v.push_back(1);
             v
         });
+    }
+
+    #[test]
+    fn test_vec_extend_from_slice_chunking() {
+        let env = Env::default();
+        // Cover empty, sub-chunk, exact-chunk-multiple, and cross-chunk lengths
+        // to exercise the chunked bulk append in `extend_from_slice`.
+        for n in [0usize, 1, 31, 32, 33, 64, 65, 100] {
+            let items: std::vec::Vec<u32> = (0..n as u32).collect();
+            let mut v = Vec::<u32>::from_array(&env, [1000u32]);
+            v.extend_from_slice(&items);
+            let mut expected = std::vec![1000u32];
+            expected.extend_from_slice(&items);
+            let got: std::vec::Vec<u32> = v.iter().collect();
+            assert_eq!(got, expected);
+        }
     }
 
     #[test]
