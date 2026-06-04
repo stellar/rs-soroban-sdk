@@ -407,8 +407,33 @@ where
     where
         T: Clone,
     {
-        let mut vec = Vec::new(env);
-        vec.extend_from_slice(items);
+        // Build the Vec using bulk `vec_new_from_slice` host calls over
+        // fixed-size chunks, rather than one `vec_push_back` host call per
+        // element. This both reduces the number of host calls and avoids
+        // allocating a new intermediate vec object on the host for every
+        // element. See the benches in `tests/bench_from_slice` for the cost
+        // difference.
+        const CHUNK: usize = 32;
+        let mut buf = [Val::VOID.to_val(); CHUNK];
+        let mut chunks = items.chunks(CHUNK);
+        let mut vec = match chunks.next() {
+            None => return Vec::new(env),
+            Some(chunk) => {
+                for (dst, src) in buf.iter_mut().zip(chunk) {
+                    *dst = src.into_val(env);
+                }
+                let obj = env.vec_new_from_slice(&buf[..chunk.len()]).unwrap_infallible();
+                unsafe { Self::unchecked_new(env.clone(), obj) }
+            }
+        };
+        for chunk in chunks {
+            for (dst, src) in buf.iter_mut().zip(chunk) {
+                *dst = src.into_val(env);
+            }
+            let obj = env.vec_new_from_slice(&buf[..chunk.len()]).unwrap_infallible();
+            let sub = unsafe { Self::unchecked_new(env.clone(), obj) };
+            vec.append(&sub);
+        }
         vec
     }
 
@@ -1099,6 +1124,20 @@ mod test {
             v.push_back(1);
             v
         });
+    }
+
+    #[test]
+    fn test_vec_from_slice_chunking() {
+        let env = Env::default();
+        // Cover empty, sub-chunk, exact-chunk-multiple, and cross-chunk lengths
+        // to exercise the chunked bulk construction in `from_slice`.
+        for n in [0usize, 1, 31, 32, 33, 64, 65, 100] {
+            let items: std::vec::Vec<u32> = (0..n as u32).collect();
+            let v = Vec::<u32>::from_slice(&env, &items);
+            assert_eq!(v.len() as usize, n);
+            let got: std::vec::Vec<u32> = v.iter().collect();
+            assert_eq!(got, items);
+        }
     }
 
     #[test]

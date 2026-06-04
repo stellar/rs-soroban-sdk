@@ -1814,6 +1814,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_bench_from_slice"
+version = "26.0.1"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
 name = "test_bls"
 version = "26.0.1"
 dependencies = [
