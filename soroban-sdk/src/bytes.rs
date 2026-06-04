@@ -1328,21 +1328,13 @@ impl<const N: usize> TryFrom<&Bytes> for [u8; N] {
 
 impl<const N: usize> From<BytesN<N>> for [u8; N] {
     fn from(bin: BytesN<N>) -> Self {
-        let mut res = [0u8; N];
-        for (i, b) in bin.into_iter().enumerate() {
-            res[i] = b;
-        }
-        res
+        bin.to_array()
     }
 }
 
 impl<const N: usize> From<&BytesN<N>> for [u8; N] {
     fn from(bin: &BytesN<N>) -> Self {
-        let mut res = [0u8; N];
-        for (i, b) in bin.iter().enumerate() {
-            res[i] = b;
-        }
-        res
+        bin.to_array()
     }
 }
 
