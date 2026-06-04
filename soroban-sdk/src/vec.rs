@@ -411,8 +411,7 @@ where
         // fixed-size chunks, rather than one `vec_push_back` host call per
         // element. This both reduces the number of host calls and avoids
         // allocating a new intermediate vec object on the host for every
-        // element. See the benches in `tests/bench_from_slice` for the cost
-        // difference.
+        // element.
         const CHUNK: usize = 32;
         let mut buf = [Val::VOID.to_val(); CHUNK];
         let mut chunks = items.chunks(CHUNK);
@@ -422,7 +421,9 @@ where
                 for (dst, src) in buf.iter_mut().zip(chunk) {
                     *dst = src.into_val(env);
                 }
-                let obj = env.vec_new_from_slice(&buf[..chunk.len()]).unwrap_infallible();
+                let obj = env
+                    .vec_new_from_slice(&buf[..chunk.len()])
+                    .unwrap_infallible();
                 unsafe { Self::unchecked_new(env.clone(), obj) }
             }
         };
@@ -430,7 +431,9 @@ where
             for (dst, src) in buf.iter_mut().zip(chunk) {
                 *dst = src.into_val(env);
             }
-            let obj = env.vec_new_from_slice(&buf[..chunk.len()]).unwrap_infallible();
+            let obj = env
+                .vec_new_from_slice(&buf[..chunk.len()])
+                .unwrap_infallible();
             let sub = unsafe { Self::unchecked_new(env.clone(), obj) };
             vec.append(&sub);
         }

@@ -3,7 +3,6 @@
 mod address;
 mod address_payload;
 mod auth;
-mod bench_from_slice_wasm;
 mod bytes_alloc_vec;
 mod bytes_buffer;
 mod bytes_slice;
