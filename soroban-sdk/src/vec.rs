@@ -762,15 +762,11 @@ where
 
     /// Extend with the items in the slice.
     #[inline(always)]
-    pub fn extend_from_slice(&mut self, items: &[T])
-    where
-        T: Clone,
-    {
+    pub fn extend_from_slice(&mut self, items: &[T]) {
         // Build the new items in bulk using `vec_new_from_slice` host calls
         // over fixed-size chunks and append each chunk, rather than making one
         // `vec_push_back` host call per element (which also allocates a new
-        // intermediate vec object on the host every time). See the benches in
-        // `tests/bench_extend_from_slice` for the cost difference.
+        // intermediate vec object on the host every time).
         const CHUNK: usize = 32;
         let env = self.env().clone();
         let mut buf = [Val::VOID.to_val(); CHUNK];
