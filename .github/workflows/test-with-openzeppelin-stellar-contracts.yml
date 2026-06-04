@@ -105,17 +105,30 @@ jobs:
       run: |
         # Crates such as soroban-poseidon are pulled from crates.io and depend on
         # soroban-sdk from crates.io. The [workspace.dependencies] path rewrite above
-        # cannot redirect those transitive copies, so two soroban-sdk crates get
-        # linked, producing duplicate `panic_impl` lang item errors (E0152, #1723).
-        # A [patch.crates-io] table redirects transitive copies to the local checkout
-        # (valid while the local version is semver-compatible with the required one).
-        # Reuse the crate list collected in the "Patch workspace dependencies" step.
+        # only redirects directly named dependency edges, so those transitive copies
+        # stay on crates.io and two soroban-sdk crates get linked -> duplicate
+        # `panic_impl` lang item (E0152, #1723). Collapse them in two moves, both over
+        # the crate list collected in "Patch workspace dependencies":
+        #   1. Add a [patch.crates-io] table pointing each crate at the local checkout.
+        #      A [patch] entry adds the path crate's version to crates.io resolution,
+        #      but on its own it leaves a transitive edge the lock pinned to a
+        #      different registry version untouched.
+        #   2. cargo update each crate so that edge re-resolves onto the patched
+        #      version, leaving a single local copy in the graph. (Can't rescue an
+        #      incompatible-major transitive dep; that would need the remedy in #1723.)
         if [ -s "$RUNNER_TEMP/sdk-crates.tsv" ]; then
           # Don't emit a second [patch.crates-io] header if one already exists upstream.
           grep -q '^\[patch\.crates-io\]' Cargo.toml || printf '\n[patch.crates-io]\n' >> Cargo.toml
           while IFS=$'\t' read -r crate dir; do
             rel_path=$(realpath --relative-to="." "$dir")
             echo "$crate = { path = \"$rel_path\" }" >> Cargo.toml
+          done < "$RUNNER_TEMP/sdk-crates.tsv"
+          # Re-resolve only the patched crates that are actually in the graph.
+          graph=$(cargo metadata --format-version 1 | jq -r '.packages[].name')
+          while IFS=$'\t' read -r crate dir; do
+            if grep -qxF "$crate" <<< "$graph"; then
+              cargo update -p "$crate"
+            fi
           done < "$RUNNER_TEMP/sdk-crates.tsv"
         fi
 
