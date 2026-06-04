@@ -1800,7 +1800,7 @@ dependencies = [
 
 [[package]]
 name = "test_attributes"
-version = "26.0.1"
+version = "26.1.0"
 dependencies = [
  "soroban-sdk",
  "soroban-spec",
