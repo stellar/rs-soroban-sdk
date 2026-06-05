@@ -403,10 +403,7 @@ where
 
     /// Create a Vec from the slice of items.
     #[inline(always)]
-    pub fn from_slice(env: &Env, items: &[T]) -> Vec<T>
-    where
-        T: Clone,
-    {
+    pub fn from_slice(env: &Env, items: &[T]) -> Vec<T> {
         // Build the Vec using bulk `vec_new_from_slice` host calls over
         // fixed-size chunks, rather than one `vec_push_back` host call per
         // element. This both reduces the number of host calls and avoids
