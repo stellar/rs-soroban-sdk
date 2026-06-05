@@ -1,3 +1,4 @@
+use stellar_xdr;
 extern crate proc_macro;
 
 mod arbitrary;
