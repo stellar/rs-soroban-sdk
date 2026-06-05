@@ -215,11 +215,14 @@ pub fn derive_type_enum(
             type Error = #path::ConversionError;
             #[inline(always)]
             fn try_from_val(env: &#path::Env, val: &#path::Val) -> Result<Self, #path::ConversionError> {
-                use #path::{EnvBase,TryIntoVal,TryFromVal};
+                #[allow(unused_imports)]
+                use #path::{EnvBase,TryIntoVal,TryFromVal,Val,VecObject};
                 const CASES: &'static [&'static str] = &[#(#case_name_str_lits),*];
-                let vec: #path::Vec<#path::Val> = val.try_into_val(env)?;
-                let mut iter = vec.try_iter();
-                let discriminant: #path::Symbol = iter.next().ok_or(#path::ConversionError)??.try_into_val(env).map_err(|_|#path::ConversionError)?;
+                let vec: #path::Vec<Val> = val.try_into_val(env)?;
+                #[allow(unused_variables)]
+                let vec_obj: VecObject = vec.to_object();
+                let len = vec.len();
+                let discriminant: #path::Symbol = vec.get(0).ok_or(#path::ConversionError)?.try_into_val(env).map_err(|_|#path::ConversionError)?;
                 Ok(match u32::from(env.symbol_index_in_strs(discriminant.to_symbol_val(), CASES)?) as usize {
                     #(#try_froms,)*
                     _ => Err(#path::ConversionError{})?,
@@ -346,7 +349,7 @@ fn map_empty_variant(
     });
     let try_from = quote! {
         #case_num_lit => {
-            if iter.len() > 0 {
+            if len != 1 {
                 return Err(#path::ConversionError);
             }
             Self::#case_ident
@@ -436,20 +439,27 @@ fn map_tuple_variant(
 
     let num_fields = fields.iter().len();
     let try_from = {
+        // Total number of elements in the representation vec: the discriminant
+        // symbol plus one element per tuple field.
+        let slot_count = num_fields + 1;
+        // Field i lives at vec index i+1 (index 0 is the discriminant).
         let field_convs = fields
             .iter()
             .enumerate()
-            .map(|(_i, _f)| {
+            .map(|(i, _f)| {
+                let slot = Literal::usize_unsuffixed(i + 1);
                 quote! {
-                    iter.next().ok_or(#path::ConversionError)??.try_into_val(env)?
+                    vals[#slot].try_into_val(env).map_err(|_| #path::ConversionError)?
                 }
             })
             .collect::<Vec<_>>();
         quote! {
             #case_num_lit => {
-                if iter.len() > #num_fields {
+                if len as usize != #slot_count {
                     return Err(#path::ConversionError);
                 }
+                let mut vals: [Val; #slot_count] = [Val::VOID.to_val(); #slot_count];
+                env.vec_unpack_to_slice(vec_obj, &mut vals).map_err(|_| #path::ConversionError)?;
                 Self::#case_ident( #(#field_convs,)* )
             }
         }
