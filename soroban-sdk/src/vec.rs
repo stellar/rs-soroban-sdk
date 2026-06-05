@@ -770,6 +770,61 @@ where
             self.push_back(item.clone());
         }
     }
+
+    /// Copy the items into an array of fixed length `N`.
+    ///
+    /// All `N` items are read from the environment with a single host call,
+    /// rather than one host call per item as with [`Vec::get`] or iteration.
+    ///
+    /// ### Panics
+    ///
+    /// If the length of the vec is not exactly `N`.
+    ///
+    /// If any item cannot be converted to type `T`.
+    #[inline(always)]
+    pub fn to_array<const N: usize>(&self) -> [T; N] {
+        self.try_to_array().unwrap_optimized()
+    }
+
+    /// Copy the items into an array of fixed length `N`.
+    ///
+    /// All `N` items are read from the environment with a single host call,
+    /// rather than one host call per item as with [`Vec::get`] or iteration.
+    ///
+    /// ### Errors
+    ///
+    /// If any item cannot be converted to type `T`.
+    ///
+    /// ### Panics
+    ///
+    /// If the length of the vec is not exactly `N`.
+    #[inline(always)]
+    pub fn try_to_array<const N: usize>(&self) -> Result<[T; N], T::Error> {
+        let env = self.env();
+        let mut vals: [Val; N] = [Val::VOID.to_val(); N];
+        env.vec_unpack_to_slice(self.obj, &mut vals)
+            .unwrap_infallible();
+        // Convert each Val into T, short-circuiting on the first error.
+        let mut err: Option<T::Error> = None;
+        let arr = core::array::from_fn(|i| {
+            if err.is_some() {
+                // A previous conversion already failed; avoid further work and
+                // return a placeholder that will be discarded below.
+                return None;
+            }
+            match T::try_from_val(env, &vals[i]) {
+                Ok(v) => Some(v),
+                Err(e) => {
+                    err = Some(e);
+                    None
+                }
+            }
+        });
+        match err {
+            Some(e) => Err(e),
+            None => Ok(arr.map(|o| o.unwrap_optimized())),
+        }
+    }
 }
 
 impl<T> Vec<T> {
@@ -1420,6 +1475,35 @@ mod test {
         assert_eq!(iter.next(), Some(Ok(0)));
         assert_eq!(iter.next(), Some(Ok(1)));
         assert_eq!(iter.into_vec(), vec![&env, 2, 3, 4]);
+    }
+
+    #[test]
+    fn test_vec_to_array() {
+        let env = Env::default();
+        let vec = vec![&env, 0u32, 1, 2, 3, 4];
+        let arr: [u32; 5] = vec.to_array();
+        assert_eq!(arr, [0, 1, 2, 3, 4]);
+
+        let empty: Vec<u32> = vec![&env];
+        let arr: [u32; 0] = empty.to_array();
+        assert_eq!(arr, [0u32; 0]);
+    }
+
+    #[test]
+    #[should_panic(expected = "Error(Object, UnexpectedSize)")]
+    fn test_vec_to_array_wrong_length() {
+        let env = Env::default();
+        let vec = vec![&env, 0u32, 1, 2];
+        let _: [u32; 5] = vec.to_array();
+    }
+
+    #[test]
+    fn test_vec_try_to_array_conversion_error() {
+        let env = Env::default();
+        let vec: Val = (1i64, 2i32).try_into_val(&env).unwrap();
+        let vec: Vec<i64> = vec.try_into_val(&env).unwrap();
+        let r: Result<[i64; 2], _> = vec.try_to_array();
+        assert_eq!(r, Err(ConversionError.into()));
     }
 
     #[test]
