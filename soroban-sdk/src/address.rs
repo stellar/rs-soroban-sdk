@@ -300,6 +300,171 @@ impl Address {
     ///
     /// If called outside of `__check_auth`, or if this address has not
     /// authorized the invocation.
+    ///
+    /// ### Examples
+    ///
+    /// A "modular" custom account that performs no authentication itself, and
+    /// instead delegates it to a set of registered signer addresses. The user
+    /// chooses which of the registered signers to authenticate with, by
+    /// attaching them to the transaction as delegated signers.
+    ///
+    /// ```
+    /// use soroban_sdk::{
+    ///     auth::{Context, CustomAccountInterface},
+    ///     contract, contracterror, contractimpl, contracttype,
+    ///     crypto::Hash, vec, Address, Env, Vec,
+    /// };
+    ///
+    /// #[contracterror]
+    /// #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
+    /// #[repr(u32)]
+    /// pub enum Error {
+    ///     UnknownDelegate = 1,
+    /// }
+    ///
+    /// #[contracttype]
+    /// pub enum DataKey {
+    ///     Signers,
+    /// }
+    ///
+    /// #[contract]
+    /// pub struct ModularAccount;
+    ///
+    /// #[contractimpl]
+    /// impl ModularAccount {
+    ///     // Registers the addresses allowed to authenticate for this account.
+    ///     pub fn __constructor(env: Env, signers: Vec<Address>) {
+    ///         env.storage().instance().set(&DataKey::Signers, &signers);
+    ///     }
+    /// }
+    ///
+    /// #[contractimpl]
+    /// impl CustomAccountInterface for ModularAccount {
+    ///     // The account verifies no signature of its own, so it carries no
+    ///     // signature to check.
+    ///     type Signature = ();
+    ///     type Error = Error;
+    ///
+    ///     fn __check_auth(
+    ///         env: Env,
+    ///         _signature_payload: Hash<32>,
+    ///         _signatures: (),
+    ///         _auth_contexts: Vec<Context>,
+    ///     ) -> Result<(), Error> {
+    ///         // The signers the user attached to the transaction for this
+    ///         // account's authorization.
+    ///         let delegates = env.get_delegated_signers_for_current_auth_check();
+    ///
+    ///         // The host does not validate the delegates, so the account must
+    ///         // check that each one is actually a registered signer before
+    ///         // trusting it.
+    ///         let signers: Vec<Address> =
+    ///             env.storage().instance().get(&DataKey::Signers).unwrap();
+    ///         for delegate in delegates.iter() {
+    ///             if !signers.contains(&delegate) {
+    ///                 return Err(Error::UnknownDelegate);
+    ///             }
+    ///             // Forward the current authorization to the delegate. Its own
+    ///             // authentication is checked as if it had required auth
+    ///             // directly, but without needing a separate auth entry.
+    ///             delegate.delegate_account_auth();
+    ///         }
+    ///         Ok(())
+    ///     }
+    /// }
+    ///
+    /// // A delegate account. Stands in for any address (a Stellar account or
+    /// // another contract) that knows how to authenticate itself.
+    /// #[contract]
+    /// pub struct Delegate;
+    ///
+    /// #[contractimpl]
+    /// impl CustomAccountInterface for Delegate {
+    ///     type Signature = ();
+    ///     type Error = Error;
+    ///     fn __check_auth(
+    ///         _env: Env,
+    ///         _signature_payload: Hash<32>,
+    ///         _signatures: (),
+    ///         _auth_contexts: Vec<Context>,
+    ///     ) -> Result<(), Error> {
+    ///         Ok(())
+    ///     }
+    /// }
+    ///
+    /// // A contract with an operation that requires the account's authorization.
+    /// #[contract]
+    /// pub struct Protected;
+    ///
+    /// #[contractimpl]
+    /// impl Protected {
+    ///     pub fn protected(account: Address) {
+    ///         account.require_auth();
+    ///     }
+    /// }
+    ///
+    /// #[test]
+    /// fn test() {
+    /// # }
+    /// # #[cfg(feature = "testutils")]
+    /// # fn main() {
+    ///     use soroban_sdk::xdr::{
+    ///         InvokeContractArgs, ScAddress, ScVal, SorobanAddressCredentials,
+    ///         SorobanAddressCredentialsWithDelegates, SorobanAuthorizationEntry,
+    ///         SorobanAuthorizedFunction, SorobanAuthorizedInvocation,
+    ///         SorobanCredentials, SorobanDelegateSignature, StringM, VecM,
+    ///     };
+    ///
+    ///     let env = Env::default();
+    ///     let delegate = env.register(Delegate, ());
+    ///     // Register the modular account with `delegate` as an allowed signer.
+    ///     let account = env.register(ModularAccount, (vec![&env, delegate.clone()],));
+    ///     let protected = env.register(Protected, ());
+    ///
+    ///     let account_addr: ScAddress = account.clone().try_into().unwrap();
+    ///     let delegate_addr: ScAddress = delegate.clone().try_into().unwrap();
+    ///
+    ///     // This authorization entry is normally built by the user's
+    ///     // wallet/tooling and attached to the transaction. It authorizes
+    ///     // `protected` on behalf of the account, and attaches `delegate` as a
+    ///     // delegated signer. Delegates must be sorted by address with no
+    ///     // duplicates.
+    ///     env.set_auths(&[SorobanAuthorizationEntry {
+    ///         credentials: SorobanCredentials::AddressWithDelegates(
+    ///             SorobanAddressCredentialsWithDelegates {
+    ///                 address_credentials: SorobanAddressCredentials {
+    ///                     address: account_addr.clone(),
+    ///                     nonce: 1,
+    ///                     signature_expiration_ledger: 100,
+    ///                     // The account verifies no signature of its own.
+    ///                     signature: ScVal::Void,
+    ///                 },
+    ///                 delegates: std::vec![SorobanDelegateSignature {
+    ///                     address: delegate_addr,
+    ///                     signature: ScVal::Void,
+    ///                     nested_delegates: VecM::default(),
+    ///                 }]
+    ///                 .try_into()
+    ///                 .unwrap(),
+    ///             },
+    ///         ),
+    ///         root_invocation: SorobanAuthorizedInvocation {
+    ///             function: SorobanAuthorizedFunction::ContractFn(InvokeContractArgs {
+    ///                 contract_address: protected.clone().try_into().unwrap(),
+    ///                 function_name: StringM::try_from("protected").unwrap().into(),
+    ///                 args: std::vec![ScVal::Address(account_addr)].try_into().unwrap(),
+    ///             }),
+    ///             sub_invocations: VecM::default(),
+    ///         },
+    ///     }]);
+    ///
+    ///     // The call succeeds: the account delegates its authentication to
+    ///     // `delegate`, which approves it.
+    ///     ProtectedClient::new(&env, &protected).protected(&account);
+    /// }
+    /// # #[cfg(not(feature = "testutils"))]
+    /// # fn main() { }
+    /// ```
     pub fn delegate_account_auth(&self) {
         Env::delegate_account_auth(&self.env, self.obj).unwrap_infallible();
     }
