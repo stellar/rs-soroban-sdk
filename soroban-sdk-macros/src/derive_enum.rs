@@ -215,13 +215,9 @@ pub fn derive_type_enum(
             type Error = #path::ConversionError;
             #[inline(always)]
             fn try_from_val(env: &#path::Env, val: &#path::Val) -> Result<Self, #path::ConversionError> {
-                #[allow(unused_imports)]
-                use #path::{EnvBase,TryIntoVal,TryFromVal,Val,VecObject};
+                use #path::{EnvBase,TryIntoVal,TryFromVal};
                 const CASES: &'static [&'static str] = &[#(#case_name_str_lits),*];
-                let vec: #path::Vec<Val> = val.try_into_val(env)?;
-                #[allow(unused_variables)]
-                let vec_obj: VecObject = vec.to_object();
-                let len = vec.len();
+                let vec: #path::Vec<#path::Val> = val.try_into_val(env)?;
                 let discriminant: #path::Symbol = vec.get(0).ok_or(#path::ConversionError)?.try_into_val(env).map_err(|_|#path::ConversionError)?;
                 Ok(match u32::from(env.symbol_index_in_strs(discriminant.to_symbol_val(), CASES)?) as usize {
                     #(#try_froms,)*
@@ -349,7 +345,7 @@ fn map_empty_variant(
     });
     let try_from = quote! {
         #case_num_lit => {
-            if len != 1 {
+            if vec.len() != 1 {
                 return Err(#path::ConversionError);
             }
             Self::#case_ident
@@ -439,10 +435,9 @@ fn map_tuple_variant(
 
     let num_fields = fields.iter().len();
     let try_from = {
-        // Total number of elements in the representation vec: the discriminant
-        // symbol plus one element per tuple field.
+        // The representation vec holds the discriminant symbol at index 0
+        // followed by one element per tuple field, so field i is at index i + 1.
         let slot_count = num_fields + 1;
-        // Field i lives at vec index i+1 (index 0 is the discriminant).
         let field_convs = fields
             .iter()
             .enumerate()
@@ -455,11 +450,16 @@ fn map_tuple_variant(
             .collect::<Vec<_>>();
         quote! {
             #case_num_lit => {
-                if len as usize != #slot_count {
+                // Reject malformed input with a recoverable error before
+                // unpacking: vec_unpack_to_slice requires the lengths to match
+                // and panics (rather than returning) on mismatch.
+                if vec.len() as usize != #slot_count {
                     return Err(#path::ConversionError);
                 }
-                let mut vals: [Val; #slot_count] = [Val::VOID.to_val(); #slot_count];
-                env.vec_unpack_to_slice(vec_obj, &mut vals).map_err(|_| #path::ConversionError)?;
+                // Read the whole representation in one host call rather than one
+                // per element.
+                let mut vals: [#path::Val; #slot_count] = [#path::Val::VOID.to_val(); #slot_count];
+                env.vec_unpack_to_slice(vec.to_object(), &mut vals).map_err(|_| #path::ConversionError)?;
                 Self::#case_ident( #(#field_convs,)* )
             }
         }
