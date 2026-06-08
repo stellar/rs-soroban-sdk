@@ -381,26 +381,26 @@ impl Env {
         unsafe { Address::unchecked_new(self.clone(), address) }
     }
 
-    /// Get the addresses of delegated signers passed to the transaction for performing
-    /// authorization checks on behalf of the current custom account contract.
-    ///
-    /// This may only be called from the `__check_auth` function of a custom
+    /// Get the addresses of delegated signers passed to the transaction for
+    /// performing authorization checks on behalf of the current custom
     /// account contract.
+    ///
+    /// This may only be called within `__check_auth` contract function.
     ///
     /// This returns the addresses provided by the user and these are not
     /// sanitized in any way. It is the responsibility of the contract to check
     /// that the addresses are actually valid delegates for the account.
     ///
-    /// Typical usage flow is to get all the delegated signers passed by the user
-    /// to the transaction via `Env::get_delegated_signers_for_current_auth_check`,
+    /// Typical usage flow is to use `Env::get_delegated_signers` to get all the
+    /// delegated signers passed by the user inside the matching auth entry, then
     /// verify that these delegates actually belong to the account and are valid
-    /// for this transaction, and then call `delegate_account_auth` for each of
+    /// for this transaction, and then call `delegate_auth` for each of
     /// these delegates.
     ///
     /// ### Panics
     ///
     /// If called outside of `__check_auth`.
-    pub fn get_delegated_signers_for_current_auth_check(&self) -> Vec<Address> {
+    pub fn get_delegated_signers(&self) -> Vec<Address> {
         let addresses =
             internal::Env::get_delegated_signers_for_current_auth_check(self).unwrap_infallible();
         addresses.into_val(self)
