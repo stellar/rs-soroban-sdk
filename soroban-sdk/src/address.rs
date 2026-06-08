@@ -271,8 +271,7 @@ impl Address {
 
     /// Delegates the current `__check_auth` authorization to this address.
     ///
-    /// This may only be called from the `__check_auth` function of a custom
-    /// account contract.
+    /// This may only be called within `__check_auth` contract function.
     ///
     /// When this is called, the host forwards the current authorization context
     /// provided to  `__check_auth` to the `address` and checks if the `address`
@@ -282,25 +281,24 @@ impl Address {
     /// separate authorization entry for the `address` in transaction.
     ///
     /// Use this in conjunction with
-    /// `Env::get_delegated_signers_for_current_auth_check` instead of
-    /// `require_auth` when implementing modular custom accounts. These accounts
-    /// don't have to perform the authentication themselves, but instead can
-    /// delegate the authentication logic to a different address (G- or C-) that
-    /// performs the actual authentication logic. The delegate may rely on its
-    /// own delegates as well, i.e. delegation can be nested recursively if
-    /// necessary.
+    /// `Env::get_delegated_signers` instead of `require_auth` when implementing
+    /// modular custom accounts. These accounts don't have to perform the
+    /// authentication themselves, but instead can delegate the authentication
+    /// logic to a different address (G- or C-) that performs the actual
+    /// authentication logic. The delegate may rely on its own delegates as
+    /// well, i.e. delegation can be nested recursively if necessary.
     ///
-    /// Typical usage flow is to get all the delegated signers passed by the user
-    /// to the transaction via `Env::get_delegated_signers_for_current_auth_check`,
+    /// Typical usage flow is to use `Env::get_delegated_signers` to get all the
+    /// delegated signers passed by the user inside the matching auth entry, then
     /// verify that these delegates actually belong to the account and are valid
-    /// for this transaction, and then call `delegate_account_auth` for each of
+    /// for this transaction, and then call `delegate_auth` for each of
     /// these delegates.
     ///
     /// ### Panics
     ///
     /// If called outside of `__check_auth`, or if this address has not
     /// authorized the invocation.
-    pub fn delegate_account_auth(&self) {
+    pub fn delegate_auth(&self) {
         Env::delegate_account_auth(&self.env, self.obj).unwrap_infallible();
     }
 
