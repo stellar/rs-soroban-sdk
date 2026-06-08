@@ -255,9 +255,9 @@ impl Address {
     /// `(to, amount)` pair, so the same authorization remains valid regardless
     /// of the other arguments passed to the function.
     ///
-    /// `require_auth_for_args` works with the standard auth-mocking utilities,
-    /// so tests can use either [`Env::mock_all_auths`] (recording auth) or
-    /// [`Env::mock_auths`].
+    /// `require_auth_for_args` works with the standard auth-mocking utilities.
+    /// This example uses [`Env::mock_all_auths`] (recording auth);
+    /// [`Env::mock_auths`] can be used instead to mock a specific auth.
     ///
     /// ```
     /// use soroban_sdk::{contract, contractimpl, Address, Env, IntoVal, Vec};
@@ -282,10 +282,7 @@ impl Address {
     /// # fn main() {
     ///     use soroban_sdk::{
     ///         symbol_short,
-    ///         testutils::{
-    ///             Address as _, AuthorizedFunction, AuthorizedInvocation, MockAuth,
-    ///             MockAuthInvoke,
-    ///         },
+    ///         testutils::{Address as _, AuthorizedFunction, AuthorizedInvocation},
     ///         Val,
     ///     };
     ///
@@ -300,10 +297,9 @@ impl Address {
     ///     // for. Note that these are not the full invocation arguments.
     ///     let auth_args: Vec<Val> = (to.clone(), 100i128).into_val(&env);
     ///
-    ///     // Option 1: record all required auths automatically with
-    ///     // `mock_all_auths`. After the call, `env.auths()` reports the
-    ///     // authorization that was required, so the test can assert it covered
-    ///     // only `(to, amount)`.
+    ///     // Record all required auths automatically with `mock_all_auths`.
+    ///     // After the call, `env.auths()` reports the authorization that was
+    ///     // required, so the test can assert it covered only `(to, amount)`.
     ///     env.mock_all_auths();
     ///     client.transfer(&from, &to, &100, &1);
     ///     assert_eq!(
@@ -320,22 +316,6 @@ impl Address {
     ///             }
     ///         )]
     ///     );
-    ///
-    ///     // Option 2: mock only a specific auth with `mock_auths`. The mocked
-    ///     // `args` must match the arguments passed to `require_auth_for_args`
-    ///     // (here `(to, amount)`), not the full invocation arguments, otherwise
-    ///     // the call panics. The same auth covers calls with a different `memo`.
-    ///     let mock = [MockAuth {
-    ///         address: &from,
-    ///         invoke: &MockAuthInvoke {
-    ///             contract: &contract_id,
-    ///             fn_name: "transfer",
-    ///             args: auth_args.clone(),
-    ///             sub_invokes: &[],
-    ///         },
-    ///     }];
-    ///     client.mock_auths(&mock).transfer(&from, &to, &100, &1);
-    ///     client.mock_auths(&mock).transfer(&from, &to, &100, &2);
     /// }
     /// ```
     pub fn require_auth_for_args(&self, args: Vec<Val>) {
@@ -362,9 +342,9 @@ impl Address {
     /// A contract that requires the `from` address to authorize the invocation
     /// (with all of its arguments) before performing a transfer.
     ///
-    /// `require_auth` works with the standard auth-mocking utilities, so tests
-    /// can use either [`Env::mock_all_auths`] (recording auth) or
-    /// [`Env::mock_auths`].
+    /// `require_auth` works with the standard auth-mocking utilities. This
+    /// example uses [`Env::mock_all_auths`] (recording auth); [`Env::mock_auths`]
+    /// can be used instead to mock a specific auth.
     ///
     /// ```
     /// use soroban_sdk::{contract, contractimpl, Address, Env};
@@ -388,10 +368,7 @@ impl Address {
     /// # fn main() {
     ///     use soroban_sdk::{
     ///         symbol_short,
-    ///         testutils::{
-    ///             Address as _, AuthorizedFunction, AuthorizedInvocation, MockAuth,
-    ///             MockAuthInvoke,
-    ///         },
+    ///         testutils::{Address as _, AuthorizedFunction, AuthorizedInvocation},
     ///         IntoVal,
     ///     };
     ///
@@ -402,11 +379,10 @@ impl Address {
     ///     let from = Address::generate(&env);
     ///     let to = Address::generate(&env);
     ///
-    ///     // Option 1: record all required auths automatically with
-    ///     // `mock_all_auths`. This is the most convenient option for the
-    ///     // majority of tests. After the call, `env.auths()` reports the auths
-    ///     // that were required so the test can assert the expected
-    ///     // authorization was required over the full argument list.
+    ///     // Record all required auths automatically with `mock_all_auths`.
+    ///     // After the call, `env.auths()` reports the auths that were required
+    ///     // so the test can assert the expected authorization was required over
+    ///     // the full argument list.
     ///     env.mock_all_auths();
     ///     client.transfer(&from, &to, &100);
     ///     assert_eq!(
@@ -423,22 +399,6 @@ impl Address {
     ///             }
     ///         )]
     ///     );
-    ///
-    ///     // Option 2: mock only a specific auth with `mock_auths`. The mocked
-    ///     // invocation must match the contract, function name, and the full
-    ///     // argument list that `require_auth` requires, otherwise the call
-    ///     // panics.
-    ///     client
-    ///         .mock_auths(&[MockAuth {
-    ///             address: &from,
-    ///             invoke: &MockAuthInvoke {
-    ///                 contract: &contract_id,
-    ///                 fn_name: "transfer",
-    ///                 args: (from.clone(), to.clone(), 100i128).into_val(&env),
-    ///                 sub_invokes: &[],
-    ///             },
-    ///         }])
-    ///         .transfer(&from, &to, &100);
     /// }
     /// ```
     pub fn require_auth(&self) {
