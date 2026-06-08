@@ -376,10 +376,10 @@ impl Address {
     /// // A delegate account. Stands in for any address (a Stellar account or
     /// // another contract) that knows how to authenticate itself.
     /// #[contract]
-    /// pub struct Delegate;
+    /// pub struct DelegateAccount;
     ///
     /// #[contractimpl]
-    /// impl CustomAccountInterface for Delegate {
+    /// impl CustomAccountInterface for DelegateAccount {
     ///     type Signature = ();
     ///     type Error = Error;
     ///     fn __check_auth(
@@ -409,7 +409,7 @@ impl Address {
     /// # #[cfg(feature = "testutils")]
     /// # fn main() {
     ///     let env = Env::default();
-    ///     let delegate = env.register(Delegate, ());
+    ///     let delegate = env.register(DelegateAccount, ());
     ///     // Register the modular account with `delegate` as an allowed signer.
     ///     let account = env.register(ModularAccount, (vec![&env, delegate.clone()],));
     ///     let protected = env.register(Protected, ());
