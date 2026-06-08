@@ -25,8 +25,11 @@ because on those versions the target enables wasm features (reference-types, mul
 the Soroban environment does not support and that cannot be easily disabled. Building for
 `wasm32-unknown-unknown` on Rust 1.82+ produces a build error.
 
-Build contracts with `stellar contract build` (stellar-cli), or with
-`cargo build --target wasm32v1-none`.
+Build contracts with `stellar contract build` from [stellar-cli], which targets `wasm32v1-none`
+and applies the build settings the Soroban runtime requires. Do not build contracts with
+`cargo build`.
+
+[stellar-cli]: https://github.com/stellar/stellar-cli
 
 ### Features
 
