@@ -403,53 +403,9 @@ impl Env {
     ///
     /// ### Examples
     ///
-    /// A "modular" custom account that delegates its authentication to the
-    /// signers the user attaches to the transaction, instead of verifying any
-    /// signatures itself:
-    ///
-    /// ```
-    /// use soroban_sdk::{
-    ///     auth::{Context, CustomAccountInterface},
-    ///     contract, contracterror, contractimpl, crypto::Hash, Env, Vec,
-    /// };
-    ///
-    /// #[contracterror]
-    /// #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
-    /// #[repr(u32)]
-    /// pub enum Error {
-    ///     UnknownDelegate = 1,
-    /// }
-    ///
-    /// #[contract]
-    /// pub struct ModularAccount;
-    ///
-    /// #[contractimpl]
-    /// impl CustomAccountInterface for ModularAccount {
-    ///     type Signature = ();
-    ///     type Error = Error;
-    ///
-    ///     fn __check_auth(
-    ///         env: Env,
-    ///         _signature_payload: Hash<32>,
-    ///         _signatures: (),
-    ///         _auth_contexts: Vec<Context>,
-    ///     ) -> Result<(), Error> {
-    ///         // Get the signers the user attached to the transaction for this
-    ///         // account's authorization. These are not validated by the host,
-    ///         // so the account must check that each one is allowed to sign for
-    ///         // it before trusting it (see the example linked below).
-    ///         let delegates = env.get_delegated_signers_for_current_auth_check();
-    ///         for delegate in delegates.iter() {
-    ///             delegate.delegate_account_auth();
-    ///         }
-    ///         Ok(())
-    ///     }
-    /// }
-    /// # fn main() { }
-    /// ```
-    ///
     /// See [`Address::delegate_account_auth`] for a complete, runnable example
-    /// that also validates the delegates and shows how to set them up in a test.
+    /// of a modular custom account that retrieves its delegated signers with
+    /// this function, validates them, and delegates authentication to them.
     pub fn get_delegated_signers_for_current_auth_check(&self) -> Vec<Address> {
         let addresses =
             internal::Env::get_delegated_signers_for_current_auth_check(self).unwrap_infallible();
