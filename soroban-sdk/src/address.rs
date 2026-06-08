@@ -325,6 +325,7 @@ impl Address {
     /// #[contracttype]
     /// pub enum DataKey {
     ///     Signers,
+    ///     ApprovedContexts,
     /// }
     ///
     /// #[contract]
@@ -374,7 +375,9 @@ impl Address {
     /// }
     ///
     /// // A delegate account. Stands in for any address (a Stellar account or
-    /// // another contract) that knows how to authenticate itself.
+    /// // another contract) that knows how to authenticate itself. Here it
+    /// // records the context it approved so the test can verify the delegation
+    /// // reached it.
     /// #[contract]
     /// pub struct DelegateAccount;
     ///
@@ -383,11 +386,14 @@ impl Address {
     ///     type Signature = ();
     ///     type Error = Error;
     ///     fn __check_auth(
-    ///         _env: Env,
+    ///         env: Env,
     ///         _signature_payload: Hash<32>,
     ///         _signatures: (),
-    ///         _auth_contexts: Vec<Context>,
+    ///         auth_contexts: Vec<Context>,
     ///     ) -> Result<(), Error> {
+    ///         env.storage()
+    ///             .instance()
+    ///             .set(&DataKey::ApprovedContexts, &auth_contexts);
     ///         Ok(())
     ///     }
     /// }
@@ -465,6 +471,7 @@ impl Address {
     ///     // The account authorized the `protected` call. Delegating to
     ///     // `delegate` is not recorded as a separate authorization.
     ///     use soroban_sdk::{
+    ///         auth::ContractContext,
     ///         testutils::{AuthorizedFunction, AuthorizedInvocation},
     ///         IntoVal, Symbol,
     ///     };
@@ -482,6 +489,21 @@ impl Address {
     ///             }
     ///         )]
     ///     );
+    ///
+    ///     // The delegation actually reached `delegate`, which approved the
+    ///     // same invocation that was authorized above.
+    ///     let approved: Vec<Context> = env.as_contract(&delegate, || {
+    ///         env.storage().instance().get(&DataKey::ApprovedContexts).unwrap()
+    ///     });
+    ///     assert_eq!(approved.len(), 1);
+    ///     match approved.get(0).unwrap() {
+    ///         Context::Contract(ContractContext { contract, fn_name, args }) => {
+    ///             assert_eq!(contract, protected);
+    ///             assert_eq!(fn_name, Symbol::new(&env, "protected"));
+    ///             assert_eq!(args, (account.clone(),).into_val(&env));
+    ///         }
+    ///         _ => panic!("expected a contract invocation context"),
+    ///     }
     /// }
     /// # #[cfg(not(feature = "testutils"))]
     /// # fn main() { }
