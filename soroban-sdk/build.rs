@@ -6,14 +6,14 @@ pub fn main() {
     println!("cargo::rustc-check-cfg=cfg(soroban_sdk_internal_no_rssdkver_meta)");
 
     // Check if we're building for wasm32-unknown-unknown target (cross-compilation safe)
-    println!("cargo::rerun-if-env-changed=SOROBAN_SDK_ALLOW_WASM32_UNKNOWN_UNKNOWN");
     if std::env::var("CARGO_CFG_TARGET_FAMILY").as_deref() == Ok("wasm")
         && std::env::var("CARGO_CFG_TARGET_OS").as_deref() == Ok("unknown")
     {
         if let Ok(version) = rustc_version::version() {
             if version.major == 1 && version.minor >= 82 {
+                println!("cargo::rerun-if-env-changed=SOROBAN_SDK_ALLOW_WASM32_UNKNOWN_UNKNOWN");
                 if std::env::var("SOROBAN_SDK_ALLOW_WASM32_UNKNOWN_UNKNOWN").is_ok() {
-                    println!("cargo:warning=Building for 'wasm32-unknown-unknown' with Rust 1.82+ via SOROBAN_SDK_ALLOW_WASM32_UNKNOWN_UNKNOWN. The produced wasm uses features (reference-types, multi-value) that are not supported by the Soroban Environment and MUST NOT be deployed on-chain. This is only suitable for purposes such as static analysis. To produce deployable contracts, use the 'wasm32v1-none' target available with Rust 1.84+.");
+                    println!("cargo::warning=Building for 'wasm32-unknown-unknown' with Rust 1.82+ via SOROBAN_SDK_ALLOW_WASM32_UNKNOWN_UNKNOWN. The produced wasm uses features (reference-types, multi-value) that are not supported by the Soroban Environment and MUST NOT be deployed on-chain. This is only suitable for purposes such as static analysis. To produce deployable contracts, use the 'wasm32v1-none' target available with Rust 1.84+.");
                 } else {
                     panic!("Rust compiler 1.82+ with target 'wasm32-unknown-unknown' is unsupported by the Soroban Environment, use 'wasm32v1-none' available with Rust 1.84+. The 'wasm32-unknown-unknown' target in Rust 1.82+ has features enabled that are not yet supported and not easily disabled: reference-types, multi-value. If you must build for the 'wasm32-unknown-unknown' use Rust 1.81 or earlier. If you only need to compile (not deploy) the contract, e.g. for static analysis, set the SOROBAN_SDK_ALLOW_WASM32_UNKNOWN_UNKNOWN environment variable to bypass this check.");
                 }

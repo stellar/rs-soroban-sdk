@@ -139,6 +139,25 @@
 //! set. The check only fires for wasm targets; native builds (e.g. unit tests)
 //! are unaffected.
 //!
+//! # Build Environment Variables
+//!
+//! ## `SOROBAN_SDK_ALLOW_WASM32_UNKNOWN_UNKNOWN`
+//!
+//! The SDK supports the `wasm32v1-none` target (available with Rust 1.84+),
+//! the only Wasm target supported by the Soroban Environment on Stellar.
+//! Building for the `wasm32-unknown-unknown` target with Rust 1.82+ is rejected
+//! at build time with an error, because that target enables Wasm features
+//! (`reference-types`, `multi-value`) that the Soroban Environment does not
+//! support, producing Wasm that cannot be deployed on-chain.
+//!
+//! Setting the `SOROBAN_SDK_ALLOW_WASM32_UNKNOWN_UNKNOWN` environment variable
+//! (to any value) bypasses this check, replacing the error with a build
+//! warning. This is intended only for tooling that needs to *compile* a
+//! contract but never *deploys* the resulting Wasm — for example static
+//! analysis tools that are coupled to a specific newer Rust toolchain. The
+//! Wasm produced this way must not be deployed on-chain. To produce deployable
+//! contracts, use the `wasm32v1-none` target instead.
+//!
 //! [`contracttype`]: crate::contracttype
 //! [`contracterror`]: crate::contracterror
 //! [`contractevent`]: crate::contractevent
