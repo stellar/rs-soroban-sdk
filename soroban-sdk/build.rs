@@ -20,15 +20,19 @@ pub fn main() {
         println!("cargo:rustc-env=RUSTC_VERSION={rustc_version}");
     }
 
-    // When the experimental_spec_shaking_v2 feature is enabled on a wasm target, check for an
-    // env var from the build system (Stellar CLI) that indicates it supports spec optimization
-    // using markers.
+    // The env var set by the build system (Stellar CLI) that indicates it supports spec
+    // optimization using markers.
+    let build_system_env_name = "SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2";
+    println!("cargo::rerun-if-env-changed={build_system_env_name}");
+    let build_system_supports_spec_shaking_v2 = std::env::var(build_system_env_name).is_ok();
+    let target_family_is_wasm =
+        std::env::var("CARGO_CFG_TARGET_FAMILY").unwrap_or_default() == "wasm";
+
     if std::env::var("CARGO_FEATURE_EXPERIMENTAL_SPEC_SHAKING_V2").is_ok() {
-        let env_name = "SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2";
-        println!("cargo::rerun-if-env-changed={env_name}");
-        if std::env::var(env_name).is_err()
-            && std::env::var("CARGO_CFG_TARGET_FAMILY").unwrap_or_default() == "wasm"
-        {
+        // When the experimental_spec_shaking_v2 feature is enabled on a wasm target, the build
+        // system must support spec optimization using markers, otherwise the build cannot produce
+        // a correct spec.
+        if !build_system_supports_spec_shaking_v2 && target_family_is_wasm {
             eprintln!(
                 "\
 \nerror: soroban-sdk feature 'experimental_spec_shaking_v2' requires stellar-cli v25.2.0+\
@@ -44,6 +48,18 @@ pub fn main() {
             );
             std::process::exit(1);
         }
+    } else if !build_system_supports_spec_shaking_v2 && target_family_is_wasm {
+        // When the experimental_spec_shaking_v2 feature is not enabled, building a wasm without a
+        // build system that supports spec optimization using markers still works today, but a
+        // future SDK version will enable spec shaking v2 by default which requires a supported
+        // build tool. Warn so users can migrate ahead of time.
+        println!(
+            "cargo::warning=\
+soroban-sdk: building for wasm without a build tool that supports spec shaking v2. \
+A future SDK version will enable spec shaking v2 by default, which requires building with a \
+supported build tool. Migrate to `stellar contract build` from stellar-cli v25.2.0 or newer to \
+ensure your contracts keep building."
+        );
     }
 
     crate_git_revision::init();

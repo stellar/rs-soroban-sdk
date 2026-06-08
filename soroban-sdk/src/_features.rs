@@ -139,6 +139,14 @@
 //! set. The check only fires for wasm targets; native builds (e.g. unit tests)
 //! are unaffected.
 //!
+//! Even when this feature is *not* enabled, building for wasm without a
+//! supported build tool (i.e. without the
+//! `SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2` environment variable
+//! set) emits a build warning. A future SDK version will enable spec shaking v2
+//! by default, which will require a supported build tool, so the warning
+//! advises migrating to `stellar contract build`. As above, the warning only
+//! fires for wasm targets and not native builds.
+//!
 //! [`contracttype`]: crate::contracttype
 //! [`contracterror`]: crate::contracterror
 //! [`contractevent`]: crate::contractevent
