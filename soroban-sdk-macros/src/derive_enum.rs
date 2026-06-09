@@ -181,9 +181,9 @@ pub fn derive_type_enum(
         None
     };
 
-    // SpecShakingMarker impl - only generated when spec is true and the
-    // experimental_spec_shaking_v2 feature is enabled.
-    let spec_shaking_impl = if cfg!(feature = "experimental_spec_shaking_v2") {
+    // SpecShakingMarker impl - only generated when spec is true and spec
+    // shaking v2 is enabled (the default).
+    let spec_shaking_impl = if !cfg!(feature = "disable_spec_shaking_v2") {
         spec_xdr.as_ref().map(|spec_xdr| {
             // Flatten all variant field types for shaking calls, deduplicating
             // to avoid redundant calls for types that appear in multiple variants.

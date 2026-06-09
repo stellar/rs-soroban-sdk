@@ -62,17 +62,16 @@ pub(crate) const DEFAULT_XDR_RW_LIMITS: Limits = Limits {
     len: 0x1000000,
 };
 
-/// Emit a deprecation warning when `export` is set with the
-/// `experimental_spec_shaking_v2` feature enabled. Under v2 the spec is
-/// determined by reachability, so the argument has no effect and will be
-/// removed in a future release.
+/// Emit a deprecation warning when `export` is set with spec shaking v2
+/// enabled (the default). Under v2 the spec is determined by reachability, so
+/// the argument has no effect and will be removed in a future release.
 pub(crate) fn export_arg_v2_deprecation(export: &Option<bool>, ident: &syn::Ident) -> TokenStream2 {
-    if cfg!(feature = "experimental_spec_shaking_v2") && export.is_some() {
+    if !cfg!(feature = "disable_spec_shaking_v2") && export.is_some() {
         let marker = format_ident!("__SOROBAN_EXPORT_ARG_DEPRECATED_FOR_{}", ident);
         quote! {
             #[doc(hidden)]
             #[allow(non_upper_case_globals)]
-            #[deprecated = "`export` is a no-op under `experimental_spec_shaking_v2` (specs are determined by reachability) and will be removed in a future release"]
+            #[deprecated = "`export` is a no-op under spec shaking v2 (the default; specs are determined by reachability) and will be removed in a future release"]
             const #marker: () = ();
             const _: () = #marker;
         }
@@ -456,11 +455,11 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
         Err(e) => return e.to_compile_error().into(),
     }
     let export_deprecation = export_arg_v2_deprecation(&args.export, ident);
-    // Under `experimental_spec_shaking_v2` the spec is always emitted and
+    // Under spec shaking v2 (the default) the spec is always emitted and
     // reachability determines what is retained, so the `export` argument is
     // ignored (a deprecation warning is emitted above). Otherwise, honor an
     // explicit `export` value, falling back to exporting only `pub` types.
-    let gen_spec = if cfg!(feature = "experimental_spec_shaking_v2") {
+    let gen_spec = if !cfg!(feature = "disable_spec_shaking_v2") {
         true
     } else if let Some(export) = args.export {
         export
@@ -533,11 +532,11 @@ pub fn contracterror(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let ident = &input.ident;
     let attrs = &input.attrs;
     let export_deprecation = export_arg_v2_deprecation(&args.export, ident);
-    // Under `experimental_spec_shaking_v2` the spec is always emitted and
+    // Under spec shaking v2 (the default) the spec is always emitted and
     // reachability determines what is retained, so the `export` argument is
     // ignored (a deprecation warning is emitted above). Otherwise, honor an
     // explicit `export` value, falling back to exporting only `pub` types.
-    let gen_spec = if cfg!(feature = "experimental_spec_shaking_v2") {
+    let gen_spec = if !cfg!(feature = "disable_spec_shaking_v2") {
         true
     } else if let Some(export) = args.export {
         export
@@ -726,10 +725,10 @@ pub fn contractimport(metadata: TokenStream) -> TokenStream {
         }
     };
 
-    // Generate with options based on whether the experimental_spec_shaking_v2
-    // feature is enabled.
+    // Generate with options based on whether spec shaking v2 is enabled (the
+    // default; disabled only with `disable_spec_shaking_v2`).
     let opts = GenerateOptions {
-        export: cfg!(feature = "experimental_spec_shaking_v2"),
+        export: !cfg!(feature = "disable_spec_shaking_v2"),
     };
     match generate_from_wasm_with_options(&wasm, &args.file, args.sha256.as_deref(), &opts) {
         Ok(code) => quote! { #code },

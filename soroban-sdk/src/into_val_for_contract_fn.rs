@@ -5,10 +5,11 @@
 //! The trait has a blanket implementation for all types that already implement
 //! IntoVal<Env, Val>.
 //!
-//! When the `experimental_spec_shaking_v2` feature is enabled, this trait also
-//! calls `SpecShakingMarker::spec_shaking_marker()` to ensure that type specs
-//! are included in the WASM when types are used at external boundaries
-//! (function return values).
+//! Spec shaking v2 is the default behavior; under it this trait also calls
+//! `SpecShakingMarker::spec_shaking_marker()` to ensure that type specs are
+//! included in the WASM when types are used at external boundaries (function
+//! return values). The `disable_spec_shaking_v2` feature opts out of this
+//! behavior.
 
 use crate::{Env, IntoVal, Val};
 
@@ -20,7 +21,7 @@ pub trait IntoValForContractFn {
     fn into_val_for_contract_fn(self, env: &Env) -> Val;
 }
 
-#[cfg(feature = "experimental_spec_shaking_v2")]
+#[cfg(not(feature = "disable_spec_shaking_v2"))]
 #[doc(hidden)]
 #[allow(deprecated)]
 impl<T> IntoValForContractFn for T
@@ -33,7 +34,7 @@ where
     }
 }
 
-#[cfg(not(feature = "experimental_spec_shaking_v2"))]
+#[cfg(feature = "disable_spec_shaking_v2")]
 #[doc(hidden)]
 #[allow(deprecated)]
 impl<T> IntoValForContractFn for T

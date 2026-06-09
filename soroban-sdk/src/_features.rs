@@ -26,12 +26,16 @@
 //! [`Address::from_payload`][crate::Address::from_payload]) that are easy to
 //! misuse. Use with care.
 //!
-//! ## `experimental_spec_shaking_v2`
+//! ## `disable_spec_shaking_v2`
 //!
-//! Enables v2 spec shaking, an improved mechanism for controlling which type,
-//! event, and function definitions appear in a contract's spec.
+//! Spec shaking v2 is an improved mechanism for controlling which type, event,
+//! and function definitions appear in a contract's spec. **It is the default
+//! behavior of the SDK.** The `disable_spec_shaking_v2` feature opts out of v2
+//! and falls back to the legacy v1 behavior. It is provided as a transitional
+//! escape hatch for the v26 release period in case the new default causes
+//! issues, and is expected to be removed in a future release.
 //!
-//! ### Spec Shaking v1 (default, no feature flag)
+//! ### Spec Shaking v1 (opt-out, `disable_spec_shaking_v2` feature)
 //!
 //! - Lib imports (via `contractimport!`): exported
 //! - Wasm imports (via `contractimport!`): not exported
@@ -40,7 +44,7 @@
 //! - All events: exported
 //! - All functions: exported
 //!
-//! ### Spec Shaking v2 (this feature)
+//! ### Spec Shaking v2 (default)
 //!
 //! - Everything exported (types, events, functions, imports)
 //! - Unused entries shaken out using dead code / spec elimination
@@ -53,7 +57,7 @@
 //!
 //! ### How It Works
 //!
-//! When this feature is enabled, the SDK embeds 14-byte **markers** in the Wasm
+//! By default (v2 enabled), the SDK embeds 14-byte **markers** in the Wasm
 //! data section for each exported type and event. A marker consists of a
 //! `SpEcV1` magic prefix followed by 8 bytes of a SHA-256 hash of the spec
 //! entry's XDR.
@@ -78,42 +82,44 @@
 //!
 //! ### Changed Behaviour
 //!
-//! When this feature is enabled the following macros change behaviour:
+//! Relative to the legacy v1 behavior (which is restored by the
+//! `disable_spec_shaking_v2` feature), the following macros behave differently
+//! under the v2 default:
 //!
 //! #### [`contracttype`]
 //!
-//! Without this feature, spec entries are only generated for `pub` types (or
-//! when `export = true` is explicitly set). With this feature, spec entries and
-//! markers are generated for all types regardless of visibility, and post-build
-//! tooling removes entries that are not reachable from the contract interface.
-//! The `export` argument is a no-op under this feature and emits a deprecation
+//! Under v1, spec entries are only generated for `pub` types (or
+//! when `export = true` is explicitly set). Under the v2 default, spec entries
+//! and markers are generated for all types regardless of visibility, and
+//! post-build tooling removes entries that are not reachable from the contract
+//! interface. The `export` argument is a no-op under v2 and emits a deprecation
 //! warning at the macro call site; it will be removed in a future release.
 //!
 //! #### [`contracterror`]
 //!
-//! Same as [`contracttype`]: without this feature, spec entries are only
-//! generated for `pub` types. With this feature, post-build tooling removes
-//! unreachable error enum entries. The `export` argument is a no-op under this
-//! feature and emits a deprecation warning; it will be removed in a future
+//! Same as [`contracttype`]: under v1, spec entries are only
+//! generated for `pub` types. Under the v2 default, post-build tooling removes
+//! unreachable error enum entries. The `export` argument is a no-op under v2
+//! and emits a deprecation warning; it will be removed in a future
 //! release.
 //!
 //! #### [`contractevent`]
 //!
 //! Markers are embedded for all events, allowing post-build tools to strip
 //! spec entries for events that are never published at a contract boundary.
-//! The `export` argument is a no-op under this feature and emits a deprecation
+//! The `export` argument is a no-op under v2 and emits a deprecation
 //! warning; it will be removed in a future release.
 //!
 //! #### [`contractimport!`]
 //!
-//! Without this feature, [`contractimport!`] generates imported types with
+//! Under v1, [`contractimport!`] generates imported types with
 //! `export = false`. Imported types do not produce spec entries in the
 //! importing contract's spec. They are purely local Rust types used for
 //! serialization. The importing contract's spec only contains its own function
 //! definitions, and callers must look at the imported contract's spec to find
 //! the type definitions.
 //!
-//! With this feature, [`contractimport!`] generates imported types without
+//! Under the v2 default, [`contractimport!`] generates imported types without
 //! `export` controls. Imported types produce spec entries and markers in
 //! the importing contract, just like locally defined types. This changes the
 //! contract's spec to be self-contained — it includes the type definitions for
@@ -132,12 +138,14 @@
 //!
 //! ### Build Requirements
 //!
-//! This feature requires building with `stellar contract build` from
-//! `stellar-cli` v25.2.0 or newer. Building a contract for wasm (e.g. with
-//! `cargo build --target wasm32v1-none`) will produce a build error unless the
+//! Because spec shaking v2 is the default, building a contract requires
+//! `stellar contract build` from `stellar-cli` v25.2.0 or newer. Building a
+//! contract for wasm (e.g. with `cargo build --target wasm32v1-none`) will
+//! produce a build error unless the
 //! `SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2` environment variable is
 //! set. The check only fires for wasm targets; native builds (e.g. unit tests)
-//! are unaffected.
+//! are unaffected. To avoid these requirements, opt out of v2 with the
+//! `disable_spec_shaking_v2` feature.
 //!
 //! [`contracttype`]: crate::contracttype
 //! [`contracterror`]: crate::contracterror

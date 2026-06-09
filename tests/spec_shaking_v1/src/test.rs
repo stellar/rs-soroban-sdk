@@ -12,11 +12,11 @@ fn test_spec_shaking_v1() {
     // Read all spec entries from the WASM.
     let entries = soroban_spec::read::from_wasm(WASM).unwrap();
 
-    // No markers should be embedded without the experimental feature.
+    // No markers should be embedded under v1 (disable_spec_shaking_v2).
     let markers = soroban_spec::shaking::find_all(WASM);
     assert!(
         markers.is_empty(),
-        "no markers should be present without experimental_spec_shaking_v2, found {}",
+        "no markers should be present under disable_spec_shaking_v2 (v1), found {}",
         markers.len()
     );
 

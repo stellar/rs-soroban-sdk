@@ -20,10 +20,11 @@ pub fn main() {
         println!("cargo:rustc-env=RUSTC_VERSION={rustc_version}");
     }
 
-    // When the experimental_spec_shaking_v2 feature is enabled on a wasm target, check for an
-    // env var from the build system (Stellar CLI) that indicates it supports spec optimization
-    // using markers.
-    if std::env::var("CARGO_FEATURE_EXPERIMENTAL_SPEC_SHAKING_V2").is_ok() {
+    // Spec shaking v2 is the default behavior (active unless the
+    // `disable_spec_shaking_v2` feature is set). When active on a wasm target,
+    // check for an env var from the build system (Stellar CLI) that indicates
+    // it supports spec optimization using markers.
+    if std::env::var("CARGO_FEATURE_DISABLE_SPEC_SHAKING_V2").is_err() {
         let env_name = "SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2";
         println!("cargo::rerun-if-env-changed={env_name}");
         if std::env::var(env_name).is_err()
@@ -31,15 +32,17 @@ pub fn main() {
         {
             eprintln!(
                 "\
-\nerror: soroban-sdk feature 'experimental_spec_shaking_v2' requires stellar-cli v25.2.0+\
+\nerror: soroban-sdk spec shaking v2 (the default) requires stellar-cli v25.2.0+\
 \n\
-\nThe soroban-sdk 'experimental_spec_shaking_v2' feature requires building\
-\nwith `stellar contract build` from stellar-cli v25.2.0 or newer.\
+\nspec shaking v2 is now the default behavior of soroban-sdk and requires\
+\nbuilding with `stellar contract build` from stellar-cli v25.2.0 or newer.\
 \n\
 \nTo fix, either:\
 \n  - Build with `stellar contract build` using stellar-cli v25.2.0+\
-\n  - Disable the feature by removing 'experimental_spec_shaking_v2' from\
-\n    the soroban-sdk import features list in Cargo.toml.\
+\n  - Set the SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2 env var if\
+\n    your build system supports spec optimization using markers\
+\n  - Opt out of spec shaking v2 by adding 'disable_spec_shaking_v2' to the\
+\n    soroban-sdk import features list in Cargo.toml.\
 "
             );
             std::process::exit(1);

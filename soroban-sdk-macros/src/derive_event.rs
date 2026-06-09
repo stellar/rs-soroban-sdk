@@ -172,11 +172,11 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     // If errors have occurred, return them.
     let mut errors = errors.checkpoint()?;
 
-    // Generated code spec. Under `experimental_spec_shaking_v2` the spec is
+    // Generated code spec. Under spec shaking v2 (the default) the spec is
     // always emitted and reachability determines what is retained, so an
     // explicit `export = false` is ignored (a deprecation warning is emitted
     // separately).
-    let export = cfg!(feature = "experimental_spec_shaking_v2") || args.export.unwrap_or(true);
+    let export = !cfg!(feature = "disable_spec_shaking_v2") || args.export.unwrap_or(true);
     let export_gen = if export {
         Some(quote! { #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")] })
     } else {
@@ -207,7 +207,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         "__SPEC_XDR_EVENT_{}",
         input.ident.unraw().to_string().to_uppercase()
     );
-    let spec_shaking_call = if export && cfg!(feature = "experimental_spec_shaking_v2") {
+    let spec_shaking_call = if export && !cfg!(feature = "disable_spec_shaking_v2") {
         Some(quote! { <Self as #path::SpecShakingMarker>::spec_shaking_marker(); })
     } else {
         None
@@ -225,9 +225,9 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         }
     };
 
-    // SpecShakingMarker impl - only generated when export is true and the
-    // experimental_spec_shaking_v2 feature is enabled.
-    let spec_shaking_impl = if export && cfg!(feature = "experimental_spec_shaking_v2") {
+    // SpecShakingMarker impl - only generated when export is true and spec
+    // shaking v2 is enabled (the default).
+    let spec_shaking_impl = if export && !cfg!(feature = "disable_spec_shaking_v2") {
         Some(shaking::generate_marker_impl(
             path,
             quote!(#ident),

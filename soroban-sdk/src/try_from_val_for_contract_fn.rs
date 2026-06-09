@@ -14,9 +14,10 @@
 //! is most appropriate. For types that should only be used and converted to as
 //! part of contract function invocation, then this trait is appropriate.
 //!
-//! When the `experimental_spec_shaking_v2` feature is enabled, this trait also
-//! calls `SpecShakingMarker::spec_shaking_marker()` to ensure that type specs
-//! are included in the WASM when types are used at external boundaries.
+//! Spec shaking v2 is the default behavior; under it this trait also calls
+//! `SpecShakingMarker::spec_shaking_marker()` to ensure that type specs are
+//! included in the WASM when types are used at external boundaries. The
+//! `disable_spec_shaking_v2` feature opts out of this behavior.
 
 use crate::{env::internal::Env, Error, TryFromVal};
 use core::fmt::Debug;
@@ -30,7 +31,7 @@ pub trait TryFromValForContractFn<E: Env, V: ?Sized>: Sized {
     fn try_from_val_for_contract_fn(env: &E, v: &V) -> Result<Self, Self::Error>;
 }
 
-#[cfg(feature = "experimental_spec_shaking_v2")]
+#[cfg(not(feature = "disable_spec_shaking_v2"))]
 #[doc(hidden)]
 #[allow(deprecated)]
 impl<E: Env, T, U> TryFromValForContractFn<E, T> for U
@@ -44,7 +45,7 @@ where
     }
 }
 
-#[cfg(not(feature = "experimental_spec_shaking_v2"))]
+#[cfg(feature = "disable_spec_shaking_v2")]
 #[doc(hidden)]
 #[allow(deprecated)]
 impl<E: Env, T, U> TryFromValForContractFn<E, T> for U

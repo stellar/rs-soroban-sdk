@@ -16,7 +16,7 @@ crate-type = ["cdylib", "rlib"]
 doctest = false
 
 [dependencies]
-soroban-sdk = {path = "../../soroban-sdk", features = ["experimental_spec_shaking_v2"]}
+soroban-sdk = {path = "../../soroban-sdk", features = []}
 
 [dev-dependencies]
 soroban-sdk = {path = "../../soroban-sdk", features = ["testutils"]}

@@ -12,11 +12,11 @@ use crate::{
 /// need to be authorized.
 #[derive(Clone)]
 #[cfg_attr(
-    feature = "experimental_spec_shaking_v2",
+    not(feature = "disable_spec_shaking_v2"),
     contracttype(crate_path = "crate")
 )]
 #[cfg_attr(
-    not(feature = "experimental_spec_shaking_v2"),
+    feature = "disable_spec_shaking_v2",
     contracttype(crate_path = "crate", export = false)
 )]
 pub enum Context {
@@ -34,11 +34,11 @@ pub enum Context {
 /// from `contract` function with `fn_name` name and `args` arguments.
 #[derive(Clone)]
 #[cfg_attr(
-    feature = "experimental_spec_shaking_v2",
+    not(feature = "disable_spec_shaking_v2"),
     contracttype(crate_path = "crate")
 )]
 #[cfg_attr(
-    not(feature = "experimental_spec_shaking_v2"),
+    feature = "disable_spec_shaking_v2",
     contracttype(crate_path = "crate", export = false)
 )]
 pub struct ContractContext {
@@ -51,11 +51,11 @@ pub struct ContractContext {
 /// new contract on behalf of authorizer address.
 #[derive(Clone)]
 #[cfg_attr(
-    feature = "experimental_spec_shaking_v2",
+    not(feature = "disable_spec_shaking_v2"),
     contracttype(crate_path = "crate")
 )]
 #[cfg_attr(
-    not(feature = "experimental_spec_shaking_v2"),
+    feature = "disable_spec_shaking_v2",
     contracttype(crate_path = "crate", export = false)
 )]
 pub struct CreateContractHostFnContext {
@@ -69,11 +69,11 @@ pub struct CreateContractHostFnContext {
 /// contract constructor arguments.
 #[derive(Clone)]
 #[cfg_attr(
-    feature = "experimental_spec_shaking_v2",
+    not(feature = "disable_spec_shaking_v2"),
     contracttype(crate_path = "crate")
 )]
 #[cfg_attr(
-    not(feature = "experimental_spec_shaking_v2"),
+    feature = "disable_spec_shaking_v2",
     contracttype(crate_path = "crate", export = false)
 )]
 pub struct CreateContractWithConstructorHostFnContext {
@@ -86,11 +86,11 @@ pub struct CreateContractWithConstructorHostFnContext {
 /// `CreateContractHostFnContext`.
 #[derive(Clone)]
 #[cfg_attr(
-    feature = "experimental_spec_shaking_v2",
+    not(feature = "disable_spec_shaking_v2"),
     contracttype(crate_path = "crate")
 )]
 #[cfg_attr(
-    not(feature = "experimental_spec_shaking_v2"),
+    feature = "disable_spec_shaking_v2",
     contracttype(crate_path = "crate", export = false)
 )]
 pub enum ContractExecutable {
@@ -106,11 +106,11 @@ pub enum ContractExecutable {
 /// current contract.
 #[derive(Clone)]
 #[cfg_attr(
-    feature = "experimental_spec_shaking_v2",
+    not(feature = "disable_spec_shaking_v2"),
     contracttype(crate_path = "crate")
 )]
 #[cfg_attr(
-    not(feature = "experimental_spec_shaking_v2"),
+    feature = "disable_spec_shaking_v2",
     contracttype(crate_path = "crate", export = false)
 )]
 pub enum InvokerContractAuthEntry {
@@ -125,11 +125,11 @@ pub enum InvokerContractAuthEntry {
 /// Value of contract node in InvokerContractAuthEntry tree.
 #[derive(Clone)]
 #[cfg_attr(
-    feature = "experimental_spec_shaking_v2",
+    not(feature = "disable_spec_shaking_v2"),
     contracttype(crate_path = "crate")
 )]
 #[cfg_attr(
-    not(feature = "experimental_spec_shaking_v2"),
+    feature = "disable_spec_shaking_v2",
     contracttype(crate_path = "crate", export = false)
 )]
 pub struct SubContractInvocation {

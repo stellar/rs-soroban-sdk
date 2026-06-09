@@ -12,9 +12,9 @@ crate-type = ["cdylib"]
 doctest = false
 
 [dependencies]
-soroban-sdk = {path = "../../soroban-sdk"}
+soroban-sdk = {path = "../../soroban-sdk", features = ["disable_spec_shaking_v2"]}
 test_spec_lib = {path = "../spec_lib"}
 
 [dev-dependencies]
-soroban-sdk = {path = "../../soroban-sdk", features = ["testutils"]}
+soroban-sdk = {path = "../../soroban-sdk", features = ["testutils", "disable_spec_shaking_v2"]}
 soroban-spec = {path = "../../soroban-spec"}

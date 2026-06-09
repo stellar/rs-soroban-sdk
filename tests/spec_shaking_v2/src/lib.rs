@@ -247,7 +247,7 @@ pub struct UsedVecElementNested {
 }
 
 // Used types declared with `export = false`: the argument is a no-op under
-// `experimental_spec_shaking_v2` (a deprecation warning is emitted by the
+// spec shaking v2 (the default; a deprecation warning is emitted by the
 // macro).
 #[allow(deprecated)]
 mod export_false_used {

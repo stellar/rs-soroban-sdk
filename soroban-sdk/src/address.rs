@@ -215,11 +215,11 @@ impl TryFrom<Address> for AccountId {
 }
 
 #[cfg_attr(
-    feature = "experimental_spec_shaking_v2",
+    not(feature = "disable_spec_shaking_v2"),
     contracttype(crate_path = "crate")
 )]
 #[cfg_attr(
-    not(feature = "experimental_spec_shaking_v2"),
+    feature = "disable_spec_shaking_v2",
     contracttype(crate_path = "crate", export = false)
 )]
 #[derive(Clone, Debug, PartialEq, Eq)]

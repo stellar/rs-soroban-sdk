@@ -9893,7 +9893,7 @@ mod export_false_used {
     }
     #[doc(hidden)]
     #[allow(non_upper_case_globals)]
-    #[deprecated = "`export` is a no-op under `experimental_spec_shaking_v2` (specs are determined by reachability) and will be removed in a future release"]
+    #[deprecated = "`export` is a no-op under spec shaking v2 (the default; specs are determined by reachability) and will be removed in a future release"]
     const __SOROBAN_EXPORT_ARG_DEPRECATED_FOR_UsedExportFalseStruct: () = ();
     const _: () = __SOROBAN_EXPORT_ARG_DEPRECATED_FOR_UsedExportFalseStruct;
     pub static __SPEC_XDR_TYPE_USEDEXPORTFALSESTRUCT: [u8; 60usize] =
@@ -10266,7 +10266,7 @@ mod export_false_used {
     }
     #[doc(hidden)]
     #[allow(non_upper_case_globals)]
-    #[deprecated = "`export` is a no-op under `experimental_spec_shaking_v2` (specs are determined by reachability) and will be removed in a future release"]
+    #[deprecated = "`export` is a no-op under spec shaking v2 (the default; specs are determined by reachability) and will be removed in a future release"]
     const __SOROBAN_EXPORT_ARG_DEPRECATED_FOR_UsedExportFalseError: () = ();
     const _: () = __SOROBAN_EXPORT_ARG_DEPRECATED_FOR_UsedExportFalseError;
     pub static __SPEC_XDR_TYPE_USEDEXPORTFALSEERROR: [u8; 56usize] =
@@ -10435,7 +10435,7 @@ mod export_false_used {
     }
     #[doc(hidden)]
     #[allow(non_upper_case_globals)]
-    #[deprecated = "`export` is a no-op under `experimental_spec_shaking_v2` (specs are determined by reachability) and will be removed in a future release"]
+    #[deprecated = "`export` is a no-op under spec shaking v2 (the default; specs are determined by reachability) and will be removed in a future release"]
     const __SOROBAN_EXPORT_ARG_DEPRECATED_FOR_UsedExportFalseEvent: () = ();
     const _: () = __SOROBAN_EXPORT_ARG_DEPRECATED_FOR_UsedExportFalseEvent;
     pub static __SPEC_XDR_EVENT_USEDEXPORTFALSEEVENT: [u8; 120usize] =
@@ -12639,7 +12639,7 @@ const _: () = {
     }
 };
 mod wasm_imported {
-    pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01*\x07`\x02~~\x01~`\x03~~~\x01~`\x01~\x01~`\x00\x01~`\x02\x7f\x7f\x01~`\x04\x7f\x7f\x7f\x7f\x01~`\x02\x7f~\x00\x02%\x06\x01b\x01j\x00\x00\x01x\x011\x00\x00\x01v\x01g\x00\x00\x01m\x019\x00\x01\x01i\x012\x00\x02\x01i\x011\x00\x02\x03\x0b\n\x03\x04\x03\x02\x00\x05\x00\x00\x06\x06\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x82\x80\xc0\x00\x0b\x7f\x00A\xa0\x80\xc0\x00\x0b\x7f\x00A\xa0\x80\xc0\x00\x0b\x07\x81\x01\n\x06memory\x02\x00\tfn_enum_a\x00\x06\rfn_enum_int_a\x00\x08\nfn_error_a\x00\t\nfn_event_a\x00\n\x0bfn_struct_a\x00\x0c\x11fn_struct_tuple_a\x00\r\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\xbd\x08\n\x8b\x02\x03\x01\x7f\x01~\x03\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00B\x00!\x01A~!\x02\x03~\x02@\x02@\x02@\x02@\x02@ \x02E\r\x00A\x01!\x03 \x02A\x82\x80\xc0\x80\x00j-\x00\x00\"\x04A\xdf\x00F\r\x04 \x04APjA\xff\x01qA\nI\r\x02 \x04A\xbf\x7fjA\xff\x01qA\x1aI\r\x03\x02@ \x04A\x9f\x7fjA\xff\x01qA\x1aO\r\x00 \x04AEj!\x03\x0c\x05\x0b \x00 \x04\xadB\x08\x86B\x01\x847\x03\x00A\x80\x80\xc0\x80\x00\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x80\x80\x80\x80\x00!\x01\x0c\x01\x0b \x00 \x01B\x08\x86B\x0e\x84\"\x017\x02\x04\x0b \x00 \x017\x03\x00 \x00A\x01\x10\x87\x80\x80\x80\x00!\x01 \x00A\x10j$\x80\x80\x80\x80\x00 \x01\x0f\x0b \x04ARj!\x03\x0c\x01\x0b \x04AKj!\x03\x0b \x01B\x06\x86 \x03\xadB\xff\x01\x83\x84!\x01 \x02A\x01j!\x02\x0c\x00\x0b\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x82\x80\x80\x80\x00\x0b\x08\x00B\x84\x80\x80\x800\x0b*\x00\x02@ \x00B\xff\x01\x83B\x04Q\r\x00\x00\x0bB\x83\x80\x80\x80  \x00B\x84\x80\x80\x80p\x83 \x00B\x80\x80\x80\x80\x10T\x1b\x0b\xdc\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcd\x00R\r\x00 \x01B\xff\x01\x83B\xc9\x00R\r\x00 \x02 \x007\x03\x08 \x02B\x8e\xcc\xc1\xfc\xac\xdd\xab\x017\x03\x00A\x00!\x03\x03@\x02@ \x03A\x10G\r\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02A\x10j \x03j \x02 \x03j)\x03\x007\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x02A\x10jA\x02\x10\x87\x80\x80\x80\x00!\x00 \x02 \x017\x03\x10 \x00A\x98\x80\xc0\x80\x00A\x01 \x02A\x10jA\x01\x10\x8b\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x02A j$\x80\x80\x80\x80\x00B\x02\x0f\x0b \x02A\x10j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b\x00\x0b.\x00\x02@ \x01 \x03F\r\x00\x00\x0b \x00\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x83\x80\x80\x80\x00\x0by\x01\x02\x7f#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\x04R\r\x00A\x01A\x02A\x00 \x01\xa7A\xff\x01q\"\x03\x1b \x03A\x01F\x1b\"\x03A\x02F\r\x00 \x02 \x03\xad7\x03\x08 \x02 \x00B\x84\x80\x80\x80p\x837\x03\x00A\x88\x80\xc0\x80\x00A\x02 \x02A\x02\x10\x8b\x80\x80\x80\x00!\x00 \x02A\x10j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b\xb2\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00 \x02A\x10j \x00\x10\x8e\x80\x80\x80\x00\x02@ \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x8e\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x01 \x02A\x10j \x00\x10\x8f\x80\x80\x80\x00 \x02(\x02\x10\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x8f\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02 \x02)\x03\x187\x03\x08 \x02 \x007\x03\x00 \x02A\x02\x10\x87\x80\x80\x80\x00!\x00 \x02A j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b]\x02\x01\x7f\x01~\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc1\x00F\r\x00\x02@ \x02A\x07F\r\x00B\x01!\x03B\x83\x90\x80\x80\x80\x01!\x01\x0c\x02\x0b \x01B\x08\x87!\x01B\x00!\x03\x0c\x01\x0bB\x00!\x03 \x01\x10\x84\x80\x80\x80\x00!\x01\x0b \x00 \x037\x03\x00 \x00 \x017\x03\x08\x0bF\x00\x02@\x02@ \x01B\x80\x80\x80\x80\x80\x80\x80\xc0\x00|B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x01B\x08\x86B\x07\x84!\x01\x0c\x01\x0b \x01\x10\x85\x80\x80\x80\x00!\x01\x0b \x00B\x007\x03\x00 \x00 \x017\x03\x08\x0b\x0b)\x01\x00A\x80\x80\xc0\x00\x0b V2f1f2\x00\x00\x02\x00\x10\x00\x02\x00\x00\x00\x04\x00\x10\x00\x02\x00\x00\x00\x04\x00\x10\x00\x02\x00\x00\x00\x00\xbf\x0e\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\tfn_enum_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_error_a\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05input\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd0\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_event_a\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bfn_struct_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rfn_enum_int_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x08EnumIntA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11fn_struct_tuple_a\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumB\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x07\x00\x00\x00\x07\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumC\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorB\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x0c\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorC\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00e\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00f\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventA\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventB\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_b\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventC\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_c\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructA\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructB\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructC\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x03\xea\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntA\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntB\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntC\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\xc8\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x01,\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleB\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleC\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x0b\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1a\x00\x00\x00\x00\x00+\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00";
+    pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01*\x07`\x02~~\x01~`\x03~~~\x01~`\x01~\x01~`\x00\x01~`\x02\x7f\x7f\x01~`\x04\x7f\x7f\x7f\x7f\x01~`\x02\x7f~\x00\x02%\x06\x01b\x01j\x00\x00\x01x\x011\x00\x00\x01v\x01g\x00\x00\x01m\x019\x00\x01\x01i\x012\x00\x02\x01i\x011\x00\x02\x03\x0b\n\x03\x04\x03\x02\x00\x05\x00\x00\x06\x06\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x82\x80\xc0\x00\x0b\x7f\x00A\xf4\x80\xc0\x00\x0b\x7f\x00A\x80\x81\xc0\x00\x0b\x07\x81\x01\n\x06memory\x02\x00\tfn_enum_a\x00\x06\rfn_enum_int_a\x00\x08\nfn_error_a\x00\t\nfn_event_a\x00\n\x0bfn_struct_a\x00\x0c\x11fn_struct_tuple_a\x00\r\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\xfa\x08\n\x95\x02\x03\x01\x7f\x01~\x03\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\x00-\x00\x82\x80\xc0\x80\x00\x1aB\x00!\x01A~!\x02\x03~\x02@\x02@\x02@\x02@\x02@ \x02E\r\x00A\x01!\x03 \x02A\x82\x80\xc0\x80\x00j-\x00\x00\"\x04A\xdf\x00F\r\x04 \x04APjA\xff\x01qA\nI\r\x02 \x04A\xbf\x7fjA\xff\x01qA\x1aI\r\x03\x02@ \x04A\x9f\x7fjA\xff\x01qA\x1aO\r\x00 \x04AEj!\x03\x0c\x05\x0b \x00 \x04\xadB\x08\x86B\x01\x847\x03\x00A\x80\x80\xc0\x80\x00\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x80\x80\x80\x80\x00!\x01\x0c\x01\x0b \x00 \x01B\x08\x86B\x0e\x84\"\x017\x02\x04\x0b \x00 \x017\x03\x00 \x00A\x01\x10\x87\x80\x80\x80\x00!\x01 \x00A\x10j$\x80\x80\x80\x80\x00 \x01\x0f\x0b \x04ARj!\x03\x0c\x01\x0b \x04AKj!\x03\x0b \x01B\x06\x86 \x03\xadB\xff\x01\x83\x84!\x01 \x02A\x01j!\x02\x0c\x00\x0b\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x82\x80\x80\x80\x00\x0b\x12\x00A\x00-\x00\xba\x80\xc0\x80\x00\x1aB\x84\x80\x80\x800\x0b4\x00\x02@ \x00B\xff\x01\x83B\x04Q\r\x00\x00\x0bA\x00-\x00\x90\x80\xc0\x80\x00\x1aB\x83\x80\x80\x80  \x00B\x84\x80\x80\x80p\x83 \x00B\x80\x80\x80\x80\x10T\x1b\x0b\xe6\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcd\x00R\r\x00 \x01B\xff\x01\x83B\xc9\x00R\r\x00A\x00!\x03A\x00-\x00\x9e\x80\xc0\x80\x00\x1a \x02 \x007\x03\x08 \x02B\x8e\xcc\xc1\xfc\xac\xdd\xab\x017\x03\x00\x03@\x02@ \x03A\x10G\r\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02A\x10j \x03j \x02 \x03j)\x03\x007\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x02A\x10jA\x02\x10\x87\x80\x80\x80\x00!\x00 \x02 \x017\x03\x10 \x00A\xec\x80\xc0\x80\x00A\x01 \x02A\x10jA\x01\x10\x8b\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x02A j$\x80\x80\x80\x80\x00B\x02\x0f\x0b \x02A\x10j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b\x00\x0b.\x00\x02@ \x01 \x03F\r\x00\x00\x0b \x00\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x83\x80\x80\x80\x00\x0b\x83\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\x04R\r\x00A\x01A\x02A\x00 \x01\xa7A\xff\x01q\"\x03\x1b \x03A\x01F\x1b\"\x03A\x02F\r\x00A\x00-\x00\xac\x80\xc0\x80\x00\x1a \x02 \x03\xad7\x03\x08 \x02 \x00B\x84\x80\x80\x80p\x837\x03\x00A\xdc\x80\xc0\x80\x00A\x02 \x02A\x02\x10\x8b\x80\x80\x80\x00!\x00 \x02A\x10j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b\xbc\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00 \x02A\x10j \x00\x10\x8e\x80\x80\x80\x00\x02@ \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x8e\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x01A\x00-\x00\xc8\x80\xc0\x80\x00\x1a \x02A\x10j \x00\x10\x8f\x80\x80\x80\x00 \x02(\x02\x10\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x8f\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02 \x02)\x03\x187\x03\x08 \x02 \x007\x03\x00 \x02A\x02\x10\x87\x80\x80\x80\x00!\x00 \x02A j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b]\x02\x01\x7f\x01~\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc1\x00F\r\x00\x02@ \x02A\x07F\r\x00B\x01!\x03B\x83\x90\x80\x80\x80\x01!\x01\x0c\x02\x0b \x01B\x08\x87!\x01B\x00!\x03\x0c\x01\x0bB\x00!\x03 \x01\x10\x84\x80\x80\x80\x00!\x01\x0b \x00 \x037\x03\x00 \x00 \x017\x03\x08\x0bF\x00\x02@\x02@ \x01B\x80\x80\x80\x80\x80\x80\x80\xc0\x00|B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x01B\x08\x86B\x07\x84!\x01\x0c\x01\x0b \x01\x10\x85\x80\x80\x80\x00!\x01\x0b \x00B\x007\x03\x00 \x00 \x017\x03\x08\x0b\x0b}\x01\x00A\x80\x80\xc0\x00\x0btV2SpEcV1\xa2=N\xc1p\x95\x90\xb2SpEcV1\xe9R\xa7\xe8b\x99\xa2\xc3SpEcV1K\xe6\x8ej\x19\x9en\xbdSpEcV1\xb6\x1c\xfd\xdfhY-dSpEcV1V]\x80\\~\x1a\x08/SpEcV1\xcf)\x97]S\xb2\xfd)f1f2\x00\x00V\x00\x10\x00\x02\x00\x00\x00X\x00\x10\x00\x02\x00\x00\x00X\x00\x10\x00\x02\x00\x00\x00\x00\xd3#\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\tfn_enum_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_error_a\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05input\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd0\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_event_a\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bfn_struct_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rfn_enum_int_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x08EnumIntA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11fn_struct_tuple_a\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\xe3Context of a single authorized call performed by an address.\n\nCustom account contracts that implement `__check_auth` special function\nreceive a list of `Context` values corresponding to all the calls that\nneed to be authorized.\x00\x00\x00\x00\x00\x00\x00\x00\x07Context\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x14Contract invocation.\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x01\x00\x00\x00=Contract that has a constructor with no arguments is created.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00DContract that has a constructor with 1 or more arguments is created.\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x01\x00\x00\x00\xbdAuthorization context of a single contract call.\n\nThis struct corresponds to a `require_auth_for_args` call for an address\nfrom `contract` function with `fn_name` name and `args` arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08contract\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x07fn_name\x00\x00\x00\x00\x11\x00\x00\x00\x02\x00\x00\x00_Contract executable used for creating a new contract and used in\n`CreateContractHostFnContext`.\x00\x00\x00\x00\x00\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x008Value of contract node in InvokerContractAuthEntry tree.\x00\x00\x00\x00\x00\x00\x00\x15SubContractInvocation\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x07\xd0\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x00\x00\x00\x00\x0fsub_invocations\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00\x18InvokerContractAuthEntry\x00\x00\x00\x02\x00\x00\x01/A node in the tree of authorizations performed on behalf of the current\ncontract as invoker of the contracts deeper in the call stack.\n\nThis is used as an argument of `authorize_as_current_contract` host function.\n\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\ncurrent contract.\x00\x00\x00\x00\x00\x00\x00\x00\x18InvokerContractAuthEntry\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x12Invoke a contract.\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x15SubContractInvocation\x00\x00\x00\x00\x00\x00\x01\x00\x00\x005Create a contract passing 0 arguments to constructor.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00=Create a contract passing 0 or more arguments to constructor.\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x01\x00\x00\x00vAuthorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\xd6Authorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\nThis is the same as `CreateContractHostFnContext`, but also has\ncontract constructor arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x10constructor_args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nExecutable\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStellarAsset\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Account\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumB\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x07\x00\x00\x00\x07\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumC\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorB\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x0c\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorC\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00e\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00f\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventA\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventB\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_b\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventC\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_c\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructA\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructB\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructC\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x03\xea\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntA\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntB\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntC\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\xc8\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x01,\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleB\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleC\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x0b\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1a\x00\x00\x00\x00\x00O\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12rssdk_spec_shaking\x00\x00\x00\x00\x00\x012\x00\x00\x00";
     pub trait Contract {
         fn fn_enum_a(env: soroban_sdk::Env) -> EnumA;
         fn fn_error_a(env: soroban_sdk::Env, input: u32) -> Result<u32, ErrorA>;
@@ -13257,6 +13257,2107 @@ mod wasm_imported {
             (f1, f2)
         }
     }
+    pub struct ContractContext {
+        pub args: soroban_sdk::Vec<soroban_sdk::Val>,
+        pub contract: soroban_sdk::Address,
+        pub fn_name: soroban_sdk::Symbol,
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for ContractContext {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            ::core::fmt::Formatter::debug_struct_field3_finish(
+                f,
+                "ContractContext",
+                "args",
+                &self.args,
+                "contract",
+                &self.contract,
+                "fn_name",
+                &&self.fn_name,
+            )
+        }
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for ContractContext {
+        #[inline]
+        fn clone(&self) -> ContractContext {
+            ContractContext {
+                args: ::core::clone::Clone::clone(&self.args),
+                contract: ::core::clone::Clone::clone(&self.contract),
+                fn_name: ::core::clone::Clone::clone(&self.fn_name),
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for ContractContext {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {
+            let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Vec<soroban_sdk::Val>>;
+            let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Address>;
+            let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Symbol>;
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for ContractContext {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for ContractContext {
+        #[inline]
+        fn eq(&self, other: &ContractContext) -> bool {
+            self.args == other.args
+                && self.contract == other.contract
+                && self.fn_name == other.fn_name
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for ContractContext {
+        #[inline]
+        fn cmp(&self, other: &ContractContext) -> ::core::cmp::Ordering {
+            match ::core::cmp::Ord::cmp(&self.args, &other.args) {
+                ::core::cmp::Ordering::Equal => {
+                    match ::core::cmp::Ord::cmp(&self.contract, &other.contract) {
+                        ::core::cmp::Ordering::Equal => {
+                            ::core::cmp::Ord::cmp(&self.fn_name, &other.fn_name)
+                        }
+                        cmp => cmp,
+                    }
+                }
+                cmp => cmp,
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for ContractContext {
+        #[inline]
+        fn partial_cmp(
+            &self,
+            other: &ContractContext,
+        ) -> ::core::option::Option<::core::cmp::Ordering> {
+            match ::core::cmp::PartialOrd::partial_cmp(&self.args, &other.args) {
+                ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                    match ::core::cmp::PartialOrd::partial_cmp(&self.contract, &other.contract) {
+                        ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                            ::core::cmp::PartialOrd::partial_cmp(&self.fn_name, &other.fn_name)
+                        }
+                        cmp => cmp,
+                    }
+                }
+                cmp => cmp,
+            }
+        }
+    }
+    pub static __SPEC_XDR_TYPE_CONTRACTCONTEXT: [u8; 96usize] = ContractContext::spec_xdr();
+    impl ContractContext {
+        pub const fn spec_xdr() -> [u8; 96usize] {
+            *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0fContractContext\0\0\0\0\x03\0\0\0\0\0\0\0\x04args\0\0\x03\xea\0\0\0\0\0\0\0\0\0\0\0\x08contract\0\0\0\x13\0\0\0\0\0\0\0\x07fn_name\0\0\0\0\x11"
+        }
+    }
+    impl soroban_sdk::SpecShakingMarker for ContractContext {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {
+            <soroban_sdk::Vec<
+                soroban_sdk::Val,
+            > as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            <soroban_sdk::Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ContractContext {
+        type Error = soroban_sdk::ConversionError;
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::Val,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+            const KEYS: [&'static str; 3usize] = ["args", "contract", "fn_name"];
+            let mut vals: [Val; 3usize] = [Val::VOID.to_val(); 3usize];
+            let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+            env.map_unpack_to_slice(map, &KEYS, &mut vals)
+                .map_err(|_| ConversionError)?;
+            Ok(Self {
+                args: vals[0]
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::ConversionError)?,
+                contract: vals[1]
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::ConversionError)?,
+                fn_name: vals[2]
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::ConversionError)?,
+            })
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, ContractContext> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &ContractContext,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+            const KEYS: [&'static str; 3usize] = ["args", "contract", "fn_name"];
+            let vals: [Val; 3usize] = [
+                (&val.args).try_into_val(env).map_err(|_| ConversionError)?,
+                (&val.contract)
+                    .try_into_val(env)
+                    .map_err(|_| ConversionError)?,
+                (&val.fn_name)
+                    .try_into_val(env)
+                    .map_err(|_| ConversionError)?,
+            ];
+            Ok(env
+                .map_new_from_slices(&KEYS, &vals)
+                .map_err(|_| ConversionError)?
+                .into())
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, &ContractContext> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &&ContractContext,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, ContractContext>>::try_from_val(
+                env, *val,
+            )
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for ContractContext {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::xdr::ScMap,
+        ) -> Result<Self, soroban_sdk::xdr::Error> {
+            use soroban_sdk::xdr::Validate;
+            use soroban_sdk::TryIntoVal;
+            let map = val;
+            if map.len() != 3usize {
+                return Err(soroban_sdk::xdr::Error::Invalid);
+            }
+            map.validate()?;
+            Ok(Self {
+                args: {
+                    let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
+                        "args"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into();
+                    let idx = map
+                        .binary_search_by_key(&key, |entry| entry.key.clone())
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                    let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                        .try_into_val(env)
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                    rv.try_into_val(env)
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?
+                },
+                contract: {
+                    let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
+                        "contract"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into();
+                    let idx = map
+                        .binary_search_by_key(&key, |entry| entry.key.clone())
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                    let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                        .try_into_val(env)
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                    rv.try_into_val(env)
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?
+                },
+                fn_name: {
+                    let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
+                        "fn_name"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into();
+                    let idx = map
+                        .binary_search_by_key(&key, |entry| entry.key.clone())
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                    let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                        .try_into_val(env)
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                    rv.try_into_val(env)
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?
+                },
+            })
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVal> for ContractContext {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::xdr::ScVal,
+        ) -> Result<Self, soroban_sdk::xdr::Error> {
+            if let soroban_sdk::xdr::ScVal::Map(Some(map)) = val {
+                <_ as soroban_sdk::TryFromVal<_, _>>::try_from_val(env, map)
+            } else {
+                Err(soroban_sdk::xdr::Error::Invalid)
+            }
+        }
+    }
+    impl TryFrom<&ContractContext> for soroban_sdk::xdr::ScMap {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from(val: &ContractContext) -> Result<Self, soroban_sdk::xdr::Error> {
+            extern crate alloc;
+            use soroban_sdk::TryFromVal;
+            soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
+                soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "args"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.args)
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                },
+                soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "contract"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.contract)
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                },
+                soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "fn_name"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.fn_name)
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                },
+            ])))
+        }
+    }
+    impl TryFrom<ContractContext> for soroban_sdk::xdr::ScMap {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from(val: ContractContext) -> Result<Self, soroban_sdk::xdr::Error> {
+            (&val).try_into()
+        }
+    }
+    impl TryFrom<&ContractContext> for soroban_sdk::xdr::ScVal {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from(val: &ContractContext) -> Result<Self, soroban_sdk::xdr::Error> {
+            Ok(soroban_sdk::xdr::ScVal::Map(Some(val.try_into()?)))
+        }
+    }
+    impl TryFrom<ContractContext> for soroban_sdk::xdr::ScVal {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from(val: ContractContext) -> Result<Self, soroban_sdk::xdr::Error> {
+            (&val).try_into()
+        }
+    }
+    const _: () = {
+        use soroban_sdk::testutils::arbitrary::arbitrary;
+        use soroban_sdk::testutils::arbitrary::std;
+        pub struct ArbitraryContractContext {
+            args: <soroban_sdk::Vec<
+                soroban_sdk::Val,
+            > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+            contract: <soroban_sdk::Address as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+            fn_name: <soroban_sdk::Symbol as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+        }
+        #[automatically_derived]
+        impl ::core::fmt::Debug for ArbitraryContractContext {
+            #[inline]
+            fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                ::core::fmt::Formatter::debug_struct_field3_finish(
+                    f,
+                    "ArbitraryContractContext",
+                    "args",
+                    &self.args,
+                    "contract",
+                    &self.contract,
+                    "fn_name",
+                    &&self.fn_name,
+                )
+            }
+        }
+        #[automatically_derived]
+        impl ::core::clone::Clone for ArbitraryContractContext {
+            #[inline]
+            fn clone(&self) -> ArbitraryContractContext {
+                ArbitraryContractContext {
+                    args: ::core::clone::Clone::clone(&self.args),
+                    contract: ::core::clone::Clone::clone(&self.contract),
+                    fn_name: ::core::clone::Clone::clone(&self.fn_name),
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::Eq for ArbitraryContractContext {
+            #[inline]
+            #[doc(hidden)]
+            #[coverage(off)]
+            fn assert_receiver_is_total_eq(&self) -> () {
+                let _: ::core::cmp::AssertParamIsEq<
+                    <soroban_sdk::Vec<
+                        soroban_sdk::Val,
+                    > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                >;
+                let _: ::core::cmp::AssertParamIsEq<
+                    <soroban_sdk::Address as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                >;
+                let _: ::core::cmp::AssertParamIsEq<
+                    <soroban_sdk::Symbol as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                >;
+            }
+        }
+        #[automatically_derived]
+        impl ::core::marker::StructuralPartialEq for ArbitraryContractContext {}
+        #[automatically_derived]
+        impl ::core::cmp::PartialEq for ArbitraryContractContext {
+            #[inline]
+            fn eq(&self, other: &ArbitraryContractContext) -> bool {
+                self.args == other.args
+                    && self.contract == other.contract
+                    && self.fn_name == other.fn_name
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::Ord for ArbitraryContractContext {
+            #[inline]
+            fn cmp(&self, other: &ArbitraryContractContext) -> ::core::cmp::Ordering {
+                match ::core::cmp::Ord::cmp(&self.args, &other.args) {
+                    ::core::cmp::Ordering::Equal => {
+                        match ::core::cmp::Ord::cmp(&self.contract, &other.contract) {
+                            ::core::cmp::Ordering::Equal => {
+                                ::core::cmp::Ord::cmp(&self.fn_name, &other.fn_name)
+                            }
+                            cmp => cmp,
+                        }
+                    }
+                    cmp => cmp,
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::PartialOrd for ArbitraryContractContext {
+            #[inline]
+            fn partial_cmp(
+                &self,
+                other: &ArbitraryContractContext,
+            ) -> ::core::option::Option<::core::cmp::Ordering> {
+                match ::core::cmp::PartialOrd::partial_cmp(&self.args, &other.args) {
+                    ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                        match ::core::cmp::PartialOrd::partial_cmp(&self.contract, &other.contract)
+                        {
+                            ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                                ::core::cmp::PartialOrd::partial_cmp(&self.fn_name, &other.fn_name)
+                            }
+                            cmp => cmp,
+                        }
+                    }
+                    cmp => cmp,
+                }
+            }
+        }
+        const _: () = {
+            #[allow(non_upper_case_globals)]
+            const RECURSIVE_COUNT_ArbitraryContractContext: ::std::thread::LocalKey<
+                std::cell::Cell<u32>,
+            > = {
+                #[inline]
+                fn __init() -> std::cell::Cell<u32> {
+                    std::cell::Cell::new(0)
+                }
+                unsafe {
+                    ::std::thread::LocalKey::new(
+                        const {
+                            if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
+                                |init| {
+                                    #[thread_local]
+                                    static VAL: ::std::thread::local_impl::LazyStorage<
+                                        std::cell::Cell<u32>,
+                                        (),
+                                    > = ::std::thread::local_impl::LazyStorage::new();
+                                    VAL.get_or_init(init, __init)
+                                }
+                            } else {
+                                |init| {
+                                    #[thread_local]
+                                    static VAL: ::std::thread::local_impl::LazyStorage<
+                                        std::cell::Cell<u32>,
+                                        !,
+                                    > = ::std::thread::local_impl::LazyStorage::new();
+                                    VAL.get_or_init(init, __init)
+                                }
+                            }
+                        },
+                    )
+                }
+            };
+            #[automatically_derived]
+            impl<'arbitrary> arbitrary::Arbitrary<'arbitrary> for ArbitraryContractContext {
+                fn arbitrary(
+                    u: &mut arbitrary::Unstructured<'arbitrary>,
+                ) -> arbitrary::Result<Self> {
+                    let guard_against_recursion = u.is_empty();
+                    if guard_against_recursion {
+                        RECURSIVE_COUNT_ArbitraryContractContext.with(|count| {
+                            if count.get() > 0 {
+                                return Err(arbitrary::Error::NotEnoughData);
+                            }
+                            count.set(count.get() + 1);
+                            Ok(())
+                        })?;
+                    }
+                    let result = (|| {
+                        Ok(ArbitraryContractContext {
+                            args: arbitrary::Arbitrary::arbitrary(u)?,
+                            contract: arbitrary::Arbitrary::arbitrary(u)?,
+                            fn_name: arbitrary::Arbitrary::arbitrary(u)?,
+                        })
+                    })();
+                    if guard_against_recursion {
+                        RECURSIVE_COUNT_ArbitraryContractContext.with(|count| {
+                            count.set(count.get() - 1);
+                        });
+                    }
+                    result
+                }
+                fn arbitrary_take_rest(
+                    mut u: arbitrary::Unstructured<'arbitrary>,
+                ) -> arbitrary::Result<Self> {
+                    let guard_against_recursion = u.is_empty();
+                    if guard_against_recursion {
+                        RECURSIVE_COUNT_ArbitraryContractContext.with(|count| {
+                            if count.get() > 0 {
+                                return Err(arbitrary::Error::NotEnoughData);
+                            }
+                            count.set(count.get() + 1);
+                            Ok(())
+                        })?;
+                    }
+                    let result = (|| {
+                        Ok(ArbitraryContractContext {
+                            args: arbitrary::Arbitrary::arbitrary(&mut u)?,
+                            contract: arbitrary::Arbitrary::arbitrary(&mut u)?,
+                            fn_name: arbitrary::Arbitrary::arbitrary_take_rest(u)?,
+                        })
+                    })();
+                    if guard_against_recursion {
+                        RECURSIVE_COUNT_ArbitraryContractContext.with(|count| {
+                            count.set(count.get() - 1);
+                        });
+                    }
+                    result
+                }
+                #[inline]
+                fn size_hint(depth: usize) -> (usize, Option<usize>) {
+                    arbitrary::size_hint::recursion_guard(depth, |depth| {
+                        arbitrary::size_hint::and_all(
+                            &[
+                                <<soroban_sdk::Vec<
+                                    soroban_sdk::Val,
+                                > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                    depth,
+                                ),
+                                <<soroban_sdk::Address as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                    depth,
+                                ),
+                                <<soroban_sdk::Symbol as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                    depth,
+                                ),
+                            ],
+                        )
+                    })
+                }
+            }
+        };
+        impl soroban_sdk::testutils::arbitrary::SorobanArbitrary for ContractContext {
+            type Prototype = ArbitraryContractContext;
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, ArbitraryContractContext> for ContractContext {
+            type Error = soroban_sdk::ConversionError;
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                v: &ArbitraryContractContext,
+            ) -> std::result::Result<Self, Self::Error> {
+                Ok(ContractContext {
+                    args: soroban_sdk::IntoVal::into_val(&v.args, env),
+                    contract: soroban_sdk::IntoVal::into_val(&v.contract, env),
+                    fn_name: soroban_sdk::IntoVal::into_val(&v.fn_name, env),
+                })
+            }
+        }
+    };
+    pub struct SubContractInvocation {
+        pub context: ContractContext,
+        pub sub_invocations: soroban_sdk::Vec<InvokerContractAuthEntry>,
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for SubContractInvocation {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            ::core::fmt::Formatter::debug_struct_field2_finish(
+                f,
+                "SubContractInvocation",
+                "context",
+                &self.context,
+                "sub_invocations",
+                &&self.sub_invocations,
+            )
+        }
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for SubContractInvocation {
+        #[inline]
+        fn clone(&self) -> SubContractInvocation {
+            SubContractInvocation {
+                context: ::core::clone::Clone::clone(&self.context),
+                sub_invocations: ::core::clone::Clone::clone(&self.sub_invocations),
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for SubContractInvocation {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {
+            let _: ::core::cmp::AssertParamIsEq<ContractContext>;
+            let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Vec<InvokerContractAuthEntry>>;
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for SubContractInvocation {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for SubContractInvocation {
+        #[inline]
+        fn eq(&self, other: &SubContractInvocation) -> bool {
+            self.context == other.context && self.sub_invocations == other.sub_invocations
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for SubContractInvocation {
+        #[inline]
+        fn cmp(&self, other: &SubContractInvocation) -> ::core::cmp::Ordering {
+            match ::core::cmp::Ord::cmp(&self.context, &other.context) {
+                ::core::cmp::Ordering::Equal => {
+                    ::core::cmp::Ord::cmp(&self.sub_invocations, &other.sub_invocations)
+                }
+                cmp => cmp,
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for SubContractInvocation {
+        #[inline]
+        fn partial_cmp(
+            &self,
+            other: &SubContractInvocation,
+        ) -> ::core::option::Option<::core::cmp::Ordering> {
+            match ::core::cmp::PartialOrd::partial_cmp(&self.context, &other.context) {
+                ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                    ::core::cmp::PartialOrd::partial_cmp(
+                        &self.sub_invocations,
+                        &other.sub_invocations,
+                    )
+                }
+                cmp => cmp,
+            }
+        }
+    }
+    pub static __SPEC_XDR_TYPE_SUBCONTRACTINVOCATION: [u8; 144usize] =
+        SubContractInvocation::spec_xdr();
+    impl SubContractInvocation {
+        pub const fn spec_xdr() -> [u8; 144usize] {
+            *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x15SubContractInvocation\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x07context\0\0\0\x07\xd0\0\0\0\x0fContractContext\0\0\0\0\0\0\0\0\x0fsub_invocations\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x18InvokerContractAuthEntry"
+        }
+    }
+    impl soroban_sdk::SpecShakingMarker for SubContractInvocation {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {
+            <ContractContext as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            <soroban_sdk::Vec<
+                InvokerContractAuthEntry,
+            > as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for SubContractInvocation {
+        type Error = soroban_sdk::ConversionError;
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::Val,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+            const KEYS: [&'static str; 2usize] = ["context", "sub_invocations"];
+            let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
+            let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+            env.map_unpack_to_slice(map, &KEYS, &mut vals)
+                .map_err(|_| ConversionError)?;
+            Ok(Self {
+                context: vals[0]
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::ConversionError)?,
+                sub_invocations: vals[1]
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::ConversionError)?,
+            })
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, SubContractInvocation> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &SubContractInvocation,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+            const KEYS: [&'static str; 2usize] = ["context", "sub_invocations"];
+            let vals: [Val; 2usize] = [
+                (&val.context)
+                    .try_into_val(env)
+                    .map_err(|_| ConversionError)?,
+                (&val.sub_invocations)
+                    .try_into_val(env)
+                    .map_err(|_| ConversionError)?,
+            ];
+            Ok(env
+                .map_new_from_slices(&KEYS, &vals)
+                .map_err(|_| ConversionError)?
+                .into())
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, &SubContractInvocation> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &&SubContractInvocation,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, SubContractInvocation>>::try_from_val(
+                env, *val,
+            )
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for SubContractInvocation {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::xdr::ScMap,
+        ) -> Result<Self, soroban_sdk::xdr::Error> {
+            use soroban_sdk::xdr::Validate;
+            use soroban_sdk::TryIntoVal;
+            let map = val;
+            if map.len() != 2usize {
+                return Err(soroban_sdk::xdr::Error::Invalid);
+            }
+            map.validate()?;
+            Ok(Self {
+                context: {
+                    let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
+                        "context"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into();
+                    let idx = map
+                        .binary_search_by_key(&key, |entry| entry.key.clone())
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                    let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                        .try_into_val(env)
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                    rv.try_into_val(env)
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?
+                },
+                sub_invocations: {
+                    let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
+                        "sub_invocations"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into();
+                    let idx = map
+                        .binary_search_by_key(&key, |entry| entry.key.clone())
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                    let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                        .try_into_val(env)
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                    rv.try_into_val(env)
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?
+                },
+            })
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVal> for SubContractInvocation {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::xdr::ScVal,
+        ) -> Result<Self, soroban_sdk::xdr::Error> {
+            if let soroban_sdk::xdr::ScVal::Map(Some(map)) = val {
+                <_ as soroban_sdk::TryFromVal<_, _>>::try_from_val(env, map)
+            } else {
+                Err(soroban_sdk::xdr::Error::Invalid)
+            }
+        }
+    }
+    impl TryFrom<&SubContractInvocation> for soroban_sdk::xdr::ScMap {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from(val: &SubContractInvocation) -> Result<Self, soroban_sdk::xdr::Error> {
+            extern crate alloc;
+            use soroban_sdk::TryFromVal;
+            soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
+                soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "context"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.context)
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                },
+                soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "sub_invocations"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.sub_invocations)
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                },
+            ])))
+        }
+    }
+    impl TryFrom<SubContractInvocation> for soroban_sdk::xdr::ScMap {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from(val: SubContractInvocation) -> Result<Self, soroban_sdk::xdr::Error> {
+            (&val).try_into()
+        }
+    }
+    impl TryFrom<&SubContractInvocation> for soroban_sdk::xdr::ScVal {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from(val: &SubContractInvocation) -> Result<Self, soroban_sdk::xdr::Error> {
+            Ok(soroban_sdk::xdr::ScVal::Map(Some(val.try_into()?)))
+        }
+    }
+    impl TryFrom<SubContractInvocation> for soroban_sdk::xdr::ScVal {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from(val: SubContractInvocation) -> Result<Self, soroban_sdk::xdr::Error> {
+            (&val).try_into()
+        }
+    }
+    const _: () = {
+        use soroban_sdk::testutils::arbitrary::arbitrary;
+        use soroban_sdk::testutils::arbitrary::std;
+        pub struct ArbitrarySubContractInvocation {
+            context: <ContractContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+            sub_invocations: <soroban_sdk::Vec<
+                InvokerContractAuthEntry,
+            > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+        }
+        #[automatically_derived]
+        impl ::core::fmt::Debug for ArbitrarySubContractInvocation {
+            #[inline]
+            fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                ::core::fmt::Formatter::debug_struct_field2_finish(
+                    f,
+                    "ArbitrarySubContractInvocation",
+                    "context",
+                    &self.context,
+                    "sub_invocations",
+                    &&self.sub_invocations,
+                )
+            }
+        }
+        #[automatically_derived]
+        impl ::core::clone::Clone for ArbitrarySubContractInvocation {
+            #[inline]
+            fn clone(&self) -> ArbitrarySubContractInvocation {
+                ArbitrarySubContractInvocation {
+                    context: ::core::clone::Clone::clone(&self.context),
+                    sub_invocations: ::core::clone::Clone::clone(&self.sub_invocations),
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::Eq for ArbitrarySubContractInvocation {
+            #[inline]
+            #[doc(hidden)]
+            #[coverage(off)]
+            fn assert_receiver_is_total_eq(&self) -> () {
+                let _: ::core::cmp::AssertParamIsEq<
+                    <ContractContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                >;
+                let _: ::core::cmp::AssertParamIsEq<
+                    <soroban_sdk::Vec<
+                        InvokerContractAuthEntry,
+                    > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                >;
+            }
+        }
+        #[automatically_derived]
+        impl ::core::marker::StructuralPartialEq for ArbitrarySubContractInvocation {}
+        #[automatically_derived]
+        impl ::core::cmp::PartialEq for ArbitrarySubContractInvocation {
+            #[inline]
+            fn eq(&self, other: &ArbitrarySubContractInvocation) -> bool {
+                self.context == other.context && self.sub_invocations == other.sub_invocations
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::Ord for ArbitrarySubContractInvocation {
+            #[inline]
+            fn cmp(&self, other: &ArbitrarySubContractInvocation) -> ::core::cmp::Ordering {
+                match ::core::cmp::Ord::cmp(&self.context, &other.context) {
+                    ::core::cmp::Ordering::Equal => {
+                        ::core::cmp::Ord::cmp(&self.sub_invocations, &other.sub_invocations)
+                    }
+                    cmp => cmp,
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::PartialOrd for ArbitrarySubContractInvocation {
+            #[inline]
+            fn partial_cmp(
+                &self,
+                other: &ArbitrarySubContractInvocation,
+            ) -> ::core::option::Option<::core::cmp::Ordering> {
+                match ::core::cmp::PartialOrd::partial_cmp(&self.context, &other.context) {
+                    ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                        ::core::cmp::PartialOrd::partial_cmp(
+                            &self.sub_invocations,
+                            &other.sub_invocations,
+                        )
+                    }
+                    cmp => cmp,
+                }
+            }
+        }
+        const _: () = {
+            #[allow(non_upper_case_globals)]
+            const RECURSIVE_COUNT_ArbitrarySubContractInvocation: ::std::thread::LocalKey<
+                std::cell::Cell<u32>,
+            > = {
+                #[inline]
+                fn __init() -> std::cell::Cell<u32> {
+                    std::cell::Cell::new(0)
+                }
+                unsafe {
+                    ::std::thread::LocalKey::new(
+                        const {
+                            if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
+                                |init| {
+                                    #[thread_local]
+                                    static VAL: ::std::thread::local_impl::LazyStorage<
+                                        std::cell::Cell<u32>,
+                                        (),
+                                    > = ::std::thread::local_impl::LazyStorage::new();
+                                    VAL.get_or_init(init, __init)
+                                }
+                            } else {
+                                |init| {
+                                    #[thread_local]
+                                    static VAL: ::std::thread::local_impl::LazyStorage<
+                                        std::cell::Cell<u32>,
+                                        !,
+                                    > = ::std::thread::local_impl::LazyStorage::new();
+                                    VAL.get_or_init(init, __init)
+                                }
+                            }
+                        },
+                    )
+                }
+            };
+            #[automatically_derived]
+            impl<'arbitrary> arbitrary::Arbitrary<'arbitrary> for ArbitrarySubContractInvocation {
+                fn arbitrary(
+                    u: &mut arbitrary::Unstructured<'arbitrary>,
+                ) -> arbitrary::Result<Self> {
+                    let guard_against_recursion = u.is_empty();
+                    if guard_against_recursion {
+                        RECURSIVE_COUNT_ArbitrarySubContractInvocation.with(|count| {
+                            if count.get() > 0 {
+                                return Err(arbitrary::Error::NotEnoughData);
+                            }
+                            count.set(count.get() + 1);
+                            Ok(())
+                        })?;
+                    }
+                    let result = (|| {
+                        Ok(ArbitrarySubContractInvocation {
+                            context: arbitrary::Arbitrary::arbitrary(u)?,
+                            sub_invocations: arbitrary::Arbitrary::arbitrary(u)?,
+                        })
+                    })();
+                    if guard_against_recursion {
+                        RECURSIVE_COUNT_ArbitrarySubContractInvocation.with(|count| {
+                            count.set(count.get() - 1);
+                        });
+                    }
+                    result
+                }
+                fn arbitrary_take_rest(
+                    mut u: arbitrary::Unstructured<'arbitrary>,
+                ) -> arbitrary::Result<Self> {
+                    let guard_against_recursion = u.is_empty();
+                    if guard_against_recursion {
+                        RECURSIVE_COUNT_ArbitrarySubContractInvocation.with(|count| {
+                            if count.get() > 0 {
+                                return Err(arbitrary::Error::NotEnoughData);
+                            }
+                            count.set(count.get() + 1);
+                            Ok(())
+                        })?;
+                    }
+                    let result = (|| {
+                        Ok(ArbitrarySubContractInvocation {
+                            context: arbitrary::Arbitrary::arbitrary(&mut u)?,
+                            sub_invocations: arbitrary::Arbitrary::arbitrary_take_rest(u)?,
+                        })
+                    })();
+                    if guard_against_recursion {
+                        RECURSIVE_COUNT_ArbitrarySubContractInvocation.with(|count| {
+                            count.set(count.get() - 1);
+                        });
+                    }
+                    result
+                }
+                #[inline]
+                fn size_hint(depth: usize) -> (usize, Option<usize>) {
+                    arbitrary::size_hint::recursion_guard(depth, |depth| {
+                        arbitrary::size_hint::and_all(
+                            &[
+                                <<ContractContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                    depth,
+                                ),
+                                <<soroban_sdk::Vec<
+                                    InvokerContractAuthEntry,
+                                > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                    depth,
+                                ),
+                            ],
+                        )
+                    })
+                }
+            }
+        };
+        impl soroban_sdk::testutils::arbitrary::SorobanArbitrary for SubContractInvocation {
+            type Prototype = ArbitrarySubContractInvocation;
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, ArbitrarySubContractInvocation>
+            for SubContractInvocation
+        {
+            type Error = soroban_sdk::ConversionError;
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                v: &ArbitrarySubContractInvocation,
+            ) -> std::result::Result<Self, Self::Error> {
+                Ok(SubContractInvocation {
+                    context: soroban_sdk::IntoVal::into_val(&v.context, env),
+                    sub_invocations: soroban_sdk::IntoVal::into_val(&v.sub_invocations, env),
+                })
+            }
+        }
+    };
+    pub struct CreateContractHostFnContext {
+        pub executable: ContractExecutable,
+        pub salt: soroban_sdk::BytesN<32>,
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for CreateContractHostFnContext {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            ::core::fmt::Formatter::debug_struct_field2_finish(
+                f,
+                "CreateContractHostFnContext",
+                "executable",
+                &self.executable,
+                "salt",
+                &&self.salt,
+            )
+        }
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for CreateContractHostFnContext {
+        #[inline]
+        fn clone(&self) -> CreateContractHostFnContext {
+            CreateContractHostFnContext {
+                executable: ::core::clone::Clone::clone(&self.executable),
+                salt: ::core::clone::Clone::clone(&self.salt),
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for CreateContractHostFnContext {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {
+            let _: ::core::cmp::AssertParamIsEq<ContractExecutable>;
+            let _: ::core::cmp::AssertParamIsEq<soroban_sdk::BytesN<32>>;
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for CreateContractHostFnContext {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for CreateContractHostFnContext {
+        #[inline]
+        fn eq(&self, other: &CreateContractHostFnContext) -> bool {
+            self.executable == other.executable && self.salt == other.salt
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for CreateContractHostFnContext {
+        #[inline]
+        fn cmp(&self, other: &CreateContractHostFnContext) -> ::core::cmp::Ordering {
+            match ::core::cmp::Ord::cmp(&self.executable, &other.executable) {
+                ::core::cmp::Ordering::Equal => ::core::cmp::Ord::cmp(&self.salt, &other.salt),
+                cmp => cmp,
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for CreateContractHostFnContext {
+        #[inline]
+        fn partial_cmp(
+            &self,
+            other: &CreateContractHostFnContext,
+        ) -> ::core::option::Option<::core::cmp::Ordering> {
+            match ::core::cmp::PartialOrd::partial_cmp(&self.executable, &other.executable) {
+                ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                    ::core::cmp::PartialOrd::partial_cmp(&self.salt, &other.salt)
+                }
+                cmp => cmp,
+            }
+        }
+    }
+    pub static __SPEC_XDR_TYPE_CREATECONTRACTHOSTFNCONTEXT: [u8; 116usize] =
+        CreateContractHostFnContext::spec_xdr();
+    impl CreateContractHostFnContext {
+        pub const fn spec_xdr() -> [u8; 116usize] {
+            *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x1bCreateContractHostFnContext\0\0\0\0\x02\0\0\0\0\0\0\0\nexecutable\0\0\0\0\x07\xd0\0\0\0\x12ContractExecutable\0\0\0\0\0\0\0\0\0\x04salt\0\0\x03\xee\0\0\0 "
+        }
+    }
+    impl soroban_sdk::SpecShakingMarker for CreateContractHostFnContext {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {
+            <ContractExecutable as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            <soroban_sdk::BytesN<32> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for CreateContractHostFnContext {
+        type Error = soroban_sdk::ConversionError;
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::Val,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+            const KEYS: [&'static str; 2usize] = ["executable", "salt"];
+            let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
+            let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+            env.map_unpack_to_slice(map, &KEYS, &mut vals)
+                .map_err(|_| ConversionError)?;
+            Ok(Self {
+                executable: vals[0]
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::ConversionError)?,
+                salt: vals[1]
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::ConversionError)?,
+            })
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, CreateContractHostFnContext> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &CreateContractHostFnContext,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+            const KEYS: [&'static str; 2usize] = ["executable", "salt"];
+            let vals: [Val; 2usize] = [
+                (&val.executable)
+                    .try_into_val(env)
+                    .map_err(|_| ConversionError)?,
+                (&val.salt).try_into_val(env).map_err(|_| ConversionError)?,
+            ];
+            Ok(env
+                .map_new_from_slices(&KEYS, &vals)
+                .map_err(|_| ConversionError)?
+                .into())
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, &CreateContractHostFnContext> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &&CreateContractHostFnContext,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            <_ as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                CreateContractHostFnContext,
+            >>::try_from_val(env, *val)
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap>
+        for CreateContractHostFnContext
+    {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::xdr::ScMap,
+        ) -> Result<Self, soroban_sdk::xdr::Error> {
+            use soroban_sdk::xdr::Validate;
+            use soroban_sdk::TryIntoVal;
+            let map = val;
+            if map.len() != 2usize {
+                return Err(soroban_sdk::xdr::Error::Invalid);
+            }
+            map.validate()?;
+            Ok(Self {
+                executable: {
+                    let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
+                        "executable"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into();
+                    let idx = map
+                        .binary_search_by_key(&key, |entry| entry.key.clone())
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                    let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                        .try_into_val(env)
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                    rv.try_into_val(env)
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?
+                },
+                salt: {
+                    let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
+                        "salt"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into();
+                    let idx = map
+                        .binary_search_by_key(&key, |entry| entry.key.clone())
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                    let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                        .try_into_val(env)
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                    rv.try_into_val(env)
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?
+                },
+            })
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVal>
+        for CreateContractHostFnContext
+    {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::xdr::ScVal,
+        ) -> Result<Self, soroban_sdk::xdr::Error> {
+            if let soroban_sdk::xdr::ScVal::Map(Some(map)) = val {
+                <_ as soroban_sdk::TryFromVal<_, _>>::try_from_val(env, map)
+            } else {
+                Err(soroban_sdk::xdr::Error::Invalid)
+            }
+        }
+    }
+    impl TryFrom<&CreateContractHostFnContext> for soroban_sdk::xdr::ScMap {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from(val: &CreateContractHostFnContext) -> Result<Self, soroban_sdk::xdr::Error> {
+            extern crate alloc;
+            use soroban_sdk::TryFromVal;
+            soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
+                soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "executable"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.executable)
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                },
+                soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "salt"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.salt)
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                },
+            ])))
+        }
+    }
+    impl TryFrom<CreateContractHostFnContext> for soroban_sdk::xdr::ScMap {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from(val: CreateContractHostFnContext) -> Result<Self, soroban_sdk::xdr::Error> {
+            (&val).try_into()
+        }
+    }
+    impl TryFrom<&CreateContractHostFnContext> for soroban_sdk::xdr::ScVal {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from(val: &CreateContractHostFnContext) -> Result<Self, soroban_sdk::xdr::Error> {
+            Ok(soroban_sdk::xdr::ScVal::Map(Some(val.try_into()?)))
+        }
+    }
+    impl TryFrom<CreateContractHostFnContext> for soroban_sdk::xdr::ScVal {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from(val: CreateContractHostFnContext) -> Result<Self, soroban_sdk::xdr::Error> {
+            (&val).try_into()
+        }
+    }
+    const _: () = {
+        use soroban_sdk::testutils::arbitrary::arbitrary;
+        use soroban_sdk::testutils::arbitrary::std;
+        pub struct ArbitraryCreateContractHostFnContext {
+            executable: <ContractExecutable as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+            salt: <soroban_sdk::BytesN<
+                32,
+            > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+        }
+        #[automatically_derived]
+        impl ::core::fmt::Debug for ArbitraryCreateContractHostFnContext {
+            #[inline]
+            fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                ::core::fmt::Formatter::debug_struct_field2_finish(
+                    f,
+                    "ArbitraryCreateContractHostFnContext",
+                    "executable",
+                    &self.executable,
+                    "salt",
+                    &&self.salt,
+                )
+            }
+        }
+        #[automatically_derived]
+        impl ::core::clone::Clone for ArbitraryCreateContractHostFnContext {
+            #[inline]
+            fn clone(&self) -> ArbitraryCreateContractHostFnContext {
+                ArbitraryCreateContractHostFnContext {
+                    executable: ::core::clone::Clone::clone(&self.executable),
+                    salt: ::core::clone::Clone::clone(&self.salt),
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::Eq for ArbitraryCreateContractHostFnContext {
+            #[inline]
+            #[doc(hidden)]
+            #[coverage(off)]
+            fn assert_receiver_is_total_eq(&self) -> () {
+                let _: ::core::cmp::AssertParamIsEq<
+                    <ContractExecutable as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                >;
+                let _: ::core::cmp::AssertParamIsEq<
+                    <soroban_sdk::BytesN<
+                        32,
+                    > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                >;
+            }
+        }
+        #[automatically_derived]
+        impl ::core::marker::StructuralPartialEq for ArbitraryCreateContractHostFnContext {}
+        #[automatically_derived]
+        impl ::core::cmp::PartialEq for ArbitraryCreateContractHostFnContext {
+            #[inline]
+            fn eq(&self, other: &ArbitraryCreateContractHostFnContext) -> bool {
+                self.executable == other.executable && self.salt == other.salt
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::Ord for ArbitraryCreateContractHostFnContext {
+            #[inline]
+            fn cmp(&self, other: &ArbitraryCreateContractHostFnContext) -> ::core::cmp::Ordering {
+                match ::core::cmp::Ord::cmp(&self.executable, &other.executable) {
+                    ::core::cmp::Ordering::Equal => ::core::cmp::Ord::cmp(&self.salt, &other.salt),
+                    cmp => cmp,
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::PartialOrd for ArbitraryCreateContractHostFnContext {
+            #[inline]
+            fn partial_cmp(
+                &self,
+                other: &ArbitraryCreateContractHostFnContext,
+            ) -> ::core::option::Option<::core::cmp::Ordering> {
+                match ::core::cmp::PartialOrd::partial_cmp(&self.executable, &other.executable) {
+                    ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                        ::core::cmp::PartialOrd::partial_cmp(&self.salt, &other.salt)
+                    }
+                    cmp => cmp,
+                }
+            }
+        }
+        const _: () = {
+            #[allow(non_upper_case_globals)]
+            const RECURSIVE_COUNT_ArbitraryCreateContractHostFnContext: ::std::thread::LocalKey<
+                std::cell::Cell<u32>,
+            > = {
+                #[inline]
+                fn __init() -> std::cell::Cell<u32> {
+                    std::cell::Cell::new(0)
+                }
+                unsafe {
+                    ::std::thread::LocalKey::new(
+                        const {
+                            if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
+                                |init| {
+                                    #[thread_local]
+                                    static VAL: ::std::thread::local_impl::LazyStorage<
+                                        std::cell::Cell<u32>,
+                                        (),
+                                    > = ::std::thread::local_impl::LazyStorage::new();
+                                    VAL.get_or_init(init, __init)
+                                }
+                            } else {
+                                |init| {
+                                    #[thread_local]
+                                    static VAL: ::std::thread::local_impl::LazyStorage<
+                                        std::cell::Cell<u32>,
+                                        !,
+                                    > = ::std::thread::local_impl::LazyStorage::new();
+                                    VAL.get_or_init(init, __init)
+                                }
+                            }
+                        },
+                    )
+                }
+            };
+            #[automatically_derived]
+            impl<'arbitrary> arbitrary::Arbitrary<'arbitrary> for ArbitraryCreateContractHostFnContext {
+                fn arbitrary(
+                    u: &mut arbitrary::Unstructured<'arbitrary>,
+                ) -> arbitrary::Result<Self> {
+                    let guard_against_recursion = u.is_empty();
+                    if guard_against_recursion {
+                        RECURSIVE_COUNT_ArbitraryCreateContractHostFnContext.with(|count| {
+                            if count.get() > 0 {
+                                return Err(arbitrary::Error::NotEnoughData);
+                            }
+                            count.set(count.get() + 1);
+                            Ok(())
+                        })?;
+                    }
+                    let result = (|| {
+                        Ok(ArbitraryCreateContractHostFnContext {
+                            executable: arbitrary::Arbitrary::arbitrary(u)?,
+                            salt: arbitrary::Arbitrary::arbitrary(u)?,
+                        })
+                    })();
+                    if guard_against_recursion {
+                        RECURSIVE_COUNT_ArbitraryCreateContractHostFnContext.with(|count| {
+                            count.set(count.get() - 1);
+                        });
+                    }
+                    result
+                }
+                fn arbitrary_take_rest(
+                    mut u: arbitrary::Unstructured<'arbitrary>,
+                ) -> arbitrary::Result<Self> {
+                    let guard_against_recursion = u.is_empty();
+                    if guard_against_recursion {
+                        RECURSIVE_COUNT_ArbitraryCreateContractHostFnContext.with(|count| {
+                            if count.get() > 0 {
+                                return Err(arbitrary::Error::NotEnoughData);
+                            }
+                            count.set(count.get() + 1);
+                            Ok(())
+                        })?;
+                    }
+                    let result = (|| {
+                        Ok(ArbitraryCreateContractHostFnContext {
+                            executable: arbitrary::Arbitrary::arbitrary(&mut u)?,
+                            salt: arbitrary::Arbitrary::arbitrary_take_rest(u)?,
+                        })
+                    })();
+                    if guard_against_recursion {
+                        RECURSIVE_COUNT_ArbitraryCreateContractHostFnContext.with(|count| {
+                            count.set(count.get() - 1);
+                        });
+                    }
+                    result
+                }
+                #[inline]
+                fn size_hint(depth: usize) -> (usize, Option<usize>) {
+                    arbitrary::size_hint::recursion_guard(depth, |depth| {
+                        arbitrary::size_hint::and_all(
+                            &[
+                                <<ContractExecutable as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                    depth,
+                                ),
+                                <<soroban_sdk::BytesN<
+                                    32,
+                                > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                    depth,
+                                ),
+                            ],
+                        )
+                    })
+                }
+            }
+        };
+        impl soroban_sdk::testutils::arbitrary::SorobanArbitrary for CreateContractHostFnContext {
+            type Prototype = ArbitraryCreateContractHostFnContext;
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, ArbitraryCreateContractHostFnContext>
+            for CreateContractHostFnContext
+        {
+            type Error = soroban_sdk::ConversionError;
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                v: &ArbitraryCreateContractHostFnContext,
+            ) -> std::result::Result<Self, Self::Error> {
+                Ok(CreateContractHostFnContext {
+                    executable: soroban_sdk::IntoVal::into_val(&v.executable, env),
+                    salt: soroban_sdk::IntoVal::into_val(&v.salt, env),
+                })
+            }
+        }
+    };
+    pub struct CreateContractWithConstructorHostFnContext {
+        pub constructor_args: soroban_sdk::Vec<soroban_sdk::Val>,
+        pub executable: ContractExecutable,
+        pub salt: soroban_sdk::BytesN<32>,
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for CreateContractWithConstructorHostFnContext {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            ::core::fmt::Formatter::debug_struct_field3_finish(
+                f,
+                "CreateContractWithConstructorHostFnContext",
+                "constructor_args",
+                &self.constructor_args,
+                "executable",
+                &self.executable,
+                "salt",
+                &&self.salt,
+            )
+        }
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for CreateContractWithConstructorHostFnContext {
+        #[inline]
+        fn clone(&self) -> CreateContractWithConstructorHostFnContext {
+            CreateContractWithConstructorHostFnContext {
+                constructor_args: ::core::clone::Clone::clone(&self.constructor_args),
+                executable: ::core::clone::Clone::clone(&self.executable),
+                salt: ::core::clone::Clone::clone(&self.salt),
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for CreateContractWithConstructorHostFnContext {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {
+            let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Vec<soroban_sdk::Val>>;
+            let _: ::core::cmp::AssertParamIsEq<ContractExecutable>;
+            let _: ::core::cmp::AssertParamIsEq<soroban_sdk::BytesN<32>>;
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for CreateContractWithConstructorHostFnContext {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for CreateContractWithConstructorHostFnContext {
+        #[inline]
+        fn eq(&self, other: &CreateContractWithConstructorHostFnContext) -> bool {
+            self.constructor_args == other.constructor_args
+                && self.executable == other.executable
+                && self.salt == other.salt
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for CreateContractWithConstructorHostFnContext {
+        #[inline]
+        fn cmp(&self, other: &CreateContractWithConstructorHostFnContext) -> ::core::cmp::Ordering {
+            match ::core::cmp::Ord::cmp(&self.constructor_args, &other.constructor_args) {
+                ::core::cmp::Ordering::Equal => {
+                    match ::core::cmp::Ord::cmp(&self.executable, &other.executable) {
+                        ::core::cmp::Ordering::Equal => {
+                            ::core::cmp::Ord::cmp(&self.salt, &other.salt)
+                        }
+                        cmp => cmp,
+                    }
+                }
+                cmp => cmp,
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for CreateContractWithConstructorHostFnContext {
+        #[inline]
+        fn partial_cmp(
+            &self,
+            other: &CreateContractWithConstructorHostFnContext,
+        ) -> ::core::option::Option<::core::cmp::Ordering> {
+            match ::core::cmp::PartialOrd::partial_cmp(
+                &self.constructor_args,
+                &other.constructor_args,
+            ) {
+                ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                    match ::core::cmp::PartialOrd::partial_cmp(&self.executable, &other.executable)
+                    {
+                        ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                            ::core::cmp::PartialOrd::partial_cmp(&self.salt, &other.salt)
+                        }
+                        cmp => cmp,
+                    }
+                }
+                cmp => cmp,
+            }
+        }
+    }
+    pub static __SPEC_XDR_TYPE_CREATECONTRACTWITHCONSTRUCTORHOSTFNCONTEXT: [u8; 164usize] =
+        CreateContractWithConstructorHostFnContext::spec_xdr();
+    impl CreateContractWithConstructorHostFnContext {
+        pub const fn spec_xdr() -> [u8; 164usize] {
+            *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0*CreateContractWithConstructorHostFnContext\0\0\0\0\0\x03\0\0\0\0\0\0\0\x10constructor_args\0\0\x03\xea\0\0\0\0\0\0\0\0\0\0\0\nexecutable\0\0\0\0\x07\xd0\0\0\0\x12ContractExecutable\0\0\0\0\0\0\0\0\0\x04salt\0\0\x03\xee\0\0\0 "
+        }
+    }
+    impl soroban_sdk::SpecShakingMarker for CreateContractWithConstructorHostFnContext {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {
+            <soroban_sdk::Vec<
+                soroban_sdk::Val,
+            > as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            <ContractExecutable as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            <soroban_sdk::BytesN<32> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>
+        for CreateContractWithConstructorHostFnContext
+    {
+        type Error = soroban_sdk::ConversionError;
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::Val,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+            const KEYS: [&'static str; 3usize] = ["constructor_args", "executable", "salt"];
+            let mut vals: [Val; 3usize] = [Val::VOID.to_val(); 3usize];
+            let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+            env.map_unpack_to_slice(map, &KEYS, &mut vals)
+                .map_err(|_| ConversionError)?;
+            Ok(Self {
+                constructor_args: vals[0]
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::ConversionError)?,
+                executable: vals[1]
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::ConversionError)?,
+                salt: vals[2]
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::ConversionError)?,
+            })
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, CreateContractWithConstructorHostFnContext>
+        for soroban_sdk::Val
+    {
+        type Error = soroban_sdk::ConversionError;
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &CreateContractWithConstructorHostFnContext,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+            const KEYS: [&'static str; 3usize] = ["constructor_args", "executable", "salt"];
+            let vals: [Val; 3usize] = [
+                (&val.constructor_args)
+                    .try_into_val(env)
+                    .map_err(|_| ConversionError)?,
+                (&val.executable)
+                    .try_into_val(env)
+                    .map_err(|_| ConversionError)?,
+                (&val.salt).try_into_val(env).map_err(|_| ConversionError)?,
+            ];
+            Ok(env
+                .map_new_from_slices(&KEYS, &vals)
+                .map_err(|_| ConversionError)?
+                .into())
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, &CreateContractWithConstructorHostFnContext>
+        for soroban_sdk::Val
+    {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &&CreateContractWithConstructorHostFnContext,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            <_ as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                CreateContractWithConstructorHostFnContext,
+            >>::try_from_val(env, *val)
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap>
+        for CreateContractWithConstructorHostFnContext
+    {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::xdr::ScMap,
+        ) -> Result<Self, soroban_sdk::xdr::Error> {
+            use soroban_sdk::xdr::Validate;
+            use soroban_sdk::TryIntoVal;
+            let map = val;
+            if map.len() != 3usize {
+                return Err(soroban_sdk::xdr::Error::Invalid);
+            }
+            map.validate()?;
+            Ok(Self {
+                constructor_args: {
+                    let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
+                        "constructor_args"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into();
+                    let idx = map
+                        .binary_search_by_key(&key, |entry| entry.key.clone())
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                    let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                        .try_into_val(env)
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                    rv.try_into_val(env)
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?
+                },
+                executable: {
+                    let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
+                        "executable"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into();
+                    let idx = map
+                        .binary_search_by_key(&key, |entry| entry.key.clone())
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                    let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                        .try_into_val(env)
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                    rv.try_into_val(env)
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?
+                },
+                salt: {
+                    let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
+                        "salt"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into();
+                    let idx = map
+                        .binary_search_by_key(&key, |entry| entry.key.clone())
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                    let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                        .try_into_val(env)
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                    rv.try_into_val(env)
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?
+                },
+            })
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVal>
+        for CreateContractWithConstructorHostFnContext
+    {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::xdr::ScVal,
+        ) -> Result<Self, soroban_sdk::xdr::Error> {
+            if let soroban_sdk::xdr::ScVal::Map(Some(map)) = val {
+                <_ as soroban_sdk::TryFromVal<_, _>>::try_from_val(env, map)
+            } else {
+                Err(soroban_sdk::xdr::Error::Invalid)
+            }
+        }
+    }
+    impl TryFrom<&CreateContractWithConstructorHostFnContext> for soroban_sdk::xdr::ScMap {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from(
+            val: &CreateContractWithConstructorHostFnContext,
+        ) -> Result<Self, soroban_sdk::xdr::Error> {
+            extern crate alloc;
+            use soroban_sdk::TryFromVal;
+            soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
+                soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "constructor_args"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.constructor_args)
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                },
+                soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "executable"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.executable)
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                },
+                soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "salt"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.salt)
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                },
+            ])))
+        }
+    }
+    impl TryFrom<CreateContractWithConstructorHostFnContext> for soroban_sdk::xdr::ScMap {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from(
+            val: CreateContractWithConstructorHostFnContext,
+        ) -> Result<Self, soroban_sdk::xdr::Error> {
+            (&val).try_into()
+        }
+    }
+    impl TryFrom<&CreateContractWithConstructorHostFnContext> for soroban_sdk::xdr::ScVal {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from(
+            val: &CreateContractWithConstructorHostFnContext,
+        ) -> Result<Self, soroban_sdk::xdr::Error> {
+            Ok(soroban_sdk::xdr::ScVal::Map(Some(val.try_into()?)))
+        }
+    }
+    impl TryFrom<CreateContractWithConstructorHostFnContext> for soroban_sdk::xdr::ScVal {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from(
+            val: CreateContractWithConstructorHostFnContext,
+        ) -> Result<Self, soroban_sdk::xdr::Error> {
+            (&val).try_into()
+        }
+    }
+    const _: () = {
+        use soroban_sdk::testutils::arbitrary::arbitrary;
+        use soroban_sdk::testutils::arbitrary::std;
+        pub struct ArbitraryCreateContractWithConstructorHostFnContext {
+            constructor_args: <soroban_sdk::Vec<
+                soroban_sdk::Val,
+            > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+            executable: <ContractExecutable as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+            salt: <soroban_sdk::BytesN<
+                32,
+            > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+        }
+        #[automatically_derived]
+        impl ::core::fmt::Debug for ArbitraryCreateContractWithConstructorHostFnContext {
+            #[inline]
+            fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                ::core::fmt::Formatter::debug_struct_field3_finish(
+                    f,
+                    "ArbitraryCreateContractWithConstructorHostFnContext",
+                    "constructor_args",
+                    &self.constructor_args,
+                    "executable",
+                    &self.executable,
+                    "salt",
+                    &&self.salt,
+                )
+            }
+        }
+        #[automatically_derived]
+        impl ::core::clone::Clone for ArbitraryCreateContractWithConstructorHostFnContext {
+            #[inline]
+            fn clone(&self) -> ArbitraryCreateContractWithConstructorHostFnContext {
+                ArbitraryCreateContractWithConstructorHostFnContext {
+                    constructor_args: ::core::clone::Clone::clone(&self.constructor_args),
+                    executable: ::core::clone::Clone::clone(&self.executable),
+                    salt: ::core::clone::Clone::clone(&self.salt),
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::Eq for ArbitraryCreateContractWithConstructorHostFnContext {
+            #[inline]
+            #[doc(hidden)]
+            #[coverage(off)]
+            fn assert_receiver_is_total_eq(&self) -> () {
+                let _: ::core::cmp::AssertParamIsEq<
+                    <soroban_sdk::Vec<
+                        soroban_sdk::Val,
+                    > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                >;
+                let _: ::core::cmp::AssertParamIsEq<
+                    <ContractExecutable as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                >;
+                let _: ::core::cmp::AssertParamIsEq<
+                    <soroban_sdk::BytesN<
+                        32,
+                    > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                >;
+            }
+        }
+        #[automatically_derived]
+        impl ::core::marker::StructuralPartialEq for ArbitraryCreateContractWithConstructorHostFnContext {}
+        #[automatically_derived]
+        impl ::core::cmp::PartialEq for ArbitraryCreateContractWithConstructorHostFnContext {
+            #[inline]
+            fn eq(&self, other: &ArbitraryCreateContractWithConstructorHostFnContext) -> bool {
+                self.constructor_args == other.constructor_args
+                    && self.executable == other.executable
+                    && self.salt == other.salt
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::Ord for ArbitraryCreateContractWithConstructorHostFnContext {
+            #[inline]
+            fn cmp(
+                &self,
+                other: &ArbitraryCreateContractWithConstructorHostFnContext,
+            ) -> ::core::cmp::Ordering {
+                match ::core::cmp::Ord::cmp(&self.constructor_args, &other.constructor_args) {
+                    ::core::cmp::Ordering::Equal => {
+                        match ::core::cmp::Ord::cmp(&self.executable, &other.executable) {
+                            ::core::cmp::Ordering::Equal => {
+                                ::core::cmp::Ord::cmp(&self.salt, &other.salt)
+                            }
+                            cmp => cmp,
+                        }
+                    }
+                    cmp => cmp,
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::PartialOrd for ArbitraryCreateContractWithConstructorHostFnContext {
+            #[inline]
+            fn partial_cmp(
+                &self,
+                other: &ArbitraryCreateContractWithConstructorHostFnContext,
+            ) -> ::core::option::Option<::core::cmp::Ordering> {
+                match ::core::cmp::PartialOrd::partial_cmp(
+                    &self.constructor_args,
+                    &other.constructor_args,
+                ) {
+                    ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                        match ::core::cmp::PartialOrd::partial_cmp(
+                            &self.executable,
+                            &other.executable,
+                        ) {
+                            ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                                ::core::cmp::PartialOrd::partial_cmp(&self.salt, &other.salt)
+                            }
+                            cmp => cmp,
+                        }
+                    }
+                    cmp => cmp,
+                }
+            }
+        }
+        const _: () = {
+            #[allow(non_upper_case_globals)]
+            const RECURSIVE_COUNT_ArbitraryCreateContractWithConstructorHostFnContext:
+                ::std::thread::LocalKey<std::cell::Cell<u32>> = {
+                #[inline]
+                fn __init() -> std::cell::Cell<u32> {
+                    std::cell::Cell::new(0)
+                }
+                unsafe {
+                    ::std::thread::LocalKey::new(
+                        const {
+                            if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
+                                |init| {
+                                    #[thread_local]
+                                    static VAL: ::std::thread::local_impl::LazyStorage<
+                                        std::cell::Cell<u32>,
+                                        (),
+                                    > = ::std::thread::local_impl::LazyStorage::new();
+                                    VAL.get_or_init(init, __init)
+                                }
+                            } else {
+                                |init| {
+                                    #[thread_local]
+                                    static VAL: ::std::thread::local_impl::LazyStorage<
+                                        std::cell::Cell<u32>,
+                                        !,
+                                    > = ::std::thread::local_impl::LazyStorage::new();
+                                    VAL.get_or_init(init, __init)
+                                }
+                            }
+                        },
+                    )
+                }
+            };
+            #[automatically_derived]
+            impl<'arbitrary> arbitrary::Arbitrary<'arbitrary>
+                for ArbitraryCreateContractWithConstructorHostFnContext
+            {
+                fn arbitrary(
+                    u: &mut arbitrary::Unstructured<'arbitrary>,
+                ) -> arbitrary::Result<Self> {
+                    let guard_against_recursion = u.is_empty();
+                    if guard_against_recursion {
+                        RECURSIVE_COUNT_ArbitraryCreateContractWithConstructorHostFnContext.with(
+                            |count| {
+                                if count.get() > 0 {
+                                    return Err(arbitrary::Error::NotEnoughData);
+                                }
+                                count.set(count.get() + 1);
+                                Ok(())
+                            },
+                        )?;
+                    }
+                    let result = (|| {
+                        Ok(ArbitraryCreateContractWithConstructorHostFnContext {
+                            constructor_args: arbitrary::Arbitrary::arbitrary(u)?,
+                            executable: arbitrary::Arbitrary::arbitrary(u)?,
+                            salt: arbitrary::Arbitrary::arbitrary(u)?,
+                        })
+                    })();
+                    if guard_against_recursion {
+                        RECURSIVE_COUNT_ArbitraryCreateContractWithConstructorHostFnContext.with(
+                            |count| {
+                                count.set(count.get() - 1);
+                            },
+                        );
+                    }
+                    result
+                }
+                fn arbitrary_take_rest(
+                    mut u: arbitrary::Unstructured<'arbitrary>,
+                ) -> arbitrary::Result<Self> {
+                    let guard_against_recursion = u.is_empty();
+                    if guard_against_recursion {
+                        RECURSIVE_COUNT_ArbitraryCreateContractWithConstructorHostFnContext.with(
+                            |count| {
+                                if count.get() > 0 {
+                                    return Err(arbitrary::Error::NotEnoughData);
+                                }
+                                count.set(count.get() + 1);
+                                Ok(())
+                            },
+                        )?;
+                    }
+                    let result = (|| {
+                        Ok(ArbitraryCreateContractWithConstructorHostFnContext {
+                            constructor_args: arbitrary::Arbitrary::arbitrary(&mut u)?,
+                            executable: arbitrary::Arbitrary::arbitrary(&mut u)?,
+                            salt: arbitrary::Arbitrary::arbitrary_take_rest(u)?,
+                        })
+                    })();
+                    if guard_against_recursion {
+                        RECURSIVE_COUNT_ArbitraryCreateContractWithConstructorHostFnContext.with(
+                            |count| {
+                                count.set(count.get() - 1);
+                            },
+                        );
+                    }
+                    result
+                }
+                #[inline]
+                fn size_hint(depth: usize) -> (usize, Option<usize>) {
+                    arbitrary::size_hint::recursion_guard(depth, |depth| {
+                        arbitrary::size_hint::and_all(
+                            &[
+                                <<soroban_sdk::Vec<
+                                    soroban_sdk::Val,
+                                > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                    depth,
+                                ),
+                                <<ContractExecutable as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                    depth,
+                                ),
+                                <<soroban_sdk::BytesN<
+                                    32,
+                                > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                    depth,
+                                ),
+                            ],
+                        )
+                    })
+                }
+            }
+        };
+        impl soroban_sdk::testutils::arbitrary::SorobanArbitrary
+            for CreateContractWithConstructorHostFnContext
+        {
+            type Prototype = ArbitraryCreateContractWithConstructorHostFnContext;
+        }
+        impl
+            soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                ArbitraryCreateContractWithConstructorHostFnContext,
+            > for CreateContractWithConstructorHostFnContext
+        {
+            type Error = soroban_sdk::ConversionError;
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                v: &ArbitraryCreateContractWithConstructorHostFnContext,
+            ) -> std::result::Result<Self, Self::Error> {
+                Ok(CreateContractWithConstructorHostFnContext {
+                    constructor_args: soroban_sdk::IntoVal::into_val(&v.constructor_args, env),
+                    executable: soroban_sdk::IntoVal::into_val(&v.executable, env),
+                    salt: soroban_sdk::IntoVal::into_val(&v.salt, env),
+                })
+            }
+        }
+    };
     pub struct StructA {
         pub f1: u32,
         pub f2: bool,
@@ -15796,6 +17897,2527 @@ mod wasm_imported {
                     soroban_sdk::IntoVal::into_val(&v.0, env),
                     soroban_sdk::IntoVal::into_val(&v.1, env),
                 ))
+            }
+        }
+    };
+    pub enum Context {
+        Contract(ContractContext),
+        CreateContractHostFn(CreateContractHostFnContext),
+        CreateContractWithCtorHostFn(CreateContractWithConstructorHostFnContext),
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for Context {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            match self {
+                Context::Contract(__self_0) => {
+                    ::core::fmt::Formatter::debug_tuple_field1_finish(f, "Contract", &__self_0)
+                }
+                Context::CreateContractHostFn(__self_0) => {
+                    ::core::fmt::Formatter::debug_tuple_field1_finish(
+                        f,
+                        "CreateContractHostFn",
+                        &__self_0,
+                    )
+                }
+                Context::CreateContractWithCtorHostFn(__self_0) => {
+                    ::core::fmt::Formatter::debug_tuple_field1_finish(
+                        f,
+                        "CreateContractWithCtorHostFn",
+                        &__self_0,
+                    )
+                }
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for Context {
+        #[inline]
+        fn clone(&self) -> Context {
+            match self {
+                Context::Contract(__self_0) => {
+                    Context::Contract(::core::clone::Clone::clone(__self_0))
+                }
+                Context::CreateContractHostFn(__self_0) => {
+                    Context::CreateContractHostFn(::core::clone::Clone::clone(__self_0))
+                }
+                Context::CreateContractWithCtorHostFn(__self_0) => {
+                    Context::CreateContractWithCtorHostFn(::core::clone::Clone::clone(__self_0))
+                }
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for Context {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {
+            let _: ::core::cmp::AssertParamIsEq<ContractContext>;
+            let _: ::core::cmp::AssertParamIsEq<CreateContractHostFnContext>;
+            let _: ::core::cmp::AssertParamIsEq<CreateContractWithConstructorHostFnContext>;
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for Context {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for Context {
+        #[inline]
+        fn eq(&self, other: &Context) -> bool {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            __self_discr == __arg1_discr
+                && match (self, other) {
+                    (Context::Contract(__self_0), Context::Contract(__arg1_0)) => {
+                        __self_0 == __arg1_0
+                    }
+                    (
+                        Context::CreateContractHostFn(__self_0),
+                        Context::CreateContractHostFn(__arg1_0),
+                    ) => __self_0 == __arg1_0,
+                    (
+                        Context::CreateContractWithCtorHostFn(__self_0),
+                        Context::CreateContractWithCtorHostFn(__arg1_0),
+                    ) => __self_0 == __arg1_0,
+                    _ => unsafe { ::core::intrinsics::unreachable() },
+                }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for Context {
+        #[inline]
+        fn cmp(&self, other: &Context) -> ::core::cmp::Ordering {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            match ::core::cmp::Ord::cmp(&__self_discr, &__arg1_discr) {
+                ::core::cmp::Ordering::Equal => match (self, other) {
+                    (Context::Contract(__self_0), Context::Contract(__arg1_0)) => {
+                        ::core::cmp::Ord::cmp(__self_0, __arg1_0)
+                    }
+                    (
+                        Context::CreateContractHostFn(__self_0),
+                        Context::CreateContractHostFn(__arg1_0),
+                    ) => ::core::cmp::Ord::cmp(__self_0, __arg1_0),
+                    (
+                        Context::CreateContractWithCtorHostFn(__self_0),
+                        Context::CreateContractWithCtorHostFn(__arg1_0),
+                    ) => ::core::cmp::Ord::cmp(__self_0, __arg1_0),
+                    _ => unsafe { ::core::intrinsics::unreachable() },
+                },
+                cmp => cmp,
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for Context {
+        #[inline]
+        fn partial_cmp(&self, other: &Context) -> ::core::option::Option<::core::cmp::Ordering> {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            match (self, other) {
+                (Context::Contract(__self_0), Context::Contract(__arg1_0)) => {
+                    ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0)
+                }
+                (
+                    Context::CreateContractHostFn(__self_0),
+                    Context::CreateContractHostFn(__arg1_0),
+                ) => ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0),
+                (
+                    Context::CreateContractWithCtorHostFn(__self_0),
+                    Context::CreateContractWithCtorHostFn(__arg1_0),
+                ) => ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0),
+                _ => ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr),
+            }
+        }
+    }
+    pub static __SPEC_XDR_TYPE_CONTEXT: [u8; 244usize] = Context::spec_xdr();
+    impl Context {
+        pub const fn spec_xdr() -> [u8; 244usize] {
+            *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x07Context\0\0\0\0\x03\0\0\0\x01\0\0\0\0\0\0\0\x08Contract\0\0\0\x01\0\0\x07\xd0\0\0\0\x0fContractContext\0\0\0\0\x01\0\0\0\0\0\0\0\x14CreateContractHostFn\0\0\0\x01\0\0\x07\xd0\0\0\0\x1bCreateContractHostFnContext\0\0\0\0\x01\0\0\0\0\0\0\0\x1cCreateContractWithCtorHostFn\0\0\0\x01\0\0\x07\xd0\0\0\0*CreateContractWithConstructorHostFnContext\0\0"
+        }
+    }
+    impl soroban_sdk::SpecShakingMarker for Context {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {
+            <ContractContext as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            <CreateContractHostFnContext as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Context {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::Val,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
+            const CASES: &'static [&'static str] = &[
+                "Contract",
+                "CreateContractHostFn",
+                "CreateContractWithCtorHostFn",
+            ];
+            let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
+            let mut iter = vec.try_iter();
+            let discriminant: soroban_sdk::Symbol = iter
+                .next()
+                .ok_or(soroban_sdk::ConversionError)??
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?;
+            Ok(
+                match u32::from(env.symbol_index_in_strs(discriminant.to_symbol_val(), CASES)?)
+                    as usize
+                {
+                    0 => {
+                        if iter.len() > 1usize {
+                            return Err(soroban_sdk::ConversionError);
+                        }
+                        Self::Contract(
+                            iter.next()
+                                .ok_or(soroban_sdk::ConversionError)??
+                                .try_into_val(env)?,
+                        )
+                    }
+                    1 => {
+                        if iter.len() > 1usize {
+                            return Err(soroban_sdk::ConversionError);
+                        }
+                        Self::CreateContractHostFn(
+                            iter.next()
+                                .ok_or(soroban_sdk::ConversionError)??
+                                .try_into_val(env)?,
+                        )
+                    }
+                    2 => {
+                        if iter.len() > 1usize {
+                            return Err(soroban_sdk::ConversionError);
+                        }
+                        Self::CreateContractWithCtorHostFn(
+                            iter.next()
+                                .ok_or(soroban_sdk::ConversionError)??
+                                .try_into_val(env)?,
+                        )
+                    }
+                    _ => Err(soroban_sdk::ConversionError {})?,
+                },
+            )
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, Context> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &Context,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{TryFromVal, TryIntoVal};
+            match val {
+                Context::Contract(ref value0) => {
+                    let tup: (soroban_sdk::Val, soroban_sdk::Val) = (
+                        soroban_sdk::Symbol::try_from_val(env, &"Contract")?.to_val(),
+                        value0.try_into_val(env)?,
+                    );
+                    tup.try_into_val(env).map_err(Into::into)
+                }
+                Context::CreateContractHostFn(ref value0) => {
+                    let tup: (soroban_sdk::Val, soroban_sdk::Val) = (
+                        soroban_sdk::Symbol::try_from_val(env, &"CreateContractHostFn")?.to_val(),
+                        value0.try_into_val(env)?,
+                    );
+                    tup.try_into_val(env).map_err(Into::into)
+                }
+                Context::CreateContractWithCtorHostFn(ref value0) => {
+                    let tup: (soroban_sdk::Val, soroban_sdk::Val) = (
+                        soroban_sdk::Symbol::try_from_val(env, &"CreateContractWithCtorHostFn")?
+                            .to_val(),
+                        value0.try_into_val(env)?,
+                    );
+                    tup.try_into_val(env).map_err(Into::into)
+                }
+            }
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, &Context> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &&Context,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, Context>>::try_from_val(env, *val)
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVec> for Context {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::xdr::ScVec,
+        ) -> Result<Self, soroban_sdk::xdr::Error> {
+            use soroban_sdk::xdr::Validate;
+            use soroban_sdk::TryIntoVal;
+            let vec = val;
+            let mut iter = vec.iter();
+            let discriminant: soroban_sdk::xdr::ScSymbol = iter
+                .next()
+                .ok_or(soroban_sdk::xdr::Error::Invalid)?
+                .clone()
+                .try_into()
+                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+            let discriminant_name: &str = &discriminant.to_utf8_string()?;
+            Ok(match discriminant_name {
+                "Contract" => {
+                    if iter.len() > 1usize {
+                        return Err(soroban_sdk::xdr::Error::Invalid);
+                    }
+                    let rv0: soroban_sdk::Val = iter
+                        .next()
+                        .ok_or(soroban_sdk::xdr::Error::Invalid)?
+                        .try_into_val(env)
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                    Self::Contract(
+                        rv0.try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                }
+                "CreateContractHostFn" => {
+                    if iter.len() > 1usize {
+                        return Err(soroban_sdk::xdr::Error::Invalid);
+                    }
+                    let rv0: soroban_sdk::Val = iter
+                        .next()
+                        .ok_or(soroban_sdk::xdr::Error::Invalid)?
+                        .try_into_val(env)
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                    Self::CreateContractHostFn(
+                        rv0.try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                }
+                "CreateContractWithCtorHostFn" => {
+                    if iter.len() > 1usize {
+                        return Err(soroban_sdk::xdr::Error::Invalid);
+                    }
+                    let rv0: soroban_sdk::Val = iter
+                        .next()
+                        .ok_or(soroban_sdk::xdr::Error::Invalid)?
+                        .try_into_val(env)
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                    Self::CreateContractWithCtorHostFn(
+                        rv0.try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                }
+                _ => Err(soroban_sdk::xdr::Error::Invalid)?,
+            })
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVal> for Context {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::xdr::ScVal,
+        ) -> Result<Self, soroban_sdk::xdr::Error> {
+            if let soroban_sdk::xdr::ScVal::Vec(Some(vec)) = val {
+                <_ as soroban_sdk::TryFromVal<_, _>>::try_from_val(env, vec)
+            } else {
+                Err(soroban_sdk::xdr::Error::Invalid)
+            }
+        }
+    }
+    impl TryFrom<&Context> for soroban_sdk::xdr::ScVec {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from(val: &Context) -> Result<Self, soroban_sdk::xdr::Error> {
+            extern crate alloc;
+            Ok(match val {
+                Context::Contract(value0) => (
+                    soroban_sdk::xdr::ScSymbol(
+                        "Contract"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    ),
+                    value0,
+                )
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                Context::CreateContractHostFn(value0) => (
+                    soroban_sdk::xdr::ScSymbol(
+                        "CreateContractHostFn"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    ),
+                    value0,
+                )
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                Context::CreateContractWithCtorHostFn(value0) => (
+                    soroban_sdk::xdr::ScSymbol(
+                        "CreateContractWithCtorHostFn"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    ),
+                    value0,
+                )
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            })
+        }
+    }
+    impl TryFrom<Context> for soroban_sdk::xdr::ScVec {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from(val: Context) -> Result<Self, soroban_sdk::xdr::Error> {
+            (&val).try_into()
+        }
+    }
+    impl TryFrom<&Context> for soroban_sdk::xdr::ScVal {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from(val: &Context) -> Result<Self, soroban_sdk::xdr::Error> {
+            Ok(soroban_sdk::xdr::ScVal::Vec(Some(val.try_into()?)))
+        }
+    }
+    impl TryFrom<Context> for soroban_sdk::xdr::ScVal {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from(val: Context) -> Result<Self, soroban_sdk::xdr::Error> {
+            (&val).try_into()
+        }
+    }
+    const _: () = {
+        use soroban_sdk::testutils::arbitrary::arbitrary;
+        use soroban_sdk::testutils::arbitrary::std;
+        pub enum ArbitraryContext {
+            Contract(
+                <ContractContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+            ),
+            CreateContractHostFn(
+                <CreateContractHostFnContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+            ),
+            CreateContractWithCtorHostFn(
+                <CreateContractWithConstructorHostFnContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+            ),
+        }
+        #[automatically_derived]
+        impl ::core::fmt::Debug for ArbitraryContext {
+            #[inline]
+            fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                match self {
+                    ArbitraryContext::Contract(__self_0) => {
+                        ::core::fmt::Formatter::debug_tuple_field1_finish(f, "Contract", &__self_0)
+                    }
+                    ArbitraryContext::CreateContractHostFn(__self_0) => {
+                        ::core::fmt::Formatter::debug_tuple_field1_finish(
+                            f,
+                            "CreateContractHostFn",
+                            &__self_0,
+                        )
+                    }
+                    ArbitraryContext::CreateContractWithCtorHostFn(__self_0) => {
+                        ::core::fmt::Formatter::debug_tuple_field1_finish(
+                            f,
+                            "CreateContractWithCtorHostFn",
+                            &__self_0,
+                        )
+                    }
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::clone::Clone for ArbitraryContext {
+            #[inline]
+            fn clone(&self) -> ArbitraryContext {
+                match self {
+                    ArbitraryContext::Contract(__self_0) => {
+                        ArbitraryContext::Contract(::core::clone::Clone::clone(__self_0))
+                    }
+                    ArbitraryContext::CreateContractHostFn(__self_0) => {
+                        ArbitraryContext::CreateContractHostFn(::core::clone::Clone::clone(
+                            __self_0,
+                        ))
+                    }
+                    ArbitraryContext::CreateContractWithCtorHostFn(__self_0) => {
+                        ArbitraryContext::CreateContractWithCtorHostFn(::core::clone::Clone::clone(
+                            __self_0,
+                        ))
+                    }
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::Eq for ArbitraryContext {
+            #[inline]
+            #[doc(hidden)]
+            #[coverage(off)]
+            fn assert_receiver_is_total_eq(&self) -> () {
+                let _: ::core::cmp::AssertParamIsEq<
+                    <ContractContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                >;
+                let _: ::core::cmp::AssertParamIsEq<
+                    <CreateContractHostFnContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                >;
+                let _: ::core::cmp::AssertParamIsEq<
+                    <CreateContractWithConstructorHostFnContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                >;
+            }
+        }
+        #[automatically_derived]
+        impl ::core::marker::StructuralPartialEq for ArbitraryContext {}
+        #[automatically_derived]
+        impl ::core::cmp::PartialEq for ArbitraryContext {
+            #[inline]
+            fn eq(&self, other: &ArbitraryContext) -> bool {
+                let __self_discr = ::core::intrinsics::discriminant_value(self);
+                let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+                __self_discr == __arg1_discr
+                    && match (self, other) {
+                        (
+                            ArbitraryContext::Contract(__self_0),
+                            ArbitraryContext::Contract(__arg1_0),
+                        ) => __self_0 == __arg1_0,
+                        (
+                            ArbitraryContext::CreateContractHostFn(__self_0),
+                            ArbitraryContext::CreateContractHostFn(__arg1_0),
+                        ) => __self_0 == __arg1_0,
+                        (
+                            ArbitraryContext::CreateContractWithCtorHostFn(__self_0),
+                            ArbitraryContext::CreateContractWithCtorHostFn(__arg1_0),
+                        ) => __self_0 == __arg1_0,
+                        _ => unsafe { ::core::intrinsics::unreachable() },
+                    }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::Ord for ArbitraryContext {
+            #[inline]
+            fn cmp(&self, other: &ArbitraryContext) -> ::core::cmp::Ordering {
+                let __self_discr = ::core::intrinsics::discriminant_value(self);
+                let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+                match ::core::cmp::Ord::cmp(&__self_discr, &__arg1_discr) {
+                    ::core::cmp::Ordering::Equal => match (self, other) {
+                        (
+                            ArbitraryContext::Contract(__self_0),
+                            ArbitraryContext::Contract(__arg1_0),
+                        ) => ::core::cmp::Ord::cmp(__self_0, __arg1_0),
+                        (
+                            ArbitraryContext::CreateContractHostFn(__self_0),
+                            ArbitraryContext::CreateContractHostFn(__arg1_0),
+                        ) => ::core::cmp::Ord::cmp(__self_0, __arg1_0),
+                        (
+                            ArbitraryContext::CreateContractWithCtorHostFn(__self_0),
+                            ArbitraryContext::CreateContractWithCtorHostFn(__arg1_0),
+                        ) => ::core::cmp::Ord::cmp(__self_0, __arg1_0),
+                        _ => unsafe { ::core::intrinsics::unreachable() },
+                    },
+                    cmp => cmp,
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::PartialOrd for ArbitraryContext {
+            #[inline]
+            fn partial_cmp(
+                &self,
+                other: &ArbitraryContext,
+            ) -> ::core::option::Option<::core::cmp::Ordering> {
+                let __self_discr = ::core::intrinsics::discriminant_value(self);
+                let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+                match (self, other) {
+                    (
+                        ArbitraryContext::Contract(__self_0),
+                        ArbitraryContext::Contract(__arg1_0),
+                    ) => ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0),
+                    (
+                        ArbitraryContext::CreateContractHostFn(__self_0),
+                        ArbitraryContext::CreateContractHostFn(__arg1_0),
+                    ) => ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0),
+                    (
+                        ArbitraryContext::CreateContractWithCtorHostFn(__self_0),
+                        ArbitraryContext::CreateContractWithCtorHostFn(__arg1_0),
+                    ) => ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0),
+                    _ => ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr),
+                }
+            }
+        }
+        const _: () = {
+            #[allow(non_upper_case_globals)]
+            const RECURSIVE_COUNT_ArbitraryContext: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
+                #[inline]
+                fn __init() -> std::cell::Cell<u32> {
+                    std::cell::Cell::new(0)
+                }
+                unsafe {
+                    ::std::thread::LocalKey::new(
+                        const {
+                            if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
+                                |init| {
+                                    #[thread_local]
+                                    static VAL: ::std::thread::local_impl::LazyStorage<
+                                        std::cell::Cell<u32>,
+                                        (),
+                                    > = ::std::thread::local_impl::LazyStorage::new();
+                                    VAL.get_or_init(init, __init)
+                                }
+                            } else {
+                                |init| {
+                                    #[thread_local]
+                                    static VAL: ::std::thread::local_impl::LazyStorage<
+                                        std::cell::Cell<u32>,
+                                        !,
+                                    > = ::std::thread::local_impl::LazyStorage::new();
+                                    VAL.get_or_init(init, __init)
+                                }
+                            }
+                        },
+                    )
+                }
+            };
+            #[automatically_derived]
+            impl<'arbitrary> arbitrary::Arbitrary<'arbitrary> for ArbitraryContext {
+                fn arbitrary(
+                    u: &mut arbitrary::Unstructured<'arbitrary>,
+                ) -> arbitrary::Result<Self> {
+                    let guard_against_recursion = u.is_empty();
+                    if guard_against_recursion {
+                        RECURSIVE_COUNT_ArbitraryContext.with(|count| {
+                            if count.get() > 0 {
+                                return Err(arbitrary::Error::NotEnoughData);
+                            }
+                            count.set(count.get() + 1);
+                            Ok(())
+                        })?;
+                    }
+                    let result = (|| {
+                        Ok(
+                            match (u64::from(<u32 as arbitrary::Arbitrary>::arbitrary(u)?) * 3u64)
+                                >> 32
+                            {
+                                0u64 => {
+                                    ArbitraryContext::Contract(arbitrary::Arbitrary::arbitrary(u)?)
+                                }
+                                1u64 => ArbitraryContext::CreateContractHostFn(
+                                    arbitrary::Arbitrary::arbitrary(u)?,
+                                ),
+                                2u64 => ArbitraryContext::CreateContractWithCtorHostFn(
+                                    arbitrary::Arbitrary::arbitrary(u)?,
+                                ),
+                                _ => ::core::panicking::panic(
+                                    "internal error: entered unreachable code",
+                                ),
+                            },
+                        )
+                    })();
+                    if guard_against_recursion {
+                        RECURSIVE_COUNT_ArbitraryContext.with(|count| {
+                            count.set(count.get() - 1);
+                        });
+                    }
+                    result
+                }
+                fn arbitrary_take_rest(
+                    mut u: arbitrary::Unstructured<'arbitrary>,
+                ) -> arbitrary::Result<Self> {
+                    let guard_against_recursion = u.is_empty();
+                    if guard_against_recursion {
+                        RECURSIVE_COUNT_ArbitraryContext.with(|count| {
+                            if count.get() > 0 {
+                                return Err(arbitrary::Error::NotEnoughData);
+                            }
+                            count.set(count.get() + 1);
+                            Ok(())
+                        })?;
+                    }
+                    let result = (|| {
+                        Ok(
+                            match (u64::from(<u32 as arbitrary::Arbitrary>::arbitrary(&mut u)?)
+                                * 3u64)
+                                >> 32
+                            {
+                                0u64 => ArbitraryContext::Contract(
+                                    arbitrary::Arbitrary::arbitrary_take_rest(u)?,
+                                ),
+                                1u64 => ArbitraryContext::CreateContractHostFn(
+                                    arbitrary::Arbitrary::arbitrary_take_rest(u)?,
+                                ),
+                                2u64 => ArbitraryContext::CreateContractWithCtorHostFn(
+                                    arbitrary::Arbitrary::arbitrary_take_rest(u)?,
+                                ),
+                                _ => ::core::panicking::panic(
+                                    "internal error: entered unreachable code",
+                                ),
+                            },
+                        )
+                    })();
+                    if guard_against_recursion {
+                        RECURSIVE_COUNT_ArbitraryContext.with(|count| {
+                            count.set(count.get() - 1);
+                        });
+                    }
+                    result
+                }
+                #[inline]
+                fn size_hint(depth: usize) -> (usize, Option<usize>) {
+                    arbitrary::size_hint::and(
+                        <u32 as arbitrary::Arbitrary>::size_hint(depth),
+                        arbitrary::size_hint::recursion_guard(depth, |depth| {
+                            arbitrary::size_hint::or_all(
+                                    &[
+                                        arbitrary::size_hint::and_all(
+                                            &[
+                                                <<ContractContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                                    depth,
+                                                ),
+                                            ],
+                                        ),
+                                        arbitrary::size_hint::and_all(
+                                            &[
+                                                <<CreateContractHostFnContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                                    depth,
+                                                ),
+                                            ],
+                                        ),
+                                        arbitrary::size_hint::and_all(
+                                            &[
+                                                <<CreateContractWithConstructorHostFnContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                                    depth,
+                                                ),
+                                            ],
+                                        ),
+                                    ],
+                                )
+                        }),
+                    )
+                }
+            }
+        };
+        impl soroban_sdk::testutils::arbitrary::SorobanArbitrary for Context {
+            type Prototype = ArbitraryContext;
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, ArbitraryContext> for Context {
+            type Error = soroban_sdk::ConversionError;
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                v: &ArbitraryContext,
+            ) -> std::result::Result<Self, Self::Error> {
+                Ok(match v {
+                    ArbitraryContext::Contract(field_0) => {
+                        Context::Contract(soroban_sdk::IntoVal::into_val(field_0, env))
+                    }
+                    ArbitraryContext::CreateContractHostFn(field_0) => {
+                        Context::CreateContractHostFn(soroban_sdk::IntoVal::into_val(field_0, env))
+                    }
+                    ArbitraryContext::CreateContractWithCtorHostFn(field_0) => {
+                        Context::CreateContractWithCtorHostFn(soroban_sdk::IntoVal::into_val(
+                            field_0, env,
+                        ))
+                    }
+                })
+            }
+        }
+    };
+    pub enum ContractExecutable {
+        Wasm(soroban_sdk::BytesN<32>),
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for ContractExecutable {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            match self {
+                ContractExecutable::Wasm(__self_0) => {
+                    ::core::fmt::Formatter::debug_tuple_field1_finish(f, "Wasm", &__self_0)
+                }
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for ContractExecutable {
+        #[inline]
+        fn clone(&self) -> ContractExecutable {
+            match self {
+                ContractExecutable::Wasm(__self_0) => {
+                    ContractExecutable::Wasm(::core::clone::Clone::clone(__self_0))
+                }
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for ContractExecutable {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {
+            let _: ::core::cmp::AssertParamIsEq<soroban_sdk::BytesN<32>>;
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for ContractExecutable {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for ContractExecutable {
+        #[inline]
+        fn eq(&self, other: &ContractExecutable) -> bool {
+            match (self, other) {
+                (ContractExecutable::Wasm(__self_0), ContractExecutable::Wasm(__arg1_0)) => {
+                    __self_0 == __arg1_0
+                }
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for ContractExecutable {
+        #[inline]
+        fn cmp(&self, other: &ContractExecutable) -> ::core::cmp::Ordering {
+            match (self, other) {
+                (ContractExecutable::Wasm(__self_0), ContractExecutable::Wasm(__arg1_0)) => {
+                    ::core::cmp::Ord::cmp(__self_0, __arg1_0)
+                }
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for ContractExecutable {
+        #[inline]
+        fn partial_cmp(
+            &self,
+            other: &ContractExecutable,
+        ) -> ::core::option::Option<::core::cmp::Ordering> {
+            match (self, other) {
+                (ContractExecutable::Wasm(__self_0), ContractExecutable::Wasm(__arg1_0)) => {
+                    ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0)
+                }
+            }
+        }
+    }
+    pub static __SPEC_XDR_TYPE_CONTRACTEXECUTABLE: [u8; 68usize] = ContractExecutable::spec_xdr();
+    impl ContractExecutable {
+        pub const fn spec_xdr() -> [u8; 68usize] {
+            *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x12ContractExecutable\0\0\0\0\0\x01\0\0\0\x01\0\0\0\0\0\0\0\x04Wasm\0\0\0\x01\0\0\x03\xee\0\0\0 "
+        }
+    }
+    impl soroban_sdk::SpecShakingMarker for ContractExecutable {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {
+            <soroban_sdk::BytesN<32> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ContractExecutable {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::Val,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
+            const CASES: &'static [&'static str] = &["Wasm"];
+            let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
+            let mut iter = vec.try_iter();
+            let discriminant: soroban_sdk::Symbol = iter
+                .next()
+                .ok_or(soroban_sdk::ConversionError)??
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?;
+            Ok(
+                match u32::from(env.symbol_index_in_strs(discriminant.to_symbol_val(), CASES)?)
+                    as usize
+                {
+                    0 => {
+                        if iter.len() > 1usize {
+                            return Err(soroban_sdk::ConversionError);
+                        }
+                        Self::Wasm(
+                            iter.next()
+                                .ok_or(soroban_sdk::ConversionError)??
+                                .try_into_val(env)?,
+                        )
+                    }
+                    _ => Err(soroban_sdk::ConversionError {})?,
+                },
+            )
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, ContractExecutable> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &ContractExecutable,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{TryFromVal, TryIntoVal};
+            match val {
+                ContractExecutable::Wasm(ref value0) => {
+                    let tup: (soroban_sdk::Val, soroban_sdk::Val) = (
+                        soroban_sdk::Symbol::try_from_val(env, &"Wasm")?.to_val(),
+                        value0.try_into_val(env)?,
+                    );
+                    tup.try_into_val(env).map_err(Into::into)
+                }
+            }
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, &ContractExecutable> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &&ContractExecutable,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, ContractExecutable>>::try_from_val(
+                env, *val,
+            )
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVec> for ContractExecutable {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::xdr::ScVec,
+        ) -> Result<Self, soroban_sdk::xdr::Error> {
+            use soroban_sdk::xdr::Validate;
+            use soroban_sdk::TryIntoVal;
+            let vec = val;
+            let mut iter = vec.iter();
+            let discriminant: soroban_sdk::xdr::ScSymbol = iter
+                .next()
+                .ok_or(soroban_sdk::xdr::Error::Invalid)?
+                .clone()
+                .try_into()
+                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+            let discriminant_name: &str = &discriminant.to_utf8_string()?;
+            Ok(match discriminant_name {
+                "Wasm" => {
+                    if iter.len() > 1usize {
+                        return Err(soroban_sdk::xdr::Error::Invalid);
+                    }
+                    let rv0: soroban_sdk::Val = iter
+                        .next()
+                        .ok_or(soroban_sdk::xdr::Error::Invalid)?
+                        .try_into_val(env)
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                    Self::Wasm(
+                        rv0.try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                }
+                _ => Err(soroban_sdk::xdr::Error::Invalid)?,
+            })
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVal> for ContractExecutable {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::xdr::ScVal,
+        ) -> Result<Self, soroban_sdk::xdr::Error> {
+            if let soroban_sdk::xdr::ScVal::Vec(Some(vec)) = val {
+                <_ as soroban_sdk::TryFromVal<_, _>>::try_from_val(env, vec)
+            } else {
+                Err(soroban_sdk::xdr::Error::Invalid)
+            }
+        }
+    }
+    impl TryFrom<&ContractExecutable> for soroban_sdk::xdr::ScVec {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from(val: &ContractExecutable) -> Result<Self, soroban_sdk::xdr::Error> {
+            extern crate alloc;
+            Ok(match val {
+                ContractExecutable::Wasm(value0) => (
+                    soroban_sdk::xdr::ScSymbol(
+                        "Wasm"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    ),
+                    value0,
+                )
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            })
+        }
+    }
+    impl TryFrom<ContractExecutable> for soroban_sdk::xdr::ScVec {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from(val: ContractExecutable) -> Result<Self, soroban_sdk::xdr::Error> {
+            (&val).try_into()
+        }
+    }
+    impl TryFrom<&ContractExecutable> for soroban_sdk::xdr::ScVal {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from(val: &ContractExecutable) -> Result<Self, soroban_sdk::xdr::Error> {
+            Ok(soroban_sdk::xdr::ScVal::Vec(Some(val.try_into()?)))
+        }
+    }
+    impl TryFrom<ContractExecutable> for soroban_sdk::xdr::ScVal {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from(val: ContractExecutable) -> Result<Self, soroban_sdk::xdr::Error> {
+            (&val).try_into()
+        }
+    }
+    const _: () = {
+        use soroban_sdk::testutils::arbitrary::arbitrary;
+        use soroban_sdk::testutils::arbitrary::std;
+        pub enum ArbitraryContractExecutable {
+            Wasm(
+                <soroban_sdk::BytesN<
+                    32,
+                > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+            ),
+        }
+        #[automatically_derived]
+        impl ::core::fmt::Debug for ArbitraryContractExecutable {
+            #[inline]
+            fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                match self {
+                    ArbitraryContractExecutable::Wasm(__self_0) => {
+                        ::core::fmt::Formatter::debug_tuple_field1_finish(f, "Wasm", &__self_0)
+                    }
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::clone::Clone for ArbitraryContractExecutable {
+            #[inline]
+            fn clone(&self) -> ArbitraryContractExecutable {
+                match self {
+                    ArbitraryContractExecutable::Wasm(__self_0) => {
+                        ArbitraryContractExecutable::Wasm(::core::clone::Clone::clone(__self_0))
+                    }
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::Eq for ArbitraryContractExecutable {
+            #[inline]
+            #[doc(hidden)]
+            #[coverage(off)]
+            fn assert_receiver_is_total_eq(&self) -> () {
+                let _: ::core::cmp::AssertParamIsEq<
+                    <soroban_sdk::BytesN<
+                        32,
+                    > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                >;
+            }
+        }
+        #[automatically_derived]
+        impl ::core::marker::StructuralPartialEq for ArbitraryContractExecutable {}
+        #[automatically_derived]
+        impl ::core::cmp::PartialEq for ArbitraryContractExecutable {
+            #[inline]
+            fn eq(&self, other: &ArbitraryContractExecutable) -> bool {
+                match (self, other) {
+                    (
+                        ArbitraryContractExecutable::Wasm(__self_0),
+                        ArbitraryContractExecutable::Wasm(__arg1_0),
+                    ) => __self_0 == __arg1_0,
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::Ord for ArbitraryContractExecutable {
+            #[inline]
+            fn cmp(&self, other: &ArbitraryContractExecutable) -> ::core::cmp::Ordering {
+                match (self, other) {
+                    (
+                        ArbitraryContractExecutable::Wasm(__self_0),
+                        ArbitraryContractExecutable::Wasm(__arg1_0),
+                    ) => ::core::cmp::Ord::cmp(__self_0, __arg1_0),
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::PartialOrd for ArbitraryContractExecutable {
+            #[inline]
+            fn partial_cmp(
+                &self,
+                other: &ArbitraryContractExecutable,
+            ) -> ::core::option::Option<::core::cmp::Ordering> {
+                match (self, other) {
+                    (
+                        ArbitraryContractExecutable::Wasm(__self_0),
+                        ArbitraryContractExecutable::Wasm(__arg1_0),
+                    ) => ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0),
+                }
+            }
+        }
+        const _: () = {
+            #[allow(non_upper_case_globals)]
+            const RECURSIVE_COUNT_ArbitraryContractExecutable: ::std::thread::LocalKey<
+                std::cell::Cell<u32>,
+            > = {
+                #[inline]
+                fn __init() -> std::cell::Cell<u32> {
+                    std::cell::Cell::new(0)
+                }
+                unsafe {
+                    ::std::thread::LocalKey::new(
+                        const {
+                            if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
+                                |init| {
+                                    #[thread_local]
+                                    static VAL: ::std::thread::local_impl::LazyStorage<
+                                        std::cell::Cell<u32>,
+                                        (),
+                                    > = ::std::thread::local_impl::LazyStorage::new();
+                                    VAL.get_or_init(init, __init)
+                                }
+                            } else {
+                                |init| {
+                                    #[thread_local]
+                                    static VAL: ::std::thread::local_impl::LazyStorage<
+                                        std::cell::Cell<u32>,
+                                        !,
+                                    > = ::std::thread::local_impl::LazyStorage::new();
+                                    VAL.get_or_init(init, __init)
+                                }
+                            }
+                        },
+                    )
+                }
+            };
+            #[automatically_derived]
+            impl<'arbitrary> arbitrary::Arbitrary<'arbitrary> for ArbitraryContractExecutable {
+                fn arbitrary(
+                    u: &mut arbitrary::Unstructured<'arbitrary>,
+                ) -> arbitrary::Result<Self> {
+                    let guard_against_recursion = u.is_empty();
+                    if guard_against_recursion {
+                        RECURSIVE_COUNT_ArbitraryContractExecutable.with(|count| {
+                            if count.get() > 0 {
+                                return Err(arbitrary::Error::NotEnoughData);
+                            }
+                            count.set(count.get() + 1);
+                            Ok(())
+                        })?;
+                    }
+                    let result = (|| {
+                        Ok(
+                            match (u64::from(<u32 as arbitrary::Arbitrary>::arbitrary(u)?) * 1u64)
+                                >> 32
+                            {
+                                0u64 => ArbitraryContractExecutable::Wasm(
+                                    arbitrary::Arbitrary::arbitrary(u)?,
+                                ),
+                                _ => ::core::panicking::panic(
+                                    "internal error: entered unreachable code",
+                                ),
+                            },
+                        )
+                    })();
+                    if guard_against_recursion {
+                        RECURSIVE_COUNT_ArbitraryContractExecutable.with(|count| {
+                            count.set(count.get() - 1);
+                        });
+                    }
+                    result
+                }
+                fn arbitrary_take_rest(
+                    mut u: arbitrary::Unstructured<'arbitrary>,
+                ) -> arbitrary::Result<Self> {
+                    let guard_against_recursion = u.is_empty();
+                    if guard_against_recursion {
+                        RECURSIVE_COUNT_ArbitraryContractExecutable.with(|count| {
+                            if count.get() > 0 {
+                                return Err(arbitrary::Error::NotEnoughData);
+                            }
+                            count.set(count.get() + 1);
+                            Ok(())
+                        })?;
+                    }
+                    let result = (|| {
+                        Ok(
+                            match (u64::from(<u32 as arbitrary::Arbitrary>::arbitrary(&mut u)?)
+                                * 1u64)
+                                >> 32
+                            {
+                                0u64 => ArbitraryContractExecutable::Wasm(
+                                    arbitrary::Arbitrary::arbitrary_take_rest(u)?,
+                                ),
+                                _ => ::core::panicking::panic(
+                                    "internal error: entered unreachable code",
+                                ),
+                            },
+                        )
+                    })();
+                    if guard_against_recursion {
+                        RECURSIVE_COUNT_ArbitraryContractExecutable.with(|count| {
+                            count.set(count.get() - 1);
+                        });
+                    }
+                    result
+                }
+                #[inline]
+                fn size_hint(depth: usize) -> (usize, Option<usize>) {
+                    arbitrary::size_hint::and(
+                        <u32 as arbitrary::Arbitrary>::size_hint(depth),
+                        arbitrary::size_hint::recursion_guard(depth, |depth| {
+                            arbitrary::size_hint::or_all(
+                                    &[
+                                        arbitrary::size_hint::and_all(
+                                            &[
+                                                <<soroban_sdk::BytesN<
+                                                    32,
+                                                > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                                    depth,
+                                                ),
+                                            ],
+                                        ),
+                                    ],
+                                )
+                        }),
+                    )
+                }
+            }
+        };
+        impl soroban_sdk::testutils::arbitrary::SorobanArbitrary for ContractExecutable {
+            type Prototype = ArbitraryContractExecutable;
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, ArbitraryContractExecutable> for ContractExecutable {
+            type Error = soroban_sdk::ConversionError;
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                v: &ArbitraryContractExecutable,
+            ) -> std::result::Result<Self, Self::Error> {
+                Ok(match v {
+                    ArbitraryContractExecutable::Wasm(field_0) => {
+                        ContractExecutable::Wasm(soroban_sdk::IntoVal::into_val(field_0, env))
+                    }
+                })
+            }
+        }
+    };
+    pub enum InvokerContractAuthEntry {
+        Contract(SubContractInvocation),
+        CreateContractHostFn(CreateContractHostFnContext),
+        CreateContractWithCtorHostFn(CreateContractWithConstructorHostFnContext),
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for InvokerContractAuthEntry {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            match self {
+                InvokerContractAuthEntry::Contract(__self_0) => {
+                    ::core::fmt::Formatter::debug_tuple_field1_finish(f, "Contract", &__self_0)
+                }
+                InvokerContractAuthEntry::CreateContractHostFn(__self_0) => {
+                    ::core::fmt::Formatter::debug_tuple_field1_finish(
+                        f,
+                        "CreateContractHostFn",
+                        &__self_0,
+                    )
+                }
+                InvokerContractAuthEntry::CreateContractWithCtorHostFn(__self_0) => {
+                    ::core::fmt::Formatter::debug_tuple_field1_finish(
+                        f,
+                        "CreateContractWithCtorHostFn",
+                        &__self_0,
+                    )
+                }
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for InvokerContractAuthEntry {
+        #[inline]
+        fn clone(&self) -> InvokerContractAuthEntry {
+            match self {
+                InvokerContractAuthEntry::Contract(__self_0) => {
+                    InvokerContractAuthEntry::Contract(::core::clone::Clone::clone(__self_0))
+                }
+                InvokerContractAuthEntry::CreateContractHostFn(__self_0) => {
+                    InvokerContractAuthEntry::CreateContractHostFn(::core::clone::Clone::clone(
+                        __self_0,
+                    ))
+                }
+                InvokerContractAuthEntry::CreateContractWithCtorHostFn(__self_0) => {
+                    InvokerContractAuthEntry::CreateContractWithCtorHostFn(
+                        ::core::clone::Clone::clone(__self_0),
+                    )
+                }
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for InvokerContractAuthEntry {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {
+            let _: ::core::cmp::AssertParamIsEq<SubContractInvocation>;
+            let _: ::core::cmp::AssertParamIsEq<CreateContractHostFnContext>;
+            let _: ::core::cmp::AssertParamIsEq<CreateContractWithConstructorHostFnContext>;
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for InvokerContractAuthEntry {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for InvokerContractAuthEntry {
+        #[inline]
+        fn eq(&self, other: &InvokerContractAuthEntry) -> bool {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            __self_discr == __arg1_discr
+                && match (self, other) {
+                    (
+                        InvokerContractAuthEntry::Contract(__self_0),
+                        InvokerContractAuthEntry::Contract(__arg1_0),
+                    ) => __self_0 == __arg1_0,
+                    (
+                        InvokerContractAuthEntry::CreateContractHostFn(__self_0),
+                        InvokerContractAuthEntry::CreateContractHostFn(__arg1_0),
+                    ) => __self_0 == __arg1_0,
+                    (
+                        InvokerContractAuthEntry::CreateContractWithCtorHostFn(__self_0),
+                        InvokerContractAuthEntry::CreateContractWithCtorHostFn(__arg1_0),
+                    ) => __self_0 == __arg1_0,
+                    _ => unsafe { ::core::intrinsics::unreachable() },
+                }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for InvokerContractAuthEntry {
+        #[inline]
+        fn cmp(&self, other: &InvokerContractAuthEntry) -> ::core::cmp::Ordering {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            match ::core::cmp::Ord::cmp(&__self_discr, &__arg1_discr) {
+                ::core::cmp::Ordering::Equal => match (self, other) {
+                    (
+                        InvokerContractAuthEntry::Contract(__self_0),
+                        InvokerContractAuthEntry::Contract(__arg1_0),
+                    ) => ::core::cmp::Ord::cmp(__self_0, __arg1_0),
+                    (
+                        InvokerContractAuthEntry::CreateContractHostFn(__self_0),
+                        InvokerContractAuthEntry::CreateContractHostFn(__arg1_0),
+                    ) => ::core::cmp::Ord::cmp(__self_0, __arg1_0),
+                    (
+                        InvokerContractAuthEntry::CreateContractWithCtorHostFn(__self_0),
+                        InvokerContractAuthEntry::CreateContractWithCtorHostFn(__arg1_0),
+                    ) => ::core::cmp::Ord::cmp(__self_0, __arg1_0),
+                    _ => unsafe { ::core::intrinsics::unreachable() },
+                },
+                cmp => cmp,
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for InvokerContractAuthEntry {
+        #[inline]
+        fn partial_cmp(
+            &self,
+            other: &InvokerContractAuthEntry,
+        ) -> ::core::option::Option<::core::cmp::Ordering> {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            match (self, other) {
+                (
+                    InvokerContractAuthEntry::Contract(__self_0),
+                    InvokerContractAuthEntry::Contract(__arg1_0),
+                ) => ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0),
+                (
+                    InvokerContractAuthEntry::CreateContractHostFn(__self_0),
+                    InvokerContractAuthEntry::CreateContractHostFn(__arg1_0),
+                ) => ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0),
+                (
+                    InvokerContractAuthEntry::CreateContractWithCtorHostFn(__self_0),
+                    InvokerContractAuthEntry::CreateContractWithCtorHostFn(__arg1_0),
+                ) => ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0),
+                _ => ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr),
+            }
+        }
+    }
+    pub static __SPEC_XDR_TYPE_INVOKERCONTRACTAUTHENTRY: [u8; 268usize] =
+        InvokerContractAuthEntry::spec_xdr();
+    impl InvokerContractAuthEntry {
+        pub const fn spec_xdr() -> [u8; 268usize] {
+            *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x18InvokerContractAuthEntry\0\0\0\x03\0\0\0\x01\0\0\0\0\0\0\0\x08Contract\0\0\0\x01\0\0\x07\xd0\0\0\0\x15SubContractInvocation\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x14CreateContractHostFn\0\0\0\x01\0\0\x07\xd0\0\0\0\x1bCreateContractHostFnContext\0\0\0\0\x01\0\0\0\0\0\0\0\x1cCreateContractWithCtorHostFn\0\0\0\x01\0\0\x07\xd0\0\0\0*CreateContractWithConstructorHostFnContext\0\0"
+        }
+    }
+    impl soroban_sdk::SpecShakingMarker for InvokerContractAuthEntry {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {
+            <SubContractInvocation as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            <CreateContractHostFnContext as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for InvokerContractAuthEntry {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::Val,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
+            const CASES: &'static [&'static str] = &[
+                "Contract",
+                "CreateContractHostFn",
+                "CreateContractWithCtorHostFn",
+            ];
+            let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
+            let mut iter = vec.try_iter();
+            let discriminant: soroban_sdk::Symbol = iter
+                .next()
+                .ok_or(soroban_sdk::ConversionError)??
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?;
+            Ok(
+                match u32::from(env.symbol_index_in_strs(discriminant.to_symbol_val(), CASES)?)
+                    as usize
+                {
+                    0 => {
+                        if iter.len() > 1usize {
+                            return Err(soroban_sdk::ConversionError);
+                        }
+                        Self::Contract(
+                            iter.next()
+                                .ok_or(soroban_sdk::ConversionError)??
+                                .try_into_val(env)?,
+                        )
+                    }
+                    1 => {
+                        if iter.len() > 1usize {
+                            return Err(soroban_sdk::ConversionError);
+                        }
+                        Self::CreateContractHostFn(
+                            iter.next()
+                                .ok_or(soroban_sdk::ConversionError)??
+                                .try_into_val(env)?,
+                        )
+                    }
+                    2 => {
+                        if iter.len() > 1usize {
+                            return Err(soroban_sdk::ConversionError);
+                        }
+                        Self::CreateContractWithCtorHostFn(
+                            iter.next()
+                                .ok_or(soroban_sdk::ConversionError)??
+                                .try_into_val(env)?,
+                        )
+                    }
+                    _ => Err(soroban_sdk::ConversionError {})?,
+                },
+            )
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, InvokerContractAuthEntry> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &InvokerContractAuthEntry,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{TryFromVal, TryIntoVal};
+            match val {
+                InvokerContractAuthEntry::Contract(ref value0) => {
+                    let tup: (soroban_sdk::Val, soroban_sdk::Val) = (
+                        soroban_sdk::Symbol::try_from_val(env, &"Contract")?.to_val(),
+                        value0.try_into_val(env)?,
+                    );
+                    tup.try_into_val(env).map_err(Into::into)
+                }
+                InvokerContractAuthEntry::CreateContractHostFn(ref value0) => {
+                    let tup: (soroban_sdk::Val, soroban_sdk::Val) = (
+                        soroban_sdk::Symbol::try_from_val(env, &"CreateContractHostFn")?.to_val(),
+                        value0.try_into_val(env)?,
+                    );
+                    tup.try_into_val(env).map_err(Into::into)
+                }
+                InvokerContractAuthEntry::CreateContractWithCtorHostFn(ref value0) => {
+                    let tup: (soroban_sdk::Val, soroban_sdk::Val) = (
+                        soroban_sdk::Symbol::try_from_val(env, &"CreateContractWithCtorHostFn")?
+                            .to_val(),
+                        value0.try_into_val(env)?,
+                    );
+                    tup.try_into_val(env).map_err(Into::into)
+                }
+            }
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, &InvokerContractAuthEntry> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &&InvokerContractAuthEntry,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, InvokerContractAuthEntry>>::try_from_val(
+                env, *val,
+            )
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVec>
+        for InvokerContractAuthEntry
+    {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::xdr::ScVec,
+        ) -> Result<Self, soroban_sdk::xdr::Error> {
+            use soroban_sdk::xdr::Validate;
+            use soroban_sdk::TryIntoVal;
+            let vec = val;
+            let mut iter = vec.iter();
+            let discriminant: soroban_sdk::xdr::ScSymbol = iter
+                .next()
+                .ok_or(soroban_sdk::xdr::Error::Invalid)?
+                .clone()
+                .try_into()
+                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+            let discriminant_name: &str = &discriminant.to_utf8_string()?;
+            Ok(match discriminant_name {
+                "Contract" => {
+                    if iter.len() > 1usize {
+                        return Err(soroban_sdk::xdr::Error::Invalid);
+                    }
+                    let rv0: soroban_sdk::Val = iter
+                        .next()
+                        .ok_or(soroban_sdk::xdr::Error::Invalid)?
+                        .try_into_val(env)
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                    Self::Contract(
+                        rv0.try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                }
+                "CreateContractHostFn" => {
+                    if iter.len() > 1usize {
+                        return Err(soroban_sdk::xdr::Error::Invalid);
+                    }
+                    let rv0: soroban_sdk::Val = iter
+                        .next()
+                        .ok_or(soroban_sdk::xdr::Error::Invalid)?
+                        .try_into_val(env)
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                    Self::CreateContractHostFn(
+                        rv0.try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                }
+                "CreateContractWithCtorHostFn" => {
+                    if iter.len() > 1usize {
+                        return Err(soroban_sdk::xdr::Error::Invalid);
+                    }
+                    let rv0: soroban_sdk::Val = iter
+                        .next()
+                        .ok_or(soroban_sdk::xdr::Error::Invalid)?
+                        .try_into_val(env)
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                    Self::CreateContractWithCtorHostFn(
+                        rv0.try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                }
+                _ => Err(soroban_sdk::xdr::Error::Invalid)?,
+            })
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVal>
+        for InvokerContractAuthEntry
+    {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::xdr::ScVal,
+        ) -> Result<Self, soroban_sdk::xdr::Error> {
+            if let soroban_sdk::xdr::ScVal::Vec(Some(vec)) = val {
+                <_ as soroban_sdk::TryFromVal<_, _>>::try_from_val(env, vec)
+            } else {
+                Err(soroban_sdk::xdr::Error::Invalid)
+            }
+        }
+    }
+    impl TryFrom<&InvokerContractAuthEntry> for soroban_sdk::xdr::ScVec {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from(val: &InvokerContractAuthEntry) -> Result<Self, soroban_sdk::xdr::Error> {
+            extern crate alloc;
+            Ok(match val {
+                InvokerContractAuthEntry::Contract(value0) => (
+                    soroban_sdk::xdr::ScSymbol(
+                        "Contract"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    ),
+                    value0,
+                )
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                InvokerContractAuthEntry::CreateContractHostFn(value0) => (
+                    soroban_sdk::xdr::ScSymbol(
+                        "CreateContractHostFn"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    ),
+                    value0,
+                )
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                InvokerContractAuthEntry::CreateContractWithCtorHostFn(value0) => (
+                    soroban_sdk::xdr::ScSymbol(
+                        "CreateContractWithCtorHostFn"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    ),
+                    value0,
+                )
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            })
+        }
+    }
+    impl TryFrom<InvokerContractAuthEntry> for soroban_sdk::xdr::ScVec {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from(val: InvokerContractAuthEntry) -> Result<Self, soroban_sdk::xdr::Error> {
+            (&val).try_into()
+        }
+    }
+    impl TryFrom<&InvokerContractAuthEntry> for soroban_sdk::xdr::ScVal {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from(val: &InvokerContractAuthEntry) -> Result<Self, soroban_sdk::xdr::Error> {
+            Ok(soroban_sdk::xdr::ScVal::Vec(Some(val.try_into()?)))
+        }
+    }
+    impl TryFrom<InvokerContractAuthEntry> for soroban_sdk::xdr::ScVal {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from(val: InvokerContractAuthEntry) -> Result<Self, soroban_sdk::xdr::Error> {
+            (&val).try_into()
+        }
+    }
+    const _: () = {
+        use soroban_sdk::testutils::arbitrary::arbitrary;
+        use soroban_sdk::testutils::arbitrary::std;
+        pub enum ArbitraryInvokerContractAuthEntry {
+            Contract(
+                <SubContractInvocation as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+            ),
+            CreateContractHostFn(
+                <CreateContractHostFnContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+            ),
+            CreateContractWithCtorHostFn(
+                <CreateContractWithConstructorHostFnContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+            ),
+        }
+        #[automatically_derived]
+        impl ::core::fmt::Debug for ArbitraryInvokerContractAuthEntry {
+            #[inline]
+            fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                match self {
+                    ArbitraryInvokerContractAuthEntry::Contract(__self_0) => {
+                        ::core::fmt::Formatter::debug_tuple_field1_finish(f, "Contract", &__self_0)
+                    }
+                    ArbitraryInvokerContractAuthEntry::CreateContractHostFn(__self_0) => {
+                        ::core::fmt::Formatter::debug_tuple_field1_finish(
+                            f,
+                            "CreateContractHostFn",
+                            &__self_0,
+                        )
+                    }
+                    ArbitraryInvokerContractAuthEntry::CreateContractWithCtorHostFn(__self_0) => {
+                        ::core::fmt::Formatter::debug_tuple_field1_finish(
+                            f,
+                            "CreateContractWithCtorHostFn",
+                            &__self_0,
+                        )
+                    }
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::clone::Clone for ArbitraryInvokerContractAuthEntry {
+            #[inline]
+            fn clone(&self) -> ArbitraryInvokerContractAuthEntry {
+                match self {
+                    ArbitraryInvokerContractAuthEntry::Contract(__self_0) => {
+                        ArbitraryInvokerContractAuthEntry::Contract(::core::clone::Clone::clone(
+                            __self_0,
+                        ))
+                    }
+                    ArbitraryInvokerContractAuthEntry::CreateContractHostFn(__self_0) => {
+                        ArbitraryInvokerContractAuthEntry::CreateContractHostFn(
+                            ::core::clone::Clone::clone(__self_0),
+                        )
+                    }
+                    ArbitraryInvokerContractAuthEntry::CreateContractWithCtorHostFn(__self_0) => {
+                        ArbitraryInvokerContractAuthEntry::CreateContractWithCtorHostFn(
+                            ::core::clone::Clone::clone(__self_0),
+                        )
+                    }
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::Eq for ArbitraryInvokerContractAuthEntry {
+            #[inline]
+            #[doc(hidden)]
+            #[coverage(off)]
+            fn assert_receiver_is_total_eq(&self) -> () {
+                let _: ::core::cmp::AssertParamIsEq<
+                    <SubContractInvocation as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                >;
+                let _: ::core::cmp::AssertParamIsEq<
+                    <CreateContractHostFnContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                >;
+                let _: ::core::cmp::AssertParamIsEq<
+                    <CreateContractWithConstructorHostFnContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                >;
+            }
+        }
+        #[automatically_derived]
+        impl ::core::marker::StructuralPartialEq for ArbitraryInvokerContractAuthEntry {}
+        #[automatically_derived]
+        impl ::core::cmp::PartialEq for ArbitraryInvokerContractAuthEntry {
+            #[inline]
+            fn eq(&self, other: &ArbitraryInvokerContractAuthEntry) -> bool {
+                let __self_discr = ::core::intrinsics::discriminant_value(self);
+                let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+                __self_discr == __arg1_discr
+                    && match (self, other) {
+                        (
+                            ArbitraryInvokerContractAuthEntry::Contract(__self_0),
+                            ArbitraryInvokerContractAuthEntry::Contract(__arg1_0),
+                        ) => __self_0 == __arg1_0,
+                        (
+                            ArbitraryInvokerContractAuthEntry::CreateContractHostFn(__self_0),
+                            ArbitraryInvokerContractAuthEntry::CreateContractHostFn(__arg1_0),
+                        ) => __self_0 == __arg1_0,
+                        (
+                            ArbitraryInvokerContractAuthEntry::CreateContractWithCtorHostFn(
+                                __self_0,
+                            ),
+                            ArbitraryInvokerContractAuthEntry::CreateContractWithCtorHostFn(
+                                __arg1_0,
+                            ),
+                        ) => __self_0 == __arg1_0,
+                        _ => unsafe { ::core::intrinsics::unreachable() },
+                    }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::Ord for ArbitraryInvokerContractAuthEntry {
+            #[inline]
+            fn cmp(&self, other: &ArbitraryInvokerContractAuthEntry) -> ::core::cmp::Ordering {
+                let __self_discr = ::core::intrinsics::discriminant_value(self);
+                let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+                match ::core::cmp::Ord::cmp(&__self_discr, &__arg1_discr) {
+                    ::core::cmp::Ordering::Equal => match (self, other) {
+                        (
+                            ArbitraryInvokerContractAuthEntry::Contract(__self_0),
+                            ArbitraryInvokerContractAuthEntry::Contract(__arg1_0),
+                        ) => ::core::cmp::Ord::cmp(__self_0, __arg1_0),
+                        (
+                            ArbitraryInvokerContractAuthEntry::CreateContractHostFn(__self_0),
+                            ArbitraryInvokerContractAuthEntry::CreateContractHostFn(__arg1_0),
+                        ) => ::core::cmp::Ord::cmp(__self_0, __arg1_0),
+                        (
+                            ArbitraryInvokerContractAuthEntry::CreateContractWithCtorHostFn(
+                                __self_0,
+                            ),
+                            ArbitraryInvokerContractAuthEntry::CreateContractWithCtorHostFn(
+                                __arg1_0,
+                            ),
+                        ) => ::core::cmp::Ord::cmp(__self_0, __arg1_0),
+                        _ => unsafe { ::core::intrinsics::unreachable() },
+                    },
+                    cmp => cmp,
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::PartialOrd for ArbitraryInvokerContractAuthEntry {
+            #[inline]
+            fn partial_cmp(
+                &self,
+                other: &ArbitraryInvokerContractAuthEntry,
+            ) -> ::core::option::Option<::core::cmp::Ordering> {
+                let __self_discr = ::core::intrinsics::discriminant_value(self);
+                let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+                match (self, other) {
+                    (
+                        ArbitraryInvokerContractAuthEntry::Contract(__self_0),
+                        ArbitraryInvokerContractAuthEntry::Contract(__arg1_0),
+                    ) => ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0),
+                    (
+                        ArbitraryInvokerContractAuthEntry::CreateContractHostFn(__self_0),
+                        ArbitraryInvokerContractAuthEntry::CreateContractHostFn(__arg1_0),
+                    ) => ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0),
+                    (
+                        ArbitraryInvokerContractAuthEntry::CreateContractWithCtorHostFn(__self_0),
+                        ArbitraryInvokerContractAuthEntry::CreateContractWithCtorHostFn(__arg1_0),
+                    ) => ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0),
+                    _ => ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr),
+                }
+            }
+        }
+        const _: () = {
+            #[allow(non_upper_case_globals)]
+            const RECURSIVE_COUNT_ArbitraryInvokerContractAuthEntry: ::std::thread::LocalKey<
+                std::cell::Cell<u32>,
+            > = {
+                #[inline]
+                fn __init() -> std::cell::Cell<u32> {
+                    std::cell::Cell::new(0)
+                }
+                unsafe {
+                    ::std::thread::LocalKey::new(
+                        const {
+                            if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
+                                |init| {
+                                    #[thread_local]
+                                    static VAL: ::std::thread::local_impl::LazyStorage<
+                                        std::cell::Cell<u32>,
+                                        (),
+                                    > = ::std::thread::local_impl::LazyStorage::new();
+                                    VAL.get_or_init(init, __init)
+                                }
+                            } else {
+                                |init| {
+                                    #[thread_local]
+                                    static VAL: ::std::thread::local_impl::LazyStorage<
+                                        std::cell::Cell<u32>,
+                                        !,
+                                    > = ::std::thread::local_impl::LazyStorage::new();
+                                    VAL.get_or_init(init, __init)
+                                }
+                            }
+                        },
+                    )
+                }
+            };
+            #[automatically_derived]
+            impl<'arbitrary> arbitrary::Arbitrary<'arbitrary> for ArbitraryInvokerContractAuthEntry {
+                fn arbitrary(
+                    u: &mut arbitrary::Unstructured<'arbitrary>,
+                ) -> arbitrary::Result<Self> {
+                    let guard_against_recursion = u.is_empty();
+                    if guard_against_recursion {
+                        RECURSIVE_COUNT_ArbitraryInvokerContractAuthEntry.with(|count| {
+                            if count.get() > 0 {
+                                return Err(arbitrary::Error::NotEnoughData);
+                            }
+                            count.set(count.get() + 1);
+                            Ok(())
+                        })?;
+                    }
+                    let result = (|| {
+                        Ok(
+                            match (u64::from(<u32 as arbitrary::Arbitrary>::arbitrary(u)?) * 3u64)
+                                >> 32
+                            {
+                                0u64 => ArbitraryInvokerContractAuthEntry::Contract(
+                                    arbitrary::Arbitrary::arbitrary(u)?,
+                                ),
+                                1u64 => ArbitraryInvokerContractAuthEntry::CreateContractHostFn(
+                                    arbitrary::Arbitrary::arbitrary(u)?,
+                                ),
+                                2u64 => {
+                                    ArbitraryInvokerContractAuthEntry::CreateContractWithCtorHostFn(
+                                        arbitrary::Arbitrary::arbitrary(u)?,
+                                    )
+                                }
+                                _ => ::core::panicking::panic(
+                                    "internal error: entered unreachable code",
+                                ),
+                            },
+                        )
+                    })();
+                    if guard_against_recursion {
+                        RECURSIVE_COUNT_ArbitraryInvokerContractAuthEntry.with(|count| {
+                            count.set(count.get() - 1);
+                        });
+                    }
+                    result
+                }
+                fn arbitrary_take_rest(
+                    mut u: arbitrary::Unstructured<'arbitrary>,
+                ) -> arbitrary::Result<Self> {
+                    let guard_against_recursion = u.is_empty();
+                    if guard_against_recursion {
+                        RECURSIVE_COUNT_ArbitraryInvokerContractAuthEntry.with(|count| {
+                            if count.get() > 0 {
+                                return Err(arbitrary::Error::NotEnoughData);
+                            }
+                            count.set(count.get() + 1);
+                            Ok(())
+                        })?;
+                    }
+                    let result = (|| {
+                        Ok(
+                            match (u64::from(<u32 as arbitrary::Arbitrary>::arbitrary(&mut u)?)
+                                * 3u64)
+                                >> 32
+                            {
+                                0u64 => ArbitraryInvokerContractAuthEntry::Contract(
+                                    arbitrary::Arbitrary::arbitrary_take_rest(u)?,
+                                ),
+                                1u64 => ArbitraryInvokerContractAuthEntry::CreateContractHostFn(
+                                    arbitrary::Arbitrary::arbitrary_take_rest(u)?,
+                                ),
+                                2u64 => {
+                                    ArbitraryInvokerContractAuthEntry::CreateContractWithCtorHostFn(
+                                        arbitrary::Arbitrary::arbitrary_take_rest(u)?,
+                                    )
+                                }
+                                _ => ::core::panicking::panic(
+                                    "internal error: entered unreachable code",
+                                ),
+                            },
+                        )
+                    })();
+                    if guard_against_recursion {
+                        RECURSIVE_COUNT_ArbitraryInvokerContractAuthEntry.with(|count| {
+                            count.set(count.get() - 1);
+                        });
+                    }
+                    result
+                }
+                #[inline]
+                fn size_hint(depth: usize) -> (usize, Option<usize>) {
+                    arbitrary::size_hint::and(
+                        <u32 as arbitrary::Arbitrary>::size_hint(depth),
+                        arbitrary::size_hint::recursion_guard(depth, |depth| {
+                            arbitrary::size_hint::or_all(
+                                    &[
+                                        arbitrary::size_hint::and_all(
+                                            &[
+                                                <<SubContractInvocation as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                                    depth,
+                                                ),
+                                            ],
+                                        ),
+                                        arbitrary::size_hint::and_all(
+                                            &[
+                                                <<CreateContractHostFnContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                                    depth,
+                                                ),
+                                            ],
+                                        ),
+                                        arbitrary::size_hint::and_all(
+                                            &[
+                                                <<CreateContractWithConstructorHostFnContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                                    depth,
+                                                ),
+                                            ],
+                                        ),
+                                    ],
+                                )
+                        }),
+                    )
+                }
+            }
+        };
+        impl soroban_sdk::testutils::arbitrary::SorobanArbitrary for InvokerContractAuthEntry {
+            type Prototype = ArbitraryInvokerContractAuthEntry;
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, ArbitraryInvokerContractAuthEntry>
+            for InvokerContractAuthEntry
+        {
+            type Error = soroban_sdk::ConversionError;
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                v: &ArbitraryInvokerContractAuthEntry,
+            ) -> std::result::Result<Self, Self::Error> {
+                Ok(match v {
+                    ArbitraryInvokerContractAuthEntry::Contract(field_0) => {
+                        InvokerContractAuthEntry::Contract(soroban_sdk::IntoVal::into_val(
+                            field_0, env,
+                        ))
+                    }
+                    ArbitraryInvokerContractAuthEntry::CreateContractHostFn(field_0) => {
+                        InvokerContractAuthEntry::CreateContractHostFn(
+                            soroban_sdk::IntoVal::into_val(field_0, env),
+                        )
+                    }
+                    ArbitraryInvokerContractAuthEntry::CreateContractWithCtorHostFn(field_0) => {
+                        InvokerContractAuthEntry::CreateContractWithCtorHostFn(
+                            soroban_sdk::IntoVal::into_val(field_0, env),
+                        )
+                    }
+                })
+            }
+        }
+    };
+    pub enum Executable {
+        Wasm(soroban_sdk::BytesN<32>),
+        StellarAsset,
+        Account,
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for Executable {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            match self {
+                Executable::Wasm(__self_0) => {
+                    ::core::fmt::Formatter::debug_tuple_field1_finish(f, "Wasm", &__self_0)
+                }
+                Executable::StellarAsset => ::core::fmt::Formatter::write_str(f, "StellarAsset"),
+                Executable::Account => ::core::fmt::Formatter::write_str(f, "Account"),
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for Executable {
+        #[inline]
+        fn clone(&self) -> Executable {
+            match self {
+                Executable::Wasm(__self_0) => {
+                    Executable::Wasm(::core::clone::Clone::clone(__self_0))
+                }
+                Executable::StellarAsset => Executable::StellarAsset,
+                Executable::Account => Executable::Account,
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for Executable {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {
+            let _: ::core::cmp::AssertParamIsEq<soroban_sdk::BytesN<32>>;
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for Executable {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for Executable {
+        #[inline]
+        fn eq(&self, other: &Executable) -> bool {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            __self_discr == __arg1_discr
+                && match (self, other) {
+                    (Executable::Wasm(__self_0), Executable::Wasm(__arg1_0)) => {
+                        __self_0 == __arg1_0
+                    }
+                    _ => true,
+                }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for Executable {
+        #[inline]
+        fn cmp(&self, other: &Executable) -> ::core::cmp::Ordering {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            match ::core::cmp::Ord::cmp(&__self_discr, &__arg1_discr) {
+                ::core::cmp::Ordering::Equal => match (self, other) {
+                    (Executable::Wasm(__self_0), Executable::Wasm(__arg1_0)) => {
+                        ::core::cmp::Ord::cmp(__self_0, __arg1_0)
+                    }
+                    _ => ::core::cmp::Ordering::Equal,
+                },
+                cmp => cmp,
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for Executable {
+        #[inline]
+        fn partial_cmp(&self, other: &Executable) -> ::core::option::Option<::core::cmp::Ordering> {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            match (self, other) {
+                (Executable::Wasm(__self_0), Executable::Wasm(__arg1_0)) => {
+                    ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0)
+                }
+                _ => ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr),
+            }
+        }
+    }
+    pub static __SPEC_XDR_TYPE_EXECUTABLE: [u8; 104usize] = Executable::spec_xdr();
+    impl Executable {
+        pub const fn spec_xdr() -> [u8; 104usize] {
+            *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\nExecutable\0\0\0\0\0\x03\0\0\0\x01\0\0\0\0\0\0\0\x04Wasm\0\0\0\x01\0\0\x03\xee\0\0\0 \0\0\0\0\0\0\0\0\0\0\0\x0cStellarAsset\0\0\0\0\0\0\0\0\0\0\0\x07Account\0"
+        }
+    }
+    impl soroban_sdk::SpecShakingMarker for Executable {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {
+            <soroban_sdk::BytesN<32> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Executable {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::Val,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
+            const CASES: &'static [&'static str] = &["Wasm", "StellarAsset", "Account"];
+            let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
+            let mut iter = vec.try_iter();
+            let discriminant: soroban_sdk::Symbol = iter
+                .next()
+                .ok_or(soroban_sdk::ConversionError)??
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?;
+            Ok(
+                match u32::from(env.symbol_index_in_strs(discriminant.to_symbol_val(), CASES)?)
+                    as usize
+                {
+                    0 => {
+                        if iter.len() > 1usize {
+                            return Err(soroban_sdk::ConversionError);
+                        }
+                        Self::Wasm(
+                            iter.next()
+                                .ok_or(soroban_sdk::ConversionError)??
+                                .try_into_val(env)?,
+                        )
+                    }
+                    1 => {
+                        if iter.len() > 0 {
+                            return Err(soroban_sdk::ConversionError);
+                        }
+                        Self::StellarAsset
+                    }
+                    2 => {
+                        if iter.len() > 0 {
+                            return Err(soroban_sdk::ConversionError);
+                        }
+                        Self::Account
+                    }
+                    _ => Err(soroban_sdk::ConversionError {})?,
+                },
+            )
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, Executable> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &Executable,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{TryFromVal, TryIntoVal};
+            match val {
+                Executable::Wasm(ref value0) => {
+                    let tup: (soroban_sdk::Val, soroban_sdk::Val) = (
+                        soroban_sdk::Symbol::try_from_val(env, &"Wasm")?.to_val(),
+                        value0.try_into_val(env)?,
+                    );
+                    tup.try_into_val(env).map_err(Into::into)
+                }
+                Executable::StellarAsset => {
+                    let tup: (soroban_sdk::Val,) =
+                        (soroban_sdk::Symbol::try_from_val(env, &"StellarAsset")?.to_val(),);
+                    tup.try_into_val(env).map_err(Into::into)
+                }
+                Executable::Account => {
+                    let tup: (soroban_sdk::Val,) =
+                        (soroban_sdk::Symbol::try_from_val(env, &"Account")?.to_val(),);
+                    tup.try_into_val(env).map_err(Into::into)
+                }
+            }
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, &Executable> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &&Executable,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, Executable>>::try_from_val(env, *val)
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVec> for Executable {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::xdr::ScVec,
+        ) -> Result<Self, soroban_sdk::xdr::Error> {
+            use soroban_sdk::xdr::Validate;
+            use soroban_sdk::TryIntoVal;
+            let vec = val;
+            let mut iter = vec.iter();
+            let discriminant: soroban_sdk::xdr::ScSymbol = iter
+                .next()
+                .ok_or(soroban_sdk::xdr::Error::Invalid)?
+                .clone()
+                .try_into()
+                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+            let discriminant_name: &str = &discriminant.to_utf8_string()?;
+            Ok(match discriminant_name {
+                "Wasm" => {
+                    if iter.len() > 1usize {
+                        return Err(soroban_sdk::xdr::Error::Invalid);
+                    }
+                    let rv0: soroban_sdk::Val = iter
+                        .next()
+                        .ok_or(soroban_sdk::xdr::Error::Invalid)?
+                        .try_into_val(env)
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
+                    Self::Wasm(
+                        rv0.try_into_val(env)
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                }
+                "StellarAsset" => {
+                    if iter.len() > 0 {
+                        return Err(soroban_sdk::xdr::Error::Invalid);
+                    }
+                    Self::StellarAsset
+                }
+                "Account" => {
+                    if iter.len() > 0 {
+                        return Err(soroban_sdk::xdr::Error::Invalid);
+                    }
+                    Self::Account
+                }
+                _ => Err(soroban_sdk::xdr::Error::Invalid)?,
+            })
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScVal> for Executable {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::xdr::ScVal,
+        ) -> Result<Self, soroban_sdk::xdr::Error> {
+            if let soroban_sdk::xdr::ScVal::Vec(Some(vec)) = val {
+                <_ as soroban_sdk::TryFromVal<_, _>>::try_from_val(env, vec)
+            } else {
+                Err(soroban_sdk::xdr::Error::Invalid)
+            }
+        }
+    }
+    impl TryFrom<&Executable> for soroban_sdk::xdr::ScVec {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from(val: &Executable) -> Result<Self, soroban_sdk::xdr::Error> {
+            extern crate alloc;
+            Ok(match val {
+                Executable::Wasm(value0) => (
+                    soroban_sdk::xdr::ScSymbol(
+                        "Wasm"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    ),
+                    value0,
+                )
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                Executable::StellarAsset => {
+                    let symbol = soroban_sdk::xdr::ScSymbol(
+                        "StellarAsset"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    );
+                    let val = soroban_sdk::xdr::ScVal::Symbol(symbol);
+                    (val,)
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?
+                }
+                Executable::Account => {
+                    let symbol = soroban_sdk::xdr::ScSymbol(
+                        "Account"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    );
+                    let val = soroban_sdk::xdr::ScVal::Symbol(symbol);
+                    (val,)
+                        .try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?
+                }
+            })
+        }
+    }
+    impl TryFrom<Executable> for soroban_sdk::xdr::ScVec {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from(val: Executable) -> Result<Self, soroban_sdk::xdr::Error> {
+            (&val).try_into()
+        }
+    }
+    impl TryFrom<&Executable> for soroban_sdk::xdr::ScVal {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from(val: &Executable) -> Result<Self, soroban_sdk::xdr::Error> {
+            Ok(soroban_sdk::xdr::ScVal::Vec(Some(val.try_into()?)))
+        }
+    }
+    impl TryFrom<Executable> for soroban_sdk::xdr::ScVal {
+        type Error = soroban_sdk::xdr::Error;
+        #[inline(always)]
+        fn try_from(val: Executable) -> Result<Self, soroban_sdk::xdr::Error> {
+            (&val).try_into()
+        }
+    }
+    const _: () = {
+        use soroban_sdk::testutils::arbitrary::arbitrary;
+        use soroban_sdk::testutils::arbitrary::std;
+        pub enum ArbitraryExecutable {
+            Wasm(
+                <soroban_sdk::BytesN<
+                    32,
+                > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+            ),
+            StellarAsset,
+            Account,
+        }
+        #[automatically_derived]
+        impl ::core::fmt::Debug for ArbitraryExecutable {
+            #[inline]
+            fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+                match self {
+                    ArbitraryExecutable::Wasm(__self_0) => {
+                        ::core::fmt::Formatter::debug_tuple_field1_finish(f, "Wasm", &__self_0)
+                    }
+                    ArbitraryExecutable::StellarAsset => {
+                        ::core::fmt::Formatter::write_str(f, "StellarAsset")
+                    }
+                    ArbitraryExecutable::Account => ::core::fmt::Formatter::write_str(f, "Account"),
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::clone::Clone for ArbitraryExecutable {
+            #[inline]
+            fn clone(&self) -> ArbitraryExecutable {
+                match self {
+                    ArbitraryExecutable::Wasm(__self_0) => {
+                        ArbitraryExecutable::Wasm(::core::clone::Clone::clone(__self_0))
+                    }
+                    ArbitraryExecutable::StellarAsset => ArbitraryExecutable::StellarAsset,
+                    ArbitraryExecutable::Account => ArbitraryExecutable::Account,
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::Eq for ArbitraryExecutable {
+            #[inline]
+            #[doc(hidden)]
+            #[coverage(off)]
+            fn assert_receiver_is_total_eq(&self) -> () {
+                let _: ::core::cmp::AssertParamIsEq<
+                    <soroban_sdk::BytesN<
+                        32,
+                    > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
+                >;
+            }
+        }
+        #[automatically_derived]
+        impl ::core::marker::StructuralPartialEq for ArbitraryExecutable {}
+        #[automatically_derived]
+        impl ::core::cmp::PartialEq for ArbitraryExecutable {
+            #[inline]
+            fn eq(&self, other: &ArbitraryExecutable) -> bool {
+                let __self_discr = ::core::intrinsics::discriminant_value(self);
+                let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+                __self_discr == __arg1_discr
+                    && match (self, other) {
+                        (
+                            ArbitraryExecutable::Wasm(__self_0),
+                            ArbitraryExecutable::Wasm(__arg1_0),
+                        ) => __self_0 == __arg1_0,
+                        _ => true,
+                    }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::Ord for ArbitraryExecutable {
+            #[inline]
+            fn cmp(&self, other: &ArbitraryExecutable) -> ::core::cmp::Ordering {
+                let __self_discr = ::core::intrinsics::discriminant_value(self);
+                let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+                match ::core::cmp::Ord::cmp(&__self_discr, &__arg1_discr) {
+                    ::core::cmp::Ordering::Equal => match (self, other) {
+                        (
+                            ArbitraryExecutable::Wasm(__self_0),
+                            ArbitraryExecutable::Wasm(__arg1_0),
+                        ) => ::core::cmp::Ord::cmp(__self_0, __arg1_0),
+                        _ => ::core::cmp::Ordering::Equal,
+                    },
+                    cmp => cmp,
+                }
+            }
+        }
+        #[automatically_derived]
+        impl ::core::cmp::PartialOrd for ArbitraryExecutable {
+            #[inline]
+            fn partial_cmp(
+                &self,
+                other: &ArbitraryExecutable,
+            ) -> ::core::option::Option<::core::cmp::Ordering> {
+                let __self_discr = ::core::intrinsics::discriminant_value(self);
+                let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+                match (self, other) {
+                    (ArbitraryExecutable::Wasm(__self_0), ArbitraryExecutable::Wasm(__arg1_0)) => {
+                        ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0)
+                    }
+                    _ => ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr),
+                }
+            }
+        }
+        const _: () = {
+            #[allow(non_upper_case_globals)]
+            const RECURSIVE_COUNT_ArbitraryExecutable: ::std::thread::LocalKey<
+                std::cell::Cell<u32>,
+            > = {
+                #[inline]
+                fn __init() -> std::cell::Cell<u32> {
+                    std::cell::Cell::new(0)
+                }
+                unsafe {
+                    ::std::thread::LocalKey::new(
+                        const {
+                            if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
+                                |init| {
+                                    #[thread_local]
+                                    static VAL: ::std::thread::local_impl::LazyStorage<
+                                        std::cell::Cell<u32>,
+                                        (),
+                                    > = ::std::thread::local_impl::LazyStorage::new();
+                                    VAL.get_or_init(init, __init)
+                                }
+                            } else {
+                                |init| {
+                                    #[thread_local]
+                                    static VAL: ::std::thread::local_impl::LazyStorage<
+                                        std::cell::Cell<u32>,
+                                        !,
+                                    > = ::std::thread::local_impl::LazyStorage::new();
+                                    VAL.get_or_init(init, __init)
+                                }
+                            }
+                        },
+                    )
+                }
+            };
+            #[automatically_derived]
+            impl<'arbitrary> arbitrary::Arbitrary<'arbitrary> for ArbitraryExecutable {
+                fn arbitrary(
+                    u: &mut arbitrary::Unstructured<'arbitrary>,
+                ) -> arbitrary::Result<Self> {
+                    let guard_against_recursion = u.is_empty();
+                    if guard_against_recursion {
+                        RECURSIVE_COUNT_ArbitraryExecutable.with(|count| {
+                            if count.get() > 0 {
+                                return Err(arbitrary::Error::NotEnoughData);
+                            }
+                            count.set(count.get() + 1);
+                            Ok(())
+                        })?;
+                    }
+                    let result = (|| {
+                        Ok(
+                            match (u64::from(<u32 as arbitrary::Arbitrary>::arbitrary(u)?) * 3u64)
+                                >> 32
+                            {
+                                0u64 => {
+                                    ArbitraryExecutable::Wasm(arbitrary::Arbitrary::arbitrary(u)?)
+                                }
+                                1u64 => ArbitraryExecutable::StellarAsset,
+                                2u64 => ArbitraryExecutable::Account,
+                                _ => ::core::panicking::panic(
+                                    "internal error: entered unreachable code",
+                                ),
+                            },
+                        )
+                    })();
+                    if guard_against_recursion {
+                        RECURSIVE_COUNT_ArbitraryExecutable.with(|count| {
+                            count.set(count.get() - 1);
+                        });
+                    }
+                    result
+                }
+                fn arbitrary_take_rest(
+                    mut u: arbitrary::Unstructured<'arbitrary>,
+                ) -> arbitrary::Result<Self> {
+                    let guard_against_recursion = u.is_empty();
+                    if guard_against_recursion {
+                        RECURSIVE_COUNT_ArbitraryExecutable.with(|count| {
+                            if count.get() > 0 {
+                                return Err(arbitrary::Error::NotEnoughData);
+                            }
+                            count.set(count.get() + 1);
+                            Ok(())
+                        })?;
+                    }
+                    let result = (|| {
+                        Ok(
+                            match (u64::from(<u32 as arbitrary::Arbitrary>::arbitrary(&mut u)?)
+                                * 3u64)
+                                >> 32
+                            {
+                                0u64 => ArbitraryExecutable::Wasm(
+                                    arbitrary::Arbitrary::arbitrary_take_rest(u)?,
+                                ),
+                                1u64 => ArbitraryExecutable::StellarAsset,
+                                2u64 => ArbitraryExecutable::Account,
+                                _ => ::core::panicking::panic(
+                                    "internal error: entered unreachable code",
+                                ),
+                            },
+                        )
+                    })();
+                    if guard_against_recursion {
+                        RECURSIVE_COUNT_ArbitraryExecutable.with(|count| {
+                            count.set(count.get() - 1);
+                        });
+                    }
+                    result
+                }
+                #[inline]
+                fn size_hint(depth: usize) -> (usize, Option<usize>) {
+                    arbitrary::size_hint::and(
+                        <u32 as arbitrary::Arbitrary>::size_hint(depth),
+                        arbitrary::size_hint::recursion_guard(depth, |depth| {
+                            arbitrary::size_hint::or_all(
+                                    &[
+                                        arbitrary::size_hint::and_all(
+                                            &[
+                                                <<soroban_sdk::BytesN<
+                                                    32,
+                                                > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as arbitrary::Arbitrary>::size_hint(
+                                                    depth,
+                                                ),
+                                            ],
+                                        ),
+                                        arbitrary::size_hint::and_all(&[]),
+                                        arbitrary::size_hint::and_all(&[]),
+                                    ],
+                                )
+                        }),
+                    )
+                }
+            }
+        };
+        impl soroban_sdk::testutils::arbitrary::SorobanArbitrary for Executable {
+            type Prototype = ArbitraryExecutable;
+        }
+        impl soroban_sdk::TryFromVal<soroban_sdk::Env, ArbitraryExecutable> for Executable {
+            type Error = soroban_sdk::ConversionError;
+            fn try_from_val(
+                env: &soroban_sdk::Env,
+                v: &ArbitraryExecutable,
+            ) -> std::result::Result<Self, Self::Error> {
+                Ok(match v {
+                    ArbitraryExecutable::Wasm(field_0) => {
+                        Executable::Wasm(soroban_sdk::IntoVal::into_val(field_0, env))
+                    }
+                    ArbitraryExecutable::StellarAsset => Executable::StellarAsset,
+                    ArbitraryExecutable::Account => Executable::Account,
+                })
             }
         }
     };
@@ -26616,7 +31238,7 @@ mod test {
     use soroban_sdk::xdr::ScSpecEntry;
     use std::collections::HashSet;
     use std::vec::Vec;
-    const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01^\x10`\x02~~\x01~`\x01~\x01~`\x03~~~\x01~`\x04~~~~\x01~`\x00\x00`\x00\x01~`\x02\x7f\x7f\x01~`\x04\x7f\x7f\x7f\x7f\x01~`\x01~\x00`\x02\x7f\x7f\x00`\x03~\x7f\x7f\x01~`\x02\x7f\x7f\x01\x7f`\x02\x7f~\x00`\x05~\x7f\x7f\x7f\x7f\x00`\x03\x7f\x7f\x7f\x00`\x01\x7f\x01~\x02I\x0c\x01x\x011\x00\x00\x01v\x013\x00\x01\x01i\x012\x00\x01\x01v\x01h\x00\x02\x01v\x01g\x00\x00\x01m\x01a\x00\x03\x01b\x01m\x00\x02\x01b\x01j\x00\x00\x01v\x011\x00\x00\x01b\x018\x00\x01\x01x\x015\x00\x01\x01m\x019\x00\x02\x0398\x04\x04\x04\x04\x04\x04\x04\x04\x04\x04\x04\x05\x06\x00\x07\x05\x00\x05\x05\x05\x05\x05\x01\x08\x01\x05\x01\t\n\x0b\x0c\x05\x01\r\x01\x0c\x01\x01\x01\x05\x01\x01\x01\x00\x01\x05\x05\x0e\x0f\x01\x05\x01\x01\x01\x04\x04\x04\x05\x01p\x01\x0c\x0c\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x96\x89\xc0\x00\x0b\x7f\x00A\xe4\x8a\xc0\x00\x0b\x7f\x00A\xf0\x8a\xc0\x00\x0b\x07\xd8\x04\"\x06memory\x02\x00\x11publish_data_type\x00\x17\x1apublish_export_false_event\x00\x1b\x13publish_nested_data\x00\x1d\x14publish_nested_topic\x00\x1e\x11publish_ref_event\x00\x1f\x0epublish_simple\x00 \x12publish_topic_type\x00!\x11with_assert_error\x00\"\x12with_auth_contexts\x00$\nwith_error\x00%\x0fwith_executable\x00&\x17with_export_false_error\x00+\x18with_export_false_struct\x00,\x11with_invoker_auth\x00.\x0fwith_lib_struct\x000\x08with_map\x001\x0cwith_non_pub\x002\x12with_non_pub_error\x003\x0bwith_option\x004\x10with_panic_error\x005\x14with_panic_raw_error\x006\nwith_param\x007\x0ewith_recursion\x008\x0bwith_result\x009\x0bwith_return\x00:\nwith_tuple\x00=\x11with_tuple_return\x00>\x08with_vec\x00?\x0fwith_vec_nested\x00@\x12with_wasm_imported\x00A\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\t\x11\x01\x00A\x01\x0b\x0b\x0f\x11\x13\x12\x0e\r\x14\x15\x16\x0c\x10\n\xc128\x0c\x00A\x00-\x00\x9c\x80\xc0\x80\x00\x1a\x0b\x16\x00A\x00-\x00\xfe\x80\xc0\x80\x00\x1aA\x00-\x00\xd4\x80\xc0\x80\x00\x1a\x0b\x0c\x00A\x00-\x00\x8c\x81\xc0\x80\x00\x1a\x0bJ\x01\x01\x7f#\x80\x80\x80\x80\x00!\x00A\x00-\x00\x94\x84\xc0\x80\x00\x1a \x00A\x10k\"\x00A\x81\x80\x80\x80\x006\x02\x0c \x00(\x02\x0c\x1aA\x00-\x00\xd2\x81\xc0\x80\x00\x1aA\x00-\x00\xe0\x81\xc0\x80\x00\x1aA\x00-\x00\xee\x81\xc0\x80\x00\x1a\x0b6\x01\x01\x7f#\x80\x80\x80\x80\x00!\x00A\x00-\x00\xec\x82\xc0\x80\x00\x1a \x00A\x10k\"\x00A\x82\x80\x80\x80\x006\x02\x0c \x00(\x02\x0c\x1aA\x00-\x00\xfa\x82\xc0\x80\x00\x1a\x0b\x0c\x00A\x00-\x00\xb2\x83\xc0\x80\x00\x1a\x0b\x86\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00A\x83\x80\x80\x80\x006\x02\x0c \x00(\x02\x0c\x1aA\x00-\x00\x88\x89\xc0\x80\x00\x1a \x00A\x84\x80\x80\x80\x006\x02\x04 \x00(\x02\x04\x1aA\x00-\x00\xb4\x88\xc0\x80\x00\x1aA\x00-\x00\xa6\x88\xc0\x80\x00\x1aA\x00-\x00\xd0\x88\xc0\x80\x00\x1a \x00A\x83\x80\x80\x80\x006\x02\x08 \x00(\x02\x08\x1aA\x00-\x00\xa6\x88\xc0\x80\x00\x1aA\x00-\x00\xde\x88\xc0\x80\x00\x1aA\x00-\x00\xc2\x88\xc0\x80\x00\x1a\x0b\x02\x00\x0bk\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00A\x83\x80\x80\x80\x006\x02\x0c \x00(\x02\x0c\x1aA\x00-\x00\x88\x89\xc0\x80\x00\x1aA\x00-\x00\xa6\x88\xc0\x80\x00\x1aA\x00-\x00\xd0\x88\xc0\x80\x00\x1a \x00A\x83\x80\x80\x80\x006\x02\x08 \x00(\x02\x08\x1aA\x00-\x00\xa6\x88\xc0\x80\x00\x1aA\x00-\x00\xde\x88\xc0\x80\x00\x1aA\x00-\x00\xec\x88\xc0\x80\x00\x1a\x0b\x0c\x00A\x00-\x00\xa2\x84\xc0\x80\x00\x1a\x0b\x0c\x00A\x00-\x00\xb0\x84\xc0\x80\x00\x1a\x0b\xae\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A k\"\x00$\x80\x80\x80\x80\x00A\x80\x87\xc0\x80\x00A\x06\x10\x98\x80\x80\x80\x00!\x01A\x00-\x00\xa8\x81\xc0\x80\x00\x1aA\x00-\x00\x88\x83\xc0\x80\x00\x1aA\xbc\x87\xc0\x80\x00A\x19\x10\x98\x80\x80\x80\x00 \x01\x10\x99\x80\x80\x80\x00!\x01 \x00B\x84\x80\x80\x80 7\x03\x18 \x00B\x84\x80\x80\x80\x107\x03\x10 \x00A\xd8\x86\xc0\x80\x00A\x02 \x00A\x10jA\x02\x10\x9a\x80\x80\x80\x007\x03\x08 \x01A\xa0\x87\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9a\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A j$\x80\x80\x80\x80\x00B\x02\x0bE\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00 \x02 \x00 \x01\x10\xbb\x80\x80\x80\x00\x02@ \x02(\x02\x00A\x01G\r\x00\x00\x0b \x02)\x03\x08!\x03 \x02A\x10j$\x80\x80\x80\x80\x00 \x03\x0b\x92\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00 \x02 \x017\x03\x08 \x02 \x007\x03\x00A\x00!\x03\x03~\x02@ \x03A\x10G\r\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02A\x10j \x03j \x02 \x03j)\x03\x007\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x02A\x10j\x10\xbc\x80\x80\x80\x00!\x01 \x02A j$\x80\x80\x80\x80\x00 \x01\x0f\x0b \x02A\x10j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b.\x00\x02@ \x01 \x03F\r\x00\x00\x0b \x00\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x8b\x80\x80\x80\x00\x0b\x83\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\x86\x87\xc0\x80\x00A\x02\x10\x98\x80\x80\x80\x00!\x01A\x00-\x00\xf8\x83\xc0\x80\x00\x1aA\xdc\x84\xc0\x80\x00A\x17\x10\x98\x80\x80\x80\x00 \x01\x10\x99\x80\x80\x80\x00!\x01 \x00B\x01B\x00\x10\x9c\x80\x80\x80\x007\x03\x08 \x01A\xd4\x84\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9a\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\n\x00 \x00B\x08\x86B\x0b\x84\x0b\xc5\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\xad\x85\xc0\x80\x00A\x06\x10\x98\x80\x80\x80\x00!\x01A\x00-\x00\xfc\x81\xc0\x80\x00\x1aA\x00-\x00\x8a\x82\xc0\x80\x00\x1aA\x00-\x00\xce\x83\xc0\x80\x00\x1aA\xef\x87\xc0\x80\x00A\x1b\x10\x98\x80\x80\x80\x00 \x01\x10\x99\x80\x80\x80\x00!\x01 \x00B\x84\x80\x80\x80\xa0\x057\x03\x08 \x00A\xf8\x84\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9a\x80\x80\x80\x007\x03\x00 \x00A\xf0\x86\xc0\x80\x00A\x01 \x00A\x01\x10\x9a\x80\x80\x80\x007\x03\x08 \x01A\xa0\x87\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9a\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\xc2\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\x00-\x00\xd0\x82\xc0\x80\x00\x1aA\x00-\x00\xde\x82\xc0\x80\x00\x1aA\x00-\x00\xdc\x83\xc0\x80\x00\x1aA\x8a\x88\xc0\x80\x00A\x1c\x10\x98\x80\x80\x80\x00!\x01 \x00B\x84\x80\x80\x80\xa0\x057\x03\x08 \x00A\xf8\x84\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9a\x80\x80\x80\x007\x03\x00 \x01A\xf0\x86\xc0\x80\x00A\x01 \x00A\x01\x10\x9a\x80\x80\x80\x00\x10\x99\x80\x80\x80\x00!\x01 \x00B\xe4\x00B\x00\x10\x9c\x80\x80\x80\x007\x03\x08 \x01A\xd4\x84\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9a\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\xc7\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00 \x00A\x85\x80\x80\x80\x006\x02\x08 \x00(\x02\x08\x1a \x00A\x86\x80\x80\x80\x006\x02\x08 \x00(\x02\x08\x1aA\x00-\x00\xb6\x81\xc0\x80\x00\x1aA\xa8\x87\xc0\x80\x00A\x14\x10\x98\x80\x80\x80\x00B\x84\x80\x80\x80\x10\x10\x99\x80\x80\x80\x00!\x01 \x00B\x84\x80\x80\x80\xb0\x0c7\x03\x08 \x00A\xf8\x84\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9a\x80\x80\x80\x007\x03\x00 \x00A\xcc\x86\xc0\x80\x00A\x01 \x00A\x01\x10\x9a\x80\x80\x80\x007\x03\x08 \x01A\xa0\x87\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9a\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\x84\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\xf8\x86\xc0\x80\x00A\x08\x10\x98\x80\x80\x80\x00!\x01A\x00-\x00\xaa\x80\xc0\x80\x00\x1aA\x88\x87\xc0\x80\x00A\x11\x10\x98\x80\x80\x80\x00 \x01\x10\x99\x80\x80\x80\x00!\x01 \x00B\xe4\x00B\x00\x10\x9c\x80\x80\x80\x007\x03\x08 \x01A\xd4\x84\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9a\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\x82\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\x00-\x00\x98\x82\xc0\x80\x00\x1aA\x00-\x00\x96\x83\xc0\x80\x00\x1aA\xd5\x87\xc0\x80\x00A\x1a\x10\x98\x80\x80\x80\x00B\x84\x80\x80\x80\x10\x10\x99\x80\x80\x80\x00!\x01 \x00B\xe4\x00B\x00\x10\x9c\x80\x80\x80\x007\x03\x08 \x01A\xd4\x84\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9a\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0bJ\x01\x01\x7f\x02@\x02@A\x01A\x02A\x00 \x00\xa7A\xff\x01q\"\x01\x1b \x01A\x01F\x1b\"\x01A\x02F\r\x00 \x01A\x01qE\r\x01B\x02\x0f\x0b\x00\x0bA\x00-\x00\xc2\x82\xc0\x80\x00\x1aB\x83\x80\x80\x80\x10\x10\xa3\x80\x80\x80\x00\x00\x0b\x0b\x00 \x00\x10\x8a\x80\x80\x80\x00\x1a\x0b0\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01A\x87\x80\x80\x80\x006\x02\x0c \x01(\x02\x0c\x1a\x02@ \x00B\xff\x01\x83B\xcb\x00Q\r\x00\x00\x0bB\x02\x0b\x13\x00A\x00-\x00\x80\x80\xc0\x80\x00\x1aB\x84\x80\x80\x80\xa0\x05\x0b\xc0\x02\x03\x01\x7f\x01~\x01\x7f#\x80\x80\x80\x80\x00A k\"\x01$\x80\x80\x80\x80\x00A\x00-\x00\xfa\x88\xc0\x80\x00\x1a\x02@ \x00B\xff\x01\x83B\xcb\x00R\r\x00 \x00\x10\x81\x80\x80\x80\x00!\x02 \x01A\x006\x02\x08 \x01 \x007\x03\x00 \x01 \x02B \x88>\x02\x0c \x01A\x10j \x01\x10\xa7\x80\x80\x80\x00 \x01)\x03\x10\"\x00B\x02Q\r\x00 \x00\xa7A\x01q\r\x00\x02@ \x01)\x03\x18\"\x00\xa7A\xff\x01q\"\x03A\xca\x00F\r\x00 \x03A\x0eG\r\x01\x0b\x02@\x02@\x02@\x02@ \x00A\x94\x85\xc0\x80\x00A\x03\x10\xa8\x80\x80\x80\x00B \x88\xa7\x0e\x03\x01\x02\x00\x04\x0b \x01(\x02\x08 \x01(\x02\x0c\x10\xa9\x80\x80\x80\x00\r\x03\x0c\x02\x0b \x01(\x02\x08 \x01(\x02\x0c\x10\xa9\x80\x80\x80\x00A\x01K\r\x02 \x01A\x10j \x01\x10\xa7\x80\x80\x80\x00 \x01)\x03\x10\"\x00B\x02Q\r\x02 \x00\xa7A\x01q\r\x02 \x01A\x10j \x01)\x03\x18\x10\xaa\x80\x80\x80\x00 \x01(\x02\x10A\x01G\r\x01\x0c\x02\x0b \x01(\x02\x08 \x01(\x02\x0c\x10\xa9\x80\x80\x80\x00\r\x01\x0b \x01A j$\x80\x80\x80\x80\x00B\x02\x0f\x0b\x00\x0bJ\x02\x01~\x01\x7fB\x02!\x02\x02@ \x01(\x02\x08\"\x03 \x01(\x02\x0cO\r\x00 \x00 \x01)\x03\x00 \x03\xadB \x86B\x04\x84\x10\x88\x80\x80\x80\x007\x03\x08 \x01 \x03A\x01j6\x02\x08B\x00!\x02\x0b \x00 \x027\x03\x00\x0b\x1c\x00 \x00 \x01\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x86\x80\x80\x80\x00\x0b\x19\x00\x02@ \x01 \x00I\r\x00 \x01 \x00k\x0f\x0b\x10\xc3\x80\x80\x80\x00\x00\x0bB\x01\x01~B\x01!\x02\x02@ \x01B\xff\x01\x83B\xc8\x00R\r\x00 \x01\x10\x89\x80\x80\x80\x00B\x80\x80\x80\x80p\x83B\x80\x80\x80\x80\x80\x04R\r\x00 \x00 \x017\x03\x08B\x00!\x02\x0b \x00 \x027\x03\x00\x0b\x12\x00A\x00-\x00\xea\x83\xc0\x80\x00\x1aB\x84\x80\x80\x80\x10\x0bg\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00A\x00-\x00\x86\x84\xc0\x80\x00\x1a \x01B\x027\x03\x08\x02@\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xf8\x84\xc0\x80\x00A\x01 \x01A\x08jA\x01\x10\xad\x80\x80\x80\x00 \x011\x00\x08B\x04Q\r\x01\x0b\x00\x0b \x01A\x10j$\x80\x80\x80\x80\x00B\x02\x0b1\x00\x02@ \x02 \x04F\r\x00\x00\x0b \x00 \x01\xadB \x86B\x04\x84 \x03\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x85\x80\x80\x80\x00\x1a\x0b\xd3\x07\x03\x01\x7f\x01~\x01\x7f#\x80\x80\x80\x80\x00A\xc0\x00k\"\x01$\x80\x80\x80\x80\x00 \x01A\x83\x80\x80\x80\x006\x02\x18 \x01(\x02\x18\x1aA\x00-\x00\x88\x89\xc0\x80\x00\x1a \x01A\x84\x80\x80\x80\x006\x02\x18 \x01(\x02\x18\x1aA\x00-\x00\xb4\x88\xc0\x80\x00\x1aA\x00-\x00\xa6\x88\xc0\x80\x00\x1aA\x00-\x00\xd0\x88\xc0\x80\x00\x1a \x01A\x83\x80\x80\x80\x006\x02\x18 \x01(\x02\x18\x1aA\x00-\x00\xa6\x88\xc0\x80\x00\x1aA\x00-\x00\xde\x88\xc0\x80\x00\x1aA\x00-\x00\xc2\x88\xc0\x80\x00\x1a\x02@\x02@ \x00B\xff\x01\x83B\xcb\x00R\r\x00 \x00\x10\x81\x80\x80\x80\x00!\x02 \x01A\x006\x02\x10 \x01 \x007\x03\x08 \x01 \x02B \x88>\x02\x14 \x01A\x18j \x01A\x08j\x10\xa7\x80\x80\x80\x00 \x01)\x03\x18\"\x00B\x02Q\r\x00 \x00\xa7A\x01q\r\x00\x02@ \x01)\x03 \"\x00\xa7A\xff\x01q\"\x03A\xca\x00F\r\x00 \x03A\x0eG\r\x01\x0b\x02@\x02@\x02@ \x00A\xb0\x86\xc0\x80\x00A\x03\x10\xa8\x80\x80\x80\x00B \x88\xa7\x0e\x03\x00\x01\x02\x03\x0b \x01(\x02\x10 \x01(\x02\x14\x10\xa9\x80\x80\x80\x00A\x01K\r\x02 \x01A\x18j \x01A\x08j\x10\xa7\x80\x80\x80\x00 \x01)\x03\x18\"\x00B\x02Q\r\x02 \x00\xa7A\x01q\r\x02 \x01)\x03 !\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x01A0j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x00B\xff\x01\x83B\xcc\x00R\r\x02 \x00A\xe8\x89\xc0\x80\x00A\x02 \x01A0jA\x02\x10\xad\x80\x80\x80\x00 \x01)\x030!\x00A\x00!\x03\x02@\x03@ \x03A\x18F\r\x01 \x01A\x18j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x00B\xff\x01\x83B\xcc\x00R\r\x02 \x00A\xac\x89\xc0\x80\x00A\x03 \x01A\x18jA\x03\x10\xad\x80\x80\x80\x00 \x011\x00\x18B\xcb\x00R\r\x02 \x011\x00 B\xcd\x00R\r\x02\x02@ \x01-\x00(\"\x03A\x0eF\r\x00 \x03A\xca\x00G\r\x03\x0b \x011\x008B\xcb\x00R\r\x02\x0c\x03\x0b \x01(\x02\x10 \x01(\x02\x14\x10\xa9\x80\x80\x80\x00A\x01K\r\x01 \x01A\x18j \x01A\x08j\x10\xa7\x80\x80\x80\x00 \x01)\x03\x18\"\x00B\x02Q\r\x01 \x00\xa7A\x01q\r\x01 \x01)\x03 !\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x01A0j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x00B\xff\x01\x83B\xcc\x00R\r\x01 \x00A\x88\x8a\xc0\x80\x00A\x02 \x01A0jA\x02\x10\xad\x80\x80\x80\x00 \x01A\x18j \x01)\x030\x10\xaf\x80\x80\x80\x00 \x01(\x02\x18\r\x01 \x01A\x18j \x01)\x038\x10\xaa\x80\x80\x80\x00 \x01(\x02\x18A\x01G\r\x02\x0c\x01\x0b \x01(\x02\x10 \x01(\x02\x14\x10\xa9\x80\x80\x80\x00A\x01K\r\x00 \x01A\x18j \x01A\x08j\x10\xa7\x80\x80\x80\x00 \x01)\x03\x18\"\x00B\x02Q\r\x00 \x00\xa7A\x01q\r\x00 \x01)\x03 !\x00A\x00!\x03\x02@\x03@ \x03A\x18F\r\x01 \x01A\x18j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xa8\x8a\xc0\x80\x00A\x03 \x01A\x18jA\x03\x10\xad\x80\x80\x80\x00 \x011\x00\x18B\xcb\x00R\r\x00 \x01A0j \x01)\x03 \x10\xaf\x80\x80\x80\x00 \x01(\x020\r\x00 \x01A0j \x01)\x03(\x10\xaa\x80\x80\x80\x00 \x01(\x020A\x01G\r\x01\x0b\x00\x0b \x01A\xc0\x00j$\x80\x80\x80\x80\x00B\x02\x0b\xb3\x02\x03\x01\x7f\x01~\x01\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00\x02@\x02@ \x01B\xff\x01\x83B\xcb\x00Q\r\x00 \x00B\x017\x03\x00\x0c\x01\x0b \x01\x10\x81\x80\x80\x80\x00!\x03 \x02A\x006\x02\x08 \x02 \x017\x03\x00 \x02 \x03B \x88>\x02\x0c \x02A\x10j \x02\x10\xa7\x80\x80\x80\x00\x02@ \x02)\x03\x10\"\x01B\x02Q\r\x00 \x01\xa7A\x01q\r\x00\x02@ \x02)\x03\x18\"\x01\xa7A\xff\x01q\"\x04A\xca\x00F\r\x00 \x04A\x0eG\r\x01\x0b\x02@ \x01A\xc8\x89\xc0\x80\x00A\x01\x10\xa8\x80\x80\x80\x00B\xff\xff\xff\xff\x0fV\r\x00 \x02(\x02\x08 \x02(\x02\x0c\x10\xa9\x80\x80\x80\x00A\x01K\r\x00 \x02A\x10j \x02\x10\xa7\x80\x80\x80\x00 \x02)\x03\x10\"\x01B\x02Q\r\x00 \x01\xa7A\x01q\r\x00 \x02A\x10j \x02)\x03\x18\x10\xaa\x80\x80\x80\x00 \x02(\x02\x10\r\x00 \x02)\x03\x18!\x01 \x00B\x007\x03\x00 \x00 \x017\x03\x08\x0c\x02\x0b \x00B\x017\x03\x00\x0c\x01\x0b \x00B\x017\x03\x00\x0b \x02A j$\x80\x80\x80\x80\x00\x0b\x9e\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00 \x01A\x83\x80\x80\x80\x006\x02\x00 \x01(\x02\x00\x1aA\x00!\x02A\x00-\x00\xc0\x8a\xc0\x80\x00\x1a\x02@\x03@ \x02A\x10F\r\x01 \x01 \x02jB\x027\x03\x00 \x02A\x08j!\x02\x0c\x00\x0b\x0b\x02@\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xd4\x8a\xc0\x80\x00A\x02 \x01A\x02\x10\xad\x80\x80\x80\x00 \x011\x00\x00B\xcb\x00R\r\x00 \x011\x00\x08B\xcd\x00Q\r\x01\x0b\x00\x0b \x01A\x10j$\x80\x80\x80\x80\x00B\x02\x0bA\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01A\x88\x80\x80\x80\x006\x02\x0c \x01(\x02\x0c\x1a \x01A\x89\x80\x80\x80\x006\x02\x08 \x01(\x02\x08\x1a\x02@ \x00B\xff\x01\x83B\xcc\x00Q\r\x00\x00\x0bB\x02\x0bg\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00A\x00-\x00\xe2\x80\xc0\x80\x00\x1a \x01B\x027\x03\x08\x02@\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xf8\x84\xc0\x80\x00A\x01 \x01A\x08jA\x01\x10\xad\x80\x80\x80\x00 \x011\x00\x08B\x04Q\r\x01\x0b\x00\x0b \x01A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\x12\x00A\x00-\x00\xb8\x80\xc0\x80\x00\x1aB\x84\x80\x80\x80\x10\x0br\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00A\x00-\x00\xc4\x81\xc0\x80\x00\x1a\x02@ \x00B\x02Q\r\x00 \x01B\x027\x03\x08\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xc8\x85\xc0\x80\x00A\x01 \x01A\x08jA\x01\x10\xad\x80\x80\x80\x00 \x01)\x03\x08B\xff\x01\x83B\x04Q\r\x01\x0b\x00\x0b \x01A\x10j$\x80\x80\x80\x80\x00B\x02\x0bI\x01\x01\x7f\x02@\x02@A\x01A\x02A\x00 \x00\xa7A\xff\x01q\"\x01\x1b \x01A\x01F\x1b\"\x01A\x02F\r\x00 \x01A\x01q\r\x01B\x02\x0f\x0b\x00\x0bA\x00-\x00\xb4\x82\xc0\x80\x00\x1aB\x83\x80\x80\x80\x10\x10\xa3\x80\x80\x80\x00\x00\x0b@\x01\x01\x7f\x02@\x02@A\x01A\x02A\x00 \x00\xa7A\xff\x01q\"\x01\x1b \x01A\x01F\x1b\"\x01A\x02F\r\x00 \x01A\x01q\r\x01B\x02\x0f\x0b\x00\x0bB\x83\x80\x80\x80\xf0\x00\x10\xa3\x80\x80\x80\x00\x00\x0b\x8a\x02\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00A\x00!\x03A\x00-\x00\xa6\x82\xc0\x80\x00\x1aA\x00-\x00\xc6\x80\xc0\x80\x00\x1a\x02@\x03@ \x03A\x10F\r\x01 \x02A\x08j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b\x02@\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xb4\x85\xc0\x80\x00A\x02 \x02A\x08jA\x02\x10\xad\x80\x80\x80\x00 \x021\x00\x08B\x04R\r\x00 \x02B\x027\x03\x18 \x02)\x03\x10\"\x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xf8\x84\xc0\x80\x00A\x01 \x02A\x18jA\x01\x10\xad\x80\x80\x80\x00\x02@ \x02)\x03\x18\"\x00\xa7A\xff\x01q\"\x03A\x07F\r\x00 \x03A\xc1\x00G\r\x01 \x00\x10\x82\x80\x80\x80\x00\x1a\x0bA\x00-\x00\xf0\x80\xc0\x80\x00\x1a \x01B\xff\x01\x83B\x04R\r\x00 \x01B \x88\xa7A}jA}K\r\x01\x0b\x00\x0b \x02A j$\x80\x80\x80\x80\x00B\x02\x0b\x90\x04\x03\x01\x7f\x01~\x01\x7f#\x80\x80\x80\x80\x00A0k\"\x01$\x80\x80\x80\x80\x00A\x00-\x00\x94\x84\xc0\x80\x00\x1a \x01A\x81\x80\x80\x80\x006\x02  \x01(\x02 \x1aA\x00-\x00\xd2\x81\xc0\x80\x00\x1aA\x00-\x00\xe0\x81\xc0\x80\x00\x1aA\x00-\x00\xee\x81\xc0\x80\x00\x1a \x01B\x027\x03\x08\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xf8\x84\xc0\x80\x00A\x01 \x01A\x08jA\x01\x10\xad\x80\x80\x80\x00 \x01)\x03\x08\"\x00B\xff\x01\x83B\xcb\x00R\r\x00 \x00\x10\x81\x80\x80\x80\x00!\x02 \x01A\x006\x02\x18 \x01 \x007\x03\x10 \x01 \x02B \x88>\x02\x1c \x01A j \x01A\x10j\x10\xa7\x80\x80\x80\x00 \x01)\x03 \"\x00B\x02Q\r\x00 \x00\xa7A\x01q\r\x00\x02@ \x01)\x03(\"\x00\xa7A\xff\x01q\"\x03A\xca\x00F\r\x00 \x03A\x0eG\r\x01\x0b\x02@\x02@\x02@ \x00A\xe8\x85\xc0\x80\x00A\x02\x10\xa8\x80\x80\x80\x00B \x88\xa7\x0e\x02\x01\x00\x03\x0b \x01(\x02\x18 \x01(\x02\x1c\x10\xa9\x80\x80\x80\x00A\x01K\r\x02 \x01A j \x01A\x10j\x10\xa7\x80\x80\x80\x00 \x01)\x03 \"\x00B\x02Q\r\x02 \x00\xa7A\x01q\r\x02 \x01)\x03(!\x00 \x01B\x027\x03  \x00B\xff\x01\x83B\xcc\x00R\r\x02 \x00A\xf8\x84\xc0\x80\x00A\x01 \x01A jA\x01\x10\xad\x80\x80\x80\x00 \x011\x00 B\xcb\x00Q\r\x01\x0c\x02\x0b \x01(\x02\x18 \x01(\x02\x1c\x10\xa9\x80\x80\x80\x00A\x01K\r\x01 \x01A j \x01A\x10j\x10\xa7\x80\x80\x80\x00 \x01)\x03 \"\x00B\x02Q\r\x01 \x00\xa7A\x01q\r\x01 \x01)\x03(!\x00 \x01B\x027\x03  \x00B\xff\x01\x83B\xcc\x00R\r\x01 \x00A\xf8\x84\xc0\x80\x00A\x01 \x01A jA\x01\x10\xad\x80\x80\x80\x00 \x011\x00 B\x04R\r\x01\x0b \x01A0j$\x80\x80\x80\x80\x00B\x02\x0f\x0b\x00\x0bZ\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\x00-\x00\xbe\x84\xc0\x80\x00\x1aA\x00-\x00\x80\x80\xc0\x80\x00\x1a \x00B\x84\x80\x80\x80\x107\x03\x08A\xc8\x85\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9a\x80\x80\x80\x00!\x01 \x00A\x10j$\x80\x80\x80\x80\x00 \x01\x0bo\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\x00-\x00\x8e\x80\xc0\x80\x00\x1a \x00A\xc8\x86\xc0\x80\x00A\x01\x10\xbb\x80\x80\x80\x00\x02@ \x00(\x02\x00A\x01G\r\x00\x00\x0b \x00)\x03\x08!\x01 \x00B\x84\x80\x80\x80\x107\x03\x08 \x00 \x017\x03\x00 \x00\x10\xbc\x80\x80\x80\x00!\x01 \x00A\x10j$\x80\x80\x80\x80\x00 \x01\x0b\xdb\x01\x02\x01~\x04\x7f\x02@\x02@ \x02A\tK\r\x00B\x00!\x03 \x02!\x04 \x01!\x05\x03@\x02@ \x04\r\x00 \x03B\x08\x86B\x0e\x84!\x03\x0c\x03\x0bA\x01!\x06\x02@ \x05-\x00\x00\"\x07A\xdf\x00F\r\x00\x02@\x02@ \x07APjA\xff\x01qA\nI\r\x00 \x07A\xbf\x7fjA\xff\x01qA\x1aI\r\x01 \x07A\x9f\x7fjA\xff\x01qA\x1aO\r\x04 \x07AEj!\x06\x0c\x02\x0b \x07ARj!\x06\x0c\x01\x0b \x07AKj!\x06\x0b \x03B\x06\x86 \x06\xadB\xff\x01\x83\x84!\x03 \x04A\x7fj!\x04 \x05A\x01j!\x05\x0c\x00\x0b\x0b \x01\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x87\x80\x80\x80\x00!\x03\x0b \x00B\x007\x03\x00 \x00 \x037\x03\x08\x0b\x17\x00 \x00\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x84\x80\x80\x80\x00\x0b\xc4\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x01$\x80\x80\x80\x80\x00A\x00!\x02A\x00-\x00\x9a\x81\xc0\x80\x00\x1a\x02@\x02@ \x00B\xff\x01\x83B\xcb\x00R\r\x00\x02@\x03@ \x02A\x10F\r\x01 \x01A\x08j \x02jB\x027\x03\x00 \x02A\x08j!\x02\x0c\x00\x0b\x0b \x00 \x01A\x08j\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x83\x80\x80\x80\x00\x1a \x01B\x027\x03\x18 \x01)\x03\x08\"\x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xf8\x84\xc0\x80\x00A\x01 \x01A\x18jA\x01\x10\xad\x80\x80\x80\x00 \x011\x00\x18B\x04R\r\x00 \x011\x00\x10B\x04Q\r\x01\x0b\x00\x0b \x01A j$\x80\x80\x80\x80\x00B\x02\x0bo\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A k\"\x00$\x80\x80\x80\x80\x00A\x00-\x00\xa4\x83\xc0\x80\x00\x1a \x00B\x84\x80\x80\x80\x107\x03\x18A\xf8\x84\xc0\x80\x00A\x01 \x00A\x18jA\x01\x10\x9a\x80\x80\x80\x00!\x01 \x00B\x84\x80\x80\x80 7\x03\x10 \x00 \x017\x03\x08 \x00A\x08j\x10\xbc\x80\x80\x80\x00!\x01 \x00A j$\x80\x80\x80\x80\x00 \x01\x0b0\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01A\x8a\x80\x80\x80\x006\x02\x0c \x01(\x02\x0c\x1a\x02@ \x00B\xff\x01\x83B\xcb\x00Q\r\x00\x00\x0bB\x02\x0b0\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01A\x8b\x80\x80\x80\x006\x02\x0c \x01(\x02\x0c\x1a\x02@ \x00B\xff\x01\x83B\xcb\x00Q\r\x00\x00\x0bB\x02\x0b\x8d\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00A\x00!\x02A\x00-\x00\xc0\x83\xc0\x80\x00\x1a\x02@\x03@ \x02A\x10F\r\x01 \x01 \x02jB\x027\x03\x00 \x02A\x08j!\x02\x0c\x00\x0b\x0b\x02@\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xd4\x8a\xc0\x80\x00A\x02 \x01A\x02\x10\xad\x80\x80\x80\x00 \x011\x00\x00B\x04R\r\x00 \x01)\x03\x08B\xfe\x01\x83P\r\x01\x0b\x00\x0b \x01A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\x03\x00\x00\x0b\t\x00\x10\xc2\x80\x80\x80\x00\x00\x0b\x0b\xee\n\x01\x00A\x80\x80\xc0\x00\x0b\xe4\nSpEcV1Hh\xdc\xaaa\x8d\xf7\rSpEcV1\xe7\xcf\x9b1n\x15\x13\xfeSpEcV1\xe2\x01y\xc9\x9a\xf8\xedtSpEcV1v1\x0eP\xa9C\xc7*SpEcV1\xa9<\xd8+\xb7\xa7\r\x17SpEcV1X\x03\xf6t\xc7\xd0\x01\"SpEcV1\'\xbd_A\r\x9a\x89\x02SpEcV1p\x8c\x0fN!\x082\xd8SpEcV1\xc2\xf4N\xbf\xebqvpSpEcV1K\xdf\'8m/\xe8\x1dSpEcV1@\xb9LO\xf9\xd1\xe8\xe2SpEcV1\xde\x1dMa\x01\xec\xb0ASpEcV1\xc2 \x1b\xdc\xc8gxZSpEcV1[Q+\xe9\xde\xd5\xf2>SpEcV1\xb3/\x97\xd5\x06\xbd3BSpEcV1?\xd9\xb3q\xdep>\xf3SpEcV1*\\\x9c\xf4e\xaa\x1e]SpEcV1u2\x0b\x97\xae\xcd\x86\xbfSpEcV1\x0c\xf0\xf6w\xfd\x1a\x1b\x94SpEcV1\'\xf2\xa2\xb9\xd0)\xc0uSpEcV1\xf5\xd4\x9b\xa3\xccI\x13\xf7SpEcV1\x84\x08Y\xae\xa0\xf128SpEcV1\r\xb76\xae\x93D\xef\x1aSpEcV1\x8b\x89\x1f#\xbd\x157\xf4SpEcV16\x83?\xf0\xcdW\xb1/SpEcV1\x94\xc7w/_\xebXcSpEcV1\xb4\xabN]\xe3\xeaA\xd6SpEcV1\x13?J\x12d\xden|SpEcV1q\xa3z;6\xa6R\x01SpEcV1q^\xe2&\x9di\x9d\x0eSpEcV1Y\xa66\xb3\xecxE\x13SpEcV1\xcf@%X\xde+J@SpEcV1\xb6\x1c\xfd\xdfhY-dSpEcV1 \xfbl\x04B\x82\xc0\xb4SpEcV1\xe3\xf2\x9b5%a\xfb\xd6SpEcV1\r\xd6\r \xfc\xdb\xea\xf3SpEcV1\x9a\x14*\xbc\x82a\x08XSpEcV1\x7f\xc5\xceo\xc3ST\x08SpEcV1\xe6Q\xd5T\x13\x8a\xb7lSpEcV1[\xf4R\xdf\xdd\xb4\xb0\xbcSpEcV1\xaaX8\xde\xef\xbb6%SpEcV1k\xe4zxB\xd1+\x02amount\x00\x00L\x02\x10\x00\x06\x00\x00\x00used_export_false_eventval\x00\x00s\x02\x10\x00\x03\x00\x00\x00StellarAssetAccount\x00\xc4\x04\x10\x00\x04\x00\x00\x00\x80\x02\x10\x00\x0c\x00\x00\x00\x8c\x02\x10\x00\x07\x00\x00\x00anested\x00\xac\x02\x10\x00\x01\x00\x00\x00\xad\x02\x10\x00\x06\x00\x00\x00data\xc4\x02\x10\x00\x04\x00\x00\x00NotRecursiveRecursive\x00\x00\x00\xd0\x02\x10\x00\x0c\x00\x00\x00\xdc\x02\x10\x00\t\x00\x00\x00ContractCreateContractHostFnCreateContractWithCtorHostFn\xf8\x02\x10\x00\x08\x00\x00\x00\x00\x03\x10\x00\x14\x00\x00\x00\x14\x03\x10\x00\x1c\x00\x00\x00A\x00\x00\x00\xad\x02\x10\x00\x06\x00\x00\x00xy\x00\x00T\x03\x10\x00\x01\x00\x00\x00U\x03\x10\x00\x01\x00\x00\x00inner\x00\x00\x00h\x03\x10\x00\x05\x00\x00\x00transfercoordsefused_event_simplepayload\x99\x03\x10\x00\x07\x00\x00\x00used_event_with_refsused_event_with_data_typeused_event_with_topic_typeused_event_with_nested_dataused_event_with_nested_topicSpEcV1\xb6\xb1Hy\xda\xca\xaf\xccSpEcV1\x9e)H\x8e\xf0\x01{{SpEcV1ULqD\xd3\xfa:\x1fSpEcV1\x15\xe5\x1a,\xc0\xc7\xef\xd4SpEcV1s\x94\x0c\x1926\x1d\x90SpEcV1\xa3J\xcf\xf7D\x93\x0bBSpEcV1L|{\r\xf4\xf2\x1a\xa8SpEcV1\xf1\xf9\x90\x07E*e\xfdargscontractfn_name\x00\x00\x00\x96\x04\x10\x00\x04\x00\x00\x00\x9a\x04\x10\x00\x08\x00\x00\x00\xa2\x04\x10\x00\x07\x00\x00\x00Wasm\xc4\x04\x10\x00\x04\x00\x00\x00contextsub_invocations\x00\x00\xd0\x04\x10\x00\x07\x00\x00\x00\xd7\x04\x10\x00\x0f\x00\x00\x00executablesalt\x00\x00\xf8\x04\x10\x00\n\x00\x00\x00\x02\x05\x10\x00\x04\x00\x00\x00constructor_args\x18\x05\x10\x00\x10\x00\x00\x00\xf8\x04\x10\x00\n\x00\x00\x00\x02\x05\x10\x00\x04\x00\x00\x00SpEcV1\xa3\x16\n\x8f\xc9\x92\xd2\x11f1f2\x00\x00N\x05\x10\x00\x02\x00\x00\x00P\x05\x10\x00\x02\x00\x00\x00\x00\xb7Y\x0econtractspecv0\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumB\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x07\x00\x00\x00\x07\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumC\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorB\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x0c\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorC\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00e\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00f\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventA\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventB\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_b\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventC\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_c\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructA\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructB\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructC\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x03\xea\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntA\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntB\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntC\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\xc8\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x01,\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleB\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleC\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14UsedExportFalseError\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Fail\x00\x00\x00\x01\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14UsedExportFalseEvent\x00\x00\x00\x01\x00\x00\x00\x17used_export_false_event\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x06amount\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x15UsedExportFalseStruct\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08UsedLeaf\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08with_map\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01m\x00\x00\x00\x00\x00\x03\xec\x00\x00\x07\xd0\x00\x00\x00\nUsedMapKey\x00\x00\x00\x00\x07\xd0\x00\x00\x00\nUsedMapVal\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08with_vec\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01v\x00\x00\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00\x0eUsedVecElement\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nUnusedEnum\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01A\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01B\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nUsedMapKey\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02K1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02K2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nUsedMapVal\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01v\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nwith_error\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd0\x00\x00\x00\rUsedErrorEnum\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nwith_param\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01s\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x0fUsedParamStruct\x00\x00\x00\x00\x00\x00\x00\x00\x02ie\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x10UsedParamIntEnum\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nwith_tuple\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01t\x00\x00\x00\x00\x00\x03\xed\x00\x00\x00\x02\x00\x00\x07\xd0\x00\x00\x00\x10UsedTupleElement\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bUnusedEvent\x00\x00\x00\x00\x01\x00\x00\x00\x0cunused_event\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04data\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cUnusedStruct\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01x\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cUsedResultOk\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04data\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bwith_option\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01o\x00\x00\x00\x00\x00\x03\xe8\x00\x00\x07\xd0\x00\x00\x00\x11UsedOptionElement\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bwith_result\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x07\xd0\x00\x00\x00\x0cUsedResultOk\x00\x00\x07\xd0\x00\x00\x00\rUsedErrorEnum\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bwith_return\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0eUsedReturnEnum\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rUnusedIntEnum\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02U1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02U2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rUsedErrorEnum\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x08NotFound\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x07Invalid\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cwith_non_pub\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01s\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x10UsedNonPubStruct\x00\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0eUnusedPubError\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Nope\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0eUsedReturnEnum\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01A\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01B\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0eUsedVecElement\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04data\x00\x00\x00\x04\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fUsedNonPubError\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Fail\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fUsedParamStruct\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x06nested\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x12UsedNestedInStruct\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fUsedRefDataType\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x06nested\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x10UsedRefDataInner\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0epublish_simple\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0ewith_recursion\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01r\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x11UsedRecursiveRoot\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fUsedEventSimple\x00\x00\x00\x00\x01\x00\x00\x00\x11used_event_simple\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x06amount\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10UsedNonPubStruct\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10UsedParamIntEnum\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01X\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01Y\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10UsedRefDataInner\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10UsedRefTopicType\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04Send\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Recv\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10UsedTupleElement\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fwith_executable\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01e\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\nExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fwith_lib_struct\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01s\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x07StructC\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fwith_vec_nested\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01v\x00\x00\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00\x14UsedVecElementNested\x00\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11UnusedNonPubError\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03Bad\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11UsedEventDataType\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01x\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x01y\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11UsedOptionElement\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04data\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11UsedRecursiveLeaf\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00\x11UsedRecursiveRoot\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11UsedRecursiveNode\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x0cNotRecursive\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x08UsedLeaf\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\tRecursive\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x11UsedRecursiveLeaf\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11UsedRecursiveRoot\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x07\xd0\x00\x00\x00\x11UsedRecursiveNode\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10with_panic_error\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04fail\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11UsedEventWithRefs\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x14used_event_with_refs\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x07\xd0\x00\x00\x00\x10UsedRefTopicType\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x07payload\x00\x00\x00\x07\xd0\x00\x00\x00\x0fUsedRefDataType\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12UnusedNonPubStruct\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01x\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12UsedEventDataInner\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12UsedEventDataOuter\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05inner\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x12UsedEventDataInner\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12UsedEventTopicType\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x08Transfer\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Mint\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12UsedNestedInStruct\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x07\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12UsedPanicErrorEnum\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Boom\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11publish_data_type\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11publish_ref_event\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11with_assert_error\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02ok\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11with_invoker_auth\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01i\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x18InvokerContractAuthEntry\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11with_tuple_return\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x03\xed\x00\x00\x00\x02\x00\x00\x07\xd0\x00\x00\x00\x16UsedTupleReturnElement\x00\x00\x00\x00\x00\x04\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13UsedAssertErrorEnum\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03Bad\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13UsedEventTopicInner\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13UsedEventTopicOuter\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05inner\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x13UsedEventTopicInner\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13UsedVecInnerElement\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12publish_topic_type\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12with_auth_contexts\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01c\x00\x00\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00\x07Context\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12with_non_pub_error\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd0\x00\x00\x00\x0fUsedNonPubError\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12with_wasm_imported\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01s\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14UsedVecElementNested\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x05inner\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x13UsedVecInnerElement\x00\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\tvec_inner\x00\x00\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00\x16UsedVecInnerVecElement\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13publish_nested_data\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14publish_nested_topic\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14with_panic_raw_error\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04fail\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x15UsedEventWithDataType\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x19used_event_with_data_type\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x07payload\x00\x00\x00\x07\xd0\x00\x00\x00\x11UsedEventDataType\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x16UsedTupleReturnElement\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x16UsedVecInnerVecElement\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x16UsedEventWithTopicType\x00\x00\x00\x00\x00\x01\x00\x00\x00\x1aused_event_with_topic_type\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x07\xd0\x00\x00\x00\x12UsedEventTopicType\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x06amount\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x17UsedEventWithNestedData\x00\x00\x00\x00\x01\x00\x00\x00\x1bused_event_with_nested_data\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x07payload\x00\x00\x00\x07\xd0\x00\x00\x00\x12UsedEventDataOuter\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x18UnusedNonContractFnParam\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01x\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x17with_export_false_error\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd0\x00\x00\x00\x14UsedExportFalseError\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x18UsedEventWithNestedTopic\x00\x00\x00\x01\x00\x00\x00\x1cused_event_with_nested_topic\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04info\x00\x00\x07\xd0\x00\x00\x00\x13UsedEventTopicOuter\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x06amount\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x19UnusedNonContractFnReturn\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01x\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x18with_export_false_struct\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01s\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x15UsedExportFalseStruct\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1apublish_export_false_event\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\xe3Context of a single authorized call performed by an address.\n\nCustom account contracts that implement `__check_auth` special function\nreceive a list of `Context` values corresponding to all the calls that\nneed to be authorized.\x00\x00\x00\x00\x00\x00\x00\x00\x07Context\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x14Contract invocation.\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x01\x00\x00\x00=Contract that has a constructor with no arguments is created.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00DContract that has a constructor with 1 or more arguments is created.\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x01\x00\x00\x00\xbdAuthorization context of a single contract call.\n\nThis struct corresponds to a `require_auth_for_args` call for an address\nfrom `contract` function with `fn_name` name and `args` arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08contract\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x07fn_name\x00\x00\x00\x00\x11\x00\x00\x00\x02\x00\x00\x00_Contract executable used for creating a new contract and used in\n`CreateContractHostFnContext`.\x00\x00\x00\x00\x00\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x008Value of contract node in InvokerContractAuthEntry tree.\x00\x00\x00\x00\x00\x00\x00\x15SubContractInvocation\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x07\xd0\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x00\x00\x00\x00\x0fsub_invocations\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00\x18InvokerContractAuthEntry\x00\x00\x00\x02\x00\x00\x01/A node in the tree of authorizations performed on behalf of the current\ncontract as invoker of the contracts deeper in the call stack.\n\nThis is used as an argument of `authorize_as_current_contract` host function.\n\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\ncurrent contract.\x00\x00\x00\x00\x00\x00\x00\x00\x18InvokerContractAuthEntry\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x12Invoke a contract.\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x15SubContractInvocation\x00\x00\x00\x00\x00\x00\x01\x00\x00\x005Create a contract passing 0 arguments to constructor.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00=Create a contract passing 0 or more arguments to constructor.\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x01\x00\x00\x00vAuthorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\xd6Authorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\nThis is the same as `CreateContractHostFnContext`, but also has\ncontract constructor arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x10constructor_args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nExecutable\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStellarAsset\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Account\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumB\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x07\x00\x00\x00\x07\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumC\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorB\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x0c\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorC\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00e\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00f\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventA\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventB\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_b\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventC\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_c\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructA\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructB\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructC\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x03\xea\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntA\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntB\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntC\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\xc8\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x01,\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleB\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleC\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x0b\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1a\x00\x00\x00\x00\x00O\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12rssdk_spec_shaking\x00\x00\x00\x00\x00\x012\x00\x00\x00";
+    const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01^\x10`\x02~~\x01~`\x01~\x01~`\x03~~~\x01~`\x04~~~~\x01~`\x00\x00`\x00\x01~`\x02\x7f\x7f\x01~`\x04\x7f\x7f\x7f\x7f\x01~`\x01~\x00`\x02\x7f\x7f\x00`\x03~\x7f\x7f\x01~`\x02\x7f\x7f\x01\x7f`\x02\x7f~\x00`\x05~\x7f\x7f\x7f\x7f\x00`\x03\x7f\x7f\x7f\x00`\x01\x7f\x01~\x02I\x0c\x01x\x011\x00\x00\x01v\x013\x00\x01\x01i\x012\x00\x01\x01v\x01h\x00\x02\x01v\x01g\x00\x00\x01m\x01a\x00\x03\x01b\x01m\x00\x02\x01b\x01j\x00\x00\x01v\x011\x00\x00\x01b\x018\x00\x01\x01x\x015\x00\x01\x01m\x019\x00\x02\x0398\x04\x04\x04\x04\x04\x04\x04\x04\x04\x04\x04\x05\x06\x00\x07\x05\x00\x05\x05\x05\x05\x05\x01\x08\x01\x05\x01\t\n\x0b\x0c\x05\x01\r\x01\x0c\x01\x01\x01\x05\x01\x01\x01\x00\x01\x05\x05\x0e\x0f\x01\x05\x01\x01\x01\x04\x04\x04\x05\x01p\x01\x0c\x0c\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x96\x89\xc0\x00\x0b\x7f\x00A\xe4\x8a\xc0\x00\x0b\x7f\x00A\xf0\x8a\xc0\x00\x0b\x07\xd8\x04\"\x06memory\x02\x00\x11publish_data_type\x00\x17\x1apublish_export_false_event\x00\x1b\x13publish_nested_data\x00\x1d\x14publish_nested_topic\x00\x1e\x11publish_ref_event\x00\x1f\x0epublish_simple\x00 \x12publish_topic_type\x00!\x11with_assert_error\x00\"\x12with_auth_contexts\x00$\nwith_error\x00%\x0fwith_executable\x00&\x17with_export_false_error\x00+\x18with_export_false_struct\x00,\x11with_invoker_auth\x00.\x0fwith_lib_struct\x000\x08with_map\x001\x0cwith_non_pub\x002\x12with_non_pub_error\x003\x0bwith_option\x004\x10with_panic_error\x005\x14with_panic_raw_error\x006\nwith_param\x007\x0ewith_recursion\x008\x0bwith_result\x009\x0bwith_return\x00:\nwith_tuple\x00=\x11with_tuple_return\x00>\x08with_vec\x00?\x0fwith_vec_nested\x00@\x12with_wasm_imported\x00A\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\t\x11\x01\x00A\x01\x0b\x0b\x0f\x11\x13\x12\x0e\r\x14\x15\x16\x0c\x10\n\xc128\x0c\x00A\x00-\x00\x9c\x80\xc0\x80\x00\x1a\x0b\x16\x00A\x00-\x00\xfe\x80\xc0\x80\x00\x1aA\x00-\x00\xd4\x80\xc0\x80\x00\x1a\x0b\x0c\x00A\x00-\x00\x8c\x81\xc0\x80\x00\x1a\x0bJ\x01\x01\x7f#\x80\x80\x80\x80\x00!\x00A\x00-\x00\x94\x84\xc0\x80\x00\x1a \x00A\x10k\"\x00A\x81\x80\x80\x80\x006\x02\x0c \x00(\x02\x0c\x1aA\x00-\x00\xd2\x81\xc0\x80\x00\x1aA\x00-\x00\xe0\x81\xc0\x80\x00\x1aA\x00-\x00\xee\x81\xc0\x80\x00\x1a\x0b6\x01\x01\x7f#\x80\x80\x80\x80\x00!\x00A\x00-\x00\xec\x82\xc0\x80\x00\x1a \x00A\x10k\"\x00A\x82\x80\x80\x80\x006\x02\x0c \x00(\x02\x0c\x1aA\x00-\x00\xfa\x82\xc0\x80\x00\x1a\x0b\x0c\x00A\x00-\x00\xb2\x83\xc0\x80\x00\x1a\x0b\x86\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00A\x83\x80\x80\x80\x006\x02\x0c \x00(\x02\x0c\x1aA\x00-\x00\x88\x89\xc0\x80\x00\x1a \x00A\x84\x80\x80\x80\x006\x02\x08 \x00(\x02\x08\x1aA\x00-\x00\xb4\x88\xc0\x80\x00\x1aA\x00-\x00\xa6\x88\xc0\x80\x00\x1aA\x00-\x00\xd0\x88\xc0\x80\x00\x1a \x00A\x83\x80\x80\x80\x006\x02\x04 \x00(\x02\x04\x1aA\x00-\x00\xa6\x88\xc0\x80\x00\x1aA\x00-\x00\xde\x88\xc0\x80\x00\x1aA\x00-\x00\xc2\x88\xc0\x80\x00\x1a\x0b\x02\x00\x0bk\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00A\x83\x80\x80\x80\x006\x02\x0c \x00(\x02\x0c\x1aA\x00-\x00\x88\x89\xc0\x80\x00\x1aA\x00-\x00\xa6\x88\xc0\x80\x00\x1aA\x00-\x00\xd0\x88\xc0\x80\x00\x1a \x00A\x83\x80\x80\x80\x006\x02\x08 \x00(\x02\x08\x1aA\x00-\x00\xa6\x88\xc0\x80\x00\x1aA\x00-\x00\xde\x88\xc0\x80\x00\x1aA\x00-\x00\xec\x88\xc0\x80\x00\x1a\x0b\x0c\x00A\x00-\x00\xa2\x84\xc0\x80\x00\x1a\x0b\x0c\x00A\x00-\x00\xb0\x84\xc0\x80\x00\x1a\x0b\xae\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A k\"\x00$\x80\x80\x80\x80\x00A\x80\x87\xc0\x80\x00A\x06\x10\x98\x80\x80\x80\x00!\x01A\x00-\x00\xa8\x81\xc0\x80\x00\x1aA\x00-\x00\x88\x83\xc0\x80\x00\x1aA\xbc\x87\xc0\x80\x00A\x19\x10\x98\x80\x80\x80\x00 \x01\x10\x99\x80\x80\x80\x00!\x01 \x00B\x84\x80\x80\x80 7\x03\x18 \x00B\x84\x80\x80\x80\x107\x03\x10 \x00A\xd8\x86\xc0\x80\x00A\x02 \x00A\x10jA\x02\x10\x9a\x80\x80\x80\x007\x03\x08 \x01A\xa0\x87\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9a\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A j$\x80\x80\x80\x80\x00B\x02\x0bE\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00 \x02 \x00 \x01\x10\xbb\x80\x80\x80\x00\x02@ \x02(\x02\x00A\x01G\r\x00\x00\x0b \x02)\x03\x08!\x03 \x02A\x10j$\x80\x80\x80\x80\x00 \x03\x0b\x92\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00 \x02 \x017\x03\x08 \x02 \x007\x03\x00A\x00!\x03\x03~\x02@ \x03A\x10G\r\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02A\x10j \x03j \x02 \x03j)\x03\x007\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x02A\x10j\x10\xbc\x80\x80\x80\x00!\x01 \x02A j$\x80\x80\x80\x80\x00 \x01\x0f\x0b \x02A\x10j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b.\x00\x02@ \x01 \x03F\r\x00\x00\x0b \x00\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x8b\x80\x80\x80\x00\x0b\x83\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\x86\x87\xc0\x80\x00A\x02\x10\x98\x80\x80\x80\x00!\x01A\x00-\x00\xf8\x83\xc0\x80\x00\x1aA\xdc\x84\xc0\x80\x00A\x17\x10\x98\x80\x80\x80\x00 \x01\x10\x99\x80\x80\x80\x00!\x01 \x00B\x01B\x00\x10\x9c\x80\x80\x80\x007\x03\x08 \x01A\xd4\x84\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9a\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\n\x00 \x00B\x08\x86B\x0b\x84\x0b\xc5\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\xad\x85\xc0\x80\x00A\x06\x10\x98\x80\x80\x80\x00!\x01A\x00-\x00\xfc\x81\xc0\x80\x00\x1aA\x00-\x00\x8a\x82\xc0\x80\x00\x1aA\x00-\x00\xce\x83\xc0\x80\x00\x1aA\xef\x87\xc0\x80\x00A\x1b\x10\x98\x80\x80\x80\x00 \x01\x10\x99\x80\x80\x80\x00!\x01 \x00B\x84\x80\x80\x80\xa0\x057\x03\x08 \x00A\xf8\x84\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9a\x80\x80\x80\x007\x03\x00 \x00A\xf0\x86\xc0\x80\x00A\x01 \x00A\x01\x10\x9a\x80\x80\x80\x007\x03\x08 \x01A\xa0\x87\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9a\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\xc2\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\x00-\x00\xd0\x82\xc0\x80\x00\x1aA\x00-\x00\xde\x82\xc0\x80\x00\x1aA\x00-\x00\xdc\x83\xc0\x80\x00\x1aA\x8a\x88\xc0\x80\x00A\x1c\x10\x98\x80\x80\x80\x00!\x01 \x00B\x84\x80\x80\x80\xa0\x057\x03\x08 \x00A\xf8\x84\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9a\x80\x80\x80\x007\x03\x00 \x01A\xf0\x86\xc0\x80\x00A\x01 \x00A\x01\x10\x9a\x80\x80\x80\x00\x10\x99\x80\x80\x80\x00!\x01 \x00B\xe4\x00B\x00\x10\x9c\x80\x80\x80\x007\x03\x08 \x01A\xd4\x84\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9a\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\xc7\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00 \x00A\x85\x80\x80\x80\x006\x02\x08 \x00(\x02\x08\x1a \x00A\x86\x80\x80\x80\x006\x02\x08 \x00(\x02\x08\x1aA\x00-\x00\xb6\x81\xc0\x80\x00\x1aA\xa8\x87\xc0\x80\x00A\x14\x10\x98\x80\x80\x80\x00B\x84\x80\x80\x80\x10\x10\x99\x80\x80\x80\x00!\x01 \x00B\x84\x80\x80\x80\xb0\x0c7\x03\x08 \x00A\xf8\x84\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9a\x80\x80\x80\x007\x03\x00 \x00A\xcc\x86\xc0\x80\x00A\x01 \x00A\x01\x10\x9a\x80\x80\x80\x007\x03\x08 \x01A\xa0\x87\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9a\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\x84\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\xf8\x86\xc0\x80\x00A\x08\x10\x98\x80\x80\x80\x00!\x01A\x00-\x00\xaa\x80\xc0\x80\x00\x1aA\x88\x87\xc0\x80\x00A\x11\x10\x98\x80\x80\x80\x00 \x01\x10\x99\x80\x80\x80\x00!\x01 \x00B\xe4\x00B\x00\x10\x9c\x80\x80\x80\x007\x03\x08 \x01A\xd4\x84\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9a\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\x82\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\x00-\x00\x98\x82\xc0\x80\x00\x1aA\x00-\x00\x96\x83\xc0\x80\x00\x1aA\xd5\x87\xc0\x80\x00A\x1a\x10\x98\x80\x80\x80\x00B\x84\x80\x80\x80\x10\x10\x99\x80\x80\x80\x00!\x01 \x00B\xe4\x00B\x00\x10\x9c\x80\x80\x80\x007\x03\x08 \x01A\xd4\x84\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9a\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0bJ\x01\x01\x7f\x02@\x02@A\x01A\x02A\x00 \x00\xa7A\xff\x01q\"\x01\x1b \x01A\x01F\x1b\"\x01A\x02F\r\x00 \x01A\x01qE\r\x01B\x02\x0f\x0b\x00\x0bA\x00-\x00\xc2\x82\xc0\x80\x00\x1aB\x83\x80\x80\x80\x10\x10\xa3\x80\x80\x80\x00\x00\x0b\x0b\x00 \x00\x10\x8a\x80\x80\x80\x00\x1a\x0b0\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01A\x87\x80\x80\x80\x006\x02\x0c \x01(\x02\x0c\x1a\x02@ \x00B\xff\x01\x83B\xcb\x00Q\r\x00\x00\x0bB\x02\x0b\x13\x00A\x00-\x00\x80\x80\xc0\x80\x00\x1aB\x84\x80\x80\x80\xa0\x05\x0b\xc0\x02\x03\x01\x7f\x01~\x01\x7f#\x80\x80\x80\x80\x00A k\"\x01$\x80\x80\x80\x80\x00A\x00-\x00\xfa\x88\xc0\x80\x00\x1a\x02@ \x00B\xff\x01\x83B\xcb\x00R\r\x00 \x00\x10\x81\x80\x80\x80\x00!\x02 \x01A\x006\x02\x08 \x01 \x007\x03\x00 \x01 \x02B \x88>\x02\x0c \x01A\x10j \x01\x10\xa7\x80\x80\x80\x00 \x01)\x03\x10\"\x00B\x02Q\r\x00 \x00\xa7A\x01q\r\x00\x02@ \x01)\x03\x18\"\x00\xa7A\xff\x01q\"\x03A\xca\x00F\r\x00 \x03A\x0eG\r\x01\x0b\x02@\x02@\x02@\x02@ \x00A\x94\x85\xc0\x80\x00A\x03\x10\xa8\x80\x80\x80\x00B \x88\xa7\x0e\x03\x01\x02\x00\x04\x0b \x01(\x02\x08 \x01(\x02\x0c\x10\xa9\x80\x80\x80\x00\r\x03\x0c\x02\x0b \x01(\x02\x08 \x01(\x02\x0c\x10\xa9\x80\x80\x80\x00A\x01K\r\x02 \x01A\x10j \x01\x10\xa7\x80\x80\x80\x00 \x01)\x03\x10\"\x00B\x02Q\r\x02 \x00\xa7A\x01q\r\x02 \x01A\x10j \x01)\x03\x18\x10\xaa\x80\x80\x80\x00 \x01(\x02\x10A\x01G\r\x01\x0c\x02\x0b \x01(\x02\x08 \x01(\x02\x0c\x10\xa9\x80\x80\x80\x00\r\x01\x0b \x01A j$\x80\x80\x80\x80\x00B\x02\x0f\x0b\x00\x0bJ\x02\x01~\x01\x7fB\x02!\x02\x02@ \x01(\x02\x08\"\x03 \x01(\x02\x0cO\r\x00 \x00 \x01)\x03\x00 \x03\xadB \x86B\x04\x84\x10\x88\x80\x80\x80\x007\x03\x08 \x01 \x03A\x01j6\x02\x08B\x00!\x02\x0b \x00 \x027\x03\x00\x0b\x1c\x00 \x00 \x01\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x86\x80\x80\x80\x00\x0b\x19\x00\x02@ \x01 \x00I\r\x00 \x01 \x00k\x0f\x0b\x10\xc3\x80\x80\x80\x00\x00\x0bB\x01\x01~B\x01!\x02\x02@ \x01B\xff\x01\x83B\xc8\x00R\r\x00 \x01\x10\x89\x80\x80\x80\x00B\x80\x80\x80\x80p\x83B\x80\x80\x80\x80\x80\x04R\r\x00 \x00 \x017\x03\x08B\x00!\x02\x0b \x00 \x027\x03\x00\x0b\x12\x00A\x00-\x00\xea\x83\xc0\x80\x00\x1aB\x84\x80\x80\x80\x10\x0bg\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00A\x00-\x00\x86\x84\xc0\x80\x00\x1a \x01B\x027\x03\x08\x02@\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xf8\x84\xc0\x80\x00A\x01 \x01A\x08jA\x01\x10\xad\x80\x80\x80\x00 \x011\x00\x08B\x04Q\r\x01\x0b\x00\x0b \x01A\x10j$\x80\x80\x80\x80\x00B\x02\x0b1\x00\x02@ \x02 \x04F\r\x00\x00\x0b \x00 \x01\xadB \x86B\x04\x84 \x03\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x85\x80\x80\x80\x00\x1a\x0b\xd3\x07\x03\x01\x7f\x01~\x01\x7f#\x80\x80\x80\x80\x00A\xc0\x00k\"\x01$\x80\x80\x80\x80\x00 \x01A\x83\x80\x80\x80\x006\x02\x18 \x01(\x02\x18\x1aA\x00-\x00\x88\x89\xc0\x80\x00\x1a \x01A\x84\x80\x80\x80\x006\x02\x18 \x01(\x02\x18\x1aA\x00-\x00\xb4\x88\xc0\x80\x00\x1aA\x00-\x00\xa6\x88\xc0\x80\x00\x1aA\x00-\x00\xd0\x88\xc0\x80\x00\x1a \x01A\x83\x80\x80\x80\x006\x02\x18 \x01(\x02\x18\x1aA\x00-\x00\xa6\x88\xc0\x80\x00\x1aA\x00-\x00\xde\x88\xc0\x80\x00\x1aA\x00-\x00\xc2\x88\xc0\x80\x00\x1a\x02@\x02@ \x00B\xff\x01\x83B\xcb\x00R\r\x00 \x00\x10\x81\x80\x80\x80\x00!\x02 \x01A\x006\x02\x10 \x01 \x007\x03\x08 \x01 \x02B \x88>\x02\x14 \x01A\x18j \x01A\x08j\x10\xa7\x80\x80\x80\x00 \x01)\x03\x18\"\x00B\x02Q\r\x00 \x00\xa7A\x01q\r\x00\x02@ \x01)\x03 \"\x00\xa7A\xff\x01q\"\x03A\xca\x00F\r\x00 \x03A\x0eG\r\x01\x0b\x02@\x02@\x02@ \x00A\xb0\x86\xc0\x80\x00A\x03\x10\xa8\x80\x80\x80\x00B \x88\xa7\x0e\x03\x00\x01\x02\x03\x0b \x01(\x02\x10 \x01(\x02\x14\x10\xa9\x80\x80\x80\x00A\x01K\r\x02 \x01A\x18j \x01A\x08j\x10\xa7\x80\x80\x80\x00 \x01)\x03\x18\"\x00B\x02Q\r\x02 \x00\xa7A\x01q\r\x02 \x01)\x03 !\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x01A0j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x00B\xff\x01\x83B\xcc\x00R\r\x02 \x00A\xe8\x89\xc0\x80\x00A\x02 \x01A0jA\x02\x10\xad\x80\x80\x80\x00 \x01)\x030!\x00A\x00!\x03\x02@\x03@ \x03A\x18F\r\x01 \x01A\x18j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x00B\xff\x01\x83B\xcc\x00R\r\x02 \x00A\xac\x89\xc0\x80\x00A\x03 \x01A\x18jA\x03\x10\xad\x80\x80\x80\x00 \x011\x00\x18B\xcb\x00R\r\x02 \x011\x00 B\xcd\x00R\r\x02\x02@ \x01-\x00(\"\x03A\x0eF\r\x00 \x03A\xca\x00G\r\x03\x0b \x011\x008B\xcb\x00R\r\x02\x0c\x03\x0b \x01(\x02\x10 \x01(\x02\x14\x10\xa9\x80\x80\x80\x00A\x01K\r\x01 \x01A\x18j \x01A\x08j\x10\xa7\x80\x80\x80\x00 \x01)\x03\x18\"\x00B\x02Q\r\x01 \x00\xa7A\x01q\r\x01 \x01)\x03 !\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x01A0j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x00B\xff\x01\x83B\xcc\x00R\r\x01 \x00A\x88\x8a\xc0\x80\x00A\x02 \x01A0jA\x02\x10\xad\x80\x80\x80\x00 \x01A\x18j \x01)\x030\x10\xaf\x80\x80\x80\x00 \x01(\x02\x18\r\x01 \x01A\x18j \x01)\x038\x10\xaa\x80\x80\x80\x00 \x01(\x02\x18A\x01G\r\x02\x0c\x01\x0b \x01(\x02\x10 \x01(\x02\x14\x10\xa9\x80\x80\x80\x00A\x01K\r\x00 \x01A\x18j \x01A\x08j\x10\xa7\x80\x80\x80\x00 \x01)\x03\x18\"\x00B\x02Q\r\x00 \x00\xa7A\x01q\r\x00 \x01)\x03 !\x00A\x00!\x03\x02@\x03@ \x03A\x18F\r\x01 \x01A\x18j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xa8\x8a\xc0\x80\x00A\x03 \x01A\x18jA\x03\x10\xad\x80\x80\x80\x00 \x011\x00\x18B\xcb\x00R\r\x00 \x01A0j \x01)\x03 \x10\xaf\x80\x80\x80\x00 \x01(\x020\r\x00 \x01A0j \x01)\x03(\x10\xaa\x80\x80\x80\x00 \x01(\x020A\x01G\r\x01\x0b\x00\x0b \x01A\xc0\x00j$\x80\x80\x80\x80\x00B\x02\x0b\xb3\x02\x03\x01\x7f\x01~\x01\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00\x02@\x02@ \x01B\xff\x01\x83B\xcb\x00Q\r\x00 \x00B\x017\x03\x00\x0c\x01\x0b \x01\x10\x81\x80\x80\x80\x00!\x03 \x02A\x006\x02\x08 \x02 \x017\x03\x00 \x02 \x03B \x88>\x02\x0c \x02A\x10j \x02\x10\xa7\x80\x80\x80\x00\x02@ \x02)\x03\x10\"\x01B\x02Q\r\x00 \x01\xa7A\x01q\r\x00\x02@ \x02)\x03\x18\"\x01\xa7A\xff\x01q\"\x04A\xca\x00F\r\x00 \x04A\x0eG\r\x01\x0b\x02@ \x01A\xc8\x89\xc0\x80\x00A\x01\x10\xa8\x80\x80\x80\x00B\xff\xff\xff\xff\x0fV\r\x00 \x02(\x02\x08 \x02(\x02\x0c\x10\xa9\x80\x80\x80\x00A\x01K\r\x00 \x02A\x10j \x02\x10\xa7\x80\x80\x80\x00 \x02)\x03\x10\"\x01B\x02Q\r\x00 \x01\xa7A\x01q\r\x00 \x02A\x10j \x02)\x03\x18\x10\xaa\x80\x80\x80\x00 \x02(\x02\x10\r\x00 \x02)\x03\x18!\x01 \x00B\x007\x03\x00 \x00 \x017\x03\x08\x0c\x02\x0b \x00B\x017\x03\x00\x0c\x01\x0b \x00B\x017\x03\x00\x0b \x02A j$\x80\x80\x80\x80\x00\x0b\x9e\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00 \x01A\x83\x80\x80\x80\x006\x02\x00 \x01(\x02\x00\x1aA\x00!\x02A\x00-\x00\xc0\x8a\xc0\x80\x00\x1a\x02@\x03@ \x02A\x10F\r\x01 \x01 \x02jB\x027\x03\x00 \x02A\x08j!\x02\x0c\x00\x0b\x0b\x02@\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xd4\x8a\xc0\x80\x00A\x02 \x01A\x02\x10\xad\x80\x80\x80\x00 \x011\x00\x00B\xcb\x00R\r\x00 \x011\x00\x08B\xcd\x00Q\r\x01\x0b\x00\x0b \x01A\x10j$\x80\x80\x80\x80\x00B\x02\x0bA\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01A\x88\x80\x80\x80\x006\x02\x0c \x01(\x02\x0c\x1a \x01A\x89\x80\x80\x80\x006\x02\x08 \x01(\x02\x08\x1a\x02@ \x00B\xff\x01\x83B\xcc\x00Q\r\x00\x00\x0bB\x02\x0bg\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00A\x00-\x00\xe2\x80\xc0\x80\x00\x1a \x01B\x027\x03\x08\x02@\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xf8\x84\xc0\x80\x00A\x01 \x01A\x08jA\x01\x10\xad\x80\x80\x80\x00 \x011\x00\x08B\x04Q\r\x01\x0b\x00\x0b \x01A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\x12\x00A\x00-\x00\xb8\x80\xc0\x80\x00\x1aB\x84\x80\x80\x80\x10\x0br\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00A\x00-\x00\xc4\x81\xc0\x80\x00\x1a\x02@ \x00B\x02Q\r\x00 \x01B\x027\x03\x08\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xc8\x85\xc0\x80\x00A\x01 \x01A\x08jA\x01\x10\xad\x80\x80\x80\x00 \x01)\x03\x08B\xff\x01\x83B\x04Q\r\x01\x0b\x00\x0b \x01A\x10j$\x80\x80\x80\x80\x00B\x02\x0bI\x01\x01\x7f\x02@\x02@A\x01A\x02A\x00 \x00\xa7A\xff\x01q\"\x01\x1b \x01A\x01F\x1b\"\x01A\x02F\r\x00 \x01A\x01q\r\x01B\x02\x0f\x0b\x00\x0bA\x00-\x00\xb4\x82\xc0\x80\x00\x1aB\x83\x80\x80\x80\x10\x10\xa3\x80\x80\x80\x00\x00\x0b@\x01\x01\x7f\x02@\x02@A\x01A\x02A\x00 \x00\xa7A\xff\x01q\"\x01\x1b \x01A\x01F\x1b\"\x01A\x02F\r\x00 \x01A\x01q\r\x01B\x02\x0f\x0b\x00\x0bB\x83\x80\x80\x80\xf0\x00\x10\xa3\x80\x80\x80\x00\x00\x0b\x8a\x02\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00A\x00!\x03A\x00-\x00\xa6\x82\xc0\x80\x00\x1aA\x00-\x00\xc6\x80\xc0\x80\x00\x1a\x02@\x03@ \x03A\x10F\r\x01 \x02A\x08j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b\x02@\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xb4\x85\xc0\x80\x00A\x02 \x02A\x08jA\x02\x10\xad\x80\x80\x80\x00 \x021\x00\x08B\x04R\r\x00 \x02B\x027\x03\x18 \x02)\x03\x10\"\x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xf8\x84\xc0\x80\x00A\x01 \x02A\x18jA\x01\x10\xad\x80\x80\x80\x00\x02@ \x02)\x03\x18\"\x00\xa7A\xff\x01q\"\x03A\x07F\r\x00 \x03A\xc1\x00G\r\x01 \x00\x10\x82\x80\x80\x80\x00\x1a\x0bA\x00-\x00\xf0\x80\xc0\x80\x00\x1a \x01B\xff\x01\x83B\x04R\r\x00 \x01B \x88\xa7A}jA}K\r\x01\x0b\x00\x0b \x02A j$\x80\x80\x80\x80\x00B\x02\x0b\x90\x04\x03\x01\x7f\x01~\x01\x7f#\x80\x80\x80\x80\x00A0k\"\x01$\x80\x80\x80\x80\x00A\x00-\x00\x94\x84\xc0\x80\x00\x1a \x01A\x81\x80\x80\x80\x006\x02  \x01(\x02 \x1aA\x00-\x00\xd2\x81\xc0\x80\x00\x1aA\x00-\x00\xe0\x81\xc0\x80\x00\x1aA\x00-\x00\xee\x81\xc0\x80\x00\x1a \x01B\x027\x03\x08\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xf8\x84\xc0\x80\x00A\x01 \x01A\x08jA\x01\x10\xad\x80\x80\x80\x00 \x01)\x03\x08\"\x00B\xff\x01\x83B\xcb\x00R\r\x00 \x00\x10\x81\x80\x80\x80\x00!\x02 \x01A\x006\x02\x18 \x01 \x007\x03\x10 \x01 \x02B \x88>\x02\x1c \x01A j \x01A\x10j\x10\xa7\x80\x80\x80\x00 \x01)\x03 \"\x00B\x02Q\r\x00 \x00\xa7A\x01q\r\x00\x02@ \x01)\x03(\"\x00\xa7A\xff\x01q\"\x03A\xca\x00F\r\x00 \x03A\x0eG\r\x01\x0b\x02@\x02@\x02@ \x00A\xe8\x85\xc0\x80\x00A\x02\x10\xa8\x80\x80\x80\x00B \x88\xa7\x0e\x02\x01\x00\x03\x0b \x01(\x02\x18 \x01(\x02\x1c\x10\xa9\x80\x80\x80\x00A\x01K\r\x02 \x01A j \x01A\x10j\x10\xa7\x80\x80\x80\x00 \x01)\x03 \"\x00B\x02Q\r\x02 \x00\xa7A\x01q\r\x02 \x01)\x03(!\x00 \x01B\x027\x03  \x00B\xff\x01\x83B\xcc\x00R\r\x02 \x00A\xf8\x84\xc0\x80\x00A\x01 \x01A jA\x01\x10\xad\x80\x80\x80\x00 \x011\x00 B\xcb\x00Q\r\x01\x0c\x02\x0b \x01(\x02\x18 \x01(\x02\x1c\x10\xa9\x80\x80\x80\x00A\x01K\r\x01 \x01A j \x01A\x10j\x10\xa7\x80\x80\x80\x00 \x01)\x03 \"\x00B\x02Q\r\x01 \x00\xa7A\x01q\r\x01 \x01)\x03(!\x00 \x01B\x027\x03  \x00B\xff\x01\x83B\xcc\x00R\r\x01 \x00A\xf8\x84\xc0\x80\x00A\x01 \x01A jA\x01\x10\xad\x80\x80\x80\x00 \x011\x00 B\x04R\r\x01\x0b \x01A0j$\x80\x80\x80\x80\x00B\x02\x0f\x0b\x00\x0bZ\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\x00-\x00\xbe\x84\xc0\x80\x00\x1aA\x00-\x00\x80\x80\xc0\x80\x00\x1a \x00B\x84\x80\x80\x80\x107\x03\x08A\xc8\x85\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9a\x80\x80\x80\x00!\x01 \x00A\x10j$\x80\x80\x80\x80\x00 \x01\x0bo\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\x00-\x00\x8e\x80\xc0\x80\x00\x1a \x00A\xc8\x86\xc0\x80\x00A\x01\x10\xbb\x80\x80\x80\x00\x02@ \x00(\x02\x00A\x01G\r\x00\x00\x0b \x00)\x03\x08!\x01 \x00B\x84\x80\x80\x80\x107\x03\x08 \x00 \x017\x03\x00 \x00\x10\xbc\x80\x80\x80\x00!\x01 \x00A\x10j$\x80\x80\x80\x80\x00 \x01\x0b\xdb\x01\x02\x01~\x04\x7f\x02@\x02@ \x02A\tK\r\x00B\x00!\x03 \x02!\x04 \x01!\x05\x03@\x02@ \x04\r\x00 \x03B\x08\x86B\x0e\x84!\x03\x0c\x03\x0bA\x01!\x06\x02@ \x05-\x00\x00\"\x07A\xdf\x00F\r\x00\x02@\x02@ \x07APjA\xff\x01qA\nI\r\x00 \x07A\xbf\x7fjA\xff\x01qA\x1aI\r\x01 \x07A\x9f\x7fjA\xff\x01qA\x1aO\r\x04 \x07AEj!\x06\x0c\x02\x0b \x07ARj!\x06\x0c\x01\x0b \x07AKj!\x06\x0b \x03B\x06\x86 \x06\xadB\xff\x01\x83\x84!\x03 \x04A\x7fj!\x04 \x05A\x01j!\x05\x0c\x00\x0b\x0b \x01\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x87\x80\x80\x80\x00!\x03\x0b \x00B\x007\x03\x00 \x00 \x037\x03\x08\x0b\x17\x00 \x00\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x84\x80\x80\x80\x00\x0b\xc4\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x01$\x80\x80\x80\x80\x00A\x00!\x02A\x00-\x00\x9a\x81\xc0\x80\x00\x1a\x02@\x02@ \x00B\xff\x01\x83B\xcb\x00R\r\x00\x02@\x03@ \x02A\x10F\r\x01 \x01A\x08j \x02jB\x027\x03\x00 \x02A\x08j!\x02\x0c\x00\x0b\x0b \x00 \x01A\x08j\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x83\x80\x80\x80\x00\x1a \x01B\x027\x03\x18 \x01)\x03\x08\"\x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xf8\x84\xc0\x80\x00A\x01 \x01A\x18jA\x01\x10\xad\x80\x80\x80\x00 \x011\x00\x18B\x04R\r\x00 \x011\x00\x10B\x04Q\r\x01\x0b\x00\x0b \x01A j$\x80\x80\x80\x80\x00B\x02\x0bo\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A k\"\x00$\x80\x80\x80\x80\x00A\x00-\x00\xa4\x83\xc0\x80\x00\x1a \x00B\x84\x80\x80\x80\x107\x03\x18A\xf8\x84\xc0\x80\x00A\x01 \x00A\x18jA\x01\x10\x9a\x80\x80\x80\x00!\x01 \x00B\x84\x80\x80\x80 7\x03\x10 \x00 \x017\x03\x08 \x00A\x08j\x10\xbc\x80\x80\x80\x00!\x01 \x00A j$\x80\x80\x80\x80\x00 \x01\x0b0\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01A\x8a\x80\x80\x80\x006\x02\x0c \x01(\x02\x0c\x1a\x02@ \x00B\xff\x01\x83B\xcb\x00Q\r\x00\x00\x0bB\x02\x0b0\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01A\x8b\x80\x80\x80\x006\x02\x0c \x01(\x02\x0c\x1a\x02@ \x00B\xff\x01\x83B\xcb\x00Q\r\x00\x00\x0bB\x02\x0b\x8d\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00A\x00!\x02A\x00-\x00\xc0\x83\xc0\x80\x00\x1a\x02@\x03@ \x02A\x10F\r\x01 \x01 \x02jB\x027\x03\x00 \x02A\x08j!\x02\x0c\x00\x0b\x0b\x02@\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xd4\x8a\xc0\x80\x00A\x02 \x01A\x02\x10\xad\x80\x80\x80\x00 \x011\x00\x00B\x04R\r\x00 \x01)\x03\x08B\xfe\x01\x83P\r\x01\x0b\x00\x0b \x01A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\x03\x00\x00\x0b\t\x00\x10\xc2\x80\x80\x80\x00\x00\x0b\x0b\xee\n\x01\x00A\x80\x80\xc0\x00\x0b\xe4\nSpEcV1Hh\xdc\xaaa\x8d\xf7\rSpEcV1\xe7\xcf\x9b1n\x15\x13\xfeSpEcV1\xe2\x01y\xc9\x9a\xf8\xedtSpEcV1v1\x0eP\xa9C\xc7*SpEcV1\xa9<\xd8+\xb7\xa7\r\x17SpEcV1X\x03\xf6t\xc7\xd0\x01\"SpEcV1\'\xbd_A\r\x9a\x89\x02SpEcV1p\x8c\x0fN!\x082\xd8SpEcV1\xc2\xf4N\xbf\xebqvpSpEcV1K\xdf\'8m/\xe8\x1dSpEcV1@\xb9LO\xf9\xd1\xe8\xe2SpEcV1\xde\x1dMa\x01\xec\xb0ASpEcV1\xc2 \x1b\xdc\xc8gxZSpEcV1[Q+\xe9\xde\xd5\xf2>SpEcV1\xb3/\x97\xd5\x06\xbd3BSpEcV1?\xd9\xb3q\xdep>\xf3SpEcV1*\\\x9c\xf4e\xaa\x1e]SpEcV1u2\x0b\x97\xae\xcd\x86\xbfSpEcV1\x0c\xf0\xf6w\xfd\x1a\x1b\x94SpEcV1\'\xf2\xa2\xb9\xd0)\xc0uSpEcV1\xf5\xd4\x9b\xa3\xccI\x13\xf7SpEcV1\x84\x08Y\xae\xa0\xf128SpEcV1\r\xb76\xae\x93D\xef\x1aSpEcV1\x8b\x89\x1f#\xbd\x157\xf4SpEcV16\x83?\xf0\xcdW\xb1/SpEcV1\x94\xc7w/_\xebXcSpEcV1\xb4\xabN]\xe3\xeaA\xd6SpEcV1\x13?J\x12d\xden|SpEcV1q\xa3z;6\xa6R\x01SpEcV1q^\xe2&\x9di\x9d\x0eSpEcV1Y\xa66\xb3\xecxE\x13SpEcV1\xcf@%X\xde+J@SpEcV1\xb6\x1c\xfd\xdfhY-dSpEcV1 \xfbl\x04B\x82\xc0\xb4SpEcV1\xe3\xf2\x9b5%a\xfb\xd6SpEcV1\r\xd6\r \xfc\xdb\xea\xf3SpEcV1\x9a\x14*\xbc\x82a\x08XSpEcV1\x7f\xc5\xceo\xc3ST\x08SpEcV1\xe6Q\xd5T\x13\x8a\xb7lSpEcV1[\xf4R\xdf\xdd\xb4\xb0\xbcSpEcV1\xaaX8\xde\xef\xbb6%SpEcV1k\xe4zxB\xd1+\x02amount\x00\x00L\x02\x10\x00\x06\x00\x00\x00used_export_false_eventval\x00\x00s\x02\x10\x00\x03\x00\x00\x00StellarAssetAccount\x00\xc4\x04\x10\x00\x04\x00\x00\x00\x80\x02\x10\x00\x0c\x00\x00\x00\x8c\x02\x10\x00\x07\x00\x00\x00anested\x00\xac\x02\x10\x00\x01\x00\x00\x00\xad\x02\x10\x00\x06\x00\x00\x00data\xc4\x02\x10\x00\x04\x00\x00\x00NotRecursiveRecursive\x00\x00\x00\xd0\x02\x10\x00\x0c\x00\x00\x00\xdc\x02\x10\x00\t\x00\x00\x00ContractCreateContractHostFnCreateContractWithCtorHostFn\xf8\x02\x10\x00\x08\x00\x00\x00\x00\x03\x10\x00\x14\x00\x00\x00\x14\x03\x10\x00\x1c\x00\x00\x00A\x00\x00\x00\xad\x02\x10\x00\x06\x00\x00\x00xy\x00\x00T\x03\x10\x00\x01\x00\x00\x00U\x03\x10\x00\x01\x00\x00\x00inner\x00\x00\x00h\x03\x10\x00\x05\x00\x00\x00transfercoordsefused_event_simplepayload\x99\x03\x10\x00\x07\x00\x00\x00used_event_with_refsused_event_with_data_typeused_event_with_topic_typeused_event_with_nested_dataused_event_with_nested_topicSpEcV1\xb6\xb1Hy\xda\xca\xaf\xccSpEcV1\x9e)H\x8e\xf0\x01{{SpEcV1ULqD\xd3\xfa:\x1fSpEcV1\x15\xe5\x1a,\xc0\xc7\xef\xd4SpEcV1s\x94\x0c\x1926\x1d\x90SpEcV1\xa3J\xcf\xf7D\x93\x0bBSpEcV1L|{\r\xf4\xf2\x1a\xa8SpEcV1\xf1\xf9\x90\x07E*e\xfdargscontractfn_name\x00\x00\x00\x96\x04\x10\x00\x04\x00\x00\x00\x9a\x04\x10\x00\x08\x00\x00\x00\xa2\x04\x10\x00\x07\x00\x00\x00Wasm\xc4\x04\x10\x00\x04\x00\x00\x00contextsub_invocations\x00\x00\xd0\x04\x10\x00\x07\x00\x00\x00\xd7\x04\x10\x00\x0f\x00\x00\x00executablesalt\x00\x00\xf8\x04\x10\x00\n\x00\x00\x00\x02\x05\x10\x00\x04\x00\x00\x00constructor_args\x18\x05\x10\x00\x10\x00\x00\x00\xf8\x04\x10\x00\n\x00\x00\x00\x02\x05\x10\x00\x04\x00\x00\x00SpEcV1\xa3\x16\n\x8f\xc9\x92\xd2\x11f1f2\x00\x00N\x05\x10\x00\x02\x00\x00\x00P\x05\x10\x00\x02\x00\x00\x00\x00\xebb\x0econtractspecv0\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumB\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x07\x00\x00\x00\x07\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumC\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorB\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x0c\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorC\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00e\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00f\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventA\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventB\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_b\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventC\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_c\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Context\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructA\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructB\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructC\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x03\xea\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntA\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntB\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntC\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\xc8\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x01,\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nExecutable\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStellarAsset\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Account\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleB\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleC\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08contract\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x07fn_name\x00\x00\x00\x00\x11\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x15SubContractInvocation\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x07\xd0\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x00\x00\x00\x00\x0fsub_invocations\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00\x18InvokerContractAuthEntry\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x18InvokerContractAuthEntry\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x15SubContractInvocation\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x10constructor_args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14UsedExportFalseError\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Fail\x00\x00\x00\x01\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14UsedExportFalseEvent\x00\x00\x00\x01\x00\x00\x00\x17used_export_false_event\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x06amount\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x15UsedExportFalseStruct\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08UsedLeaf\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08with_map\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01m\x00\x00\x00\x00\x00\x03\xec\x00\x00\x07\xd0\x00\x00\x00\nUsedMapKey\x00\x00\x00\x00\x07\xd0\x00\x00\x00\nUsedMapVal\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08with_vec\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01v\x00\x00\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00\x0eUsedVecElement\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nUnusedEnum\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01A\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01B\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nUsedMapKey\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02K1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02K2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nUsedMapVal\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01v\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nwith_error\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd0\x00\x00\x00\rUsedErrorEnum\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nwith_param\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01s\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x0fUsedParamStruct\x00\x00\x00\x00\x00\x00\x00\x00\x02ie\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x10UsedParamIntEnum\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nwith_tuple\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01t\x00\x00\x00\x00\x00\x03\xed\x00\x00\x00\x02\x00\x00\x07\xd0\x00\x00\x00\x10UsedTupleElement\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bUnusedEvent\x00\x00\x00\x00\x01\x00\x00\x00\x0cunused_event\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04data\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cUnusedStruct\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01x\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cUsedResultOk\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04data\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bwith_option\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01o\x00\x00\x00\x00\x00\x03\xe8\x00\x00\x07\xd0\x00\x00\x00\x11UsedOptionElement\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bwith_result\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x07\xd0\x00\x00\x00\x0cUsedResultOk\x00\x00\x07\xd0\x00\x00\x00\rUsedErrorEnum\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bwith_return\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0eUsedReturnEnum\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rUnusedIntEnum\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02U1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02U2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rUsedErrorEnum\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x08NotFound\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x07Invalid\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cwith_non_pub\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01s\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x10UsedNonPubStruct\x00\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0eUnusedPubError\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Nope\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0eUsedReturnEnum\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01A\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01B\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0eUsedVecElement\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04data\x00\x00\x00\x04\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fUsedNonPubError\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Fail\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fUsedParamStruct\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x06nested\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x12UsedNestedInStruct\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fUsedRefDataType\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x06nested\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x10UsedRefDataInner\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0epublish_simple\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0ewith_recursion\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01r\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x11UsedRecursiveRoot\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fUsedEventSimple\x00\x00\x00\x00\x01\x00\x00\x00\x11used_event_simple\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x06amount\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10UsedNonPubStruct\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10UsedParamIntEnum\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01X\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01Y\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10UsedRefDataInner\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10UsedRefTopicType\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04Send\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Recv\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10UsedTupleElement\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fwith_executable\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01e\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\nExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fwith_lib_struct\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01s\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x07StructC\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fwith_vec_nested\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01v\x00\x00\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00\x14UsedVecElementNested\x00\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11UnusedNonPubError\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03Bad\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11UsedEventDataType\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01x\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x01y\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11UsedOptionElement\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04data\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11UsedRecursiveLeaf\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00\x11UsedRecursiveRoot\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11UsedRecursiveNode\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x0cNotRecursive\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x08UsedLeaf\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\tRecursive\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x11UsedRecursiveLeaf\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11UsedRecursiveRoot\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x07\xd0\x00\x00\x00\x11UsedRecursiveNode\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10with_panic_error\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04fail\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11UsedEventWithRefs\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x14used_event_with_refs\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x07\xd0\x00\x00\x00\x10UsedRefTopicType\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x07payload\x00\x00\x00\x07\xd0\x00\x00\x00\x0fUsedRefDataType\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12UnusedNonPubStruct\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01x\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12UsedEventDataInner\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12UsedEventDataOuter\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05inner\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x12UsedEventDataInner\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12UsedEventTopicType\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x08Transfer\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Mint\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12UsedNestedInStruct\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x07\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12UsedPanicErrorEnum\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Boom\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11publish_data_type\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11publish_ref_event\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11with_assert_error\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02ok\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11with_invoker_auth\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01i\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x18InvokerContractAuthEntry\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11with_tuple_return\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x03\xed\x00\x00\x00\x02\x00\x00\x07\xd0\x00\x00\x00\x16UsedTupleReturnElement\x00\x00\x00\x00\x00\x04\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13UsedAssertErrorEnum\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03Bad\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13UsedEventTopicInner\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13UsedEventTopicOuter\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05inner\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x13UsedEventTopicInner\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13UsedVecInnerElement\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12publish_topic_type\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12with_auth_contexts\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01c\x00\x00\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00\x07Context\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12with_non_pub_error\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd0\x00\x00\x00\x0fUsedNonPubError\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12with_wasm_imported\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01s\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14UsedVecElementNested\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x05inner\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x13UsedVecInnerElement\x00\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\tvec_inner\x00\x00\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00\x16UsedVecInnerVecElement\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13publish_nested_data\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14publish_nested_topic\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14with_panic_raw_error\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04fail\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x15UsedEventWithDataType\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x19used_event_with_data_type\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x07payload\x00\x00\x00\x07\xd0\x00\x00\x00\x11UsedEventDataType\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x16UsedTupleReturnElement\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x16UsedVecInnerVecElement\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x16UsedEventWithTopicType\x00\x00\x00\x00\x00\x01\x00\x00\x00\x1aused_event_with_topic_type\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x07\xd0\x00\x00\x00\x12UsedEventTopicType\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x06amount\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x17UsedEventWithNestedData\x00\x00\x00\x00\x01\x00\x00\x00\x1bused_event_with_nested_data\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x07payload\x00\x00\x00\x07\xd0\x00\x00\x00\x12UsedEventDataOuter\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x18UnusedNonContractFnParam\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01x\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x17with_export_false_error\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd0\x00\x00\x00\x14UsedExportFalseError\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x18UsedEventWithNestedTopic\x00\x00\x00\x01\x00\x00\x00\x1cused_event_with_nested_topic\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04info\x00\x00\x07\xd0\x00\x00\x00\x13UsedEventTopicOuter\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x06amount\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x19UnusedNonContractFnReturn\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01x\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x18with_export_false_struct\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01s\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x15UsedExportFalseStruct\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1apublish_export_false_event\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\xe3Context of a single authorized call performed by an address.\n\nCustom account contracts that implement `__check_auth` special function\nreceive a list of `Context` values corresponding to all the calls that\nneed to be authorized.\x00\x00\x00\x00\x00\x00\x00\x00\x07Context\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x14Contract invocation.\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x01\x00\x00\x00=Contract that has a constructor with no arguments is created.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00DContract that has a constructor with 1 or more arguments is created.\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x01\x00\x00\x00\xbdAuthorization context of a single contract call.\n\nThis struct corresponds to a `require_auth_for_args` call for an address\nfrom `contract` function with `fn_name` name and `args` arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08contract\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x07fn_name\x00\x00\x00\x00\x11\x00\x00\x00\x02\x00\x00\x00_Contract executable used for creating a new contract and used in\n`CreateContractHostFnContext`.\x00\x00\x00\x00\x00\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x008Value of contract node in InvokerContractAuthEntry tree.\x00\x00\x00\x00\x00\x00\x00\x15SubContractInvocation\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x07\xd0\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x00\x00\x00\x00\x0fsub_invocations\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00\x18InvokerContractAuthEntry\x00\x00\x00\x02\x00\x00\x01/A node in the tree of authorizations performed on behalf of the current\ncontract as invoker of the contracts deeper in the call stack.\n\nThis is used as an argument of `authorize_as_current_contract` host function.\n\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\ncurrent contract.\x00\x00\x00\x00\x00\x00\x00\x00\x18InvokerContractAuthEntry\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x12Invoke a contract.\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x15SubContractInvocation\x00\x00\x00\x00\x00\x00\x01\x00\x00\x005Create a contract passing 0 arguments to constructor.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00=Create a contract passing 0 or more arguments to constructor.\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x01\x00\x00\x00vAuthorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\xd6Authorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\nThis is the same as `CreateContractHostFnContext`, but also has\ncontract constructor arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x10constructor_args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nExecutable\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStellarAsset\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Account\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumB\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x07\x00\x00\x00\x07\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumC\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorB\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x0c\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorC\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00e\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00f\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventA\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventB\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_b\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventC\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_c\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructA\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructB\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructC\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x03\xea\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntA\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntB\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntC\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\xc8\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x01,\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleB\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleC\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x0b\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1a\x00\x00\x00\x00\x00O\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12rssdk_spec_shaking\x00\x00\x00\x00\x00\x012\x00\x00\x00";
     extern crate test;
     #[rustc_test_marker = "test::test_spec_shaking_v2"]
     #[doc(hidden)]

@@ -290,7 +290,7 @@ impl Env {
     ///
     /// Equivalent to `panic!`, but with an error value instead of a string.
     #[doc(hidden)]
-    #[cfg(feature = "experimental_spec_shaking_v2")]
+    #[cfg(not(feature = "disable_spec_shaking_v2"))]
     #[inline(always)]
     pub fn panic_with_error<I>(&self, error: I) -> !
     where
@@ -304,7 +304,7 @@ impl Env {
     ///
     /// Equivalent to `panic!`, but with an error value instead of a string.
     #[doc(hidden)]
-    #[cfg(not(feature = "experimental_spec_shaking_v2"))]
+    #[cfg(feature = "disable_spec_shaking_v2")]
     #[inline(always)]
     pub fn panic_with_error(&self, error: impl Into<internal::Error>) -> ! {
         self.panic_with_error_inner(error.into())
