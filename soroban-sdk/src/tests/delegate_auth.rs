@@ -71,7 +71,7 @@ impl CustomAccountInterface for ModularAccount {
             .ed25519_verify(&public_key, &signature_payload.into(), &signature);
         record_authorized_calls(&env, &auth_contexts);
 
-        // The signers the user attached to the transaction for this account's
+        // The signers the user attached to the auth entry for this account's
         // authorization.
         let delegates = env.get_delegated_signers();
 
