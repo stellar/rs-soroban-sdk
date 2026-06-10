@@ -42,7 +42,6 @@ mod crypto_poseidon;
 mod crypto_secp256k1;
 mod crypto_secp256r1;
 mod crypto_sha256;
-mod delegate_auth;
 mod env;
 mod max_ttl;
 mod muxed_address;
