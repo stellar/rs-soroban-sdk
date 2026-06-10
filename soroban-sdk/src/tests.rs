@@ -50,6 +50,7 @@ mod prng;
 mod prng_range;
 mod proptest_scval_cmp;
 mod proptest_val_cmp;
+mod snapshot_source_empty_wasm_hash;
 mod storage_testutils;
 mod token_client;
 mod vec_slice;

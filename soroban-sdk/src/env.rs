@@ -600,6 +600,44 @@ use std::{path::Path, rc::Rc};
 #[cfg(any(test, feature = "testutils"))]
 use xdr::{LedgerEntry, LedgerKey, LedgerKeyContractData, SorobanAuthorizationEntry};
 
+/// The SHA256 of empty/zero bytes
+/// (`e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`), which
+/// the host uses as the synthetic WASM hash for native (non-WASM) test
+/// contracts. ContractCode entries for this hash never exist on any real
+/// network, so lookups for them are filtered out before reaching a
+/// `SnapshotSource`.
+#[cfg(any(test, feature = "testutils"))]
+const EMPTY_WASM_HASH: [u8; 32] = [
+    0xe3, 0xb0, 0xc4, 0x42, 0x98, 0xfc, 0x1c, 0x14, 0x9a, 0xfb, 0xf4, 0xc8, 0x99, 0x6f, 0xb9, 0x24,
+    0x27, 0xae, 0x41, 0xe4, 0x64, 0x9b, 0x93, 0x4c, 0xa4, 0x95, 0x99, 0x1b, 0x78, 0x52, 0xb8, 0x55,
+];
+
+/// Wraps a [`SnapshotSource`](internal::storage::SnapshotSource) and short
+/// circuits lookups for the empty WASM hash ContractCode entry used by native
+/// test contracts, returning `Ok(None)` without ever consulting the inner
+/// source. This avoids wasteful (and always-failing) lookups against remote
+/// snapshot sources for an entry that will never exist on any real network.
+#[cfg(any(test, feature = "testutils"))]
+struct FilteringSnapshotSource {
+    inner: Rc<dyn internal::storage::SnapshotSource>,
+}
+
+#[cfg(any(test, feature = "testutils"))]
+impl internal::storage::SnapshotSource for FilteringSnapshotSource {
+    fn get(
+        &self,
+        key: &Rc<xdr::LedgerKey>,
+    ) -> Result<Option<(Rc<xdr::LedgerEntry>, Option<u32>)>, soroban_env_host::HostError> {
+        if let xdr::LedgerKey::ContractCode(xdr::LedgerKeyContractCode { hash, .. }) = key.as_ref()
+        {
+            if hash.0 == EMPTY_WASM_HASH {
+                return Ok(None);
+            }
+        }
+        self.inner.get(key)
+    }
+}
+
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
@@ -684,6 +722,14 @@ impl Env {
             1
         };
 
+        // Wrap the incoming snapshot source so that lookups for the empty WASM
+        // hash ContractCode entry (used by native test contracts) are short
+        // circuited and never reach the underlying source. See issue #1635
+        // "Empty WASM hash leaks to SnapshotSource".
+        let recording_footprint: Rc<dyn internal::storage::SnapshotSource> =
+            Rc::new(FilteringSnapshotSource {
+                inner: recording_footprint,
+            });
         let storage = internal::storage::Storage::with_recording_footprint(recording_footprint);
         let budget = internal::budget::Budget::default();
         let env_impl = internal::EnvImpl::with_storage_and_budget(storage, budget.clone());
