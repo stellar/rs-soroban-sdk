@@ -1,6 +1,8 @@
 //! Storage contains types for storing data for the currently executing contract.
 use core::fmt::Debug;
 
+#[cfg(feature = "next")]
+use crate::{env::internal::AddressObject, Address};
 use crate::{
     env::internal::{self, ContractTtlExtension, StorageType, Val},
     unwrap::{UnwrapInfallible, UnwrapOptimized},
@@ -9,8 +11,9 @@ use crate::{
 
 /// Storage stores and retrieves data for the currently executing contract.
 ///
-/// All data stored can only be queried and modified by the contract that stores
-/// it. Contracts cannot query or modify data stored by other contracts.
+/// By default, data can only be queried and modified by the contract that stores
+/// it. The `next` feature also exposes read-only external storage methods that
+/// can query another contract's storage without invoking that contract.
 ///
 /// There are three types of storage - Temporary, Persistent, and Instance.
 ///
@@ -181,8 +184,7 @@ impl Storage {
         V: TryFromVal<Env, Val>,
     {
         let key = key.into_val(&self.env);
-        if self.has_internal(key, storage_type) {
-            let rv = self.get_internal(key, storage_type);
+        if let Some(rv) = self.try_get_internal(key, storage_type) {
             Some(V::try_from_val(&self.env, &rv).unwrap_optimized())
         } else {
             None
@@ -326,6 +328,144 @@ impl Storage {
     fn get_internal(&self, key: Val, storage_type: StorageType) -> Val {
         internal::Env::get_contract_data(&self.env, key, storage_type).unwrap_infallible()
     }
+
+    #[cfg(all(target_family = "wasm", feature = "next"))]
+    fn try_get_internal(&self, key: Val, storage_type: StorageType) -> Option<Val> {
+        #[link(wasm_import_module = "l")]
+        extern "C" {
+            #[link_name = "h"]
+            fn try_get_contract_data(k: Val, t: StorageType, has_pos: internal::U32Val) -> Val;
+        }
+
+        let mut has = Val::VOID.to_val();
+        let has_pos = internal::U32Val::from((&mut has as *mut Val) as u32);
+        let value = unsafe { try_get_contract_data(key, storage_type, has_pos) };
+        if bool::from(internal::Bool::try_from_val(&self.env, &has).unwrap_optimized()) {
+            Some(value)
+        } else {
+            None
+        }
+    }
+
+    #[cfg(not(all(target_family = "wasm", feature = "next")))]
+    fn try_get_internal(&self, key: Val, storage_type: StorageType) -> Option<Val> {
+        if self.has_internal(key, storage_type) {
+            Some(self.get_internal(key, storage_type))
+        } else {
+            None
+        }
+    }
+
+    /// Returns if the provided contract stores a value under the given key.
+    ///
+    /// This is read-only. It records the target contract data key in the
+    /// transaction footprint and does not invoke the target contract.
+    #[cfg(feature = "next")]
+    #[inline(always)]
+    pub(crate) fn has_external<K>(
+        &self,
+        contract: &Address,
+        key: &K,
+        storage_type: StorageType,
+    ) -> bool
+    where
+        K: IntoVal<Env, Val>,
+    {
+        self.has_external_internal(contract.to_object(), key.into_val(&self.env), storage_type)
+    }
+
+    /// Returns the value stored by the provided contract under the given key.
+    ///
+    /// Returns `None` when the value is missing. This is read-only and does not
+    /// invoke the target contract. External instance storage reads load the
+    /// target contract's whole instance entry.
+    #[cfg(feature = "next")]
+    #[inline(always)]
+    pub(crate) fn get_external<K, V>(
+        &self,
+        contract: &Address,
+        key: &K,
+        storage_type: StorageType,
+    ) -> Option<V>
+    where
+        K: IntoVal<Env, Val>,
+        V: TryFromVal<Env, Val>,
+    {
+        let key = key.into_val(&self.env);
+        if let Some(rv) = self.try_get_external_internal(contract.to_object(), key, storage_type) {
+            Some(V::try_from_val(&self.env, &rv).unwrap_optimized())
+        } else {
+            None
+        }
+    }
+
+    #[cfg(all(target_family = "wasm", feature = "next"))]
+    fn has_external_internal(
+        &self,
+        contract: AddressObject,
+        key: Val,
+        storage_type: StorageType,
+    ) -> bool {
+        #[link(wasm_import_module = "l")]
+        extern "C" {
+            #[link_name = "i"]
+            fn has_external_contract_data(
+                contract: AddressObject,
+                k: Val,
+                t: StorageType,
+            ) -> internal::Bool;
+        }
+
+        unsafe { has_external_contract_data(contract, key, storage_type) }.into()
+    }
+
+    #[cfg(all(not(target_family = "wasm"), feature = "next"))]
+    fn has_external_internal(
+        &self,
+        _contract: AddressObject,
+        _key: Val,
+        _storage_type: StorageType,
+    ) -> bool {
+        panic!("external storage reads require protocol 28 host support")
+    }
+
+    #[cfg(all(target_family = "wasm", feature = "next"))]
+    fn try_get_external_internal(
+        &self,
+        contract: AddressObject,
+        key: Val,
+        storage_type: StorageType,
+    ) -> Option<Val> {
+        #[link(wasm_import_module = "l")]
+        extern "C" {
+            #[link_name = "k"]
+            fn try_get_external_contract_data(
+                contract: AddressObject,
+                k: Val,
+                t: StorageType,
+                has_pos: internal::U32Val,
+            ) -> Val;
+        }
+
+        let mut has = Val::VOID.to_val();
+        let has_pos = internal::U32Val::from((&mut has as *mut Val) as u32);
+        let value = unsafe { try_get_external_contract_data(contract, key, storage_type, has_pos) };
+        if bool::from(internal::Bool::try_from_val(&self.env, &has).unwrap_optimized()) {
+            Some(value)
+        } else {
+            None
+        }
+    }
+
+    #[cfg(all(not(target_family = "wasm"), feature = "next"))]
+    fn try_get_external_internal(
+        &self,
+        _contract: AddressObject,
+        _key: Val,
+        _storage_type: StorageType,
+    ) -> Option<Val> {
+        panic!("external storage reads require protocol 28 host support")
+    }
 }
 
 pub struct Persistent {
@@ -347,6 +487,32 @@ impl Persistent {
         V: TryFromVal<Env, Val>,
     {
         self.storage.get(key, StorageType::Persistent)
+    }
+
+    /// Returns if the provided contract stores a persistent value under `key`.
+    ///
+    /// This is read-only and does not invoke the target contract.
+    #[cfg(feature = "next")]
+    pub fn has_external<K>(&self, contract: &Address, key: &K) -> bool
+    where
+        K: IntoVal<Env, Val>,
+    {
+        self.storage
+            .has_external(contract, key, StorageType::Persistent)
+    }
+
+    /// Returns a persistent value stored by the provided contract.
+    ///
+    /// This is read-only and does not invoke the target contract.
+    #[cfg(feature = "next")]
+    pub fn get_external<K, V>(&self, contract: &Address, key: &K) -> Option<V>
+    where
+        V::Error: Debug,
+        K: IntoVal<Env, Val>,
+        V: TryFromVal<Env, Val>,
+    {
+        self.storage
+            .get_external(contract, key, StorageType::Persistent)
     }
 
     pub fn set<K, V>(&self, key: &K, val: &V)
@@ -464,6 +630,32 @@ impl Temporary {
         self.storage.get(key, StorageType::Temporary)
     }
 
+    /// Returns if the provided contract stores a temporary value under `key`.
+    ///
+    /// This is read-only and does not invoke the target contract.
+    #[cfg(feature = "next")]
+    pub fn has_external<K>(&self, contract: &Address, key: &K) -> bool
+    where
+        K: IntoVal<Env, Val>,
+    {
+        self.storage
+            .has_external(contract, key, StorageType::Temporary)
+    }
+
+    /// Returns a temporary value stored by the provided contract.
+    ///
+    /// This is read-only and does not invoke the target contract.
+    #[cfg(feature = "next")]
+    pub fn get_external<K, V>(&self, contract: &Address, key: &K) -> Option<V>
+    where
+        V::Error: Debug,
+        K: IntoVal<Env, Val>,
+        V: TryFromVal<Env, Val>,
+    {
+        self.storage
+            .get_external(contract, key, StorageType::Temporary)
+    }
+
     pub fn set<K, V>(&self, key: &K, val: &V)
     where
         K: IntoVal<Env, Val>,
@@ -551,6 +743,32 @@ impl Instance {
         V: TryFromVal<Env, Val>,
     {
         self.storage.get(key, StorageType::Instance)
+    }
+
+    /// Returns if the provided contract stores an instance value under `key`.
+    ///
+    /// This is read-only and loads the target contract's whole instance entry.
+    #[cfg(feature = "next")]
+    pub fn has_external<K>(&self, contract: &Address, key: &K) -> bool
+    where
+        K: IntoVal<Env, Val>,
+    {
+        self.storage
+            .has_external(contract, key, StorageType::Instance)
+    }
+
+    /// Returns an instance value stored by the provided contract.
+    ///
+    /// This is read-only and loads the target contract's whole instance entry.
+    #[cfg(feature = "next")]
+    pub fn get_external<K, V>(&self, contract: &Address, key: &K) -> Option<V>
+    where
+        V::Error: Debug,
+        K: IntoVal<Env, Val>,
+        V: TryFromVal<Env, Val>,
+    {
+        self.storage
+            .get_external(contract, key, StorageType::Instance)
     }
 
     pub fn set<K, V>(&self, key: &K, val: &V)
