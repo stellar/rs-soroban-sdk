@@ -1,4 +1,4 @@
-//! Exercises delegated `__check_auth` via [`Address::delegate_auth`].
+//! Exercises delegated `__check_auth` via [`crate::custom_account::CustomAccount::delegate_auth`].
 //!
 //! A custom account may delegate (part of) its authentication to a set of other
 //! addresses rather than performing all of it itself. The user chooses which of
@@ -11,17 +11,16 @@ use ed25519_dalek::{Signer, SigningKey};
 use sha2::{Digest, Sha256};
 
 use soroban_sdk::xdr::{
-    self, HashIdPreimage, HashIdPreimageSorobanAuthorizationWithAddress, InvokeContractArgs,
-    Limits, ScAddress, ScErrorCode, ScErrorType, ScVal, SorobanAddressCredentials,
-    SorobanAddressCredentialsWithDelegates, SorobanAuthorizationEntry, SorobanAuthorizedFunction,
-    SorobanAuthorizedInvocation, SorobanCredentials, SorobanDelegateSignature, StringM, VecM,
-    WriteXdr,
+    HashIdPreimage, HashIdPreimageSorobanAuthorizationWithAddress, InvokeContractArgs, Limits,
+    ScAddress, ScVal, SorobanAddressCredentials, SorobanAddressCredentialsWithDelegates,
+    SorobanAuthorizationEntry, SorobanAuthorizedFunction, SorobanAuthorizedInvocation,
+    SorobanCredentials, SorobanDelegateSignature, StringM, VecM, WriteXdr,
 };
 use soroban_sdk::{
     auth::{Context, CustomAccountInterface},
     contract, contracterror, contractimpl, contracttype,
     crypto::Hash,
-    vec, Address, BytesN, Env, Error, Symbol, TryFromVal, Vec,
+    vec, Address, BytesN, Env, Symbol, TryFromVal, Vec,
 };
 
 #[contracterror]
@@ -73,7 +72,7 @@ impl CustomAccountInterface for ModularAccount {
 
         // The signers the user attached to the auth entry for this account's
         // authorization.
-        let delegates = env.get_delegated_signers();
+        let delegates = env.custom_account().get_delegated_signers();
 
         let signers: Vec<Address> = env.storage().instance().get(&DataKey::Signers).unwrap();
         for delegate in delegates.iter() {
@@ -83,7 +82,7 @@ impl CustomAccountInterface for ModularAccount {
                 return Err(ModularAccountError::UnknownDelegate);
             }
             // Forward the current authentication context to the delegate.
-            delegate.delegate_auth();
+            env.custom_account().delegate_auth(&delegate);
         }
         Ok(())
     }

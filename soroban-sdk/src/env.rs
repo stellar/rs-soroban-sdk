@@ -114,6 +114,7 @@ where
 }
 
 use crate::auth::InvokerContractAuthEntry;
+use crate::custom_account::CustomAccount;
 use crate::unwrap::UnwrapInfallible;
 use crate::unwrap::UnwrapOptimized;
 use crate::InvokeError;
@@ -345,6 +346,15 @@ impl Env {
         Deployer::new(self)
     }
 
+    /// Get an accessor for functions used for custom account implementation.
+    ///
+    /// The accessor's methods may only be called within `__check_auth` contract
+    /// function.
+    #[inline(always)]
+    pub fn custom_account(&self) -> CustomAccount {
+        CustomAccount::new(self)
+    }
+
     /// Get a [Crypto] for accessing the current cryptographic functions.
     #[inline(always)]
     pub fn crypto(&self) -> Crypto {
@@ -379,31 +389,6 @@ impl Env {
     pub fn current_contract_address(&self) -> Address {
         let address = internal::Env::get_current_contract_address(self).unwrap_infallible();
         unsafe { Address::unchecked_new(self.clone(), address) }
-    }
-
-    /// Get the addresses of delegated signers passed to the transaction for
-    /// performing authorization checks on behalf of the current custom
-    /// account contract.
-    ///
-    /// This may only be called within `__check_auth` contract function.
-    ///
-    /// This returns the addresses provided by the user and these are not
-    /// sanitized in any way. It is the responsibility of the contract to check
-    /// that the addresses are actually valid delegates for the account.
-    ///
-    /// Typical usage flow is to use `Env::get_delegated_signers` to get all the
-    /// delegated signers passed by the user inside the matching auth entry, then
-    /// verify that these delegates actually belong to the account and are valid
-    /// for this transaction, and then call `delegate_auth` for each of
-    /// these delegates.
-    ///
-    /// ### Panics
-    ///
-    /// If called outside of `__check_auth`.
-    pub fn get_delegated_signers(&self) -> Vec<Address> {
-        let addresses =
-            internal::Env::get_delegated_signers_for_current_auth_check(self).unwrap_infallible();
-        addresses.into_val(self)
     }
 
     #[doc(hidden)]
