@@ -391,8 +391,10 @@ impl Storage {
         K: IntoVal<Env, Val>,
         V: TryFromVal<Env, Val>,
     {
+        let contract = contract.to_object();
         let key = key.into_val(&self.env);
-        if let Some(rv) = self.try_get_external_internal(contract.to_object(), key, storage_type) {
+        if self.has_external_internal(contract, key, storage_type) {
+            let rv = self.get_external_internal(contract, key, storage_type);
             Some(V::try_from_val(&self.env, &rv).unwrap_optimized())
         } else {
             None
@@ -430,40 +432,28 @@ impl Storage {
     }
 
     #[cfg(all(target_family = "wasm", feature = "next"))]
-    fn try_get_external_internal(
+    fn get_external_internal(
         &self,
         contract: AddressObject,
         key: Val,
         storage_type: StorageType,
-    ) -> Option<Val> {
+    ) -> Val {
         #[link(wasm_import_module = "l")]
         extern "C" {
-            #[link_name = "k"]
-            fn try_get_external_contract_data(
-                contract: AddressObject,
-                k: Val,
-                t: StorageType,
-                has_pos: internal::U32Val,
-            ) -> Val;
+            #[link_name = "j"]
+            fn get_external_contract_data(contract: AddressObject, k: Val, t: StorageType) -> Val;
         }
 
-        let mut has = Val::VOID.to_val();
-        let has_pos = internal::U32Val::from((&mut has as *mut Val) as u32);
-        let value = unsafe { try_get_external_contract_data(contract, key, storage_type, has_pos) };
-        if bool::from(internal::Bool::try_from_val(&self.env, &has).unwrap_optimized()) {
-            Some(value)
-        } else {
-            None
-        }
+        unsafe { get_external_contract_data(contract, key, storage_type) }
     }
 
     #[cfg(all(not(target_family = "wasm"), feature = "next"))]
-    fn try_get_external_internal(
+    fn get_external_internal(
         &self,
         _contract: AddressObject,
         _key: Val,
         _storage_type: StorageType,
-    ) -> Option<Val> {
+    ) -> Val {
         panic!("external storage reads require protocol 28 host support")
     }
 }
