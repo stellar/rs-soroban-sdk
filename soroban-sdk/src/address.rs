@@ -269,6 +269,20 @@ impl Address {
         self.env.require_auth(self);
     }
 
+    /// Delegates the current `__check_auth` authorization to the provided
+    /// `address`. CAP-71-01: must be called from inside a custom account's
+    /// `__check_auth`. The host requires `address` to have authorized the same
+    /// call tree (same signature payload + context) via the auth entry's
+    /// delegate signatures.
+    ///
+    /// ### Panics
+    ///
+    /// If called outside of `__check_auth`, or if `address` has not
+    /// authorized this invocation.
+    pub fn delegate_account_auth(&self) {
+        self.env.delegate_account_auth(self);
+    }
+
     /// Creates an `Address` corresponding to the provided Stellar strkey.
     ///
     /// The only supported strkey types are account keys (`G...`) and contract keys (`C...`). Any

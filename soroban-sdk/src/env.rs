@@ -392,6 +392,11 @@ impl Env {
         internal::Env::require_auth(self, address.to_object()).unwrap_infallible();
     }
 
+    #[doc(hidden)]
+    pub(crate) fn delegate_account_auth(&self, address: &Address) {
+        internal::Env::delegate_account_auth(self, address.to_object()).unwrap_infallible();
+    }
+
     /// Invokes a function of a contract that is registered in the [Env].
     ///
     /// # Panics

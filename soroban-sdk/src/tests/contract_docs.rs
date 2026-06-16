@@ -1,8 +1,7 @@
 mod fn_ {
     use crate as soroban_sdk;
     use soroban_sdk::{contract, contractimpl, Env};
-    use stellar_xdr::curr as stellar_xdr;
-    use stellar_xdr::{Limits, ReadXdr, ScSpecEntry, ScSpecFunctionV0};
+        use stellar_xdr::{Limits, ReadXdr, ScSpecEntry, ScSpecFunctionV0};
 
     #[contract]
     pub struct Contract;
@@ -39,8 +38,7 @@ mod fn_ {
 mod struct_ {
     use crate as soroban_sdk;
     use soroban_sdk::contracttype;
-    use stellar_xdr::curr as stellar_xdr;
-    use stellar_xdr::{Limits, ReadXdr, ScSpecEntry, ScSpecUdtStructFieldV0, ScSpecUdtStructV0};
+        use stellar_xdr::{Limits, ReadXdr, ScSpecEntry, ScSpecUdtStructFieldV0, ScSpecUdtStructV0};
 
     /// S holds a and
     // TODO: Implement.
@@ -83,8 +81,7 @@ mod struct_ {
 mod struct_tuple {
     use crate as soroban_sdk;
     use soroban_sdk::contracttype;
-    use stellar_xdr::curr as stellar_xdr;
-    use stellar_xdr::{Limits, ReadXdr, ScSpecEntry, ScSpecUdtStructFieldV0, ScSpecUdtStructV0};
+        use stellar_xdr::{Limits, ReadXdr, ScSpecEntry, ScSpecUdtStructFieldV0, ScSpecUdtStructV0};
 
     /// S holds two u64s.
     #[contracttype]
@@ -125,8 +122,7 @@ mod struct_tuple {
 mod enum_ {
     use crate as soroban_sdk;
     use soroban_sdk::contracttype;
-    use stellar_xdr::curr as stellar_xdr;
-    use stellar_xdr::{
+        use stellar_xdr::{
         Limits, ReadXdr, ScSpecEntry, ScSpecUdtUnionCaseTupleV0, ScSpecUdtUnionCaseV0,
         ScSpecUdtUnionCaseVoidV0, ScSpecUdtUnionV0,
     };
@@ -177,8 +173,7 @@ mod enum_ {
 mod enum_int {
     use crate as soroban_sdk;
     use soroban_sdk::contracttype;
-    use stellar_xdr::curr as stellar_xdr;
-    use stellar_xdr::{Limits, ReadXdr, ScSpecEntry, ScSpecUdtEnumCaseV0, ScSpecUdtEnumV0};
+        use stellar_xdr::{Limits, ReadXdr, ScSpecEntry, ScSpecUdtEnumCaseV0, ScSpecUdtEnumV0};
 
     /// E has variants A and B.
     #[contracttype]
@@ -220,8 +215,7 @@ mod enum_int {
 mod enum_error_int {
     use crate as soroban_sdk;
     use soroban_sdk::contracterror;
-    use stellar_xdr::curr as stellar_xdr;
-    use stellar_xdr::{
+        use stellar_xdr::{
         Limits, ReadXdr, ScSpecEntry, ScSpecUdtErrorEnumCaseV0, ScSpecUdtErrorEnumV0,
     };
 

@@ -1,6 +1,5 @@
 use proc_macro2::{Literal, TokenStream};
 use quote::quote;
-use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{
     ScSpecEventParamLocationV0, ScSpecEventV0, ScSpecTypeDef, ScSpecUdtEnumV0,
     ScSpecUdtErrorEnumV0, ScSpecUdtStructV0, ScSpecUdtUnionV0,
@@ -348,8 +347,7 @@ mod test {
 
     use super::{generate_event, generate_struct, GenerateError};
     use quote::quote;
-    use stellar_xdr::curr as stellar_xdr;
-    use stellar_xdr::{
+        use stellar_xdr::{
         ScSpecEventDataFormat, ScSpecEventParamLocationV0, ScSpecEventParamV0, ScSpecEventV0,
         ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, ScSymbol, VecM,
     };

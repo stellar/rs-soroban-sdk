@@ -1,5 +1,5 @@
 use proc_macro2::Ident;
-use stellar_xdr::curr::{ScSymbol, StringM};
+use stellar_xdr::{ScSymbol, StringM};
 
 use crate::types::GenerateError;
 
