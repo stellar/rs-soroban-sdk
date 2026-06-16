@@ -31,6 +31,29 @@ fn init_tracing() {
     });
 }
 
+/// The stellar-xdr `curr` schema version that cached fixtures are serialized
+/// against.
+///
+/// Committed snapshot fixtures store ledger entries using stellar-xdr's serde
+/// JSON representation. If that representation ever changes (a field rename,
+/// add/remove, or enum-variant shift), fixtures produced by an older schema
+/// would silently deserialize into wrong data — or panic — with no indication
+/// of why. Embedding this fingerprint and rejecting mismatches turns that into
+/// a clear, actionable failure instead.
+fn xdr_schema_version() -> &'static str {
+    stellar_xdr::VERSION.xdr_curr
+}
+
+/// On-disk wrapper for a cached ledger-entry fixture, tagging the serialized
+/// entry with the XDR schema version it was produced with.
+#[derive(serde::Serialize, serde::Deserialize)]
+struct CachedEntry {
+    /// stellar-xdr `curr` schema version (see [`xdr_schema_version`]).
+    xdr_schema_version: String,
+    /// The cached ledger entry, or `None` if the entry was absent/removed.
+    entry: Option<LedgerEntry>,
+}
+
 /// Snapshot source that downloads ledger meta and searches for ledger entries
 /// based on a specific transaction context.
 pub struct TxSnapshotSource {
@@ -97,18 +120,35 @@ impl TxSnapshotSource {
             ledger_cache_dir.join(format!("{:x}.json", key_hash)),
             |write| -> Result<(), Box<dyn std::error::Error>> {
                 // Fetch the data from the underlying fetcher
-                let result = self.fetcher.fetch(key)?;
+                let entry = self.fetcher.fetch(key)?;
 
-                // Serialize to JSON
-                serde_json::to_writer_pretty(write, &result)?;
+                // Serialize to JSON, tagged with the XDR schema version.
+                let cached = CachedEntry {
+                    xdr_schema_version: xdr_schema_version().to_string(),
+                    entry,
+                };
+                serde_json::to_writer_pretty(write, &cached)?;
 
                 Ok(())
             },
         )
         .expect("failed to cache entry");
 
-        // Parse the cached result
-        serde_json::from_reader(fetch_read).expect("failed to parse cached entry")
+        // Parse the cached result, rejecting fixtures produced by a different
+        // XDR schema (which would otherwise deserialize into wrong data).
+        let cached: CachedEntry =
+            serde_json::from_reader(fetch_read).expect("failed to parse cached entry");
+        assert_eq!(
+            cached.xdr_schema_version,
+            xdr_schema_version(),
+            "cached snapshot {:x}.json was produced with stellar-xdr schema {} \
+             but this build uses {}; delete the tests-snapshot-source directory \
+             and re-run to regenerate the fixtures",
+            key_hash,
+            cached.xdr_schema_version,
+            xdr_schema_version(),
+        );
+        cached.entry
     }
 }
 

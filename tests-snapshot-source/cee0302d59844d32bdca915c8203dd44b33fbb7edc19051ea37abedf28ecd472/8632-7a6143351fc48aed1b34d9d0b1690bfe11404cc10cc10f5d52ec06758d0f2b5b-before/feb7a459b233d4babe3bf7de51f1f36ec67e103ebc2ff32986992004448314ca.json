@@ -1,49 +1,52 @@
 {
-  "last_modified_ledger_seq": 8622,
-  "data": {
-    "contract_data": {
-      "ext": "v0",
-      "contract": "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC",
-      "key": {
-        "vec": [
-          {
-            "symbol": "Balance"
-          },
-          {
-            "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM"
-          }
-        ]
-      },
-      "durability": "persistent",
-      "val": {
-        "map": [
-          {
-            "key": {
-              "symbol": "amount"
+  "xdr_schema_version": "cff714a5ebaaaf2dac343b3546c2df73f0b7a36e",
+  "entry": {
+    "last_modified_ledger_seq": 8622,
+    "data": {
+      "contract_data": {
+        "ext": "v0",
+        "contract": "CDLZFC3SYJYDZT7K67VZ75HPJVIEUVNIXF47ZG2FB2RMQQVU2HHGCYSC",
+        "key": {
+          "vec": [
+            {
+              "symbol": "Balance"
             },
-            "val": {
-              "i128": "6"
+            {
+              "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM"
             }
-          },
-          {
-            "key": {
-              "symbol": "authorized"
+          ]
+        },
+        "durability": "persistent",
+        "val": {
+          "map": [
+            {
+              "key": {
+                "symbol": "amount"
+              },
+              "val": {
+                "i128": "6"
+              }
             },
-            "val": {
-              "bool": true
-            }
-          },
-          {
-            "key": {
-              "symbol": "clawback"
+            {
+              "key": {
+                "symbol": "authorized"
+              },
+              "val": {
+                "bool": true
+              }
             },
-            "val": {
-              "bool": false
+            {
+              "key": {
+                "symbol": "clawback"
+              },
+              "val": {
+                "bool": false
+              }
             }
-          }
-        ]
+          ]
+        }
       }
-    }
-  },
-  "ext": "v0"
+    },
+    "ext": "v0"
+  }
 }

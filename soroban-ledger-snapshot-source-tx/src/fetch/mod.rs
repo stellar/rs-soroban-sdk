@@ -177,10 +177,18 @@ impl LedgerEntryFetcher {
     ///
     /// This method uses several layers of caching to the system cache directory to avoid refetching entries.
     pub fn fetch(&self, key: &LedgerKey) -> Result<Option<LedgerEntry>, Error> {
-        tracing::info!(key = %serde_json::to_value(key)?, "fetch");
+        // Serialization here is purely for logging; never let a logging failure
+        // change the outcome of the fetch, so use `unwrap_or_default` (which
+        // yields JSON null) rather than `?`.
+        tracing::info!(key = %serde_json::to_value(key).unwrap_or_default(), "fetch");
         let result = self.fetch_with_entry_cache(key);
         if let Ok(entry) = &result {
-            tracing::info!(entry = %serde_json::to_value(entry)?, "found")
+            match entry {
+                Some(_) => {
+                    tracing::info!(entry = %serde_json::to_value(entry).unwrap_or_default(), "found")
+                }
+                None => tracing::info!("not found"),
+            }
         }
         result
     }
@@ -356,13 +364,11 @@ impl LedgerEntryFetcher {
         tracing::debug!(ledger, "fetch from rpc");
         let key_xdr = key.to_xdr(Limits::none())?;
         let key_hash = Sha256::digest(&key_xdr);
-        let rpc_read = cache(
-            cache_path.join(format!("rpc-{ledger}-{key_hash:x}.json")),
-            |write| {
-                get_ledger_entry(rpc_url, key, write)
-                    .map_err(|e| Box::new(e) as Box<dyn std::error::Error>)
-            },
-        )?;
+        let rpc_cache_path = cache_path.join(format!("rpc-{ledger}-{key_hash:x}.json"));
+        let rpc_read = cache(rpc_cache_path.clone(), |write| {
+            get_ledger_entry(rpc_url, key, write)
+                .map_err(|e| Box::new(e) as Box<dyn std::error::Error>)
+        })?;
         if let Some((entry, _ttl, latest_ledger)) = parse_ledger_entry(rpc_read)? {
             // Only trust the RPC answer when the node has actually observed the
             // target ledger (latest_ledger >= ledger). If the node is lagging,
@@ -380,6 +386,13 @@ impl LedgerEntryFetcher {
             if usable {
                 return Ok(Some(Some(entry)));
             }
+            // The response was not usable (e.g. a lagging node had not yet
+            // observed `ledger`). Don't leave it in the cache: a stale
+            // `latestLedger` would be replayed on every subsequent run and keep
+            // the RPC fast path permanently disabled for this (ledger, key),
+            // even after the node catches up. Removing it lets a later run
+            // re-query. Falls through to the meta/archive search below.
+            let _ = std::fs::remove_file(&rpc_cache_path);
         }
 
         Ok(None)
