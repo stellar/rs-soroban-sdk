@@ -2,8 +2,6 @@ use std::fs::{self, File};
 use std::io::{Read, Write};
 use std::path::Path;
 
-use fs2::FileExt;
-
 /// Cache a file, collecting bytes if not present, and return a reader
 pub fn cache<P, C, CE>(path: P, collect: C) -> Result<impl Read, CacheError<CE>>
 where
@@ -17,7 +15,10 @@ where
     if !path.exists() {
         let lock_path = path.with_extension("lock");
         let lock_file = File::create(&lock_path).map_err(CacheError::Io)?;
-        lock_file.lock_exclusive().map_err(CacheError::Io)?;
+        // Acquire an exclusive advisory lock using std's native file locking
+        // (stable since Rust 1.89), released automatically when `lock_file` is
+        // dropped at the end of this scope.
+        File::lock(&lock_file).map_err(CacheError::Io)?;
 
         if !path.exists() {
             // Write atomically via temp file and rename.

@@ -25,4 +25,3 @@ tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 reqwest = { version = "0.12", default-features = false, features = ["json", "blocking", "rustls-tls"] }
 flate2 = { version = "1.0", features = ["rust_backend"] }
 zstd = "0.13"
-fs2 = "0.4"
