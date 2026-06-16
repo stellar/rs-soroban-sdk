@@ -603,8 +603,9 @@ use xdr::{LedgerEntry, LedgerKey, LedgerKeyContractData, SorobanAuthorizationEnt
 /// Wraps a [`SnapshotSource`](internal::storage::SnapshotSource) and short
 /// circuits lookups for the empty WASM hash ContractCode entry used by native
 /// test contracts, returning `Ok(None)` without ever consulting the inner
-/// source. This avoids wasteful (and always-failing) lookups against remote
-/// snapshot sources for an entry that will never exist on any real network.
+/// source. This is an optimization that avoids wasteful (and always-failing)
+/// lookups against remote snapshot sources for an entry that will never exist
+/// on any real network.
 #[cfg(any(test, feature = "testutils"))]
 struct FilteringSnapshotSource {
     inner: Rc<dyn internal::storage::SnapshotSource>,
