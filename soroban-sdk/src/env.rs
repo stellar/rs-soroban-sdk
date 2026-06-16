@@ -600,12 +600,12 @@ use std::{path::Path, rc::Rc};
 #[cfg(any(test, feature = "testutils"))]
 use xdr::{LedgerEntry, LedgerKey, LedgerKeyContractData, SorobanAuthorizationEntry};
 
-/// Wraps a [`SnapshotSource`](internal::storage::SnapshotSource) and short
-/// circuits lookups for the empty WASM hash ContractCode entry used by native
-/// test contracts, returning `Ok(None)` without ever consulting the inner
-/// source. This is an optimization that avoids wasteful (and always-failing)
-/// lookups against remote snapshot sources for an entry that will never exist
-/// on any real network.
+/// Wraps a [`SnapshotSource`](internal::storage::SnapshotSource) and
+/// short-circuits lookups for the empty WASM hash ContractCode entry used by
+/// native test contracts, returning `Ok(None)` without ever consulting the
+/// inner source. This is an optimization that avoids wasteful (and
+/// always-failing) lookups against remote snapshot sources for an entry that
+/// will never exist on any real network.
 #[cfg(any(test, feature = "testutils"))]
 struct FilteringSnapshotSource {
     inner: Rc<dyn internal::storage::SnapshotSource>,
@@ -721,9 +721,9 @@ impl Env {
         };
 
         // Wrap the incoming snapshot source so that lookups for the empty WASM
-        // hash ContractCode entry (used by native test contracts) are short
-        // circuited and never reach the underlying source. See issue #1635
-        // "Empty WASM hash leaks to SnapshotSource".
+        // hash ContractCode entry (used by native test contracts) are
+        // short-circuited and never reach the underlying source. See issue
+        // #1635 "Empty WASM hash leaks to SnapshotSource".
         let recording_footprint: Rc<dyn internal::storage::SnapshotSource> =
             Rc::new(FilteringSnapshotSource {
                 inner: recording_footprint,
