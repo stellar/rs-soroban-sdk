@@ -84,12 +84,13 @@ jobs:
 
     - name: Collect publishable rs-soroban-sdk crates
       run: |
-        # Collect the publishable rs-soroban-sdk crates and their directories once, from
-        # the authoritative cargo metadata, deriving the path from manifest_path rather
-        # than assuming the package name matches the directory name. The list is reused
-        # by the patching steps below.
+        # Collect the publishable rs-soroban-sdk crates, their directories, and their
+        # versions once, from the authoritative cargo metadata, deriving the path from
+        # manifest_path rather than assuming the package name matches the directory
+        # name. The list (name<TAB>dir<TAB>version) is reused by the patching steps
+        # below.
         (cd ${{ github.workspace }}/rs-soroban-sdk && cargo metadata --format-version 1 --no-deps) \
-          | jq -r '.packages[] | select(.publish != []) | "\(.name)\t\(.manifest_path | sub("/Cargo.toml$"; ""))"' \
+          | jq -r '.packages[] | select(.publish != []) | "\(.name)\t\(.manifest_path | sub("/Cargo.toml$"; ""))\t\(.version)"' \
           > "$RUNNER_TEMP/sdk-crates.tsv"
 
     - name: Patch SDK versions
@@ -104,7 +105,7 @@ jobs:
         echo "$files" | sort -u | while read -r file; do
           echo Patching "$file" ...
           dir=$(dirname "$file")
-          while IFS=$'\t' read -r crate crate_dir; do
+          while IFS=$'\t' read -r crate crate_dir version; do
             rel_path=$(realpath --relative-to="$dir" "$crate_dir")
             sed -i 's|'"$crate"' = "\([^"]*\)"|'"$crate"' = { path = "'"$rel_path"'" }|g' "$file"
             sed -i 's|'"$crate"' = {.*version = "[^"]*"\(.*\)|'"$crate"' = { path = "'"$rel_path"'" \1|g' "$file"
@@ -129,20 +130,44 @@ jobs:
     - name: Patch transitive crates.io dependencies
       run: |
         # Crates such as soroban-poseidon are pulled from crates.io and depend on
-        # soroban-sdk from crates.io. The path rewrites above cannot redirect those
-        # transitive copies, so two soroban-sdk crates get linked, producing duplicate
-        # `panic_impl` lang item errors (E0152, #1723). A [patch.crates-io] table in
-        # the workspace root redirects transitive copies to the local checkout (valid
-        # while the local version is semver-compatible with the required one).
-        # Reuse the crate list collected in the "Patch SDK versions" step.
+        # soroban-sdk from crates.io. The path rewrites above only redirect directly
+        # named dependency edges, so those transitive copies stay on crates.io and two
+        # soroban-sdk crates get linked -> duplicate `panic_impl` lang item (E0152,
+        # #1723). Collapse them in two moves, both over the crate list collected in
+        # "Patch SDK versions":
+        #   1. Add a [patch.crates-io] table pointing each crate at the local checkout.
+        #      A [patch] entry adds the path crate's version to crates.io resolution,
+        #      but on its own it leaves a transitive edge the lock pinned to a
+        #      different registry version untouched.
+        #   2. Pin each patched crate that the lock already references to the local
+        #      checkout's version with `cargo update --precise`, so the transitive
+        #      edges move onto it. Pinning (rather than letting cargo pick the highest
+        #      compatible version) stops a newer *published* SDK from being chosen for a
+        #      transitive edge and re-splitting the graph. (Can't rescue an
+        #      incompatible-major transitive dep, so the matrix exclusion is still
+        #      needed.)
         workspace_root=$(cargo metadata --format-version 1 --no-deps | jq -r '.workspace_root')
         if [ -s "$RUNNER_TEMP/sdk-crates.tsv" ]; then
           # Don't emit a second [patch.crates-io] header if one already exists upstream.
           grep -q '^\[patch\.crates-io\]' "$workspace_root/Cargo.toml" || printf '\n[patch.crates-io]\n' >> "$workspace_root/Cargo.toml"
-          while IFS=$'\t' read -r crate crate_dir; do
+          while IFS=$'\t' read -r crate crate_dir version; do
             rel_path=$(realpath --relative-to="$workspace_root" "$crate_dir")
             echo "$crate = { path = \"$rel_path\" }" >> "$workspace_root/Cargo.toml"
           done < "$RUNNER_TEMP/sdk-crates.tsv"
+          # Build the -p specs from crates the committed lock already references.
+          # All crates share one workspace version, so a single --precise re-resolves
+          # everything in one pass (no stale intermediate locks).
+          specs=()
+          precise=
+          while IFS=$'\t' read -r crate crate_dir version; do
+            if grep -q "^name = \"$crate\"\$" "$workspace_root/Cargo.lock"; then
+              specs+=( -p "$crate" )
+              precise=$version
+            fi
+          done < "$RUNNER_TEMP/sdk-crates.tsv"
+          if [ "${#specs[@]}" -gt 0 ]; then
+            cargo update "${specs[@]}" --precise "$precise"
+          fi
         fi
 
     - name: Diff
