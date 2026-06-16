@@ -36,7 +36,7 @@
 use std::collections::HashSet;
 
 use sha2::{Digest, Sha256};
-use stellar_xdr::curr::{Limits, ScMetaEntry, ScSpecEntry, WriteXdr};
+use stellar_xdr::{Limits, ScMetaEntry, ScSpecEntry, WriteXdr};
 
 /// The contract meta key that indicates the spec shaking version.
 ///
@@ -179,7 +179,7 @@ pub fn filter<'a, I: IntoIterator<Item = ScSpecEntry> + 'a>(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use stellar_xdr::curr::{
+    use stellar_xdr::{
         ScMetaV0, ScSpecEntry, ScSpecEventDataFormat, ScSpecEventV0, ScSpecFunctionInputV0,
         ScSpecFunctionV0, ScSpecTypeDef, ScSpecUdtEnumCaseV0, ScSpecUdtEnumV0,
         ScSpecUdtStructFieldV0, ScSpecUdtStructV0, StringM, VecM,

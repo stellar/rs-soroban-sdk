@@ -114,6 +114,7 @@ where
 }
 
 use crate::auth::InvokerContractAuthEntry;
+use crate::custom_account::CustomAccount;
 use crate::unwrap::UnwrapInfallible;
 use crate::unwrap::UnwrapOptimized;
 use crate::InvokeError;
@@ -343,6 +344,15 @@ impl Env {
     #[inline(always)]
     pub fn deployer(&self) -> Deployer {
         Deployer::new(self)
+    }
+
+    /// Get an accessor for functions used for custom account implementation.
+    ///
+    /// The accessor's methods may only be called within `__check_auth` contract
+    /// function.
+    #[inline(always)]
+    pub fn custom_account(&self) -> CustomAccount {
+        CustomAccount::new(self)
     }
 
     /// Get a [Crypto] for accessing the current cryptographic functions.

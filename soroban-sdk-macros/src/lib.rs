@@ -1,3 +1,4 @@
+use stellar_xdr;
 extern crate proc_macro;
 
 mod arbitrary;
@@ -54,7 +55,6 @@ use syn_ext::HasFnsItem;
 
 use soroban_spec_rust::{generate_from_wasm_with_options, GenerateFromFileError, GenerateOptions};
 
-use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{Limits, ScMetaEntry, ScMetaV0, StringM, WriteXdr};
 
 pub(crate) const DEFAULT_XDR_RW_LIMITS: Limits = Limits {
