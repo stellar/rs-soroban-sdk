@@ -103,7 +103,9 @@ impl CustomAccount {
     ///
     /// #[contracttype]
     /// pub enum DataKey {
-    ///     Signers,
+    ///     // Marks an address as a signer allowed to authenticate for this
+    ///     // account.
+    ///     Signer(Address),
     ///     ApprovedContexts,
     /// }
     ///
@@ -114,7 +116,9 @@ impl CustomAccount {
     /// impl ModularAccount {
     ///     // Registers the addresses allowed to authenticate for this account.
     ///     pub fn __constructor(env: Env, signers: Vec<Address>) {
-    ///         env.storage().instance().set(&DataKey::Signers, &signers);
+    ///         for signer in signers.iter() {
+    ///             env.storage().instance().set(&DataKey::Signer(signer), &());
+    ///         }
     ///     }
     /// }
     ///
@@ -138,10 +142,8 @@ impl CustomAccount {
     ///         // The host does not validate the delegates, so the account must
     ///         // check that each one is actually a registered signer before
     ///         // trusting it.
-    ///         let signers: Vec<Address> =
-    ///             env.storage().instance().get(&DataKey::Signers).unwrap();
     ///         for delegate in delegates.iter() {
-    ///             if !signers.contains(&delegate) {
+    ///             if !env.storage().instance().has(&DataKey::Signer(delegate.clone())) {
     ///                 return Err(Error::UnknownDelegate);
     ///             }
     ///             // Forward the current authorization to the delegate. Its own
@@ -173,6 +175,8 @@ impl CustomAccount {
     ///         env.storage()
     ///             .instance()
     ///             .set(&DataKey::ApprovedContexts, &auth_contexts);
+    ///         // Returning `Ok(())` approves the delegated authentication;
+    ///         // returning an error would reject it.
     ///         Ok(())
     ///     }
     /// }
