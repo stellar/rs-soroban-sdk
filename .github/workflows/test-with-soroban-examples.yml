@@ -42,16 +42,6 @@ jobs:
       matrix:
         working-directory: ${{ fromJSON(needs.collect-examples.outputs.dirs) }}
         experimental_spec_shaking_v2: [true, false]
-        # Exclude examples that depend on a crates.io package whose own soroban-sdk
-        # dependency is an incompatible major to the soroban-sdk under test. The
-        # [patch.crates-io] step below redirects transitive soroban-sdk copies to the
-        # local checkout, but Cargo only applies the patch when the local version
-        # satisfies the requirement. privacy-pools pulls soroban-poseidon 25.0.0
-        # (soroban-sdk ^25), which the local soroban-sdk (26.x) does not satisfy, so two
-        # soroban-sdk copies are compiled and linking fails with a duplicate lang item
-        # (panic_impl). https://github.com/stellar/rs-soroban-sdk/issues/1723
-        exclude:
-        - working-directory: privacy-pools
     defaults:
       run:
         working-directory: soroban-examples/${{ matrix.working-directory }}
@@ -81,6 +71,35 @@ jobs:
     - uses: stellar/stellar-cli@v23.1.4
 
     - uses: stellar/actions/rust-cache@main
+
+    - name: Align the local soroban-sdk version with the example
+      working-directory: ${{ github.workspace }}
+      run: |
+        # The example pins soroban-sdk and may pull crates such as soroban-poseidon
+        # from crates.io that depend on a specific soroban-sdk major. When the local
+        # checkout has bumped to a newer major (for example a 27.0.0-rc release), the
+        # [patch.crates-io] + `cargo update --precise` step below can't redirect those
+        # transitive soroban-sdk edges, because Cargo only applies a patch when the
+        # local version satisfies the requirement (for example soroban-poseidon's ^25
+        # in privacy-pools). Relabel the local crates with the version the example
+        # already resolves so the patch satisfies the requirement, collapsing every
+        # soroban-sdk edge onto the local checkout's code regardless of the bump.
+        dest_version=$(
+          cargo metadata --manifest-path "soroban-examples/${{ matrix.working-directory }}/Cargo.toml" --format-version 1 \
+            | jq -r '.packages[] | select(.name == "soroban-sdk") | .version' \
+            | head -n1
+        )
+        local_version=$(
+          cargo metadata --manifest-path rs-soroban-sdk/Cargo.toml --format-version 1 --no-deps \
+            | jq -r '.packages[] | select(.name == "soroban-sdk") | .version'
+        )
+        echo "example soroban-sdk version: ${dest_version:?could not determine the example soroban-sdk version}"
+        echo "local soroban-sdk version: $local_version"
+        if [ "$dest_version" != "$local_version" ]; then
+          escaped=$(printf '%s' "$local_version" | sed 's/[.]/\\./g')
+          sed -i "s|\"$escaped\"|\"$dest_version\"|g" rs-soroban-sdk/Cargo.toml
+          echo "Relabelled local rs-soroban-sdk crates from $local_version to $dest_version"
+        fi
 
     - name: Collect publishable rs-soroban-sdk crates
       run: |
@@ -143,9 +162,10 @@ jobs:
         #      checkout's version with `cargo update --precise`, so the transitive
         #      edges move onto it. Pinning (rather than letting cargo pick the highest
         #      compatible version) stops a newer *published* SDK from being chosen for a
-        #      transitive edge and re-splitting the graph. (Can't rescue an
-        #      incompatible-major transitive dep, so the matrix exclusion is still
-        #      needed.)
+        #      transitive edge and re-splitting the graph. (When the local checkout is
+        #      an incompatible major, the "Align the local soroban-sdk version with the
+        #      example" step above first relabels it to the example's version, so these
+        #      requirements stay satisfiable; see #1723.)
         workspace_root=$(cargo metadata --format-version 1 --no-deps | jq -r '.workspace_root')
         if [ -s "$RUNNER_TEMP/sdk-crates.tsv" ]; then
           # Don't emit a second [patch.crates-io] header if one already exists upstream.
