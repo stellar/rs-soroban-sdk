@@ -1329,7 +1329,7 @@ dependencies = [
  "soroban-env-host",
  "soroban-ledger-snapshot",
  "soroban-sdk-macros",
- "stellar-strkey 0.0.17",
+ "stellar-strkey 0.0.18",
  "visibility",
 ]
 
@@ -1429,9 +1429,8 @@ dependencies = [
 
 [[package]]
 name = "stellar-strkey"
-version = "0.0.17"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0247b168bdee20244445e3d9cdea697dde6211e88742dd04acfd1b498661e936"
+version = "0.0.18"
+source = "git+https://github.com/stellar/rs-stellar-strkey?rev=73bf43778a4acad5e7b3589f54a5ec3607c4b7b1#73bf43778a4acad5e7b3589f54a5ec3607c4b7b1"
 dependencies = [
  "crate-git-revision 0.0.9",
  "data-encoding",

@@ -16,6 +16,12 @@ test_fuzz = { path = ".." }
 [workspace]
 members = ["."]
 
+# Temporary: stellar-strkey 0.0.18 is not yet published to crates.io. Point at
+# the release/v0.0.18 branch so this PR can be validated against the actual
+# 0.0.18 code ahead of the release. Remove once 0.0.18 is published.
+[patch.crates-io]
+stellar-strkey = { git = "https://github.com/stellar/rs-stellar-strkey", rev = "73bf43778a4acad5e7b3589f54a5ec3607c4b7b1" }
+
 [profile.release]
 debug = 1
 
