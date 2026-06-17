@@ -278,15 +278,19 @@ impl CustomAccount {
     ///     let approved: Vec<Context> = env.as_contract(&delegate, || {
     ///         env.storage().instance().get(&DataKey::ApprovedContexts).unwrap()
     ///     });
-    ///     assert_eq!(approved.len(), 1);
-    ///     match approved.get(0).unwrap() {
-    ///         Context::Contract(ContractContext { contract, fn_name, args }) => {
-    ///             assert_eq!(contract, protected);
-    ///             assert_eq!(fn_name, Symbol::new(&env, "protected"));
-    ///             assert_eq!(args, (account.clone(),).into_val(&env));
-    ///         }
-    ///         _ => panic!("expected a contract invocation context"),
-    ///     }
+    ///     // `Context` does not implement `Debug`, so compare with `assert!`
+    ///     // rather than `assert_eq!`.
+    ///     assert!(
+    ///         approved
+    ///             == vec![
+    ///                 &env,
+    ///                 Context::Contract(ContractContext {
+    ///                     contract: protected.clone(),
+    ///                     fn_name: Symbol::new(&env, "protected"),
+    ///                     args: (account.clone(),).into_val(&env),
+    ///                 }),
+    ///             ]
+    ///     );
     /// }
     /// # #[cfg(not(feature = "testutils"))]
     /// # fn main() { }
