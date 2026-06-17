@@ -90,8 +90,8 @@ impl CustomAccount {
     /// ```
     /// use soroban_sdk::{
     ///     auth::{Context, CustomAccountInterface},
-    ///     contract, contracterror, contractimpl,
-    ///     crypto::Hash, symbol_short, vec, Address, Env, Vec,
+    ///     contract, contracterror, contractimpl, contracttype,
+    ///     crypto::Hash, vec, Address, Env, Vec,
     /// };
     ///
     /// #[contracterror]
@@ -106,11 +106,16 @@ impl CustomAccount {
     ///
     /// #[contractimpl]
     /// impl ModularAccount {
-    ///     // Registers the addresses allowed to authenticate for this account by
-    ///     // storing each one as a key in the account's instance storage.
+    ///     // Registers the addresses allowed to authenticate for this account.
     ///     pub fn __constructor(env: Env, signers: Vec<Address>) {
+    ///         // Marks an address as a signer allowed to authenticate for this
+    ///         // account.
+    ///         #[contracttype]
+    ///         enum DataKey {
+    ///             Signer(Address),
+    ///         }
     ///         for signer in signers.iter() {
-    ///             env.storage().instance().set(&signer, &());
+    ///             env.storage().instance().set(&DataKey::Signer(signer), &());
     ///         }
     ///     }
     /// }
@@ -128,6 +133,10 @@ impl CustomAccount {
     ///         _signatures: (),
     ///         _auth_contexts: Vec<Context>,
     ///     ) -> Result<(), Error> {
+    ///         #[contracttype]
+    ///         enum DataKey {
+    ///             Signer(Address),
+    ///         }
     ///         // The signers the user attached to the auth entry for this
     ///         // account's authorization.
     ///         let delegates = env.custom_account().get_delegated_signers();
@@ -136,7 +145,7 @@ impl CustomAccount {
     ///         // check that each one is actually a registered signer before
     ///         // trusting it.
     ///         for delegate in delegates.iter() {
-    ///             if !env.storage().instance().has(&delegate) {
+    ///             if !env.storage().instance().has(&DataKey::Signer(delegate.clone())) {
     ///                 return Err(Error::UnknownDelegate);
     ///             }
     ///             // Forward the current authorization to the delegate. Its own
@@ -165,9 +174,13 @@ impl CustomAccount {
     ///         _signatures: (),
     ///         auth_contexts: Vec<Context>,
     ///     ) -> Result<(), Error> {
+    ///         #[contracttype]
+    ///         enum DataKey {
+    ///             ApprovedContexts,
+    ///         }
     ///         env.storage()
     ///             .instance()
-    ///             .set(&symbol_short!("approved"), &auth_contexts);
+    ///             .set(&DataKey::ApprovedContexts, &auth_contexts);
     ///         // Returning `Ok(())` approves the delegated authentication;
     ///         // returning an error would reject it.
     ///         Ok(())
@@ -268,8 +281,12 @@ impl CustomAccount {
     ///
     ///     // The delegation actually reached `delegate`, which approved the
     ///     // same invocation that was authorized above.
+    ///     #[contracttype]
+    ///     enum DataKey {
+    ///         ApprovedContexts,
+    ///     }
     ///     let approved: Vec<Context> = env.as_contract(&delegate, || {
-    ///         env.storage().instance().get(&symbol_short!("approved")).unwrap()
+    ///         env.storage().instance().get(&DataKey::ApprovedContexts).unwrap()
     ///     });
     ///     assert_eq!(
     ///         approved,
