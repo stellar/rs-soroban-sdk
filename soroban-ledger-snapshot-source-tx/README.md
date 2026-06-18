@@ -8,7 +8,7 @@ Add the dependency:
 
 ```toml
 [dependencies]
-soroban-ledger-snapshot-source-tx = "26"
+soroban-ledger-snapshot-source-tx = "27"
 ```
 
 Use it in tests:
