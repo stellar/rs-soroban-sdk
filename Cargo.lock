@@ -1676,7 +1676,8 @@ dependencies = [
 [[package]]
 name = "stellar-strkey"
 version = "0.0.18"
-source = "git+https://github.com/stellar/rs-stellar-strkey?rev=73bf43778a4acad5e7b3589f54a5ec3607c4b7b1#73bf43778a4acad5e7b3589f54a5ec3607c4b7b1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0f34ff61c0ca6f1c2b4169e8d1633417bd9225f58b6175e4e317204565d16277"
 dependencies = [
  "crate-git-revision 0.0.9",
  "data-encoding",
