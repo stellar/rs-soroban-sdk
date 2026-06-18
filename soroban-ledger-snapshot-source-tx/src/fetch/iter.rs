@@ -426,7 +426,11 @@ impl<'a> TransactionMetaNormalized<'a> {
     fn tx_changes_before(&self) -> Option<&'a LedgerEntryChanges> {
         match self.0 {
             TransactionMeta::V0(_) => None,
-            TransactionMeta::V1(m) => Some(&m.tx_changes), // TODO: Should this be before or after, or just ignored?
+            // V1 carries both the pre-tx `State` snapshots and the post-tx
+            // mutations in a single `tx_changes` list. The iterator's
+            // `should_yield` keeps only `State` changes during "before" phases,
+            // so returning the whole list yields the correct before-changes.
+            TransactionMeta::V1(m) => Some(&m.tx_changes),
             TransactionMeta::V2(m) => Some(&m.tx_changes_before),
             TransactionMeta::V3(m) => Some(&m.tx_changes_before),
             TransactionMeta::V4(m) => Some(&m.tx_changes_before),
@@ -435,7 +439,11 @@ impl<'a> TransactionMetaNormalized<'a> {
 
     fn tx_changes_after(&self) -> Option<&'a LedgerEntryChanges> {
         match self.0 {
-            TransactionMeta::V0(_) | TransactionMeta::V1(_) => None,
+            TransactionMeta::V0(_) => None,
+            // The same V1 `tx_changes` list also holds the post-tx mutations;
+            // `should_yield` keeps only the non-`State` changes during "after"
+            // phases, so the same list yields the correct after-changes.
+            TransactionMeta::V1(m) => Some(&m.tx_changes),
             TransactionMeta::V2(m) => Some(&m.tx_changes_after),
             TransactionMeta::V3(m) => Some(&m.tx_changes_after),
             TransactionMeta::V4(m) => Some(&m.tx_changes_after),
