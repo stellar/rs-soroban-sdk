@@ -27,6 +27,21 @@ pub enum Error {
 
     #[error("xdr parsing error: {0}")]
     Xdr(#[from] xdr::Error),
+
+    #[error("invalid ledger hex {0:?}: expected at least 6 hex characters")]
+    InvalidLedgerHex(String),
+
+    #[error("invalid bucket hash {0:?}: expected at least 6 hex characters")]
+    InvalidBucketHash(String),
+}
+
+/// Split the first six characters of a hex string into the three two-character
+/// directory prefixes used by the history archive's nested layout. Returns
+/// `None` if the string is shorter than six bytes or a split would fall on a
+/// non-char boundary, so callers can surface a typed error instead of panicking
+/// on a malformed/truncated value.
+fn hash_prefixes(hex: &str) -> Option<(&str, &str, &str)> {
+    Some((hex.get(0..2)?, hex.get(2..4)?, hex.get(4..6)?))
 }
 
 #[allow(dead_code)]
@@ -43,9 +58,8 @@ pub fn get_history<W: Write + ?Sized>(
 ) -> Result<(), Error> {
     let history_url = {
         let ledger_hex = format!("{ledger:08x}");
-        let ledger_hex_0 = ledger_hex[0..=1].to_string();
-        let ledger_hex_1 = ledger_hex[2..=3].to_string();
-        let ledger_hex_2 = ledger_hex[4..=5].to_string();
+        let (ledger_hex_0, ledger_hex_1, ledger_hex_2) = hash_prefixes(&ledger_hex)
+            .ok_or_else(|| Error::InvalidLedgerHex(ledger_hex.clone()))?;
         format!("{archive_url}/history/{ledger_hex_0}/{ledger_hex_1}/{ledger_hex_2}/history-{ledger_hex}.json")
     };
 
@@ -88,9 +102,8 @@ pub fn get_bucket<W: Write + ?Sized>(
     bucket: &str,
     writer: &mut W,
 ) -> Result<Option<u64>, Error> {
-    let bucket_0 = &bucket[0..=1];
-    let bucket_1 = &bucket[2..=3];
-    let bucket_2 = &bucket[4..=5];
+    let (bucket_0, bucket_1, bucket_2) =
+        hash_prefixes(bucket).ok_or_else(|| Error::InvalidBucketHash(bucket.to_string()))?;
     let bucket_url =
         format!("{archive_url}/bucket/{bucket_0}/{bucket_1}/{bucket_2}/bucket-{bucket}.xdr.gz");
 
