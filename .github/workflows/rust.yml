@@ -128,6 +128,7 @@ jobs:
         --exclude soroban-meta
         --exclude soroban-token-spec
         --exclude stellar-asset-spec
+        --exclude soroban-ledger-snapshot-source-tx
 
   build:
     needs: setup
