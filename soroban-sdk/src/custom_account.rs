@@ -130,11 +130,16 @@
 //! # }
 //! # #[cfg(feature = "testutils")]
 //! # fn main() {
-//!     use soroban_sdk::xdr::{
-//!         InvokeContractArgs, ScAddress, ScVal, SorobanAddressCredentials,
-//!         SorobanAddressCredentialsWithDelegates, SorobanAuthorizationEntry,
-//!         SorobanAuthorizedFunction, SorobanAuthorizedInvocation,
-//!         SorobanCredentials, SorobanDelegateSignature, StringM, VecM,
+//!     use soroban_sdk::{
+//!         auth::ContractContext,
+//!         testutils::{AuthorizedFunction, AuthorizedInvocation},
+//!         xdr::{
+//!             InvokeContractArgs, ScAddress, ScVal, SorobanAddressCredentials,
+//!             SorobanAddressCredentialsWithDelegates, SorobanAuthorizationEntry,
+//!             SorobanAuthorizedFunction, SorobanAuthorizedInvocation,
+//!             SorobanCredentials, SorobanDelegateSignature, StringM, VecM,
+//!         },
+//!         IntoVal, Symbol,
 //!     };
 //!
 //!     let env = Env::default();
@@ -186,11 +191,6 @@
 //!
 //!     // The account authorized the `protected` call. Delegating to
 //!     // `delegate` is not recorded as a separate authorization.
-//!     use soroban_sdk::{
-//!         auth::ContractContext,
-//!         testutils::{AuthorizedFunction, AuthorizedInvocation},
-//!         IntoVal, Symbol,
-//!     };
 //!     assert_eq!(
 //!         env.auths(),
 //!         std::vec![(
