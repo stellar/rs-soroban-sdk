@@ -82,8 +82,8 @@ impl CustomAccount {
     ///
     /// ### Examples
     ///
-    /// A "modular" custom account that performs no authentication itself, and
-    /// instead delegates it to a set of registered signer addresses. The user
+    /// A module custom account that performs authentication by delegating to
+    /// other accounts instead of doing the authentication itself. The user
     /// chooses which of the registered signers to authenticate with, by
     /// attaching them to the transaction as delegated signers.
     ///
@@ -101,10 +101,10 @@ impl CustomAccount {
     ///     UnknownDelegate = 1,
     /// }
     ///
-    /// // Marks an address as a signer allowed to authenticate for the modular
-    /// // account.
     /// #[contracttype]
     /// enum ModularAccountDataKey {
+    ///     // Marks an address as a signer allowed to authenticate for the
+    ///     // modular account.
     ///     Signer(Address),
     /// }
     ///
@@ -140,9 +140,7 @@ impl CustomAccount {
     ///         // account's authorization.
     ///         let delegates = env.custom_account().get_delegated_signers();
     ///
-    ///         // The host does not validate the delegates, so the account must
-    ///         // check that each one is actually a registered signer before
-    ///         // trusting it.
+    ///         // Check if the delegates are accepted by the modular account.
     ///         for delegate in delegates.iter() {
     ///             if !env
     ///                 .storage()
@@ -151,26 +149,24 @@ impl CustomAccount {
     ///             {
     ///                 return Err(Error::UnknownDelegate);
     ///             }
-    ///             // Forward the current authorization to the delegate. Its own
-    ///             // authentication is checked as if it had required auth
-    ///             // directly, but without needing a separate auth entry.
+    ///             // Forward the current authorization to the delegate.
     ///             env.custom_account().delegate_auth(&delegate);
     ///         }
     ///         Ok(())
     ///     }
     /// }
     ///
-    /// // Records the contexts the delegate approved so the test can verify the
-    /// // delegation reached it.
     /// #[contracttype]
     /// enum DelegateAccountDataKey {
+    ///     // Records the contexts the delegate approved so the test can verify
+    ///     // the delegation reached it.
     ///     ApprovedContexts,
     /// }
     ///
-    /// // A delegate account. Stands in for any address (a Stellar account or
-    /// // another contract) that knows how to authenticate itself. Here it
-    /// // records the context it approved so the test can verify the delegation
-    /// // reached it.
+    /// // A simple account that the ModularAccount can delegate to for auth.
+    /// //
+    /// // It will always authorise an auth request, and store a copy of the auth
+    /// // context for later comparing in tests.
     /// #[contract]
     /// pub struct DelegateAccount;
     ///
