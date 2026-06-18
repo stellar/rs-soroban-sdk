@@ -117,7 +117,7 @@ impl CustomAccount {
     ///     pub fn __constructor(env: Env, signers: Vec<Address>) {
     ///         for signer in signers.iter() {
     ///             env.storage()
-    ///                 .instance()
+    ///                 .persistent()
     ///                 .set(&ModularAccountDataKey::Signer(signer), &());
     ///         }
     ///     }
@@ -146,7 +146,7 @@ impl CustomAccount {
     ///         for delegate in delegates.iter() {
     ///             if !env
     ///                 .storage()
-    ///                 .instance()
+    ///                 .persistent()
     ///                 .has(&ModularAccountDataKey::Signer(delegate.clone()))
     ///             {
     ///                 return Err(Error::UnknownDelegate);
