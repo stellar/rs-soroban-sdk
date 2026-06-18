@@ -5,7 +5,7 @@
 //!
 //! ### Examples
 //!
-//! A module custom account that performs authentication by delegating to
+//! A modular custom account that performs authentication by delegating to
 //! other accounts instead of doing the authentication itself. The user
 //! chooses which of the registered signers to authenticate with, by
 //! attaching them to the transaction as delegated signers.
@@ -72,7 +72,9 @@
 //!             {
 //!                 return Err(Error::UnknownDelegate);
 //!             }
-//!             // Forward the current authorization to the delegate.
+//!         }
+//!         // Forward the current authorization to each delegate.
+//!         for delegate in delegates.iter() {
 //!             env.custom_account().delegate_auth(&delegate);
 //!         }
 //!         Ok(())
@@ -88,7 +90,7 @@
 //!
 //! // A simple account that the ModularAccount can delegate to for auth.
 //! //
-//! // It will always authorise an auth request, and store a copy of the auth
+//! // It will always authorize an auth request, and store a copy of the auth
 //! // context for later comparing in tests.
 //! #[contract]
 //! pub struct DelegateAccount;
