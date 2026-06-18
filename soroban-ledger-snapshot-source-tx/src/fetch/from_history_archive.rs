@@ -1,6 +1,6 @@
 use flate2::read::GzDecoder;
 use std::io::{self, copy, Cursor, Write};
-use stellar_xdr::curr::{self as xdr, Frame, Limited, ReadXdr};
+use stellar_xdr::{self as xdr, Frame, Limited, ReadXdr};
 
 #[derive(thiserror::Error, Debug)]
 pub enum Error {

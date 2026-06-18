@@ -3,7 +3,6 @@ use soroban_sdk::{
     contract, contractimpl, contracttype, map, symbol_short, ConversionError, Env, IntoVal,
     TryFromVal, Val,
 };
-use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{
     Limits, ReadXdr, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef,
     ScSpecTypeTuple, ScSpecTypeUdt,

@@ -1,6 +1,6 @@
 use crate::read;
 use std::fs;
-use stellar_xdr::curr::{Limits, ScMetaEntry, ScMetaV0, StringM, WriteXdr};
+use stellar_xdr::{Limits, ScMetaEntry, ScMetaV0, StringM, WriteXdr};
 
 #[test]
 fn test_from_wasm() {

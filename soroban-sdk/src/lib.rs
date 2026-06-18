@@ -1248,6 +1248,7 @@ pub mod auth;
 #[macro_use]
 mod bytes;
 pub mod crypto;
+pub mod custom_account;
 pub mod deploy;
 mod error;
 pub use error::InvokeError;

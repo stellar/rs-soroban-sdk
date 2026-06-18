@@ -2,7 +2,6 @@
 
 use std::io::{copy, Cursor, Write};
 
-use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{LedgerCloseMeta, LedgerCloseMetaBatch, Limits, ReadXdr};
 use thiserror::Error;
 
@@ -78,14 +77,13 @@ pub fn get_ledger<W: Write + ?Sized>(
 pub fn parse_ledger<R: std::io::Read>(sequence: u32, reader: R) -> Result<LedgerCloseMeta, Error> {
     // Parse as LedgerCloseMetaBatch first, then extract the single ledger
     let mut limited_reader = stellar_xdr::Limited::new(reader, Limits::none());
-    let mut batch: LedgerCloseMetaBatch = ReadXdr::read_xdr(&mut limited_reader)?;
+    let batch: LedgerCloseMetaBatch = ReadXdr::read_xdr(&mut limited_reader)?;
 
     // Return the first (and assumed only) ledger from the batch
     batch
         .ledger_close_metas
         .into_iter()
         .next()
-        .cloned()
         .ok_or(Error::LedgerNotFound(sequence))
 }
 

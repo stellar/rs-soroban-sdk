@@ -1,6 +1,6 @@
 use serde_json::json;
 use std::io::{copy, Write};
-use stellar_xdr::curr::{
+use stellar_xdr::{
     Error as XdrError, LedgerEntry, LedgerEntryData, LedgerEntryExt, LedgerKey, Limits, ReadXdr,
     WriteXdr,
 };
@@ -131,7 +131,7 @@ struct GetLedgerEntriesResponseEntry {
 mod test {
     use super::{parse_ledger_entry, Error};
     use std::io::Cursor;
-    use stellar_xdr::curr::{Hash, LedgerEntryData, LedgerEntryExt, Limits, TtlEntry, WriteXdr};
+    use stellar_xdr::{Hash, LedgerEntryData, LedgerEntryExt, Limits, TtlEntry, WriteXdr};
 
     fn sample_entry_xdr() -> String {
         // A small, fully-deterministic LedgerEntryData to base64-encode into a

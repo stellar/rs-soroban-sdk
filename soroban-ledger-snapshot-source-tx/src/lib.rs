@@ -31,8 +31,7 @@ fn init_tracing() {
     });
 }
 
-/// The stellar-xdr `curr` schema version that cached fixtures are serialized
-/// against.
+/// The stellar-xdr schema version that cached fixtures are serialized against.
 ///
 /// Committed snapshot fixtures store ledger entries using stellar-xdr's serde
 /// JSON representation. If that representation ever changes (a field rename,
@@ -41,14 +40,14 @@ fn init_tracing() {
 /// of why. Embedding this fingerprint and rejecting mismatches turns that into
 /// a clear, actionable failure instead.
 fn xdr_schema_version() -> &'static str {
-    stellar_xdr::VERSION.xdr_curr
+    stellar_xdr::VERSION.xdr
 }
 
 /// On-disk wrapper for a cached ledger-entry fixture, tagging the serialized
 /// entry with the XDR schema version it was produced with.
 #[derive(serde::Serialize, serde::Deserialize)]
 struct CachedEntry {
-    /// stellar-xdr `curr` schema version (see [`xdr_schema_version`]).
+    /// stellar-xdr schema version (see [`xdr_schema_version`]).
     xdr_schema_version: String,
     /// The cached ledger entry, or `None` if the entry was absent/removed.
     entry: Option<LedgerEntry>,
