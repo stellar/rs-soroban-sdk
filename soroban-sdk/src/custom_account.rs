@@ -183,7 +183,7 @@ impl CustomAccount {
     ///         env.storage()
     ///             .instance()
     ///             .set(&DelegateAccountDataKey::ApprovedContexts, &auth_contexts);
-    ///         // Returning `Ok(())` approves the delegated authentication;
+    ///         // Returning `Ok(())` approves the auth;
     ///         // returning an error would reject it.
     ///         Ok(())
     ///     }
