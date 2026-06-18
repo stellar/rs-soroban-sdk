@@ -15,9 +15,9 @@ where
     if !path.exists() {
         let lock_path = path.with_extension("lock");
         let lock_file = File::create(&lock_path).map_err(CacheError::Io)?;
-        // Acquire an exclusive advisory lock using std's native file locking
-        // (stable since Rust 1.89), released automatically when `lock_file` is
-        // dropped at the end of this scope.
+        // Acquire an exclusive advisory lock using std's native file locking,
+        // released automatically when `lock_file` is dropped at the end of this
+        // scope.
         File::lock(&lock_file).map_err(CacheError::Io)?;
 
         if !path.exists() {
