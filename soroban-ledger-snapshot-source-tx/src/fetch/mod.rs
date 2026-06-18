@@ -422,34 +422,51 @@ impl LedgerEntryFetcher {
         let key_xdr = key.to_xdr(Limits::none())?;
         let key_hash = Sha256::digest(&key_xdr);
         let rpc_cache_path = cache_path.join(format!("rpc-{ledger}-{key_hash:x}.json"));
-        let rpc_read = cache(rpc_cache_path.clone(), |write| {
-            get_ledger_entry(rpc_url, key, write)
-                .map_err(|e| Box::new(e) as Box<dyn std::error::Error>)
-        })?;
-        if let Some((entry, _ttl, latest_ledger)) = parse_ledger_entry(rpc_read)? {
-            // Only trust the RPC answer when the node has actually observed the
-            // target ledger (latest_ledger >= ledger). If the node is lagging,
-            // an entry whose last_modified is below `ledger` might still be
-            // modified at or after `ledger` once the node catches up, so the
-            // current response could be stale; fall back to meta/archive rather
-            // than persisting a potentially wrong answer.
-            let usable = entry.last_modified_ledger_seq < ledger && latest_ledger >= ledger;
+        let rpc_read = match cache(rpc_cache_path, |write| {
+            // Fetch the raw RPC response into memory first, so its usability can
+            // be checked before it is committed to the cache.
+            let mut buf = Vec::new();
+            get_ledger_entry(rpc_url, key, &mut buf)
+                .map_err(|e| Box::new(e) as Box<dyn std::error::Error>)?;
+            // Only trust (and therefore cache) the RPC answer when the node has
+            // actually observed the target ledger (latest_ledger >= ledger). If
+            // the node is lagging, an entry whose last_modified is below `ledger`
+            // might still be modified at or after `ledger` once the node catches
+            // up, so the response could be stale. Doing this check here, inside
+            // the cache collector, means a non-usable response is never written:
+            // `cache()` discards the temp file when the collector errors, rather
+            // than persisting a potentially-wrong answer that would be replayed
+            // on every later run (permanently disabling the RPC fast path for
+            // this (ledger, key) even after the node catches up).
+            let usable = match parse_ledger_entry(Cursor::new(&buf))
+                .map_err(|e| Box::new(e) as Box<dyn std::error::Error>)?
+            {
+                Some((entry, _ttl, latest_ledger)) => {
+                    entry.last_modified_ledger_seq < ledger && latest_ledger >= ledger
+                }
+                None => false,
+            };
+            if !usable {
+                return Err(Box::<dyn std::error::Error>::from(
+                    "rpc response not usable for this ledger",
+                ));
+            }
+            write.write_all(&buf)?;
+            Ok(())
+        }) {
+            Ok(rpc_read) => rpc_read,
+            // Not usable, not found, or a transient RPC error: fall back to the
+            // authoritative meta/archive search below.
+            Err(_) => return Ok(None),
+        };
+        // The cached response is known-usable (only usable responses are
+        // persisted above), so return its entry.
+        if let Some((entry, _ttl, _latest_ledger)) = parse_ledger_entry(rpc_read)? {
             tracing::debug!(
                 last_modified = entry.last_modified_ledger_seq,
-                latest_ledger,
-                usable,
                 "found from rpc"
             );
-            if usable {
-                return Ok(Some(Some(entry)));
-            }
-            // The response was not usable (e.g. a lagging node had not yet
-            // observed `ledger`). Don't leave it in the cache: a stale
-            // `latestLedger` would be replayed on every subsequent run and keep
-            // the RPC fast path permanently disabled for this (ledger, key),
-            // even after the node catches up. Removing it lets a later run
-            // re-query. Falls through to the meta/archive search below.
-            let _ = std::fs::remove_file(&rpc_cache_path);
+            return Ok(Some(Some(entry)));
         }
 
         Ok(None)
