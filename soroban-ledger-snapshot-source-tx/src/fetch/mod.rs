@@ -1,9 +1,10 @@
 use crate::cache::{cache, CacheError};
 use from_history_archive::{get_bucket, get_history, parse_bucket, parse_history};
-use from_meta_storage::{get_ledger, parse_ledger};
+use from_meta_storage::{get_config, get_ledger, parse_config, parse_ledger};
 use from_rpc::{get_ledger_entry, parse_ledger_entry};
 use sha2::{Digest, Sha256};
 use soroban_sdk::xdr::{BucketEntry, LedgerEntry, LedgerKey, Limited, Limits, WriteXdr};
+use std::io::Cursor;
 use std::path::{Path, PathBuf};
 
 mod iter;
@@ -244,6 +245,11 @@ impl LedgerEntryFetcher {
             }
         }
 
+        // Read the SEP-54 storage layout (cached) so meta object paths are
+        // derived from the deployment's actual partition/batch sizes rather than
+        // hardcoded constants.
+        let (ledgers_per_batch, batches_per_partition) = self.meta_config(cache_path)?;
+
         // Calculate checkpoint boundaries
         let checkpoint_count = self.network.archive_checkpoint_ledger_count;
         let (prev_checkpoint, ledgers_to_checkpoint) =
@@ -268,25 +274,43 @@ impl LedgerEntryFetcher {
         if let Err(e) = std::thread::Builder::new()
             .name("snapshot-source-prefetch-meta".to_string())
             .spawn(move || {
-                Self::prefetch_meta(&prefetch_meta_url, &prefetch_cache_path, &prefetch_ledgers);
+                Self::prefetch_meta(
+                    &prefetch_meta_url,
+                    &prefetch_cache_path,
+                    &prefetch_ledgers,
+                    ledgers_per_batch,
+                    batches_per_partition,
+                );
             })
         {
             tracing::warn!(error = %e, "failed to spawn meta prefetch thread");
         }
 
         // Phase 1: Check the starting ledger
-        if let Some(result) = self.fetch_from_meta(&cache_path, self.ledger, key)? {
+        if let Some(result) = self.fetch_from_meta(
+            cache_path,
+            self.ledger,
+            key,
+            ledgers_per_batch,
+            batches_per_partition,
+        )? {
             return Ok(result);
         }
 
         // Optimization: Try RPC for all ledger entries
-        if let Some(result) = self.fetch_from_rpc(&cache_path, self.ledger, key)? {
+        if let Some(result) = self.fetch_from_rpc(cache_path, self.ledger, key)? {
             return Ok(result);
         }
 
         // Phase 2: Search through previous ledgers down to the previous checkpoint
         for ledger in (prev_checkpoint + 1..self.ledger).rev() {
-            if let Some(result) = self.fetch_from_meta(&cache_path, ledger, key)? {
+            if let Some(result) = self.fetch_from_meta(
+                cache_path,
+                ledger,
+                key,
+                ledgers_per_batch,
+                batches_per_partition,
+            )? {
                 return Ok(result);
             }
         }
@@ -295,7 +319,26 @@ impl LedgerEntryFetcher {
         self.fetch_from_archive(&cache_path, prev_checkpoint, key)
     }
 
-    fn prefetch_meta(meta_url: &str, cache_path: &Path, ledgers: &[u32]) {
+    /// Fetch (and cache) the SEP-54 storage configuration, returning the
+    /// `(ledgers_per_batch, batches_per_partition)` used to derive meta object
+    /// paths. The config is small and constant for a network, so it is cached
+    /// like any other fetched artifact and read from disk on subsequent calls.
+    fn meta_config(&self, cache_path: &Path) -> Result<(u32, u32), Error> {
+        let read = cache(cache_path.join("meta-config.json"), |write| {
+            get_config(&self.network.meta_url, write)
+                .map_err(|e| Box::new(e) as Box<dyn std::error::Error>)
+        })?;
+        let config = parse_config(read)?;
+        Ok((config.ledgers_per_batch, config.batches_per_partition))
+    }
+
+    fn prefetch_meta(
+        meta_url: &str,
+        cache_path: &Path,
+        ledgers: &[u32],
+        ledgers_per_batch: u32,
+        batches_per_partition: u32,
+    ) {
         // Process in chunks of 10 to avoid too many open files
         const MAX_CONCURRENT_DOWNLOADS: usize = 10;
         for chunk in ledgers.chunks(MAX_CONCURRENT_DOWNLOADS) {
@@ -306,8 +349,14 @@ impl LedgerEntryFetcher {
                     let path = cache_path.join(format!("ledger-{l}.xdr"));
                     std::thread::spawn(move || {
                         let _ = cache(path, |write| {
-                            get_ledger(&meta_url, l, write)
-                                .map_err(|e| Box::new(e) as Box<dyn std::error::Error>)
+                            get_ledger(
+                                &meta_url,
+                                l,
+                                ledgers_per_batch,
+                                batches_per_partition,
+                                write,
+                            )
+                            .map_err(|e| Box::new(e) as Box<dyn std::error::Error>)
                         });
                     })
                 })
@@ -324,11 +373,19 @@ impl LedgerEntryFetcher {
         cache_path: &Path,
         ledger: u32,
         key: &LedgerKey,
+        ledgers_per_batch: u32,
+        batches_per_partition: u32,
     ) -> Result<Option<Option<LedgerEntry>>, Error> {
         tracing::debug!(ledger, "fetch from meta");
         let meta_read = cache(cache_path.join(format!("ledger-{ledger}.xdr")), |write| {
-            get_ledger(&self.network.meta_url, ledger, write)
-                .map_err(|e| Box::new(e) as Box<dyn std::error::Error>)
+            get_ledger(
+                &self.network.meta_url,
+                ledger,
+                ledgers_per_batch,
+                batches_per_partition,
+                write,
+            )
+            .map_err(|e| Box::new(e) as Box<dyn std::error::Error>)
         })?;
         let meta = parse_ledger(ledger, meta_read)?;
 
