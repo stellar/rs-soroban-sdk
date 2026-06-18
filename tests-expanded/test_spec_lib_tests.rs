@@ -5673,6 +5673,67 @@ impl EventC {
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
+pub struct EventD;
+#[automatically_derived]
+impl ::core::clone::Clone for EventD {
+    #[inline]
+    fn clone(&self) -> EventD {
+        EventD
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for EventD {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::write_str(f, "EventD")
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for EventD {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {}
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for EventD {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for EventD {
+    #[inline]
+    fn eq(&self, other: &EventD) -> bool {
+        true
+    }
+}
+pub static __SPEC_XDR_EVENT_EVENTD: [u8; 48usize] = EventD::spec_xdr();
+impl EventD {
+    pub const fn spec_xdr() -> [u8; 48usize] {
+        *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventD\0\0\0\0\0\x01\0\0\0\x07event_d\0\0\0\0\0\0\0\0\x02"
+    }
+}
+impl soroban_sdk::Event for EventD {
+    fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+        use soroban_sdk::IntoVal;
+        (&{
+            #[allow(deprecated)]
+            const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("event_d");
+            SYMBOL
+        },)
+            .into_val(env)
+    }
+    fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
+        use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
+        const KEYS: [&'static str; 0usize] = [];
+        let vals: [soroban_sdk::Val; 0usize] = [];
+        env.map_new_from_slices(&KEYS, &vals)
+            .unwrap_infallible()
+            .into()
+    }
+}
+impl EventD {
+    pub fn publish(&self, env: &soroban_sdk::Env) {
+        <_ as soroban_sdk::Event>::publish(self, env);
+    }
+}
 #[rustc_main]
 #[coverage(off)]
 #[doc(hidden)]

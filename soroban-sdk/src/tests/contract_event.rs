@@ -214,6 +214,36 @@ fn test_no_topics_no_data() {
 }
 
 #[test]
+fn test_unit_struct() {
+    let env = Env::default();
+
+    #[contract]
+    pub struct Contract;
+    let id = env.register(Contract, ());
+
+    #[contractevent]
+    pub struct MyEvent;
+
+    let event = MyEvent;
+    env.as_contract(&id, || {
+        event.publish(&env);
+    });
+
+    let data: Val = Map::<Symbol, Val>::new(&env).into_val(&env);
+    let expected_event = xdr::ContractEvent {
+        ext: xdr::ExtensionPoint::V0,
+        type_: xdr::ContractEventType::Contract,
+        contract_id: Some(id.contract_id()),
+        body: xdr::ContractEventBody::V0(xdr::ContractEventV0 {
+            topics: vec![&env, symbol_short!("my_event")].into(),
+            data: xdr::ScVal::try_from_val(&env, &data).unwrap(),
+        }),
+    };
+    assert_eq!(env.events().all(), std::vec![expected_event.clone()]);
+    assert_eq!(event.to_xdr(&env, &id), expected_event);
+}
+
+#[test]
 fn test_data_single_value() {
     let env = Env::default();
 
