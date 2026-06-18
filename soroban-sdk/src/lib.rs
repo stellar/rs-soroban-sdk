@@ -1204,6 +1204,10 @@ pub use env::Val;
 pub use env::FromVal;
 /// Used to do conversions between values in the Soroban environment.
 pub use env::IntoVal;
+/// Used to convert a value into a [`Val`] without having to fix the destination
+/// type, unlike [`IntoVal`]/`into_val` which require the destination type to be
+/// inferable.
+pub use env::ToVal;
 /// Used to do conversions between values in the Soroban environment.
 pub use env::TryFromVal;
 /// Used to do conversions between values in the Soroban environment.

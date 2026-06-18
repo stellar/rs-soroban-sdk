@@ -113,6 +113,22 @@ where
     }
 }
 
+/// Used to convert a value into a `Val` without having to fix the destination
+/// type, unlike `IntoVal`/`into_val` which require the destination type to be
+/// inferable.
+pub trait ToVal {
+    fn to_val(&self, e: &Env) -> Val;
+}
+
+impl<T> ToVal for T
+where
+    T: IntoVal<Env, Val>,
+{
+    fn to_val(&self, e: &Env) -> Val {
+        self.into_val(e)
+    }
+}
+
 use crate::auth::InvokerContractAuthEntry;
 use crate::custom_account::CustomAccount;
 use crate::unwrap::UnwrapInfallible;

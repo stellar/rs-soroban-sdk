@@ -52,5 +52,6 @@ mod prng_range;
 mod proptest_scval_cmp;
 mod proptest_val_cmp;
 mod storage_testutils;
+mod to_val;
 mod token_client;
 mod vec_slice;
