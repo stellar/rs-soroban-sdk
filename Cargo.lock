@@ -1847,6 +1847,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_constructor_with_auth"
+version = "27.0.0-rc.1"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
 name = "test_contract_data"
 version = "27.0.0-rc.1"
 dependencies = [
