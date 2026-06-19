@@ -380,9 +380,9 @@ where
     ///
     /// This provides FromIterator-like functionality but requires an Env parameter.
     ///
-    /// Note: This function iteratively adds each item one at a time, making a call to the Soroban
-    /// environment for each item making it inefficient for joining two [`Vec`]s. Use
-    /// [`Vec::append`] to join two [`Vec`]s.
+    /// Note: This function adds the items in bulk in fixed-size chunks. To join
+    /// two existing [`Vec`]s, prefer [`Vec::append`], which is a single host
+    /// call.
     ///
     /// ### Examples
     ///
@@ -951,8 +951,28 @@ where
     T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     fn extend<I: IntoIterator<Item = T>>(&mut self, iter: I) {
+        // Accumulate items into a fixed-size stack buffer and flush each full
+        // buffer with a single bulk `vec_new_from_slice` + append, rather than
+        // making one `vec_push_back` host call per element (which also
+        // allocates a new intermediate vec object on the host every time).
+        const CHUNK: usize = 32;
+        let env = self.env().clone();
+        let mut buf = [Val::VOID.to_val(); CHUNK];
+        let mut n = 0;
         for item in iter {
-            self.push_back(item);
+            buf[n] = item.into_val(&env);
+            n += 1;
+            if n == CHUNK {
+                let obj = env.vec_new_from_slice(&buf).unwrap_infallible();
+                let sub = unsafe { Self::unchecked_new(env.clone(), obj) };
+                self.append(&sub);
+                n = 0;
+            }
+        }
+        if n > 0 {
+            let obj = env.vec_new_from_slice(&buf[..n]).unwrap_infallible();
+            let sub = unsafe { Self::unchecked_new(env.clone(), obj) };
+            self.append(&sub);
         }
     }
 }
@@ -1099,6 +1119,28 @@ mod test {
             v.push_back(1);
             v
         });
+    }
+
+    #[test]
+    fn test_vec_from_iter_chunking() {
+        let env = Env::default();
+        // Cover empty, sub-chunk, exact-chunk-multiple, and cross-chunk lengths
+        // to exercise the chunked bulk accumulation in `Extend`/`from_iter`.
+        for n in [0usize, 1, 31, 32, 33, 64, 65, 100] {
+            let items: std::vec::Vec<u32> = (0..n as u32).collect();
+            let v = Vec::<u32>::from_iter(&env, items.iter().copied());
+            assert_eq!(v.len() as usize, n);
+            let got: std::vec::Vec<u32> = v.iter().collect();
+            assert_eq!(got, items);
+
+            // extend onto a non-empty vec should preserve order.
+            let mut e = Vec::<u32>::from_array(&env, [1000u32]);
+            e.extend(items.iter().copied());
+            let mut expected = std::vec![1000u32];
+            expected.extend(items.iter().copied());
+            let got_e: std::vec::Vec<u32> = e.iter().collect();
+            assert_eq!(got_e, expected);
+        }
     }
 
     #[test]
