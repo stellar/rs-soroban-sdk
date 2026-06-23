@@ -386,9 +386,19 @@ impl Env {
     }
 
     /// Get the Address object corresponding to the current executing contract.
+    ///
+    /// See [`Env::current_address`] for a shorter alias of this function.
     pub fn current_contract_address(&self) -> Address {
         let address = internal::Env::get_current_contract_address(self).unwrap_infallible();
         unsafe { Address::unchecked_new(self.clone(), address) }
+    }
+
+    /// Get the Address object corresponding to the current executing contract.
+    ///
+    /// Shorter alias for [`Env::current_contract_address`].
+    #[inline(always)]
+    pub fn current_address(&self) -> Address {
+        self.current_contract_address()
     }
 
     #[doc(hidden)]

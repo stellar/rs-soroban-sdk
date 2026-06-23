@@ -36,6 +36,10 @@ impl Contract {
         // This should fail because auths aren't mocked.
         env.require_auth(&address);
     }
+
+    pub fn get_addresses(env: Env) -> (Address, Address) {
+        (env.current_contract_address(), env.current_address())
+    }
 }
 
 #[contracterror]
@@ -356,3 +360,14 @@ fn test_register_restores_auth_before_panics() {
     assert!(post_register.is_err());
     assert_eq!(pre_register, post_register);
 }
+
+#[test]
+fn test_current_address_alias() {
+    let env = Env::default();
+    let addr = env.register(Contract, ());
+    let client = ContractClient::new(&env, &addr);
+    let (addr1, addr2) = client.get_addresses();
+    assert_eq!(addr1, addr);
+    assert_eq!(addr2, addr);
+}
+
