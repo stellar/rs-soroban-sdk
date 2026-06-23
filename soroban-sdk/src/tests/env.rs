@@ -356,3 +356,46 @@ fn test_register_restores_auth_before_panics() {
     assert!(post_register.is_err());
     assert_eq!(pre_register, post_register);
 }
+
+#[test]
+fn test_as_contract_with_func() {
+    use crate::testutils::{MockAuth, MockAuthInvoke};
+    use crate::IntoVal;
+
+    let env = Env::default();
+    let test_contract_id = Address::generate(&env);
+    env.register_at(&test_contract_id, Contract, ());
+
+    let func_name = Symbol::new(&env, "custom_fn");
+    let user = Address::generate(&env);
+
+    env.mock_auths(&[MockAuth {
+        address: &user,
+        invoke: &MockAuthInvoke {
+            contract: &test_contract_id,
+            fn_name: "custom_fn",
+            args: ().into_val(&env),
+            sub_invokes: &[],
+        },
+    }]);
+
+    env.as_contract_with_func(&test_contract_id, &func_name, || {
+        user.require_auth();
+    });
+}
+
+#[test]
+fn test_try_as_contract_with_func() {
+    let env = Env::default();
+
+    let addr = Address::generate(&env);
+    env.register_at(&addr, Contract, ());
+
+    let func_name = Symbol::new(&env, "custom_fn");
+
+    let result = env.try_as_contract_with_func::<Symbol, Error>(&addr, &func_name, || {
+        Symbol::new(&env, "hello")
+    });
+    assert_eq!(result, Ok(Symbol::new(&env, "hello")));
+}
+
