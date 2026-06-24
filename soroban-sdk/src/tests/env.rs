@@ -386,16 +386,30 @@ fn test_as_contract_with_func() {
 
 #[test]
 fn test_try_as_contract_with_func() {
+    use crate::testutils::{MockAuth, MockAuthInvoke};
+    use crate::IntoVal;
+
     let env = Env::default();
 
     let addr = Address::generate(&env);
     env.register_at(&addr, Contract, ());
 
     let func_name = Symbol::new(&env, "custom_fn");
+    let user = Address::generate(&env);
+
+    env.mock_auths(&[MockAuth {
+        address: &user,
+        invoke: &MockAuthInvoke {
+            contract: &addr,
+            fn_name: "custom_fn",
+            args: ().into_val(&env),
+            sub_invokes: &[],
+        },
+    }]);
 
     let result = env.try_as_contract_with_func::<Symbol, Error>(&addr, &func_name, || {
+        user.require_auth();
         Symbol::new(&env, "hello")
     });
     assert_eq!(result, Ok(Symbol::new(&env, "hello")));
 }
-
