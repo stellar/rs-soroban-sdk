@@ -1733,7 +1733,17 @@ impl Env {
     ///
     /// Used to write or read contract data, or take other actions in tests for
     /// setting up tests or asserting on internal state.
-    pub fn as_contract_with_func<T>(&self, id: &Address, func: &crate::Symbol, f: impl FnOnce() -> T) -> T {
+    ///
+    /// Unlike [`as_contract`][Self::as_contract], `func` is recorded as the
+    /// current contract function for authorization. This lets
+    /// [`mock_auths`][Self::mock_auths] and [`auths`][Self::auths] observe the
+    /// same function name that [`Address::require_auth`] uses.
+    pub fn as_contract_with_func<T>(
+        &self,
+        id: &Address,
+        func: &crate::Symbol,
+        f: impl FnOnce() -> T,
+    ) -> T {
         let id = id.contract_id();
         let mut t: Option<T> = None;
         self.env_impl
@@ -1831,6 +1841,11 @@ impl Env {
     ///
     /// Used to write or read contract data, or take other actions in tests for
     /// setting up tests or asserting on internal state.
+    ///
+    /// Unlike [`try_as_contract`][Self::try_as_contract], `func` is recorded as
+    /// the current contract function for authorization. This lets
+    /// [`mock_auths`][Self::mock_auths] and [`auths`][Self::auths] observe the
+    /// same function name that [`Address::require_auth`] uses.
     pub fn try_as_contract_with_func<T, E>(
         &self,
         id: &Address,
@@ -1843,10 +1858,12 @@ impl Env {
     {
         let id = id.contract_id();
         let mut t: Option<T> = None;
-        let result = self.env_impl.try_with_test_contract_frame(id, func.to_symbol_val(), || {
-            t = Some(f());
-            Ok(().into())
-        });
+        let result = self
+            .env_impl
+            .try_with_test_contract_frame(id, func.to_symbol_val(), || {
+                t = Some(f());
+                Ok(().into())
+            });
 
         match result {
             Ok(_) => Ok(t.unwrap()),
