@@ -29,29 +29,41 @@ soroban-token-sdk = { version = "27.0.0-rc.1", path = "soroban-token-sdk" }
 soroban-token-spec = { version = "27.0.0-rc.1", path = "soroban-token-spec" }
 stellar-asset-spec = { version = "27.0.0-rc.1", path = "stellar-asset-spec" }
 
+# CAP-0084 pre-release pins: rs-soroban-env#1695 (fork branch p28-cap-0084).
+# `next` enables env's CAP-0084 handling (SAC muxed-contract path +
+# ScAddress::MuxedContract match arms in soroban-env-host) and, via
+# soroban-env-common, stellar-xdr/cap_0083,cap_0084. Drop the fork pin and
+# `next` once CAP-0084 lands on stellar tags.
 [workspace.dependencies.soroban-env-common]
-version = "=27.0.0"
-#git = "https://github.com/stellar/rs-soroban-env"
-#rev = "7fb0a840812fe8921bb48bebf7b4aa7160467ec8"
+version = "27"
+git = "https://github.com/sisuresh/rs-stellar-contract-env"
+rev = "dd545ff1f23850b13a48f0bd7bfd2cd67206a4ca"
+features = ["next"]
 
 [workspace.dependencies.soroban-env-guest]
-version = "=27.0.0"
-#git = "https://github.com/stellar/rs-soroban-env"
-#rev = "7fb0a840812fe8921bb48bebf7b4aa7160467ec8"
+version = "27"
+git = "https://github.com/sisuresh/rs-stellar-contract-env"
+rev = "dd545ff1f23850b13a48f0bd7bfd2cd67206a4ca"
+features = ["next"]
 
 [workspace.dependencies.soroban-env-host]
-version = "=27.0.0"
-#git = "https://github.com/stellar/rs-soroban-env"
-#rev = "7fb0a840812fe8921bb48bebf7b4aa7160467ec8"
+version = "27"
+git = "https://github.com/sisuresh/rs-stellar-contract-env"
+rev = "dd545ff1f23850b13a48f0bd7bfd2cd67206a4ca"
+features = ["next"]
 
 [workspace.dependencies.stellar-strkey]
 version = "=0.0.16"
 
+# CAP-0084 pre-release pin: rs-stellar-xdr#548 (fork branch p28-cap-0084).
+# Per-cap-feature layout. Same source+rev as soroban-env-common's stellar-xdr
+# pin -> unified crate instance.
 [workspace.dependencies.stellar-xdr]
-version = "=27.0.0"
-#git = "https://github.com/stellar/rs-stellar-xdr"
-#rev = "a749b69b3471aec0c20ec431b0297f3414d66421"
+version = "27"
+git = "https://github.com/sisuresh/rs-stellar-xdr"
+rev = "bd30d420ce6f63ccd9360e371830384cb84d1c04"
 default-features = false
+features = ["cap_0083", "cap_0084"]
 
 #[patch.crates-io]
 #soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }

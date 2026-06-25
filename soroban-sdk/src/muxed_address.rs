@@ -36,8 +36,8 @@ enum AddressObjectWrapper {
 /// contract has upgraded its interface to switch from `Address` argument to
 /// `MuxedAddress` argument, it won't break any of its existing clients.
 ///
-/// Currently only the regular Stellar accounts can be multiplexed, i.e.
-/// multiplexed contract addresses don't exist.
+/// Both regular Stellar accounts and contract addresses can be multiplexed
+/// (the latter via CAP-0084's muxed contract addresses).
 ///
 /// Note, that multiplexed addresses can not be used directly as a storage key.
 /// This is a precaution to prevent accidental unexpected fragmentation of
@@ -79,6 +79,19 @@ impl Debug for MuxedAddress {
                                     },
                                 );
                                 write!(f, "MuxedAccount({})", strkey.to_string())
+                            }
+                            // CAP-0084: muxed contract addresses have no strkey
+                            // form, so render the contract strkey plus the mux id.
+                            xdr::ScAddress::MuxedContract(muxed_contract) => {
+                                let strkey = Strkey::Contract(stellar_strkey::Contract(
+                                    muxed_contract.contract_id.0 .0,
+                                ));
+                                write!(
+                                    f,
+                                    "MuxedContract({}, {})",
+                                    strkey.to_string(),
+                                    muxed_contract.id
+                                )
                             }
                             _ => Err(core::fmt::Error),
                         }
@@ -356,9 +369,13 @@ impl TryFromVal<Env, ScVal> for MuxedAddress {
                         .try_into_val(env)
                         .unwrap_infallible())
                 }
-                ScAddress::MuxedAccount(_) => Ok(MuxedAddressObject::try_from_val(env, &v)?
-                    .try_into_val(env)
-                    .unwrap_infallible()),
+                // CAP-0084: a muxed contract is a muxed address too, so route
+                // it through MuxedAddressObject like a muxed account.
+                ScAddress::MuxedAccount(_) | ScAddress::MuxedContract(_) => {
+                    Ok(MuxedAddressObject::try_from_val(env, &v)?
+                        .try_into_val(env)
+                        .unwrap_infallible())
+                }
                 ScAddress::ClaimableBalance(_) | ScAddress::LiquidityPool(_) => {
                     panic!("unsupported ScAddress type")
                 }
@@ -394,23 +411,36 @@ impl crate::testutils::MuxedAddress for MuxedAddress {
     fn new<T: Into<MuxedAddress>>(address: T, id: u64) -> crate::MuxedAddress {
         let address: MuxedAddress = address.into();
         let sc_val = ScVal::try_from_val(&address.env, address.as_val()).unwrap();
-        let account_id = match sc_val {
+        let result_sc_val = match sc_val {
             ScVal::Address(address) => match address {
-                ScAddress::MuxedAccount(muxed_account) => muxed_account.ed25519,
+                ScAddress::MuxedAccount(muxed_account) => ScVal::Address(ScAddress::MuxedAccount(
+                    crate::env::internal::xdr::MuxedEd25519Account {
+                        id,
+                        ed25519: muxed_account.ed25519,
+                    },
+                )),
                 ScAddress::Account(crate::env::internal::xdr::AccountId(
                     crate::env::internal::xdr::PublicKey::PublicKeyTypeEd25519(account_id),
-                )) => account_id,
-                ScAddress::Contract(_) => panic!("contract addresses can not be multiplexed"),
+                )) => ScVal::Address(ScAddress::MuxedAccount(
+                    crate::env::internal::xdr::MuxedEd25519Account {
+                        id,
+                        ed25519: account_id,
+                    },
+                )),
+                // CAP-0084: contract addresses can now be multiplexed.
+                ScAddress::Contract(contract_id) => ScVal::Address(ScAddress::MuxedContract(
+                    crate::env::internal::xdr::MuxedContract { id, contract_id },
+                )),
+                ScAddress::MuxedContract(muxed_contract) => ScVal::Address(
+                    ScAddress::MuxedContract(crate::env::internal::xdr::MuxedContract {
+                        id,
+                        contract_id: muxed_contract.contract_id,
+                    }),
+                ),
                 ScAddress::ClaimableBalance(_) | ScAddress::LiquidityPool(_) => unreachable!(),
             },
             _ => unreachable!(),
         };
-        let result_sc_val = ScVal::Address(ScAddress::MuxedAccount(
-            crate::env::internal::xdr::MuxedEd25519Account {
-                id,
-                ed25519: account_id,
-            },
-        ));
         result_sc_val.try_into_val(&address.env).unwrap()
     }
 }

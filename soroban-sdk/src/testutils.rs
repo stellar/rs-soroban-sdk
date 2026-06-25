@@ -277,7 +277,11 @@ pub use crate::env::internal::LedgerInfo;
 /// Returns a default `LedgerInfo` suitable for testing.
 pub(crate) fn default_ledger_info() -> LedgerInfo {
     LedgerInfo {
-        protocol_version: 27,
+        // CAP-0084 SPIKE: env is pinned with feature "next" (protocol 28), so
+        // test contracts are built for protocol 28; the test ledger must match
+        // or the host rejects them as "newer than host". Revert to 27 if the
+        // env pin drops `next`.
+        protocol_version: 28,
         sequence_number: 0,
         timestamp: 0,
         network_id: [0; 32],

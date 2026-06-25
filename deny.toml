@@ -248,7 +248,9 @@ allow-git = []
 
 [sources.allow-org]
 # 1 or more github.com organizations to allow git sources for
-github = ["stellar"]
+# SPIKE (CAP-0084): "sisuresh" allows the rs-soroban-env#1695 / rs-stellar-xdr#548
+# pre-release fork pins. Revert once those land on stellar tags.
+github = ["stellar", "sisuresh"]
 # 1 or more gitlab.com organizations to allow git sources for
 # gitlab = [""]
 # 1 or more bitbucket.org organizations to allow git sources for
