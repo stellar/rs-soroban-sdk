@@ -359,7 +359,9 @@ impl TryFromVal<Env, ScVal> for MuxedAddress {
                 ScAddress::MuxedAccount(_) => Ok(MuxedAddressObject::try_from_val(env, &v)?
                     .try_into_val(env)
                     .unwrap_infallible()),
-                ScAddress::ClaimableBalance(_) | ScAddress::LiquidityPool(_) => {
+                ScAddress::ClaimableBalance(_)
+                | ScAddress::LiquidityPool(_)
+                | ScAddress::MuxedContract(_) => {
                     panic!("unsupported ScAddress type")
                 }
             },
@@ -401,7 +403,9 @@ impl crate::testutils::MuxedAddress for MuxedAddress {
                     crate::env::internal::xdr::PublicKey::PublicKeyTypeEd25519(account_id),
                 )) => account_id,
                 ScAddress::Contract(_) => panic!("contract addresses can not be multiplexed"),
-                ScAddress::ClaimableBalance(_) | ScAddress::LiquidityPool(_) => unreachable!(),
+                ScAddress::ClaimableBalance(_)
+                | ScAddress::LiquidityPool(_)
+                | ScAddress::MuxedContract(_) => unreachable!(),
             },
             _ => unreachable!(),
         };
