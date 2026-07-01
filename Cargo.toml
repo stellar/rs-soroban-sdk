@@ -37,17 +37,17 @@ stellar-asset-spec = { version = "27.0.0-rc.1", path = "stellar-asset-spec" }
 [workspace.dependencies.soroban-env-common]
 version = "=27.0.0"
 git = "https://github.com/stellar/rs-soroban-env"
-rev = "8cf4f5e1580b86d65529e6ed4f78b734908c62fa"
+rev = "87a9b566425bd34d82272b2188545b33319c6cdb"
 
 [workspace.dependencies.soroban-env-guest]
 version = "=27.0.0"
 git = "https://github.com/stellar/rs-soroban-env"
-rev = "8cf4f5e1580b86d65529e6ed4f78b734908c62fa"
+rev = "87a9b566425bd34d82272b2188545b33319c6cdb"
 
 [workspace.dependencies.soroban-env-host]
 version = "=27.0.0"
 git = "https://github.com/stellar/rs-soroban-env"
-rev = "8cf4f5e1580b86d65529e6ed4f78b734908c62fa"
+rev = "87a9b566425bd34d82272b2188545b33319c6cdb"
 
 [workspace.dependencies.stellar-strkey]
 version = "=0.0.16"
@@ -59,7 +59,7 @@ version = "=0.0.16"
 [workspace.dependencies.stellar-xdr]
 version = "=28.0.0"
 git = "https://github.com/stellar/rs-stellar-xdr"
-rev = "7b46a60d914c1e5befd6a2d2c50d2fdf7e5eb1f0"
+rev = "8f826caa99f3b4c55e4d958eb5b6a9a1dbbf9873"
 default-features = false
 
 # SPIKE: Protocol 28 (CAP-0084) the pinned rs-soroban-env#1696 env crates
@@ -68,7 +68,7 @@ default-features = false
 # fork network) so cargo-deny allow-org=stellar sees a single stellar source.
 # Remove once rs-soroban-env repins xdr to the stellar org / a released version.
 [patch."https://github.com/sisuresh/rs-stellar-xdr"]
-stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "7b46a60d914c1e5befd6a2d2c50d2fdf7e5eb1f0", default-features = false }
+stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "8f826caa99f3b4c55e4d958eb5b6a9a1dbbf9873", default-features = false }
 
 #[patch.crates-io]
 #soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }
