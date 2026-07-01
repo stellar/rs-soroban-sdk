@@ -29,29 +29,46 @@ soroban-token-sdk = { version = "27.0.0-rc.1", path = "soroban-token-sdk" }
 soroban-token-spec = { version = "27.0.0-rc.1", path = "soroban-token-spec" }
 stellar-asset-spec = { version = "27.0.0-rc.1", path = "stellar-asset-spec" }
 
+# SPIKE: Protocol 28 (CAP-0084) pins the three env crates to the unmerged
+# rs-soroban-env#1696 branch commit, referenced via stellar/rs-soroban-env
+# (reachable through the fork network so cargo-deny allow-org=stellar passes).
+# Productionize -> stellar/rs-soroban-env merged SHA (or a released version)
+# once it lands; restore `version =` only.
 [workspace.dependencies.soroban-env-common]
 version = "=27.0.0"
-#git = "https://github.com/stellar/rs-soroban-env"
-#rev = "7fb0a840812fe8921bb48bebf7b4aa7160467ec8"
+git = "https://github.com/stellar/rs-soroban-env"
+rev = "87a9b566425bd34d82272b2188545b33319c6cdb"
 
 [workspace.dependencies.soroban-env-guest]
 version = "=27.0.0"
-#git = "https://github.com/stellar/rs-soroban-env"
-#rev = "7fb0a840812fe8921bb48bebf7b4aa7160467ec8"
+git = "https://github.com/stellar/rs-soroban-env"
+rev = "87a9b566425bd34d82272b2188545b33319c6cdb"
 
 [workspace.dependencies.soroban-env-host]
 version = "=27.0.0"
-#git = "https://github.com/stellar/rs-soroban-env"
-#rev = "7fb0a840812fe8921bb48bebf7b4aa7160467ec8"
+git = "https://github.com/stellar/rs-soroban-env"
+rev = "87a9b566425bd34d82272b2188545b33319c6cdb"
 
 [workspace.dependencies.stellar-strkey]
 version = "=0.0.16"
 
+# SPIKE: Protocol 28 (CAP-0084) pins stellar-xdr to the unmerged
+# rs-stellar-xdr#549 branch commit, referenced via stellar/rs-stellar-xdr
+# (reachable through the fork network; per-cap layout, self-reports 28.0.0).
+# Productionize -> stellar/rs-stellar-xdr merged SHA (or crates.io 28.0.0).
 [workspace.dependencies.stellar-xdr]
-version = "=27.0.0"
-#git = "https://github.com/stellar/rs-stellar-xdr"
-#rev = "a749b69b3471aec0c20ec431b0297f3414d66421"
+version = "=28.0.0"
+git = "https://github.com/stellar/rs-stellar-xdr"
+rev = "8f826caa99f3b4c55e4d958eb5b6a9a1dbbf9873"
 default-features = false
+
+# SPIKE: Protocol 28 (CAP-0084) the pinned rs-soroban-env#1696 env crates
+# transitively depend on stellar-xdr from sisuresh/rs-stellar-xdr. Redirect that
+# transitive git source to stellar/rs-stellar-xdr (same commit, reachable via the
+# fork network) so cargo-deny allow-org=stellar sees a single stellar source.
+# Remove once rs-soroban-env repins xdr to the stellar org / a released version.
+[patch."https://github.com/sisuresh/rs-stellar-xdr"]
+stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "8f826caa99f3b4c55e4d958eb5b6a9a1dbbf9873", default-features = false }
 
 #[patch.crates-io]
 #soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }
