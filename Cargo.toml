@@ -30,24 +30,27 @@ soroban-token-spec = { version = "27.0.0-rc.1", path = "soroban-token-spec" }
 stellar-asset-spec = { version = "27.0.0-rc.1", path = "stellar-asset-spec" }
 
 # SPIKE: Protocol 28 (CAP-0084) pins the three env crates to the unmerged
-# rs-soroban-env#1696 branch commit, referenced via stellar/rs-soroban-env
-# (reachable through the fork network so cargo-deny allow-org=stellar passes).
+# rs-soroban-env#1700 branch commit, hosted on the sisuresh/rs-soroban-env fork
+# branch (reachable through the fork network so cargo-deny allow-org=stellar
+# passes). Version constraints are relaxed off the exact `=` pin per
+# lessons.md:45 — the git-rev package may self-report a differing
+# patch/prerelease version; keep major-version compatibility.
 # Productionize -> stellar/rs-soroban-env merged SHA (or a released version)
 # once it lands; restore `version =` only.
 [workspace.dependencies.soroban-env-common]
-version = "=27.0.0"
+version = "27.0.0"
 git = "https://github.com/sisuresh/rs-soroban-env"
-rev = "b5fdf26ea1ff85d2a99e82f42388e0cb6e3de3a2"
+rev = "26b035c00663a424a0cdc4732911d49ddb6bb26f"
 
 [workspace.dependencies.soroban-env-guest]
-version = "=27.0.0"
+version = "27.0.0"
 git = "https://github.com/sisuresh/rs-soroban-env"
-rev = "b5fdf26ea1ff85d2a99e82f42388e0cb6e3de3a2"
+rev = "26b035c00663a424a0cdc4732911d49ddb6bb26f"
 
 [workspace.dependencies.soroban-env-host]
-version = "=27.0.0"
+version = "27.0.0"
 git = "https://github.com/sisuresh/rs-soroban-env"
-rev = "b5fdf26ea1ff85d2a99e82f42388e0cb6e3de3a2"
+rev = "26b035c00663a424a0cdc4732911d49ddb6bb26f"
 
 [workspace.dependencies.stellar-strkey]
 version = "=0.0.16"
