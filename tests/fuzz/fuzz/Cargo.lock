@@ -1208,7 +1208,7 @@ checksum = "a507befe795404456341dfab10cef66ead4c041f62b8b11bbb92bffe5d0953e0"
 [[package]]
 name = "soroban-builtin-sdk-macros"
 version = "27.0.0"
-source = "git+https://github.com/sisuresh/rs-soroban-env?rev=b51329b6614d1f594e91cbc3f85483f455f9172c#b51329b6614d1f594e91cbc3f85483f455f9172c"
+source = "git+https://github.com/sisuresh/rs-soroban-env?rev=c500d8bea38a0621889549b32e50ed4a23f2079d#c500d8bea38a0621889549b32e50ed4a23f2079d"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -1219,7 +1219,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-common"
 version = "27.0.0"
-source = "git+https://github.com/sisuresh/rs-soroban-env?rev=b51329b6614d1f594e91cbc3f85483f455f9172c#b51329b6614d1f594e91cbc3f85483f455f9172c"
+source = "git+https://github.com/sisuresh/rs-soroban-env?rev=c500d8bea38a0621889549b32e50ed4a23f2079d#c500d8bea38a0621889549b32e50ed4a23f2079d"
 dependencies = [
  "arbitrary",
  "crate-git-revision 0.0.9",
@@ -1237,7 +1237,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-guest"
 version = "27.0.0"
-source = "git+https://github.com/sisuresh/rs-soroban-env?rev=b51329b6614d1f594e91cbc3f85483f455f9172c#b51329b6614d1f594e91cbc3f85483f455f9172c"
+source = "git+https://github.com/sisuresh/rs-soroban-env?rev=c500d8bea38a0621889549b32e50ed4a23f2079d#c500d8bea38a0621889549b32e50ed4a23f2079d"
 dependencies = [
  "soroban-env-common",
  "static_assertions",
@@ -1246,7 +1246,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-host"
 version = "27.0.0"
-source = "git+https://github.com/sisuresh/rs-soroban-env?rev=b51329b6614d1f594e91cbc3f85483f455f9172c#b51329b6614d1f594e91cbc3f85483f455f9172c"
+source = "git+https://github.com/sisuresh/rs-soroban-env?rev=c500d8bea38a0621889549b32e50ed4a23f2079d#c500d8bea38a0621889549b32e50ed4a23f2079d"
 dependencies = [
  "ark-bls12-381",
  "ark-bn254",
@@ -1282,7 +1282,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-macros"
 version = "27.0.0"
-source = "git+https://github.com/sisuresh/rs-soroban-env?rev=b51329b6614d1f594e91cbc3f85483f455f9172c#b51329b6614d1f594e91cbc3f85483f455f9172c"
+source = "git+https://github.com/sisuresh/rs-soroban-env?rev=c500d8bea38a0621889549b32e50ed4a23f2079d#c500d8bea38a0621889549b32e50ed4a23f2079d"
 dependencies = [
  "itertools",
  "proc-macro2",
