@@ -97,6 +97,9 @@ jobs:
     - uses: stellar/actions/rust-check-git-rev-deps@main
 
   semver-checks:
+    # Skippable via 'skip-semver-checks' label for the 27.0.0 release: https://github.com/stellar/rs-soroban-sdk/pull/1925
+    # This should be removed after 27.0.0 is released and soroban-env is patched
+    if: "!contains(github.event.pull_request.labels.*.name, 'skip-semver-checks') && github.event_name != 'merge_group'"
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
