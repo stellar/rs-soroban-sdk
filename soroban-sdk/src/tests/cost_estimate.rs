@@ -21,8 +21,8 @@ fn test_cost_estimate_with_storage() {
     client.put(&symbol_short!("k1"), &symbol_short!("v1"));
     expect![[r#"
         InvocationResources {
-            instructions: 242479,
-            mem_bytes: 1126705,
+            instructions: 242953,
+            mem_bytes: 1126945,
             disk_read_entries: 0,
             memory_read_entries: 3,
             write_entries: 1,
@@ -37,8 +37,8 @@ fn test_cost_estimate_with_storage() {
     .assert_eq(format!("{:#?}", e.cost_estimate().resources()).as_str());
     expect![[r#"
         FeeEstimate {
-            total: 29122,
-            instructions: 607,
+            total: 29123,
+            instructions: 608,
             disk_read_entries: 6250,
             write_entries: 10000,
             disk_read_bytes: 0,
@@ -54,8 +54,8 @@ fn test_cost_estimate_with_storage() {
     assert_eq!(client.get(&symbol_short!("k1")), Some(symbol_short!("v1")));
     expect![[r#"
         InvocationResources {
-            instructions: 241076,
-            mem_bytes: 1125802,
+            instructions: 241112,
+            mem_bytes: 1125994,
             disk_read_entries: 0,
             memory_read_entries: 3,
             write_entries: 0,
@@ -87,8 +87,8 @@ fn test_cost_estimate_with_storage() {
     client.del(&symbol_short!("k1"));
     expect![[r#"
         InvocationResources {
-            instructions: 238618,
-            mem_bytes: 1126022,
+            instructions: 238650,
+            mem_bytes: 1126182,
             disk_read_entries: 0,
             memory_read_entries: 3,
             write_entries: 1,
@@ -120,8 +120,8 @@ fn test_cost_estimate_with_storage() {
     assert_eq!(client.get(&symbol_short!("k1")), None);
     expect![[r#"
         InvocationResources {
-            instructions: 238885,
-            mem_bytes: 1125666,
+            instructions: 238917,
+            mem_bytes: 1125826,
             disk_read_entries: 0,
             memory_read_entries: 3,
             write_entries: 0,
@@ -161,18 +161,18 @@ fn test_cost_estimate_budget() {
     // Budget breakdown corresponds to the last invocation only.
     expect![[r#"
         ===============================================================================================================================================================================
-        Cpu limit: 100000000; used: 257503
-        Mem limit: 41943040; used: 1145211
+        Cpu limit: 100000000; used: 257977
+        Mem limit: 41943040; used: 1145451
         ===============================================================================================================================================================================
         CostType                           iterations     input          cpu_insns      mem_bytes      const_term_cpu      lin_term_cpu        const_term_mem      lin_term_mem        
         WasmInsnExec                       284            None           1136           0              4                   0                   0                   0                   
-        MemAlloc                           23             Some(1051337)  141397         1051705        434                 16                  16                  128                 
-        MemCpy                             104            Some(10589)    5675           0              42                  16                  0                   0                   
+        MemAlloc                           24             Some(1051561)  141859         1051945        434                 16                  16                  128                 
+        MemCpy                             104            Some(10685)    5687           0              42                  16                  0                   0                   
         MemCmp                             67             Some(1996)     3184           0              44                  16                  0                   0                   
         DispatchHostFunction               1              None           310            0              310                 0                   0                   0                   
         VisitObject                        2              None           122            0              61                  0                   0                   0                   
         ValSer                             61             Some(1248)     14265          18506          230                 29                  242                 384                 
-        ValDeser                           0              Some(0)        0              0              59052               4001                0                   384                 
+        ValDeser                           0              Some(0)        0              0              331                 4369                0                   384                 
         ComputeSha256Hash                  1              Some(0)        3738           0              3738                7012                0                   0                   
         ComputeEd25519PubKey               0              None           0              0              40253               0                   0                   0                   
         VerifyEd25519Sig                   0              Some(0)        0              0              377524              4068                0                   0                   
@@ -253,9 +253,9 @@ fn test_cost_estimate_budget() {
         Bn254G1Msm                         0              Some(0)        0              0              1185193             41568084            73061               229779              
         ===============================================================================================================================================================================
         Internal details (diagnostics info, does not affect fees) 
-        Total # times meter was called: 272
-        Shadow cpu limit: 100000000; used: 32431
-        Shadow mem limit: 41943040; used: 27108
+        Total # times meter was called: 273
+        Shadow cpu limit: 100000000; used: 32579
+        Shadow mem limit: 41943040; used: 27684
         ===============================================================================================================================================================================
 
 
