@@ -2298,4 +2298,32 @@ mod as_contract_func_tests {
         let env = Env::default();
         assert_eq!(func_sym(&env, &(|| {})), Symbol::new(&env, ""));
     }
+
+    // A name whose last path segment exceeds the 32-character Symbol limit.
+    fn a_function_with_a_name_that_is_far_longer_than_thirty_two_characters() {}
+
+    #[test]
+    fn overlong_name_falls_back_to_empty() {
+        let env = Env::default();
+        assert_eq!(
+            func_sym(
+                &env,
+                &a_function_with_a_name_that_is_far_longer_than_thirty_two_characters
+            ),
+            Symbol::new(&env, ""),
+        );
+    }
+
+    fn generic_function<T>() {}
+
+    #[test]
+    fn generic_function_falls_back_to_empty() {
+        // `type_name` renders the monomorphized name as `generic_function<u32>`,
+        // whose `<`/`>` are not valid Symbol characters, so it falls back.
+        let env = Env::default();
+        assert_eq!(
+            func_sym(&env, &generic_function::<u32>),
+            Symbol::new(&env, ""),
+        );
+    }
 }
