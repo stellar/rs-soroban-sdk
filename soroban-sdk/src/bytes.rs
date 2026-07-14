@@ -839,16 +839,24 @@ impl IntoIterator for Bytes {
     type IntoIter = BytesIter;
 
     fn into_iter(self) -> Self::IntoIter {
-        BytesIter(self)
+        BytesIter::new(self)
     }
 }
 
 #[derive(Clone)]
-pub struct BytesIter(Bytes);
+pub struct BytesIter {
+    bin: Bytes,
+    start: u32, // inclusive
+    end: u32,   // exclusive
+}
 
 impl BytesIter {
-    fn into_bin(self) -> Bytes {
-        self.0
+    fn new(bin: Bytes) -> Self {
+        Self {
+            start: 0,
+            end: bin.len(),
+            bin,
+        }
     }
 }
 
@@ -856,40 +864,28 @@ impl Iterator for BytesIter {
     type Item = u8;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.0.is_empty() {
-            None
+        if self.start < self.end {
+            let val = self.bin.get_unchecked(self.start);
+            self.start += 1;
+            Some(val)
         } else {
-            let val: u32 = self
-                .0
-                .env()
-                .bytes_front(self.0.obj)
-                .unwrap_infallible()
-                .into();
-            self.0 = self.0.slice(1..);
-            Some(val as u8)
+            None
         }
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
-        let len = self.0.len() as usize;
+        let len = (self.end - self.start) as usize;
         (len, Some(len))
     }
 }
 
 impl DoubleEndedIterator for BytesIter {
     fn next_back(&mut self) -> Option<Self::Item> {
-        let len = self.0.len();
-        if len == 0 {
-            None
+        if self.start < self.end {
+            self.end -= 1;
+            Some(self.bin.get_unchecked(self.end))
         } else {
-            let val: u32 = self
-                .0
-                .env()
-                .bytes_back(self.0.obj)
-                .unwrap_infallible()
-                .into();
-            self.0 = self.0.slice(..len - 1);
-            Some(val as u8)
+            None
         }
     }
 }
@@ -898,7 +894,7 @@ impl FusedIterator for BytesIter {}
 
 impl ExactSizeIterator for BytesIter {
     fn len(&self) -> usize {
-        self.0.len() as usize
+        (self.end - self.start) as usize
     }
 }
 
@@ -1304,7 +1300,7 @@ impl<const N: usize> IntoIterator for BytesN<N> {
     type IntoIter = BytesIter;
 
     fn into_iter(self) -> Self::IntoIter {
-        BytesIter(self.0)
+        BytesIter::new(self.0)
     }
 }
 
@@ -1530,6 +1526,80 @@ mod test {
         assert_eq!(iter.next_back(), Some(20));
         assert_eq!(iter.next_back(), None);
         assert_eq!(iter.next_back(), None);
+    }
+
+    #[test]
+    fn test_bin_iter_large() {
+        let env = Env::default();
+        const N: usize = 100;
+        let mut data = [0u8; N];
+        for i in 0..N {
+            data[i] = i as u8;
+        }
+        let bin = Bytes::from_slice(&env, &data);
+
+        // Forward yields every byte in order, exactly N of them.
+        let mut count = 0usize;
+        for (i, b) in bin.iter().enumerate() {
+            assert_eq!(b, data[i]);
+            count += 1;
+        }
+        assert_eq!(count, N);
+
+        // Reverse yields every byte in reverse order.
+        let mut expect = N;
+        for b in bin.iter().rev() {
+            expect -= 1;
+            assert_eq!(b, data[expect]);
+        }
+        assert_eq!(expect, 0);
+
+        // ExactSizeIterator length tracks remaining across a bulk chunk read.
+        let mut it = bin.iter();
+        assert_eq!(it.len(), N);
+        assert_eq!(it.size_hint(), (N, Some(N)));
+        it.next();
+        assert_eq!(it.len(), N - 1);
+
+        // Interleaved double-ended iteration: the front and back cursors must
+        // meet correctly in the middle.
+        let mut it = bin.iter();
+        let mut lo = 0usize;
+        let mut hi = N;
+        let mut front = true;
+        while lo < hi {
+            if front {
+                assert_eq!(it.next(), Some(data[lo]));
+                lo += 1;
+            } else {
+                assert_eq!(it.next_back(), Some(data[hi - 1]));
+                hi -= 1;
+            }
+            front = !front;
+        }
+        assert_eq!(it.next(), None);
+        assert_eq!(it.next_back(), None);
+        assert_eq!(it.len(), 0);
+
+        for len in [32usize, 33] {
+            let mut d = [0u8; 33];
+            for i in 0..len {
+                d[i] = (200 - i) as u8;
+            }
+            let b = Bytes::from_slice(&env, &d[..len]);
+            let mut i = 0;
+            for x in b.iter() {
+                assert_eq!(x, d[i]);
+                i += 1;
+            }
+            assert_eq!(i, len);
+            let mut j = len;
+            for x in b.iter().rev() {
+                j -= 1;
+                assert_eq!(x, d[j]);
+            }
+            assert_eq!(j, 0);
+        }
     }
 
     #[test]
