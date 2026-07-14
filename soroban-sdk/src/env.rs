@@ -1672,6 +1672,31 @@ impl Env {
             .unwrap();
     }
 
+    /// Derives the contract frame's function name from the type `F` of the
+    /// closure passed to [`Env::as_contract`]/[`Env::try_as_contract`].
+    ///
+    /// The last `::`-separated segment of [`core::any::type_name`] is used, so
+    /// a named function `f` resolves to the symbol `f`. Closures (which resolve
+    /// to `{{closure}}`) and any other names that are not valid symbols fall
+    /// back to an empty symbol, preserving the historical behavior.
+    fn as_contract_func<F>(&self, _f: &F) -> Symbol {
+        let name = core::any::type_name::<F>()
+            .rsplit("::")
+            .next()
+            .unwrap_or("");
+        // `type_name` is best-effort: closures resolve to `{{closure}}`, and
+        // other names may contain characters or exceed the length that a Symbol
+        // permits. Fall back to an empty symbol for anything that is not a valid
+        // Symbol, preserving the historical behavior.
+        let name =
+            if name.len() <= 32 && name.bytes().all(|b| b.is_ascii_alphanumeric() || b == b'_') {
+                name
+            } else {
+                ""
+            };
+        crate::Symbol::new(self, name).to_symbol_val()
+    }
+
     /// Run the function as if executed by the given contract ID.
     ///
     /// Used to write or read contract data, or take other actions in tests for
@@ -1717,7 +1742,7 @@ impl Env {
     /// ```
     pub fn as_contract<T>(&self, id: &Address, f: impl FnOnce() -> T) -> T {
         let id = id.contract_id();
-        let func = Symbol::from_small_str("");
+        let func = self.as_contract_func(&f);
         let mut t: Option<T> = None;
         self.env_impl
             .with_test_contract_frame(id, func, || {
@@ -1795,7 +1820,7 @@ impl Env {
         E::Error: Into<InvokeError>,
     {
         let id = id.contract_id();
-        let func = Symbol::from_small_str("");
+        let func = self.as_contract_func(&f);
         let mut t: Option<T> = None;
         let result = self.env_impl.try_with_test_contract_frame(id, func, || {
             t = Some(f());
@@ -2248,3 +2273,29 @@ macro_rules! impl_env_for_sdk {
 
 // Here we invoke the x-macro passing generate_env_trait as its callback macro.
 internal::call_macro_with_all_host_functions! { impl_env_for_sdk }
+
+#[cfg(test)]
+mod as_contract_func_tests {
+    use crate::{Env, Symbol, TryFromVal};
+
+    fn func_sym<T, F: FnOnce() -> T>(env: &Env, f: &F) -> Symbol {
+        Symbol::try_from_val(env, &env.as_contract_func(f)).unwrap()
+    }
+
+    fn some_named_function() {}
+
+    #[test]
+    fn named_function_uses_its_name() {
+        let env = Env::default();
+        assert_eq!(
+            func_sym(&env, &some_named_function),
+            Symbol::new(&env, "some_named_function"),
+        );
+    }
+
+    #[test]
+    fn closure_uses_empty_name() {
+        let env = Env::default();
+        assert_eq!(func_sym(&env, &(|| {})), Symbol::new(&env, ""));
+    }
+}
