@@ -1675,19 +1675,24 @@ impl Env {
     /// Derives the contract frame's function name from the type `F` of the
     /// closure passed to [`Env::as_contract`]/[`Env::try_as_contract`].
     ///
-    /// The last `::`-separated segment of [`core::any::type_name`] is used, so
-    /// a named function `f` resolves to the symbol `f`. Closures (which resolve
-    /// to `{{closure}}`) and any other names that are not valid symbols fall
+    /// The name comes from [`core::any::type_name`]: generic arguments are
+    /// dropped and the last `::`-separated segment is taken, so a named
+    /// function `f` resolves to the symbol `f`. Closures (which resolve to
+    /// `{{closure}}`) and any other names that a Symbol cannot represent fall
     /// back to an empty symbol, preserving the historical behavior.
-    fn as_contract_func<F>(&self, _f: &F) -> Symbol {
-        let name = core::any::type_name::<F>()
-            .rsplit("::")
-            .next()
-            .unwrap_or("");
-        // `type_name` is best-effort: closures resolve to `{{closure}}`, and
-        // other names may contain characters or exceed the length that a Symbol
-        // permits. Fall back to an empty symbol for anything that is not a valid
-        // Symbol, preserving the historical behavior.
+    fn as_contract_func_name<F>(&self, _f: &F) -> Symbol {
+        // `type_name` is best-effort and its exact format is unstable, so it is
+        // only ever a diagnostic hint. Drop any generic arguments before
+        // splitting on `::`, since those arguments can themselves contain `::`
+        // paths (e.g. `f<alloc::string::String>`).
+        let name = core::any::type_name::<F>();
+        let name = name.split('<').next().unwrap_or(name);
+        let name = name.rsplit("::").next().unwrap_or(name);
+        // Fall back to an empty symbol for anything a Symbol cannot represent:
+        // closures (`{{closure}}`), over-long names, etc. The local Env's
+        // symbol constructor panics on invalid input rather than reporting it,
+        // so the name is checked against Symbol's rules (`a-zA-Z0-9_`, max 32
+        // characters) up front.
         let name =
             if name.len() <= 32 && name.bytes().all(|b| b.is_ascii_alphanumeric() || b == b'_') {
                 name
@@ -1742,7 +1747,7 @@ impl Env {
     /// ```
     pub fn as_contract<T>(&self, id: &Address, f: impl FnOnce() -> T) -> T {
         let id = id.contract_id();
-        let func = self.as_contract_func(&f);
+        let func = self.as_contract_func_name(&f);
         let mut t: Option<T> = None;
         self.env_impl
             .with_test_contract_frame(id, func, || {
@@ -1820,7 +1825,7 @@ impl Env {
         E::Error: Into<InvokeError>,
     {
         let id = id.contract_id();
-        let func = self.as_contract_func(&f);
+        let func = self.as_contract_func_name(&f);
         let mut t: Option<T> = None;
         let result = self.env_impl.try_with_test_contract_frame(id, func, || {
             t = Some(f());
@@ -2278,8 +2283,10 @@ internal::call_macro_with_all_host_functions! { impl_env_for_sdk }
 mod as_contract_func_tests {
     use crate::{Env, Symbol, TryFromVal};
 
-    fn func_sym<T, F: FnOnce() -> T>(env: &Env, f: &F) -> Symbol {
-        Symbol::try_from_val(env, &env.as_contract_func(f)).unwrap()
+    // Resolves the symbol `as_contract_func_name` derives for `f`, so the tests
+    // below can assert on it directly.
+    fn func_sym<F>(env: &Env, f: &F) -> Symbol {
+        Symbol::try_from_val(env, &env.as_contract_func_name(f)).unwrap()
     }
 
     fn some_named_function() {}
@@ -2317,13 +2324,15 @@ mod as_contract_func_tests {
     fn generic_function<T>() {}
 
     #[test]
-    fn generic_function_falls_back_to_empty() {
-        // `type_name` renders the monomorphized name as `generic_function<u32>`,
-        // whose `<`/`>` are not valid Symbol characters, so it falls back.
+    fn generic_function_uses_base_name() {
+        // `type_name` renders the monomorphized name as
+        // `generic_function<soroban_sdk::env::Env>`. The generic arguments are
+        // dropped before splitting on `::`, so the `::` inside them does not
+        // leak into the result and the base name is used.
         let env = Env::default();
         assert_eq!(
-            func_sym(&env, &generic_function::<u32>),
-            Symbol::new(&env, ""),
+            func_sym(&env, &generic_function::<Env>),
+            Symbol::new(&env, "generic_function"),
         );
     }
 }
