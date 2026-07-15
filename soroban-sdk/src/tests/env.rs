@@ -356,3 +356,55 @@ fn test_register_restores_auth_before_panics() {
     assert!(post_register.is_err());
     assert_eq!(pre_register, post_register);
 }
+
+// `as_contract`/`try_as_contract` derive the test frame's function name from
+// the function or closure passed in, via `core::any::type_name`. That
+// derivation runs on every call and must never panic, whatever the shape of the
+// name: a closure (which `type_name` renders as `{{closure}}`), a generic
+// function (whose `type_name` embeds `::` inside its generic arguments), or a
+// name longer than a `Symbol` allows. The derived name has no public accessor,
+// so these drive the public entry points and check only that the closure still
+// runs and returns its value.
+#[test]
+fn as_contract_accepts_any_function_shape() {
+    let env = Env::default();
+    let id = env.register(Contract, ());
+
+    fn named() -> u32 {
+        1
+    }
+    fn generic<T>() -> u32 {
+        1
+    }
+    fn a_name_that_is_much_longer_than_the_thirty_two_character_symbol_limit() -> u32 {
+        1
+    }
+
+    // Named function.
+    assert_eq!(env.as_contract(&id, named), 1);
+    assert_eq!(env.try_as_contract::<u32, Error>(&id, named), Ok(1));
+    // Closure.
+    assert_eq!(env.as_contract(&id, || 1u32), 1);
+    assert_eq!(env.try_as_contract::<u32, Error>(&id, || 1u32), Ok(1));
+    // Generic function.
+    assert_eq!(env.as_contract(&id, generic::<Env>), 1);
+    assert_eq!(
+        env.try_as_contract::<u32, Error>(&id, generic::<Env>),
+        Ok(1)
+    );
+    // Name longer than a `Symbol` allows.
+    assert_eq!(
+        env.as_contract(
+            &id,
+            a_name_that_is_much_longer_than_the_thirty_two_character_symbol_limit
+        ),
+        1
+    );
+    assert_eq!(
+        env.try_as_contract::<u32, Error>(
+            &id,
+            a_name_that_is_much_longer_than_the_thirty_two_character_symbol_limit
+        ),
+        Ok(1)
+    );
+}
