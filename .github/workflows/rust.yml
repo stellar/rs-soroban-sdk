@@ -97,6 +97,9 @@ jobs:
     - uses: stellar/actions/rust-check-git-rev-deps@main
 
   semver-checks:
+    # When a PR enters the merge queue, the event context changes from pull_request to merge_group,
+    # so github.event.pull_request becomes null/empty, so we don't do this check in the merge queue.
+    if: "!contains(github.event.pull_request.labels.*.name, 'skip-semver-checks') && github.event_name != 'merge_group'"
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
