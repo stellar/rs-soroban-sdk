@@ -49,6 +49,13 @@ mod constructor_contract {
     soroban_sdk::contractimport!(file = "../target/wasm32v1-none/release/test_constructor.wasm");
 }
 
+mod constructor_with_auth_contract {
+    use crate as soroban_sdk;
+    soroban_sdk::contractimport!(
+        file = "../target/wasm32v1-none/release/test_constructor_with_auth.wasm"
+    );
+}
+
 #[test]
 fn default_and_from_snapshot_same_settings() {
     let env1 = Env::default();
@@ -355,4 +362,24 @@ fn test_register_restores_auth_before_panics() {
     let post_register = client.try_need_auth(&user);
     assert!(post_register.is_err());
     assert_eq!(pre_register, post_register);
+}
+
+// Regression test for https://github.com/stellar/rs-soroban-sdk/issues/1738.
+// `register_at` must invoke a Wasm contract's constructor under recording
+// authorization, the same as `register`. The constructor here calls
+// `require_auth`, which under recording auth is recorded and succeeds. Without
+// the recording auth switch the constructor runs under the enforcing auth of
+// the default env, and `require_auth` panics during registration.
+//
+// Snapshot capture is disabled because the snapshot embeds the imported Wasm's
+// hash, which is not stable across toolchains (see the snapshot ignores in
+// .gitignore for other Wasm-importing tests).
+#[test]
+fn test_register_at_wasm_constructor_uses_recording_auth() {
+    let env = Env::new_with_config(EnvTestConfig {
+        capture_snapshot_at_drop: false,
+    });
+    let admin = Address::generate(&env);
+    let contract_id = Address::generate(&env);
+    env.register_at(&contract_id, constructor_with_auth_contract::WASM, (admin,));
 }

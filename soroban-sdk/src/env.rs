@@ -783,6 +783,15 @@ impl Env {
     /// to construct the arguments with the appropriate types for invoking
     /// the constructor during registration.
     ///
+    /// The constructor is invoked using recording authorization, so any
+    /// [`Address::require_auth`] calls it makes are recorded and succeed
+    /// without authorization needing to be set up. This is a convenience of the
+    /// test utilities and does not reflect on-chain behavior. To exercise a
+    /// constructor under enforcing authorization, deploy the contract using the
+    /// real deployment functions instead, e.g.
+    /// `env.deployer().with_address(address, salt).deploy_v2(wasm_hash, args)`,
+    /// which authorizes the deployment on behalf of `address`.
+    ///
     /// Returns the address of the registered contract that is the same as the
     /// contract id passed in.
     ///
@@ -849,6 +858,15 @@ impl Env {
     /// Pass the contract type when the contract is defined in the current crate
     /// and is being registered natively. Pass the contract wasm bytes when the
     /// contract has been loaded as wasm.
+    ///
+    /// The constructor is invoked using recording authorization, the same as
+    /// [`Env::register`], so any [`Address::require_auth`] calls it makes are
+    /// recorded and succeed without authorization needing to be set up. This is
+    /// a convenience of the test utilities and does not reflect on-chain
+    /// behavior. To exercise a constructor under enforcing authorization, deploy
+    /// the contract using the real deployment functions instead, e.g.
+    /// `env.deployer().with_address(address, salt).deploy_v2(wasm_hash, args)`,
+    /// which authorizes the deployment on behalf of `address`.
     ///
     /// Returns the address of the registered contract that is the same as the
     /// contract id passed in.
@@ -1667,9 +1685,20 @@ impl Env {
         self.host()
             .add_ledger_entry(&key, &entry, Some(live_until_ledger))
             .unwrap();
+        // Run the constructor under recording auth so that `require_auth` calls
+        // in the constructor succeed, matching the behavior of
+        // `register_contract_with_source` (used when no contract ID is
+        // provided). See https://github.com/stellar/rs-soroban-sdk/issues/1738.
+        let prev_auth_manager = self.env_impl.snapshot_auth_manager().unwrap();
         self.env_impl
-            .call_constructor_for_stored_contract_unsafe(&contract_id, constructor_args.to_object())
+            .switch_to_recording_auth_inherited_from_snapshot(&prev_auth_manager)
             .unwrap();
+        let call_result = self.env_impl.call_constructor_for_stored_contract_unsafe(
+            &contract_id,
+            constructor_args.to_object(),
+        );
+        self.env_impl.set_auth_manager(prev_auth_manager).unwrap();
+        call_result.unwrap();
     }
 
     /// Run the function as if executed by the given contract ID.
