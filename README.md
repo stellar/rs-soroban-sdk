@@ -1,11 +1,11 @@
 # rs-soroban-sdk
 Rust SDK for writing contracts for [Soroban].
 
-Soroban: https://soroban.stellar.org
+Soroban: https://stellar.org/soroban
 
 Docs: https://docs.rs/soroban-sdk
 
-[Soroban]: https://soroban.stellar.org
+[Soroban]: https://stellar.org/soroban
 
 ## Support
 
