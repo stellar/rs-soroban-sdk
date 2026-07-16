@@ -248,7 +248,10 @@ allow-git = []
 
 [sources.allow-org]
 # 1 or more github.com organizations to allow git sources for
-github = ["stellar"]
+# TEMP CAP-0085 SPIKE: "sisuresh" allows the fork-hosted rs-soroban-env#1704
+# and rs-stellar-xdr#553 rev pins (git+https://github.com/sisuresh/...).
+# Revert to just ["stellar"] when both re-point to accepted stellar/ merged revs.
+github = ["stellar", "sisuresh"]
 # 1 or more gitlab.com organizations to allow git sources for
 # gitlab = [""]
 # 1 or more bitbucket.org organizations to allow git sources for
