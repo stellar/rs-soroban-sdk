@@ -1677,9 +1677,10 @@ impl Env {
     ///
     /// The name comes from [`core::any::type_name`]: generic arguments are
     /// dropped and the last `::`-separated segment is taken, so a named
-    /// function `f` resolves to the symbol `f`. Closures (which resolve to
-    /// `{{closure}}`) and any other names that a Symbol cannot represent fall
-    /// back to an empty symbol, preserving the historical behavior.
+    /// function `f` resolves to the symbol `f`. Names longer than a Symbol
+    /// allows are truncated, and names with characters a Symbol cannot
+    /// represent (e.g. closures, which resolve to `{{closure}}`) fall back to
+    /// an empty symbol, preserving the historical behavior.
     fn as_contract_func_name<F>(&self, _f: &F) -> Symbol {
         // `type_name` is best-effort and its exact format is unstable, so it is
         // only ever a diagnostic hint. Drop any generic arguments before
@@ -1688,17 +1689,22 @@ impl Env {
         let name = core::any::type_name::<F>();
         let name = name.split('<').next().unwrap_or(name);
         let name = name.rsplit("::").next().unwrap_or(name);
-        // Fall back to an empty symbol for anything a Symbol cannot represent:
-        // closures (`{{closure}}`), over-long names, etc. The local Env's
-        // symbol constructor panics on invalid input rather than reporting it,
-        // so the name is checked against Symbol's rules (`a-zA-Z0-9_`, max 32
-        // characters) up front.
-        let name =
-            if name.len() <= 32 && name.bytes().all(|b| b.is_ascii_alphanumeric() || b == b'_') {
-                name
-            } else {
-                ""
-            };
+        // The local Env's symbol constructor panics on invalid input rather
+        // than reporting it, so keep the name within Symbol's rules up front.
+        // Defer the character check to Symbol itself via
+        // `SymbolSmall::validate_byte` rather than restating the charset here:
+        // names with a character a Symbol cannot represent fall back to an
+        // empty symbol, and names that are only too long are truncated to
+        // Symbol's 32 character limit (the charset is all ASCII, so this is a
+        // byte boundary).
+        let name = if name
+            .bytes()
+            .all(|b| internal::SymbolSmall::validate_byte(b).is_ok())
+        {
+            &name[..name.len().min(32)]
+        } else {
+            ""
+        };
         crate::Symbol::new(self, name).to_symbol_val()
     }
 
