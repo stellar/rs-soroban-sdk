@@ -1672,42 +1672,6 @@ impl Env {
             .unwrap();
     }
 
-    /// Derives the contract frame's function name from the type `F` of the
-    /// closure passed to [`Env::as_contract`]/[`Env::try_as_contract`].
-    ///
-    /// The name comes from [`core::any::type_name`]: generic arguments are
-    /// dropped and the last `::`-separated segment is taken, so a named
-    /// function `f` resolves to the symbol `f`. Names longer than a Symbol
-    /// allows are truncated, and names with characters a Symbol cannot
-    /// represent (e.g. closures, which resolve to `{{closure}}`) fall back to
-    /// an empty symbol, preserving the historical behavior.
-    fn as_contract_func_name<F>(&self, _f: &F) -> Symbol {
-        // `type_name` is best-effort and its exact format is unstable, so it is
-        // only ever a diagnostic hint. Drop any generic arguments before
-        // splitting on `::`, since those arguments can themselves contain `::`
-        // paths (e.g. `f<alloc::string::String>`).
-        let name = core::any::type_name::<F>();
-        let name = name.split('<').next().unwrap_or(name);
-        let name = name.rsplit("::").next().unwrap_or(name);
-        // The local Env's symbol constructor panics on invalid input rather
-        // than reporting it, so keep the name within Symbol's rules up front.
-        // Defer the character check to Symbol itself via
-        // `SymbolSmall::validate_byte` rather than restating the charset here:
-        // names with a character a Symbol cannot represent fall back to an
-        // empty symbol, and names that are only too long are truncated to
-        // Symbol's 32 character limit (the charset is all ASCII, so this is a
-        // byte boundary).
-        let name = if name
-            .bytes()
-            .all(|b| internal::SymbolSmall::validate_byte(b).is_ok())
-        {
-            &name[..name.len().min(32)]
-        } else {
-            ""
-        };
-        crate::Symbol::new(self, name).to_symbol_val()
-    }
-
     /// Run the function as if executed by the given contract ID.
     ///
     /// Used to write or read contract data, or take other actions in tests for
@@ -1842,6 +1806,42 @@ impl Env {
             Ok(_) => Ok(t.unwrap()),
             Err(e) => Err(E::try_from(e.error).map_err(Into::into)),
         }
+    }
+
+    /// Derives the contract frame's function name from the type `F` of the
+    /// closure passed to [`Env::as_contract`]/[`Env::try_as_contract`].
+    ///
+    /// The name comes from [`core::any::type_name`]: generic arguments are
+    /// dropped and the last `::`-separated segment is taken, so a named
+    /// function `f` resolves to the symbol `f`. Names longer than a Symbol
+    /// allows are truncated, and names with characters a Symbol cannot
+    /// represent (e.g. closures, which resolve to `{{closure}}`) fall back to
+    /// an empty symbol, preserving the historical behavior.
+    fn as_contract_func_name<F>(&self, _f: &F) -> Symbol {
+        // `type_name` is best-effort and its exact format is unstable, so it is
+        // only ever a diagnostic hint. Drop any generic arguments before
+        // splitting on `::`, since those arguments can themselves contain `::`
+        // paths (e.g. `f<alloc::string::String>`).
+        let name = core::any::type_name::<F>();
+        let name = name.split('<').next().unwrap_or(name);
+        let name = name.rsplit("::").next().unwrap_or(name);
+        // The local Env's symbol constructor panics on invalid input rather
+        // than reporting it, so keep the name within Symbol's rules up front.
+        // Defer the character check to Symbol itself via
+        // `SymbolSmall::validate_byte` rather than restating the charset here:
+        // names with a character a Symbol cannot represent fall back to an
+        // empty symbol, and names that are only too long are truncated to
+        // Symbol's 32 character limit (the charset is all ASCII, so this is a
+        // byte boundary).
+        let name = if name
+            .bytes()
+            .all(|b| internal::SymbolSmall::validate_byte(b).is_ok())
+        {
+            &name[..name.len().min(32)]
+        } else {
+            ""
+        };
+        crate::Symbol::new(self, name).to_symbol_val()
     }
 
     /// Creates a new Env loaded with the [`Snapshot`].
