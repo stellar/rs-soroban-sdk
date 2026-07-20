@@ -1,11 +1,14 @@
 use soroban_sdk_macros::contracterror;
 
 use crate::{
-    self as soroban_sdk, contract, contractimpl,
+    self as soroban_sdk,
+    auth::{Context, CustomAccountInterface},
+    contract, contractimpl,
+    crypto::Hash,
     env::EnvTestConfig,
-    testutils::{Address as _, Logs},
+    testutils::{Address as _, Logs, MockAuth, MockAuthInvoke},
     xdr::{ScErrorCode, ScErrorType},
-    Address, Env, Error, InvokeError, Symbol,
+    Address, Env, Error, IntoVal, InvokeError, Symbol, Vec,
 };
 
 #[test]
@@ -358,64 +361,122 @@ fn test_register_restores_auth_before_panics() {
 }
 
 // `as_contract`/`try_as_contract` derive the test frame's function name from
-// the function or closure passed in, via `core::any::type_name`. That
-// derivation runs on every call and must never panic, whatever the shape of the
-// name: a closure (which `type_name` renders as `{{closure}}`), a generic
-// function (whose `type_name` embeds `::` inside its generic arguments), a
-// callable nested in a generic context (e.g. a closure inside a generic
-// function, whose `type_name` carries the enclosing generic's `::`), or a name
-// longer than a `Symbol` allows. The derived name has no public accessor, so
-// these drive the public entry points and check only that the closure still
-// runs and returns its value.
+// the function or closure passed in, via `core::any::type_name`. The derived
+// name isn't exposed directly, but it is the `fn_name` recorded for an
+// authorization performed inside the frame, so a `MockAuth` with a matching
+// `fn_name` lets us assert the exact derived symbol: the `require_auth` inside
+// the frame is authorized only when the names match.
+//
+// A custom account used as the authorizing address; its `__check_auth` always
+// approves, so a `require_auth` inside a frame succeeds as long as a matching
+// `MockAuth` entry (same contract, function name, and args) was provided.
+#[contract]
+struct AuthTarget;
+
+#[contractimpl]
+impl CustomAccountInterface for AuthTarget {
+    type Signature = ();
+    type Error = ContractError;
+    #[allow(non_snake_case)]
+    fn __check_auth(
+        _env: Env,
+        _signature_payload: Hash<32>,
+        _signature: (),
+        _auth_contexts: Vec<Context>,
+    ) -> Result<(), ContractError> {
+        Ok(())
+    }
+}
+
+// `fn` items can't capture, so the address they authorize is threaded in via a
+// thread-local; closures could capture it directly but use the same helper.
+std::thread_local! {
+    static AUTH_TARGET: std::cell::RefCell<Option<Address>> =
+        const { std::cell::RefCell::new(None) };
+}
+
+fn require_target_auth() {
+    AUTH_TARGET.with(|t| t.borrow().as_ref().unwrap().require_auth());
+}
+
+fn named() {
+    require_target_auth();
+}
+
+fn generic<T>() {
+    require_target_auth();
+}
+
+fn a_name_that_is_much_longer_than_the_thirty_two_character_symbol_limit() {
+    require_target_auth();
+}
+
+// Runs `f` inside `contract`'s frame with `target` authorized for a call named
+// `expected`, so the `require_auth` in `f` succeeds only if the frame's derived
+// function name equals `expected`. `f` is taken by value so its concrete type
+// (and thus `type_name`) reaches the derivation; a `fn()` coercion would erase
+// the callable's identity.
+fn assert_frame_fn_name<F: FnOnce()>(
+    env: &Env,
+    contract: &Address,
+    target: &Address,
+    expected: &str,
+    f: F,
+) {
+    env.set_auths(&[MockAuth {
+        address: target,
+        invoke: &MockAuthInvoke {
+            contract,
+            fn_name: expected,
+            args: ().into_val(env),
+            sub_invokes: &[],
+        },
+    }
+    .into()]);
+    env.as_contract(contract, f);
+}
+
 #[test]
-fn as_contract_accepts_any_function_shape() {
+fn as_contract_frame_fn_name_is_derived_from_callable() {
     let env = Env::default();
-    let id = env.register(Contract, ());
+    let contract = env.register(Contract, ());
+    let target = env.register(AuthTarget, ());
+    AUTH_TARGET.with(|t| *t.borrow_mut() = Some(target.clone()));
 
-    fn named() -> u32 {
-        1
+    // Named function resolves to its own name.
+    assert_frame_fn_name(&env, &contract, &target, "named", named);
+    // Generic function drops its generic arguments.
+    assert_frame_fn_name(&env, &contract, &target, "generic", generic::<Env>);
+    // A name longer than a `Symbol` allows is truncated to 32 characters.
+    assert_frame_fn_name(
+        &env,
+        &contract,
+        &target,
+        &"a_name_that_is_much_longer_than_the_thirty_two_character_symbol_limit"[..32],
+        a_name_that_is_much_longer_than_the_thirty_two_character_symbol_limit,
+    );
+    // A closure resolves to the empty symbol.
+    assert_frame_fn_name(&env, &contract, &target, "", || require_target_auth());
+    // A closure nested in a generic context resolves to the empty symbol too:
+    // `type_name` renders it as `..::closure_in_generic_context<T>::{{closure}}`,
+    // and the enclosing generic's name must not leak through.
+    fn closure_in_generic_context<T>(env: &Env, contract: &Address, target: &Address) {
+        assert_frame_fn_name(env, contract, target, "", || require_target_auth());
     }
-    fn generic<T>() -> u32 {
-        1
-    }
-    fn a_name_that_is_much_longer_than_the_thirty_two_character_symbol_limit() -> u32 {
-        1
-    }
-    // A closure nested in a generic context: `type_name` renders it as
-    // `..::closure_in_generic_context<T>::{{closure}}`. The derivation must key
-    // off the closure's own (empty) segment, not the enclosing generic's name.
-    fn closure_in_generic_context<T>(env: &Env, id: &Address) {
-        assert_eq!(env.as_contract(id, || 1u32), 1);
-        assert_eq!(env.try_as_contract::<u32, Error>(id, || 1u32), Ok(1));
-    }
+    closure_in_generic_context::<Env>(&env, &contract, &target);
 
-    // Named function.
-    assert_eq!(env.as_contract(&id, named), 1);
-    assert_eq!(env.try_as_contract::<u32, Error>(&id, named), Ok(1));
-    // Closure.
-    assert_eq!(env.as_contract(&id, || 1u32), 1);
-    assert_eq!(env.try_as_contract::<u32, Error>(&id, || 1u32), Ok(1));
-    // Generic function.
-    assert_eq!(env.as_contract(&id, generic::<Env>), 1);
-    assert_eq!(
-        env.try_as_contract::<u32, Error>(&id, generic::<Env>),
-        Ok(1)
-    );
-    // Name longer than a `Symbol` allows.
-    assert_eq!(
-        env.as_contract(
-            &id,
-            a_name_that_is_much_longer_than_the_thirty_two_character_symbol_limit
-        ),
-        1
-    );
-    assert_eq!(
-        env.try_as_contract::<u32, Error>(
-            &id,
-            a_name_that_is_much_longer_than_the_thirty_two_character_symbol_limit
-        ),
-        Ok(1)
-    );
-    // Callable nested in a generic context.
-    closure_in_generic_context::<Env>(&env, &id);
+    // The same derivation feeds `try_as_contract`, and a non-matching name
+    // really fails the auth, so the matches above are meaningful rather than
+    // vacuous.
+    env.set_auths(&[MockAuth {
+        address: &target,
+        invoke: &MockAuthInvoke {
+            contract: &contract,
+            fn_name: "not_the_derived_name",
+            args: ().into_val(&env),
+            sub_invokes: &[],
+        },
+    }
+    .into()]);
+    assert!(env.try_as_contract::<(), Error>(&contract, named).is_err());
 }
