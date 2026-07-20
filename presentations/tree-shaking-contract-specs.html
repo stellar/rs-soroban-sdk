@@ -1,0 +1,1315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hacking Rust to Build Contracts — Tree Shaking Contract Specs</title>
+
+<!-- Fonts: enhancement only. Strong system fallbacks so the deck survives flaky conference wifi. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+/* ===========================================================================
+   THEME — "Rust/WASM lab": deep charcoal-violet, Rust-orange + WASM-violet,
+   terminal-green for "kept"/code, red for "stripped".
+   Change these variables to re-skin the whole deck.
+   =========================================================================== */
+:root {
+    --bg:        #0c0a14;
+    --bg2:       #131020;
+    --panel:     #1a1626;
+    --panel-2:   #221c33;
+    --line:      #2e2740;
+    --text:      #ece8f2;
+    --muted:     #9b93ad;
+    --faint:     #6d6683;
+
+    --rust:      #f2884b;   /* Rust orange */
+    --rust-deep: #d9662a;
+    --wasm:      #8b7cf6;   /* WASM violet  */
+    --green:     #58e39a;   /* kept / survives DCE */
+    --red:       #ff6b7a;   /* stripped */
+    --amber:     #ffcf6b;
+
+    --rust-glow: rgba(242,136,75,0.28);
+    --wasm-glow: rgba(139,124,246,0.28);
+
+    --font-display: 'Space Grotesk', ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace;
+
+    --title-size:    clamp(1.9rem, 5.4vw, 4.4rem);
+    --h2-size:       clamp(1.35rem, 3.4vw, 2.6rem);
+    --h3-size:       clamp(1rem, 2vw, 1.5rem);
+    --body-size:     clamp(0.82rem, 1.45vw, 1.14rem);
+    --small-size:    clamp(0.7rem, 1.05vw, 0.9rem);
+    --code-size:     clamp(0.66rem, 1.15vw, 1rem);
+    --mono-label:    clamp(0.6rem, 0.95vw, 0.8rem);
+
+    --slide-padding: clamp(1.4rem, 4.5vw, 5rem);
+    --content-gap:   clamp(0.7rem, 1.9vh, 1.7rem);
+    --element-gap:   clamp(0.35rem, 1vh, 0.9rem);
+
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --dur: 0.7s;
+    --radius: 14px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html {
+    height: 100%;
+    scroll-behavior: smooth;
+    scroll-snap-type: y mandatory;
+}
+body {
+    height: 100%;
+    overflow-x: hidden;
+    font-family: var(--font-body, var(--font-display));
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ============================== SLIDE SHELL ============================== */
+.slide {
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    scroll-snap-align: start;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: var(--slide-padding);
+    background:
+        radial-gradient(1200px 700px at 85% -10%, rgba(139,124,246,0.10), transparent 60%),
+        radial-gradient(900px 600px at -10% 110%, rgba(242,136,75,0.10), transparent 55%),
+        var(--bg);
+}
+/* faint engineering grid */
+.slide::before {
+    content: "";
+    position: absolute; inset: 0;
+    background-image:
+        linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+    background-size: 46px 46px;
+    mask-image: radial-gradient(120% 120% at 50% 30%, #000 55%, transparent 100%);
+    pointer-events: none;
+}
+.slide-content {
+    position: relative;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--content-gap);
+    max-height: 100%;
+    overflow: hidden;
+    z-index: 1;
+}
+
+/* ============================== TYPOGRAPHY ============================== */
+h1 { font-family: var(--font-display); font-weight: 700; font-size: var(--title-size); line-height: 1.02; letter-spacing: -0.02em; }
+h2 { font-family: var(--font-display); font-weight: 600; font-size: var(--h2-size); line-height: 1.06; letter-spacing: -0.015em; }
+h3 { font-family: var(--font-display); font-weight: 600; font-size: var(--h3-size); line-height: 1.15; }
+p, li { font-size: var(--body-size); line-height: 1.5; color: var(--text); }
+strong { color: #fff; font-weight: 600; }
+.mono { font-family: var(--font-mono); }
+code { font-family: var(--font-mono); }
+
+/* kicker / eyebrow label */
+.kicker {
+    font-family: var(--font-mono);
+    font-size: var(--mono-label);
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--rust);
+    display: flex; align-items: center; gap: 0.7em;
+}
+.kicker::before { content: ""; width: clamp(18px,3vw,42px); height: 2px; background: linear-gradient(90deg, var(--rust), transparent); }
+
+.accent-rust { color: var(--rust); }
+.accent-wasm { color: var(--wasm); }
+.accent-green { color: var(--green); }
+.accent-red { color: var(--red); }
+.gradient-text {
+    background: linear-gradient(100deg, var(--rust) 0%, var(--amber) 40%, var(--wasm) 100%);
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+.subtle { color: var(--muted); }
+.faint  { color: var(--faint); }
+
+/* ============================== LISTS ============================== */
+ul.clean { list-style: none; display: flex; flex-direction: column; gap: clamp(0.4rem, 1.3vh, 1rem); }
+ul.clean li { position: relative; padding-left: 1.5em; color: var(--text); }
+ul.clean li::before {
+    content: "▹"; position: absolute; left: 0; top: 0.02em; color: var(--rust); font-family: var(--font-mono);
+}
+ul.clean li .lead { color: #fff; font-weight: 600; }
+
+/* ============================== PANELS / CARDS ============================== */
+.panel {
+    background: linear-gradient(180deg, var(--panel), var(--panel-2));
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: clamp(0.8rem, 1.8vw, 1.5rem);
+}
+.grid { display: grid; gap: clamp(0.6rem, 1.4vw, 1.1rem); }
+.g2 { grid-template-columns: repeat(2, 1fr); }
+.g3 { grid-template-columns: repeat(3, 1fr); }
+.g2-3 { grid-template-columns: 1.15fr 1fr; align-items: center; }
+
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: clamp(0.75rem,1.6vw,1.3rem); display: flex; flex-direction: column; gap: 0.4em; }
+.card .num { font-family: var(--font-mono); font-size: var(--small-size); color: var(--wasm); letter-spacing: 0.1em; }
+.card h3 { font-size: var(--h3-size); }
+.card p { font-size: var(--small-size); color: var(--muted); }
+
+.tag { display: inline-block; font-family: var(--font-mono); font-size: var(--mono-label); padding: 0.25em 0.7em; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); }
+.tag.rust { color: var(--rust); border-color: rgba(242,136,75,0.4); background: rgba(242,136,75,0.08); }
+.tag.wasm { color: var(--wasm); border-color: rgba(139,124,246,0.4); background: rgba(139,124,246,0.08); }
+.tag.green{ color: var(--green); border-color: rgba(88,227,154,0.4); background: rgba(88,227,154,0.08); }
+.tag.red  { color: var(--red);  border-color: rgba(255,107,122,0.4); background: rgba(255,107,122,0.08); }
+
+/* ============================== CODE BLOCK ============================== */
+.code {
+    font-family: var(--font-mono);
+    font-size: var(--code-size);
+    line-height: 1.55;
+    background: #0a0812;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: clamp(0.7rem, 1.5vw, 1.25rem) clamp(0.9rem,1.8vw,1.5rem);
+    overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+}
+.code .bar { display: flex; gap: 6px; margin-bottom: 0.7em; opacity: 0.8; }
+.code .bar i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.code .bar i:nth-child(1){ background:#ff5f56;} .code .bar i:nth-child(2){ background:#ffbd2e;} .code .bar i:nth-child(3){ background:#27c93f;}
+.code .fname { font-size: var(--mono-label); color: var(--faint); margin-left: auto; align-self: center; }
+.code pre { white-space: pre; overflow: hidden; }
+.tok-kw { color: var(--wasm); }
+.tok-fn { color: var(--amber); }
+.tok-ty { color: var(--green); }
+.tok-str{ color: #ffb0c4; }
+.tok-at { color: var(--rust); }
+.tok-cm { color: var(--faint); font-style: italic; }
+.tok-mut{ color: var(--red); }
+
+/* ============================== MARKER BYTE VIS ============================== */
+.bytes { display: flex; flex-wrap: wrap; gap: 6px; font-family: var(--font-mono); }
+.byte { min-width: clamp(28px, 4vw, 52px); text-align: center; padding: 0.5em 0.2em; border-radius: 8px; font-size: var(--small-size); border: 1px solid var(--line); background: var(--panel); }
+.byte.magic { color: var(--rust); border-color: rgba(242,136,75,0.5); background: rgba(242,136,75,0.10); }
+.byte.hash  { color: var(--wasm); border-color: rgba(139,124,246,0.5); background: rgba(139,124,246,0.10); }
+.byte small { display: block; font-size: 0.62em; color: var(--faint); letter-spacing: 0.05em; margin-top: 0.2em; }
+
+/* ============================== FLOW / PIPELINE ============================== */
+.flow { display: flex; align-items: stretch; gap: clamp(0.4rem,1vw,0.9rem); flex-wrap: wrap; }
+.flow .node { flex: 1 1 0; min-width: 0; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: clamp(0.6rem,1.3vw,1rem); display: flex; flex-direction: column; gap: 0.3em; }
+.flow .node .lbl { font-family: var(--font-mono); font-size: var(--mono-label); color: var(--wasm); letter-spacing: 0.1em; }
+.flow .node p { font-size: var(--small-size); color: var(--muted); }
+.flow .arrow { align-self: center; color: var(--rust); font-family: var(--font-mono); font-size: 1.2em; }
+
+/* before/after columns */
+.ba { display: grid; grid-template-columns: 1fr auto 1fr; gap: clamp(0.6rem,1.6vw,1.4rem); align-items: stretch; }
+.ba .col { border: 1px solid var(--line); border-radius: var(--radius); padding: clamp(0.7rem,1.6vw,1.3rem); background: var(--panel); display:flex; flex-direction:column; gap: 0.45em; }
+.ba .col.before { border-color: rgba(255,107,122,0.35); }
+.ba .col.after  { border-color: rgba(88,227,154,0.35); }
+.ba .entry { font-family: var(--font-mono); font-size: var(--small-size); padding: 0.28em 0.55em; border-radius: 6px; background: var(--bg2); display:flex; justify-content: space-between; gap: 0.5em; }
+.ba .entry.gone { color: var(--red); text-decoration: line-through; opacity: 0.62; }
+.ba .entry.keep { color: var(--green); }
+.ba .mid { align-self: center; color: var(--rust); font-size: clamp(1.2rem,3vw,2rem); font-family: var(--font-mono); }
+.ba .ttl { font-family: var(--font-mono); font-size: var(--mono-label); letter-spacing: 0.12em; text-transform: uppercase; }
+
+/* stat */
+.stat { font-family: var(--font-mono); }
+.stat .big { font-size: clamp(1.6rem,4.5vw,3.4rem); font-weight: 700; line-height: 1; }
+
+/* timeline */
+.timeline { display: grid; grid-template-columns: repeat(3,1fr); gap: clamp(0.6rem,1.6vw,1.3rem); }
+.timeline .stage { border: 1px solid var(--line); border-radius: var(--radius); padding: clamp(0.7rem,1.5vw,1.2rem); background: var(--panel); position: relative; }
+.timeline .stage .p { font-family: var(--font-mono); font-size: var(--small-size); color: var(--rust); letter-spacing: 0.12em; }
+.timeline .stage h3 { font-size: var(--h3-size); margin: 0.15em 0; }
+.timeline .stage p.d { font-size: var(--small-size); color: var(--muted); }
+.timeline .stage.now { border-color: rgba(88,227,154,0.5); box-shadow: 0 0 0 1px rgba(88,227,154,0.25), 0 8px 30px rgba(88,227,154,0.10); }
+
+/* ============================== TITLE SLIDE ============================== */
+.title-slide .slide-content { justify-content: center; }
+.title-wrap { display: flex; flex-direction: column; gap: clamp(0.6rem,1.8vh,1.6rem); }
+.title-slide h1 { max-width: 16ch; }
+.title-slide .sub { font-size: clamp(1rem,2.4vw,1.7rem); color: var(--muted); font-family: var(--font-mono); }
+.byline { display: flex; flex-wrap: wrap; gap: 0.6em 1.2em; align-items: center; font-family: var(--font-mono); font-size: var(--small-size); color: var(--faint); margin-top: clamp(0.4rem,1.5vh,1rem); }
+.byline b { color: var(--text); font-weight: 500; }
+
+/* ============================== FOOTER / CHROME ============================== */
+.slide-footer {
+    position: absolute; left: var(--slide-padding); right: var(--slide-padding); bottom: clamp(0.7rem,2vh,1.6rem);
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--font-mono); font-size: var(--mono-label); color: var(--faint);
+    z-index: 2; pointer-events: none;
+}
+.slide-footer .t { letter-spacing: 0.14em; text-transform: uppercase; }
+
+.progress-bar { position: fixed; top: 0; left: 0; height: 3px; width: 0; background: linear-gradient(90deg, var(--rust), var(--wasm)); z-index: 50; transition: width 0.25s var(--ease); }
+
+.nav-dots { position: fixed; right: clamp(10px,1.6vw,22px); top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 9px; z-index: 40; }
+.nav-dots button { width: 9px; height: 9px; border-radius: 50%; border: 1px solid var(--faint); background: transparent; cursor: pointer; padding: 0; transition: all 0.25s var(--ease); }
+.nav-dots button.active { background: var(--rust); border-color: var(--rust); transform: scale(1.35); box-shadow: 0 0 10px var(--rust-glow); }
+
+.hint { position: fixed; left: 50%; bottom: clamp(8px,1.5vh,16px); transform: translateX(-50%); font-family: var(--font-mono); font-size: var(--mono-label); color: var(--faint); z-index: 40; background: rgba(12,10,20,0.6); padding: 0.3em 0.9em; border-radius: 999px; border: 1px solid var(--line); backdrop-filter: blur(6px); }
+.hint b { color: var(--muted); }
+
+/* ============================== ANIMATIONS ============================== */
+.reveal { opacity: 0; transform: translateY(26px); transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease); }
+.slide.visible .reveal { opacity: 1; transform: translateY(0); }
+.slide.visible .reveal:nth-child(1){ transition-delay: .05s;}
+.slide.visible .reveal:nth-child(2){ transition-delay: .13s;}
+.slide.visible .reveal:nth-child(3){ transition-delay: .21s;}
+.slide.visible .reveal:nth-child(4){ transition-delay: .29s;}
+.slide.visible .reveal:nth-child(5){ transition-delay: .37s;}
+.slide.visible .reveal:nth-child(6){ transition-delay: .45s;}
+.blink { animation: blink 1.1s steps(1) infinite; } @keyframes blink { 50% { opacity: 0; } }
+
+/* ============================== RESPONSIVE ============================== */
+@media (max-height: 760px){ :root{ --content-gap: clamp(0.5rem,1.4vh,1rem);} }
+@media (max-height: 640px){
+    :root{ --slide-padding: clamp(1rem,3vw,2.2rem); --title-size: clamp(1.5rem,4.6vw,2.6rem); --h2-size: clamp(1.1rem,3vw,1.7rem); --body-size: clamp(0.74rem,1.3vw,0.95rem); }
+    .nav-dots{ display:none; }
+}
+@media (max-height: 520px){ :root{ --code-size: clamp(0.58rem,1vw,0.8rem);} .hint{ display:none;} }
+@media (max-width: 820px){
+    .g2,.g3,.g2-3,.ba,.timeline { grid-template-columns: 1fr; }
+    .ba .mid { display:none; }
+    .flow { flex-direction: column; } .flow .arrow { transform: rotate(90deg); }
+}
+@media (prefers-reduced-motion: reduce){
+    *,*::before,*::after { animation-duration: .01ms !important; transition-duration: .2s !important; }
+    html { scroll-behavior: auto; }
+}
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progress"></div>
+<nav class="nav-dots" id="dots" aria-label="Slide navigation"></nav>
+<div class="hint">← → / Space · <b>P</b> presenter · <b>F</b> fullscreen</div>
+
+<!-- ============================= SLIDE 0 · TITLE ============================= -->
+<section class="slide title-slide">
+    <div class="slide-content">
+        <div class="title-wrap">
+            <div class="kicker reveal">Rust · WASM · Soroban</div>
+            <h1 class="reveal">Hacking Rust to Build Contracts</h1>
+            <div class="sub reveal"><span class="gradient-text">Tree Shaking Contract Specs</span></div>
+            <p class="reveal subtle" style="max-width:52ch;">How we taught the Rust compiler to tell us which types a smart contract <em>actually</em> exposes — by hiding breadcrumbs in the WASM data section and letting dead-code elimination do the rest.</p>
+            <div class="byline reveal">
+                <span><b>Leigh McCulloch</b> · Stellar</span>
+                <span>·</span>
+                <span>stellar/rs-soroban-sdk</span>
+                <span>·</span>
+                <span>30 min</span>
+            </div>
+        </div>
+    </div>
+    <div class="slide-footer"><span class="t">Hacking Rust to Build Contracts</span><span>01</span></div>
+</section>
+
+<!-- ============================= SLIDE 1 · THE ARTIFACT ============================= -->
+<section class="slide">
+    <div class="slide-content">
+        <div class="kicker reveal">The artifact</div>
+        <h2 class="reveal">A contract is code <span class="accent-rust">plus</span> a description of itself</h2>
+        <div class="grid g2-3">
+            <div class="reveal">
+                <p style="margin-bottom:0.8em;">A Soroban contract compiles to a single <span class="mono accent-wasm">.wasm</span>. Tucked inside a custom section, <span class="mono">contractspecv0</span>, is the contract's <strong>interface spec</strong> (SEP-48): every function signature, user type, error, and event — serialized as XDR (Stellar's binary encoding).</p>
+                <p>Tooling lives on that spec: the CLI, client bindings in other languages, explorers, wallets. It's how the outside world knows how to <em>call</em> your contract.</p>
+            </div>
+            <div class="panel reveal">
+                <div class="mono" style="font-size:var(--mono-label); color:var(--faint); letter-spacing:0.12em; margin-bottom:0.6em;">contract.wasm</div>
+                <div class="bytes" style="flex-direction:column; gap:6px;">
+                    <div class="byte" style="min-width:0; text-align:left;">code &nbsp;<span class="faint">— the executable functions</span></div>
+                    <div class="byte magic" style="min-width:0; text-align:left;">contractspecv0 <span class="faint">— the interface (XDR)</span></div>
+                    <div class="byte" style="min-width:0; text-align:left;">contractmetav0 <span class="faint">— build metadata</span></div>
+                </div>
+            </div>
+        </div>
+        <div class="grid g3 reveal">
+            <div class="card"><span class="num">ethereum</span><h3>ABI</h3><p>JSON, <em>off-chain</em> — and only your external interface.</p></div>
+            <div class="card"><span class="num">solana</span><h3>IDL</h3><p>Anchor's interface — optional &amp; separable: JSON, a closable on-chain account, or embedded (0.30+).</p></div>
+            <div class="card"><span class="num">soroban</span><h3>Contract spec</h3><p>Lives <em>inside</em> the deployed WASM by design — mandatory, no off-chain option. Self-describing.</p></div>
+        </div>
+    </div>
+    <div class="slide-footer"><span class="t">The artifact</span><span>02</span></div>
+</section>
+
+<!-- ============================= SLIDE 2 · THE PROBLEM ============================= -->
+<section class="slide">
+    <div class="slide-content">
+        <div class="kicker reveal">The problem</div>
+        <h2 class="reveal">Every type you <em>define</em> ends up in the spec —<br>even the ones you never <em>expose</em></h2>
+        <ul class="clean reveal" style="max-width:64ch;">
+            <li><span class="lead">Define it, ship it.</span> Each <span class="mono">#[contracttype]</span>, <span class="mono">#[contracterror]</span>, <span class="mono">#[contractevent]</span> emits a spec entry — whether or not it appears at the contract's boundary.</li>
+            <li><span class="lead">Internal types leak.</span> Storage structs, helper enums, intermediate shapes — all described to the world.</li>
+            <li><span class="lead">Imports drag in everything.</span> <span class="mono">contractimport!</span> carries an interface's whole type set — with no reachability there's no way to keep only what you actually call.</li>
+            <li><span class="lead">Bigger = worse.</span> On-chain bytes cost rent; a bloated spec is dead weight in every download, every explorer, every binding.</li>
+        </ul>
+        <p class="reveal subtle mono" style="font-size:var(--small-size);">The spec should be the contract's <span class="accent-green">public surface</span> — not a memory dump of every type the author happened to declare.</p>
+    </div>
+    <div class="slide-footer"><span class="t">The problem</span><span>03</span></div>
+</section>
+
+<!-- ============================= SLIDE 3 · OLD WORKAROUND ============================= -->
+<section class="slide">
+    <div class="slide-content">
+        <div class="kicker reveal">Spec shaking v1 — the workaround we lived with</div>
+        <h2 class="reveal">Guess from <span class="mono">pub</span> and a manual <span class="mono">export</span> flag</h2>
+        <div class="grid g2">
+            <div class="panel reveal">
+                <div class="tag rust" style="margin-bottom:0.6em;">the heuristic</div>
+                <ul class="clean" style="gap:0.35rem;">
+                    <li><span class="mono">pub</span> types → exported</li>
+                    <li>non-<span class="mono">pub</span> types → hidden</li>
+                    <li>all events, all functions → exported</li>
+                    <li><span class="mono">contractimport!</span> (wasm) → export <em>nothing</em></li>
+                    <li>override manually: <span class="mono">export = true|false</span></li>
+                </ul>
+            </div>
+            <div class="panel reveal">
+                <div class="tag red" style="margin-bottom:0.6em;">why it hurt</div>
+                <ul class="clean" style="gap:0.35rem;">
+                    <li><span class="lead">Visibility ≠ interface.</span> A <span class="mono">pub</span> helper is still in your API surface.</li>
+                    <li><span class="lead">All-or-nothing imports.</span> Re-exposing an imported type meant re-exposing the whole interface — so imports exposed nothing.</li>
+                    <li><span class="lead">Manual bookkeeping.</span> <span class="mono">export</span> flags drift out of sync with real usage.</li>
+                </ul>
+            </div>
+        </div>
+        <p class="reveal subtle" style="font-size:var(--small-size);">We wanted the compiler to answer one question automatically: <strong>is this type actually reachable from the contract's boundary?</strong></p>
+    </div>
+    <div class="slide-footer"><span class="t">Spec shaking v1</span><span>04</span></div>
+</section>
+
+<!-- ============================= SLIDE 4 · THE GOAL ============================= -->
+<section class="slide">
+    <div class="slide-content">
+        <div class="kicker reveal">The goal</div>
+        <h2 class="reveal">Tree shaking — but for on-chain <span class="gradient-text">type specs</span></h2>
+        <div class="grid g2-3">
+            <div class="reveal">
+                <p style="margin-bottom:0.7em;">JavaScript bundlers "tree shake": start from what's reachable, drop the rest. We want the same for the contract spec.</p>
+                <p><strong>Keep</strong> a type's spec entry if — and only if — it's reachable from a public contract function, a published event, or a thrown error. <strong>Strip</strong> everything else. Automatically. No flags.</p>
+            </div>
+            <div class="panel reveal">
+                <div class="ba" style="grid-template-columns:1fr;">
+                    <div class="col before">
+                        <span class="ttl accent-red">before</span>
+                        <span class="entry keep">fn transfer(...)</span>
+                        <span class="entry gone">struct LedgerKey</span>
+                        <span class="entry gone">enum InternalState</span>
+                        <span class="entry gone">…40 imported types</span>
+                    </div>
+                    <div class="col after">
+                        <span class="ttl accent-green">after</span>
+                        <span class="entry keep">fn transfer(...)</span>
+                        <span class="entry keep">struct TransferEvent</span>
+                    </div>
+                </div>
+                <p class="faint mono" style="font-size:var(--mono-label); margin-top:0.5em;">illustrative</p>
+            </div>
+        </div>
+    </div>
+    <div class="slide-footer"><span class="t">The goal</span><span>05</span></div>
+</section>
+
+<!-- ============================= SLIDE 5 · WHY HARD: MACROS ============================= -->
+<section class="slide">
+    <div class="slide-content">
+        <div class="kicker reveal">Why this is hard #1</div>
+        <h2 class="reveal">Proc-macros are <span class="accent-red">blind</span> to the whole program</h2>
+        <div class="grid g2-3">
+            <div class="reveal">
+                <p style="margin-bottom:0.7em;">A derive macro sees exactly <em>one</em> item at a time. When <span class="mono">#[contracttype]</span> expands over <span class="mono">struct Foo</span>, it has no idea whether <span class="mono">Foo</span> is used at a boundary somewhere else in the crate.</p>
+                <p>Macros run <strong>in isolation, in unspecified order, cache-independently</strong>. There's no shared state, no second pass, no "ask me again once you've seen everything."</p>
+                <p class="subtle" style="font-size:var(--small-size); margin-top:0.6em;">So the macro <em>cannot</em> decide "should this be in the spec?" at expansion time.</p>
+            </div>
+            <div class="code reveal">
+                <div class="bar"><i></i><i></i><i></i><span class="fname">lib.rs</span></div>
+<pre><span class="tok-at">#[contracttype]</span>       <span class="tok-cm">// expands here…</span>
+<span class="tok-kw">pub struct</span> <span class="tok-ty">Foo</span> { <span class="tok-kw">pub</span> x: u32 }
+
+<span class="tok-cm">// …but "is Foo used?" is decided</span>
+<span class="tok-cm">// 300 lines away — in another file,</span>
+<span class="tok-cm">// another macro invocation the</span>
+<span class="tok-cm">// compiler runs independently.</span>
+<span class="tok-at">#[contractimpl]</span>
+<span class="tok-kw">impl</span> <span class="tok-ty">Contract</span> {
+    <span class="tok-kw">pub fn</span> <span class="tok-fn">go</span>(e: <span class="tok-ty">Env</span>, f: <span class="tok-ty">Foo</span>) { … }
+}</pre>
+            </div>
+        </div>
+    </div>
+    <div class="slide-footer"><span class="t">Why it's hard · macros</span><span>06</span></div>
+</section>
+
+<!-- ============================= SLIDE 6 · WHY HARD: IDENTITY ============================= -->
+<section class="slide">
+    <div class="slide-content">
+        <div class="kicker reveal">Why this is hard #2</div>
+        <h2 class="reveal">Type <span class="accent-red">identity</span> can't ride on the name</h2>
+        <ul class="clean reveal" style="max-width:66ch;">
+            <li><span class="lead">Names collide.</span> Two modules define <span class="mono">Status</span>. A local <span class="mono">Balance</span> and an imported <span class="mono">Balance</span> are different specs with the same label.</li>
+            <li><span class="lead">Names are lossy.</span> The spec entry records structure, doc, fields — the name alone can't tell one shape from another.</li>
+            <li><span class="lead">We need a stable fingerprint</span> that survives compilation and means "this exact spec entry," independent of what it's called.</li>
+        </ul>
+        <div class="panel reveal" style="max-width:70ch;">
+            <p class="mono" style="font-size:var(--code-size);">identity(entry) = <span class="accent-rust">SHA-256</span>( entry.to_xdr() )<span class="blink accent-green">▊</span></p>
+            <p class="subtle" style="font-size:var(--small-size); margin-top:0.5em;">Hash the serialized spec entry, not its name. Same bytes on both sides — inside the WASM and in the post-build tool.</p>
+        </div>
+    </div>
+    <div class="slide-footer"><span class="t">Why it's hard · identity</span><span>07</span></div>
+</section>
+
+<!-- ============================= SLIDE 7 · THE INSIGHT ============================= -->
+<section class="slide">
+    <div class="slide-content">
+        <div class="kicker reveal">The insight</div>
+        <h2 class="reveal">Something already computes whole-program reachability</h2>
+        <p class="reveal" style="max-width:60ch;">The part of the pipeline that runs <strong>after</strong> the macros and already computes reachability for free is the compiler + linker's <span class="accent-rust">dead-code elimination</span>.</p>
+        <div class="panel reveal" style="max-width:74ch; border-color: rgba(242,136,75,0.4); box-shadow: 0 0 40px rgba(242,136,75,0.08);">
+            <p style="font-size:clamp(1rem,2.1vw,1.5rem); line-height:1.35;">If unreachable code gets stripped anyway… then <strong>attach a breadcrumb to each type, and let DCE tell us which ones survive.</strong></p>
+        </div>
+        <p class="reveal subtle" style="max-width:64ch;">We can't ask the macro. And the spec is an opaque <span class="mono">contractspecv0</span> blob the linker never reads — but DCE <em>does</em> strip unused code and the data it references. So we emit code whose survival is a proxy for use, and read the answer out of the finished binary.</p>
+    </div>
+    <div class="slide-footer"><span class="t">The insight</span><span>08</span></div>
+</section>
+
+<!-- ============================= SLIDE 8 · THE MARKER ============================= -->
+<section class="slide">
+    <div class="slide-content">
+        <div class="kicker reveal">The hack · the marker</div>
+        <h2 class="reveal">14 bytes in the data section</h2>
+        <div class="reveal">
+            <div class="bytes" style="margin-bottom:0.5em;">
+                <div class="byte magic">S<small></small></div>
+                <div class="byte magic">p<small></small></div>
+                <div class="byte magic">E<small></small></div>
+                <div class="byte magic">c<small></small></div>
+                <div class="byte magic">V<small></small></div>
+                <div class="byte magic">1<small>magic</small></div>
+                <div class="byte hash">h0</div><div class="byte hash">h1</div><div class="byte hash">h2</div><div class="byte hash">h3</div>
+                <div class="byte hash">h4</div><div class="byte hash">h5</div><div class="byte hash">h6</div><div class="byte hash">h7<small>sha-256</small></div>
+            </div>
+        </div>
+        <div class="grid g2 reveal">
+            <div class="panel">
+                <div class="tag rust" style="margin-bottom:0.5em;">6-byte magic</div>
+                <p class="subtle" style="font-size:var(--small-size);">The literal ASCII <span class="mono accent-rust">SpEcV1</span>. A distinctive needle a post-build scanner can find in a haystack of data bytes.</p>
+            </div>
+            <div class="panel">
+                <div class="tag wasm" style="margin-bottom:0.5em;">8-byte fingerprint</div>
+                <p class="subtle" style="font-size:var(--small-size);">The first 64 bits of <span class="mono">SHA-256(spec_entry_xdr)</span> — the stable identity, matched against a hash of each spec entry.</p>
+            </div>
+        </div>
+        <p class="reveal faint mono" style="font-size:var(--mono-label);">soroban-spec/src/shaking.rs · generate_marker_for_xdr()</p>
+    </div>
+    <div class="slide-footer"><span class="t">The marker</span><span>09</span></div>
+</section>
+
+<!-- ============================= SLIDE 9 · THE MARKER FN ============================= -->
+<section class="slide">
+    <div class="slide-content">
+        <div class="kicker reveal">The hack · anchoring the breadcrumb</div>
+        <h2 class="reveal">A function whose survival <em>is</em> the signal</h2>
+        <div class="grid g2-3">
+            <div class="code reveal">
+                <div class="bar"><i></i><i></i><i></i><span class="fname">generated by #[contracttype]</span></div>
+<pre><span class="tok-kw">impl</span> <span class="tok-ty">SpecShakingMarker</span> <span class="tok-kw">for</span> <span class="tok-ty">Foo</span> {
+  <span class="tok-at">#[inline(always)]</span>
+  <span class="tok-kw">fn</span> <span class="tok-fn">spec_shaking_marker</span>() {
+    <span class="tok-at">#[cfg(target_family = <span class="tok-str">"wasm"</span>)]</span> {
+      <span class="tok-kw">static</span> <span class="tok-ty">MARKER</span>: [u8; 14] =
+        *<span class="tok-str">b"SpEcV1\x93\xd5\x05\x04\x36\x68\x40\xd2"</span>;
+      <span class="tok-kw">let</span> _ = <span class="tok-kw">unsafe</span> {
+        <span class="tok-fn">read_volatile</span>(<span class="tok-ty">MARKER</span>.as_ptr()) <span class="tok-cm">// anchor</span>
+      };
+    }
+  }
+}</pre>
+            </div>
+            <div class="reveal">
+                <ul class="clean" style="gap:0.5rem;">
+                    <li><span class="lead">Trait with a no-op default.</span> Primitives &amp; SDK types do nothing; contract types get this impl.</li>
+                    <li><span class="lead"><span class="mono">read_volatile</span></span> forbids the optimizer from folding the static away — <em>if</em> the function runs.</li>
+                    <li><span class="lead"><span class="mono">#[cfg(wasm)]</span></span> — native/test builds pay nothing; markers exist only in the shipped artifact.</li>
+                    <li><span class="lead">One byte is enough.</span> Volatile-touching the symbol anchors all 14; reading more just grows code.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="slide-footer"><span class="t">The marker function</span><span>10</span></div>
+</section>
+
+<!-- ============================= SLIDE 10 · BOUNDARIES ============================= -->
+<section class="slide">
+    <div class="slide-content">
+        <div class="kicker reveal">The hack · where the breadcrumb is dropped</div>
+        <h2 class="reveal">Call it only at the <span class="accent-rust">boundary</span></h2>
+        <div class="grid g2-3">
+            <div class="reveal">
+                <p style="margin-bottom:0.6em;"><span class="mono">spec_shaking_marker()</span> is invoked from exactly the four places a type crosses the contract's edge — nowhere else. Internal use (storage, cross-contract calls) never triggers it.</p>
+                <div class="grid g2" style="gap:0.5rem;">
+                    <div class="card"><span class="num">01</span><h3 style="font-size:var(--body-size);">Fn params</h3><p>on input deserialize</p></div>
+                    <div class="card"><span class="num">02</span><h3 style="font-size:var(--body-size);">Fn returns</h3><p>on output serialize</p></div>
+                    <div class="card"><span class="num">03</span><h3 style="font-size:var(--body-size);">Events</h3><p>inside <span class="mono">.publish()</span></p></div>
+                    <div class="card"><span class="num">04</span><h3 style="font-size:var(--body-size);">Errors</h3><p><span class="mono">panic_with_error!</span></p></div>
+                </div>
+            </div>
+            <div class="code reveal">
+                <div class="bar"><i></i><i></i><i></i><span class="fname">into_val_for_contract_fn.rs</span></div>
+<pre><span class="tok-cm">// wired into the return path</span>
+<span class="tok-kw">impl</span>&lt;T&gt; <span class="tok-ty">IntoValForContractFn</span> <span class="tok-kw">for</span> T
+<span class="tok-kw">where</span> T: <span class="tok-ty">IntoVal</span>&lt;<span class="tok-ty">Env</span>,<span class="tok-ty">Val</span>&gt;
+       + <span class="tok-ty">SpecShakingMarker</span> {
+  <span class="tok-kw">fn</span> <span class="tok-fn">into_val_for_contract_fn</span>(
+      <span class="tok-kw">self</span>, e: &amp;<span class="tok-ty">Env</span>) -&gt; <span class="tok-ty">Val</span> {
+    <span class="tok-ty">T</span>::<span class="tok-fn">spec_shaking_marker</span>(); <span class="tok-cm">// ← here</span>
+    <span class="tok-kw">self</span>.<span class="tok-fn">into_val</span>(e)
+  }
+}</pre>
+            </div>
+        </div>
+    </div>
+    <div class="slide-footer"><span class="t">Boundaries</span><span>11</span></div>
+</section>
+
+<!-- ============================= SLIDE 11 · PROPAGATION ============================= -->
+<section class="slide">
+    <div class="slide-content">
+        <div class="kicker reveal">The hack · nesting &amp; recursion</div>
+        <h2 class="reveal">Markers that reach <em>through</em> types</h2>
+        <div class="grid g2-3">
+            <div class="reveal">
+                <ul class="clean" style="gap:0.5rem;">
+                    <li><span class="lead">Fields chain.</span> A struct's marker fn calls its field types' marker fns — one boundary hit marks the whole tree.</li>
+                    <li><span class="lead">Inline shapes call directly.</span> <span class="mono">Option&lt;T&gt;</span>, <span class="mono">Result&lt;T,E&gt;</span>, tuples — their size includes the inner type, so a direct call is safe.</li>
+                    <li><span class="lead">Indirection uses <span class="mono">keep_reachable</span>.</span> <span class="mono">Vec&lt;T&gt;</span>, <span class="mono">Map&lt;K,V&gt;</span>, <span class="mono">&amp;T</span> are pointer-sized regardless of <span class="mono">T</span> → a recursive type could loop forever. So we take the fn <em>pointer</em> and volatile-read it, never calling it.</li>
+                </ul>
+            </div>
+            <div class="code reveal">
+                <div class="bar"><i></i><i></i><i></i><span class="fname">spec_shaking.rs</span></div>
+<pre><span class="tok-cm">// direct — inner is inline</span>
+<span class="tok-kw">impl</span>&lt;T: <span class="tok-ty">SSM</span>&gt; <span class="tok-ty">SSM</span> <span class="tok-kw">for</span> <span class="tok-ty">Option</span>&lt;T&gt; {
+  <span class="tok-kw">fn</span> <span class="tok-fn">marker</span>() { <span class="tok-ty">T</span>::<span class="tok-fn">marker</span>(); }
+}
+
+<span class="tok-cm">// indirect — break the cycle</span>
+<span class="tok-kw">impl</span>&lt;T: <span class="tok-ty">SSM</span>&gt; <span class="tok-ty">SSM</span> <span class="tok-kw">for</span> <span class="tok-ty">Vec</span>&lt;T&gt; {
+  <span class="tok-kw">fn</span> <span class="tok-fn">marker</span>() {
+    <span class="tok-fn">keep_reachable</span>(<span class="tok-ty">T</span>::<span class="tok-fn">marker</span>);
+  }              <span class="tok-cm">// ↑ fn ptr, not a call</span>
+}</pre>
+            </div>
+        </div>
+    </div>
+    <div class="slide-footer"><span class="t">Propagation</span><span>12</span></div>
+</section>
+
+<!-- ============================= SLIDE 12 · DCE RESULT ============================= -->
+<section class="slide">
+    <div class="slide-content">
+        <div class="kicker reveal">The hack · let the compiler decide</div>
+        <h2 class="reveal">DCE separates <span class="accent-green">used</span> from <span class="accent-red">unused</span></h2>
+        <div class="flow reveal">
+            <div class="node"><span class="lbl">reachable?</span><p>Is <span class="mono">marker()</span> called from a live boundary?</p></div>
+            <div class="arrow">→</div>
+            <div class="node" style="border-color:rgba(88,227,154,0.4);"><span class="lbl accent-green">yes</span><p>fn kept · <span class="mono">read_volatile</span> anchors the 14 bytes in the data section.</p></div>
+            <div class="node" style="border-color:rgba(255,107,122,0.4);"><span class="lbl accent-red">no</span><p>no live caller → marker fn never instantiated → its 14 bytes are never emitted.</p></div>
+        </div>
+        <p class="reveal" style="max-width:66ch;">The finished WASM's data section now contains a <span class="mono accent-rust">SpEcV1</span> marker for precisely the types that touch the boundary — computed by the compiler + linker, no macro coordination required.</p>
+        <p class="reveal subtle mono" style="font-size:var(--small-size);">This is the whole trick: <strong>whole-program reachability, read back out of the binary.</strong></p>
+    </div>
+    <div class="slide-footer"><span class="t">DCE does the work</span><span>13</span></div>
+</section>
+
+<!-- ============================= SLIDE 13 · POST-BUILD ============================= -->
+<section class="slide">
+    <div class="slide-content">
+        <div class="kicker reveal">The hack · post-build</div>
+        <h2 class="reveal">stellar-cli reads the breadcrumbs and shakes</h2>
+        <div class="grid g2-3">
+            <div class="code reveal">
+                <div class="bar"><i></i><i></i><i></i><span class="fname">stellar-cli · build.rs::filter_spec</span></div>
+<pre><span class="tok-cm">// only if meta says v2</span>
+<span class="tok-kw">if</span> <span class="tok-fn">spec_shaking_version_for_meta</span>(meta)
+     != 2 { <span class="tok-kw">return</span> <span class="tok-ty">Ok</span>(()); }
+
+<span class="tok-kw">let</span> markers = shaking::<span class="tok-fn">find_all</span>(&amp;wasm);
+<span class="tok-kw">let</span> shaken  =
+  <span class="tok-fn">filter_and_dedup_spec</span>(spec, &amp;markers)?;
+
+<span class="tok-fn">replace_custom_section</span>(
+  &amp;wasm, <span class="tok-str">"contractspecv0"</span>, &amp;shaken)?;</pre>
+            </div>
+            <div class="reveal">
+                <ul class="clean" style="gap:0.5rem;">
+                    <li><span class="lead">Scan</span> the data section for the <span class="mono">SpEcV1</span> needle → a set of marker hashes.</li>
+                    <li><span class="lead">Match</span> by hashing every spec entry's XDR and checking the set.</li>
+                    <li><span class="lead">Functions always stay</span> — they <em>are</em> the API. Types &amp; events survive only with a marker.</li>
+                    <li><span class="lead">Dedup</span> identical entries, then rewrite <span class="mono">contractspecv0</span> in place.</li>
+                </ul>
+            </div>
+        </div>
+        <p class="reveal faint mono" style="font-size:var(--mono-label);">soroban_spec::shaking::filter() — keep FunctionV0; keep others iff marker present</p>
+    </div>
+    <div class="slide-footer"><span class="t">Post-build filter</span><span>14</span></div>
+</section>
+
+<!-- ============================= SLIDE 14 · META FLAG ============================= -->
+<section class="slide">
+    <div class="slide-content">
+        <div class="kicker reveal">Opt-in signal</div>
+        <h2 class="reveal">How does the tool know to shake?</h2>
+        <div class="grid g2-3">
+            <div class="reveal">
+                <p style="margin-bottom:0.7em;">A WASM built the old way has <em>no</em> markers. Shaking it blindly would strip every type. So v2 writes a version note in <span class="mono">contractmetav0</span>:</p>
+                <div class="panel">
+                    <p class="mono" style="font-size:var(--code-size);"><span class="accent-rust">rssdk_spec_shaking</span> = <span class="accent-green">"2"</span></p>
+                </div>
+                <p class="subtle" style="font-size:var(--small-size); margin-top:0.7em;">Absent or <span class="mono">"1"</span> → the tool leaves the spec untouched. <span class="mono">"2"</span> → markers are present, safe to shake.</p>
+            </div>
+            <div class="reveal">
+                <ul class="clean" style="gap:0.55rem;">
+                    <li><span class="lead">Forward-safe.</span> Old tools ignore an unknown meta key; old WASMs are never mis-shaken by new tools.</li>
+                    <li><span class="lead">Version-negotiated.</span> The meta value <em>is</em> the protocol between SDK and CLI — bump it, evolve the scheme.</li>
+                    <li><span class="lead">Self-declaring.</span> Anyone inspecting the WASM can see exactly how its spec was produced.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="slide-footer"><span class="t">Opt-in meta</span><span>15</span></div>
+</section>
+
+<!-- ============================= SLIDE 15 · PAYOFF ============================= -->
+<section class="slide">
+    <div class="slide-content">
+        <div class="kicker reveal">The payoff</div>
+        <h2 class="reveal">Specs that describe the <span class="gradient-text">interface</span>, nothing more</h2>
+        <div class="grid g3 reveal">
+            <div class="card"><div class="stat"><span class="big accent-green">only used</span></div><p>Types, errors &amp; events survive only when reachable from a boundary — decided by the compiler, not by hand.</p></div>
+            <div class="card"><div class="stat"><span class="big accent-rust">self-contained</span></div><p>Imported types used at the boundary are now included &amp; kept; unused imports vanish. Import safely at last.</p></div>
+            <div class="card"><div class="stat"><span class="big accent-wasm">zero flags</span></div><p>No <span class="mono">export</span> bookkeeping. Visibility no longer leaks into your public API.</p></div>
+        </div>
+        <p class="reveal subtle" style="max-width:66ch;">Same source, same macros — the difference is entirely in what the linker keeps alive and what the CLI reads back out.</p>
+    </div>
+    <div class="slide-footer"><span class="t">The payoff</span><span>16</span></div>
+</section>
+
+<!-- ============================= SLIDE 16 · ROLLOUT CHICKEN-EGG ============================= -->
+<section class="slide">
+    <div class="slide-content">
+        <div class="kicker reveal">Shipping it · the hard part</div>
+        <h2 class="reveal">The clever part was easy. <span class="accent-rust">Rolling it out</span> was not.</h2>
+        <div class="panel reveal" style="border-color:rgba(255,107,122,0.35); max-width:72ch;">
+            <p style="font-size:clamp(0.95rem,1.9vw,1.35rem); line-height:1.4;">v2 makes the SDK export <strong>everything</strong>, trusting the CLI to strip the rest. Build with plain <span class="mono">cargo build</span> and no CLI runs… so your spec gets <span class="accent-red">bigger</span>, not smaller.</p>
+        </div>
+        <ul class="clean reveal" style="max-width:66ch;">
+            <li>The optimization is <strong>split across two tools</strong>: the SDK plants markers, the CLI harvests them.</li>
+            <li>Ship the SDK first and half the pipeline is missing — a strict regression for anyone not on the new CLI.</li>
+            <li>A compile-time feature can't detect what build tool is driving it… <em>unless we make it.</em></li>
+        </ul>
+    </div>
+    <div class="slide-footer"><span class="t">Rollout · chicken &amp; egg</span><span>17</span></div>
+</section>
+
+<!-- ============================= SLIDE 17 · BUILD GUARD ============================= -->
+<section class="slide">
+    <div class="slide-content">
+        <div class="kicker reveal">Shipping it · the guard</div>
+        <h2 class="reveal">Make the build <em>fail</em> without the right tool</h2>
+        <div class="grid g2-3">
+            <div class="code reveal">
+                <div class="bar"><i></i><i></i><i></i><span class="fname">soroban-sdk/build.rs</span></div>
+<pre><span class="tok-cm">// feature on + wasm target…</span>
+<span class="tok-kw">if</span> feature_enabled &amp;&amp; target_is_wasm {
+  <span class="tok-kw">if</span> env::<span class="tok-fn">var</span>(
+    <span class="tok-str">"…SUPPORTS_SPEC_SHAKING_V2"</span>
+  ).<span class="tok-fn">is_err</span>() {
+    <span class="tok-fn">eprintln!</span>(<span class="tok-str">"error: requires \
+       stellar-cli v25.2.0+"</span>);
+    process::<span class="tok-fn">exit</span>(1);
+  }
+}</pre>
+                <div class="bar" style="margin-top:0.8em;"><i></i><i></i><i></i><span class="fname">stellar-cli sets it</span></div>
+<pre>cmd.<span class="tok-fn">env</span>(<span class="tok-str">"…SUPPORTS_SPEC_SHAKING_V2"</span>, <span class="tok-str">"1"</span>);</pre>
+            </div>
+            <div class="reveal">
+                <ul class="clean" style="gap:0.5rem;">
+                    <li><span class="lead">The CLI is the handshake.</span> Only <span class="mono">stellar contract build</span> sets the env var → the SDK trusts the harvest step will run.</li>
+                    <li><span class="lead">Fail loud, fail early.</span> A wrong build errors at compile time with a fix, instead of silently shipping a bloated spec.</li>
+                    <li><span class="lead">Native builds untouched.</span> The guard only fires for wasm; your unit tests never see it.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="slide-footer"><span class="t">The build guard</span><span>18</span></div>
+</section>
+
+<!-- ============================= SLIDE 18 · PROTOCOL ROLLOUT ============================= -->
+<section class="slide">
+    <div class="slide-content">
+        <div class="kicker reveal">Shipping it · across protocol versions</div>
+        <h2 class="reveal">Opt-in → default → always-on</h2>
+        <div class="timeline reveal">
+            <div class="stage now"><span class="p">protocol 26</span><h3>Opt-in</h3><p class="d">Behind <span class="mono">experimental_spec_shaking_v2</span>; wasm build without the CLI errors. Where the SDK sits today — burning down edge cases.</p></div>
+            <div class="stage"><span class="p">protocol 27</span><h3>Default <span class="faint" style="font-weight:400;">(planned)</span></h3><p class="d">Flip the feature on by default. Escape hatch: disable default features to stay on v1.</p></div>
+            <div class="stage"><span class="p">protocol 28</span><h3>Always-on</h3><p class="d">Flag removed. v2 is simply how the SDK builds.</p></div>
+        </div>
+        <p class="reveal subtle" style="max-width:68ch;">Not a straight line: enabling-by-default was merged, then <strong>reverted</strong> for protocol 26 safety, then re-staged. A cross-repo, cross-protocol migration is its own engineering problem — the feature flag is the pressure valve.</p>
+        <p class="reveal faint mono" style="font-size:var(--mono-label);">tracking: rs-soroban-sdk#1844 · enable #1812 → revert #1850 → re-stage</p>
+    </div>
+    <div class="slide-footer"><span class="t">Protocol rollout</span><span>19</span></div>
+</section>
+
+<!-- ============================= SLIDE 19 · EDGE CASES ============================= -->
+<section class="slide">
+    <div class="slide-content">
+        <div class="kicker reveal">The long tail</div>
+        <h2 class="reveal">Where "reachable" got subtle</h2>
+        <div class="grid g3 reveal">
+            <div class="card"><span class="num accent-rust">#1852</span><h3 style="font-size:var(--body-size);">Panic-only errors</h3><p>An error thrown via <span class="mono">panic_with_error!</span> never appears in a <span class="mono">Result</span> return — so it needs its own boundary marker, or it'd be shaken out.</p></div>
+            <div class="card"><span class="num accent-rust">#1835</span><h3 style="font-size:var(--body-size);">Recursive types</h3><p>A type reachable through <span class="mono">Vec&lt;Self&gt;</span> would recurse forever on a direct call → the <span class="mono">keep_reachable</span> fn-pointer trick.</p></div>
+            <div class="card"><span class="num accent-rust">#1876</span><h3 style="font-size:var(--body-size);">Deprecating <span class="mono">export</span></h3><p>Under v2, <span class="mono">export</span> is a no-op — worse, it can drop a marker for a reachable type. Now it warns and will be removed.</p></div>
+        </div>
+        <p class="reveal subtle" style="max-width:68ch;">Each is a small hole in the "reachability = used" model. The pattern held; the edges just needed their own roots.</p>
+    </div>
+    <div class="slide-footer"><span class="t">Edge cases</span><span>20</span></div>
+</section>
+
+<!-- ============================= SLIDE 20 · GRAPH V2 ============================= -->
+<section class="slide">
+    <div class="slide-content">
+        <div class="kicker reveal">What's next</div>
+        <h2 class="reveal">From markers-per-type to <span class="gradient-text">roots + a graph</span></h2>
+        <div class="grid g2-3">
+            <div class="reveal">
+                <p style="margin-bottom:0.6em;">Marker-per-type still leans on hashing to reconnect types. The next iteration (PR <span class="mono">#1861</span>) makes identity <strong>exact</strong>:</p>
+                <ul class="clean" style="gap:0.45rem;">
+                    <li><span class="lead">Functions are roots</span> — read straight from the public spec.</li>
+                    <li><span class="lead">Markers only for hidden roots</span> — events &amp; thrown errors, which don't show up in a function signature.</li>
+                    <li><span class="lead">A removable sidecar graph</span> (<span class="mono">SpGrV1</span>) records exact spec-entry references. Traverse it; keep reachable types.</li>
+                    <li><span class="lead">Strip the graph</span> from the final WASM — the scaffolding never ships.</li>
+                </ul>
+            </div>
+            <div class="panel reveal">
+                <div class="flow" style="flex-direction:column; gap:0.4rem;">
+                    <div class="node"><span class="lbl">macros emit</span><p>markers · <span class="mono">SpGrV1</span> graph · <span class="mono">contractspecv0</span></p></div>
+                    <div class="arrow" style="transform:rotate(90deg);">→</div>
+                    <div class="node"><span class="lbl accent-rust">traverse</span><p>roots → follow exact refs → reachable set</p></div>
+                    <div class="arrow" style="transform:rotate(90deg);">→</div>
+                    <div class="node" style="border-color:rgba(88,227,154,0.4);"><span class="lbl accent-green">result</span><p>rewrite spec · drop private graph</p></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="slide-footer"><span class="t">Graph-based v2</span><span>21</span></div>
+</section>
+
+<!-- ============================= SLIDE 21 · TAKEAWAYS ============================= -->
+<section class="slide">
+    <div class="slide-content">
+        <div class="kicker reveal">Takeaways</div>
+        <h2 class="reveal">A trick you can steal</h2>
+        <ul class="clean reveal" style="max-width:70ch;">
+            <li><span class="lead">Let the compiler and linker answer what macros can't.</span> When you need whole-program reachability but only have per-item metaprogramming, encode a proxy the compiler will keep-or-kill, then read it back from the artifact.</li>
+            <li><span class="lead">Identify by content hash, not by name.</span> Names are ambiguous across modules and imports; a hash of the serialized thing is stable on both sides of the pipeline.</li>
+            <li><span class="lead">A side channel in the binary is a protocol.</span> Data-section breadcrumbs + a version note in meta = a contract between compiler and tooling.</li>
+            <li><span class="lead">Shipping is the feature.</span> Feature flags, build guards, and a staged protocol rollout mattered as much as the hack itself.</li>
+        </ul>
+    </div>
+    <div class="slide-footer"><span class="t">Takeaways</span><span>22</span></div>
+</section>
+
+<!-- ============================= SLIDE 22 · THANKS ============================= -->
+<section class="slide title-slide">
+    <div class="slide-content">
+        <div class="title-wrap">
+            <div class="kicker reveal">Thank you</div>
+            <h1 class="reveal">Questions?</h1>
+            <p class="reveal subtle" style="max-width:56ch;">Tree shaking contract specs: markers in the data section, dead-code elimination as the oracle, and a hash-based side channel between the SDK and the CLI.</p>
+            <div class="grid g3 reveal" style="margin-top:0.6rem; max-width:64ch;">
+                <div class="card"><span class="num">sdk</span><p class="mono" style="font-size:var(--small-size);">stellar/rs-soroban-sdk</p></div>
+                <div class="card"><span class="num">cli</span><p class="mono" style="font-size:var(--small-size);">stellar/stellar-cli</p></div>
+                <div class="card"><span class="num">origin</span><p class="mono" style="font-size:var(--small-size);">PR #1672 · #1861</p></div>
+            </div>
+            <div class="byline reveal"><span><b>Leigh McCulloch</b> · Stellar</span><span>·</span><span>@leighmcculloch</span></div>
+        </div>
+    </div>
+    <div class="slide-footer"><span class="t">Hacking Rust to Build Contracts</span><span>23</span></div>
+</section>
+
+<script>
+/* ===========================================================================
+   SPEAKER NOTES — one entry per slide (index-aligned). Technical detail for
+   the presenter; shown in the presenter window (press P), never to the audience.
+   =========================================================================== */
+const SPEAKER_NOTES = [
+/* 0 — Title */
+`Set the frame in one line: this is a talk about a compiler/linker hack, not a blockchain talk. The problem is dull-sounding — "contract specs are too big" — and the solution is genuinely fun: we abuse Rust's dead-code elimination to answer a question the language otherwise can't answer.
+
+Anchor terms up front so nobody's lost: Soroban = Stellar's smart-contract platform; contracts are Rust compiled to WASM. The whole talk lives in the soroban-sdk (macros + traits) and the stellar-cli (post-build tool).
+
+Promise the payload: by the end you'll know how 14 bytes of magic in the WASM data section, plus one volatile read, let the linker tell a post-build tool exactly which types a contract exposes.`,
+
+/* 1 — The artifact */
+`The one concept everything hangs on: a Soroban contract deploys as a single .wasm, and inside it is a custom section called contractspecv0 that holds the machine-readable interface — every function signature, every user-defined type (struct/enum), every error enum, every event — serialized as XDR (Stellar's binary encoding). There's also contractmetav0 for build metadata; remember that, it comes back later.
+
+Why it matters: the spec is not decoration. The CLI generates client bindings from it, explorers render it, other-language SDKs type-check calls against it. It is the contract's public API description, and it is on-chain.
+
+Cross-chain bridge for the mixed audience — say this explicitly:
+- Ethereum: the ABI is JSON you keep off-chain next to the bytecode. Nothing on-chain forces it to be minimal or correct.
+- Solana/Anchor: the IDL plays the ABI role; modern Anchor (0.30+) can even embed it in the program and fetch it on-chain via 'anchor idl fetch' — but it stays optional, and can be omitted or stripped.
+- Soroban: the spec ships *inside* the deployed WASM — the contract is self-describing. The distinction that actually holds: Soroban's spec is mandatory and unavoidable — every deploy carries it, rent-bearing and downloaded forever — whereas an Anchor IDL, embedded or in an account, is optional. That mandatory on-chain-ness is exactly why minimizing it is worth a talk.`,
+
+/* 2 — The problem */
+`State the defect crisply: the SDK macros emit a spec entry for every type you *declare*, decoupled from whether you *use* it at the boundary. #[contracttype], #[contracterror], #[contractevent] each contribute an entry.
+
+Concretely where bloat comes from:
+1. Storage/internal types — a LedgerKey enum, an intermediate struct — described to the world though no caller ever sees them.
+2. contractimport! — you import another contract's interface to call it, and pre-shaking that meant either exporting all of its types or none.
+3. Sheer count — token contracts, AMMs, protocols with big type vocabularies.
+
+Cost framing for the skeptics: on-chain bytes are not free (ledger rent), and every consumer — CLI, explorer, bindings — parses the whole spec. A spec that's 5x too big is pure drag.
+
+Land the thesis line at the bottom: the spec should be the contract's public surface, not a memory dump of everything the author declared.
+
+Bridge for the Ethereum crowd: in Solidity your ABI is derived FROM the external interface — solc only emits entries for external/public functions and the types they touch, so an internal struct or helper enum cannot appear in it. Soroban inverts this: the SDK's '#[contracttype]' derive emits a spec entry the instant you DECLARE a type, used or not. That inversion is exactly why internal types leak into the on-chain spec — and why we have to shake them back out.`,
+
+/* 3 — Spec shaking v1 (old workaround) */
+`This is the "before" — what the SDK actually did for years, so the audience sees this isn't theoretical.
+
+The v1 heuristic keyed off Rust visibility: pub → in the spec, non-pub → out; all functions and all events exported; wasm imports exported nothing; and a manual escape hatch export = true/false on the macro.
+
+Why each hurts (these are the real complaints from users):
+- Visibility ≠ interface. Plenty of pub types are internal; plenty of API-relevant types are conservatively non-pub. Rust visibility was never designed to mean "part of my ABI."
+- All-or-nothing imports. This is the big one. Re-export one imported type and you'd re-export the entire imported interface, so the SDK chose to export nothing from imports — which meant self-contained specs were impossible.
+- Manual export flags rot. They drift out of sync with what's actually used.
+
+Transition: all of these are humans guessing at one question the compiler could answer precisely — is this type reachable from the boundary? Hold that question up; the rest of the talk answers it.`,
+
+/* 4 — The goal */
+`Name the analogy the whole audience already knows: tree shaking, from JS bundlers. Start from the roots that are reachable; drop everything else. We want that, but for the on-chain type spec.
+
+Define "reachable from the boundary" precisely, because it's the spec of the feature: a type's entry is kept iff it appears (transitively) in a public contract function's parameters or return, in a published event, or in a thrown error. Everything else is stripped. Automatically, no flags.
+
+Walk the before/after panel: before, the function plus a pile of internal and imported types; after, just the function and the one event/type actually crossing the edge. That visual is the entire value proposition — keep it on screen while you say "and the author changed nothing to get here."
+
+Flag the tension you'll pay off later: "automatically" is doing a lot of work in that sentence — the next two slides are why it's hard.`,
+
+/* 5 — Why hard #1: macros are blind */
+`This is the crux for the Rust crowd; slow down. A procedural/derive macro is a pure function from one item's tokens to tokens. When #[contracttype] runs on struct Foo, its entire universe is Foo. It cannot see the impl block 300 lines away that decides whether Foo is used.
+
+Reinforce with the compilation model: macro expansions are independent, run in unspecified order, are cached per-item, and there is no second pass where a macro gets to revise its output "now that I've seen the whole crate." No global mutable state you can trust across invocations (and even if you hacked one in, incremental/parallel builds would betray you).
+
+So the naive approach — "have the macro decide whether to emit the spec entry" — is provably impossible at macro time. The information literally does not exist yet.
+
+Point at the code: the expansion site and the usage site are different macro invocations. Whatever computes reachability has to run later than macros. Set up the reveal: what runs later? The linker.`,
+
+/* 6 — Why hard #2: identity */
+`The second hard problem, independent of the first: even once you know a type is used, how do you point at "this exact spec entry" from outside the compiler?
+
+Names fail two ways:
+- Collisions: two modules each define Status; a local Balance and an imported Balance share a name but are different specs. Post-build, a name is not a key.
+- Lossiness: the spec entry encodes fields, docs, variants, ordering. The name throws all of that away, so name-matching can't distinguish shapes or detect drift.
+
+The fix: identity = SHA-256 of the spec entry's serialized XDR, truncated to 64 bits for the marker. Same serialization routine on both sides — the SDK hashes the entry it emits, the CLI hashes each entry it finds — so the fingerprints line up exactly. Mention this is why the historic "type identity" problem for spec work basically dissolves: you stop arguing about names.
+
+64 bits collision note if asked: contract specs have tens, maybe low hundreds, of entries — birthday-bound collision risk at 2^64 across that few items is negligible, and a collision only ever risks keeping an unused entry, never dropping a used one.`,
+
+/* 7 — The insight */
+`This is the "aha" slide — let it breathe. The reframing: stop trying to make the macro smart. The compiler+linker already computes whole-program reachability every single build, because that's what dead-code elimination *is*. Unreachable functions and their data get stripped.
+
+Answer the obvious bundler-person question before it's asked — "if you're tree shaking, why not just shake the spec directly?": the spec is a passive blob in a WASM custom section (contractspecv0), which the linker/DCE treats as opaque metadata and never reads or reasons about. DCE only strips code and the data that code references. So you can't shake the spec, but you CAN attach a signal to code — and read the surviving signal back out.
+
+So invert the problem: instead of asking "is this type used?", attach a breadcrumb to each type such that the breadcrumb survives DCE exactly when the type is used, then read the surviving breadcrumbs out of the finished binary.
+
+Say the load-bearing sentence out loud (it's on the slide): we can't ask the macro; we *can* emit code whose survival is a proxy for use.
+
+This is the pivot from "impossible" to "here's how" — the next four slides are just the careful engineering to make a breadcrumb that (a) survives iff reachable and (b) is findable afterward.
+
+If someone asks 'why not an Anchor-style idl-build aggregation pass?': unlike a separate build mode that runs generated code, DCE is a pass the normal wasm build already runs, and it reports reachability of the real compiled artifact — no second build, and the answer ships in the same WASM we already produce.`,
+
+/* 8 — The marker */
+`Introduce the breadcrumb concretely: a 14-byte array. First 6 bytes are the literal ASCII "SpEcV1" — a magic prefix chosen to be an unlikely-to-occur needle so a post-build scanner can find markers by pattern-matching the data section. The next 8 bytes are the first 64 bits of SHA-256 over the spec entry's XDR — the identity from the previous slide.
+
+Two independent jobs, hence two parts: the magic makes it *findable*; the hash makes it *identifiable*. Neither alone is enough.
+
+Pre-empt the version-mismatch snag (a Rust/Soroban dev will notice): the 'V1' in 'SpEcV1' is the marker BINARY-FORMAT version — v1 of this 14-byte layout — and is independent of the shaking-SCHEME version recorded in contractmetav0 ("2"). Same reason the graph work names its section 'SpGrV1'. So "why does the magic say V1 when we're talking about v2?" — different version numbers, different things.
+
+Point at the file: this lives in soroban-spec/src/shaking.rs, shared by both the SDK (to generate markers) and the CLI (to find them) — one crate, one definition of the format, so they can't drift.
+
+If asked why not the full 32-byte hash: 8 bytes keeps the marker small (it's replicated per used type in the binary) and is plenty given how few spec entries exist. There's a test that pins the exact bytes so any change to prefix/algorithm/truncation is caught.`,
+
+/* 9 — The marker function */
+`Must-say spine: the macros generate an impl of an internal trait, SpecShakingMarker, with a method spec_shaking_marker(); primitives and built-in SDK types keep a no-op default, contract types get a real impl. The mechanism is three parts: (1) the marker is called only at boundaries; (2) call-graph dead-code elimination ties the marker fn's survival to whether a live boundary actually calls it — an uncalled internal fn is stripped whether or not it's inlined, a called one is kept; (3) read_volatile pins the 14 bytes so the optimizer can't elide the static wherever the fn body is present. #[inline(always)] is orthogonal to that reachability decision — it's a codegen choice, not the correctness mechanism (the scheme works identically with an out-of-line marker fn). What it buys: the no-op default and the boundary call fold to nothing off-wasm, and there's no real call in the hot boundary-conversion path. And #[cfg(target_family = "wasm")] means native builds and unit tests compile it to nothing — zero cost off-chain.
+
+Line by line, if time:
+- static MARKER: [u8;14] = the magic+hash bytes as a byte-string literal, placed in the data section.
+- read_volatile(MARKER.as_ptr()): the keystone. A volatile read may not be reordered or elided by the optimizer, so as long as this function body runs, the compiler must keep MARKER in the data section. Without volatile, the optimizer would notice the read is unused and delete the static.
+
+If asked 'why not core::hint::black_box?': black_box is documented as a best-effort hint with explicitly no guarantee it prevents elision, whereas a volatile access has defined semantics the optimizer must honor across opt levels — so volatile is the correct tool when survival of the bytes must be guaranteed, not merely likely.
+
+Craft detail and the double game, if asked: we volatile-read just one byte (the pointer to the start), not the whole array — merely taking a volatile reference to the symbol anchors it; reading all 14 would be redundant and inflate code size. And note the double game: the function is subject to DCE (that's our signal), but the static inside it is protected from DCE by the volatile read (so it's there to find when the function survives).`,
+
+/* 10 — Boundaries */
+`Reachability of the marker function is only meaningful if we call it from exactly the right places — the true contract boundary, and nowhere else.
+
+The four call sites:
+1. Function parameters — the SDK's generated arg-deserialization path (TryFromValForContractFn) calls T::spec_shaking_marker() before converting the incoming Val.
+2. Function return values — the return path (IntoValForContractFn, shown here) calls it before serializing out.
+3. Events — inside the generated publish() for #[contractevent] types.
+4. Errors — via panic_with_error!/assert_with_error!, because a thrown error type may never appear in a Result and would otherwise be missed (that's the #1852 edge case later).
+
+Emphasize the deliberate *exclusions*: general TryFromVal conversions do NOT call the marker. So a type used only in storage, or only passed in a cross-contract call, does not get marked and gets shaken out. "Used at the boundary" is a precise, intentional definition, not "used anywhere."
+
+Read the code: it's a blanket impl gated on T: IntoVal + SpecShakingMarker. Under the feature flag, every contract return flows through this and drops the breadcrumb; without the flag, the same trait exists but skips the marker call. Note the trait is #[doc(hidden)] — internal plumbing the macros target, not public API (the deprecation belongs to the separate export attribute, covered later).`,
+
+/* 11 — Propagation & recursion */
+`Must-say spine: a boundary type is usually a tree — struct with fields, enum with payloads, containers of other types — and one boundary hit must mark the whole reachable subtree and terminate. The single rule that does it: call the inner marker when the inner type is inline; reference-it-without-calling when it's behind indirection. That one rule covers correctness and termination together, and it's the recursive-types fix (#1835).
+
+The three cases, if time:
+- Fields: a generated type's marker fn first calls its field types' marker fns, so marking the root transitively marks the tree.
+- Inline shapes — Option<T>, Result<T,E>, tuples: these embed the inner type in their layout, so a direct call T::marker() is fine; there's no way to build an infinitely-sized inline value, so no infinite recursion.
+- Indirection — Vec<T>, Map<K,V>, &T, &mut T: pointer-sized regardless of T, which means a type CAN recurse through them (struct Node { kids: Vec<Node> }). A direct call would recurse forever at runtime — the marker fns would call each other with no base case (stack overflow / wasm trap). So keep_reachable(f: fn()) takes the marker as a function pointer and volatile-reads the pointer, keeping the symbol reachable for DCE without ever calling it — breaking the cycle.`,
+
+/* 12 — DCE does the work */
+`Now collapse it: put a boundary call in, run a normal optimized wasm build, and DCE partitions every type automatically.
+- Reachable: some live boundary calls marker() → #[inline(always)] threads it into live code → read_volatile pins the 14 bytes → marker survives in the data section.
+- Unreachable: no live caller → the marker fn is never instantiated, so its static bytes are never emitted in the first place — not "emitted then swept."
+
+Preempt the SBF-dead-code skepticism head-on (this room compiles to SBF, where unused Rust notoriously bloats the binary): the removal here is reliable because instantiation is demand-driven (monomorphization) — a type that never crosses a boundary is never called, so its marker is never instantiated and never emitted. It is not a hopeful linker sweep of already-emitted code, which is the mechanism SBF devs rightly distrust.
+
+The profound part, and the sentence to land: we did NOT write a reachability analysis. We reused the compiler's. The data section of the finished WASM now literally contains a SpEcV1 marker for exactly the types that touch the boundary, and nothing else.
+
+Tie back to slide 5's "impossible": the macro still can't see the whole program — but it didn't need to. It only had to plant a breadcrumb; the optimizer + linker did the global reasoning; we read the answer out of the artifact.
+
+If asked about LTO/opt-levels: the volatile read is the guarantee across opt levels; volatile semantics are defined to not be optimized out. Debug and release both behave; the CLI builds release.`,
+
+/* 13 — Post-build filter */
+`The harvest half, in stellar-cli's contract build (build.rs::filter_spec). Order of operations:
+1. Parse the WASM, read contractmetav0, and bail out unless rssdk_spec_shaking == "2" (next slide) — never shake a WASM that didn't opt in.
+2. shaking::find_all(&wasm): scan every data segment for the SpEcV1 magic and collect the 14-byte markers into a HashSet of hashes.
+3. filter_and_dedup_spec(spec, markers): for each spec entry — always keep FunctionV0 (functions ARE the API, and they're the roots); for types/events, recompute SHA-256 of the entry's XDR and keep it only if that hash is in the marker set. Also collapse exact-duplicate entries.
+4. replace_custom_section(wasm, "contractspecv0", shaken): rewrite the section in place and write the WASM back out.
+
+Point out the symmetry that makes it sound: the exact same generate_marker_for_xdr / find_all / filter code lives in the shared soroban-spec crate, used by both sides. The SDK and CLI cannot disagree about the format or the hash.
+
+Reassure on safety: the failure mode is asymmetric and safe-by-construction — functions are never dropped, and a hash mismatch can only ever *keep* an entry, never wrongly drop a used one.`,
+
+/* 14 — Opt-in meta */
+`The version handshake, and why it must exist. A WASM built the old way (or by any non-marker toolchain) has zero SpEcV1 markers. If the CLI shook it blindly, "no markers" would mean "strip every type" — catastrophic. So the SDK writes a note into contractmetav0: key rssdk_spec_shaking, value "2".
+
+Rules: absent or "1" → the tool leaves the spec entirely alone; "2" → markers are present and shaking is safe. spec_shaking_version_for_meta() reads this, and filter_spec returns early if it isn't 2.
+
+Three properties worth calling out:
+- Forward-safe: older tooling ignores an unknown meta key; older WASMs are never mis-shaken by newer tools.
+- The meta value IS the SDK↔CLI protocol version. Evolve the marker scheme, bump the number, and old and new can coexist. (This is exactly the seam the graph-based v2 slots into.)
+- Self-declaring: anyone inspecting a deployed WASM can see how its spec was produced.
+
+This is the "a side channel in the binary is a protocol" theme showing up concretely — remember it for the takeaways.`,
+
+/* 15 — The payoff */
+`Recap the wins before the rollout act. Three cards:
+- Only-used: types, errors, events survive strictly by reachability, decided by the compiler — no human judgment, no drift.
+- Self-contained: this is the one that unblocks a whole workflow. Because imported types used at the boundary are now emitted-and-kept while unused imports are shaken away, you can finally contractimport! a big interface and get a spec containing only the pieces you actually use. The old all-or-nothing wall is gone.
+- Zero flags: export bookkeeping disappears; Rust visibility stops leaking into your public ABI.
+
+The kicker to say plainly: the author's source and macros are unchanged. The entire difference between a bloated spec and a minimal one is what the linker kept alive and what the CLI read back out. That's the elegance — the optimization is invisible in the code.
+
+Then pivot hard: "and if the talk ended here it'd be a tidy compiler-hack story. But the interesting engineering — and the messy part — is shipping it."`,
+
+/* 16 — Rollout chicken & egg */
+`Be honest that the clever bit was the easy bit. The hard bit is that the optimization is split across two independently-versioned tools: the SDK plants markers, the CLI harvests them. Each is necessary; neither is sufficient.
+
+The trap, stated as a regression: under v2 the SDK now EXPORTS everything (including previously-hidden and imported types), on the promise that a post-build step strips the surplus. Run a plain 'cargo build --target wasm32v1-none' with the feature on and no harvester runs — so your spec gets BIGGER than v1, not smaller. You've shipped a pessimization to anyone not on the new CLI.
+
+And a compile-time Cargo feature fundamentally cannot see what build tool is orchestrating it… so we don't get to detect it for free. We have to manufacture a signal. That's the next slide.
+
+For the audience: this is the generic hazard of any optimization that spans a producer and a consumer you don't release together. Coordination, not cleverness, is the risk.`,
+
+/* 17 — The build guard */
+`The fix is a deliberately blunt instrument: make the wrong build fail loudly instead of silently pessimizing.
+
+In soroban-sdk/build.rs: if the experimental_spec_shaking_v2 feature is enabled AND we're building for a wasm target, check for the env var SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2. If it's absent, print an actionable error ("requires stellar-cli v25.2.0+, or remove the feature") and exit(1) — the build stops before producing a bloated artifact.
+
+The other half, in stellar-cli's build command: it sets that env var to "1" before invoking cargo. So the env var is effectively a capability handshake: "the harvester will run after me." Only a build driven by 'stellar contract build' (new enough) sets it.
+
+Two guardrails to highlight:
+- Fail early with a fix, not late with a silent regression — the error text tells you exactly how to proceed.
+- The check is scoped to wasm targets, so native unit tests are never blocked (the feature is a no-op off-wasm anyway).
+
+If asked why an env var and not something cleaner: there is no supported way for a proc-macro or build script to introspect the parent build tool; an env var injected by the CLI is the pragmatic, robust seam.`,
+
+/* 18 — Protocol rollout */
+`Zoom out to the multi-release migration. The plan tracks protocol versions:
+- p26: opt-in behind experimental_spec_shaking_v2; wasm build without the CLI errors (previous slide); drive down the edge-case backlog. This is where things actually sit today — as of soroban-sdk 27.0.0 the feature is still opt-in and there is no default feature set that turns it on.
+- p27: planned default; escape hatch is disabling default features to stay on v1 (which matters when soroban-sdk is a transitive dependency you don't control). Be precise if asked: this is the target, not yet flipped in the released crate.
+- p28: flag removed, v2 is simply how the SDK builds.
+
+Be candid about the non-linearity — this is the credible-engineering beat: enabling-by-default was actually merged and then REVERTED (and a v1 fallback added) to keep protocol 26 safe while known issues were still open, then re-staged. That revert is exactly why the released SDK is still opt-in. The feature flag is the pressure valve that let us move aggressively and still back out.
+
+Lesson for the room: a good migration plan has an explicit "off" ramp at every stage. The flag isn't indecision; it's the mechanism that makes a risky cross-repo change reversible. Tracking lives in issue #1844.`,
+
+/* 19 — Edge cases */
+`The long tail — proof the model met reality. Three representative holes and how each was patched by adding a proper "root," not by abandoning the approach:
+- #1852 panic-only errors: an error surfaced only through panic_with_error!/assert_with_error! never appears in a Result<_, E> return, so nothing at the "normal" boundary would mark it. Fix: treat the panic/assert macros as boundary call sites too, so the error type is a root in its own right.
+- #1835 recursive types: a type reachable through Vec<Self> (or Map, or &Self) would infinitely recurse if the marker impl called straight through the container. Fix: the keep_reachable fn-pointer trick from slide 11 — reference the marker without calling it.
+- #1876 deprecating export: under v2, export=true/false is not just redundant, it's actively harmful — export=false can suppress a marker for a type that's still reachable, causing the CLI to drop a needed entry (missing coverage). So export now emits a deprecation warning and will be removed; reachability is the single source of truth.
+
+Meta-point: each fix is "add a missing root" or "fix a traversal edge," never "the whole idea doesn't work." The model was sound; the boundary just had more doors than the first draft enumerated.`,
+
+/* 20 — Graph-based v2 */
+`Must-say spine: where it's heading — PR #1861, open at time of writing. It keeps the philosophy (compiler decides reachability, tooling harvests) but upgrades identity from hash-matched per-type markers to an explicit, removable reference graph, so matching is exact rather than by-fingerprint — with fewer marker bytes and a cleaner final artifact. The version-meta seam from slide 14 is what lets it land without breaking existing tools.
+
+The scheme, if time:
+- Functions become roots read directly from the public contractspecv0 — no markers needed for them, because they're already visible in the spec.
+- Markers are reserved for roots that are NOT visible in the public spec: published events and thrown errors. That's a big reduction in marker count.
+- The macros emit a removable sidecar section (SpGrV1 / contractspecv0.rssdk.graphv0) recording exact spec-entry references keyed by hash — a real dependency graph, not just presence bits.
+- Post-build: start from roots, traverse the graph to the reachable set of user-defined types, rewrite contractspecv0, and then STRIP the private graph section so the scaffolding never ships in the final artifact. It also validates coverage — erroring if a reachable reference is missing or not exported.
+
+Why bother if v1-markers work, if asked: exactness (you follow declared edges instead of reassembling structure from name-free hashes), fewer marker bytes in the binary, and a cleaner final artifact.
+
+Known limits to mention if asked: export=false types referenced at a boundary report as missing rather than being synthesized; unshaken contractimport! WASMs still carry all dependency types; duplicate-named types aren't merged.`,
+
+/* 21 — Takeaways */
+`Four portable lessons — pitch these as things the audience can steal regardless of chain or language:
+1. Let the linker answer what your metaprogramming can't. If you need whole-program reachability but only have per-item macros/codegen, don't fight it — emit a proxy artifact the compiler keeps-or-kills, then read it back out of the binary. This generalizes far beyond specs (feature usage, capability detection, plugin registration).
+2. Identify by content hash, not by name. Names are ambiguous across modules, imports, and versions; a hash of the serialized object is a stable key on both sides of a build pipeline.
+3. A side channel in the binary is a protocol — design it like one. Magic prefix for discovery, hash for identity, a version note in metadata for negotiation and forward-compatibility.
+4. Shipping IS the feature. The marker hack is maybe a day of insight; the feature flag, the build-tool handshake, the staged p26→p27→p28 rollout with a revert, and the edge-case burndown are what made it real. Budget for that.
+
+Close by connecting to the audience's world: Ethereum devs already tree-shake JS with bundlers and keep ABIs off-chain; Solana devs manage IDLs; here the same instinct is applied at the WASM linker level, on-chain. Same idea, different layer of the stack.`,
+
+/* 22 — Thanks / Q&A */
+`Thank the room and open for questions. One-sentence recap to leave on screen: markers in the data section, dead-code elimination as the oracle, and a hash-based side channel between the SDK and the CLI.
+
+Pointers: the SDK is stellar/rs-soroban-sdk (soroban-spec/src/shaking.rs, soroban-sdk-macros/src/shaking.rs, soroban-sdk/src/spec_shaking.rs); the harvester is in stellar/stellar-cli's contract build; the origin PR is #1672 and the graph-based evolution is #1861.
+
+Anticipated Q&A:
+- "Could other languages use this?" Any WASM toolchain with reliable DCE and a way to anchor bytes could, but it's not part of SEP-48 — it's a Rust-SDK + CLI mechanism, not a chain-level standard.
+- "What if I don't use the CLI?" With the feature on, a wasm build errors by design; with it off you get v1 behavior.
+- "Collision risk on 64-bit hashes?" Negligible at spec-entry counts, and a collision could only keep an unused entry, never drop a used one.
+- "Runtime cost on-chain?" The markers are data-section bytes and #[cfg(wasm)]-only; the volatile reads are in boundary conversion code and measured negligible on large contracts.
+- "Do the markers ship on-chain?" In the current marker-based v2, yes — the anchored 14-byte markers stay in the WASM data section (a few bytes per reachable type), tiny next to the spec bytes removed. The graph-based evolution (#1861) strips its private sidecar graph so that scaffolding never ships.`
+];
+
+/* ===========================================================================
+   PRESENTATION CONTROLLER
+   Keyboard / wheel / touch / dots nav, scroll-snap, IntersectionObserver-driven
+   .visible animations, URL hash sync, and a BroadcastChannel-synced presenter
+   window (press P).
+   =========================================================================== */
+const PRESENTER_CHANNEL = 'ss-slides-presenter-sync';
+
+class SlidePresentation {
+    constructor() {
+        this.slides = Array.from(document.querySelectorAll('.slide'));
+        this.current = 0;
+        this.progress = document.getElementById('progress');
+        this.dotsWrap = document.getElementById('dots');
+        this.channel = ('BroadcastChannel' in window) ? new BroadcastChannel(PRESENTER_CHANNEL) : null;
+
+        this.buildDots();
+        this.observe();
+        this.bindKeys();
+        this.bindWheel();
+        this.bindTouch();
+        this.bindChannel();
+
+        // Restore from hash (deep-link / refresh-in-place).
+        const initial = this.getSlideFromHash();
+        if (initial) requestAnimationFrame(() => initial.scrollIntoView({ behavior: 'instant' }));
+        else this.setActive(0, true);
+    }
+
+    buildDots() {
+        this.slides.forEach((_, i) => {
+            const b = document.createElement('button');
+            b.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+            b.addEventListener('click', () => this.goToSlide(i));
+            this.dotsWrap.appendChild(b);
+        });
+        this.dots = Array.from(this.dotsWrap.children);
+    }
+
+    observe() {
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach((e) => {
+                if (e.isIntersecting && e.intersectionRatio >= 0.55) {
+                    e.target.classList.add('visible');
+                    const idx = this.slides.indexOf(e.target);
+                    if (idx !== -1) this.setActive(idx);
+                }
+            });
+        }, { threshold: [0.55] });
+        this.slides.forEach((s) => io.observe(s));
+    }
+
+    setActive(idx, force) {
+        if (idx === this.current && !force) { this.updateChrome(idx); return; }
+        this.current = idx;
+        this.updateChrome(idx);
+        history.replaceState(null, '', '#' + (idx + 1));
+        this.broadcast(idx);
+    }
+
+    updateChrome(idx) {
+        const pct = this.slides.length > 1 ? (idx / (this.slides.length - 1)) * 100 : 100;
+        if (this.progress) this.progress.style.width = pct + '%';
+        if (this.dots) this.dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+    }
+
+    goToSlide(idx) {
+        idx = Math.max(0, Math.min(this.slides.length - 1, idx));
+        this.slides[idx].scrollIntoView({ behavior: 'smooth' });
+    }
+    next() { this.goToSlide(this.current + 1); }
+    prev() { this.goToSlide(this.current - 1); }
+
+    getSlideFromHash() {
+        const m = window.location.hash.match(/^#(\d+)$/);
+        if (m) { const i = parseInt(m[1], 10) - 1; if (i >= 0 && i < this.slides.length) return this.slides[i]; }
+        return null;
+    }
+
+    bindKeys() {
+        window.addEventListener('keydown', (e) => {
+            if (['ArrowRight', 'ArrowDown', ' ', 'PageDown'].includes(e.key)) { e.preventDefault(); this.next(); }
+            else if (['ArrowLeft', 'ArrowUp', 'PageUp'].includes(e.key)) { e.preventDefault(); this.prev(); }
+            else if (e.key === 'Home') { e.preventDefault(); this.goToSlide(0); }
+            else if (e.key === 'End') { e.preventDefault(); this.goToSlide(this.slides.length - 1); }
+            else if (e.key === 'p' || e.key === 'P') { this.openPresenter(); }
+            else if (e.key === 'f' || e.key === 'F') { this.toggleFullscreen(); }
+        });
+    }
+
+    bindWheel() {
+        let lock = false;
+        window.addEventListener('wheel', (e) => {
+            if (lock) return;
+            if (Math.abs(e.deltaY) < 24) return;
+            lock = true;
+            if (e.deltaY > 0) this.next(); else this.prev();
+            setTimeout(() => { lock = false; }, 650);
+        }, { passive: true });
+    }
+
+    bindTouch() {
+        let y0 = null;
+        window.addEventListener('touchstart', (e) => { y0 = e.touches[0].clientY; }, { passive: true });
+        window.addEventListener('touchend', (e) => {
+            if (y0 === null) return;
+            const dy = y0 - e.changedTouches[0].clientY;
+            if (Math.abs(dy) > 45) { if (dy > 0) this.next(); else this.prev(); }
+            y0 = null;
+        }, { passive: true });
+    }
+
+    toggleFullscreen() {
+        if (!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+        else document.exitFullscreen?.();
+    }
+
+    /* ---- presenter sync ---- */
+    bindChannel() {
+        if (!this.channel) return;
+        this.channel.onmessage = (e) => {
+            const d = e.data || {};
+            if (d.type === 'nav') this.goToSlide(d.slide);
+            else if (d.type === 'hello') this.broadcast(this.current);
+        };
+    }
+    broadcast(idx) {
+        if (!this.channel) return;
+        this.channel.postMessage({ type: 'slide', slide: idx, total: this.slides.length });
+    }
+
+    openPresenter() {
+        const titles = this.slides.map((s) => {
+            const h = s.querySelector('h1, h2');
+            return h ? h.textContent.trim().replace(/\s+/g, ' ') : ('Slide ' + 1);
+        });
+        const w = window.open('', 'ss-presenter', 'width=960,height=680');
+        if (!w) { alert('Allow pop-ups to open the presenter view.'); return; }
+        const html = PRESENTER_HTML
+            .replace('/*NOTES*/', JSON.stringify(SPEAKER_NOTES))
+            .replace('/*TITLES*/', JSON.stringify(titles))
+            .replace('/*START*/', String(this.current));
+        w.document.open(); w.document.write(html); w.document.close();
+    }
+}
+
+/* Presenter window document: notes + timer + up-next + nav, synced over the
+   same BroadcastChannel. Placeholders are filled in openPresenter(). */
+const PRESENTER_HTML = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<title>Presenter · Tree Shaking Contract Specs</title>
+<style>
+ :root{--bg:#0c0a14;--panel:#1a1626;--line:#2e2740;--text:#ece8f2;--muted:#9b93ad;--rust:#f2884b;--wasm:#8b7cf6;--green:#58e39a;
+   --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;--disp:'Space Grotesk',system-ui,sans-serif;}
+ *{margin:0;padding:0;box-sizing:border-box}
+ body{background:var(--bg);color:var(--text);font-family:var(--disp);height:100vh;display:flex;flex-direction:column;padding:18px;gap:14px}
+ .top{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:13px;color:var(--muted)}
+ .top .count{color:var(--rust);font-weight:700;font-size:16px}
+ .top .timer{font-size:26px;color:var(--text);font-variant-numeric:tabular-nums}
+ .progress{height:4px;background:var(--panel);border-radius:99px;overflow:hidden}
+ .progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--rust),var(--wasm));transition:width .3s ease}
+ .cur{font-family:var(--disp);font-weight:600;font-size:22px;color:#fff;line-height:1.2}
+ .notes{flex:1;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;
+   font-size:19px;line-height:1.62;white-space:pre-wrap}
+ .next{font-family:var(--mono);font-size:14px;color:var(--muted);background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+ .next b{color:var(--wasm)}
+ .ctl{display:flex;gap:10px}
+ .ctl button{flex:1;font-family:var(--mono);font-size:15px;padding:12px;background:var(--panel);color:var(--text);border:1px solid var(--line);border-radius:10px;cursor:pointer}
+ .ctl button:hover{border-color:var(--rust);color:var(--rust)}
+ .notes::-webkit-scrollbar{width:10px}.notes::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px}
+</style></head><body>
+ <div class="top"><span class="count"><span id="n">1</span> / <span id="t">1</span></span>
+   <span class="reset" style="cursor:pointer;color:var(--muted);font-family:var(--mono)" id="reset">⟳ reset timer</span>
+   <span class="timer" id="timer">00:00</span></div>
+ <div class="progress"><i id="bar"></i></div>
+ <div class="cur" id="cur">—</div>
+ <div class="notes" id="notes">—</div>
+ <div class="next">Up next → <b id="next">—</b></div>
+ <div class="ctl"><button id="prev">← Prev</button><button id="nextb">Next →</button></div>
+<script>
+ const NOTES=/*NOTES*/;const TITLES=/*TITLES*/;let cur=/*START*/;const total=TITLES.length;
+ const ch=('BroadcastChannel'in window)?new BroadcastChannel('${PRESENTER_CHANNEL}'):null;
+ const $=id=>document.getElementById(id);
+ function render(){
+   $('n').textContent=cur+1;$('t').textContent=total;
+   $('cur').textContent=TITLES[cur]||('Slide '+(cur+1));
+   $('notes').textContent=NOTES[cur]||'(no notes)';
+   $('next').textContent=(cur+1<total)?TITLES[cur+1]:'— end —';
+   $('bar').style.width=(total>1?(cur/(total-1))*100:100)+'%';
+   $('notes').scrollTop=0;
+ }
+ function go(i){i=Math.max(0,Math.min(total-1,i));cur=i;render();if(ch)ch.postMessage({type:'nav',slide:cur});}
+ $('prev').onclick=()=>go(cur-1);$('nextb').onclick=()=>go(cur+1);
+ document.addEventListener('keydown',e=>{
+   if(['ArrowRight','ArrowDown',' ','PageDown'].includes(e.key)){e.preventDefault();go(cur+1);}
+   else if(['ArrowLeft','ArrowUp','PageUp'].includes(e.key)){e.preventDefault();go(cur-1);}
+ });
+ if(ch)ch.onmessage=e=>{const d=e.data||{};if(d.type==='slide'){cur=d.slide;render();}};
+ // timer
+ let t0=Date.now();
+ $('reset').onclick=()=>{t0=Date.now();};
+ setInterval(()=>{let s=Math.floor((Date.now()-t0)/1000);let m=Math.floor(s/60);s=s%60;
+   $('timer').textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');},250);
+ if(ch)ch.postMessage({type:'hello'});
+ render();
+<\/script></body></html>`;
+
+document.addEventListener('DOMContentLoaded', () => { window.__deck = new SlidePresentation(); });
+</script>
+</body>
+</html>
