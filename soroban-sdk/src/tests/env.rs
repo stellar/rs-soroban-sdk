@@ -361,9 +361,11 @@ fn test_register_restores_auth_before_panics() {
 // the function or closure passed in, via `core::any::type_name`. That
 // derivation runs on every call and must never panic, whatever the shape of the
 // name: a closure (which `type_name` renders as `{{closure}}`), a generic
-// function (whose `type_name` embeds `::` inside its generic arguments), or a
-// name longer than a `Symbol` allows. The derived name has no public accessor,
-// so these drive the public entry points and check only that the closure still
+// function (whose `type_name` embeds `::` inside its generic arguments), a
+// callable nested in a generic context (e.g. a closure inside a generic
+// function, whose `type_name` carries the enclosing generic's `::`), or a name
+// longer than a `Symbol` allows. The derived name has no public accessor, so
+// these drive the public entry points and check only that the closure still
 // runs and returns its value.
 #[test]
 fn as_contract_accepts_any_function_shape() {
@@ -378,6 +380,13 @@ fn as_contract_accepts_any_function_shape() {
     }
     fn a_name_that_is_much_longer_than_the_thirty_two_character_symbol_limit() -> u32 {
         1
+    }
+    // A closure nested in a generic context: `type_name` renders it as
+    // `..::closure_in_generic_context<T>::{{closure}}`. The derivation must key
+    // off the closure's own (empty) segment, not the enclosing generic's name.
+    fn closure_in_generic_context<T>(env: &Env, id: &Address) {
+        assert_eq!(env.as_contract(id, || 1u32), 1);
+        assert_eq!(env.try_as_contract::<u32, Error>(id, || 1u32), Ok(1));
     }
 
     // Named function.
@@ -407,4 +416,6 @@ fn as_contract_accepts_any_function_shape() {
         ),
         Ok(1)
     );
+    // Callable nested in a generic context.
+    closure_in_generic_context::<Env>(&env, &id);
 }

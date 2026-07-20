@@ -1819,12 +1819,30 @@ impl Env {
     /// an empty symbol, preserving the historical behavior.
     fn as_contract_func_name<F>(&self, _f: &F) -> Symbol {
         // `type_name` is best-effort and its exact format is unstable, so it is
-        // only ever a diagnostic hint. Drop any generic arguments before
-        // splitting on `::`, since those arguments can themselves contain `::`
-        // paths (e.g. `f<alloc::string::String>`).
+        // only ever a diagnostic hint. Take the final path segment: the part
+        // after the last `::` that sits outside any generic arguments. Both the
+        // arguments (e.g. `f<alloc::string::String>`) and an enclosing generic
+        // context (e.g. `outer<T>::{{closure}}`) can contain their own `::`, so
+        // track angle-bracket depth and only split on top-level separators.
         let name = core::any::type_name::<F>();
-        let name = name.split('<').next().unwrap_or(name);
-        let name = name.rsplit("::").next().unwrap_or(name);
+        let bytes = name.as_bytes();
+        let mut segment = name;
+        let mut depth: i32 = 0;
+        let mut i = 0;
+        while i + 1 < bytes.len() {
+            match bytes[i] {
+                b'<' => depth += 1,
+                b'>' => depth -= 1,
+                b':' if depth == 0 && bytes[i + 1] == b':' => {
+                    segment = &name[i + 2..];
+                    i += 1;
+                }
+                _ => {}
+            }
+            i += 1;
+        }
+        // Drop the final segment's own generic arguments (e.g. `f<u32>` -> `f`).
+        let name = segment.split('<').next().unwrap_or(segment);
         // The local Env's symbol constructor panics on invalid input rather
         // than reporting it, so keep the name within Symbol's rules up front.
         // Defer the character check to Symbol itself via
