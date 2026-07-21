@@ -1009,6 +1009,10 @@ impl Env {
         } else {
             Address::generate(self)
         };
+        // Convert the constructor arguments before switching auth managers, so
+        // that a panic during conversion cannot leave the environment stuck in
+        // recording auth. This matches the wasm registration path.
+        let constructor_args = constructor_args.into_val(self).to_object();
         let prev_auth_manager = self.env_impl.snapshot_auth_manager().unwrap();
         self.env_impl
             .switch_to_recording_auth_inherited_from_snapshot(&prev_auth_manager)
@@ -1016,7 +1020,7 @@ impl Env {
         let register_result = self.env_impl.register_test_contract_with_constructor(
             contract_id.to_object(),
             Rc::new(InternalContractFunctionSet(contract)),
-            constructor_args.into_val(self).to_object(),
+            constructor_args,
         );
         self.env_impl.set_auth_manager(prev_auth_manager).unwrap();
         register_result.unwrap();
