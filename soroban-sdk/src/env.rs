@@ -1667,9 +1667,16 @@ impl Env {
         self.host()
             .add_ledger_entry(&key, &entry, Some(live_until_ledger))
             .unwrap();
+        let prev_auth_manager = self.env_impl.snapshot_auth_manager().unwrap();
         self.env_impl
-            .call_constructor_for_stored_contract_unsafe(&contract_id, constructor_args.to_object())
+            .switch_to_recording_auth_inherited_from_snapshot(&prev_auth_manager)
             .unwrap();
+        let call_result = self.env_impl.call_constructor_for_stored_contract_unsafe(
+            &contract_id,
+            constructor_args.to_object(),
+        );
+        self.env_impl.set_auth_manager(prev_auth_manager).unwrap();
+        call_result.unwrap();
     }
 
     /// Run the function as if executed by the given contract ID.
