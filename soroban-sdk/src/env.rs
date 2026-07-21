@@ -1009,13 +1009,17 @@ impl Env {
         } else {
             Address::generate(self)
         };
+        let prev_auth_manager = self.env_impl.snapshot_auth_manager().unwrap();
         self.env_impl
-            .register_test_contract_with_constructor(
-                contract_id.to_object(),
-                Rc::new(InternalContractFunctionSet(contract)),
-                constructor_args.into_val(self).to_object(),
-            )
+            .switch_to_recording_auth_inherited_from_snapshot(&prev_auth_manager)
             .unwrap();
+        let register_result = self.env_impl.register_test_contract_with_constructor(
+            contract_id.to_object(),
+            Rc::new(InternalContractFunctionSet(contract)),
+            constructor_args.into_val(self).to_object(),
+        );
+        self.env_impl.set_auth_manager(prev_auth_manager).unwrap();
+        register_result.unwrap();
         contract_id
     }
 
