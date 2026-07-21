@@ -15,19 +15,19 @@ members = [
 ]
 
 [workspace.package]
-version = "27.0.0"
+version = "27.0.1"
 rust-version = "1.91.0"
 
 [workspace.dependencies]
-soroban-sdk = { version = "27.0.0", path = "soroban-sdk" }
-soroban-sdk-macros = { version = "27.0.0", path = "soroban-sdk-macros" }
-soroban-meta = { version = "27.0.0", path = "soroban-meta" }
-soroban-spec = { version = "27.0.0", path = "soroban-spec" }
-soroban-spec-rust = { version = "27.0.0", path = "soroban-spec-rust" }
-soroban-ledger-snapshot = { version = "27.0.0", path = "soroban-ledger-snapshot" }
-soroban-token-sdk = { version = "27.0.0", path = "soroban-token-sdk" }
-soroban-token-spec = { version = "27.0.0", path = "soroban-token-spec" }
-stellar-asset-spec = { version = "27.0.0", path = "stellar-asset-spec" }
+soroban-sdk = { version = "27.0.1", path = "soroban-sdk" }
+soroban-sdk-macros = { version = "27.0.1", path = "soroban-sdk-macros" }
+soroban-meta = { version = "27.0.1", path = "soroban-meta" }
+soroban-spec = { version = "27.0.1", path = "soroban-spec" }
+soroban-spec-rust = { version = "27.0.1", path = "soroban-spec-rust" }
+soroban-ledger-snapshot = { version = "27.0.1", path = "soroban-ledger-snapshot" }
+soroban-token-sdk = { version = "27.0.1", path = "soroban-token-sdk" }
+soroban-token-spec = { version = "27.0.1", path = "soroban-token-spec" }
+stellar-asset-spec = { version = "27.0.1", path = "stellar-asset-spec" }
 
 # SPIKE: Protocol 28 (CAP-0084) pins the three env crates to the unmerged
 # rs-soroban-env#1700 branch commit, hosted on the sisuresh/rs-soroban-env fork
@@ -42,17 +42,17 @@ stellar-asset-spec = { version = "27.0.0", path = "stellar-asset-spec" }
 [workspace.dependencies.soroban-env-common]
 version = "28.0.0"
 git = "https://github.com/sisuresh/rs-soroban-env"
-rev = "893afcc9b98e4a0b3a0810295d6de0f197250e61"
+rev = "10f8cbfeb97081735329f72411713721c36d592f"
 
 [workspace.dependencies.soroban-env-guest]
 version = "28.0.0"
 git = "https://github.com/sisuresh/rs-soroban-env"
-rev = "893afcc9b98e4a0b3a0810295d6de0f197250e61"
+rev = "10f8cbfeb97081735329f72411713721c36d592f"
 
 [workspace.dependencies.soroban-env-host]
 version = "28.0.0"
 git = "https://github.com/sisuresh/rs-soroban-env"
-rev = "893afcc9b98e4a0b3a0810295d6de0f197250e61"
+rev = "10f8cbfeb97081735329f72411713721c36d592f"
 
 [workspace.dependencies.stellar-strkey]
 version = "=0.0.16"
@@ -64,16 +64,16 @@ version = "=0.0.16"
 [workspace.dependencies.stellar-xdr]
 version = "=28.0.0"
 git = "https://github.com/sisuresh/rs-stellar-xdr"
-rev = "b0fa30a3a2a29be74f6a98a567e9b586800db509"
+rev = "3d2ad659a3a285aae9543069ee18cb6245a427ce"
 default-features = false
 
 # SPIKE: Protocol 28 (CAP-0084) the pinned rs-soroban-env#1700 env crates
 # transitively depend on stellar-xdr from sisuresh/rs-stellar-xdr at the SAME
-# rev (b0fa30a3) as the direct workspace dep above, so the git source is already
+# rev (3d2ad659) as the direct workspace dep above, so the git source is already
 # unified and no [patch] redirect is needed (a sisuresh->sisuresh patch would be
 # a self-patch). Restore a patch to stellar/rs-stellar-xdr once #552 lands there.
 # [patch."https://github.com/sisuresh/rs-stellar-xdr"]
-# stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "b0fa30a3a2a29be74f6a98a567e9b586800db509", default-features = false }
+# stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "3d2ad659a3a285aae9543069ee18cb6245a427ce", default-features = false }
 
 #[patch.crates-io]
 #soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }

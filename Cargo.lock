@@ -1111,7 +1111,7 @@ dependencies = [
 
 [[package]]
 name = "proc_macros"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "quote",
  "syn",
@@ -1405,7 +1405,7 @@ checksum = "3c5e1a9a646d36c3599cd173a41282daf47c44583ad367b8e6837255952e5c67"
 [[package]]
 name = "soroban-builtin-sdk-macros"
 version = "28.0.0"
-source = "git+https://github.com/sisuresh/rs-soroban-env?rev=893afcc9b98e4a0b3a0810295d6de0f197250e61#893afcc9b98e4a0b3a0810295d6de0f197250e61"
+source = "git+https://github.com/sisuresh/rs-soroban-env?rev=10f8cbfeb97081735329f72411713721c36d592f#10f8cbfeb97081735329f72411713721c36d592f"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -1416,7 +1416,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-common"
 version = "28.0.0"
-source = "git+https://github.com/sisuresh/rs-soroban-env?rev=893afcc9b98e4a0b3a0810295d6de0f197250e61#893afcc9b98e4a0b3a0810295d6de0f197250e61"
+source = "git+https://github.com/sisuresh/rs-soroban-env?rev=10f8cbfeb97081735329f72411713721c36d592f#10f8cbfeb97081735329f72411713721c36d592f"
 dependencies = [
  "arbitrary",
  "crate-git-revision 0.0.9",
@@ -1434,7 +1434,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-guest"
 version = "28.0.0"
-source = "git+https://github.com/sisuresh/rs-soroban-env?rev=893afcc9b98e4a0b3a0810295d6de0f197250e61#893afcc9b98e4a0b3a0810295d6de0f197250e61"
+source = "git+https://github.com/sisuresh/rs-soroban-env?rev=10f8cbfeb97081735329f72411713721c36d592f#10f8cbfeb97081735329f72411713721c36d592f"
 dependencies = [
  "soroban-env-common",
  "static_assertions",
@@ -1443,7 +1443,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-host"
 version = "28.0.0"
-source = "git+https://github.com/sisuresh/rs-soroban-env?rev=893afcc9b98e4a0b3a0810295d6de0f197250e61#893afcc9b98e4a0b3a0810295d6de0f197250e61"
+source = "git+https://github.com/sisuresh/rs-soroban-env?rev=10f8cbfeb97081735329f72411713721c36d592f#10f8cbfeb97081735329f72411713721c36d592f"
 dependencies = [
  "ark-bls12-381",
  "ark-bn254",
@@ -1479,7 +1479,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-macros"
 version = "28.0.0"
-source = "git+https://github.com/sisuresh/rs-soroban-env?rev=893afcc9b98e4a0b3a0810295d6de0f197250e61#893afcc9b98e4a0b3a0810295d6de0f197250e61"
+source = "git+https://github.com/sisuresh/rs-soroban-env?rev=10f8cbfeb97081735329f72411713721c36d592f#10f8cbfeb97081735329f72411713721c36d592f"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -1492,7 +1492,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-ledger-snapshot"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "pretty_assertions",
  "serde",
@@ -1505,7 +1505,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-meta"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "stellar-xdr",
  "thiserror",
@@ -1514,7 +1514,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-sdk"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "arbitrary",
  "ark-bls12-381",
@@ -1549,7 +1549,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-sdk-macros"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "darling",
  "heck",
@@ -1567,7 +1567,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-spec"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "base64",
  "pretty_assertions",
@@ -1579,7 +1579,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-spec-rust"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "pretty_assertions",
  "prettyplease",
@@ -1594,14 +1594,14 @@ dependencies = [
 
 [[package]]
 name = "soroban-token-sdk"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "soroban-token-spec"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
  "soroban-token-sdk",
@@ -1649,7 +1649,7 @@ checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 
 [[package]]
 name = "stellar-asset-spec"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
  "soroban-token-sdk",
@@ -1680,7 +1680,7 @@ dependencies = [
 [[package]]
 name = "stellar-xdr"
 version = "28.0.0"
-source = "git+https://github.com/sisuresh/rs-stellar-xdr?rev=b0fa30a3a2a29be74f6a98a567e9b586800db509#b0fa30a3a2a29be74f6a98a567e9b586800db509"
+source = "git+https://github.com/sisuresh/rs-stellar-xdr?rev=3d2ad659a3a285aae9543069ee18cb6245a427ce#3d2ad659a3a285aae9543069ee18cb6245a427ce"
 dependencies = [
  "arbitrary",
  "base64",
@@ -1748,63 +1748,63 @@ dependencies = [
 
 [[package]]
 name = "test_account"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_add_i128"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_add_u128"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_add_u64"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_alloc"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_associated_type_chained"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_associated_types"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_associated_types_contracttrait"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_attributes"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
  "soroban-spec",
@@ -1812,21 +1812,21 @@ dependencies = [
 
 [[package]]
 name = "test_auth"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_bls"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_bn254"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "hex",
  "soroban-sdk",
@@ -1834,21 +1834,21 @@ dependencies = [
 
 [[package]]
 name = "test_constructor"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_contract_data"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_contracttrait_impl_full"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
  "test_contracttrait_trait",
@@ -1856,7 +1856,7 @@ dependencies = [
 
 [[package]]
 name = "test_contracttrait_impl_partial"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
  "test_contracttrait_trait",
@@ -1864,14 +1864,14 @@ dependencies = [
 
 [[package]]
 name = "test_contracttrait_path_crate"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_contracttrait_path_global"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
  "test_contracttrait_trait",
@@ -1879,28 +1879,28 @@ dependencies = [
 
 [[package]]
 name = "test_contracttrait_path_relative"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_contracttrait_path_self"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_contracttrait_path_super"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_contracttrait_trait"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
  "stellar-xdr",
@@ -1908,77 +1908,77 @@ dependencies = [
 
 [[package]]
 name = "test_empty"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_empty2"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_errors"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_events"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_events_ref"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_fuzz"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_generics"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_import_contract"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_invoke_contract"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_logging"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_macros"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "proc_macros",
  "soroban-sdk",
@@ -1986,28 +1986,28 @@ dependencies = [
 
 [[package]]
 name = "test_modular"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_multiimpl"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_mutability"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_spec_import"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
  "test_spec_lib",
@@ -2015,14 +2015,14 @@ dependencies = [
 
 [[package]]
 name = "test_spec_lib"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_spec_shaking_v1"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
  "soroban-spec",
@@ -2031,7 +2031,7 @@ dependencies = [
 
 [[package]]
 name = "test_spec_shaking_v2"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
  "soroban-spec",
@@ -2040,21 +2040,21 @@ dependencies = [
 
 [[package]]
 name = "test_tuples"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_udt"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_workspace_contract"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
  "test_workspace_lib",
@@ -2062,14 +2062,14 @@ dependencies = [
 
 [[package]]
 name = "test_workspace_lib"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
 ]
 
 [[package]]
 name = "test_zero"
-version = "27.0.0"
+version = "27.0.1"
 dependencies = [
  "soroban-sdk",
 ]
