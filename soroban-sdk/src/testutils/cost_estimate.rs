@@ -36,8 +36,11 @@ impl CostEstimate {
     /// Estimates the fee for the last invocation's resources, i.e. the
     /// resources returned by `resources()`.
     ///
-    /// The fees are computed using the snapshot of the Stellar Pubnet fees made
-    /// on 2024-12-11.
+    /// The fees are computed using a snapshot of the Stellar Mainnet fees made
+    /// on 2026-07-10. Because the fees are hardcoded rather than pulled
+    /// dynamically, they may drift from the live network over time; the current
+    /// values can be checked via `stellar network settings --network mainnet`
+    /// or on Stellar Lab: <https://lab.stellar.org/network-limits>.
     ///
     /// Take the return value with a grain of salt as both the resource estimate
     /// and the fee rates may be imprecise.
@@ -45,24 +48,23 @@ impl CostEstimate {
     /// The returned value is as useful as the preceding setup, e.g. if a test
     /// contract is used instead of a Wasm contract, all the costs related to
     /// VM instantiation and execution, as well as Wasm reads/rent bumps will be
-    /// missed.    
+    /// missed.
     pub fn fee(&self) -> FeeEstimate {
-        // This is a snapshot of the fees as of 2024-12-11 with slight
-        // adjustments for p23.
-        // This has to be updated before p23 goes live with the configuration
-        // used at the network upgrade time.
+        // This is a snapshot of the Stellar Mainnet fees as of 2026-07-10.
+        // Refresh it with the values from `stellar network settings --network
+        // mainnet` (or <https://lab.stellar.org/network-limits>) when it drifts.
         let pubnet_fee_config = FeeConfiguration {
-            fee_per_instruction_increment: 25,
-            fee_per_disk_read_entry: 6250,
-            fee_per_write_entry: 10000,
-            fee_per_disk_read_1kb: 1786,
-            fee_per_write_1kb: 3500,
-            fee_per_historical_1kb: 16235,
-            fee_per_contract_event_1kb: 10000,
-            fee_per_transaction_size_1kb: 1624,
+            fee_per_instruction_increment: 7,
+            fee_per_disk_read_entry: 1563,
+            fee_per_write_entry: 2500,
+            fee_per_disk_read_1kb: 447,
+            fee_per_write_1kb: 875,
+            fee_per_historical_1kb: 4059,
+            fee_per_contract_event_1kb: 5000,
+            fee_per_transaction_size_1kb: 406,
         };
-        let pubnet_persistent_rent_rate_denominator = 2103;
-        let pubnet_temp_rent_rate_denominator = 4206;
+        let pubnet_persistent_rent_rate_denominator = 1215;
+        let pubnet_temp_rent_rate_denominator = 2430;
         // This is a bit higher than the current network fee, it's an
         // overestimate for the sake of providing a bit more conservative
         // results in case if the state grows.
@@ -133,15 +135,18 @@ pub trait NetworkInvocationResourceLimits {
 impl NetworkInvocationResourceLimits for InvocationResourceLimits {
     /// Returns the invocation resource limits used on Stellar Mainnet.
     ///
-    /// This is not pulling the values dynamically, so updating the SDK is
-    /// necessary to pick up the most recent values.
+    /// These values are a snapshot of the Mainnet network settings as of
+    /// 2026-07-10; they are hardcoded rather than pulled dynamically, so
+    /// updating the SDK is necessary to pick up the most recent values. The
+    /// current values can be checked via `stellar network settings --network
+    /// mainnet` or on Stellar Lab: <https://lab.stellar.org/network-limits>.
     fn mainnet() -> Self {
         InvocationResourceLimits {
-            instructions: 600_000_000,
+            instructions: 400_000_000,
             mem_bytes: 41943040,
-            disk_read_entries: 100,
-            write_entries: 50,
-            ledger_entries: 100,
+            disk_read_entries: 200,
+            write_entries: 200,
+            ledger_entries: 400,
             disk_read_bytes: 200000,
             write_bytes: 132096,
             contract_events_size_bytes: 16384,
