@@ -45,7 +45,7 @@ version = "=27.0.1"
 #rev = "7fb0a840812fe8921bb48bebf7b4aa7160467ec8"
 
 [workspace.dependencies.stellar-strkey]
-version = "=0.0.16"
+version = "=0.0.18"
 
 [workspace.dependencies.stellar-xdr]
 version = "=27.0.0"
