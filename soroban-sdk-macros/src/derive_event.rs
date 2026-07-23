@@ -185,7 +185,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     let spec_entry = ScSpecEntry::EventV0(ScSpecEventV0 {
         data_format: args.data_format.into(),
         doc: docs_from_attrs(&input.attrs),
-        lib: args.lib.as_deref().unwrap_or_default().try_into().unwrap(),
+        lib: crate::lib_defs(args.lib.as_deref()),
         name: ScSymbol(event_name),
         prefix_topics: prefix_topics
             .iter()

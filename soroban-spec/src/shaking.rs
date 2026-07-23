@@ -36,7 +36,9 @@
 use std::collections::HashSet;
 
 use sha2::{Digest, Sha256};
-use stellar_xdr::{Limits, ScMetaEntry, ScSpecEntry, WriteXdr};
+use stellar_xdr::{Limits, ScMetaEntry, ScSpecEntry, ScSpecTypeDef, ScSpecTypeUdt, VecM, WriteXdr};
+
+use crate::visit::walk_entry_type_defs;
 
 /// The contract meta key that indicates the spec shaking version.
 ///
@@ -85,20 +87,73 @@ pub fn generate_marker_for_xdr(spec_entry_xdr: &[u8]) -> Marker {
     ]
 }
 
+/// Clears the `lib` field of a spec entry, if it has one.
+fn clear_lib(entry: &mut ScSpecEntry) {
+    match entry {
+        ScSpecEntry::UdtStructV0(s) => s.lib = VecM::default(),
+        ScSpecEntry::UdtUnionV0(u) => u.lib = VecM::default(),
+        ScSpecEntry::UdtEnumV0(e) => e.lib = VecM::default(),
+        ScSpecEntry::UdtErrorEnumV0(e) => e.lib = VecM::default(),
+        ScSpecEntry::EventV0(e) => e.lib = VecM::default(),
+        ScSpecEntry::FunctionV0(_) => {}
+    }
+}
+
+/// Rewrites an entry to the canonical form used for hashing: the exact form the
+/// SDK emits at compile time.
+///
+/// Two enrichments applied by [`crate::resolve`] must be undone so that the
+/// hash is stable whether or not the resolver has run, and so it matches the
+/// WASM marker the SDK embedded:
+///
+/// - The `lib` field is cleared. It holds the entry's own hash (and optionally
+///   a library name); including it would make storing the hash change the hash.
+///   An empty `lib` encodes identically to a cleared one, so this is a no-op
+///   for entries straight from the SDK.
+/// - Every `UdtV2` reference is downgraded to a name-only `Udt` reference. The
+///   SDK emits name-only references (a proc-macro cannot know a referenced
+///   type's hash), so the marker is computed over that form.
+fn canonicalize_for_hash(entry: &mut ScSpecEntry) {
+    clear_lib(entry);
+    walk_entry_type_defs(entry, &mut |t| {
+        if let ScSpecTypeDef::UdtV2(u) = t {
+            *t = ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                name: u.name.clone(),
+            });
+        }
+    });
+}
+
 /// Generates a marker for a spec entry.
 ///
 /// The marker is the magic prefix `SpEcV1` followed by a truncated SHA256
-/// (first 8 bytes) of the spec entry's XDR bytes.
+/// (first 8 bytes) of the spec entry's XDR bytes, taken over the entry's
+/// canonical form (see [`canonicalize_for_hash`]).
 ///
 /// # Panics
 ///
 /// Panics if the spec entry cannot be encoded to XDR, which should never happen
 /// for valid `ScSpecEntry` values.
 pub fn generate_marker_for_entry(entry: &ScSpecEntry) -> Marker {
+    let mut entry = entry.clone();
+    canonicalize_for_hash(&mut entry);
     let xdr_bytes = entry
         .to_xdr(Limits::none())
         .expect("XDR encoding should not fail");
     generate_marker_for_xdr(&xdr_bytes)
+}
+
+/// Returns the spec-shaking hash of a spec entry: the first 8 bytes of the
+/// SHA256 of the entry's XDR with its `lib` field cleared.
+///
+/// This is the hash portion of [`generate_marker_for_entry`] (the marker
+/// without its `SpEcV1` prefix), and the value stored alongside a type's name
+/// so that references can point at an exact definition.
+pub fn hash_for_entry(entry: &ScSpecEntry) -> [u8; 8] {
+    let marker = generate_marker_for_entry(entry);
+    let mut hash = [0u8; 8];
+    hash.copy_from_slice(&marker[MAGIC.len()..]);
+    hash
 }
 
 /// Finds all spec markers in a WASM binary's data section.
@@ -220,7 +275,7 @@ mod tests {
 
         ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
             doc: StringM::default(),
-            lib: StringM::default(),
+            lib: VecM::default(),
             name: name.try_into().unwrap(),
             fields,
         })
@@ -229,7 +284,7 @@ mod tests {
     fn make_enum(name: &str) -> ScSpecEntry {
         ScSpecEntry::UdtEnumV0(ScSpecUdtEnumV0 {
             doc: StringM::default(),
-            lib: StringM::default(),
+            lib: VecM::default(),
             name: name.try_into().unwrap(),
             cases: vec![ScSpecUdtEnumCaseV0 {
                 doc: StringM::default(),
@@ -244,7 +299,7 @@ mod tests {
     fn make_event(name: &str) -> ScSpecEntry {
         ScSpecEntry::EventV0(ScSpecEventV0 {
             doc: StringM::default(),
-            lib: StringM::default(),
+            lib: VecM::default(),
             name: name.try_into().unwrap(),
             prefix_topics: VecM::default(),
             params: VecM::default(),

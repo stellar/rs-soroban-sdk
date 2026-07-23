@@ -178,7 +178,7 @@ fn test_spec_struct() {
         type_entry,
         ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
             doc: "".try_into().unwrap(),
-            lib: "".try_into().unwrap(),
+            lib: Default::default(),
             name: "TestType".try_into().unwrap(),
             fields: [
                 ScSpecUdtStructFieldV0 {
@@ -207,7 +207,7 @@ fn test_spec_struct() {
         keyword_struct_entry,
         ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
             doc: "".try_into().unwrap(),
-            lib: "".try_into().unwrap(),
+            lib: Default::default(),
             name: "type".try_into().unwrap(),
             fields: [ScSpecUdtStructFieldV0 {
                 doc: "".try_into().unwrap(),
@@ -225,7 +225,7 @@ fn test_spec_struct() {
         tuple_struct_entry,
         ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
             doc: "".try_into().unwrap(),
-            lib: "".try_into().unwrap(),
+            lib: Default::default(),
             name: "TupleStruct".try_into().unwrap(),
             fields: [
                 ScSpecUdtStructFieldV0 {
@@ -252,7 +252,7 @@ fn test_spec_enum() {
         enum_entry,
         ScSpecEntry::UdtEnumV0(ScSpecUdtEnumV0 {
             doc: "".try_into().unwrap(),
-            lib: "".try_into().unwrap(),
+            lib: Default::default(),
             name: "TestEnum".try_into().unwrap(),
             cases: [
                 ScSpecUdtEnumCaseV0 {
@@ -276,7 +276,7 @@ fn test_spec_enum() {
         error_entry,
         ScSpecEntry::UdtErrorEnumV0(ScSpecUdtErrorEnumV0 {
             doc: "".try_into().unwrap(),
-            lib: "".try_into().unwrap(),
+            lib: Default::default(),
             name: "TestError".try_into().unwrap(),
             cases: [ScSpecUdtErrorEnumCaseV0 {
                 doc: "".try_into().unwrap(),
@@ -294,7 +294,7 @@ fn test_spec_enum() {
         tuple_enum_entry,
         ScSpecEntry::UdtUnionV0(ScSpecUdtUnionV0 {
             doc: "".try_into().unwrap(),
-            lib: "".try_into().unwrap(),
+            lib: Default::default(),
             name: "TestTupleEnum".try_into().unwrap(),
             cases: [
                 ScSpecUdtUnionCaseV0::TupleV0(ScSpecUdtUnionCaseTupleV0 {
@@ -324,7 +324,7 @@ fn test_spec_event() {
         event_entry,
         ScSpecEntry::EventV0(ScSpecEventV0 {
             doc: "".try_into().unwrap(),
-            lib: "".try_into().unwrap(),
+            lib: Default::default(),
             name: ScSymbol("TestEvent".try_into().unwrap()),
             prefix_topics: [ScSymbol("test_event".try_into().unwrap())]
                 .try_into()

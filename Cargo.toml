@@ -53,6 +53,13 @@ version = "=27.0.0"
 #rev = "a749b69b3471aec0c20ec431b0297f3414d66421"
 default-features = false
 
+# WIP: this branch depends on contract-spec XDR additions (SCSpecTypeUDTV2 and
+# the reworked `lib` field) that are not yet released to crates.io. Until they
+# are, build against the coordinated rs-stellar-xdr branch. Swap to a published
+# version (and drop this patch) once the XDR change lands.
+[patch.crates-io]
+stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", branch = "contract-spec-hash-xdr-pf11xo" }
+
 #[patch.crates-io]
 #soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }
 #soroban-env-guest = { path = "../rs-soroban-env/soroban-env-guest" }

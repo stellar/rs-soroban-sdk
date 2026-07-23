@@ -58,7 +58,7 @@ mod struct_ {
         let expect = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
             doc: "S holds a and\nb.".try_into().unwrap(),
             name: "S".try_into().unwrap(),
-            lib: "".try_into().unwrap(),
+            lib: Default::default(),
             fields: [
                 ScSpecUdtStructFieldV0 {
                     doc: "a is\na".try_into().unwrap(),
@@ -99,7 +99,7 @@ mod struct_tuple {
         let expect = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
             doc: "S holds two u64s.".try_into().unwrap(),
             name: "S".try_into().unwrap(),
-            lib: "".try_into().unwrap(),
+            lib: Default::default(),
             fields: [
                 ScSpecUdtStructFieldV0 {
                     doc: "first\nline".try_into().unwrap(),
@@ -144,7 +144,7 @@ mod enum_ {
         let entry = ScSpecEntry::from_xdr(__SPEC_XDR_TYPE_E, Limits::none()).unwrap();
         let expect = ScSpecEntry::UdtUnionV0(ScSpecUdtUnionV0 {
             doc: "E has variants A and B.".try_into().unwrap(),
-            lib: "".try_into().unwrap(),
+            lib: Default::default(),
             name: "E".try_into().unwrap(),
             cases: [
                 ScSpecUdtUnionCaseV0::VoidV0(ScSpecUdtUnionCaseVoidV0 {
@@ -192,7 +192,7 @@ mod enum_int {
         let expect = ScSpecEntry::UdtEnumV0(ScSpecUdtEnumV0 {
             doc: "E has variants A and B.".try_into().unwrap(),
             name: "E".try_into().unwrap(),
-            lib: "".try_into().unwrap(),
+            lib: Default::default(),
             cases: [
                 ScSpecUdtEnumCaseV0 {
                     doc: "A is\na.".try_into().unwrap(),
@@ -236,7 +236,7 @@ mod enum_error_int {
         let expect = ScSpecEntry::UdtErrorEnumV0(ScSpecUdtErrorEnumV0 {
             doc: "E has variants A and B.".try_into().unwrap(),
             name: "E".try_into().unwrap(),
-            lib: "".try_into().unwrap(),
+            lib: Default::default(),
             cases: [
                 ScSpecUdtErrorEnumCaseV0 {
                     doc: "A is\na.".try_into().unwrap(),

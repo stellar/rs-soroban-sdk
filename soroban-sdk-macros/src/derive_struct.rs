@@ -78,7 +78,7 @@ pub fn derive_type_struct(
     let spec_xdr = if spec {
         let spec_entry = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
             doc: docs_from_attrs(attrs),
-            lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
+            lib: crate::lib_defs(lib.as_deref()),
             name: ident.unraw().to_string().try_into().unwrap(),
             fields: spec_fields.try_into().unwrap(),
         });

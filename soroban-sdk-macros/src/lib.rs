@@ -62,6 +62,22 @@ pub(crate) const DEFAULT_XDR_RW_LIMITS: Limits = Limits {
     len: 0x1000000,
 };
 
+/// Builds the `lib` field of a UDT/event spec entry from an optional library
+/// name. An absent or empty name yields an empty list, which encodes
+/// identically to the empty `string lib<80>` used before the field became a
+/// list, keeping compiled specs unchanged for the common no-`lib` case. The
+/// type's own hash is not filled in here — a proc-macro expanding one type
+/// cannot see the definitions it references, so hashes are resolved later by
+/// `soroban_spec::resolve` once the whole spec is known.
+pub(crate) fn lib_defs(lib: Option<&str>) -> stellar_xdr::VecM<stellar_xdr::ScSpecUdtDef> {
+    match lib {
+        Some(s) if !s.is_empty() => vec![stellar_xdr::ScSpecUdtDef::Lib(s.try_into().unwrap())]
+            .try_into()
+            .unwrap(),
+        _ => stellar_xdr::VecM::default(),
+    }
+}
+
 /// Emit a deprecation warning when `export` is set with the
 /// `experimental_spec_shaking_v2` feature enabled. Under v2 the spec is
 /// determined by reachability, so the argument has no effect and will be

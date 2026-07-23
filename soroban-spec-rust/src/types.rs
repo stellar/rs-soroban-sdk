@@ -43,8 +43,8 @@ pub fn generate_struct_with_options(
 ) -> Result<TokenStream, GenerateError> {
     let ident = str_to_ident(&spec.name)?;
 
-    if spec.lib.len() > 0 {
-        let lib_ident = str_to_ident(&spec.lib)?;
+    if let Some(lib) = soroban_spec::resolve::lib_name(&spec.lib) {
+        let lib_ident = str_to_ident(lib.as_str())?;
         Ok(quote! {
             type #ident = ::#lib_ident::#ident;
         })
@@ -107,8 +107,8 @@ pub fn generate_union_with_options(
     opts: &GenerateOptions,
 ) -> Result<TokenStream, GenerateError> {
     let ident = str_to_ident(&spec.name)?;
-    if spec.lib.len() > 0 {
-        let lib_ident = str_to_ident(&spec.lib)?;
+    if let Some(lib) = soroban_spec::resolve::lib_name(&spec.lib) {
+        let lib_ident = str_to_ident(lib.as_str())?;
         Ok(quote! {
             pub type #ident = ::#lib_ident::#ident;
         })
@@ -157,8 +157,8 @@ pub fn generate_enum_with_options(
     opts: &GenerateOptions,
 ) -> Result<TokenStream, GenerateError> {
     let ident = str_to_ident(&spec.name)?;
-    if spec.lib.len() > 0 {
-        let lib_ident = str_to_ident(&spec.lib)?;
+    if let Some(lib) = soroban_spec::resolve::lib_name(&spec.lib) {
+        let lib_ident = str_to_ident(lib.as_str())?;
         Ok(quote! {
             pub type #ident = ::#lib_ident::#ident;
         })
@@ -194,8 +194,8 @@ pub fn generate_error_enum_with_options(
     opts: &GenerateOptions,
 ) -> Result<TokenStream, GenerateError> {
     let ident = str_to_ident(&spec.name)?;
-    if spec.lib.len() > 0 {
-        let lib_ident = str_to_ident(&spec.lib)?;
+    if let Some(lib) = soroban_spec::resolve::lib_name(&spec.lib) {
+        let lib_ident = str_to_ident(lib.as_str())?;
         Ok(quote! {
             pub type #ident = ::#lib_ident::#ident;
         })
@@ -236,8 +236,8 @@ pub fn generate_event_with_options(
 ) -> Result<TokenStream, GenerateError> {
     let ident = str_to_ident(&spec.name)?;
 
-    if spec.lib.len() > 0 {
-        let lib_ident = str_to_ident(&spec.lib)?;
+    if let Some(lib) = soroban_spec::resolve::lib_name(&spec.lib) {
+        let lib_ident = str_to_ident(lib.as_str())?;
         Ok(quote! {
             type #ident = ::#lib_ident::#ident;
         })
@@ -333,6 +333,10 @@ pub fn generate_type_ident(spec: &ScSpecTypeDef) -> Result<TokenStream, Generate
             let ident = str_to_ident(&u.name)?;
             Ok(quote! { #ident })
         }
+        ScSpecTypeDef::UdtV2(u) => {
+            let ident = str_to_ident(&u.name)?;
+            Ok(quote! { #ident })
+        }
         ScSpecTypeDef::Void => Ok(quote! { () }),
         ScSpecTypeDef::Timepoint => Ok(quote! { soroban_sdk::Timepoint }),
         ScSpecTypeDef::Duration => Ok(quote! { soroban_sdk::Duration }),
@@ -355,7 +359,7 @@ mod test {
     #[test]
     fn test_generate_event_no_topics_no_fields() {
         let tokens = generate_event(&ScSpecEventV0 {
-            lib: "".try_into().unwrap(),
+            lib: Default::default(),
             doc: "".try_into().unwrap(),
             name: "MyEvent".try_into().unwrap(),
             prefix_topics: [].try_into().unwrap(),
@@ -377,7 +381,7 @@ mod test {
     #[test]
     fn test_generate_event_topics_fields() {
         let tokens = generate_event(&ScSpecEventV0 {
-            lib: "".try_into().unwrap(),
+            lib: Default::default(),
             doc: "".try_into().unwrap(),
             name: "MyEvent".try_into().unwrap(),
             prefix_topics: [ScSymbol("my_event".try_into().unwrap())]
@@ -421,7 +425,7 @@ mod test {
     fn test_invalid_utf8_returns_error() {
         let spec = ScSpecUdtStructV0 {
             doc: "".try_into().unwrap(),
-            lib: "".try_into().unwrap(),
+            lib: Default::default(),
             name: vec![0xff, 0xfe].try_into().unwrap(),
             fields: VecM::default(),
         };
@@ -433,7 +437,7 @@ mod test {
     fn test_invalid_ident_returns_error() {
         let spec = ScSpecUdtStructV0 {
             doc: "".try_into().unwrap(),
-            lib: "".try_into().unwrap(),
+            lib: Default::default(),
             name: "not a valid ident".try_into().unwrap(),
             fields: VecM::default(),
         };
@@ -445,7 +449,7 @@ mod test {
     fn test_invalid_utf8_in_field_name_returns_error() {
         let spec = ScSpecUdtStructV0 {
             doc: "".try_into().unwrap(),
-            lib: "".try_into().unwrap(),
+            lib: Default::default(),
             name: "ValidName".try_into().unwrap(),
             fields: vec![ScSpecUdtStructFieldV0 {
                 doc: "".try_into().unwrap(),

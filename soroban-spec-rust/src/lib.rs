@@ -284,6 +284,60 @@ mod test {
 
     const EXAMPLE_WASM: &[u8] = include_bytes!("../../target/wasm32v1-none/release/test_udt.wasm");
 
+    // Every spec-shaking marker the SDK embeds in a real contract WASM at
+    // compile time is reproduced by `soroban_spec::shaking` from the spec entry
+    // read back out. This ties the compile-time marker generation and the
+    // post-processing hash implementation together: if they diverged, stored
+    // hashes and references would not match the markers used for shaking.
+    #[test]
+    fn wasm_markers_match_spec_entry_hashes() {
+        use soroban_spec::shaking::{find_all, generate_marker_for_entry};
+        use std::collections::HashSet;
+
+        let entries = from_wasm(EXAMPLE_WASM).unwrap();
+        let entry_markers: HashSet<_> = entries.iter().map(generate_marker_for_entry).collect();
+        let wasm_markers = find_all(EXAMPLE_WASM);
+
+        assert!(!wasm_markers.is_empty(), "expected markers in the wasm");
+        for marker in &wasm_markers {
+            assert!(
+                entry_markers.contains(marker),
+                "wasm marker {marker:?} has no matching spec entry",
+            );
+        }
+    }
+
+    // Resolving a real multi-type spec rewrites at least one user-defined-type
+    // reference to the hash-carrying `UdtV2` form.
+    #[test]
+    fn resolve_rewrites_real_spec_references() {
+        use soroban_spec::resolve::resolve;
+        use stellar_xdr::{ScSpecEntry, ScSpecTypeDef};
+
+        fn is_udt_v2(t: &ScSpecTypeDef) -> bool {
+            match t {
+                ScSpecTypeDef::UdtV2(_) => true,
+                ScSpecTypeDef::Option(o) => is_udt_v2(&o.value_type),
+                ScSpecTypeDef::Vec(v) => is_udt_v2(&v.element_type),
+                ScSpecTypeDef::Result(r) => is_udt_v2(&r.ok_type) || is_udt_v2(&r.error_type),
+                ScSpecTypeDef::Map(m) => is_udt_v2(&m.key_type) || is_udt_v2(&m.value_type),
+                ScSpecTypeDef::Tuple(tu) => tu.value_types.iter().any(is_udt_v2),
+                _ => false,
+            }
+        }
+
+        let mut entries = from_wasm(EXAMPLE_WASM).unwrap();
+        resolve(&mut entries);
+        let saw = entries.iter().any(|e| match e {
+            ScSpecEntry::FunctionV0(f) => {
+                f.inputs.iter().any(|i| is_udt_v2(&i.type_)) || f.outputs.iter().any(is_udt_v2)
+            }
+            ScSpecEntry::UdtStructV0(s) => s.fields.iter().any(|f| is_udt_v2(&f.type_)),
+            _ => false,
+        });
+        assert!(saw, "expected at least one UdtV2 reference after resolve");
+    }
+
     #[test]
     fn example() {
         let entries = from_wasm(EXAMPLE_WASM).unwrap();
@@ -630,7 +684,7 @@ pub trait Contract {
         };
         let error_enum = ScSpecUdtErrorEnumV0 {
             doc: "".try_into().unwrap(),
-            lib: "".try_into().unwrap(),
+            lib: Default::default(),
             name: "Error".try_into().unwrap(),
             cases: [ScSpecUdtErrorEnumCaseV0 {
                 doc: "".try_into().unwrap(),
@@ -687,7 +741,7 @@ pub enum Error {
         };
         let error_enum = ScSpecUdtErrorEnumV0 {
             doc: "".try_into().unwrap(),
-            lib: "".try_into().unwrap(),
+            lib: Default::default(),
             name: "Error".try_into().unwrap(),
             cases: [ScSpecUdtErrorEnumCaseV0 {
                 doc: "".try_into().unwrap(),
