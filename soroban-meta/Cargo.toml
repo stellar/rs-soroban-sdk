@@ -11,6 +11,6 @@ edition = "2021"
 rust-version.workspace = true
 
 [dependencies]
-stellar-xdr = { workspace = true, features = ["curr", "std"] }
+stellar-xdr = { workspace = true, features = ["std"] }
 thiserror = "1.0.32"
 wasmparser = "0.116.1"

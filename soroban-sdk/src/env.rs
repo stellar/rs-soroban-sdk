@@ -114,6 +114,7 @@ where
 }
 
 use crate::auth::InvokerContractAuthEntry;
+use crate::custom_account::CustomAccount;
 use crate::unwrap::UnwrapInfallible;
 use crate::unwrap::UnwrapOptimized;
 use crate::InvokeError;
@@ -343,6 +344,15 @@ impl Env {
     #[inline(always)]
     pub fn deployer(&self) -> Deployer {
         Deployer::new(self)
+    }
+
+    /// Get an accessor for functions used for custom account implementation.
+    ///
+    /// The accessor's methods may only be called within `__check_auth` contract
+    /// function.
+    #[inline(always)]
+    pub fn custom_account(&self) -> CustomAccount {
+        CustomAccount::new(self)
     }
 
     /// Get a [Crypto] for accessing the current cryptographic functions.
@@ -1043,13 +1053,21 @@ impl Env {
         } else {
             Address::generate(self)
         };
+        // Convert the constructor arguments before switching auth managers, so
+        // that a panic during conversion cannot leave the environment stuck in
+        // recording auth. This matches the wasm registration path.
+        let constructor_args = constructor_args.into_val(self).to_object();
+        let prev_auth_manager = self.env_impl.snapshot_auth_manager().unwrap();
         self.env_impl
-            .register_test_contract_with_constructor(
-                contract_id.to_object(),
-                Rc::new(InternalContractFunctionSet(contract)),
-                constructor_args.into_val(self).to_object(),
-            )
+            .switch_to_recording_auth_inherited_from_snapshot(&prev_auth_manager)
             .unwrap();
+        let register_result = self.env_impl.register_test_contract_with_constructor(
+            contract_id.to_object(),
+            Rc::new(InternalContractFunctionSet(contract)),
+            constructor_args,
+        );
+        self.env_impl.set_auth_manager(prev_auth_manager).unwrap();
+        register_result.unwrap();
         contract_id
     }
 
@@ -1701,9 +1719,16 @@ impl Env {
         self.host()
             .add_ledger_entry(&key, &entry, Some(live_until_ledger))
             .unwrap();
+        let prev_auth_manager = self.env_impl.snapshot_auth_manager().unwrap();
         self.env_impl
-            .call_constructor_for_stored_contract_unsafe(&contract_id, constructor_args.to_object())
+            .switch_to_recording_auth_inherited_from_snapshot(&prev_auth_manager)
             .unwrap();
+        let call_result = self.env_impl.call_constructor_for_stored_contract_unsafe(
+            &contract_id,
+            constructor_args.to_object(),
+        );
+        self.env_impl.set_auth_manager(prev_auth_manager).unwrap();
+        call_result.unwrap();
     }
 
     /// Run the function as if executed by the given contract ID.

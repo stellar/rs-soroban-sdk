@@ -10,7 +10,7 @@ use crate::{
 /// Custom account contracts that implement `__check_auth` special function
 /// receive a list of `Context` values corresponding to all the calls that
 /// need to be authorized.
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 #[cfg_attr(
     feature = "experimental_spec_shaking_v2",
     contracttype(crate_path = "crate")
@@ -32,7 +32,7 @@ pub enum Context {
 ///
 /// This struct corresponds to a `require_auth_for_args` call for an address
 /// from `contract` function with `fn_name` name and `args` arguments.
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 #[cfg_attr(
     feature = "experimental_spec_shaking_v2",
     contracttype(crate_path = "crate")
@@ -49,7 +49,7 @@ pub struct ContractContext {
 
 /// Authorization context for `create_contract` host function that creates a
 /// new contract on behalf of authorizer address.
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 #[cfg_attr(
     feature = "experimental_spec_shaking_v2",
     contracttype(crate_path = "crate")
@@ -67,7 +67,7 @@ pub struct CreateContractHostFnContext {
 /// new contract on behalf of authorizer address.
 /// This is the same as `CreateContractHostFnContext`, but also has
 /// contract constructor arguments.
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 #[cfg_attr(
     feature = "experimental_spec_shaking_v2",
     contracttype(crate_path = "crate")
@@ -84,7 +84,7 @@ pub struct CreateContractWithConstructorHostFnContext {
 
 /// Contract executable used for creating a new contract and used in
 /// `CreateContractHostFnContext`.
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 #[cfg_attr(
     feature = "experimental_spec_shaking_v2",
     contracttype(crate_path = "crate")

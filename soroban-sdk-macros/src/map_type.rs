@@ -1,5 +1,4 @@
 use quote::ToTokens;
-use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{
     ScSpecTypeBytesN, ScSpecTypeDef, ScSpecTypeMap, ScSpecTypeOption, ScSpecTypeResult,
     ScSpecTypeTuple, ScSpecTypeUdt, ScSpecTypeVec,

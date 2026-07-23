@@ -5,8 +5,18 @@
 //!    passed to [`bytes!`] or [`bytesn!`] in hex or binary form (e.g. `bytes!(&env, 1)` becomes
 //!    `bytes!(&env, 0x1)`). Array literals such as `bytes!(&env, [3, 2, 1])` are unaffected.
 //!
+//! 2. [The `export` argument is deprecated under the `experimental_spec_shaking_v2`
+//!    feature][v27_export]. Under spec shaking v2 the final spec is determined by
+//!    reachability from the contract boundary, so `export` no longer has any effect on
+//!    [`contracttype`], [`contracterror`], or [`contractevent`] and now emits a deprecation
+//!    warning. Remove `export = ...` from these annotations; it will be removed entirely in a
+//!    future release. Default (v1) builds are unaffected.
+//!
 //! [`bytes!`]: crate::bytes
 //! [`bytesn!`]: crate::bytesn
+//! [`contracttype`]: crate::contracttype
+//! [`contracterror`]: crate::contracterror
+//! [`contractevent`]: crate::contractevent
 //!
 //! # Migrating from v25 to v26
 //!
@@ -333,3 +343,4 @@ pub mod v25_event_testing;
 pub mod v25_poseidon;
 pub mod v25_resource_limits;
 pub mod v27_bytes_literals;
+pub mod v27_export;
