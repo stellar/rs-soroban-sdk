@@ -97,6 +97,8 @@ jobs:
     - uses: stellar/actions/rust-check-git-rev-deps@main
 
   semver-checks:
+    # Push and merge queue events do not include PR labels, so only check pull request events.
+    if: "github.event_name == 'pull_request' && !contains(github.event.pull_request.labels.*.name, 'skip-semver-checks')"
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
