@@ -125,11 +125,22 @@ jobs:
       with:
         name: cargo-semver-checks
         version: 0.46.0
+    # Temporary: ed25519-dalek 3.0.0 (published 2026-07-06) breaks the
+    # cargo-semver-checks baseline rustdoc build of soroban-sdk /
+    # soroban-ledger-snapshot v26.1.0 — published soroban-env-host 26.1.3
+    # declares `ed25519-dalek >=2.0.0`, and the fresh baseline resolve (which
+    # ignores our Cargo.lock) picks 3.0.0, whose SigningKey::generate no longer
+    # accepts the old ChaCha20Rng. The 26->27 bump is a MAJOR change (semver-checks
+    # reports "no semver update required" for every crate), so no semver signal is
+    # lost. Remove these two excludes once ed25519-dalek 3.0.0 is yanked or the
+    # published env caps it.
     - run: >
         cargo semver-checks
         --exclude soroban-meta
         --exclude soroban-token-spec
         --exclude stellar-asset-spec
+        --exclude soroban-sdk
+        --exclude soroban-ledger-snapshot
 
   build:
     needs: setup

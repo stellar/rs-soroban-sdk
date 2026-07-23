@@ -59,7 +59,8 @@ impl Debug for Address {
                     }
                     ScAddress::MuxedAccount(_)
                     | ScAddress::ClaimableBalance(_)
-                    | ScAddress::LiquidityPool(_) => {
+                    | ScAddress::LiquidityPool(_)
+                    | ScAddress::MuxedContract(_) => {
                         return Err(core::fmt::Error);
                     }
                 }
