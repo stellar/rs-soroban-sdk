@@ -1825,36 +1825,16 @@ impl Env {
     /// represent (e.g. closures, which resolve to `{{closure}}`) fall back to
     /// an empty symbol, preserving the historical behavior.
     fn as_contract_func_name<F>(&self, _f: &F) -> Symbol {
-        // The callable's own name is the final `::`-separated segment of its
-        // `type_name`. `::` can also appear inside generic arguments — both the
-        // arguments themselves (`f<alloc::string::String>`) and an enclosing
-        // generic context (`outer<T>::{{closure}}`) — so any `::` within angle
-        // brackets is ignored.
-        fn last_path_segment(name: &str) -> &str {
-            // The segment starts just after the last `::` seen at angle-bracket
-            // depth zero.
-            let mut depth = 0usize;
-            let mut segment_start = 0;
-            let mut chars = name.char_indices().peekable();
-            while let Some((index, c)) = chars.next() {
-                match c {
-                    '<' => depth += 1,
-                    '>' => depth = depth.saturating_sub(1),
-                    ':' if depth == 0 && matches!(chars.peek(), Some((_, ':'))) => {
-                        chars.next(); // consume the second `:`
-                        segment_start = index + 2;
-                    }
-                    _ => {}
-                }
-            }
-            // Drop the segment's own generic arguments, e.g. `f<u32>` -> `f`.
-            let segment = &name[segment_start..];
-            segment.split('<').next().unwrap_or(segment)
-        }
-
-        // `type_name` is best-effort and its exact format is unstable, so the
-        // derived name is only ever a diagnostic hint.
-        let name = last_path_segment(core::any::type_name::<F>());
+        // Use the last `::`-separated segment of `type_name`, dropping any
+        // trailing generic arguments, so a named function `f` (or `f<u32>`)
+        // resolves to `f`. `type_name` is best-effort and its format is
+        // unstable, so this is only ever a diagnostic hint; anything not
+        // representable as a Symbol falls back to the empty symbol below —
+        // closures (`{{closure}}`), and the leftover fragment when a generic
+        // argument itself contains `::` (e.g. `f<a::B>` leaves `B>`).
+        let type_name = core::any::type_name::<F>();
+        let name = type_name.rsplit("::").next().unwrap_or(type_name);
+        let name = name.split('<').next().unwrap_or(name);
         // The local Env's symbol constructor panics on invalid input rather
         // than reporting it, so keep the name within Symbol's rules up front.
         // Defer the character check to Symbol itself via

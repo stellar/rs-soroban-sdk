@@ -446,7 +446,7 @@ fn as_contract_frame_fn_name_is_derived_from_callable() {
     // Named function resolves to its own name.
     assert_frame_fn_name(&env, &contract, &target, "named", named);
     // Generic function drops its generic arguments.
-    assert_frame_fn_name(&env, &contract, &target, "generic", generic::<Env>);
+    assert_frame_fn_name(&env, &contract, &target, "generic", generic::<u32>);
     // A name longer than a `Symbol` allows is truncated to 32 characters.
     assert_frame_fn_name(
         &env,
