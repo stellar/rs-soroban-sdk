@@ -1692,6 +1692,9 @@ impl Env {
     /// Used to write or read contract data, or take other actions in tests for
     /// setting up tests or asserting on internal state.
     ///
+    /// If `f` is a named function its name becomes the contract frame's
+    /// function name; a closure leaves the name empty.
+    ///
     /// ### Examples
     /// ```
     /// use soroban_sdk::{contract, contractimpl, Env, Symbol};
@@ -1748,6 +1751,9 @@ impl Env {
     ///
     /// Used to write or read contract data, or take other actions in tests for
     /// setting up tests or asserting on internal state.
+    ///
+    /// If `f` is a named function its name becomes the contract frame's
+    /// function name; a closure leaves the name empty.
     ///
     /// ### Examples
     /// ```
