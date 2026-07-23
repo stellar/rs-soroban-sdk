@@ -431,7 +431,6 @@ pub fn contractevent(metadata: TokenStream, input: TokenStream) -> TokenStream {
 struct ContractTypeArgs {
     #[darling(default = "default_crate_path")]
     crate_path: Path,
-    lib: Option<String>,
     export: Option<bool>,
 }
 
@@ -470,7 +469,7 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let derived = match &input.data {
         Data::Struct(s) => match s.fields {
             Fields::Named(_) => {
-                derive_type_struct(&args.crate_path, vis, ident, attrs, s, gen_spec, &args.lib)
+                derive_type_struct(&args.crate_path, vis, ident, attrs, s, gen_spec)
             }
             Fields::Unnamed(_) => derive_type_struct_tuple(
                 &args.crate_path,
@@ -479,7 +478,6 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 attrs,
                 s,
                 gen_spec,
-                &args.lib,
             ),
             Fields::Unit => Error::new(
                 s.fields.span(),
@@ -495,9 +493,9 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 .filter(|v| v.discriminant.is_some())
                 .count();
             if count_of_int_variants == 0 {
-                derive_type_enum(&args.crate_path, vis, ident, attrs, e, gen_spec, &args.lib)
+                derive_type_enum(&args.crate_path, vis, ident, attrs, e, gen_spec)
             } else if count_of_int_variants == count_of_variants {
-                derive_type_enum_int(&args.crate_path, vis, ident, attrs, e, gen_spec, &args.lib)
+                derive_type_enum_int(&args.crate_path, vis, ident, attrs, e, gen_spec)
             } else {
                 Error::new(input.span(), "enums are supported as contract types only when all variants have an explicit integer literal, or when all variants are unit or single field")
                     .to_compile_error()
@@ -517,6 +515,14 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
     .into()
 }
 
+#[derive(Debug, FromMeta)]
+struct ContractErrorArgs {
+    #[darling(default = "default_crate_path")]
+    crate_path: Path,
+    lib: Option<String>,
+    export: Option<bool>,
+}
+
 #[proc_macro_attribute]
 pub fn contracterror(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let args = match NestedMeta::parse_meta_list(metadata.into()) {
@@ -525,7 +531,7 @@ pub fn contracterror(metadata: TokenStream, input: TokenStream) -> TokenStream {
             return TokenStream::from(darling::Error::from(e).write_errors());
         }
     };
-    let args = match ContractTypeArgs::from_list(&args) {
+    let args = match ContractErrorArgs::from_list(&args) {
         Ok(v) => v,
         Err(e) => return e.write_errors().into(),
     };
