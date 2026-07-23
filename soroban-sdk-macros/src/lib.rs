@@ -514,7 +514,6 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
 struct ContractErrorArgs {
     #[darling(default = "default_crate_path")]
     crate_path: Path,
-    lib: Option<String>,
     export: Option<bool>,
 }
 
@@ -548,7 +547,7 @@ pub fn contracterror(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let derived = match &input.data {
         Data::Enum(e) => {
             if e.variants.iter().all(|v| v.discriminant.is_some()) {
-                derive_type_error_enum_int(&args.crate_path, ident, attrs, e, gen_spec, &args.lib)
+                derive_type_error_enum_int(&args.crate_path, ident, attrs, e, gen_spec)
             } else {
                 Error::new(input.span(), "enums are supported as contract errors only when all variants have an explicit integer literal")
                     .to_compile_error()
