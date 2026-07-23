@@ -40,7 +40,10 @@ impl CostEstimate {
     /// on 2026-07-10. Because the fees are hardcoded rather than pulled
     /// dynamically, they may drift from the live network over time; the current
     /// values can be checked via `stellar network settings --network mainnet`
-    /// or on Stellar Lab: <https://lab.stellar.org/network-limits>.
+    /// or on Stellar Lab: <https://lab.stellar.org/network-limits>. The one
+    /// exception is the per-1KB storage rent rate, which is a deliberate
+    /// conservative overestimate rather than the snapshot value, so storage
+    /// rent estimates may be higher than the live network charges.
     ///
     /// Take the return value with a grain of salt as both the resource estimate
     /// and the fee rates may be imprecise.
