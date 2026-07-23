@@ -1825,31 +1825,36 @@ impl Env {
     /// represent (e.g. closures, which resolve to `{{closure}}`) fall back to
     /// an empty symbol, preserving the historical behavior.
     fn as_contract_func_name<F>(&self, _f: &F) -> Symbol {
-        // `type_name` is best-effort and its exact format is unstable, so it is
-        // only ever a diagnostic hint. Take the final path segment: the part
-        // after the last `::` that sits outside any generic arguments. Both the
-        // arguments (e.g. `f<alloc::string::String>`) and an enclosing generic
-        // context (e.g. `outer<T>::{{closure}}`) can contain their own `::`, so
-        // track angle-bracket depth and only split on top-level separators.
-        let name = core::any::type_name::<F>();
-        let bytes = name.as_bytes();
-        let mut segment = name;
-        let mut depth: i32 = 0;
-        let mut i = 0;
-        while i + 1 < bytes.len() {
-            match bytes[i] {
-                b'<' => depth += 1,
-                b'>' => depth -= 1,
-                b':' if depth == 0 && bytes[i + 1] == b':' => {
-                    segment = &name[i + 2..];
-                    i += 1;
+        // The callable's own name is the final `::`-separated segment of its
+        // `type_name`. `::` can also appear inside generic arguments — both the
+        // arguments themselves (`f<alloc::string::String>`) and an enclosing
+        // generic context (`outer<T>::{{closure}}`) — so any `::` within angle
+        // brackets is ignored.
+        fn last_path_segment(name: &str) -> &str {
+            // The segment starts just after the last `::` seen at angle-bracket
+            // depth zero.
+            let mut depth = 0usize;
+            let mut segment_start = 0;
+            let mut chars = name.char_indices().peekable();
+            while let Some((index, c)) = chars.next() {
+                match c {
+                    '<' => depth += 1,
+                    '>' => depth = depth.saturating_sub(1),
+                    ':' if depth == 0 && matches!(chars.peek(), Some((_, ':'))) => {
+                        chars.next(); // consume the second `:`
+                        segment_start = index + 2;
+                    }
+                    _ => {}
                 }
-                _ => {}
             }
-            i += 1;
+            // Drop the segment's own generic arguments, e.g. `f<u32>` -> `f`.
+            let segment = &name[segment_start..];
+            segment.split('<').next().unwrap_or(segment)
         }
-        // Drop the final segment's own generic arguments (e.g. `f<u32>` -> `f`).
-        let name = segment.split('<').next().unwrap_or(segment);
+
+        // `type_name` is best-effort and its exact format is unstable, so the
+        // derived name is only ever a diagnostic hint.
+        let name = last_path_segment(core::any::type_name::<F>());
         // The local Env's symbol constructor panics on invalid input rather
         // than reporting it, so keep the name within Symbol's rules up front.
         // Defer the character check to Symbol itself via
