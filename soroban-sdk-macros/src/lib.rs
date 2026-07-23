@@ -471,14 +471,9 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
             Fields::Named(_) => {
                 derive_type_struct(&args.crate_path, vis, ident, attrs, s, gen_spec)
             }
-            Fields::Unnamed(_) => derive_type_struct_tuple(
-                &args.crate_path,
-                vis,
-                ident,
-                attrs,
-                s,
-                gen_spec,
-            ),
+            Fields::Unnamed(_) => {
+                derive_type_struct_tuple(&args.crate_path, vis, ident, attrs, s, gen_spec)
+            }
             Fields::Unit => Error::new(
                 s.fields.span(),
                 "unit structs are not supported as contract types",
