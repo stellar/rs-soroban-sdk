@@ -2,6 +2,7 @@
 
 mod address;
 mod address_payload;
+mod as_contract_fn_name;
 mod auth;
 mod bytes_alloc_vec;
 mod bytes_buffer;

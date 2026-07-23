@@ -1733,6 +1733,89 @@ impl Env {
     ///     assert_eq!(result, val);
     /// }
     /// ```
+    ///
+    /// Because a named function's name becomes the frame's function name, an
+    /// authorization performed inside the frame is recorded under that name, so
+    /// a [`MockAuth`](crate::testutils::MockAuth) can target it by name the same
+    /// way it targets a call to a named contract function.
+    ///
+    /// ```
+    /// use soroban_sdk::{
+    ///     auth::{Context, CustomAccountInterface},
+    ///     contract, contracterror, contractimpl,
+    ///     crypto::Hash,
+    ///     testutils::{Address as _, MockAuth, MockAuthInvoke},
+    ///     Address, Env, IntoVal, Vec,
+    /// };
+    ///
+    /// #[contract]
+    /// pub struct Contract;
+    /// #[contractimpl]
+    /// impl Contract {}
+    ///
+    /// #[contracterror]
+    /// #[derive(Debug, Clone, Copy, Eq, PartialEq, PartialOrd, Ord)]
+    /// #[repr(u32)]
+    /// pub enum Error {
+    ///     Fail = 1,
+    /// }
+    ///
+    /// // A custom account that approves any authorization, used as the address
+    /// // whose auth is required inside the frame.
+    /// #[contract]
+    /// pub struct Account;
+    /// #[contractimpl]
+    /// impl CustomAccountInterface for Account {
+    ///     type Signature = ();
+    ///     type Error = Error;
+    ///     fn __check_auth(
+    ///         _env: Env,
+    ///         _signature_payload: Hash<32>,
+    ///         _signatures: (),
+    ///         _auth_contexts: Vec<Context>,
+    ///     ) -> Result<(), Error> {
+    ///         Ok(())
+    ///     }
+    /// }
+    ///
+    /// // The named function to run inside the frame. Its name, `mint`, becomes
+    /// // the frame's function name. A `fn` can't capture, so the address it
+    /// // authorizes is passed in through a thread-local.
+    /// std::thread_local! {
+    ///     static ADMIN: std::cell::RefCell<Option<Address>> =
+    ///         const { std::cell::RefCell::new(None) };
+    /// }
+    /// fn mint() {
+    ///     ADMIN.with(|a| a.borrow().as_ref().unwrap().require_auth());
+    /// }
+    ///
+    /// #[test]
+    /// fn test() {
+    /// # }
+    /// # fn main() {
+    ///     let env = Env::default();
+    ///     let contract_id = env.register(Contract, ());
+    ///     let admin = env.register(Account, ());
+    ///     ADMIN.with(|a| *a.borrow_mut() = Some(admin.clone()));
+    ///
+    ///     // Authorize `admin` for a call named `mint`, the name derived from
+    ///     // the `mint` function passed to `as_contract`.
+    ///     env.set_auths(&[MockAuth {
+    ///         address: &admin,
+    ///         invoke: &MockAuthInvoke {
+    ///             contract: &contract_id,
+    ///             fn_name: "mint",
+    ///             args: ().into_val(&env),
+    ///             sub_invokes: &[],
+    ///         },
+    ///     }
+    ///     .into()]);
+    ///
+    ///     // `mint` runs inside the frame; its `require_auth` is satisfied
+    ///     // because the frame's function name matches the mocked `fn_name`.
+    ///     env.as_contract(&contract_id, mint);
+    /// }
+    /// ```
     pub fn as_contract<T>(&self, id: &Address, f: impl FnOnce() -> T) -> T {
         let id = id.contract_id();
         let func = self.as_contract_func_name(&f);
