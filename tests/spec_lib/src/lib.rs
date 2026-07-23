@@ -145,7 +145,7 @@ pub struct EventC {
     pub f3: i64,
 }
 
-// Event with no fields, defined as a unit struct (no topics, no data).
+// Event with no fields, defined as a unit struct (only the default prefix topic, no data).
 
 #[contractevent]
 #[derive(Clone, Debug, Eq, PartialEq)]
