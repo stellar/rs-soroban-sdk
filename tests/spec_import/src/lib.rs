@@ -1,6 +1,6 @@
 #![no_std]
 use soroban_sdk::{contract, contractimpl, Address, Env, String};
-use test_spec_lib::{EnumA, EnumIntA, ErrorA, EventA, StructA, StructTupleA};
+use test_spec_lib::{EnumA, EnumIntA, ErrorA, EventA, EventD, StructA, StructTupleA};
 
 #[contract]
 pub struct Contract;
@@ -33,5 +33,9 @@ impl Contract {
 
     pub fn fn_event_a(env: Env, f1: Address, f2: String) {
         EventA { f1, f2 }.publish(&env);
+    }
+
+    pub fn fn_event_d(env: Env) {
+        EventD.publish(&env);
     }
 }

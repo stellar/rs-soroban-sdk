@@ -114,10 +114,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
                     "structs with unnamed fields are not supported as contract events",
                 )
                 .with_span(&struct_.fields.span()))?,
-                Fields::Unit => Err(Error::custom(
-                    "structs with no fields are not supported as contract events",
-                )
-                .with_span(&struct_.fields.span()))?,
+                Fields::Unit => Vec::new(),
             },
             Data::Enum(_) => Err(Error::custom("enums are not supported as contract events")
                 .with_span(&input.span()))?,
