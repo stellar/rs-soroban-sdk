@@ -1744,7 +1744,7 @@ impl Env {
     ///     auth::{Context, CustomAccountInterface},
     ///     contract, contracterror, contractimpl,
     ///     crypto::Hash,
-    ///     testutils::{Address as _, MockAuth, MockAuthInvoke},
+    ///     testutils::{MockAuth, MockAuthInvoke},
     ///     Address, Env, IntoVal, Vec,
     /// };
     ///
