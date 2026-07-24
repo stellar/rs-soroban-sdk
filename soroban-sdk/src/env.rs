@@ -789,6 +789,22 @@ impl Env {
     /// If you need to specify the address the contract should be registered at,
     /// use [`Env::register_at`].
     ///
+    /// ### Authorization
+    ///
+    /// If the contract has a constructor, it is called during registration
+    /// with authorization mocked: the environment switches to recording auth
+    /// for the constructor call, so any [`Address::require_auth`] calls the
+    /// constructor makes are automatically authorized and succeed regardless
+    /// of the authorization configured on the environment. Because of this,
+    /// `register` cannot be used to test a constructor's authorization.
+    ///
+    /// To test constructor authorization, deploy the contract the way it is
+    /// deployed on-chain using the deployer returned by [`Env::deployer`],
+    /// e.g. [`Deployer::with_address`] followed by
+    /// [`deploy_v2`][crate::deploy::DeployerWithAddress::deploy_v2]. Deploying
+    /// that way runs the constructor subject to the environment's
+    /// authorization, so `require_auth` behaves as it would on-chain.
+    ///
     /// ### Examples
     /// Register a contract defined in the current crate, by specifying the type
     /// name:
@@ -853,6 +869,22 @@ impl Env {
     /// Returns the address of the registered contract that is the same as the
     /// contract id passed in.
     ///
+    /// ### Authorization
+    ///
+    /// If the contract has a constructor, it is called during registration
+    /// with authorization mocked: the environment switches to recording auth
+    /// for the constructor call, so any [`Address::require_auth`] calls the
+    /// constructor makes are automatically authorized and succeed regardless
+    /// of the authorization configured on the environment. Because of this,
+    /// `register_at` cannot be used to test a constructor's authorization.
+    ///
+    /// To test constructor authorization, deploy the contract the way it is
+    /// deployed on-chain using the deployer returned by [`Env::deployer`],
+    /// e.g. [`Deployer::with_address`] followed by
+    /// [`deploy_v2`][crate::deploy::DeployerWithAddress::deploy_v2]. Deploying
+    /// that way runs the constructor subject to the environment's
+    /// authorization, so `require_auth` behaves as it would on-chain.
+    ///
     /// ### Examples
     /// Register a contract defined in the current crate, by specifying the type
     /// name:
@@ -913,6 +945,10 @@ impl Env {
     ///
     /// If a contract has a constructor defined, then it will be called with
     /// no arguments. If a constructor takes arguments, use `register`.
+    ///
+    /// The constructor call has authorization mocked, the same as
+    /// [`register`][Self::register]; see that function for how to test
+    /// constructor authorization.
     ///
     /// Registering a contract that is already registered replaces it.
     /// Use re-registration with caution as it does not exist in the real
@@ -1032,6 +1068,10 @@ impl Env {
     /// Passing a contract ID for the first arguments registers the contract
     /// with that contract ID. Providing `None` causes the Env to generate a new
     /// contract ID that is assigned to the contract.
+    ///
+    /// If the contract has a constructor, it is called during registration
+    /// with authorization mocked, the same as [`register`][Self::register];
+    /// see that function for how to test constructor authorization.
     ///
     /// Registering a contract that is already registered replaces it.
     /// Use re-registration with caution as it does not exist in the real
