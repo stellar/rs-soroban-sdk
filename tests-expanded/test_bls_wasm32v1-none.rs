@@ -23,6 +23,10 @@ impl DummyProof {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\nDummyProof\0\0\0\0\0\x05\0\0\0\0\0\0\0\x02fp\0\0\0\0\x03\xee\0\0\00\0\0\0\0\0\0\0\x03fp2\0\0\0\x03\xee\0\0\0`\0\0\0\0\0\0\0\x02fr\0\0\0\0\0\x0c\0\0\0\0\0\0\0\x02g1\0\0\0\0\x03\xee\0\0\0`\0\0\0\0\0\0\0\x02g2\0\0\0\0\x03\xee\0\0\0\xc0"
     }
 }
+impl DummyProof {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [133u8, 87u8, 0u8, 65u8, 220u8, 126u8, 183u8, 34u8];
+}
 impl soroban_sdk::SpecShakingMarker for DummyProof {
     #[doc(hidden)]
     #[inline(always)]
@@ -203,12 +207,21 @@ pub mod __Contract__dummy_verify__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_DUMMY_VERIFY: [u8; 72usize] = super::Contract::spec_xdr_dummy_verify();
+    pub static __SPEC_XDR_FN_DUMMY_VERIFY: [u8; 80usize] = super::Contract::spec_xdr_dummy_verify();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_dummy_verify() -> [u8; 72usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0cdummy_verify\0\0\0\x01\0\0\0\0\0\0\0\x05proof\0\0\0\0\0\x07\xd0\0\0\0\nDummyProof\0\0\0\0\0\x01\0\0\0\x01"
+    pub const fn spec_xdr_dummy_verify() -> [u8; 80usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\x0cdummy_verify\0\0\0\x01\0\0\0\0\0\0\0\x05proof\0\0\0\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\nDummyProof\0\0\0\0\0\x01\0\0\0\x01";
+        {
+            let id = <DummyProof>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[48usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 #[doc(hidden)]

@@ -5,7 +5,7 @@ use soroban_sdk::{
 };
 use stellar_xdr::{
     Limits, ReadXdr, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef,
-    ScSpecTypeTuple, ScSpecTypeUdt,
+    ScSpecTypeTuple, ScSpecTypeUdtv2,
 };
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -73,6 +73,8 @@ fn test_error_on_partial_decode() {
 #[test]
 fn test_spec() {
     let entries = ScSpecEntry::from_xdr(Contract::spec_xdr_add(), Limits::none()).unwrap();
+    // Each `Udt` reference carries the id of the referenced type, exposed as
+    // `Udt::SPEC_XDR_ID`.
     let expect = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
         doc: "".try_into().unwrap(),
         name: "add".try_into().unwrap(),
@@ -80,14 +82,16 @@ fn test_spec() {
             ScSpecFunctionInputV0 {
                 doc: "".try_into().unwrap(),
                 name: "a".try_into().unwrap(),
-                type_: ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                type_: ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
+                    id: Udt::SPEC_XDR_ID,
                     name: "Udt".try_into().unwrap(),
                 }),
             },
             ScSpecFunctionInputV0 {
                 doc: "".try_into().unwrap(),
                 name: "b".try_into().unwrap(),
-                type_: ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                type_: ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
+                    id: Udt::SPEC_XDR_ID,
                     name: "Udt".try_into().unwrap(),
                 }),
             },
@@ -96,10 +100,12 @@ fn test_spec() {
         .unwrap(),
         outputs: std::vec![ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
             value_types: std::vec![
-                ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
+                    id: Udt::SPEC_XDR_ID,
                     name: "Udt".try_into().unwrap(),
                 }),
-                ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
+                    id: Udt::SPEC_XDR_ID,
                     name: "Udt".try_into().unwrap(),
                 }),
             ]

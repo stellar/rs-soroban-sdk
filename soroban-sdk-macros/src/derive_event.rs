@@ -200,9 +200,15 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
             .try_into()
             .unwrap(),
     });
-    let spec_xdr = spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap();
-    let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
-    let spec_xdr_len = spec_xdr.len();
+    // Each UDT reference among the event params is resolved to the referenced
+    // type's id at const-eval time by the generated `spec_xdr`.
+    let mut ref_types = Vec::new();
+    for ft in field_types.iter().copied() {
+        crate::map_type::collect_udt_ref_types(ft, &mut ref_types);
+    }
+    let (spec_xdr_len, spec_xdr_body) = crate::map_type::spec_xdr_const_fn(&spec_entry, &ref_types);
+    // Canonical (zeroed-id) bytes for the shaking marker.
+    let spec_canonical_xdr = spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap();
     let spec_ident = format_ident!(
         "__SPEC_XDR_EVENT_{}",
         input.ident.unraw().to_string().to_uppercase()
@@ -219,9 +225,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         pub static #spec_ident: [u8; #spec_xdr_len] = #ident::spec_xdr();
 
         impl #gen_impl #ident #gen_types #gen_where {
-            pub const fn spec_xdr() -> [u8; #spec_xdr_len] {
-                *#spec_xdr_lit
-            }
+            pub const fn spec_xdr() -> [u8; #spec_xdr_len] #spec_xdr_body
         }
     };
 
@@ -231,7 +235,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         Some(shaking::generate_marker_impl(
             path,
             quote!(#ident),
-            &spec_xdr,
+            &spec_canonical_xdr,
             field_types.iter().cloned(),
             Some(quote!(#gen_impl)),
             Some(quote!(#gen_types)),

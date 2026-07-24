@@ -1,6 +1,6 @@
 use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
-use quote::{format_ident, quote};
+use quote::quote;
 use stellar_xdr::{ScSpecEntry, ScSpecUdtErrorEnumCaseV0, ScSpecUdtErrorEnumV0, StringM, WriteXdr};
 use syn::{
     ext::IdentExt as _, spanned::Spanned, Attribute, DataEnum, Error, ExprLit, Ident, Lit, Path,
@@ -64,55 +64,29 @@ pub fn derive_type_error_enum_int(
         return quote! { #(#compile_errors)* };
     }
 
-    // Compute spec XDR once if spec is enabled.
-    let spec_xdr = if spec {
-        let spec_entry = ScSpecEntry::UdtErrorEnumV0(ScSpecUdtErrorEnumV0 {
-            doc: docs_from_attrs(attrs),
-            lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
-            name: enum_ident.unraw().to_string().try_into().unwrap(),
-            cases: spec_cases.try_into().unwrap(),
-        });
-        Some(spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap())
-    } else {
-        None
-    };
+    // The spec entry, always built so the type can expose its `SPEC_XDR_ID`
+    // identity even when its own spec is not exported.
+    let spec_entry = ScSpecEntry::UdtErrorEnumV0(ScSpecUdtErrorEnumV0 {
+        doc: docs_from_attrs(attrs),
+        lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
+        name: enum_ident.unraw().to_string().try_into().unwrap(),
+        cases: spec_cases.try_into().unwrap(),
+    });
+    let spec_gen = crate::map_type::referenceable_spec_gen(&spec_entry, &[], enum_ident, spec);
 
-    // Generated code spec.
-    let spec_gen = if let Some(ref spec_xdr) = spec_xdr {
-        let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
-        let spec_xdr_len = spec_xdr.len();
-        let spec_ident = format_ident!(
-            "__SPEC_XDR_TYPE_{}",
-            enum_ident.unraw().to_string().to_uppercase()
-        );
-        Some(quote! {
-            #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
-            pub static #spec_ident: [u8; #spec_xdr_len] = #enum_ident::spec_xdr();
-
-            impl #enum_ident {
-                pub const fn spec_xdr() -> [u8; #spec_xdr_len] {
-                    *#spec_xdr_lit
-                }
-            }
-        })
-    } else {
-        None
-    };
-
-    // SpecShakingMarker impl - only generated when spec is true and the
-    // experimental_spec_shaking_v2 feature is enabled.
+    // SpecShakingMarker impl - only generated when the experimental_spec_shaking_v2
+    // feature is enabled (spec is always emitted under that feature).
     let spec_shaking_impl = if cfg!(feature = "experimental_spec_shaking_v2") {
-        spec_xdr.as_ref().map(|spec_xdr| {
-            shaking::generate_marker_impl(
-                path,
-                quote!(#enum_ident),
-                spec_xdr,
-                std::iter::empty(),
-                None,
-                None,
-                None,
-            )
-        })
+        let canonical = spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap();
+        Some(shaking::generate_marker_impl(
+            path,
+            quote!(#enum_ident),
+            &canonical,
+            std::iter::empty(),
+            None,
+            None,
+            None,
+        ))
     } else {
         None
     };

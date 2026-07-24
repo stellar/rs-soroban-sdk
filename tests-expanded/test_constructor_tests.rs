@@ -147,6 +147,10 @@ impl DataKey {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x07DataKey\0\0\0\0\x03\0\0\0\x01\0\0\0\0\0\0\0\nPersistent\0\0\0\0\0\x01\0\0\0\x04\0\0\0\x01\0\0\0\0\0\0\0\x04Temp\0\0\0\x01\0\0\0\x04\0\0\0\x01\0\0\0\0\0\0\0\x08Instance\0\0\0\x01\0\0\0\x04"
     }
 }
+impl DataKey {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [20u8, 148u8, 125u8, 126u8, 236u8, 21u8, 148u8, 132u8];
+}
 impl soroban_sdk::SpecShakingMarker for DataKey {
     #[doc(hidden)]
     #[inline(always)]
@@ -730,12 +734,21 @@ pub mod __Contract__get_data__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_GET_DATA: [u8; 64usize] = super::Contract::spec_xdr_get_data();
+    pub static __SPEC_XDR_FN_GET_DATA: [u8; 72usize] = super::Contract::spec_xdr_get_data();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_get_data() -> [u8; 64usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x08get_data\0\0\0\x01\0\0\0\0\0\0\0\x03key\0\0\0\x07\xd0\0\0\0\x07DataKey\0\0\0\0\x01\0\0\x03\xe8\0\0\0\x07"
+    pub const fn spec_xdr_get_data() -> [u8; 72usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\x08get_data\0\0\0\x01\0\0\0\0\0\0\0\x03key\0\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x07DataKey\0\0\0\0\x01\0\0\x03\xe8\0\0\0\x07";
+        {
+            let id = <DataKey>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[40usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 impl<'a> ContractClient<'a> {

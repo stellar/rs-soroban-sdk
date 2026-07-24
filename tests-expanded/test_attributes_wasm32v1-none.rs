@@ -54,6 +54,10 @@ impl AttributeType {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\rAttributeType\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05value\0\0\0\0\0\0\x04"
     }
 }
+impl AttributeType {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [105u8, 9u8, 183u8, 6u8, 42u8, 136u8, 215u8, 248u8];
+}
 impl soroban_sdk::SpecShakingMarker for AttributeType {
     #[doc(hidden)]
     #[inline(always)]
@@ -336,12 +340,21 @@ pub mod __Contract__always__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_ALWAYS: [u8; 72usize] = super::Contract::spec_xdr_always();
+    pub static __SPEC_XDR_FN_ALWAYS: [u8; 80usize] = super::Contract::spec_xdr_always();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_always() -> [u8; 72usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x06always\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05value\0\0\0\0\0\x07\xd0\0\0\0\rAttributeType\0\0\0\0\0\0\x01\0\0\0\x04"
+    pub const fn spec_xdr_always() -> [u8; 80usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\x06always\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05value\0\0\0\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\rAttributeType\0\0\0\0\0\0\x01\0\0\0\x04";
+        {
+            let id = <AttributeType>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[44usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 #[doc(hidden)]

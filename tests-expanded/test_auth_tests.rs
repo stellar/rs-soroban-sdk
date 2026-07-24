@@ -1125,6 +1125,10 @@ mod test_a {
                 *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x05Error\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x07Decline\0\0\0\0\x01"
             }
         }
+        impl Error {
+            #[doc(hidden)]
+            pub const SPEC_XDR_ID: [u8; 8] = [96u8, 252u8, 214u8, 206u8, 181u8, 1u8, 121u8, 133u8];
+        }
         impl soroban_sdk::SpecShakingMarker for Error {
             #[doc(hidden)]
             #[inline(always)]
@@ -2608,6 +2612,10 @@ mod test_b {
             pub const fn spec_xdr() -> [u8; 48usize] {
                 *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x05Error\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x07Decline\0\0\0\0\x01"
             }
+        }
+        impl Error {
+            #[doc(hidden)]
+            pub const SPEC_XDR_ID: [u8; 8] = [96u8, 252u8, 214u8, 206u8, 181u8, 1u8, 121u8, 133u8];
         }
         impl soroban_sdk::SpecShakingMarker for Error {
             #[doc(hidden)]

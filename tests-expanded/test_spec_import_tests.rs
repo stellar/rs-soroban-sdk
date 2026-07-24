@@ -55,12 +55,21 @@ pub mod __Contract__fn_struct_a__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_FN_STRUCT_A: [u8; 80usize] = super::Contract::spec_xdr_fn_struct_a();
+    pub static __SPEC_XDR_FN_FN_STRUCT_A: [u8; 88usize] = super::Contract::spec_xdr_fn_struct_a();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_fn_struct_a() -> [u8; 80usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0bfn_struct_a\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x04\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x01\0\0\0\x01\0\0\x07\xd0\0\0\0\x07StructA\0"
+    pub const fn spec_xdr_fn_struct_a() -> [u8; 88usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\x0bfn_struct_a\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x04\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x01\0\0\0\x01\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x07StructA\0";
+        {
+            let id = <StructA>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[68usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 #[doc(hidden)]
@@ -69,13 +78,22 @@ pub mod __Contract__fn_struct_tuple_a__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_FN_STRUCT_TUPLE_A: [u8; 92usize] =
+    pub static __SPEC_XDR_FN_FN_STRUCT_TUPLE_A: [u8; 100usize] =
         super::Contract::spec_xdr_fn_struct_tuple_a();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_fn_struct_tuple_a() -> [u8; 92usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x11fn_struct_tuple_a\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x07\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x07\0\0\0\x01\0\0\x07\xd0\0\0\0\x0cStructTupleA"
+    pub const fn spec_xdr_fn_struct_tuple_a() -> [u8; 100usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\x11fn_struct_tuple_a\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x07\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x07\0\0\0\x01\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleA";
+        {
+            let id = <StructTupleA>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[76usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 #[doc(hidden)]
@@ -84,12 +102,21 @@ pub mod __Contract__fn_enum_a__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_FN_ENUM_A: [u8; 48usize] = super::Contract::spec_xdr_fn_enum_a();
+    pub static __SPEC_XDR_FN_FN_ENUM_A: [u8; 56usize] = super::Contract::spec_xdr_fn_enum_a();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_fn_enum_a() -> [u8; 48usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\tfn_enum_a\0\0\0\0\0\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x05EnumA\0\0\0"
+    pub const fn spec_xdr_fn_enum_a() -> [u8; 56usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\tfn_enum_a\0\0\0\0\0\0\0\0\0\0\x01\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x05EnumA\0\0\0";
+        {
+            let id = <EnumA>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[36usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 #[doc(hidden)]
@@ -98,13 +125,22 @@ pub mod __Contract__fn_enum_int_a__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_FN_ENUM_INT_A: [u8; 52usize] =
+    pub static __SPEC_XDR_FN_FN_ENUM_INT_A: [u8; 60usize] =
         super::Contract::spec_xdr_fn_enum_int_a();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_fn_enum_int_a() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\rfn_enum_int_a\0\0\0\0\0\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x08EnumIntA"
+    pub const fn spec_xdr_fn_enum_int_a() -> [u8; 60usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\rfn_enum_int_a\0\0\0\0\0\0\0\0\0\0\x01\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x08EnumIntA";
+        {
+            let id = <EnumIntA>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[40usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 #[doc(hidden)]
@@ -113,12 +149,21 @@ pub mod __Contract__fn_error_a__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_FN_ERROR_A: [u8; 76usize] = super::Contract::spec_xdr_fn_error_a();
+    pub static __SPEC_XDR_FN_FN_ERROR_A: [u8; 84usize] = super::Contract::spec_xdr_fn_error_a();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_fn_error_a() -> [u8; 76usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\nfn_error_a\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05input\0\0\0\0\0\0\x04\0\0\0\x01\0\0\x03\xe9\0\0\0\x04\0\0\x07\xd0\0\0\0\x06ErrorA\0\0"
+    pub const fn spec_xdr_fn_error_a() -> [u8; 84usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\nfn_error_a\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05input\0\0\0\0\0\0\x04\0\0\0\x01\0\0\x03\xe9\0\0\0\x04\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x06ErrorA\0\0";
+        {
+            let id = <ErrorA>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[64usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 #[doc(hidden)]

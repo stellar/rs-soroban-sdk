@@ -36,7 +36,7 @@
 use std::collections::HashSet;
 
 use sha2::{Digest, Sha256};
-use stellar_xdr::{Limits, ScMetaEntry, ScSpecEntry, WriteXdr};
+use stellar_xdr::{ScMetaEntry, ScSpecEntry};
 
 /// The contract meta key that indicates the spec shaking version.
 ///
@@ -95,9 +95,10 @@ pub fn generate_marker_for_xdr(spec_entry_xdr: &[u8]) -> Marker {
 /// Panics if the spec entry cannot be encoded to XDR, which should never happen
 /// for valid `ScSpecEntry` values.
 pub fn generate_marker_for_entry(entry: &ScSpecEntry) -> Marker {
-    let xdr_bytes = entry
-        .to_xdr(Limits::none())
-        .expect("XDR encoding should not fail");
+    // Hash the canonical (all-`ScSpecTypeUdtv2`-ids-zeroed) XDR so the marker is
+    // stable regardless of the referenced-type ids the entry carries, matching
+    // the marker the soroban-sdk derive macros embed at compile time.
+    let xdr_bytes = crate::udt_id::canonical_xdr(entry);
     generate_marker_for_xdr(&xdr_bytes)
 }
 

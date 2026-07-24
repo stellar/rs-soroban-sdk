@@ -333,6 +333,10 @@ pub fn generate_type_ident(spec: &ScSpecTypeDef) -> Result<TokenStream, Generate
             let ident = str_to_ident(&u.name)?;
             Ok(quote! { #ident })
         }
+        ScSpecTypeDef::UdtV2(u) => {
+            let ident = str_to_ident(&u.name)?;
+            Ok(quote! { #ident })
+        }
         ScSpecTypeDef::Void => Ok(quote! { () }),
         ScSpecTypeDef::Timepoint => Ok(quote! { soroban_sdk::Timepoint }),
         ScSpecTypeDef::Duration => Ok(quote! { soroban_sdk::Duration }),

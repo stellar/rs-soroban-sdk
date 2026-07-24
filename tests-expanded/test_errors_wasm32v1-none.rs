@@ -52,6 +52,10 @@ impl Flag {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x04Flag\0\0\0\x05\0\0\0\0\0\0\0\x01A\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01B\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01C\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01D\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\x01E\0\0\0\0\0\0\x04"
     }
 }
+impl Flag {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [103u8, 25u8, 141u8, 198u8, 138u8, 80u8, 235u8, 183u8];
+}
 impl soroban_sdk::SpecShakingMarker for Flag {
     #[doc(hidden)]
     #[inline(always)]
@@ -139,6 +143,10 @@ impl Error {
     pub const fn spec_xdr() -> [u8; 48usize] {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x05Error\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x07AnError\0\0\0\0\x01"
     }
+}
+impl Error {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [188u8, 4u8, 4u8, 234u8, 164u8, 158u8, 54u8, 40u8];
 }
 impl soroban_sdk::SpecShakingMarker for Error {
     #[doc(hidden)]
@@ -295,12 +303,21 @@ pub mod __Contract__hello__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_HELLO: [u8; 64usize] = super::Contract::spec_xdr_hello();
+    pub static __SPEC_XDR_FN_HELLO: [u8; 72usize] = super::Contract::spec_xdr_hello();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_hello() -> [u8; 64usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x05hello\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04flag\0\0\x07\xd0\0\0\0\x04Flag\0\0\0\x01\0\0\x03\xe9\0\0\0\x11\0\0\0\x03"
+    pub const fn spec_xdr_hello() -> [u8; 72usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\x05hello\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04flag\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x04Flag\0\0\0\x01\0\0\x03\xe9\0\0\0\x11\0\0\0\x03";
+        {
+            let id = <Flag>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[40usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 impl Contract {}

@@ -161,6 +161,10 @@ impl Error {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x05Error\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x08Overflow\0\0\0\x01"
     }
 }
+impl Error {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [214u8, 184u8, 96u8, 21u8, 172u8, 158u8, 105u8, 26u8];
+}
 impl soroban_sdk::SpecShakingMarker for Error {
     #[doc(hidden)]
     #[inline(always)]
@@ -293,6 +297,10 @@ impl MyError {
     pub const fn spec_xdr() -> [u8; 48usize] {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x07MyError\0\0\0\0\x01\0\0\0\0\0\0\0\x08Overflow\0\0\0\x01"
     }
+}
+impl MyError {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [149u8, 208u8, 106u8, 42u8, 29u8, 250u8, 109u8, 163u8];
 }
 impl soroban_sdk::SpecShakingMarker for MyError {
     #[doc(hidden)]
@@ -447,12 +455,21 @@ pub mod __Contract__safe_add_two__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_SAFE_ADD_TWO: [u8; 88usize] = super::Contract::spec_xdr_safe_add_two();
+    pub static __SPEC_XDR_FN_SAFE_ADD_TWO: [u8; 96usize] = super::Contract::spec_xdr_safe_add_two();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_safe_add_two() -> [u8; 88usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0csafe_add_two\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x06\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x06\0\0\0\x01\0\0\x03\xe9\0\0\0\x06\0\0\x07\xd0\0\0\0\x07MyError\0"
+    pub const fn spec_xdr_safe_add_two() -> [u8; 96usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\x0csafe_add_two\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x06\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x06\0\0\0\x01\0\0\x03\xe9\0\0\0\x06\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x07MyError\0";
+        {
+            let id = <MyError>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[76usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 impl<'a> ContractClient<'a> {

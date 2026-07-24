@@ -75,11 +75,24 @@ impl ::core::cmp::PartialEq for UsedParamStruct {
     }
 }
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDPARAMSTRUCT: [u8; 96usize] = UsedParamStruct::spec_xdr();
+pub static __SPEC_XDR_TYPE_USEDPARAMSTRUCT: [u8; 104usize] = UsedParamStruct::spec_xdr();
 impl UsedParamStruct {
-    pub const fn spec_xdr() -> [u8; 96usize] {
-        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0fUsedParamStruct\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x04\0\0\0\0\0\0\0\x06nested\0\0\0\0\x07\xd0\0\0\0\x12UsedNestedInStruct\0\0"
+    pub const fn spec_xdr() -> [u8; 104usize] {
+        let mut bytes = *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0fUsedParamStruct\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x04\0\0\0\0\0\0\0\x06nested\0\0\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x12UsedNestedInStruct\0\0";
+        {
+            let id = <UsedNestedInStruct>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[72usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
+}
+impl UsedParamStruct {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [18u8, 195u8, 159u8, 208u8, 156u8, 149u8, 101u8, 143u8];
 }
 impl soroban_sdk::SpecShakingMarker for UsedParamStruct {
     #[doc(hidden)]
@@ -88,7 +101,7 @@ impl soroban_sdk::SpecShakingMarker for UsedParamStruct {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <UsedNestedInStruct as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1X\x03\xf6t\xc7\xd0\x01\"";
+            static MARKER: [u8; 14usize] = *b"SpEcV1\x12\xc3\x9f\xd0\x9c\x95e\x8f";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -205,6 +218,10 @@ impl UsedReturnEnum {
     pub const fn spec_xdr() -> [u8; 84usize] {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x0eUsedReturnEnum\0\0\0\0\0\x02\0\0\0\x01\0\0\0\0\0\0\0\x01A\0\0\0\0\0\0\x01\0\0\0\x04\0\0\0\x01\0\0\0\0\0\0\0\x01B\0\0\0\0\0\0\x01\0\0\0\x07"
     }
+}
+impl UsedReturnEnum {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [231u8, 207u8, 155u8, 49u8, 110u8, 21u8, 19u8, 254u8];
 }
 impl soroban_sdk::SpecShakingMarker for UsedReturnEnum {
     #[doc(hidden)]
@@ -349,6 +366,10 @@ impl UsedParamIntEnum {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x10UsedParamIntEnum\0\0\0\x02\0\0\0\0\0\0\0\x01X\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01Y\0\0\0\0\0\0\x02"
     }
 }
+impl UsedParamIntEnum {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [194u8, 244u8, 78u8, 191u8, 235u8, 113u8, 118u8, 112u8];
+}
 impl soroban_sdk::SpecShakingMarker for UsedParamIntEnum {
     #[doc(hidden)]
     #[inline(always)]
@@ -448,6 +469,10 @@ impl UsedErrorEnum {
     pub const fn spec_xdr() -> [u8; 76usize] {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\rUsedErrorEnum\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x08NotFound\0\0\0\x01\0\0\0\0\0\0\0\x07Invalid\0\0\0\0\x02"
     }
+}
+impl UsedErrorEnum {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [72u8, 104u8, 220u8, 170u8, 97u8, 141u8, 247u8, 13u8];
 }
 impl soroban_sdk::SpecShakingMarker for UsedErrorEnum {
     #[doc(hidden)]
@@ -608,6 +633,10 @@ impl UsedPanicErrorEnum {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x12UsedPanicErrorEnum\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04Boom\0\0\0\x01"
     }
 }
+impl UsedPanicErrorEnum {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [13u8, 183u8, 54u8, 174u8, 147u8, 68u8, 239u8, 26u8];
+}
 impl soroban_sdk::SpecShakingMarker for UsedPanicErrorEnum {
     #[doc(hidden)]
     #[inline(always)]
@@ -764,6 +793,10 @@ impl UsedAssertErrorEnum {
     pub const fn spec_xdr() -> [u8; 56usize] {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x13UsedAssertErrorEnum\0\0\0\0\x01\0\0\0\0\0\0\0\x03Bad\0\0\0\0\x01"
     }
+}
+impl UsedAssertErrorEnum {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [139u8, 137u8, 31u8, 35u8, 189u8, 21u8, 55u8, 244u8];
 }
 impl soroban_sdk::SpecShakingMarker for UsedAssertErrorEnum {
     #[doc(hidden)]
@@ -929,6 +962,10 @@ impl UsedNestedInStruct {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x12UsedNestedInStruct\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x07"
     }
 }
+impl UsedNestedInStruct {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [132u8, 8u8, 89u8, 174u8, 160u8, 241u8, 50u8, 56u8];
+}
 impl soroban_sdk::SpecShakingMarker for UsedNestedInStruct {
     #[doc(hidden)]
     #[inline(always)]
@@ -1029,6 +1066,10 @@ impl UsedVecElement {
     pub const fn spec_xdr() -> [u8; 52usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0eUsedVecElement\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04data\0\0\0\x04"
     }
+}
+impl UsedVecElement {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [226u8, 1u8, 121u8, 201u8, 154u8, 248u8, 237u8, 116u8];
 }
 impl soroban_sdk::SpecShakingMarker for UsedVecElement {
     #[doc(hidden)]
@@ -1136,6 +1177,10 @@ impl UsedMapKey {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\nUsedMapKey\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02K1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02K2\0\0\0\0\0\x02"
     }
 }
+impl UsedMapKey {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [91u8, 244u8, 82u8, 223u8, 221u8, 180u8, 176u8, 188u8];
+}
 impl soroban_sdk::SpecShakingMarker for UsedMapKey {
     #[doc(hidden)]
     #[inline(always)]
@@ -1228,6 +1273,10 @@ impl UsedMapVal {
     pub const fn spec_xdr() -> [u8; 48usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\nUsedMapVal\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x04"
     }
+}
+impl UsedMapVal {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [170u8, 88u8, 56u8, 222u8, 239u8, 187u8, 54u8, 37u8];
 }
 impl soroban_sdk::SpecShakingMarker for UsedMapVal {
     #[doc(hidden)]
@@ -1333,6 +1382,10 @@ impl UsedOptionElement {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x11UsedOptionElement\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04data\0\0\0\x04"
     }
 }
+impl UsedOptionElement {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [179u8, 47u8, 151u8, 213u8, 6u8, 189u8, 51u8, 66u8];
+}
 impl soroban_sdk::SpecShakingMarker for UsedOptionElement {
     #[doc(hidden)]
     #[inline(always)]
@@ -1431,6 +1484,10 @@ impl UsedResultOk {
     pub const fn spec_xdr() -> [u8; 48usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cUsedResultOk\0\0\0\x01\0\0\0\0\0\0\0\x04data\0\0\0\x04"
     }
+}
+impl UsedResultOk {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [107u8, 228u8, 122u8, 120u8, 66u8, 209u8, 43u8, 2u8];
 }
 impl soroban_sdk::SpecShakingMarker for UsedResultOk {
     #[doc(hidden)]
@@ -1628,6 +1685,10 @@ impl UsedEventTopicType {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x12UsedEventTopicType\0\0\0\0\0\x02\0\0\0\0\0\0\0\x08Transfer\0\0\0\x01\0\0\0\0\0\0\0\x04Mint\0\0\0\x02"
     }
 }
+impl UsedEventTopicType {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [245u8, 212u8, 155u8, 163u8, 204u8, 73u8, 19u8, 247u8];
+}
 impl soroban_sdk::SpecShakingMarker for UsedEventTopicType {
     #[doc(hidden)]
     #[inline(always)]
@@ -1727,11 +1788,20 @@ impl ::core::cmp::PartialEq for UsedEventWithTopicType {
     }
 }
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_EVENT_USEDEVENTWITHTOPICTYPE: [u8; 152usize] =
+pub static __SPEC_XDR_EVENT_USEDEVENTWITHTOPICTYPE: [u8; 160usize] =
     UsedEventWithTopicType::spec_xdr();
 impl UsedEventWithTopicType {
-    pub const fn spec_xdr() -> [u8; 152usize] {
-        *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x16UsedEventWithTopicType\0\0\0\0\0\x01\0\0\0\x1aused_event_with_topic_type\0\0\0\0\0\x02\0\0\0\0\0\0\0\x04kind\0\0\x07\xd0\0\0\0\x12UsedEventTopicType\0\0\0\0\0\x01\0\0\0\0\0\0\0\x06amount\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02"
+    pub const fn spec_xdr() -> [u8; 160usize] {
+        let mut bytes = *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x16UsedEventWithTopicType\0\0\0\0\0\x01\0\0\0\x1aused_event_with_topic_type\0\0\0\0\0\x02\0\0\0\0\0\0\0\x04kind\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x12UsedEventTopicType\0\0\0\0\0\x01\0\0\0\0\0\0\0\x06amount\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02";
+        {
+            let id = <UsedEventTopicType>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[96usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventWithTopicType {
@@ -1741,7 +1811,7 @@ impl soroban_sdk::SpecShakingMarker for UsedEventWithTopicType {
         <UsedEventTopicType as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1q^\xe2&\x9di\x9d\x0e";
+            static MARKER: [u8; 14usize] = *b"SpEcV1\x17\xaa\x8c\"\xc9J\xfe\xa3";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -1825,6 +1895,10 @@ impl UsedEventDataType {
     pub const fn spec_xdr() -> [u8; 72usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x11UsedEventDataType\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01x\0\0\0\0\0\0\x04\0\0\0\0\0\0\0\x01y\0\0\0\0\0\0\x04"
     }
+}
+impl UsedEventDataType {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [194u8, 32u8, 27u8, 220u8, 200u8, 103u8, 120u8, 90u8];
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventDataType {
     #[doc(hidden)]
@@ -1936,11 +2010,20 @@ impl ::core::cmp::PartialEq for UsedEventWithDataType {
     }
 }
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_EVENT_USEDEVENTWITHDATATYPE: [u8; 152usize] =
+pub static __SPEC_XDR_EVENT_USEDEVENTWITHDATATYPE: [u8; 160usize] =
     UsedEventWithDataType::spec_xdr();
 impl UsedEventWithDataType {
-    pub const fn spec_xdr() -> [u8; 152usize] {
-        *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x15UsedEventWithDataType\0\0\0\0\0\0\x01\0\0\0\x19used_event_with_data_type\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x04kind\0\0\0\x11\0\0\0\x01\0\0\0\0\0\0\0\x07payload\0\0\0\x07\xd0\0\0\0\x11UsedEventDataType\0\0\0\0\0\0\0\0\0\0\x02"
+    pub const fn spec_xdr() -> [u8; 160usize] {
+        let mut bytes = *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x15UsedEventWithDataType\0\0\0\0\0\0\x01\0\0\0\x19used_event_with_data_type\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x04kind\0\0\0\x11\0\0\0\x01\0\0\0\0\0\0\0\x07payload\0\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x11UsedEventDataType\0\0\0\0\0\0\0\0\0\0\x02";
+        {
+            let id = <UsedEventDataType>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[120usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventWithDataType {
@@ -1950,7 +2033,7 @@ impl soroban_sdk::SpecShakingMarker for UsedEventWithDataType {
         <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <UsedEventDataType as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1q\xa3z;6\xa6R\x01";
+            static MARKER: [u8; 14usize] = *b"SpEcV1q-\xba\x17/\x83\xa9u";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -2025,11 +2108,24 @@ impl ::core::cmp::PartialEq for UsedEventTopicOuter {
     }
 }
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDEVENTTOPICOUTER: [u8; 84usize] = UsedEventTopicOuter::spec_xdr();
+pub static __SPEC_XDR_TYPE_USEDEVENTTOPICOUTER: [u8; 92usize] = UsedEventTopicOuter::spec_xdr();
 impl UsedEventTopicOuter {
-    pub const fn spec_xdr() -> [u8; 84usize] {
-        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x13UsedEventTopicOuter\0\0\0\0\x01\0\0\0\0\0\0\0\x05inner\0\0\0\0\0\x07\xd0\0\0\0\x13UsedEventTopicInner\0"
+    pub const fn spec_xdr() -> [u8; 92usize] {
+        let mut bytes = *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x13UsedEventTopicOuter\0\0\0\0\x01\0\0\0\0\0\0\0\x05inner\0\0\0\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x13UsedEventTopicInner\0";
+        {
+            let id = <UsedEventTopicInner>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[60usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
+}
+impl UsedEventTopicOuter {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [81u8, 60u8, 225u8, 149u8, 0u8, 82u8, 154u8, 150u8];
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventTopicOuter {
     #[doc(hidden)]
@@ -2037,7 +2133,7 @@ impl soroban_sdk::SpecShakingMarker for UsedEventTopicOuter {
     fn spec_shaking_marker() {
         <UsedEventTopicInner as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x94\xc7w/_\xebXc";
+            static MARKER: [u8; 14usize] = *b"SpEcV1Q<\xe1\x95\0R\x9a\x96";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -2138,6 +2234,10 @@ impl UsedEventTopicInner {
     pub const fn spec_xdr() -> [u8; 56usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x13UsedEventTopicInner\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
     }
+}
+impl UsedEventTopicInner {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [54u8, 131u8, 63u8, 240u8, 205u8, 87u8, 177u8, 47u8];
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventTopicInner {
     #[doc(hidden)]
@@ -2244,11 +2344,20 @@ impl ::core::cmp::PartialEq for UsedEventWithNestedTopic {
     }
 }
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_EVENT_USEDEVENTWITHNESTEDTOPIC: [u8; 152usize] =
+pub static __SPEC_XDR_EVENT_USEDEVENTWITHNESTEDTOPIC: [u8; 160usize] =
     UsedEventWithNestedTopic::spec_xdr();
 impl UsedEventWithNestedTopic {
-    pub const fn spec_xdr() -> [u8; 152usize] {
-        *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x18UsedEventWithNestedTopic\0\0\0\x01\0\0\0\x1cused_event_with_nested_topic\0\0\0\x02\0\0\0\0\0\0\0\x04info\0\0\x07\xd0\0\0\0\x13UsedEventTopicOuter\0\0\0\0\x01\0\0\0\0\0\0\0\x06amount\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02"
+    pub const fn spec_xdr() -> [u8; 160usize] {
+        let mut bytes = *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x18UsedEventWithNestedTopic\0\0\0\x01\0\0\0\x1cused_event_with_nested_topic\0\0\0\x02\0\0\0\0\0\0\0\x04info\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x13UsedEventTopicOuter\0\0\0\0\x01\0\0\0\0\0\0\0\x06amount\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02";
+        {
+            let id = <UsedEventTopicOuter>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[96usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventWithNestedTopic {
@@ -2258,7 +2367,7 @@ impl soroban_sdk::SpecShakingMarker for UsedEventWithNestedTopic {
         <UsedEventTopicOuter as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xe3\xf2\x9b5%a\xfb\xd6";
+            static MARKER: [u8; 14usize] = *b"SpEcV1\xc33\xd0\x12\xab\xee\x8dW";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -2333,11 +2442,24 @@ impl ::core::cmp::PartialEq for UsedEventDataOuter {
     }
 }
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDEVENTDATAOUTER: [u8; 84usize] = UsedEventDataOuter::spec_xdr();
+pub static __SPEC_XDR_TYPE_USEDEVENTDATAOUTER: [u8; 92usize] = UsedEventDataOuter::spec_xdr();
 impl UsedEventDataOuter {
-    pub const fn spec_xdr() -> [u8; 84usize] {
-        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x12UsedEventDataOuter\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05inner\0\0\0\0\0\x07\xd0\0\0\0\x12UsedEventDataInner\0\0"
+    pub const fn spec_xdr() -> [u8; 92usize] {
+        let mut bytes = *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x12UsedEventDataOuter\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05inner\0\0\0\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x12UsedEventDataInner\0\0";
+        {
+            let id = <UsedEventDataInner>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[60usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
+}
+impl UsedEventDataOuter {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [225u8, 223u8, 234u8, 32u8, 100u8, 73u8, 206u8, 139u8];
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventDataOuter {
     #[doc(hidden)]
@@ -2345,7 +2467,7 @@ impl soroban_sdk::SpecShakingMarker for UsedEventDataOuter {
     fn spec_shaking_marker() {
         <UsedEventDataInner as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1'\xf2\xa2\xb9\xd0)\xc0u";
+            static MARKER: [u8; 14usize] = *b"SpEcV1\xe1\xdf\xea dI\xce\x8b";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -2446,6 +2568,10 @@ impl UsedEventDataInner {
     pub const fn spec_xdr() -> [u8; 56usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x12UsedEventDataInner\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
     }
+}
+impl UsedEventDataInner {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [12u8, 240u8, 246u8, 119u8, 253u8, 26u8, 27u8, 148u8];
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventDataInner {
     #[doc(hidden)]
@@ -2552,11 +2678,20 @@ impl ::core::cmp::PartialEq for UsedEventWithNestedData {
     }
 }
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_EVENT_USEDEVENTWITHNESTEDDATA: [u8; 152usize] =
+pub static __SPEC_XDR_EVENT_USEDEVENTWITHNESTEDDATA: [u8; 160usize] =
     UsedEventWithNestedData::spec_xdr();
 impl UsedEventWithNestedData {
-    pub const fn spec_xdr() -> [u8; 152usize] {
-        *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x17UsedEventWithNestedData\0\0\0\0\x01\0\0\0\x1bused_event_with_nested_data\0\0\0\0\x02\0\0\0\0\0\0\0\x04kind\0\0\0\x11\0\0\0\x01\0\0\0\0\0\0\0\x07payload\0\0\0\x07\xd0\0\0\0\x12UsedEventDataOuter\0\0\0\0\0\0\0\0\0\x02"
+    pub const fn spec_xdr() -> [u8; 160usize] {
+        let mut bytes = *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x17UsedEventWithNestedData\0\0\0\0\x01\0\0\0\x1bused_event_with_nested_data\0\0\0\0\x02\0\0\0\0\0\0\0\x04kind\0\0\0\x11\0\0\0\x01\0\0\0\0\0\0\0\x07payload\0\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x12UsedEventDataOuter\0\0\0\0\0\0\0\0\0\x02";
+        {
+            let id = <UsedEventDataOuter>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[120usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventWithNestedData {
@@ -2566,7 +2701,7 @@ impl soroban_sdk::SpecShakingMarker for UsedEventWithNestedData {
         <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <UsedEventDataOuter as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1 \xfbl\x04B\x82\xc0\xb4";
+            static MARKER: [u8; 14usize] = *b"SpEcV1jX\x18\xb9\xf4\x8bg2";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -2648,6 +2783,10 @@ impl UsedRefTopicType {
     pub const fn spec_xdr() -> [u8; 68usize] {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x10UsedRefTopicType\0\0\0\x02\0\0\0\0\0\0\0\x04Send\0\0\0\x01\0\0\0\0\0\0\0\x04Recv\0\0\0\x02"
     }
+}
+impl UsedRefTopicType {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [64u8, 185u8, 76u8, 79u8, 249u8, 209u8, 232u8, 226u8];
 }
 impl soroban_sdk::SpecShakingMarker for UsedRefTopicType {
     #[doc(hidden)]
@@ -2741,11 +2880,24 @@ impl ::core::cmp::PartialEq for UsedRefDataType {
     }
 }
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDREFDATATYPE: [u8; 76usize] = UsedRefDataType::spec_xdr();
+pub static __SPEC_XDR_TYPE_USEDREFDATATYPE: [u8; 84usize] = UsedRefDataType::spec_xdr();
 impl UsedRefDataType {
-    pub const fn spec_xdr() -> [u8; 76usize] {
-        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0fUsedRefDataType\0\0\0\0\x01\0\0\0\0\0\0\0\x06nested\0\0\0\0\x07\xd0\0\0\0\x10UsedRefDataInner"
+    pub const fn spec_xdr() -> [u8; 84usize] {
+        let mut bytes = *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0fUsedRefDataType\0\0\0\0\x01\0\0\0\0\0\0\0\x06nested\0\0\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x10UsedRefDataInner";
+        {
+            let id = <UsedRefDataInner>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[56usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
+}
+impl UsedRefDataType {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [111u8, 109u8, 128u8, 122u8, 134u8, 55u8, 215u8, 0u8];
 }
 impl soroban_sdk::SpecShakingMarker for UsedRefDataType {
     #[doc(hidden)]
@@ -2753,7 +2905,7 @@ impl soroban_sdk::SpecShakingMarker for UsedRefDataType {
     fn spec_shaking_marker() {
         <UsedRefDataInner as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1'\xbd_A\r\x9a\x89\x02";
+            static MARKER: [u8; 14usize] = *b"SpEcV1om\x80z\x867\xd7\0";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -2847,6 +2999,10 @@ impl UsedRefDataInner {
     pub const fn spec_xdr() -> [u8; 52usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x10UsedRefDataInner\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
     }
+}
+impl UsedRefDataInner {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [75u8, 223u8, 39u8, 56u8, 109u8, 47u8, 232u8, 29u8];
 }
 impl soroban_sdk::SpecShakingMarker for UsedRefDataInner {
     #[doc(hidden)]
@@ -2951,10 +3107,27 @@ impl<'a> ::core::cmp::PartialEq for UsedEventWithRefs<'a> {
     }
 }
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_EVENT_USEDEVENTWITHREFS: [u8; 156usize] = UsedEventWithRefs::spec_xdr();
+pub static __SPEC_XDR_EVENT_USEDEVENTWITHREFS: [u8; 172usize] = UsedEventWithRefs::spec_xdr();
 impl<'a> UsedEventWithRefs<'a> {
-    pub const fn spec_xdr() -> [u8; 156usize] {
-        *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x11UsedEventWithRefs\0\0\0\0\0\0\x01\0\0\0\x14used_event_with_refs\0\0\0\x02\0\0\0\0\0\0\0\x04kind\0\0\x07\xd0\0\0\0\x10UsedRefTopicType\0\0\0\x01\0\0\0\0\0\0\0\x07payload\0\0\0\x07\xd0\0\0\0\x0fUsedRefDataType\0\0\0\0\0\0\0\0\x02"
+    pub const fn spec_xdr() -> [u8; 172usize] {
+        let mut bytes = *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x11UsedEventWithRefs\0\0\0\0\0\0\x01\0\0\0\x14used_event_with_refs\0\0\0\x02\0\0\0\0\0\0\0\x04kind\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x10UsedRefTopicType\0\0\0\x01\0\0\0\0\0\0\0\x07payload\0\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x0fUsedRefDataType\0\0\0\0\0\0\0\0\x02";
+        {
+            let id = <UsedRefTopicType>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[84usize + i] = id[i];
+                i += 1;
+            }
+        }
+        {
+            let id = <UsedRefDataType>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[136usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 impl<'a> soroban_sdk::SpecShakingMarker for UsedEventWithRefs<'a> {
@@ -2964,7 +3137,7 @@ impl<'a> soroban_sdk::SpecShakingMarker for UsedEventWithRefs<'a> {
         <&'a UsedRefTopicType as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <&'a UsedRefDataType as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1[Q+\xe9\xde\xd5\xf2>";
+            static MARKER: [u8; 14usize] = *b"SpEcV1e\x07o\xce\xaa)\xa0n";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -3039,6 +3212,10 @@ impl UsedTupleElement {
     pub const fn spec_xdr() -> [u8; 52usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x10UsedTupleElement\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
     }
+}
+impl UsedTupleElement {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [222u8, 29u8, 77u8, 97u8, 1u8, 236u8, 176u8, 65u8];
 }
 impl soroban_sdk::SpecShakingMarker for UsedTupleElement {
     #[doc(hidden)]
@@ -3144,6 +3321,10 @@ impl UsedTupleReturnElement {
     pub const fn spec_xdr() -> [u8; 60usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x16UsedTupleReturnElement\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
     }
+}
+impl UsedTupleReturnElement {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [89u8, 166u8, 54u8, 179u8, 236u8, 120u8, 69u8, 19u8];
 }
 impl soroban_sdk::SpecShakingMarker for UsedTupleReturnElement {
     #[doc(hidden)]
@@ -3252,6 +3433,10 @@ impl UsedVecInnerVecElement {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x16UsedVecInnerVecElement\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
     }
 }
+impl UsedVecInnerVecElement {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [207u8, 64u8, 37u8, 88u8, 222u8, 43u8, 74u8, 64u8];
+}
 impl soroban_sdk::SpecShakingMarker for UsedVecInnerVecElement {
     #[doc(hidden)]
     #[inline(always)]
@@ -3357,6 +3542,10 @@ impl UsedVecInnerElement {
     pub const fn spec_xdr() -> [u8; 56usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x13UsedVecInnerElement\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
     }
+}
+impl UsedVecInnerElement {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [180u8, 171u8, 78u8, 93u8, 227u8, 234u8, 65u8, 214u8];
 }
 impl soroban_sdk::SpecShakingMarker for UsedVecInnerElement {
     #[doc(hidden)]
@@ -3468,11 +3657,32 @@ impl ::core::cmp::PartialEq for UsedVecElementNested {
     }
 }
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDVECELEMENTNESTED: [u8; 156usize] = UsedVecElementNested::spec_xdr();
+pub static __SPEC_XDR_TYPE_USEDVECELEMENTNESTED: [u8; 172usize] = UsedVecElementNested::spec_xdr();
 impl UsedVecElementNested {
-    pub const fn spec_xdr() -> [u8; 156usize] {
-        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x14UsedVecElementNested\0\0\0\x03\0\0\0\0\0\0\0\x05inner\0\0\0\0\0\x07\xd0\0\0\0\x13UsedVecInnerElement\0\0\0\0\0\0\0\0\x03val\0\0\0\0\x04\0\0\0\0\0\0\0\tvec_inner\0\0\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x16UsedVecInnerVecElement\0\0"
+    pub const fn spec_xdr() -> [u8; 172usize] {
+        let mut bytes = *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x14UsedVecElementNested\0\0\0\x03\0\0\0\0\0\0\0\x05inner\0\0\0\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x13UsedVecInnerElement\0\0\0\0\0\0\0\0\x03val\0\0\0\0\x04\0\0\0\0\0\0\0\tvec_inner\0\0\0\0\0\x03\xea\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x16UsedVecInnerVecElement\0\0";
+        {
+            let id = <UsedVecInnerElement>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[60usize + i] = id[i];
+                i += 1;
+            }
+        }
+        {
+            let id = <UsedVecInnerVecElement>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[136usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
+}
+impl UsedVecElementNested {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [230u8, 190u8, 204u8, 81u8, 50u8, 238u8, 57u8, 163u8];
 }
 impl soroban_sdk::SpecShakingMarker for UsedVecElementNested {
     #[doc(hidden)]
@@ -3482,7 +3692,7 @@ impl soroban_sdk::SpecShakingMarker for UsedVecElementNested {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <Vec<UsedVecInnerVecElement> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x13?J\x12d\xden|";
+            static MARKER: [u8; 14usize] = *b"SpEcV1\xe6\xbe\xccQ2\xee9\xa3";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -3605,6 +3815,10 @@ mod export_false_used {
             *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x15UsedExportFalseStruct\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
         }
     }
+    impl UsedExportFalseStruct {
+        #[doc(hidden)]
+        pub const SPEC_XDR_ID: [u8; 8] = [127u8, 197u8, 206u8, 111u8, 195u8, 83u8, 84u8, 8u8];
+    }
     impl soroban_sdk::SpecShakingMarker for UsedExportFalseStruct {
         #[doc(hidden)]
         #[inline(always)]
@@ -3710,6 +3924,10 @@ mod export_false_used {
         pub const fn spec_xdr() -> [u8; 56usize] {
             *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x14UsedExportFalseError\0\0\0\x01\0\0\0\0\0\0\0\x04Fail\0\0\0\x01"
         }
+    }
+    impl UsedExportFalseError {
+        #[doc(hidden)]
+        pub const SPEC_XDR_ID: [u8; 8] = [13u8, 214u8, 13u8, 32u8, 252u8, 219u8, 234u8, 243u8];
     }
     impl soroban_sdk::SpecShakingMarker for UsedExportFalseError {
         #[doc(hidden)]
@@ -3970,6 +4188,10 @@ impl UsedNonPubStruct {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x10UsedNonPubStruct\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
     }
 }
+impl UsedNonPubStruct {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [112u8, 140u8, 15u8, 78u8, 33u8, 8u8, 50u8, 216u8];
+}
 impl soroban_sdk::SpecShakingMarker for UsedNonPubStruct {
     #[doc(hidden)]
     #[inline(always)]
@@ -4066,6 +4288,10 @@ impl UsedNonPubError {
     pub const fn spec_xdr() -> [u8; 52usize] {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x0fUsedNonPubError\0\0\0\0\x01\0\0\0\0\0\0\0\x04Fail\0\0\0\x01"
     }
+}
+impl UsedNonPubError {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [169u8, 60u8, 216u8, 43u8, 183u8, 167u8, 13u8, 23u8];
 }
 impl soroban_sdk::SpecShakingMarker for UsedNonPubError {
     #[doc(hidden)]
@@ -4223,11 +4449,24 @@ impl ::core::cmp::PartialEq for UsedRecursiveRoot {
     }
 }
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDRECURSIVEROOT: [u8; 80usize] = UsedRecursiveRoot::spec_xdr();
+pub static __SPEC_XDR_TYPE_USEDRECURSIVEROOT: [u8; 88usize] = UsedRecursiveRoot::spec_xdr();
 impl UsedRecursiveRoot {
-    pub const fn spec_xdr() -> [u8; 80usize] {
-        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x11UsedRecursiveRoot\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\x07\xd0\0\0\0\x11UsedRecursiveNode\0\0\0"
+    pub const fn spec_xdr() -> [u8; 88usize] {
+        let mut bytes = *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x11UsedRecursiveRoot\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x11UsedRecursiveNode\0\0\0";
+        {
+            let id = <UsedRecursiveNode>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[56usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
+}
+impl UsedRecursiveRoot {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [151u8, 194u8, 74u8, 125u8, 113u8, 185u8, 213u8, 7u8];
 }
 impl soroban_sdk::SpecShakingMarker for UsedRecursiveRoot {
     #[doc(hidden)]
@@ -4235,7 +4474,7 @@ impl soroban_sdk::SpecShakingMarker for UsedRecursiveRoot {
     fn spec_shaking_marker() {
         <UsedRecursiveNode as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1u2\x0b\x97\xae\xcd\x86\xbf";
+            static MARKER: [u8; 14usize] = *b"SpEcV1\x97\xc2J}q\xb9\xd5\x07";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -4349,11 +4588,32 @@ impl ::core::cmp::PartialEq for UsedRecursiveNode {
     }
 }
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDRECURSIVENODE: [u8; 140usize] = UsedRecursiveNode::spec_xdr();
+pub static __SPEC_XDR_TYPE_USEDRECURSIVENODE: [u8; 156usize] = UsedRecursiveNode::spec_xdr();
 impl UsedRecursiveNode {
-    pub const fn spec_xdr() -> [u8; 140usize] {
-        *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x11UsedRecursiveNode\0\0\0\0\0\0\x02\0\0\0\x01\0\0\0\0\0\0\0\x0cNotRecursive\0\0\0\x01\0\0\x07\xd0\0\0\0\x08UsedLeaf\0\0\0\x01\0\0\0\0\0\0\0\tRecursive\0\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x11UsedRecursiveLeaf\0\0\0"
+    pub const fn spec_xdr() -> [u8; 156usize] {
+        let mut bytes = *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x11UsedRecursiveNode\0\0\0\0\0\0\x02\0\0\0\x01\0\0\0\0\0\0\0\x0cNotRecursive\0\0\0\x01\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x08UsedLeaf\0\0\0\x01\0\0\0\0\0\0\0\tRecursive\0\0\0\0\0\0\x01\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x11UsedRecursiveLeaf\0\0\0";
+        {
+            let id = <UsedLeaf>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[72usize + i] = id[i];
+                i += 1;
+            }
+        }
+        {
+            let id = <UsedRecursiveLeaf>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[124usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
+}
+impl UsedRecursiveNode {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [83u8, 18u8, 87u8, 195u8, 221u8, 64u8, 208u8, 65u8];
 }
 impl soroban_sdk::SpecShakingMarker for UsedRecursiveNode {
     #[doc(hidden)]
@@ -4362,7 +4622,7 @@ impl soroban_sdk::SpecShakingMarker for UsedRecursiveNode {
         <UsedLeaf as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <UsedRecursiveLeaf as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1*\\\x9c\xf4e\xaa\x1e]";
+            static MARKER: [u8; 14usize] = *b"SpEcV1S\x12W\xc3\xdd@\xd0A";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -4490,11 +4750,24 @@ impl ::core::cmp::PartialEq for UsedRecursiveLeaf {
     }
 }
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDRECURSIVELEAF: [u8; 84usize] = UsedRecursiveLeaf::spec_xdr();
+pub static __SPEC_XDR_TYPE_USEDRECURSIVELEAF: [u8; 92usize] = UsedRecursiveLeaf::spec_xdr();
 impl UsedRecursiveLeaf {
-    pub const fn spec_xdr() -> [u8; 84usize] {
-        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x11UsedRecursiveLeaf\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x11UsedRecursiveRoot\0\0\0"
+    pub const fn spec_xdr() -> [u8; 92usize] {
+        let mut bytes = *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x11UsedRecursiveLeaf\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\x03\xea\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x11UsedRecursiveRoot\0\0\0";
+        {
+            let id = <UsedRecursiveRoot>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[60usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
+}
+impl UsedRecursiveLeaf {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [11u8, 222u8, 208u8, 20u8, 117u8, 211u8, 71u8, 232u8];
 }
 impl soroban_sdk::SpecShakingMarker for UsedRecursiveLeaf {
     #[doc(hidden)]
@@ -4502,7 +4775,7 @@ impl soroban_sdk::SpecShakingMarker for UsedRecursiveLeaf {
     fn spec_shaking_marker() {
         <Vec<UsedRecursiveRoot> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1?\xd9\xb3q\xdep>\xf3";
+            static MARKER: [u8; 14usize] = *b"SpEcV1\x0b\xde\xd0\x14u\xd3G\xe8";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -4595,6 +4868,10 @@ impl UsedLeaf {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x08UsedLeaf\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
     }
 }
+impl UsedLeaf {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [230u8, 81u8, 213u8, 84u8, 19u8, 138u8, 183u8, 108u8];
+}
 impl soroban_sdk::SpecShakingMarker for UsedLeaf {
     #[doc(hidden)]
     #[inline(always)]
@@ -4651,7 +4928,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedLeaf> for soroban_sdk::Val {
     }
 }
 mod wasm_imported {
-    pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01*\x07`\x02~~\x01~`\x03~~~\x01~`\x01~\x01~`\x00\x01~`\x02\x7f\x7f\x01~`\x04\x7f\x7f\x7f\x7f\x01~`\x02\x7f~\x00\x02%\x06\x01b\x01j\x00\x00\x01x\x011\x00\x00\x01v\x01g\x00\x00\x01m\x019\x00\x01\x01i\x012\x00\x02\x01i\x011\x00\x02\x03\x0b\n\x03\x04\x03\x02\x00\x05\x00\x00\x06\x06\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x82\x80\xc0\x00\x0b\x7f\x00A\xa0\x80\xc0\x00\x0b\x7f\x00A\xa0\x80\xc0\x00\x0b\x07\x81\x01\n\x06memory\x02\x00\tfn_enum_a\x00\x06\rfn_enum_int_a\x00\x08\nfn_error_a\x00\t\nfn_event_a\x00\n\x0bfn_struct_a\x00\x0c\x11fn_struct_tuple_a\x00\r\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\xbd\x08\n\x8b\x02\x03\x01\x7f\x01~\x03\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00B\x00!\x01A~!\x02\x03~\x02@\x02@\x02@\x02@\x02@ \x02E\r\x00A\x01!\x03 \x02A\x82\x80\xc0\x80\x00j-\x00\x00\"\x04A\xdf\x00F\r\x04 \x04APjA\xff\x01qA\nI\r\x02 \x04A\xbf\x7fjA\xff\x01qA\x1aI\r\x03\x02@ \x04A\x9f\x7fjA\xff\x01qA\x1aO\r\x00 \x04AEj!\x03\x0c\x05\x0b \x00 \x04\xadB\x08\x86B\x01\x847\x03\x00A\x80\x80\xc0\x80\x00\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x80\x80\x80\x80\x00!\x01\x0c\x01\x0b \x00 \x01B\x08\x86B\x0e\x84\"\x017\x02\x04\x0b \x00 \x017\x03\x00 \x00A\x01\x10\x87\x80\x80\x80\x00!\x01 \x00A\x10j$\x80\x80\x80\x80\x00 \x01\x0f\x0b \x04ARj!\x03\x0c\x01\x0b \x04AKj!\x03\x0b \x01B\x06\x86 \x03\xadB\xff\x01\x83\x84!\x01 \x02A\x01j!\x02\x0c\x00\x0b\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x82\x80\x80\x80\x00\x0b\x08\x00B\x84\x80\x80\x800\x0b*\x00\x02@ \x00B\xff\x01\x83B\x04Q\r\x00\x00\x0bB\x83\x80\x80\x80  \x00B\x84\x80\x80\x80p\x83 \x00B\x80\x80\x80\x80\x10T\x1b\x0b\xdc\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcd\x00R\r\x00 \x01B\xff\x01\x83B\xc9\x00R\r\x00 \x02 \x007\x03\x08 \x02B\x8e\xcc\xc1\xfc\xac\xdd\xab\x017\x03\x00A\x00!\x03\x03@\x02@ \x03A\x10G\r\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02A\x10j \x03j \x02 \x03j)\x03\x007\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x02A\x10jA\x02\x10\x87\x80\x80\x80\x00!\x00 \x02 \x017\x03\x10 \x00A\x98\x80\xc0\x80\x00A\x01 \x02A\x10jA\x01\x10\x8b\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x02A j$\x80\x80\x80\x80\x00B\x02\x0f\x0b \x02A\x10j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b\x00\x0b.\x00\x02@ \x01 \x03F\r\x00\x00\x0b \x00\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x83\x80\x80\x80\x00\x0by\x01\x02\x7f#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\x04R\r\x00A\x01A\x02A\x00 \x01\xa7A\xff\x01q\"\x03\x1b \x03A\x01F\x1b\"\x03A\x02F\r\x00 \x02 \x03\xad7\x03\x08 \x02 \x00B\x84\x80\x80\x80p\x837\x03\x00A\x88\x80\xc0\x80\x00A\x02 \x02A\x02\x10\x8b\x80\x80\x80\x00!\x00 \x02A\x10j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b\xb2\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00 \x02A\x10j \x00\x10\x8e\x80\x80\x80\x00\x02@ \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x8e\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x01 \x02A\x10j \x00\x10\x8f\x80\x80\x80\x00 \x02(\x02\x10\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x8f\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02 \x02)\x03\x187\x03\x08 \x02 \x007\x03\x00 \x02A\x02\x10\x87\x80\x80\x80\x00!\x00 \x02A j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b]\x02\x01\x7f\x01~\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc1\x00F\r\x00\x02@ \x02A\x07F\r\x00B\x01!\x03B\x83\x90\x80\x80\x80\x01!\x01\x0c\x02\x0b \x01B\x08\x87!\x01B\x00!\x03\x0c\x01\x0bB\x00!\x03 \x01\x10\x84\x80\x80\x80\x00!\x01\x0b \x00 \x037\x03\x00 \x00 \x017\x03\x08\x0bF\x00\x02@\x02@ \x01B\x80\x80\x80\x80\x80\x80\x80\xc0\x00|B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x01B\x08\x86B\x07\x84!\x01\x0c\x01\x0b \x01\x10\x85\x80\x80\x80\x00!\x01\x0b \x00B\x007\x03\x00 \x00 \x017\x03\x08\x0b\x0b)\x01\x00A\x80\x80\xc0\x00\x0b V2f1f2\x00\x00\x02\x00\x10\x00\x02\x00\x00\x00\x04\x00\x10\x00\x02\x00\x00\x00\x04\x00\x10\x00\x02\x00\x00\x00\x00\xbf\x0e\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\tfn_enum_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_error_a\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05input\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd0\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_event_a\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bfn_struct_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rfn_enum_int_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x08EnumIntA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11fn_struct_tuple_a\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumB\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x07\x00\x00\x00\x07\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumC\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorB\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x0c\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorC\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00e\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00f\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventA\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventB\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_b\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventC\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_c\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructA\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructB\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructC\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x03\xea\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntA\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntB\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntC\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\xc8\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x01,\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleB\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleC\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x0b\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1b\x00\x00\x00\x00\x00+\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00";
+    pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01*\x07`\x02~~\x01~`\x03~~~\x01~`\x01~\x01~`\x00\x01~`\x02\x7f\x7f\x01~`\x04\x7f\x7f\x7f\x7f\x01~`\x02\x7f~\x00\x02%\x06\x01b\x01j\x00\x00\x01x\x011\x00\x00\x01v\x01g\x00\x00\x01m\x019\x00\x01\x01i\x012\x00\x02\x01i\x011\x00\x02\x03\x0b\n\x03\x04\x03\x02\x00\x05\x00\x00\x06\x06\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x82\x80\xc0\x00\x0b\x7f\x00A\xa0\x80\xc0\x00\x0b\x7f\x00A\xa0\x80\xc0\x00\x0b\x07\x81\x01\n\x06memory\x02\x00\tfn_enum_a\x00\x06\rfn_enum_int_a\x00\x08\nfn_error_a\x00\t\nfn_event_a\x00\n\x0bfn_struct_a\x00\x0c\x11fn_struct_tuple_a\x00\r\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\xbd\x08\n\x8b\x02\x03\x01\x7f\x01~\x03\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00B\x00!\x01A~!\x02\x03~\x02@\x02@\x02@\x02@\x02@ \x02E\r\x00A\x01!\x03 \x02A\x82\x80\xc0\x80\x00j-\x00\x00\"\x04A\xdf\x00F\r\x04 \x04APjA\xff\x01qA\nI\r\x02 \x04A\xbf\x7fjA\xff\x01qA\x1aI\r\x03\x02@ \x04A\x9f\x7fjA\xff\x01qA\x1aO\r\x00 \x04AEj!\x03\x0c\x05\x0b \x00 \x04\xadB\x08\x86B\x01\x847\x03\x00A\x80\x80\xc0\x80\x00\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x80\x80\x80\x80\x00!\x01\x0c\x01\x0b \x00 \x01B\x08\x86B\x0e\x84\"\x017\x02\x04\x0b \x00 \x017\x03\x00 \x00A\x01\x10\x87\x80\x80\x80\x00!\x01 \x00A\x10j$\x80\x80\x80\x80\x00 \x01\x0f\x0b \x04ARj!\x03\x0c\x01\x0b \x04AKj!\x03\x0b \x01B\x06\x86 \x03\xadB\xff\x01\x83\x84!\x01 \x02A\x01j!\x02\x0c\x00\x0b\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x82\x80\x80\x80\x00\x0b\x08\x00B\x84\x80\x80\x800\x0b*\x00\x02@ \x00B\xff\x01\x83B\x04Q\r\x00\x00\x0bB\x83\x80\x80\x80  \x00B\x84\x80\x80\x80p\x83 \x00B\x80\x80\x80\x80\x10T\x1b\x0b\xdc\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcd\x00R\r\x00 \x01B\xff\x01\x83B\xc9\x00R\r\x00 \x02 \x007\x03\x08 \x02B\x8e\xcc\xc1\xfc\xac\xdd\xab\x017\x03\x00A\x00!\x03\x03@\x02@ \x03A\x10G\r\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02A\x10j \x03j \x02 \x03j)\x03\x007\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x02A\x10jA\x02\x10\x87\x80\x80\x80\x00!\x00 \x02 \x017\x03\x10 \x00A\x98\x80\xc0\x80\x00A\x01 \x02A\x10jA\x01\x10\x8b\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x02A j$\x80\x80\x80\x80\x00B\x02\x0f\x0b \x02A\x10j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b\x00\x0b.\x00\x02@ \x01 \x03F\r\x00\x00\x0b \x00\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x83\x80\x80\x80\x00\x0by\x01\x02\x7f#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\x04R\r\x00A\x01A\x02A\x00 \x01\xa7A\xff\x01q\"\x03\x1b \x03A\x01F\x1b\"\x03A\x02F\r\x00 \x02 \x03\xad7\x03\x08 \x02 \x00B\x84\x80\x80\x80p\x837\x03\x00A\x88\x80\xc0\x80\x00A\x02 \x02A\x02\x10\x8b\x80\x80\x80\x00!\x00 \x02A\x10j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b\xb2\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00 \x02A\x10j \x00\x10\x8e\x80\x80\x80\x00\x02@ \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x8e\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x01 \x02A\x10j \x00\x10\x8f\x80\x80\x80\x00 \x02(\x02\x10\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x8f\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02 \x02)\x03\x187\x03\x08 \x02 \x007\x03\x00 \x02A\x02\x10\x87\x80\x80\x80\x00!\x00 \x02A j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b]\x02\x01\x7f\x01~\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc1\x00F\r\x00\x02@ \x02A\x07F\r\x00B\x01!\x03B\x83\x90\x80\x80\x80\x01!\x01\x0c\x02\x0b \x01B\x08\x87!\x01B\x00!\x03\x0c\x01\x0bB\x00!\x03 \x01\x10\x84\x80\x80\x80\x00!\x01\x0b \x00 \x037\x03\x00 \x00 \x017\x03\x08\x0bF\x00\x02@\x02@ \x01B\x80\x80\x80\x80\x80\x80\x80\xc0\x00|B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x01B\x08\x86B\x07\x84!\x01\x0c\x01\x0b \x01\x10\x85\x80\x80\x80\x00!\x01\x0b \x00B\x007\x03\x00 \x00 \x017\x03\x08\x0b\x0b)\x01\x00A\x80\x80\xc0\x00\x0b V2f1f2\x00\x00\x02\x00\x10\x00\x02\x00\x00\x00\x04\x00\x10\x00\x02\x00\x00\x00\x04\x00\x10\x00\x02\x00\x00\x00\x00\xf7\x0e\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\tfn_enum_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd1\xa2=N\xc1p\x95\x90\xb2\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_error_a\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05input\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd1\xe9R\xa7\xe8b\x99\xa2\xc3\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_event_a\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bfn_struct_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x07\xd1\xb6\x1c\xfd\xdfhY-d\x00\x00\x00\x07StructA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rfn_enum_int_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd1V]\x80\\~\x1a\x08/\x00\x00\x00\x08EnumIntA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11fn_struct_tuple_a\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x07\xd1\xcf)\x97]S\xb2\xfd)\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumB\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x07\x00\x00\x00\x07\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumC\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd1\xb6\x1c\xfd\xdfhY-d\x00\x00\x00\x07StructA\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd1\xcf)\x97]S\xb2\xfd)\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorB\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x0c\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorC\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00e\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00f\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventA\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventB\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_b\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventC\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_c\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructA\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructB\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructC\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x03\xea\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntA\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntB\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntC\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\xc8\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x01,\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleB\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleC\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x0b\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1c\x00\x00\x00\x00\x00+\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00";
     pub trait Contract {
         fn fn_enum_a(env: soroban_sdk::Env) -> EnumA;
         fn fn_error_a(env: soroban_sdk::Env, input: u32) -> Result<u32, ErrorA>;
@@ -4981,6 +5258,10 @@ mod wasm_imported {
             *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07StructA\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x04\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x01"
         }
     }
+    impl StructA {
+        #[doc(hidden)]
+        pub const SPEC_XDR_ID: [u8; 8] = [182u8, 28u8, 253u8, 223u8, 104u8, 89u8, 45u8, 100u8];
+    }
     impl soroban_sdk::SpecShakingMarker for StructA {
         #[doc(hidden)]
         #[inline(always)]
@@ -5113,6 +5394,10 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; 60usize] {
             *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07StructB\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x07\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x10"
         }
+    }
+    impl StructB {
+        #[doc(hidden)]
+        pub const SPEC_XDR_ID: [u8; 8] = [243u8, 196u8, 211u8, 140u8, 193u8, 119u8, 233u8, 24u8];
     }
     impl soroban_sdk::SpecShakingMarker for StructB {
         #[doc(hidden)]
@@ -5247,6 +5532,10 @@ mod wasm_imported {
             *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07StructC\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\x03\xea\0\0\0\x04\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x13"
         }
     }
+    impl StructC {
+        #[doc(hidden)]
+        pub const SPEC_XDR_ID: [u8; 8] = [163u8, 22u8, 10u8, 143u8, 201u8, 146u8, 210u8, 17u8];
+    }
     impl soroban_sdk::SpecShakingMarker for StructC {
         #[doc(hidden)]
         #[inline(always)]
@@ -5377,6 +5666,10 @@ mod wasm_imported {
             *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleA\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x011\0\0\0\0\0\0\x07"
         }
     }
+    impl StructTupleA {
+        #[doc(hidden)]
+        pub const SPEC_XDR_ID: [u8; 8] = [207u8, 41u8, 151u8, 93u8, 83u8, 178u8, 253u8, 41u8];
+    }
     impl soroban_sdk::SpecShakingMarker for StructTupleA {
         #[doc(hidden)]
         #[inline(always)]
@@ -5502,6 +5795,10 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; 64usize] {
             *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleB\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\n\0\0\0\0\0\0\0\x011\0\0\0\0\0\0\n"
         }
+    }
+    impl StructTupleB {
+        #[doc(hidden)]
+        pub const SPEC_XDR_ID: [u8; 8] = [120u8, 217u8, 56u8, 156u8, 26u8, 111u8, 172u8, 140u8];
     }
     impl soroban_sdk::SpecShakingMarker for StructTupleB {
         #[doc(hidden)]
@@ -5629,6 +5926,10 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; 64usize] {
             *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleC\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\x13\0\0\0\0\0\0\0\x011\0\0\0\0\0\0\x0b"
         }
+    }
+    impl StructTupleC {
+        #[doc(hidden)]
+        pub const SPEC_XDR_ID: [u8; 8] = [197u8, 61u8, 129u8, 193u8, 34u8, 175u8, 84u8, 217u8];
     }
     impl soroban_sdk::SpecShakingMarker for StructTupleC {
         #[doc(hidden)]
@@ -5760,6 +6061,10 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; 76usize] {
             *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumA\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\0\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\0\0\0\0\0\0\0\0\x02V3\0\0"
         }
+    }
+    impl EnumA {
+        #[doc(hidden)]
+        pub const SPEC_XDR_ID: [u8; 8] = [162u8, 61u8, 78u8, 193u8, 112u8, 149u8, 144u8, 178u8];
     }
     impl soroban_sdk::SpecShakingMarker for EnumA {
         #[doc(hidden)]
@@ -5966,6 +6271,10 @@ mod wasm_imported {
             *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumB\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x01\0\0\0\x07\0\0\0\x01\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x02\0\0\0\x07\0\0\0\x07"
         }
     }
+    impl EnumB {
+        #[doc(hidden)]
+        pub const SPEC_XDR_ID: [u8; 8] = [39u8, 27u8, 0u8, 68u8, 83u8, 72u8, 94u8, 204u8];
+    }
     impl soroban_sdk::SpecShakingMarker for EnumB {
         #[doc(hidden)]
         #[inline(always)]
@@ -6168,11 +6477,32 @@ mod wasm_imported {
         }
     }
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_TYPE_ENUMC: [u8; 120usize] = EnumC::spec_xdr();
+    pub static __SPEC_XDR_TYPE_ENUMC: [u8; 136usize] = EnumC::spec_xdr();
     impl EnumC {
-        pub const fn spec_xdr() -> [u8; 120usize] {
-            *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumC\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x07StructA\0\0\0\0\x01\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x0cStructTupleA"
+        pub const fn spec_xdr() -> [u8; 136usize] {
+            let mut bytes = *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumC\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x01\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x07StructA\0\0\0\0\x01\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x01\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleA";
+            {
+                let id = <StructA>::SPEC_XDR_ID;
+                let mut i = 0usize;
+                while i < 8 {
+                    bytes[68usize + i] = id[i];
+                    i += 1;
+                }
+            }
+            {
+                let id = <StructTupleA>::SPEC_XDR_ID;
+                let mut i = 0usize;
+                while i < 8 {
+                    bytes[112usize + i] = id[i];
+                    i += 1;
+                }
+            }
+            bytes
         }
+    }
+    impl EnumC {
+        #[doc(hidden)]
+        pub const SPEC_XDR_ID: [u8; 8] = [78u8, 41u8, 7u8, 10u8, 222u8, 187u8, 73u8, 191u8];
     }
     impl soroban_sdk::SpecShakingMarker for EnumC {
         #[doc(hidden)]
@@ -6181,7 +6511,7 @@ mod wasm_imported {
             <StructA as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <StructTupleA as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1\xa0\xdd\x8f\xdc\xc9W\xbe\xc2";
+                static MARKER: [u8; 14usize] = *b"SpEcV1N)\x07\n\xde\xbbI\xbf";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
             }
         }
@@ -6349,6 +6679,10 @@ mod wasm_imported {
             *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08EnumIntA\0\0\0\x03\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x03"
         }
     }
+    impl EnumIntA {
+        #[doc(hidden)]
+        pub const SPEC_XDR_ID: [u8; 8] = [86u8, 93u8, 128u8, 92u8, 126u8, 26u8, 8u8, 47u8];
+    }
     impl soroban_sdk::SpecShakingMarker for EnumIntA {
         #[doc(hidden)]
         #[inline(always)]
@@ -6470,6 +6804,10 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; 76usize] {
             *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08EnumIntB\0\0\0\x03\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\n\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x14\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x1e"
         }
+    }
+    impl EnumIntB {
+        #[doc(hidden)]
+        pub const SPEC_XDR_ID: [u8; 8] = [44u8, 156u8, 192u8, 95u8, 237u8, 95u8, 41u8, 133u8];
     }
     impl soroban_sdk::SpecShakingMarker for EnumIntB {
         #[doc(hidden)]
@@ -6593,6 +6931,10 @@ mod wasm_imported {
             *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08EnumIntC\0\0\0\x03\0\0\0\0\0\0\0\x02V1\0\0\0\0\0d\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\xc8\0\0\0\0\0\0\0\x02V3\0\0\0\0\x01,"
         }
     }
+    impl EnumIntC {
+        #[doc(hidden)]
+        pub const SPEC_XDR_ID: [u8; 8] = [96u8, 202u8, 218u8, 25u8, 185u8, 99u8, 240u8, 47u8];
+    }
     impl soroban_sdk::SpecShakingMarker for EnumIntC {
         #[doc(hidden)]
         #[inline(always)]
@@ -6714,6 +7056,10 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; 76usize] {
             *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x06ErrorA\0\0\0\0\0\x03\0\0\0\0\0\0\0\x02E1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02E2\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02E3\0\0\0\0\0\x03"
         }
+    }
+    impl ErrorA {
+        #[doc(hidden)]
+        pub const SPEC_XDR_ID: [u8; 8] = [233u8, 82u8, 167u8, 232u8, 98u8, 153u8, 162u8, 195u8];
     }
     impl soroban_sdk::SpecShakingMarker for ErrorA {
         #[doc(hidden)]
@@ -6907,6 +7253,10 @@ mod wasm_imported {
             *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x06ErrorB\0\0\0\0\0\x03\0\0\0\0\0\0\0\x02E1\0\0\0\0\0\n\0\0\0\0\0\0\0\x02E2\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02E3\0\0\0\0\0\x0c"
         }
     }
+    impl ErrorB {
+        #[doc(hidden)]
+        pub const SPEC_XDR_ID: [u8; 8] = [29u8, 49u8, 214u8, 251u8, 136u8, 210u8, 61u8, 227u8];
+    }
     impl soroban_sdk::SpecShakingMarker for ErrorB {
         #[doc(hidden)]
         #[inline(always)]
@@ -7098,6 +7448,10 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; 76usize] {
             *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x06ErrorC\0\0\0\0\0\x03\0\0\0\0\0\0\0\x02E1\0\0\0\0\0d\0\0\0\0\0\0\0\x02E2\0\0\0\0\0e\0\0\0\0\0\0\0\x02E3\0\0\0\0\0f"
         }
+    }
+    impl ErrorC {
+        #[doc(hidden)]
+        pub const SPEC_XDR_ID: [u8; 8] = [185u8, 1u8, 175u8, 106u8, 224u8, 99u8, 163u8, 13u8];
     }
     impl soroban_sdk::SpecShakingMarker for ErrorC {
         #[doc(hidden)]
@@ -7634,6 +7988,10 @@ impl UnusedStruct {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cUnusedStruct\0\0\0\x01\0\0\0\0\0\0\0\x01x\0\0\0\0\0\0\x04"
     }
 }
+impl UnusedStruct {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [124u8, 156u8, 9u8, 30u8, 245u8, 168u8, 25u8, 160u8];
+}
 impl soroban_sdk::SpecShakingMarker for UnusedStruct {
     #[doc(hidden)]
     #[inline(always)]
@@ -7745,6 +8103,10 @@ impl UnusedEnum {
     pub const fn spec_xdr() -> [u8; 72usize] {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\nUnusedEnum\0\0\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x01A\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01B\0\0\0\0\0\0\x01\0\0\0\x07"
     }
+}
+impl UnusedEnum {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [47u8, 130u8, 154u8, 48u8, 190u8, 64u8, 14u8, 90u8];
 }
 impl soroban_sdk::SpecShakingMarker for UnusedEnum {
     #[doc(hidden)]
@@ -7881,6 +8243,10 @@ impl UnusedIntEnum {
     pub const fn spec_xdr() -> [u8; 68usize] {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\rUnusedIntEnum\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02U1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02U2\0\0\0\0\0\x02"
     }
+}
+impl UnusedIntEnum {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [12u8, 221u8, 238u8, 126u8, 44u8, 131u8, 228u8, 156u8];
 }
 impl soroban_sdk::SpecShakingMarker for UnusedIntEnum {
     #[doc(hidden)]
@@ -8063,6 +8429,10 @@ impl UnusedPubError {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x0eUnusedPubError\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04Nope\0\0\0\x01"
     }
 }
+impl UnusedPubError {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [231u8, 240u8, 123u8, 55u8, 221u8, 144u8, 122u8, 61u8];
+}
 impl soroban_sdk::SpecShakingMarker for UnusedPubError {
     #[doc(hidden)]
     #[inline(always)]
@@ -8226,6 +8596,10 @@ impl UnusedNonContractFnParam {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x18UnusedNonContractFnParam\0\0\0\x01\0\0\0\0\0\0\0\x01x\0\0\0\0\0\0\x04"
     }
 }
+impl UnusedNonContractFnParam {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [129u8, 188u8, 219u8, 180u8, 193u8, 203u8, 189u8, 197u8];
+}
 impl soroban_sdk::SpecShakingMarker for UnusedNonContractFnParam {
     #[doc(hidden)]
     #[inline(always)]
@@ -8333,6 +8707,10 @@ impl UnusedNonContractFnReturn {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x19UnusedNonContractFnReturn\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01x\0\0\0\0\0\0\x04"
     }
 }
+impl UnusedNonContractFnReturn {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [127u8, 101u8, 28u8, 10u8, 135u8, 103u8, 29u8, 192u8];
+}
 impl soroban_sdk::SpecShakingMarker for UnusedNonContractFnReturn {
     #[doc(hidden)]
     #[inline(always)]
@@ -8434,6 +8812,10 @@ impl UnusedNonPubStruct {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x12UnusedNonPubStruct\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01x\0\0\0\0\0\0\x04"
     }
 }
+impl UnusedNonPubStruct {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [168u8, 59u8, 44u8, 37u8, 125u8, 93u8, 80u8, 65u8];
+}
 impl soroban_sdk::SpecShakingMarker for UnusedNonPubStruct {
     #[doc(hidden)]
     #[inline(always)]
@@ -8532,6 +8914,10 @@ impl UnusedNonPubError {
     pub const fn spec_xdr() -> [u8; 56usize] {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x11UnusedNonPubError\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03Bad\0\0\0\0\x01"
     }
+}
+impl UnusedNonPubError {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [217u8, 95u8, 153u8, 34u8, 61u8, 198u8, 70u8, 77u8];
 }
 impl soroban_sdk::SpecShakingMarker for UnusedNonPubError {
     #[doc(hidden)]
@@ -8770,12 +9156,29 @@ pub mod __Contract__with_param__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_PARAM: [u8; 104usize] = super::Contract::spec_xdr_with_param();
+    pub static __SPEC_XDR_FN_WITH_PARAM: [u8; 120usize] = super::Contract::spec_xdr_with_param();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_param() -> [u8; 104usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\nwith_param\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01s\0\0\0\0\0\x07\xd0\0\0\0\x0fUsedParamStruct\0\0\0\0\0\0\0\0\x02ie\0\0\0\0\x07\xd0\0\0\0\x10UsedParamIntEnum\0\0\0\0"
+    pub const fn spec_xdr_with_param() -> [u8; 120usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\nwith_param\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01s\0\0\0\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x0fUsedParamStruct\0\0\0\0\0\0\0\0\x02ie\0\0\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x10UsedParamIntEnum\0\0\0\0";
+        {
+            let id = <UsedParamStruct>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[44usize + i] = id[i];
+                i += 1;
+            }
+        }
+        {
+            let id = <UsedParamIntEnum>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[88usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 #[doc(hidden)]
@@ -8785,12 +9188,21 @@ pub mod __Contract__with_return__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_RETURN: [u8; 56usize] = super::Contract::spec_xdr_with_return();
+    pub static __SPEC_XDR_FN_WITH_RETURN: [u8; 64usize] = super::Contract::spec_xdr_with_return();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_return() -> [u8; 56usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0bwith_return\0\0\0\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x0eUsedReturnEnum\0\0"
+    pub const fn spec_xdr_with_return() -> [u8; 64usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\x0bwith_return\0\0\0\0\0\0\0\0\x01\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x0eUsedReturnEnum\0\0";
+        {
+            let id = <UsedReturnEnum>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[36usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 #[doc(hidden)]
@@ -8800,12 +9212,21 @@ pub mod __Contract__with_error__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_ERROR: [u8; 64usize] = super::Contract::spec_xdr_with_error();
+    pub static __SPEC_XDR_FN_WITH_ERROR: [u8; 72usize] = super::Contract::spec_xdr_with_error();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_error() -> [u8; 64usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\nwith_error\0\0\0\0\0\0\0\0\0\x01\0\0\x03\xe9\0\0\0\x04\0\0\x07\xd0\0\0\0\rUsedErrorEnum\0\0\0"
+    pub const fn spec_xdr_with_error() -> [u8; 72usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\nwith_error\0\0\0\0\0\0\0\0\0\x01\0\0\x03\xe9\0\0\0\x04\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\rUsedErrorEnum\0\0\0";
+        {
+            let id = <UsedErrorEnum>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[44usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 #[doc(hidden)]
@@ -8863,12 +9284,21 @@ pub mod __Contract__with_vec__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_VEC: [u8; 68usize] = super::Contract::spec_xdr_with_vec();
+    pub static __SPEC_XDR_FN_WITH_VEC: [u8; 76usize] = super::Contract::spec_xdr_with_vec();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_vec() -> [u8; 68usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x08with_vec\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x0eUsedVecElement\0\0\0\0\0\0"
+    pub const fn spec_xdr_with_vec() -> [u8; 76usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\x08with_vec\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x03\xea\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x0eUsedVecElement\0\0\0\0\0\0";
+        {
+            let id = <UsedVecElement>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[44usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 #[doc(hidden)]
@@ -8878,13 +9308,22 @@ pub mod __Contract__with_vec_nested__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_VEC_NESTED: [u8; 80usize] =
+    pub static __SPEC_XDR_FN_WITH_VEC_NESTED: [u8; 88usize] =
         super::Contract::spec_xdr_with_vec_nested();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_vec_nested() -> [u8; 80usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0fwith_vec_nested\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x14UsedVecElementNested\0\0\0\0"
+    pub const fn spec_xdr_with_vec_nested() -> [u8; 88usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\x0fwith_vec_nested\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x03\xea\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x14UsedVecElementNested\0\0\0\0";
+        {
+            let id = <UsedVecElementNested>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[52usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 #[doc(hidden)]
@@ -8894,12 +9333,29 @@ pub mod __Contract__with_map__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_MAP: [u8; 84usize] = super::Contract::spec_xdr_with_map();
+    pub static __SPEC_XDR_FN_WITH_MAP: [u8; 100usize] = super::Contract::spec_xdr_with_map();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_map() -> [u8; 84usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x08with_map\0\0\0\x01\0\0\0\0\0\0\0\x01m\0\0\0\0\0\x03\xec\0\0\x07\xd0\0\0\0\nUsedMapKey\0\0\0\0\x07\xd0\0\0\0\nUsedMapVal\0\0\0\0\0\0"
+    pub const fn spec_xdr_with_map() -> [u8; 100usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\x08with_map\0\0\0\x01\0\0\0\0\0\0\0\x01m\0\0\0\0\0\x03\xec\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\nUsedMapKey\0\0\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\nUsedMapVal\0\0\0\0\0\0";
+        {
+            let id = <UsedMapKey>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[44usize + i] = id[i];
+                i += 1;
+            }
+        }
+        {
+            let id = <UsedMapVal>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[72usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 #[doc(hidden)]
@@ -8909,12 +9365,21 @@ pub mod __Contract__with_option__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_OPTION: [u8; 76usize] = super::Contract::spec_xdr_with_option();
+    pub static __SPEC_XDR_FN_WITH_OPTION: [u8; 84usize] = super::Contract::spec_xdr_with_option();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_option() -> [u8; 76usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0bwith_option\0\0\0\0\x01\0\0\0\0\0\0\0\x01o\0\0\0\0\0\x03\xe8\0\0\x07\xd0\0\0\0\x11UsedOptionElement\0\0\0\0\0\0\0"
+    pub const fn spec_xdr_with_option() -> [u8; 84usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\x0bwith_option\0\0\0\0\x01\0\0\0\0\0\0\0\x01o\0\0\0\0\0\x03\xe8\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x11UsedOptionElement\0\0\0\0\0\0\0";
+        {
+            let id = <UsedOptionElement>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[48usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 #[doc(hidden)]
@@ -8924,12 +9389,29 @@ pub mod __Contract__with_result__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_RESULT: [u8; 80usize] = super::Contract::spec_xdr_with_result();
+    pub static __SPEC_XDR_FN_WITH_RESULT: [u8; 96usize] = super::Contract::spec_xdr_with_result();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_result() -> [u8; 80usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0bwith_result\0\0\0\0\0\0\0\0\x01\0\0\x03\xe9\0\0\x07\xd0\0\0\0\x0cUsedResultOk\0\0\x07\xd0\0\0\0\rUsedErrorEnum\0\0\0"
+    pub const fn spec_xdr_with_result() -> [u8; 96usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\x0bwith_result\0\0\0\0\0\0\0\0\x01\0\0\x03\xe9\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x0cUsedResultOk\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\rUsedErrorEnum\0\0\0";
+        {
+            let id = <UsedResultOk>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[40usize + i] = id[i];
+                i += 1;
+            }
+        }
+        {
+            let id = <UsedErrorEnum>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[68usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 #[doc(hidden)]
@@ -8939,13 +9421,22 @@ pub mod __Contract__with_recursion__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_RECURSION: [u8; 76usize] =
+    pub static __SPEC_XDR_FN_WITH_RECURSION: [u8; 84usize] =
         super::Contract::spec_xdr_with_recursion();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_recursion() -> [u8; 76usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0ewith_recursion\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01r\0\0\0\0\0\x07\xd0\0\0\0\x11UsedRecursiveRoot\0\0\0\0\0\0\0"
+    pub const fn spec_xdr_with_recursion() -> [u8; 84usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\x0ewith_recursion\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01r\0\0\0\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x11UsedRecursiveRoot\0\0\0\0\0\0\0";
+        {
+            let id = <UsedRecursiveRoot>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[48usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 #[doc(hidden)]
@@ -8955,13 +9446,22 @@ pub mod __Contract__with_auth_contexts__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_AUTH_CONTEXTS: [u8; 72usize] =
+    pub static __SPEC_XDR_FN_WITH_AUTH_CONTEXTS: [u8; 80usize] =
         super::Contract::spec_xdr_with_auth_contexts();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_auth_contexts() -> [u8; 72usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x12with_auth_contexts\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01c\0\0\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x07Context\0\0\0\0\0"
+    pub const fn spec_xdr_with_auth_contexts() -> [u8; 80usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\x12with_auth_contexts\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01c\0\0\0\0\0\x03\xea\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x07Context\0\0\0\0\0";
+        {
+            let id = <soroban_sdk::auth::Context>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[56usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 #[doc(hidden)]
@@ -8971,13 +9471,22 @@ pub mod __Contract__with_invoker_auth__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_INVOKER_AUTH: [u8; 84usize] =
+    pub static __SPEC_XDR_FN_WITH_INVOKER_AUTH: [u8; 92usize] =
         super::Contract::spec_xdr_with_invoker_auth();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_invoker_auth() -> [u8; 84usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x11with_invoker_auth\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01i\0\0\0\0\0\x07\xd0\0\0\0\x18InvokerContractAuthEntry\0\0\0\0"
+    pub const fn spec_xdr_with_invoker_auth() -> [u8; 92usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\x11with_invoker_auth\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01i\0\0\0\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x18InvokerContractAuthEntry\0\0\0\0";
+        {
+            let id = <soroban_sdk::auth::InvokerContractAuthEntry>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[52usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 #[doc(hidden)]
@@ -8987,13 +9496,22 @@ pub mod __Contract__with_executable__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_EXECUTABLE: [u8; 68usize] =
+    pub static __SPEC_XDR_FN_WITH_EXECUTABLE: [u8; 76usize] =
         super::Contract::spec_xdr_with_executable();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_executable() -> [u8; 68usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0fwith_executable\0\0\0\0\x01\0\0\0\0\0\0\0\x01e\0\0\0\0\0\x07\xd0\0\0\0\nExecutable\0\0\0\0\0\0"
+    pub const fn spec_xdr_with_executable() -> [u8; 76usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\x0fwith_executable\0\0\0\0\x01\0\0\0\0\0\0\0\x01e\0\0\0\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\nExecutable\0\0\0\0\0\0";
+        {
+            let id = <soroban_sdk::Executable>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[48usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 #[doc(hidden)]
@@ -9083,13 +9601,22 @@ pub mod __Contract__with_lib_struct__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_LIB_STRUCT: [u8; 64usize] =
+    pub static __SPEC_XDR_FN_WITH_LIB_STRUCT: [u8; 72usize] =
         super::Contract::spec_xdr_with_lib_struct();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_lib_struct() -> [u8; 64usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0fwith_lib_struct\0\0\0\0\x01\0\0\0\0\0\0\0\x01s\0\0\0\0\0\x07\xd0\0\0\0\x07StructC\0\0\0\0\0"
+    pub const fn spec_xdr_with_lib_struct() -> [u8; 72usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\x0fwith_lib_struct\0\0\0\0\x01\0\0\0\0\0\0\0\x01s\0\0\0\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x07StructC\0\0\0\0\0";
+        {
+            let id = <test_spec_lib::StructC>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[48usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 #[doc(hidden)]
@@ -9099,13 +9626,22 @@ pub mod __Contract__with_wasm_imported__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_WASM_IMPORTED: [u8; 68usize] =
+    pub static __SPEC_XDR_FN_WITH_WASM_IMPORTED: [u8; 76usize] =
         super::Contract::spec_xdr_with_wasm_imported();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_wasm_imported() -> [u8; 68usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x12with_wasm_imported\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01s\0\0\0\0\0\x07\xd0\0\0\0\x07StructA\0\0\0\0\0"
+    pub const fn spec_xdr_with_wasm_imported() -> [u8; 76usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\x12with_wasm_imported\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01s\0\0\0\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x07StructA\0\0\0\0\0";
+        {
+            let id = <wasm_imported::StructA>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[52usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 #[doc(hidden)]
@@ -9115,12 +9651,21 @@ pub mod __Contract__with_non_pub__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_NON_PUB: [u8; 68usize] = super::Contract::spec_xdr_with_non_pub();
+    pub static __SPEC_XDR_FN_WITH_NON_PUB: [u8; 76usize] = super::Contract::spec_xdr_with_non_pub();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_non_pub() -> [u8; 68usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0cwith_non_pub\0\0\0\x01\0\0\0\0\0\0\0\x01s\0\0\0\0\0\x07\xd0\0\0\0\x10UsedNonPubStruct\0\0\0\0"
+    pub const fn spec_xdr_with_non_pub() -> [u8; 76usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\x0cwith_non_pub\0\0\0\x01\0\0\0\0\0\0\0\x01s\0\0\0\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x10UsedNonPubStruct\0\0\0\0";
+        {
+            let id = <UsedNonPubStruct>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[44usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 #[doc(hidden)]
@@ -9130,13 +9675,22 @@ pub mod __Contract__with_non_pub_error__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_NON_PUB_ERROR: [u8; 72usize] =
+    pub static __SPEC_XDR_FN_WITH_NON_PUB_ERROR: [u8; 80usize] =
         super::Contract::spec_xdr_with_non_pub_error();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_non_pub_error() -> [u8; 72usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x12with_non_pub_error\0\0\0\0\0\0\0\0\0\x01\0\0\x03\xe9\0\0\0\x04\0\0\x07\xd0\0\0\0\x0fUsedNonPubError\0"
+    pub const fn spec_xdr_with_non_pub_error() -> [u8; 80usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\x12with_non_pub_error\0\0\0\0\0\0\0\0\0\x01\0\0\x03\xe9\0\0\0\x04\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x0fUsedNonPubError\0";
+        {
+            let id = <UsedNonPubError>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[52usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 #[doc(hidden)]
@@ -9146,12 +9700,21 @@ pub mod __Contract__with_tuple__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_TUPLE: [u8; 80usize] = super::Contract::spec_xdr_with_tuple();
+    pub static __SPEC_XDR_FN_WITH_TUPLE: [u8; 88usize] = super::Contract::spec_xdr_with_tuple();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_tuple() -> [u8; 80usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\nwith_tuple\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01t\0\0\0\0\0\x03\xed\0\0\0\x02\0\0\x07\xd0\0\0\0\x10UsedTupleElement\0\0\0\x04\0\0\0\0"
+    pub const fn spec_xdr_with_tuple() -> [u8; 88usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\nwith_tuple\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01t\0\0\0\0\0\x03\xed\0\0\0\x02\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x10UsedTupleElement\0\0\0\x04\0\0\0\0";
+        {
+            let id = <UsedTupleElement>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[52usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 #[doc(hidden)]
@@ -9161,13 +9724,22 @@ pub mod __Contract__with_tuple_return__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_TUPLE_RETURN: [u8; 84usize] =
+    pub static __SPEC_XDR_FN_WITH_TUPLE_RETURN: [u8; 92usize] =
         super::Contract::spec_xdr_with_tuple_return();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_tuple_return() -> [u8; 84usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x11with_tuple_return\0\0\0\0\0\0\0\0\0\0\x01\0\0\x03\xed\0\0\0\x02\0\0\x07\xd0\0\0\0\x16UsedTupleReturnElement\0\0\0\0\0\x04"
+    pub const fn spec_xdr_with_tuple_return() -> [u8; 92usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\x11with_tuple_return\0\0\0\0\0\0\0\0\0\0\x01\0\0\x03\xed\0\0\0\x02\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x16UsedTupleReturnElement\0\0\0\0\0\x04";
+        {
+            let id = <UsedTupleReturnElement>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[52usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 #[doc(hidden)]
@@ -9177,13 +9749,22 @@ pub mod __Contract__with_export_false_struct__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_EXPORT_FALSE_STRUCT: [u8; 88usize] =
+    pub static __SPEC_XDR_FN_WITH_EXPORT_FALSE_STRUCT: [u8; 96usize] =
         super::Contract::spec_xdr_with_export_false_struct();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_export_false_struct() -> [u8; 88usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x18with_export_false_struct\0\0\0\x01\0\0\0\0\0\0\0\x01s\0\0\0\0\0\x07\xd0\0\0\0\x15UsedExportFalseStruct\0\0\0\0\0\0\0"
+    pub const fn spec_xdr_with_export_false_struct() -> [u8; 96usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\x18with_export_false_struct\0\0\0\x01\0\0\0\0\0\0\0\x01s\0\0\0\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x15UsedExportFalseStruct\0\0\0\0\0\0\0";
+        {
+            let id = <export_false_used::UsedExportFalseStruct>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[56usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 #[doc(hidden)]
@@ -9193,13 +9774,22 @@ pub mod __Contract__with_export_false_error__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_EXPORT_FALSE_ERROR: [u8; 80usize] =
+    pub static __SPEC_XDR_FN_WITH_EXPORT_FALSE_ERROR: [u8; 88usize] =
         super::Contract::spec_xdr_with_export_false_error();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_export_false_error() -> [u8; 80usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x17with_export_false_error\0\0\0\0\0\0\0\0\x01\0\0\x03\xe9\0\0\0\x04\0\0\x07\xd0\0\0\0\x14UsedExportFalseError"
+    pub const fn spec_xdr_with_export_false_error() -> [u8; 88usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\x17with_export_false_error\0\0\0\0\0\0\0\0\x01\0\0\x03\xe9\0\0\0\x04\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x14UsedExportFalseError";
+        {
+            let id = <export_false_used::UsedExportFalseError>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[56usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 #[doc(hidden)]

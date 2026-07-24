@@ -56,6 +56,10 @@ impl MyStruct {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x08MyStruct\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x07"
     }
 }
+impl MyStruct {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [8u8, 212u8, 167u8, 98u8, 174u8, 49u8, 124u8, 221u8];
+}
 impl soroban_sdk::SpecShakingMarker for MyStruct {
     #[doc(hidden)]
     #[inline(always)]
@@ -168,6 +172,10 @@ impl MyEnumUnit {
     pub const fn spec_xdr() -> [u8; 64usize] {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\nMyEnumUnit\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01A\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01B\0\0\0\0\0\0\x02"
     }
+}
+impl MyEnumUnit {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [50u8, 69u8, 27u8, 52u8, 28u8, 131u8, 171u8, 235u8];
 }
 impl soroban_sdk::SpecShakingMarker for MyEnumUnit {
     #[doc(hidden)]
@@ -284,11 +292,32 @@ impl ::core::cmp::PartialEq for MyEnumVariants {
     }
 }
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_MYENUMVARIANTS: [u8; 128usize] = MyEnumVariants::spec_xdr();
+pub static __SPEC_XDR_TYPE_MYENUMVARIANTS: [u8; 144usize] = MyEnumVariants::spec_xdr();
 impl MyEnumVariants {
-    pub const fn spec_xdr() -> [u8; 128usize] {
-        *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x0eMyEnumVariants\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x04VarA\0\0\0\x01\0\0\0\0\0\0\0\x04VarB\0\0\0\x01\0\0\x07\xd0\0\0\0\x08MyStruct\0\0\0\x01\0\0\0\0\0\0\0\x04VarC\0\0\0\x01\0\0\x07\xd0\0\0\0\nMyEnumUnit\0\0"
+    pub const fn spec_xdr() -> [u8; 144usize] {
+        let mut bytes = *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x0eMyEnumVariants\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x04VarA\0\0\0\x01\0\0\0\0\0\0\0\x04VarB\0\0\0\x01\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x08MyStruct\0\0\0\x01\0\0\0\0\0\0\0\x04VarC\0\0\0\x01\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\nMyEnumUnit\0\0";
+        {
+            let id = <MyStruct>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[76usize + i] = id[i];
+                i += 1;
+            }
+        }
+        {
+            let id = <MyEnumUnit>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[120usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
+}
+impl MyEnumVariants {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [119u8, 27u8, 91u8, 66u8, 102u8, 190u8, 66u8, 142u8];
 }
 impl soroban_sdk::SpecShakingMarker for MyEnumVariants {
     #[doc(hidden)]
@@ -297,7 +326,7 @@ impl soroban_sdk::SpecShakingMarker for MyEnumVariants {
         <MyStruct as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <MyEnumUnit as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xceHo\xd4mpUm";
+            static MARKER: [u8; 14usize] = *b"SpEcV1w\x1b[Bf\xbeB\x8e";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -1401,19 +1430,70 @@ impl AllTypesSpec {
 }
 impl AllTypesSpec {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_struct() -> [u8; 76usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0btest_struct\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd0\0\0\0\x08MyStruct\0\0\0\x01\0\0\x07\xd0\0\0\0\x08MyStruct"
+    pub const fn spec_xdr_test_struct() -> [u8; 92usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\x0btest_struct\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x08MyStruct\0\0\0\x01\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x08MyStruct";
+        {
+            let id = <MyStruct>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[44usize + i] = id[i];
+                i += 1;
+            }
+        }
+        {
+            let id = <MyStruct>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[72usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 impl AllTypesSpec {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_enum_unit() -> [u8; 88usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0etest_enum_unit\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd0\0\0\0\nMyEnumUnit\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\nMyEnumUnit\0\0"
+    pub const fn spec_xdr_test_enum_unit() -> [u8; 104usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\x0etest_enum_unit\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\nMyEnumUnit\0\0\0\0\0\x01\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\nMyEnumUnit\0\0";
+        {
+            let id = <MyEnumUnit>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[48usize + i] = id[i];
+                i += 1;
+            }
+        }
+        {
+            let id = <MyEnumUnit>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[80usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 impl AllTypesSpec {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_enum_variants() -> [u8; 100usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x12test_enum_variants\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd0\0\0\0\x0eMyEnumVariants\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x0eMyEnumVariants\0\0"
+    pub const fn spec_xdr_test_enum_variants() -> [u8; 116usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\x12test_enum_variants\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x0eMyEnumVariants\0\0\0\0\0\x01\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x0eMyEnumVariants\0\0";
+        {
+            let id = <MyEnumVariants>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[52usize + i] = id[i];
+                i += 1;
+            }
+        }
+        {
+            let id = <MyEnumVariants>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[88usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }

@@ -39,6 +39,10 @@ impl Value {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x05Value\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05value\0\0\0\0\0\0\x05"
     }
 }
+impl Value {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [130u8, 248u8, 116u8, 190u8, 9u8, 4u8, 98u8, 92u8];
+}
 impl soroban_sdk::SpecShakingMarker for Value {
     #[doc(hidden)]
     #[inline(always)]

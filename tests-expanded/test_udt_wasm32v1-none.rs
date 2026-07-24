@@ -56,6 +56,10 @@ impl UdtEnum2 {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08UdtEnum2\0\0\0\x02\0\0\0\0\0\0\0\x01A\0\0\0\0\0\0\n\0\0\0\0\0\0\0\x01B\0\0\0\0\0\0\x0f"
     }
 }
+impl UdtEnum2 {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [175u8, 247u8, 147u8, 186u8, 158u8, 77u8, 222u8, 154u8];
+}
 impl soroban_sdk::SpecShakingMarker for UdtEnum2 {
     #[doc(hidden)]
     #[inline(always)]
@@ -170,11 +174,40 @@ impl ::core::cmp::PartialEq for UdtEnum {
     }
 }
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_UDTENUM: [u8; 156usize] = UdtEnum::spec_xdr();
+pub static __SPEC_XDR_TYPE_UDTENUM: [u8; 180usize] = UdtEnum::spec_xdr();
 impl UdtEnum {
-    pub const fn spec_xdr() -> [u8; 156usize] {
-        *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x07UdtEnum\0\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x04UdtA\0\0\0\x01\0\0\0\0\0\0\0\x04UdtB\0\0\0\x01\0\0\x07\xd0\0\0\0\tUdtStruct\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04UdtC\0\0\0\x01\0\0\x07\xd0\0\0\0\x08UdtEnum2\0\0\0\x01\0\0\0\0\0\0\0\x04UdtD\0\0\0\x01\0\0\x07\xd0\0\0\0\x08UdtTuple"
+    pub const fn spec_xdr() -> [u8; 180usize] {
+        let mut bytes = *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x07UdtEnum\0\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x04UdtA\0\0\0\x01\0\0\0\0\0\0\0\x04UdtB\0\0\0\x01\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\tUdtStruct\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04UdtC\0\0\0\x01\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x08UdtEnum2\0\0\0\x01\0\0\0\0\0\0\0\x04UdtD\0\0\0\x01\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x08UdtTuple";
+        {
+            let id = <UdtStruct>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[68usize + i] = id[i];
+                i += 1;
+            }
+        }
+        {
+            let id = <UdtEnum2>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[116usize + i] = id[i];
+                i += 1;
+            }
+        }
+        {
+            let id = <UdtTuple>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[160usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
+}
+impl UdtEnum {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [173u8, 206u8, 71u8, 109u8, 193u8, 42u8, 125u8, 244u8];
 }
 impl soroban_sdk::SpecShakingMarker for UdtEnum {
     #[doc(hidden)]
@@ -184,7 +217,7 @@ impl soroban_sdk::SpecShakingMarker for UdtEnum {
         <UdtEnum2 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <UdtTuple as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xf3\xb0\xab@i\rH\xb4";
+            static MARKER: [u8; 14usize] = *b"SpEcV1\xad\xceGm\xc1*}\xf4";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -341,6 +374,10 @@ impl UdtTuple {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x08UdtTuple\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x011\0\0\0\0\0\x03\xea\0\0\0\x07"
     }
 }
+impl UdtTuple {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [235u8, 159u8, 18u8, 38u8, 154u8, 118u8, 40u8, 42u8];
+}
 impl soroban_sdk::SpecShakingMarker for UdtTuple {
     #[doc(hidden)]
     #[inline(always)]
@@ -457,6 +494,10 @@ impl UdtStruct {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\tUdtStruct\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x01c\0\0\0\0\0\x03\xea\0\0\0\x07"
     }
 }
+impl UdtStruct {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [22u8, 39u8, 100u8, 56u8, 255u8, 201u8, 177u8, 248u8];
+}
 impl soroban_sdk::SpecShakingMarker for UdtStruct {
     #[doc(hidden)]
     #[inline(always)]
@@ -572,11 +613,24 @@ impl ::core::cmp::PartialEq for UdtRecursive {
     }
 }
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_UDTRECURSIVE: [u8; 84usize] = UdtRecursive::spec_xdr();
+pub static __SPEC_XDR_TYPE_UDTRECURSIVE: [u8; 92usize] = UdtRecursive::spec_xdr();
 impl UdtRecursive {
-    pub const fn spec_xdr() -> [u8; 84usize] {
-        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cUdtRecursive\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x11\0\0\0\0\0\0\0\x01b\0\0\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x0cUdtRecursive"
+    pub const fn spec_xdr() -> [u8; 92usize] {
+        let mut bytes = *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cUdtRecursive\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x11\0\0\0\0\0\0\0\x01b\0\0\0\0\0\x03\xea\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x0cUdtRecursive";
+        {
+            let id = <UdtRecursive>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[68usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
+}
+impl UdtRecursive {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [154u8, 250u8, 201u8, 34u8, 187u8, 83u8, 255u8, 212u8];
 }
 impl soroban_sdk::SpecShakingMarker for UdtRecursive {
     #[doc(hidden)]
@@ -585,7 +639,7 @@ impl soroban_sdk::SpecShakingMarker for UdtRecursive {
         <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <Vec<UdtRecursive> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xc8\x12\x91\xfe\xd7\x13\xf5\x9c";
+            static MARKER: [u8; 14usize] = *b"SpEcV1\x9a\xfa\xc9\"\xbbS\xff\xd4";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -688,11 +742,24 @@ impl ::core::cmp::PartialEq for RecursiveToEnum {
     }
 }
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_RECURSIVETOENUM: [u8; 96usize] = RecursiveToEnum::spec_xdr();
+pub static __SPEC_XDR_TYPE_RECURSIVETOENUM: [u8; 104usize] = RecursiveToEnum::spec_xdr();
 impl RecursiveToEnum {
-    pub const fn spec_xdr() -> [u8; 96usize] {
-        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0fRecursiveToEnum\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x11\0\0\0\0\0\0\0\x01b\0\0\0\0\0\x03\xec\0\0\0\x04\0\0\x07\xd0\0\0\0\rRecursiveEnum\0\0\0"
+    pub const fn spec_xdr() -> [u8; 104usize] {
+        let mut bytes = *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0fRecursiveToEnum\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x11\0\0\0\0\0\0\0\x01b\0\0\0\0\0\x03\xec\0\0\0\x04\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\rRecursiveEnum\0\0\0";
+        {
+            let id = <RecursiveEnum>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[76usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
+}
+impl RecursiveToEnum {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [152u8, 76u8, 131u8, 15u8, 173u8, 201u8, 54u8, 30u8];
 }
 impl soroban_sdk::SpecShakingMarker for RecursiveToEnum {
     #[doc(hidden)]
@@ -701,7 +768,7 @@ impl soroban_sdk::SpecShakingMarker for RecursiveToEnum {
         <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <Map<u32, RecursiveEnum> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xe1oU\xdb\xd47\x98\x14";
+            static MARKER: [u8; 14usize] = *b"SpEcV1\x98L\x83\x0f\xad\xc96\x1e";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -811,11 +878,24 @@ impl ::core::cmp::PartialEq for RecursiveEnum {
     }
 }
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_RECURSIVEENUM: [u8; 112usize] = RecursiveEnum::spec_xdr();
+pub static __SPEC_XDR_TYPE_RECURSIVEENUM: [u8; 120usize] = RecursiveEnum::spec_xdr();
 impl RecursiveEnum {
-    pub const fn spec_xdr() -> [u8; 112usize] {
-        *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\rRecursiveEnum\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x0cNotRecursive\0\0\0\x01\0\0\0\0\0\0\0\tRecursive\0\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x0fRecursiveToEnum\0"
+    pub const fn spec_xdr() -> [u8; 120usize] {
+        let mut bytes = *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\rRecursiveEnum\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x0cNotRecursive\0\0\0\x01\0\0\0\0\0\0\0\tRecursive\0\0\0\0\0\0\x01\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x0fRecursiveToEnum\0";
+        {
+            let id = <RecursiveToEnum>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[92usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
+}
+impl RecursiveEnum {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [199u8, 178u8, 255u8, 91u8, 251u8, 69u8, 36u8, 137u8];
 }
 impl soroban_sdk::SpecShakingMarker for RecursiveEnum {
     #[doc(hidden)]
@@ -823,7 +903,7 @@ impl soroban_sdk::SpecShakingMarker for RecursiveEnum {
     fn spec_shaking_marker() {
         <RecursiveToEnum as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xff{V \xab\r\xdcd";
+            static MARKER: [u8; 14usize] = *b"SpEcV1\xc7\xb2\xff[\xfbE$\x89";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -958,12 +1038,29 @@ pub mod __Contract__add__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_ADD: [u8; 84usize] = super::Contract::spec_xdr_add();
+    pub static __SPEC_XDR_FN_ADD: [u8; 100usize] = super::Contract::spec_xdr_add();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_add() -> [u8; 84usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x03add\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\x07\xd0\0\0\0\x07UdtEnum\0\0\0\0\0\0\0\0\x01b\0\0\0\0\0\x07\xd0\0\0\0\x07UdtEnum\0\0\0\0\x01\0\0\0\x07"
+    pub const fn spec_xdr_add() -> [u8; 100usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\x03add\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x07UdtEnum\0\0\0\0\0\0\0\0\x01b\0\0\0\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x07UdtEnum\0\0\0\0\x01\0\0\0\x07";
+        {
+            let id = <UdtEnum>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[36usize + i] = id[i];
+                i += 1;
+            }
+        }
+        {
+            let id = <UdtEnum>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[72usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 #[doc(hidden)]
@@ -973,12 +1070,29 @@ pub mod __Contract__recursive__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_RECURSIVE: [u8; 88usize] = super::Contract::spec_xdr_recursive();
+    pub static __SPEC_XDR_FN_RECURSIVE: [u8; 104usize] = super::Contract::spec_xdr_recursive();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_recursive() -> [u8; 88usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\trecursive\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01a\0\0\0\0\0\x07\xd0\0\0\0\x0cUdtRecursive\0\0\0\x01\0\0\x03\xe8\0\0\x07\xd0\0\0\0\x0cUdtRecursive"
+    pub const fn spec_xdr_recursive() -> [u8; 104usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\trecursive\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01a\0\0\0\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x0cUdtRecursive\0\0\0\x01\0\0\x03\xe8\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x0cUdtRecursive";
+        {
+            let id = <UdtRecursive>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[44usize + i] = id[i];
+                i += 1;
+            }
+        }
+        {
+            let id = <UdtRecursive>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[80usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 #[doc(hidden)]
@@ -988,13 +1102,30 @@ pub mod __Contract__recursive_enum__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_RECURSIVE_ENUM: [u8; 124usize] =
+    pub static __SPEC_XDR_FN_RECURSIVE_ENUM: [u8; 140usize] =
         super::Contract::spec_xdr_recursive_enum();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_recursive_enum() -> [u8; 124usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0erecursive_enum\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\x07\xd0\0\0\0\rRecursiveEnum\0\0\0\0\0\0\0\0\0\0\x03key\0\0\0\0\x04\0\0\0\x01\0\0\x03\xe9\0\0\x03\xe8\0\0\x07\xd0\0\0\0\rRecursiveEnum\0\0\0\0\0\0\x03"
+    pub const fn spec_xdr_recursive_enum() -> [u8; 140usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\x0erecursive_enum\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\rRecursiveEnum\0\0\0\0\0\0\0\0\0\0\x03key\0\0\0\0\x04\0\0\0\x01\0\0\x03\xe9\0\0\x03\xe8\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\rRecursiveEnum\0\0\0\0\0\0\x03";
+        {
+            let id = <RecursiveEnum>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[48usize + i] = id[i];
+                i += 1;
+            }
+        }
+        {
+            let id = <RecursiveEnum>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[108usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 impl<'a> ContractClient<'a> {

@@ -1,7 +1,8 @@
-use quote::ToTokens;
+use proc_macro2::{Span, TokenStream as TokenStream2};
+use quote::{format_ident, quote, ToTokens};
 use stellar_xdr::{
-    ScSpecTypeBytesN, ScSpecTypeDef, ScSpecTypeMap, ScSpecTypeOption, ScSpecTypeResult,
-    ScSpecTypeTuple, ScSpecTypeUdt, ScSpecTypeVec,
+    ScSpecEntry, ScSpecTypeBytesN, ScSpecTypeDef, ScSpecTypeMap, ScSpecTypeOption,
+    ScSpecTypeResult, ScSpecTypeTuple, ScSpecTypeUdtv2, ScSpecTypeVec, WriteXdr,
 };
 use syn::{
     ext::IdentExt as _, spanned::Spanned, Error, Expr, ExprLit, GenericArgument, Ident, Lit, Path,
@@ -10,6 +11,7 @@ use syn::{
 use syn::{Generics, TypeReference};
 
 use crate::syn_ext::ident_to_type;
+use crate::DEFAULT_XDR_RW_LIMITS;
 
 // These constants' values must match the definitions of the constants with the
 // same names in soroban_sdk::crypto::bls12_381.
@@ -41,7 +43,7 @@ pub fn is_mapped_type_udt(ident: &Ident, generics: &Generics) -> Result<(), Erro
     // because the unraw'd form (`type`) isn't a valid Rust Type.
     let ty = ident_to_type(ident.clone());
     match map_type(&ty, false, false) {
-        Ok(ScSpecTypeDef::Udt(_)) => {
+        Ok(ScSpecTypeDef::Udt(_) | ScSpecTypeDef::UdtV2(_)) => {
             // `ty` does not contain the generics, so check manually here
             if generics.params.len() > 0 {
                 Err(Error::new(
@@ -55,7 +57,8 @@ pub fn is_mapped_type_udt(ident: &Ident, generics: &Generics) -> Result<(), Erro
         _ => {
             // Check if the error originated from the UDT-arm of `map_type`
             let name = ident.unraw().to_string();
-            let _ = ScSpecTypeDef::Udt(ScSpecTypeUdt {
+            let _ = ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
+                id: [0u8; 8],
                 name: name.try_into().map_err(|e| {
                     Error::new(
                         ident.span(),
@@ -178,7 +181,8 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
                     "Bn254Fr" => Ok(ScSpecTypeDef::U256),
                     // Deprecated alias for Bn254Fr
                     "BnScalar" => Ok(ScSpecTypeDef::U256),
-                    s => Ok(ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                    s => Ok(ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
+                        id: [0u8; 8],
                         name: s.try_into().map_err(|e| {
                             Error::new(
                                 t.span(),
@@ -301,6 +305,174 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
             }
         }
         _ => Err(Error::new(t.span(), "unsupported type"))?,
+    }
+}
+
+/// Builds a Rust type identifier from a UDT type name, using a raw identifier
+/// when the name is a keyword (e.g. `type` -> `r#type`).
+fn type_ident(name: &str) -> Ident {
+    syn::parse_str::<Ident>(name).unwrap_or_else(|_| Ident::new_raw(name, Span::call_site()))
+}
+
+/// The UDT type name a `Type::Path` maps to in the spec (its last path segment,
+/// unraw'd), matching how [`map_type`] names user-defined types.
+fn udt_ref_name(t: &Type) -> Option<String> {
+    if let Type::Path(TypePath {
+        path: Path { segments, .. },
+        ..
+    }) = t
+    {
+        segments.last().map(|s| s.ident.unraw().to_string())
+    } else {
+        None
+    }
+}
+
+/// Collects the Rust types of every user-defined-type reference reachable from
+/// `t`, in a form suitable for naming the referenced type in generated code
+/// (e.g. `errcontract::Flag` for a `Vec<errcontract::Flag>` field). Mirrors the
+/// structure [`map_type`] walks, reusing it to classify leaf paths as UDT or
+/// built-in so the two never disagree.
+pub(crate) fn collect_udt_ref_types(t: &Type, out: &mut Vec<Type>) {
+    match t {
+        Type::Reference(TypeReference { elem, .. }) => collect_udt_ref_types(elem, out),
+        Type::Path(TypePath {
+            qself: None,
+            path: Path { segments, .. },
+        }) => match segments.last() {
+            Some(PathSegment {
+                arguments: PathArguments::None,
+                ..
+            }) => {
+                if let Ok(ScSpecTypeDef::UdtV2(_)) = map_type(t, true, true) {
+                    out.push(t.clone());
+                }
+            }
+            Some(PathSegment {
+                ident,
+                arguments: PathArguments::AngleBracketed(angle_bracketed),
+            }) => {
+                let args = angle_bracketed.args.iter();
+                match &ident.unraw().to_string()[..] {
+                    // Containers whose type arguments can themselves be UDTs, in
+                    // the same order map_type serializes them.
+                    "Result" | "Map" | "Option" | "Vec" => {
+                        for a in args {
+                            if let GenericArgument::Type(ty) = a {
+                                collect_udt_ref_types(ty, out);
+                            }
+                        }
+                    }
+                    // BytesN<N>, Hash<N> and friends carry no UDT references.
+                    _ => {}
+                }
+            }
+            _ => {}
+        },
+        Type::Tuple(TypeTuple { elems, .. }) => {
+            for e in elems {
+                collect_udt_ref_types(e, out);
+            }
+        }
+        _ => {}
+    }
+}
+
+/// Given a spec `entry` whose `ScSpecTypeUdtv2` references carry placeholder
+/// (zeroed) ids, and the Rust types of the UDTs those references point at,
+/// returns the byte length of the entry's XDR and the body of a `const fn` that
+/// reproduces that XDR with every reference's id patched in from the referenced
+/// type's `SPEC_XDR_ID` associated const. This resolves each reference to the id
+/// of the type it points at, which is only known once that type is compiled.
+///
+/// `ref_types` are matched to references by name; a reference whose name is not
+/// found falls back to naming the type by its (bare) name.
+pub(crate) fn spec_xdr_const_fn(entry: &ScSpecEntry, ref_types: &[Type]) -> (usize, TokenStream2) {
+    let by_name: std::collections::BTreeMap<String, &Type> = ref_types
+        .iter()
+        .filter_map(|t| udt_ref_name(t).map(|n| (n, t)))
+        .collect();
+    let canonical = entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap();
+    let len = canonical.len();
+    let lit = proc_macro2::Literal::byte_string(&canonical);
+    let sites = soroban_spec::udt_id::udt_ref_sites(entry);
+    let body = if sites.is_empty() {
+        quote! { { *#lit } }
+    } else {
+        let patches = sites.into_iter().map(|site| {
+            let off = site.id_offset;
+            let ty: TokenStream2 = match by_name.get(&site.name) {
+                Some(t) => quote! { #t },
+                None => type_ident(&site.name).into_token_stream(),
+            };
+            quote! {
+                {
+                    let id = <#ty>::SPEC_XDR_ID;
+                    let mut i = 0usize;
+                    while i < 8 {
+                        bytes[#off + i] = id[i];
+                        i += 1;
+                    }
+                }
+            }
+        });
+        quote! {
+            {
+                let mut bytes = *#lit;
+                #(#patches)*
+                bytes
+            }
+        }
+    };
+    (len, body)
+}
+
+/// Returns tokens for the 8-byte `SPEC_XDR_ID` array literal identifying the
+/// type defined by `entry` (the value carried by references to it).
+pub(crate) fn spec_xdr_id_literal(entry: &ScSpecEntry) -> TokenStream2 {
+    let id: Vec<u8> = soroban_spec::udt_id::canonical_id(entry).to_vec();
+    quote! { [#(#id),*] }
+}
+
+/// Generates the spec code for a referenceable user-defined type (struct,
+/// tuple-struct, union, enum, or error enum) named `ident`.
+///
+/// The `SPEC_XDR_ID` identity const is always emitted — references to this type
+/// (from anywhere) need it, even when the type's own spec is not exported. The
+/// `spec_xdr` fn and its exported `contractspecv0` static are emitted only when
+/// `spec` is set. `ref_types` are the Rust types of the UDTs `entry` references,
+/// used to resolve their ids (see [`spec_xdr_const_fn`]).
+pub(crate) fn referenceable_spec_gen(
+    entry: &ScSpecEntry,
+    ref_types: &[Type],
+    ident: &Ident,
+    spec: bool,
+) -> TokenStream2 {
+    let spec_xdr_id = spec_xdr_id_literal(entry);
+    let id_impl = quote! {
+        impl #ident {
+            #[doc(hidden)]
+            pub const SPEC_XDR_ID: [u8; 8] = #spec_xdr_id;
+        }
+    };
+    if spec {
+        let (spec_xdr_len, spec_xdr_body) = spec_xdr_const_fn(entry, ref_types);
+        let spec_ident = format_ident!(
+            "__SPEC_XDR_TYPE_{}",
+            ident.unraw().to_string().to_uppercase()
+        );
+        quote! {
+            #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
+            pub static #spec_ident: [u8; #spec_xdr_len] = #ident::spec_xdr();
+
+            impl #ident {
+                pub const fn spec_xdr() -> [u8; #spec_xdr_len] #spec_xdr_body
+            }
+
+            #id_impl
+        }
+    } else {
+        id_impl
     }
 }
 

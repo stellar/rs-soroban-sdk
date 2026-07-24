@@ -8,7 +8,7 @@ use std::{fs, io};
 use proc_macro2::TokenStream;
 use quote::quote;
 use sha2::{Digest, Sha256};
-use stellar_xdr::{ScSpecEntry, ScSpecTypeDef, ScSpecTypeUdt, ScSpecUdtUnionCaseV0};
+use stellar_xdr::{ScSpecEntry, ScSpecTypeDef, ScSpecTypeUdtv2, ScSpecUdtUnionCaseV0};
 use syn::Error;
 
 use soroban_spec::read::{from_wasm, FromWasmError};
@@ -203,7 +203,8 @@ fn rewrite_error_to_udt(entries: &mut [ScSpecEntry]) {
     fn rewrite_ty(t: &mut ScSpecTypeDef) {
         match t {
             ScSpecTypeDef::Error => {
-                *t = ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                *t = ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
+                    id: [0u8; 8],
                     name: "Error".try_into().unwrap(),
                 });
             }
@@ -257,6 +258,11 @@ fn rewrite_error_to_udt(entries: &mut [ScSpecEntry]) {
             }
         }
     }
+    // Resolve every UdtV2 reference (the Error refs just rewritten, and any
+    // already present) to the referenced type's id, looked up by name against
+    // the full set of entries. This matches the id the soroban-sdk derive
+    // macros stamp in at compile time.
+    soroban_spec::udt_id::resolve_ids(entries);
 }
 
 /// Implemented by types that can be converted into pretty formatted Strings of
@@ -555,7 +561,7 @@ pub enum MyError {
             matches!(r.ok_type.as_ref(), ScSpecTypeDef::U64),
             "ok_type should be U64"
         );
-        let ScSpecTypeDef::Udt(u) = r.error_type.as_ref() else {
+        let ScSpecTypeDef::UdtV2(u) = r.error_type.as_ref() else {
             panic!(
                 "error_type should be a UDT for MyError, got {:?}",
                 r.error_type

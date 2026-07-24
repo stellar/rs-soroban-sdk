@@ -989,12 +989,29 @@ pub mod __Contract__test_struct__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_TEST_STRUCT: [u8; 76usize] = super::Contract::spec_xdr_test_struct();
+    pub static __SPEC_XDR_FN_TEST_STRUCT: [u8; 92usize] = super::Contract::spec_xdr_test_struct();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_struct() -> [u8; 76usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0btest_struct\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd0\0\0\0\x08MyStruct\0\0\0\x01\0\0\x07\xd0\0\0\0\x08MyStruct"
+    pub const fn spec_xdr_test_struct() -> [u8; 92usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\x0btest_struct\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x08MyStruct\0\0\0\x01\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x08MyStruct";
+        {
+            let id = <MyStruct>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[44usize + i] = id[i];
+                i += 1;
+            }
+        }
+        {
+            let id = <MyStruct>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[72usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 #[doc(hidden)]
@@ -1004,13 +1021,30 @@ pub mod __Contract__test_enum_unit__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_TEST_ENUM_UNIT: [u8; 88usize] =
+    pub static __SPEC_XDR_FN_TEST_ENUM_UNIT: [u8; 104usize] =
         super::Contract::spec_xdr_test_enum_unit();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_enum_unit() -> [u8; 88usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0etest_enum_unit\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd0\0\0\0\nMyEnumUnit\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\nMyEnumUnit\0\0"
+    pub const fn spec_xdr_test_enum_unit() -> [u8; 104usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\x0etest_enum_unit\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\nMyEnumUnit\0\0\0\0\0\x01\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\nMyEnumUnit\0\0";
+        {
+            let id = <MyEnumUnit>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[48usize + i] = id[i];
+                i += 1;
+            }
+        }
+        {
+            let id = <MyEnumUnit>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[80usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 #[doc(hidden)]
@@ -1020,13 +1054,30 @@ pub mod __Contract__test_enum_variants__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_TEST_ENUM_VARIANTS: [u8; 100usize] =
+    pub static __SPEC_XDR_FN_TEST_ENUM_VARIANTS: [u8; 116usize] =
         super::Contract::spec_xdr_test_enum_variants();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_enum_variants() -> [u8; 100usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x12test_enum_variants\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd0\0\0\0\x0eMyEnumVariants\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x0eMyEnumVariants\0\0"
+    pub const fn spec_xdr_test_enum_variants() -> [u8; 116usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\x12test_enum_variants\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x0eMyEnumVariants\0\0\0\0\0\x01\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x0eMyEnumVariants\0\0";
+        {
+            let id = <MyEnumVariants>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[52usize + i] = id[i];
+                i += 1;
+            }
+        }
+        {
+            let id = <MyEnumVariants>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[88usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 impl<'a> ContractClient<'a> {

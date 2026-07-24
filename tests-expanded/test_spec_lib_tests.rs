@@ -53,6 +53,10 @@ impl StructA {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07StructA\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x04\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x01"
     }
 }
+impl StructA {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [182u8, 28u8, 253u8, 223u8, 104u8, 89u8, 45u8, 100u8];
+}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructA {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
@@ -460,6 +464,10 @@ impl StructB {
     pub const fn spec_xdr() -> [u8; 60usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07StructB\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x07\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x10"
     }
+}
+impl StructB {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [243u8, 196u8, 211u8, 140u8, 193u8, 119u8, 233u8, 24u8];
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructB {
     type Error = soroban_sdk::ConversionError;
@@ -869,6 +877,10 @@ impl StructC {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07StructC\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\x03\xea\0\0\0\x04\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x13"
     }
 }
+impl StructC {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [163u8, 22u8, 10u8, 143u8, 201u8, 146u8, 210u8, 17u8];
+}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructC {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
@@ -1273,6 +1285,10 @@ impl StructTupleA {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleA\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x011\0\0\0\0\0\0\x07"
     }
 }
+impl StructTupleA {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [207u8, 41u8, 151u8, 93u8, 83u8, 178u8, 253u8, 41u8];
+}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleA {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -1640,6 +1656,10 @@ impl StructTupleB {
     pub const fn spec_xdr() -> [u8; 64usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleB\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\n\0\0\0\0\0\0\0\x011\0\0\0\0\0\0\n"
     }
+}
+impl StructTupleB {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [120u8, 217u8, 56u8, 156u8, 26u8, 111u8, 172u8, 140u8];
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleB {
     type Error = soroban_sdk::ConversionError;
@@ -2009,6 +2029,10 @@ impl StructTupleC {
     pub const fn spec_xdr() -> [u8; 64usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleC\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\x13\0\0\0\0\0\0\0\x011\0\0\0\0\0\0\x0b"
     }
+}
+impl StructTupleC {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [197u8, 61u8, 129u8, 193u8, 34u8, 175u8, 84u8, 217u8];
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleC {
     type Error = soroban_sdk::ConversionError;
@@ -2389,6 +2413,10 @@ impl EnumA {
     pub const fn spec_xdr() -> [u8; 76usize] {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumA\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\0\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\0\0\0\0\0\0\0\0\x02V3\0\0"
     }
+}
+impl EnumA {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [162u8, 61u8, 78u8, 193u8, 112u8, 149u8, 144u8, 178u8];
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumA {
     type Error = soroban_sdk::ConversionError;
@@ -2854,6 +2882,10 @@ impl EnumB {
     pub const fn spec_xdr() -> [u8; 96usize] {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumB\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x01\0\0\0\x07\0\0\0\x01\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x02\0\0\0\x07\0\0\0\x07"
     }
+}
+impl EnumB {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [39u8, 27u8, 0u8, 68u8, 83u8, 72u8, 94u8, 204u8];
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumB {
     type Error = soroban_sdk::ConversionError;
@@ -3436,11 +3468,32 @@ impl ::core::cmp::PartialEq for EnumC {
             }
     }
 }
-pub static __SPEC_XDR_TYPE_ENUMC: [u8; 120usize] = EnumC::spec_xdr();
+pub static __SPEC_XDR_TYPE_ENUMC: [u8; 136usize] = EnumC::spec_xdr();
 impl EnumC {
-    pub const fn spec_xdr() -> [u8; 120usize] {
-        *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumC\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x07StructA\0\0\0\0\x01\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x0cStructTupleA"
+    pub const fn spec_xdr() -> [u8; 136usize] {
+        let mut bytes = *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumC\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x01\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x07StructA\0\0\0\0\x01\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x01\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleA";
+        {
+            let id = <StructA>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[68usize + i] = id[i];
+                i += 1;
+            }
+        }
+        {
+            let id = <StructTupleA>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[112usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
+}
+impl EnumC {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [78u8, 41u8, 7u8, 10u8, 222u8, 187u8, 73u8, 191u8];
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumC {
     type Error = soroban_sdk::ConversionError;
@@ -3980,6 +4033,10 @@ impl EnumIntA {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08EnumIntA\0\0\0\x03\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x03"
     }
 }
+impl EnumIntA {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [86u8, 93u8, 128u8, 92u8, 126u8, 26u8, 8u8, 47u8];
+}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntA {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -4317,6 +4374,10 @@ impl EnumIntB {
     pub const fn spec_xdr() -> [u8; 76usize] {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08EnumIntB\0\0\0\x03\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\n\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x14\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x1e"
     }
+}
+impl EnumIntB {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [44u8, 156u8, 192u8, 95u8, 237u8, 95u8, 41u8, 133u8];
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntB {
     type Error = soroban_sdk::ConversionError;
@@ -4656,6 +4717,10 @@ impl EnumIntC {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08EnumIntC\0\0\0\x03\0\0\0\0\0\0\0\x02V1\0\0\0\0\0d\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\xc8\0\0\0\0\0\0\0\x02V3\0\0\0\0\x01,"
     }
 }
+impl EnumIntC {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [96u8, 202u8, 218u8, 25u8, 185u8, 99u8, 240u8, 47u8];
+}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntC {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -4994,6 +5059,10 @@ impl ErrorA {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x06ErrorA\0\0\0\0\0\x03\0\0\0\0\0\0\0\x02E1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02E2\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02E3\0\0\0\0\0\x03"
     }
 }
+impl ErrorA {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [233u8, 82u8, 167u8, 232u8, 98u8, 153u8, 162u8, 195u8];
+}
 impl TryFrom<soroban_sdk::Error> for ErrorA {
     type Error = soroban_sdk::Error;
     #[inline(always)]
@@ -5157,6 +5226,10 @@ impl ErrorB {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x06ErrorB\0\0\0\0\0\x03\0\0\0\0\0\0\0\x02E1\0\0\0\0\0\n\0\0\0\0\0\0\0\x02E2\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02E3\0\0\0\0\0\x0c"
     }
 }
+impl ErrorB {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [29u8, 49u8, 214u8, 251u8, 136u8, 210u8, 61u8, 227u8];
+}
 impl TryFrom<soroban_sdk::Error> for ErrorB {
     type Error = soroban_sdk::Error;
     #[inline(always)]
@@ -5319,6 +5392,10 @@ impl ErrorC {
     pub const fn spec_xdr() -> [u8; 76usize] {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x06ErrorC\0\0\0\0\0\x03\0\0\0\0\0\0\0\x02E1\0\0\0\0\0d\0\0\0\0\0\0\0\x02E2\0\0\0\0\0e\0\0\0\0\0\0\0\x02E3\0\0\0\0\0f"
     }
+}
+impl ErrorC {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [185u8, 1u8, 175u8, 106u8, 224u8, 99u8, 163u8, 13u8];
 }
 impl TryFrom<soroban_sdk::Error> for ErrorC {
     type Error = soroban_sdk::Error;

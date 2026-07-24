@@ -19,6 +19,10 @@ impl MockProof {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\tMockProof\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02g1\0\0\0\0\x03\xea\0\0\x03\xee\0\0\0@\0\0\0\0\0\0\0\x02g2\0\0\0\0\x03\xea\0\0\x03\xee\0\0\0\x80"
     }
 }
+impl MockProof {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [58u8, 129u8, 166u8, 160u8, 158u8, 231u8, 167u8, 31u8];
+}
 impl soroban_sdk::SpecShakingMarker for MockProof {
     #[doc(hidden)]
     #[inline(always)]
@@ -556,13 +560,22 @@ pub mod __Contract__verify_pairing__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_VERIFY_PAIRING: [u8; 76usize] =
+    pub static __SPEC_XDR_FN_VERIFY_PAIRING: [u8; 84usize] =
         super::Contract::spec_xdr_verify_pairing();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_verify_pairing() -> [u8; 76usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0everify_pairing\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05proof\0\0\0\0\0\x07\xd0\0\0\0\tMockProof\0\0\0\0\0\0\x01\0\0\0\x01"
+    pub const fn spec_xdr_verify_pairing() -> [u8; 84usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\x0everify_pairing\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05proof\0\0\0\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\tMockProof\0\0\0\0\0\0\x01\0\0\0\x01";
+        {
+            let id = <MockProof>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[52usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 #[doc(hidden)]

@@ -6,7 +6,7 @@ use soroban_sdk::{
 use stellar_xdr::{
     Limits, ReadXdr, ScSpecEntry, ScSpecEventDataFormat, ScSpecEventParamLocationV0,
     ScSpecEventParamV0, ScSpecEventV0, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef,
-    ScSpecTypeResult, ScSpecTypeUdt, ScSpecUdtEnumCaseV0, ScSpecUdtEnumV0,
+    ScSpecTypeResult, ScSpecTypeUdtv2, ScSpecUdtEnumCaseV0, ScSpecUdtEnumV0,
     ScSpecUdtErrorEnumCaseV0, ScSpecUdtErrorEnumV0, ScSpecUdtStructFieldV0, ScSpecUdtStructV0,
     ScSpecUdtUnionCaseTupleV0, ScSpecUdtUnionCaseV0, ScSpecUdtUnionV0, ScSymbol,
 };
@@ -117,32 +117,35 @@ fn test_functional() {
 #[test]
 fn test_spec_contract() {
     let fn_entry = ScSpecEntry::from_xdr(r#Contract::spec_xdr_type(), Limits::none()).unwrap();
-    assert_eq!(
-        fn_entry,
-        ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+    // Each UDT reference carries the id of the type it points at, exposed as
+    // that type's `SPEC_XDR_ID`.
+    let expect = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+        doc: "".try_into().unwrap(),
+        name: "type".try_into().unwrap(),
+        inputs: [ScSpecFunctionInputV0 {
             doc: "".try_into().unwrap(),
-            name: "type".try_into().unwrap(),
-            inputs: [ScSpecFunctionInputV0 {
-                doc: "".try_into().unwrap(),
-                name: "fn".try_into().unwrap(),
-                type_: ScSpecTypeDef::Udt(ScSpecTypeUdt {
-                    name: "TestEnum".try_into().unwrap(),
-                }),
-            }]
-            .try_into()
-            .unwrap(),
-            outputs: [ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
-                ok_type: Box::new(ScSpecTypeDef::Udt(ScSpecTypeUdt {
-                    name: "TestType".try_into().unwrap(),
-                })),
-                error_type: Box::new(ScSpecTypeDef::Udt(ScSpecTypeUdt {
-                    name: "TestError".try_into().unwrap(),
-                })),
-            }))]
-            .try_into()
-            .unwrap(),
-        }),
-    );
+            name: "fn".try_into().unwrap(),
+            type_: ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
+                id: TestEnum::SPEC_XDR_ID,
+                name: "TestEnum".try_into().unwrap(),
+            }),
+        }]
+        .try_into()
+        .unwrap(),
+        outputs: [ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
+            ok_type: Box::new(ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
+                id: TestType::SPEC_XDR_ID,
+                name: "TestType".try_into().unwrap(),
+            })),
+            error_type: Box::new(ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
+                id: TestError::SPEC_XDR_ID,
+                name: "TestError".try_into().unwrap(),
+            })),
+        }))]
+        .try_into()
+        .unwrap(),
+    });
+    assert_eq!(fn_entry, expect);
 
     let trait_fn_entry =
         ScSpecEntry::from_xdr(r#Contract::spec_xdr_method(), Limits::none()).unwrap();

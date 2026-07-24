@@ -37,12 +37,21 @@ pub mod __Contract__value__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_VALUE: [u8; 44usize] = super::Contract::spec_xdr_value();
+    pub static __SPEC_XDR_FN_VALUE: [u8; 52usize] = super::Contract::spec_xdr_value();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_value() -> [u8; 44usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x05value\0\0\0\0\0\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x05Value\0\0\0"
+    pub const fn spec_xdr_value() -> [u8; 52usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\x05value\0\0\0\0\0\0\0\0\0\0\x01\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x05Value\0\0\0";
+        {
+            let id = <Value>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[32usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 impl<'a> ContractClient<'a> {

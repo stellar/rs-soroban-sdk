@@ -56,6 +56,10 @@ impl Error {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x05Error\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04Fail\0\0\0\x01"
     }
 }
+impl Error {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [168u8, 31u8, 196u8, 35u8, 156u8, 143u8, 235u8, 136u8];
+}
 impl soroban_sdk::SpecShakingMarker for Error {
     #[doc(hidden)]
     #[inline(always)]
@@ -316,14 +320,23 @@ pub mod __Contract____check_auth__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(non_snake_case)]
-    pub static __SPEC_XDR_FN___CHECK_AUTH: [u8; 148usize] =
+    pub static __SPEC_XDR_FN___CHECK_AUTH: [u8; 156usize] =
         super::Contract::spec_xdr___check_auth();
 }
 impl Contract {
     #[allow(non_snake_case)]
     #[allow(non_snake_case)]
-    pub const fn spec_xdr___check_auth() -> [u8; 148usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0c__check_auth\0\0\0\x03\0\0\0\0\0\0\0\x11signature_payload\0\0\0\0\0\x03\xee\0\0\0 \0\0\0\0\0\0\0\nsignatures\0\0\0\0\0\x02\0\0\0\0\0\0\0\rauth_contexts\0\0\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x07Context\0\0\0\0\x01\0\0\x03\xe9\0\0\0\x02\0\0\0\x03"
+    pub const fn spec_xdr___check_auth() -> [u8; 156usize] {
+        let mut bytes = *b"\0\0\0\0\0\0\0\0\0\0\0\x0c__check_auth\0\0\0\x03\0\0\0\0\0\0\0\x11signature_payload\0\0\0\0\0\x03\xee\0\0\0 \0\0\0\0\0\0\0\nsignatures\0\0\0\0\0\x02\0\0\0\0\0\0\0\rauth_contexts\0\0\0\0\0\x03\xea\0\0\x07\xd1\0\0\0\0\0\0\0\0\0\0\0\x07Context\0\0\0\0\x01\0\0\x03\xe9\0\0\0\x02\0\0\0\x03";
+        {
+            let id = <Context>::SPEC_XDR_ID;
+            let mut i = 0usize;
+            while i < 8 {
+                bytes[120usize + i] = id[i];
+                i += 1;
+            }
+        }
+        bytes
     }
 }
 impl<'a> ContractClient<'a> {}
