@@ -81,9 +81,9 @@ pub(crate) fn export_arg_v2_deprecation(export: &Option<bool>, ident: &syn::Iden
     }
 }
 
-/// Emit a deprecation warning when `lib` is set on a contract type or error.
-/// The argument is a vestige of an earlier design that was never used and will
-/// be removed in a future release.
+/// Emit a deprecation warning when `lib` is set on a contract type, error, or
+/// event. The argument is a vestige of an earlier design that was never used
+/// and will be removed in a future release.
 pub(crate) fn lib_arg_deprecation(lib: &Option<String>, ident: &syn::Ident) -> TokenStream2 {
     if lib.is_some() {
         let marker = format_ident!("__SOROBAN_LIB_ARG_DEPRECATED_FOR_{}", ident);

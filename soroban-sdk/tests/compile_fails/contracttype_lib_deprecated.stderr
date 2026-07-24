@@ -15,3 +15,9 @@ error: use of deprecated constant `__SOROBAN_LIB_ARG_DEPRECATED_FOR_E`: `lib` is
    |
 16 | pub enum E {
    |          ^
+
+error: use of deprecated constant `__SOROBAN_LIB_ARG_DEPRECATED_FOR_Ev`: `lib` is deprecated and will be removed in a future release
+  --> tests/compile_fails/contracttype_lib_deprecated.rs:21:12
+   |
+21 | pub struct Ev {
+   |            ^^
