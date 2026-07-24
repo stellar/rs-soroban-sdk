@@ -43,12 +43,7 @@ pub fn generate_struct_with_options(
 ) -> Result<TokenStream, GenerateError> {
     let ident = str_to_ident(&spec.name)?;
 
-    if spec.lib.len() > 0 {
-        let lib_ident = str_to_ident(&spec.lib)?;
-        Ok(quote! {
-            type #ident = ::#lib_ident::#ident;
-        })
-    } else if spec
+    if spec
         .fields
         .iter()
         .map(|f| {
@@ -107,41 +102,34 @@ pub fn generate_union_with_options(
     opts: &GenerateOptions,
 ) -> Result<TokenStream, GenerateError> {
     let ident = str_to_ident(&spec.name)?;
-    if spec.lib.len() > 0 {
-        let lib_ident = str_to_ident(&spec.lib)?;
-        Ok(quote! {
-            pub type #ident = ::#lib_ident::#ident;
-        })
-    } else {
-        let variants = spec
-            .cases
-            .iter()
-            .map(|c| {
-                let name = match c {
-                    stellar_xdr::ScSpecUdtUnionCaseV0::VoidV0(v) => &v.name,
-                    stellar_xdr::ScSpecUdtUnionCaseV0::TupleV0(t) => &t.name,
-                };
-                let v_ident = str_to_ident(name)?;
-                match c {
-                    stellar_xdr::ScSpecUdtUnionCaseV0::VoidV0(_) => Ok(quote! { #v_ident }),
-                    stellar_xdr::ScSpecUdtUnionCaseV0::TupleV0(t) => {
-                        let v_type = t
-                            .type_
-                            .iter()
-                            .map(generate_type_ident)
-                            .collect::<Result<Vec<_>, _>>()?;
-                        Ok(quote! { #v_ident ( #(#v_type),* ) })
-                    }
+    let variants = spec
+        .cases
+        .iter()
+        .map(|c| {
+            let name = match c {
+                stellar_xdr::ScSpecUdtUnionCaseV0::VoidV0(v) => &v.name,
+                stellar_xdr::ScSpecUdtUnionCaseV0::TupleV0(t) => &t.name,
+            };
+            let v_ident = str_to_ident(name)?;
+            match c {
+                stellar_xdr::ScSpecUdtUnionCaseV0::VoidV0(_) => Ok(quote! { #v_ident }),
+                stellar_xdr::ScSpecUdtUnionCaseV0::TupleV0(t) => {
+                    let v_type = t
+                        .type_
+                        .iter()
+                        .map(generate_type_ident)
+                        .collect::<Result<Vec<_>, _>>()?;
+                    Ok(quote! { #v_ident ( #(#v_type),* ) })
                 }
-            })
-            .collect::<Result<Vec<_>, GenerateError>>()?;
-        let contracttype_attr = contracttype_attr(opts.export);
-        Ok(quote! {
-            #contracttype_attr
-            #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
-            pub enum #ident { #(#variants,)* }
+            }
         })
-    }
+        .collect::<Result<Vec<_>, GenerateError>>()?;
+    let contracttype_attr = contracttype_attr(opts.export);
+    Ok(quote! {
+        #contracttype_attr
+        #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+        pub enum #ident { #(#variants,)* }
+    })
 }
 
 /// Constructs a token stream containing a single enum that mirrors the enum
@@ -157,28 +145,21 @@ pub fn generate_enum_with_options(
     opts: &GenerateOptions,
 ) -> Result<TokenStream, GenerateError> {
     let ident = str_to_ident(&spec.name)?;
-    if spec.lib.len() > 0 {
-        let lib_ident = str_to_ident(&spec.lib)?;
-        Ok(quote! {
-            pub type #ident = ::#lib_ident::#ident;
+    let variants = spec
+        .cases
+        .iter()
+        .map(|c| {
+            let v_ident = str_to_ident(&c.name)?;
+            let v_value = Literal::u32_unsuffixed(c.value);
+            Ok(quote! { #v_ident = #v_value })
         })
-    } else {
-        let variants = spec
-            .cases
-            .iter()
-            .map(|c| {
-                let v_ident = str_to_ident(&c.name)?;
-                let v_value = Literal::u32_unsuffixed(c.value);
-                Ok(quote! { #v_ident = #v_value })
-            })
-            .collect::<Result<Vec<_>, GenerateError>>()?;
-        let contracttype_attr = contracttype_attr(opts.export);
-        Ok(quote! {
-            #contracttype_attr
-            #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
-            pub enum #ident { #(#variants,)* }
-        })
-    }
+        .collect::<Result<Vec<_>, GenerateError>>()?;
+    let contracttype_attr = contracttype_attr(opts.export);
+    Ok(quote! {
+        #contracttype_attr
+        #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
+        pub enum #ident { #(#variants,)* }
+    })
 }
 
 /// Constructs a token stream containing a single enum that mirrors the enum
@@ -194,32 +175,25 @@ pub fn generate_error_enum_with_options(
     opts: &GenerateOptions,
 ) -> Result<TokenStream, GenerateError> {
     let ident = str_to_ident(&spec.name)?;
-    if spec.lib.len() > 0 {
-        let lib_ident = str_to_ident(&spec.lib)?;
-        Ok(quote! {
-            pub type #ident = ::#lib_ident::#ident;
+    let variants = spec
+        .cases
+        .iter()
+        .map(|c| {
+            let v_ident = str_to_ident(&c.name)?;
+            let v_value = Literal::u32_unsuffixed(c.value);
+            Ok(quote! { #v_ident = #v_value })
         })
+        .collect::<Result<Vec<_>, GenerateError>>()?;
+    let contracterror_attr = if opts.export {
+        quote! { #[soroban_sdk::contracterror] }
     } else {
-        let variants = spec
-            .cases
-            .iter()
-            .map(|c| {
-                let v_ident = str_to_ident(&c.name)?;
-                let v_value = Literal::u32_unsuffixed(c.value);
-                Ok(quote! { #v_ident = #v_value })
-            })
-            .collect::<Result<Vec<_>, GenerateError>>()?;
-        let contracterror_attr = if opts.export {
-            quote! { #[soroban_sdk::contracterror] }
-        } else {
-            quote! { #[soroban_sdk::contracterror(export = false)] }
-        };
-        Ok(quote! {
-            #contracterror_attr
-            #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
-            pub enum #ident { #(#variants,)* }
-        })
-    }
+        quote! { #[soroban_sdk::contracterror(export = false)] }
+    };
+    Ok(quote! {
+        #contracterror_attr
+        #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
+        pub enum #ident { #(#variants,)* }
+    })
 }
 
 /// Constructs a token stream containing a single struct that mirrors the event
