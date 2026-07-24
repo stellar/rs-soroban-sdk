@@ -1,6 +1,7 @@
 use crate::{
     attribute::remove_attributes_from_item, default_crate_path, doc::docs_from_attrs,
-    export_arg_v2_deprecation, map_type::map_type, shaking, symbol, DEFAULT_XDR_RW_LIMITS,
+    export_arg_v2_deprecation, lib_arg_deprecation, map_type::map_type, shaking, symbol,
+    DEFAULT_XDR_RW_LIMITS,
 };
 use darling::{ast::NestedMeta, Error, FromMeta};
 use heck::ToSnakeCase;
@@ -68,12 +69,14 @@ fn derive_event_or_err(metadata: TokenStream2, input: TokenStream2) -> Result<To
     let args = ContractEventArgs::from_list(&args)?;
     let input = parse2::<DeriveInput>(input)?;
     let export_deprecation = export_arg_v2_deprecation(&args.export, &input.ident);
+    let lib_deprecation = lib_arg_deprecation(&args.lib, &input.ident);
     let derived = derive_impls(&args, &input)?;
     let mut input = input;
     remove_attributes_from_item(&mut input.data, &["topic", "data"]);
     Ok(quote! {
         #input
         #export_deprecation
+        #lib_deprecation
         #derived
     }
     .into())
