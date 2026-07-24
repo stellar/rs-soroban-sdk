@@ -1778,21 +1778,21 @@ impl Env {
     ///     }
     /// }
     ///
-    /// // The named function to run inside the frame. Its name, `mint`, becomes
-    /// // the frame's function name. A `fn` can't capture, so the address it
-    /// // authorizes is passed in through a thread-local.
-    /// std::thread_local! {
-    ///     static ADMIN: std::cell::RefCell<Option<Address>> =
-    ///         const { std::cell::RefCell::new(None) };
-    /// }
-    /// fn mint() {
-    ///     ADMIN.with(|a| a.borrow().as_ref().unwrap().require_auth());
-    /// }
-    ///
     /// #[test]
     /// fn test() {
     /// # }
     /// # fn main() {
+    ///     // The named function to run inside the frame. Its name, `mint`,
+    ///     // becomes the frame's function name. A `fn` can't capture, so the
+    ///     // address it authorizes is passed in through a thread-local.
+    ///     std::thread_local! {
+    ///         static ADMIN: std::cell::RefCell<Option<Address>> =
+    ///             const { std::cell::RefCell::new(None) };
+    ///     }
+    ///     fn mint() {
+    ///         ADMIN.with(|a| a.borrow().as_ref().unwrap().require_auth());
+    ///     }
+    ///
     ///     let env = Env::default();
     ///     let contract_id = env.register(Contract, ());
     ///     let admin = env.register(Account, ());
