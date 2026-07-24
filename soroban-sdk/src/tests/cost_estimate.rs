@@ -21,8 +21,8 @@ fn test_cost_estimate_with_storage() {
     client.put(&symbol_short!("k1"), &symbol_short!("v1"));
     expect![[r#"
         InvocationResources {
-            instructions: 242479,
-            mem_bytes: 1126705,
+            instructions: 242831,
+            mem_bytes: 1126945,
             disk_read_entries: 0,
             memory_read_entries: 3,
             write_entries: 1,
@@ -54,8 +54,8 @@ fn test_cost_estimate_with_storage() {
     assert_eq!(client.get(&symbol_short!("k1")), Some(symbol_short!("v1")));
     expect![[r#"
         InvocationResources {
-            instructions: 241076,
-            mem_bytes: 1125802,
+            instructions: 240975,
+            mem_bytes: 1125994,
             disk_read_entries: 0,
             memory_read_entries: 3,
             write_entries: 0,
@@ -87,8 +87,8 @@ fn test_cost_estimate_with_storage() {
     client.del(&symbol_short!("k1"));
     expect![[r#"
         InvocationResources {
-            instructions: 238618,
-            mem_bytes: 1126022,
+            instructions: 238528,
+            mem_bytes: 1126182,
             disk_read_entries: 0,
             memory_read_entries: 3,
             write_entries: 1,
@@ -103,8 +103,8 @@ fn test_cost_estimate_with_storage() {
     .assert_eq(format!("{:#?}", e.cost_estimate().resources()).as_str());
     expect![[r#"
         FeeEstimate {
-            total: 4231,
-            instructions: 168,
+            total: 4230,
+            instructions: 167,
             disk_read_entries: 1563,
             write_entries: 2500,
             disk_read_bytes: 0,
@@ -120,8 +120,8 @@ fn test_cost_estimate_with_storage() {
     assert_eq!(client.get(&symbol_short!("k1")), None);
     expect![[r#"
         InvocationResources {
-            instructions: 238885,
-            mem_bytes: 1125666,
+            instructions: 238795,
+            mem_bytes: 1125826,
             disk_read_entries: 0,
             memory_read_entries: 3,
             write_entries: 0,
@@ -161,33 +161,33 @@ fn test_cost_estimate_budget() {
     // Budget breakdown corresponds to the last invocation only.
     expect![[r#"
         ===============================================================================================================================================================================
-        Cpu limit: 100000000; used: 257503
-        Mem limit: 41943040; used: 1145211
+        Cpu limit: 100000000; used: 257280
+        Mem limit: 41943040; used: 1145451
         ===============================================================================================================================================================================
         CostType                           iterations     input          cpu_insns      mem_bytes      const_term_cpu      lin_term_cpu        const_term_mem      lin_term_mem        
         WasmInsnExec                       284            None           1136           0              4                   0                   0                   0                   
-        MemAlloc                           23             Some(1051337)  141397         1051705        434                 16                  16                  128                 
-        MemCpy                             104            Some(10589)    5675           0              42                  16                  0                   0                   
+        MemAlloc                           24             Some(1051561)  141859         1051945        434                 16                  16                  128                 
+        MemCpy                             104            Some(10685)    5687           0              42                  16                  0                   0                   
         MemCmp                             67             Some(1996)     3184           0              44                  16                  0                   0                   
-        DispatchHostFunction               1              None           310            0              310                 0                   0                   0                   
-        VisitObject                        2              None           122            0              61                  0                   0                   0                   
-        ValSer                             61             Some(1248)     14265          18506          230                 29                  242                 384                 
-        ValDeser                           0              Some(0)        0              0              59052               4001                0                   384                 
-        ComputeSha256Hash                  1              Some(0)        3738           0              3738                7012                0                   0                   
-        ComputeEd25519PubKey               0              None           0              0              40253               0                   0                   0                   
-        VerifyEd25519Sig                   0              Some(0)        0              0              377524              4068                0                   0                   
-        VmInstantiation                    0              Some(0)        0              0              451626              45405               130065              5064                
+        DispatchHostFunction               1              None           295            0              295                 0                   0                   0                   
+        VisitObject                        2              None           120            0              60                  0                   0                   0                   
+        ValSer                             61             Some(1248)     13690          18506          221                 26                  242                 384                 
+        ValDeser                           0              Some(0)        0              0              331                 4369                0                   384                 
+        ComputeSha256Hash                  1              Some(0)        3636           0              3636                7013                0                   0                   
+        ComputeEd25519PubKey               0              None           0              0              40256               0                   0                   0                   
+        VerifyEd25519Sig                   0              Some(0)        0              0              377551              4059                0                   0                   
+        VmInstantiation                    0              Some(0)        0              0              417482              45712               132773              4903                
         VmCachedInstantiation              0              Some(0)        0              0              41142               634                 69472               1217                
-        InvokeVmFunction                   1              None           1948           14             1948                0                   14                  0                   
-        ComputeKeccak256Hash               0              Some(0)        0              0              3766                5969                0                   0                   
-        DecodeEcdsaCurve256Sig             0              None           0              0              710                 0                   0                   0                   
-        RecoverEcdsaSecp256k1Key           0              None           0              0              2315295             0                   181                 0                   
-        Int256AddSub                       0              None           0              0              4404                0                   99                  0                   
-        Int256Mul                          0              None           0              0              4947                0                   99                  0                   
-        Int256Div                          0              None           0              0              4911                0                   99                  0                   
-        Int256Pow                          0              None           0              0              4286                0                   99                  0                   
-        Int256Shift                        0              None           0              0              913                 0                   99                  0                   
-        ChaCha20DrawBytes                  0              Some(0)        0              0              1058                501                 0                   0                   
+        InvokeVmFunction                   1              None           1945           14             1945                0                   14                  0                   
+        ComputeKeccak256Hash               0              Some(0)        0              0              6481                5943                0                   0                   
+        DecodeEcdsaCurve256Sig             0              None           0              0              711                 0                   0                   0                   
+        RecoverEcdsaSecp256k1Key           0              None           0              0              2314804             0                   181                 0                   
+        Int256AddSub                       0              None           0              0              4176                0                   99                  0                   
+        Int256Mul                          0              None           0              0              4716                0                   99                  0                   
+        Int256Div                          0              None           0              0              4680                0                   99                  0                   
+        Int256Pow                          0              None           0              0              4256                0                   99                  0                   
+        Int256Shift                        0              None           0              0              884                 0                   99                  0                   
+        ChaCha20DrawBytes                  0              Some(0)        0              0              1059                502                 0                   0                   
         ParseWasmInstructions              0              Some(0)        0              0              73077               25410               17564               6457                
         ParseWasmFunctions                 0              Some(0)        0              0              0                   540752              0                   47464               
         ParseWasmGlobals                   0              Some(0)        0              0              0                   176363              0                   13420               
@@ -253,9 +253,9 @@ fn test_cost_estimate_budget() {
         Bn254G1Msm                         0              Some(0)        0              0              1185193             41568084            73061               229779              
         ===============================================================================================================================================================================
         Internal details (diagnostics info, does not affect fees) 
-        Total # times meter was called: 272
-        Shadow cpu limit: 100000000; used: 32431
-        Shadow mem limit: 41943040; used: 27108
+        Total # times meter was called: 273
+        Shadow cpu limit: 100000000; used: 31841
+        Shadow mem limit: 41943040; used: 27684
         ===============================================================================================================================================================================
 
 
