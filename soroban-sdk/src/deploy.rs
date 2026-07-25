@@ -126,7 +126,7 @@
 use crate::{
     env::internal::{ContractTtlExtension, Env as _},
     unwrap::UnwrapInfallible,
-    Address, Bytes, BytesN, ConstructorArgs, Env, IntoVal,
+    Address, Bytes, BytesN, ConstructorArgs, Env, ExecutableTag, IntoVal,
 };
 
 /// Deployer provides access to deploying contracts.
@@ -222,6 +222,44 @@ impl Deployer {
     pub fn update_current_contract_wasm(&self, wasm_hash: impl IntoVal<Env, BytesN<32>>) {
         self.env
             .update_current_contract_wasm(wasm_hash.into_val(&self.env).to_object())
+            .unwrap_infallible();
+    }
+
+    /// Replaces the executable of the current contract with a reference to an
+    /// executable reference entry owned by another contract.
+    ///
+    /// The entry is the one in `executable_owner`'s persistent storage keyed by
+    /// `tag`. It has to already exist, or this panics. Because the protocol
+    /// guarantees an entry keyed by an [ExecutableTag] always holds the hash of
+    /// an uploaded Wasm, a reference that resolves once can never later dangle.
+    ///
+    /// After this, the current contract's executable follows that entry:
+    /// whenever the owner updates it, this contract runs the new Wasm, with no
+    /// further action from this contract. That is the point of the mechanism —
+    /// an owner can re-point an arbitrarily large fleet of contracts in a
+    /// single transaction, which is otherwise impossible once the fleet is too
+    /// large for one transaction's resource limits.
+    ///
+    /// It also means `executable_owner` can substitute arbitrary code into this
+    /// contract at any time. Only refer to an owner already trusted with full
+    /// control of this contract.
+    ///
+    /// The function won't do anything immediately. The contract executable will
+    /// only be updated after the invocation has successfully finished, matching
+    /// [Deployer::update_current_contract_wasm].
+    ///
+    /// A contract may move freely between a direct Wasm executable and an
+    /// executable reference, in either direction.
+    pub fn update_current_contract_executable_ref(
+        &self,
+        executable_owner: &Address,
+        tag: &ExecutableTag,
+    ) {
+        self.env
+            .update_current_contract_executable_ref(
+                executable_owner.to_object(),
+                tag.to_object(),
+            )
             .unwrap_infallible();
     }
 
@@ -408,6 +446,46 @@ impl DeployerWithAddress {
             .create_contract_with_constructor(
                 self.address.to_object(),
                 wasm_hash.into_val(env).to_object(),
+                self.salt.to_object(),
+                constructor_args.into_val(env).to_object(),
+            )
+            .unwrap_infallible();
+        unsafe { Address::unchecked_new(env.clone(), address_obj) }
+    }
+
+    /// Deploy a contract whose executable is a reference to an executable
+    /// reference entry owned by another contract.
+    ///
+    /// The executable is read from `executable_owner`'s persistent storage
+    /// entry keyed by `tag`, which has to already exist, or this panics.
+    /// Thereafter the deployed contract's executable follows that entry: the
+    /// owner re-points every contract deployed against the tag by updating the
+    /// one entry. See [Deployer::update_current_contract_executable_ref] for
+    /// the trust this places in the owner.
+    ///
+    /// The constructor args will be passed to the contract's constructor. Pass
+    /// `()` for contracts with no constructor or a constructor with zero
+    /// arguments.
+    ///
+    /// The address of the deployed contract is derived from the deployer
+    /// address and provided salt, identically to [DeployerWithAddress::deploy_v2].
+    ///
+    /// Returns the deployed contract's address.
+    pub fn deploy_external_ref<A>(
+        &self,
+        executable_owner: &Address,
+        tag: &ExecutableTag,
+        constructor_args: A,
+    ) -> Address
+    where
+        A: ConstructorArgs,
+    {
+        let env = &self.env;
+        let address_obj = env
+            .create_external_ref_contract(
+                self.address.to_object(),
+                executable_owner.to_object(),
+                tag.to_object(),
                 self.salt.to_object(),
                 constructor_args.into_val(env).to_object(),
             )

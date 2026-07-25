@@ -1272,6 +1272,8 @@ mod num;
 pub use num::{Duration, Timepoint, I256, U256};
 mod string;
 pub use string::String;
+mod executable_tag;
+pub use executable_tag::ExecutableTag;
 mod tuple;
 
 mod constructor_args;
