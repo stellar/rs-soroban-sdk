@@ -29,52 +29,41 @@ soroban-token-sdk = { version = "27.0.0", path = "soroban-token-sdk" }
 soroban-token-spec = { version = "27.0.0", path = "soroban-token-spec" }
 stellar-asset-spec = { version = "27.0.0", path = "stellar-asset-spec" }
 
-# SPIKE: Protocol 28 (CAP-0085, externally managed contract executables) pins
-# the three env crates to the productionization branch commit of
-# rs-soroban-env#1704, hosted on the sisuresh/rs-soroban-env fork branch
-# p28-cap-0085. cargo-deny matches the literal git-URL org, so deny.toml's
-# [sources.allow-org] temporarily includes "sisuresh" for the SPIKE (revert to
-# just ["stellar"] once the pins re-point to merged stellar/ revs).
-# Version constraints are relaxed off the exact `=` pin per lessons.md — the
-# git-rev package self-reports 28.0.0; keep major-version compatibility.
-# Productionize -> stellar/rs-soroban-env merged SHA (or a released version)
-# once #1704 lands; restore `version =` only.
+# Protocol 28 (CAP-0085, externally managed contract executables) pins the three
+# env crates to stellar/rs-soroban-env main, which carries the merged CAP-85
+# host implementation (#1703) plus its follow-up test (#1711). The CAP-85 host
+# functions are gated on `min_supported_protocol: 28`, so the `next` feature is
+# still required at each consuming crate to make them visible.
+# Productionize -> a released 28.x version on crates.io once one is cut;
+# restore `version =` only and drop the git/rev lines.
 [workspace.dependencies.soroban-env-common]
-version = "28.0.0"
-git = "https://github.com/sisuresh/rs-soroban-env"
-rev = "78026e8b974c89b703c6aceadab9ba4dc2bd4cf4"
+version = "=28.0.0"
+git = "https://github.com/stellar/rs-soroban-env"
+rev = "358d8bafde7332ad176165b8f9da0bd979e33cd9"
 
 [workspace.dependencies.soroban-env-guest]
-version = "28.0.0"
-git = "https://github.com/sisuresh/rs-soroban-env"
-rev = "78026e8b974c89b703c6aceadab9ba4dc2bd4cf4"
+version = "=28.0.0"
+git = "https://github.com/stellar/rs-soroban-env"
+rev = "358d8bafde7332ad176165b8f9da0bd979e33cd9"
 
 [workspace.dependencies.soroban-env-host]
-version = "28.0.0"
-git = "https://github.com/sisuresh/rs-soroban-env"
-rev = "78026e8b974c89b703c6aceadab9ba4dc2bd4cf4"
+version = "=28.0.0"
+git = "https://github.com/stellar/rs-soroban-env"
+rev = "358d8bafde7332ad176165b8f9da0bd979e33cd9"
 
 [workspace.dependencies.stellar-strkey]
 version = "=0.0.16"
 
-# SPIKE: Protocol 28 (CAP-0085) pins stellar-xdr to the unmerged
-# rs-stellar-xdr#553 branch commit, referenced via sisuresh/rs-stellar-xdr
-# (fork-hosted branch p28-cap-0085). This rev self-reports 27.0.0, so the
-# version constraint is relaxed to a compatible "27.0.0" (no exact `=`).
-# Productionize -> stellar/rs-stellar-xdr merged SHA (or crates.io) once #553 lands.
+# Protocol 28 (CAP-0085) pins stellar-xdr to stellar/rs-stellar-xdr at exactly
+# the rev the env crates above pin, so the git source is unified across the
+# graph and no [patch] redirect is needed. The CAP-85 XDR types are gated behind
+# the `cap_0085_executable_ref` feature, which is enabled by the consuming
+# crates (soroban-meta, soroban-sdk-macros) and by rs-soroban-env's own pin.
 [workspace.dependencies.stellar-xdr]
-version = "27.0.0"
-git = "https://github.com/sisuresh/rs-stellar-xdr"
-rev = "e1170cd9abb9d1d10cf4a3b7ed4091a109f56b71"
+version = "=27.0.0"
+git = "https://github.com/stellar/rs-stellar-xdr"
+rev = "a90de0c0d6eba8be668e9074cfb7b285ac0ecd34"
 default-features = false
-
-# SPIKE: Protocol 28 (CAP-0085) the pinned rs-soroban-env#1704 env crates
-# transitively depend on stellar-xdr from sisuresh/rs-stellar-xdr at the SAME
-# rev (e1170cd9) as the direct workspace dep above, so the git source is already
-# unified and no [patch] redirect is needed (a sisuresh->sisuresh patch would be
-# a self-patch). Restore a patch to stellar/rs-stellar-xdr once #553 lands there.
-# [patch."https://github.com/sisuresh/rs-stellar-xdr"]
-# stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "e1170cd9abb9d1d10cf4a3b7ed4091a109f56b71", default-features = false }
 
 #[patch.crates-io]
 #soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }
