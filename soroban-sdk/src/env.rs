@@ -1837,7 +1837,7 @@ impl Env {
     /// current contract function for authorization. This lets
     /// [`mock_auths`][Self::mock_auths] and [`auths`][Self::auths] observe the
     /// same function name that [`Address::require_auth`] uses.
-    pub fn as_contract_with_func<T>(
+    pub fn as_contract_fn<T>(
         &self,
         id: &Address,
         func: &crate::Symbol,
@@ -1945,7 +1945,7 @@ impl Env {
     /// the current contract function for authorization. This lets
     /// [`mock_auths`][Self::mock_auths] and [`auths`][Self::auths] observe the
     /// same function name that [`Address::require_auth`] uses.
-    pub fn try_as_contract_with_func<T, E>(
+    pub fn try_as_contract_fn<T, E>(
         &self,
         id: &Address,
         func: &crate::Symbol,

@@ -358,7 +358,7 @@ fn test_register_restores_auth_before_panics() {
 }
 
 #[test]
-fn test_as_contract_with_func() {
+fn test_as_contract_fn() {
     use crate::testutils::{MockAuth, MockAuthInvoke};
     use crate::IntoVal;
 
@@ -379,13 +379,13 @@ fn test_as_contract_with_func() {
         },
     }]);
 
-    env.as_contract_with_func(&test_contract_id, &func_name, || {
+    env.as_contract_fn(&test_contract_id, &func_name, || {
         user.require_auth();
     });
 }
 
 #[test]
-fn test_try_as_contract_with_func() {
+fn test_try_as_contract_fn() {
     use crate::testutils::{MockAuth, MockAuthInvoke};
     use crate::IntoVal;
 
@@ -407,7 +407,7 @@ fn test_try_as_contract_with_func() {
         },
     }]);
 
-    let result = env.try_as_contract_with_func::<Symbol, Error>(&addr, &func_name, || {
+    let result = env.try_as_contract_fn::<Symbol, Error>(&addr, &func_name, || {
         user.require_auth();
         Symbol::new(&env, "hello")
     });
