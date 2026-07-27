@@ -55,6 +55,12 @@ impl Contract {
     /// which has no entry — the dangling reference lives inside a type spec,
     /// not just a function spec.
     pub fn use_field_alias(_env: Env, _w: Wrapper) {}
+
+    /// Alias in return position: the function output references UDT `ItemAlias`,
+    /// which has no entry.
+    pub fn return_udt_alias(_env: Env) -> ItemAlias {
+        Item { value: 0 }
+    }
 }
 
 #[cfg(test)]

@@ -120,3 +120,10 @@ fn alias_to_container_param() {
 fn alias_in_struct_field() {
     assert_struct_field_refs_resolve("Wrapper");
 }
+
+// A type alias in return position dangles in the function's outputs, a distinct
+// codegen path from parameters.
+#[test]
+fn alias_in_return() {
+    assert_fn_refs_resolve("return_udt_alias");
+}
