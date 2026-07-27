@@ -25,6 +25,13 @@ pub type Amount = i128;
 /// A Rust type alias for a container type.
 pub type Items = soroban_sdk::Vec<Item>;
 
+/// A contract type whose field is declared with a type alias.
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct Wrapper {
+    pub item: ItemAlias,
+}
+
 #[contract]
 pub struct Contract;
 
@@ -43,6 +50,11 @@ impl Contract {
     /// real type is `Vec<Item>` (a container, not a UDT). The element type
     /// `Item` is kept via the marker, but the `Items` reference dangles.
     pub fn use_container_alias(_env: Env, _items: Items) {}
+
+    /// The struct `Wrapper` is kept, but its field references UDT `ItemAlias`,
+    /// which has no entry — the dangling reference lives inside a type spec,
+    /// not just a function spec.
+    pub fn use_field_alias(_env: Env, _w: Wrapper) {}
 }
 
 #[cfg(test)]

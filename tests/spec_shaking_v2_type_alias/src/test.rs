@@ -68,6 +68,27 @@ fn assert_fn_refs_resolve(fn_name: &str) {
     }
 }
 
+/// Assert every UDT referenced by the named struct's fields resolves to a kept
+/// entry.
+fn assert_struct_field_refs_resolve(struct_name: &str) {
+    let (kept, present) = shaken();
+    let s = kept
+        .iter()
+        .find_map(|e| match e {
+            ScSpecEntry::UdtStructV0(s) if s.name.to_utf8_string_lossy() == struct_name => Some(s),
+            _ => None,
+        })
+        .unwrap_or_else(|| panic!("struct `{struct_name}` not found in spec"));
+    let mut refs = HashSet::new();
+    s.fields.iter().for_each(|f| collect_udts(&f.type_, &mut refs));
+    for r in refs {
+        assert!(
+            present.contains(&r),
+            "struct `{struct_name}` references UDT `{r}`, but no such entry survives shaking"
+        );
+    }
+}
+
 // A Rust type alias for a contract type used as a function parameter resolves,
 // via the marker, to the real type `Item`, so the surviving spec entry is named
 // `Item`. But the function spec is built from the syntactic token `ItemAlias`,
@@ -91,4 +112,11 @@ fn alias_to_primitive_param() {
 #[test]
 fn alias_to_container_param() {
     assert_fn_refs_resolve("use_container_alias");
+}
+
+// A type alias used as a struct field type dangles inside the struct's own spec
+// entry, showing the defect is not limited to function signatures.
+#[test]
+fn alias_in_struct_field() {
+    assert_struct_field_refs_resolve("Wrapper");
 }
