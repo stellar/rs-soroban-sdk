@@ -54,7 +54,7 @@ pub(crate) const XDR_INPUT: &[&[u8]] = &[
     &SetAuthorized::spec_xdr(),
 ];
 
-pub(crate) const XDR_LEN: usize = 9128;
+pub(crate) const XDR_LEN: usize = 9184;
 
 /// Returns the contract spec for Stellar Asset contract.
 pub const fn xdr() -> &'static [u8] {
