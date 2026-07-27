@@ -84,3 +84,11 @@ fn alias_to_udt_param() {
 fn alias_to_primitive_param() {
     assert_fn_refs_resolve("use_primitive_alias");
 }
+
+// A type alias to a container is mapped by its syntactic name too, so the
+// function spec references a UDT named `Items` that has no entry (the real type
+// is `Vec<Item>`, a container). The element `Item` is kept, but `Items` dangles.
+#[test]
+fn alias_to_container_param() {
+    assert_fn_refs_resolve("use_container_alias");
+}

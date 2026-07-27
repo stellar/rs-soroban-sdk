@@ -22,6 +22,9 @@ pub type ItemAlias = Item;
 /// A Rust type alias for a primitive.
 pub type Amount = i128;
 
+/// A Rust type alias for a container type.
+pub type Items = soroban_sdk::Vec<Item>;
+
 #[contract]
 pub struct Contract;
 
@@ -35,6 +38,11 @@ impl Contract {
     /// UDT entry named `Amount` exists (the real type is the primitive `i128`),
     /// so the reference dangles.
     pub fn use_primitive_alias(_env: Env, _amount: Amount) {}
+
+    /// `map_type` treats the alias token `Items` as a UDT reference, but the
+    /// real type is `Vec<Item>` (a container, not a UDT). The element type
+    /// `Item` is kept via the marker, but the `Items` reference dangles.
+    pub fn use_container_alias(_env: Env, _items: Items) {}
 }
 
 #[cfg(test)]
