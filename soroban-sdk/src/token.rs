@@ -432,7 +432,7 @@ pub trait StellarAssetInterface {
     /// # Events
     ///
     /// Emits an event with topics `["set_authorized", id: Address,
-    /// sep0011_asset: String], data = [authorize: bool]`
+    /// sep0011_asset: String], data = authorize: bool`
     fn set_authorized(env: Env, id: Address, authorize: bool);
 
     /// Returns true if `id` is authorized to use its balance.
