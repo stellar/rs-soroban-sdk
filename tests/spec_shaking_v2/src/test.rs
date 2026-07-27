@@ -43,6 +43,7 @@ fn test_spec_shaking_v2() {
         "with_panic_raw_error",
         "with_vec",
         "with_vec_nested",
+        "with_nested_vec",
         "with_map",
         "with_recursion",
         "publish_simple",
@@ -92,6 +93,10 @@ fn test_spec_shaking_v2() {
         "UsedVecInnerVecElement",
         "UsedVecInnerElement",
         "UsedVecElementNested",
+        // nested Vec<Vec<_>> field inside a contracttype (inner type reached
+        // through two levels of Vec)
+        "UsedNestedVecStruct",
+        "UsedNestedVecInner",
         // Option element type in fn param
         "UsedOptionElement",
         // Result Ok type in fn return

@@ -246,6 +246,22 @@ pub struct UsedVecElementNested {
     pub vec_inner: Vec<UsedVecInnerVecElement>,
 }
 
+// Used as the innermost element type reached through a doubly-nested
+// `Vec<Vec<_>>` field of a contracttype. Confirms reachability traverses
+// nested Vecs inside a contracttype to keep the inner type's spec.
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedNestedVecInner {
+    pub val: u32,
+}
+
+// Used as fn param: a contracttype whose field is a nested `Vec<Vec<_>>`.
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedNestedVecStruct {
+    pub rows: Vec<Vec<UsedNestedVecInner>>,
+}
+
 // Used types declared with `export = false`: the argument is a no-op under
 // `experimental_spec_shaking_v2` (a deprecation warning is emitted by the
 // macro).
@@ -428,6 +444,8 @@ impl Contract {
     pub fn with_vec(_env: Env, _v: Vec<UsedVecElement>) {}
 
     pub fn with_vec_nested(_env: Env, _v: Vec<UsedVecElementNested>) {}
+
+    pub fn with_nested_vec(_env: Env, _s: UsedNestedVecStruct) {}
 
     pub fn with_map(_env: Env, _m: Map<UsedMapKey, UsedMapVal>) {}
 
