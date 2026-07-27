@@ -246,20 +246,15 @@ pub struct UsedVecElementNested {
     pub vec_inner: Vec<UsedVecInnerVecElement>,
 }
 
-// Used as the innermost element type reached through a doubly-nested
-// `Vec<Vec<_>>` field of a contracttype. Confirms reachability traverses
-// nested Vecs inside a contracttype to keep the inner type's spec.
+// A contracttype struct `A` whose field has type `Vec<A>`: direct
+// self-recursion through a Vec. The `keep_reachable` indirection in the
+// `Vec<T>` marker impl breaks the otherwise-infinite marker recursion, so
+// this both compiles and keeps `A`'s spec when `A` is used at a contract
+// boundary.
 #[contracttype]
 #[derive(Clone, Debug, Eq, PartialEq)]
-pub struct UsedNestedVecInner {
-    pub val: u32,
-}
-
-// Used as fn param: a contracttype whose field is a nested `Vec<Vec<_>>`.
-#[contracttype]
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub struct UsedNestedVecStruct {
-    pub rows: Vec<Vec<UsedNestedVecInner>>,
+pub struct UsedSelfRecursiveVec {
+    pub children: Vec<UsedSelfRecursiveVec>,
 }
 
 // Used types declared with `export = false`: the argument is a no-op under
@@ -445,7 +440,7 @@ impl Contract {
 
     pub fn with_vec_nested(_env: Env, _v: Vec<UsedVecElementNested>) {}
 
-    pub fn with_nested_vec(_env: Env, _s: UsedNestedVecStruct) {}
+    pub fn with_self_recursive_vec(_env: Env, _s: UsedSelfRecursiveVec) {}
 
     pub fn with_map(_env: Env, _m: Map<UsedMapKey, UsedMapVal>) {}
 

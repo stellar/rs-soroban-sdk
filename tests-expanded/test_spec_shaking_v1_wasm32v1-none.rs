@@ -3185,192 +3185,99 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedVecElementNested> for soroba
         )
     }
 }
-pub struct UsedNestedVecInner {
-    pub val: u32,
+pub struct UsedSelfRecursiveVec {
+    pub children: Vec<UsedSelfRecursiveVec>,
 }
 #[automatically_derived]
-impl ::core::clone::Clone for UsedNestedVecInner {
+impl ::core::clone::Clone for UsedSelfRecursiveVec {
     #[inline]
-    fn clone(&self) -> UsedNestedVecInner {
-        UsedNestedVecInner {
-            val: ::core::clone::Clone::clone(&self.val),
+    fn clone(&self) -> UsedSelfRecursiveVec {
+        UsedSelfRecursiveVec {
+            children: ::core::clone::Clone::clone(&self.children),
         }
     }
 }
 #[automatically_derived]
-impl ::core::fmt::Debug for UsedNestedVecInner {
+impl ::core::fmt::Debug for UsedSelfRecursiveVec {
     #[inline]
     fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
         ::core::fmt::Formatter::debug_struct_field1_finish(
             f,
-            "UsedNestedVecInner",
-            "val",
-            &&self.val,
+            "UsedSelfRecursiveVec",
+            "children",
+            &&self.children,
         )
     }
 }
 #[automatically_derived]
-impl ::core::cmp::Eq for UsedNestedVecInner {
+impl ::core::cmp::Eq for UsedSelfRecursiveVec {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
     fn assert_receiver_is_total_eq(&self) -> () {
-        let _: ::core::cmp::AssertParamIsEq<u32>;
+        let _: ::core::cmp::AssertParamIsEq<Vec<UsedSelfRecursiveVec>>;
     }
 }
 #[automatically_derived]
-impl ::core::marker::StructuralPartialEq for UsedNestedVecInner {}
+impl ::core::marker::StructuralPartialEq for UsedSelfRecursiveVec {}
 #[automatically_derived]
-impl ::core::cmp::PartialEq for UsedNestedVecInner {
+impl ::core::cmp::PartialEq for UsedSelfRecursiveVec {
     #[inline]
-    fn eq(&self, other: &UsedNestedVecInner) -> bool {
-        self.val == other.val
+    fn eq(&self, other: &UsedSelfRecursiveVec) -> bool {
+        self.children == other.children
     }
 }
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDNESTEDVECINNER: [u8; 56usize] = UsedNestedVecInner::spec_xdr();
-impl UsedNestedVecInner {
-    pub const fn spec_xdr() -> [u8; 56usize] {
-        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x12UsedNestedVecInner\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
-    }
-}
-impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedNestedVecInner {
-    type Error = soroban_sdk::ConversionError;
-    fn try_from_val(
-        env: &soroban_sdk::Env,
-        val: &soroban_sdk::Val,
-    ) -> Result<Self, soroban_sdk::ConversionError> {
-        use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
-        const KEYS: [&'static str; 1usize] = ["val"];
-        let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
-        let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
-            .map_err(|_| ConversionError)?;
-        Ok(Self {
-            val: vals[0]
-                .try_into_val(env)
-                .map_err(|_| soroban_sdk::ConversionError)?,
-        })
-    }
-}
-impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedNestedVecInner> for soroban_sdk::Val {
-    type Error = soroban_sdk::ConversionError;
-    fn try_from_val(
-        env: &soroban_sdk::Env,
-        val: &UsedNestedVecInner,
-    ) -> Result<Self, soroban_sdk::ConversionError> {
-        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
-        const KEYS: [&'static str; 1usize] = ["val"];
-        let vals: [Val; 1usize] = [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
-        Ok(env
-            .map_new_from_slices(&KEYS, &vals)
-            .map_err(|_| ConversionError)?
-            .into())
-    }
-}
-impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedNestedVecInner> for soroban_sdk::Val {
-    type Error = soroban_sdk::ConversionError;
-    #[inline(always)]
-    fn try_from_val(
-        env: &soroban_sdk::Env,
-        val: &&UsedNestedVecInner,
-    ) -> Result<Self, soroban_sdk::ConversionError> {
-        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedNestedVecInner>>::try_from_val(
-            env, *val,
-        )
-    }
-}
-pub struct UsedNestedVecStruct {
-    pub rows: Vec<Vec<UsedNestedVecInner>>,
-}
-#[automatically_derived]
-impl ::core::clone::Clone for UsedNestedVecStruct {
-    #[inline]
-    fn clone(&self) -> UsedNestedVecStruct {
-        UsedNestedVecStruct {
-            rows: ::core::clone::Clone::clone(&self.rows),
-        }
-    }
-}
-#[automatically_derived]
-impl ::core::fmt::Debug for UsedNestedVecStruct {
-    #[inline]
-    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
-        ::core::fmt::Formatter::debug_struct_field1_finish(
-            f,
-            "UsedNestedVecStruct",
-            "rows",
-            &&self.rows,
-        )
-    }
-}
-#[automatically_derived]
-impl ::core::cmp::Eq for UsedNestedVecStruct {
-    #[inline]
-    #[doc(hidden)]
-    #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
-        let _: ::core::cmp::AssertParamIsEq<Vec<Vec<UsedNestedVecInner>>>;
-    }
-}
-#[automatically_derived]
-impl ::core::marker::StructuralPartialEq for UsedNestedVecStruct {}
-#[automatically_derived]
-impl ::core::cmp::PartialEq for UsedNestedVecStruct {
-    #[inline]
-    fn eq(&self, other: &UsedNestedVecStruct) -> bool {
-        self.rows == other.rows
-    }
-}
-#[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDNESTEDVECSTRUCT: [u8; 88usize] = UsedNestedVecStruct::spec_xdr();
-impl UsedNestedVecStruct {
+pub static __SPEC_XDR_TYPE_USEDSELFRECURSIVEVEC: [u8; 88usize] = UsedSelfRecursiveVec::spec_xdr();
+impl UsedSelfRecursiveVec {
     pub const fn spec_xdr() -> [u8; 88usize] {
-        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x13UsedNestedVecStruct\0\0\0\0\x01\0\0\0\0\0\0\0\x04rows\0\0\x03\xea\0\0\x03\xea\0\0\x07\xd0\0\0\0\x12UsedNestedVecInner\0\0"
+        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x14UsedSelfRecursiveVec\0\0\0\x01\0\0\0\0\0\0\0\x08children\0\0\x03\xea\0\0\x07\xd0\0\0\0\x14UsedSelfRecursiveVec"
     }
 }
-impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedNestedVecStruct {
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedSelfRecursiveVec {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
-        const KEYS: [&'static str; 1usize] = ["rows"];
+        const KEYS: [&'static str; 1usize] = ["children"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
         env.map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
-            rows: vals[0]
+            children: vals[0]
                 .try_into_val(env)
                 .map_err(|_| soroban_sdk::ConversionError)?,
         })
     }
 }
-impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedNestedVecStruct> for soroban_sdk::Val {
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedSelfRecursiveVec> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
         env: &soroban_sdk::Env,
-        val: &UsedNestedVecStruct,
+        val: &UsedSelfRecursiveVec,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
-        const KEYS: [&'static str; 1usize] = ["rows"];
-        let vals: [Val; 1usize] = [(&val.rows).try_into_val(env).map_err(|_| ConversionError)?];
+        const KEYS: [&'static str; 1usize] = ["children"];
+        let vals: [Val; 1usize] = [(&val.children)
+            .try_into_val(env)
+            .map_err(|_| ConversionError)?];
         Ok(env
             .map_new_from_slices(&KEYS, &vals)
             .map_err(|_| ConversionError)?
             .into())
     }
 }
-impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedNestedVecStruct> for soroban_sdk::Val {
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedSelfRecursiveVec> for soroban_sdk::Val {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
     fn try_from_val(
         env: &soroban_sdk::Env,
-        val: &&UsedNestedVecStruct,
+        val: &&UsedSelfRecursiveVec,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedNestedVecStruct>>::try_from_val(
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedSelfRecursiveVec>>::try_from_val(
             env, *val,
         )
     }
@@ -8041,7 +7948,7 @@ impl Contract {
     }
     pub fn with_vec(_env: Env, _v: Vec<UsedVecElement>) {}
     pub fn with_vec_nested(_env: Env, _v: Vec<UsedVecElementNested>) {}
-    pub fn with_nested_vec(_env: Env, _s: UsedNestedVecStruct) {}
+    pub fn with_self_recursive_vec(_env: Env, _s: UsedSelfRecursiveVec) {}
     pub fn with_map(_env: Env, _m: Map<UsedMapKey, UsedMapVal>) {}
     pub fn with_option(_env: Env, _o: Option<UsedOptionElement>) {}
     pub fn with_result(_env: Env) -> Result<UsedResultOk, UsedErrorEnum> {
@@ -8251,18 +8158,18 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_nested_vec__spec {
+pub mod __Contract__with_self_recursive_vec__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_NESTED_VEC: [u8; 76usize] =
-        super::Contract::spec_xdr_with_nested_vec();
+    pub static __SPEC_XDR_FN_WITH_SELF_RECURSIVE_VEC: [u8; 84usize] =
+        super::Contract::spec_xdr_with_self_recursive_vec();
 }
 impl Contract {
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_nested_vec() -> [u8; 76usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0fwith_nested_vec\0\0\0\0\x01\0\0\0\0\0\0\0\x01s\0\0\0\0\0\x07\xd0\0\0\0\x13UsedNestedVecStruct\0\0\0\0\0"
+    pub const fn spec_xdr_with_self_recursive_vec() -> [u8; 84usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x17with_self_recursive_vec\0\0\0\0\x01\0\0\0\0\0\0\0\x01s\0\0\0\0\0\x07\xd0\0\0\0\x14UsedSelfRecursiveVec\0\0\0\0"
     }
 }
 #[doc(hidden)]
@@ -8829,19 +8736,19 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
-    pub fn with_nested_vec(&self, _s: &UsedNestedVecStruct) -> () {
+    pub fn with_self_recursive_vec(&self, _s: &UsedSelfRecursiveVec) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
-            &{ soroban_sdk::Symbol::new(&self.env, "with_nested_vec") },
+            &{ soroban_sdk::Symbol::new(&self.env, "with_self_recursive_vec") },
             ::soroban_sdk::Vec::from_array(&self.env, [_s.into_val(&self.env)]),
         );
         res
     }
-    pub fn try_with_nested_vec(
+    pub fn try_with_self_recursive_vec(
         &self,
-        _s: &UsedNestedVecStruct,
+        _s: &UsedSelfRecursiveVec,
     ) -> Result<
         Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
@@ -8849,7 +8756,7 @@ impl<'a> ContractClient<'a> {
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
-            &{ soroban_sdk::Symbol::new(&self.env, "with_nested_vec") },
+            &{ soroban_sdk::Symbol::new(&self.env, "with_self_recursive_vec") },
             ::soroban_sdk::Vec::from_array(&self.env, [_s.into_val(&self.env)]),
         );
         res
@@ -9459,7 +9366,9 @@ impl ContractArgs {
     }
     #[inline(always)]
     #[allow(clippy::unused_unit)]
-    pub fn with_nested_vec<'i>(_s: &'i UsedNestedVecStruct) -> (&'i UsedNestedVecStruct,) {
+    pub fn with_self_recursive_vec<'i>(
+        _s: &'i UsedSelfRecursiveVec,
+    ) -> (&'i UsedSelfRecursiveVec,) {
         (_s,)
     }
     #[inline(always)]
@@ -9811,14 +9720,16 @@ pub extern "C" fn __Contract__with_vec_nested__invoke_raw_extern(
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-#[deprecated(note = "use `ContractClient::new(&env, &contract_id).with_nested_vec` instead")]
+#[deprecated(
+    note = "use `ContractClient::new(&env, &contract_id).with_self_recursive_vec` instead"
+)]
 #[allow(deprecated)]
-pub fn __Contract__with_nested_vec__invoke_raw(
+pub fn __Contract__with_self_recursive_vec__invoke_raw(
     env: soroban_sdk::Env,
     arg_0: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
     soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
-        <Contract>::with_nested_vec(
+        <Contract>::with_self_recursive_vec(
             env.clone(),
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<
@@ -9832,13 +9743,15 @@ pub fn __Contract__with_nested_vec__invoke_raw(
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-#[deprecated(note = "use `ContractClient::new(&env, &contract_id).with_nested_vec` instead")]
-#[export_name = "with_nested_vec"]
-pub extern "C" fn __Contract__with_nested_vec__invoke_raw_extern(
+#[deprecated(
+    note = "use `ContractClient::new(&env, &contract_id).with_self_recursive_vec` instead"
+)]
+#[export_name = "with_self_recursive_vec"]
+pub extern "C" fn __Contract__with_self_recursive_vec__invoke_raw_extern(
     arg_0: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
     #[allow(deprecated)]
-    __Contract__with_nested_vec__invoke_raw(soroban_sdk::Env::default(), arg_0)
+    __Contract__with_self_recursive_vec__invoke_raw(soroban_sdk::Env::default(), arg_0)
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
