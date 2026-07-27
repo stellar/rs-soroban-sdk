@@ -19,6 +19,9 @@ pub struct Item {
 /// A plain Rust type alias for a contract type.
 pub type ItemAlias = Item;
 
+/// A Rust type alias for a primitive.
+pub type Amount = i128;
+
 #[contract]
 pub struct Contract;
 
@@ -27,6 +30,11 @@ impl Contract {
     /// The marker keeps the `Item` entry, but the function spec references UDT
     /// `ItemAlias`, which has no entry.
     pub fn use_udt_alias(_env: Env, _item: ItemAlias) {}
+
+    /// `map_type` treats the alias token `Amount` as a UDT reference, but no
+    /// UDT entry named `Amount` exists (the real type is the primitive `i128`),
+    /// so the reference dangles.
+    pub fn use_primitive_alias(_env: Env, _amount: Amount) {}
 }
 
 #[cfg(test)]

@@ -76,3 +76,11 @@ fn assert_fn_refs_resolve(fn_name: &str) {
 fn alias_to_udt_param() {
     assert_fn_refs_resolve("use_udt_alias");
 }
+
+// A type alias to a primitive is also mapped by its syntactic name, so the
+// function spec references a UDT named `Amount` that has no entry at all (the
+// real type, `i128`, is a primitive with no UDT entry).
+#[test]
+fn alias_to_primitive_param() {
+    assert_fn_refs_resolve("use_primitive_alias");
+}
