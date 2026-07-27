@@ -2053,6 +2053,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_spec_shaking_v2_type_alias"
+version = "27.0.2"
+dependencies = [
+ "soroban-sdk",
+ "soroban-spec",
+]
+
+[[package]]
 name = "test_tuples"
 version = "27.0.2"
 dependencies = [
