@@ -74,11 +74,19 @@ pre-agent-steps:
     run: |
       # Exits non-zero when it finds violations, which is the interesting case,
       # so the output is captured as evidence rather than used as a gate.
+      #
+      # The crates are named rather than excluded. The workspace also holds the
+      # test fixture crates, which are only out of scope by virtue of being
+      # publish = false, and checking them would take the job well past its
+      # timeout if that ever stopped being true.
       cargo semver-checks \
         --baseline-rev "$(cat .semver/base-sha.txt)" \
-        --exclude soroban-meta \
-        --exclude soroban-token-spec \
-        --exclude stellar-asset-spec \
+        --package soroban-sdk \
+        --package soroban-sdk-macros \
+        --package soroban-spec \
+        --package soroban-spec-rust \
+        --package soroban-token-sdk \
+        --package soroban-ledger-snapshot \
         > .semver/cargo-semver-checks.txt 2>&1 || true
       tail -n 40 .semver/cargo-semver-checks.txt
 ---
@@ -107,9 +115,11 @@ or run the crates; everything that needs building has already been run.
   MSRV change (`rust-version`), a Cargo feature being added or removed, and a
   dependency change appear.
 - `.semver/cargo-semver-checks.txt` — output of `cargo semver-checks` comparing
-  this pull request against the base commit. It skips `soroban-meta`,
-  `soroban-token-spec`, and `stellar-asset-spec`, so changes to those crates
-  have to be classified from the diff.
+  this pull request against the base commit. It covers `soroban-sdk`,
+  `soroban-sdk-macros`, `soroban-spec`, `soroban-spec-rust`,
+  `soroban-token-sdk`, and `soroban-ledger-snapshot`. Any other crate,
+  including `soroban-meta`, `soroban-token-spec`, and `stellar-asset-spec`, has
+  to be classified from the diff.
 
 Read the source diff for anything you need to judge yourself, with
 `git diff $BASE HEAD -- <path>`.
