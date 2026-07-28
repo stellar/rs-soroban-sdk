@@ -342,6 +342,26 @@ pub mod budget {
     ///
     /// Inputs feed into those cost dimensions.
     ///
+    /// Each dimension has a limit, and a running total of what has been
+    /// consumed against it. Metering happens as a contract executes, and the
+    /// moment a total exceeds its limit the invocation fails with
+    /// `Error(Budget, ExceededLimit)`.
+    ///
+    /// The totals are reset before every top-level contract invocation, so the
+    /// costs read describe the last invocation only. The limits are not reset,
+    /// and stay in effect for every invocation until changed by one of the
+    /// `reset_` functions. A new [`Env`] starts with limits of 100 million CPU
+    /// instructions and 40MiB memory.
+    ///
+    /// The budget limits are separate from the invocation resource limits that
+    /// [`CostEstimate::enforce_resource_limits`] and
+    /// [`CostEstimate::disable_resource_limits`] configure. The budget is
+    /// enforced while a contract executes, while the resource limits are
+    /// checked once an invocation completes, and cover ledger entries, bytes,
+    /// and event sizes as well as instructions and memory. Changing one does
+    /// not change the other, so running invocations with no limits at all
+    /// requires changing both.
+    ///
     /// Note that all cost dimensions – CPU instructions, memory – and the VM
     /// cost type inputs are likely to be underestimated when running Rust code
     /// compared to running the WASM equivalent.
@@ -349,18 +369,44 @@ pub mod budget {
     /// ### Examples
     ///
     /// ```
-    /// use soroban_sdk::{Env, Symbol};
+    /// use soroban_sdk::{contract, contractimpl, Env};
     ///
+    /// #[contract]
+    /// pub struct Contract;
+    ///
+    /// #[contractimpl]
+    /// impl Contract {
+    ///     pub fn f() {
+    ///         // ... code
+    ///     }
+    /// }
+    ///
+    /// #[test]
+    /// fn test() {
+    /// # }
     /// # #[cfg(feature = "testutils")]
     /// # fn main() {
-    /// #     let env = Env::default();
-    /// env.cost_estimate().budget().reset_default();
-    /// // ...
-    /// println!("{}", env.cost_estimate().budget());
-    /// # }
+    ///     let env = Env::default();
+    ///     let contract_id = env.register(Contract, ());
+    ///     let client = ContractClient::new(&env, &contract_id);
+    ///
+    ///     client.f();
+    ///
+    ///     // The costs are for the invocation above only.
+    ///     let budget = env.cost_estimate().budget();
+    ///     println!("cpu instructions: {}", budget.cpu_instruction_cost());
+    ///     println!("memory bytes: {}", budget.memory_bytes_cost());
+    ///
+    ///     // Print the limits, and the cost of every cost type.
+    ///     println!("{}", budget);
+    /// }
     /// # #[cfg(not(feature = "testutils"))]
     /// # fn main() { }
     /// ```
+    ///
+    /// [`Env`]: crate::Env
+    /// [`CostEstimate::enforce_resource_limits`]: crate::testutils::cost_estimate::CostEstimate::enforce_resource_limits
+    /// [`CostEstimate::disable_resource_limits`]: crate::testutils::cost_estimate::CostEstimate::disable_resource_limits
     pub struct Budget(pub(crate) crate::env::internal::budget::Budget);
 
     impl Display for Budget {
@@ -380,24 +426,145 @@ pub mod budget {
             Self(b)
         }
 
-        /// Reset the budget.
+        /// Reset the budget to its default limits, and clear everything metered
+        /// so far.
+        ///
+        /// Use this to restore the limits that a new [`Env`] starts with, after
+        /// changing them with [`reset_unlimited`][Self::reset_unlimited] or
+        /// [`reset_limits`][Self::reset_limits]. See [`Budget`] for what those
+        /// limits are.
+        ///
+        /// [`Env`]: crate::Env
         pub fn reset_default(&mut self) {
             self.0.reset_default().unwrap();
         }
 
+        /// Reset the budget with no limits, so that invocations may consume any
+        /// number of CPU instructions and any amount of memory, and clear
+        /// everything metered so far.
+        ///
+        /// The limits stay lifted for every subsequent invocation, until they
+        /// are set again with [`reset_default`][Self::reset_default] or
+        /// [`reset_limits`][Self::reset_limits].
+        ///
+        /// This does not affect the invocation resource limits, which are
+        /// checked separately once an invocation completes. Disable them with
+        /// [`CostEstimate::disable_resource_limits`] to run invocations with no
+        /// limits at all.
+        ///
+        /// ### Examples
+        ///
+        /// ```
+        /// use soroban_sdk::{contract, contractimpl, Env};
+        ///
+        /// #[contract]
+        /// pub struct Contract;
+        ///
+        /// #[contractimpl]
+        /// impl Contract {
+        ///     pub fn f() {
+        ///         // ... resource heavy code
+        ///     }
+        /// }
+        ///
+        /// #[test]
+        /// fn test() {
+        /// # }
+        /// # #[cfg(feature = "testutils")]
+        /// # fn main() {
+        ///     let env = Env::default();
+        ///
+        ///     // Both limits need lifting to run without any limits.
+        ///     env.cost_estimate().budget().reset_unlimited();
+        ///     env.cost_estimate().disable_resource_limits();
+        ///
+        ///     let contract_id = env.register(Contract, ());
+        ///     let client = ContractClient::new(&env, &contract_id);
+        ///
+        ///     client.f();
+        /// }
+        /// # #[cfg(not(feature = "testutils"))]
+        /// # fn main() { }
+        /// ```
+        ///
+        /// [`CostEstimate::disable_resource_limits`]: crate::testutils::cost_estimate::CostEstimate::disable_resource_limits
         pub fn reset_unlimited(&mut self) {
             self.0.reset_unlimited().unwrap();
         }
 
+        /// Reset the budget with the given CPU instruction and memory limits,
+        /// and clear everything metered so far.
+        ///
+        /// The limits stay in effect for every subsequent invocation, until
+        /// changed again.
+        ///
+        /// These limits are enforced while a contract executes. They are
+        /// independent of the invocation resource limits, which are checked
+        /// once an invocation completes, so a limit that a test needs enforced
+        /// in both places needs setting here and in
+        /// [`CostEstimate::enforce_resource_limits`].
+        ///
+        /// ### Examples
+        ///
+        /// ```
+        /// use soroban_sdk::{contract, contractimpl, Env};
+        ///
+        /// #[contract]
+        /// pub struct Contract;
+        ///
+        /// #[contractimpl]
+        /// impl Contract {
+        ///     pub fn f() {
+        ///         // ... code
+        ///     }
+        /// }
+        ///
+        /// #[test]
+        /// fn test() {
+        /// # }
+        /// # #[cfg(feature = "testutils")]
+        /// # fn main() {
+        ///     let env = Env::default();
+        ///
+        ///     // Allow more instructions, and less memory, than the defaults.
+        ///     env.cost_estimate()
+        ///         .budget()
+        ///         .reset_limits(1_000_000_000, 20 * 1024 * 1024);
+        ///
+        ///     let contract_id = env.register(Contract, ());
+        ///     let client = ContractClient::new(&env, &contract_id);
+        ///
+        ///     client.f();
+        /// }
+        /// # #[cfg(not(feature = "testutils"))]
+        /// # fn main() { }
+        /// ```
+        ///
+        /// [`CostEstimate::enforce_resource_limits`]: crate::testutils::cost_estimate::CostEstimate::enforce_resource_limits
         pub fn reset_limits(&mut self, cpu: u64, mem: u64) {
             self.0.reset_limits(cpu, mem).unwrap();
         }
 
+        /// Reset the per-cost-type metering that [`tracker`][Self::tracker]
+        /// returns, i.e. the iterations, inputs, and derived CPU and memory of
+        /// every [`ContractCostType`].
+        ///
+        /// The limits are unchanged, and so are the totals returned by
+        /// [`cpu_instruction_cost`][Self::cpu_instruction_cost] and
+        /// [`memory_bytes_cost`][Self::memory_bytes_cost], which continue to
+        /// count towards the limits. Use
+        /// [`reset_limits`][Self::reset_limits] or
+        /// [`reset_default`][Self::reset_default] to clear the totals as well.
         pub fn reset_tracker(&mut self) {
             self.0.reset_tracker().unwrap();
         }
 
         /// Returns the CPU instruction cost.
+        ///
+        /// This is the total metered since the budget was last reset, which for
+        /// a test that has invoked a contract is the total for the last
+        /// top-level invocation. It is the value checked against the CPU
+        /// instruction limit.
         ///
         /// Note that CPU instructions are likely to be underestimated when
         /// running Rust code compared to running the WASM equivalent.
@@ -406,6 +573,11 @@ pub mod budget {
         }
 
         /// Returns the memory cost.
+        ///
+        /// This is the total metered since the budget was last reset, which for
+        /// a test that has invoked a contract is the total for the last
+        /// top-level invocation. It is the value checked against the memory
+        /// limit.
         ///
         /// Note that memory is likely to be underestimated when running Rust
         /// code compared to running the WASM equivalent.
@@ -426,6 +598,13 @@ pub mod budget {
         }
 
         /// Print the budget costs and inputs to stdout.
+        ///
+        /// The output contains the limit and the total metered for both cost
+        /// dimensions, and a row for every [`ContractCostType`]. It is the same
+        /// output that the [`Display`] implementation produces.
+        ///
+        /// Note that Rust captures the stdout of tests that pass, so run the
+        /// test with `cargo test -- --nocapture` to see the output.
         pub fn print(&self) {
             println!("{}", self.0);
         }

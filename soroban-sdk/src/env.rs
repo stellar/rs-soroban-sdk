@@ -767,7 +767,10 @@ impl Env {
     /// While the resource metering may be useful for contract optimization,
     /// keep in mind that resource and fee estimation may be imprecise. Use
     /// simulation with RPC in order to get the exact resources for submitting
-    /// the transactions to the network.    
+    /// the transactions to the network.
+    ///
+    /// See [`CostEstimate`] for the limits that contract invocations in tests
+    /// are held to, and how to change them.
     pub fn cost_estimate(&self) -> CostEstimate {
         CostEstimate::new(self.clone())
     }

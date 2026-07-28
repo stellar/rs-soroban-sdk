@@ -69,6 +69,7 @@
 //! # fn main() {
 //!     let env = Env::default();
 //!     env.cost_estimate().disable_resource_limits(); // Disable resource limit
+//!     env.cost_estimate().budget().reset_unlimited(); // Disable budget limit
 //!
 //!     let contract_id = env.register(Contract, ());
 //!     let client = ContractClient::new(&env, &contract_id);
@@ -77,6 +78,11 @@
 //! # #[cfg(not(feature = "testutils"))]
 //! # fn main() { }
 //! ```
+//!
+//! The CPU instruction and memory budget is metered while a contract executes and enforced
+//! independently of the resource limits, so it needs disabling as well, as above. Without the call
+//! to [`Budget::reset_unlimited()`] the invocation still fails with `Error(Budget, ExceededLimit)`
+//! at the budget's default limits.
 //!
 //! ## Custom Resource Limits
 //!
@@ -139,6 +145,7 @@
 //! release.
 //!
 //! [`Env::default()`]: crate::Env::default
+//! [`Budget::reset_unlimited()`]: crate::testutils::budget::Budget::reset_unlimited
 //! [`CostEstimate::disable_resource_limits()`]: crate::testutils::cost_estimate::CostEstimate::disable_resource_limits
 //! [`CostEstimate::enforce_resource_limits()`]: crate::testutils::cost_estimate::CostEstimate::enforce_resource_limits
 //! [`InvocationResourceLimits`]: soroban_env_host::InvocationResourceLimits
