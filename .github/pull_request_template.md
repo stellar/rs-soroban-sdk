@@ -10,7 +10,7 @@
 
 [TODO or N/A]
 
-### Semver
+### SemVer
 
 [TODO: Check one. Merge only when confirmed that the main branch is accepting changes for the matching type of release. See the [Cargo SemVer Compatibility reference](https://doc.rust-lang.org/cargo/reference/semver.html).]
 
