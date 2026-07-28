@@ -1,8 +1,8 @@
 //! Auth contains types for building custom account contracts.
 
 use crate::{
-    contractimpl_trait_macro, contracttype, crypto::Hash, Address, BytesN, Env, Error, Symbol, Val,
-    Vec,
+    contractimpl_trait_macro, contracttype, crypto::Hash, Address, BytesN, Env, Error, String,
+    Symbol, Val, Vec,
 };
 
 /// Context of a single authorized call performed by an address.
@@ -95,6 +95,33 @@ pub struct CreateContractWithConstructorHostFnContext {
 )]
 pub enum ContractExecutable {
     Wasm(BytesN<32>),
+    /// CAP-0085. The contract being created takes its executable from an entry
+    /// owned by another contract, so the code it will run is whatever that entry
+    /// names — now, and after any future update by its owner.
+    ///
+    /// A custom account authorizing such a creation is therefore not approving a
+    /// fixed implementation. Decide on whether `owner` is trusted to control the
+    /// contract's code indefinitely, not on a code hash.
+    ExternalRef(ContractExecutableRef),
+}
+
+/// CAP-0085 reference to an executable entry owned by another contract.
+///
+/// `tag` keys a persistent entry in `owner`'s storage whose value is the hash of
+/// the Wasm to run. The protocol guarantees that entry always names an uploaded
+/// Wasm — but not *which* one, since `owner` may re-point it at any time.
+#[derive(Clone, Debug)]
+#[cfg_attr(
+    feature = "experimental_spec_shaking_v2",
+    contracttype(crate_path = "crate")
+)]
+#[cfg_attr(
+    not(feature = "experimental_spec_shaking_v2"),
+    contracttype(crate_path = "crate", export = false)
+)]
+pub struct ContractExecutableRef {
+    pub owner: Address,
+    pub tag: String,
 }
 
 /// A node in the tree of authorizations performed on behalf of the current
