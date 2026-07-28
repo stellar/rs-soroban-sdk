@@ -118,15 +118,27 @@ impl CostEstimate {
             .unwrap();
     }
 
-    /// Disables resource limit enforcement for contract invocations in tests.
+    /// Disables all resource limit enforcement for contract invocations in
+    /// tests.
     ///
     /// This may be useful for the experimental contracts that are still being
     /// optimized.
+    ///
+    /// A single call is sufficient to run invocations without any limits: it
+    /// disables both the invocation resource limit checks (see
+    /// `enforce_resource_limits()`) and the CPU instruction and memory budget
+    /// that is metered and enforced separately during execution. Without
+    /// resetting the budget as well, a heavy invocation could still fail with
+    /// `Error(Budget, ExceededLimit)`.
     pub fn disable_resource_limits(&self) {
         self.env
             .host()
             .set_invocation_resource_limits(None)
             .unwrap();
+        // The invocation resource limits above only gate the post-invocation
+        // resource check. The CPU instruction and memory budget is a separate
+        // limit enforced during execution, so reset it to unlimited too.
+        self.budget().reset_unlimited();
     }
 }
 

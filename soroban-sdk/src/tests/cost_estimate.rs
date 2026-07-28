@@ -149,6 +149,29 @@ fn test_cost_estimate_with_storage() {
     .assert_eq(format!("{:#?}", e.cost_estimate().fee()).as_str());
 }
 
+// A single call to `disable_resource_limits()` should be sufficient to run
+// invocations without any limits, including the CPU/memory budget that is
+// enforced separately from the invocation resource limits.
+#[test]
+fn test_disable_resource_limits_also_disables_budget() {
+    let e = Env::default();
+
+    let contract_id = e.register(contract_data::WASM, ());
+    let client = contract_data::Client::new(&e, &contract_id);
+
+    // Constrain the CPU/memory budget so tightly that any invocation would
+    // otherwise exceed it and fail with `Error(Budget, ExceededLimit)`. The
+    // limit persists across invocations until it is reset.
+    e.cost_estimate().budget().reset_limits(1, 1);
+
+    // Disabling resource limits alone should also clear the budget limit, so
+    // no separate call to `budget().reset_unlimited()` is needed.
+    e.cost_estimate().disable_resource_limits();
+
+    client.put(&symbol_short!("k1"), &symbol_short!("v1"));
+    assert_eq!(client.get(&symbol_short!("k1")), Some(symbol_short!("v1")));
+}
+
 #[test]
 fn test_cost_estimate_budget() {
     let e = Env::default();
