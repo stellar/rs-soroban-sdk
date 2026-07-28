@@ -262,6 +262,23 @@ ul.clean li .lead { color: #fff; font-weight: 600; }
 .hint { position: fixed; left: 50%; bottom: clamp(8px,1.5vh,16px); transform: translateX(-50%); font-family: var(--font-mono); font-size: var(--mono-label); color: var(--faint); z-index: 40; background: rgba(12,10,20,0.6); padding: 0.3em 0.9em; border-radius: 999px; border: 1px solid var(--line); backdrop-filter: blur(6px); }
 .hint b { color: var(--muted); }
 
+/* ============================== PRESENTER OVERLAY ==============================
+   In-page fallback for the presenter view, used when a popup window can't be
+   opened (e.g. sandboxed iframes that block window.open). Toggled with P. */
+.poverlay { position: fixed; top: 0; right: 0; bottom: 0; width: min(420px, 92vw); z-index: 60;
+    background: rgba(12,10,20,0.97); border-left: 1px solid var(--line); backdrop-filter: blur(8px);
+    display: none; flex-direction: column; gap: 10px; padding: 16px; font-family: var(--font-display); }
+.poverlay.open { display: flex; }
+.poverlay .ptop { display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+.poverlay .pcnt { color: var(--rust); font-weight: 700; font-size: 14px; }
+.poverlay .ptmr { font-size: 18px; color: var(--text); font-variant-numeric: tabular-nums; cursor: pointer; }
+.poverlay .pttl { font-weight: 600; font-size: 16px; color: #fff; line-height: 1.25; }
+.poverlay .pnts { flex: 1; overflow: auto; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px; font-size: 13.5px; line-height: 1.55; white-space: pre-wrap; color: var(--text); }
+.poverlay .pnts::-webkit-scrollbar { width: 8px; } .poverlay .pnts::-webkit-scrollbar-thumb { background: var(--line); border-radius: 99px; }
+.poverlay .pnxt { font-family: var(--font-mono); font-size: 11px; color: var(--muted); background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
+.poverlay .pnxt b { color: var(--wasm); }
+.poverlay .phint { font-family: var(--font-mono); font-size: 10px; color: var(--faint); text-align: center; }
+
 /* ============================== ANIMATIONS ============================== */
 .reveal { opacity: 0; transform: translateY(26px); transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease); }
 .slide.visible .reveal { opacity: 1; transform: translateY(0); }
@@ -1181,6 +1198,7 @@ class SlidePresentation {
         const pct = this.slides.length > 1 ? (idx / (this.slides.length - 1)) * 100 : 100;
         if (this.progress) this.progress.style.width = pct + '%';
         if (this.dots) this.dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+        this.refreshOverlay();
     }
 
     goToSlide(idx) {
@@ -1204,6 +1222,7 @@ class SlidePresentation {
             else if (e.key === 'End') { e.preventDefault(); this.goToSlide(this.slides.length - 1); }
             else if (e.key === 'p' || e.key === 'P') { this.openPresenter(); }
             else if (e.key === 'f' || e.key === 'F') { this.toggleFullscreen(); }
+            else if (e.key === 'Escape') { this.closeOverlay(); }
         });
     }
 
@@ -1248,18 +1267,82 @@ class SlidePresentation {
         this.channel.postMessage({ type: 'slide', slide: idx, total: this.slides.length });
     }
 
-    openPresenter() {
-        const titles = this.slides.map((s) => {
+    slideTitles() {
+        return this.slides.map((s, i) => {
             const h = s.querySelector('h1, h2');
-            return h ? h.textContent.trim().replace(/\s+/g, ' ') : ('Slide ' + 1);
+            return h ? h.textContent.trim().replace(/\s+/g, ' ') : ('Slide ' + (i + 1));
         });
-        const w = window.open('', 'ss-presenter', 'width=960,height=680');
-        if (!w) { alert('Allow pop-ups to open the presenter view.'); return; }
+    }
+
+    openPresenter() {
+        // If the in-page overlay is showing, P toggles it closed.
+        if (this.overlayEl && this.overlayEl.classList.contains('open')) { this.closeOverlay(); return; }
+        // Prefer a separate synced window (dual-screen presenting). Sandboxed
+        // iframes (e.g. hosted artifacts) block window.open — fall back to the
+        // in-page overlay there.
+        let w = null;
+        try { w = window.open('', 'ss-presenter', 'width=960,height=680'); } catch (err) { w = null; }
+        if (!w) { this.openOverlay(); return; }
+        const titles = this.slideTitles();
+        // Replacer functions so `$` sequences in the JSON can't be interpreted
+        // as special replacement patterns.
         const html = PRESENTER_HTML
-            .replace('/*NOTES*/', JSON.stringify(SPEAKER_NOTES))
-            .replace('/*TITLES*/', JSON.stringify(titles))
-            .replace('/*START*/', String(this.current));
+            .replace('/*NOTES*/', () => JSON.stringify(SPEAKER_NOTES))
+            .replace('/*TITLES*/', () => JSON.stringify(titles))
+            .replace('/*START*/', () => String(this.current));
         w.document.open(); w.document.write(html); w.document.close();
+    }
+
+    /* ---- in-page presenter overlay (popup-less fallback) ---- */
+    buildOverlay() {
+        if (this.overlayEl) return;
+        const el = document.createElement('aside');
+        el.className = 'poverlay';
+        el.setAttribute('aria-label', 'Presenter notes');
+        el.innerHTML =
+            '<div class="ptop"><span class="pcnt"><span class="pn">1</span> / <span class="pt">1</span></span>' +
+            '<span class="ptmr" title="Click to reset">00:00</span></div>' +
+            '<div class="pttl">—</div>' +
+            '<div class="pnts">—</div>' +
+            '<div class="pnxt">Up next → <b>—</b></div>' +
+            '<div class="phint">P or Esc to close · ← → to navigate</div>';
+        document.body.appendChild(el);
+        this.overlayEl = el;
+        el.querySelector('.ptmr').addEventListener('click', () => { this.timerStart = Date.now(); });
+    }
+
+    openOverlay() {
+        this.buildOverlay();
+        this.overlayEl.classList.add('open');
+        if (!this.timerStart) this.timerStart = Date.now();
+        if (!this.timerInterval) {
+            this.timerInterval = setInterval(() => {
+                if (!this.overlayEl.classList.contains('open')) return;
+                let s = Math.floor((Date.now() - this.timerStart) / 1000);
+                const m = Math.floor(s / 60); s = s % 60;
+                this.overlayEl.querySelector('.ptmr').textContent =
+                    String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+            }, 250);
+        }
+        this.refreshOverlay();
+    }
+
+    closeOverlay() {
+        if (this.overlayEl) this.overlayEl.classList.remove('open');
+    }
+
+    refreshOverlay() {
+        if (!this.overlayEl || !this.overlayEl.classList.contains('open')) return;
+        const idx = this.current;
+        const titles = this.slideTitles();
+        this.overlayEl.querySelector('.pn').textContent = idx + 1;
+        this.overlayEl.querySelector('.pt').textContent = this.slides.length;
+        this.overlayEl.querySelector('.pttl').textContent = titles[idx] || ('Slide ' + (idx + 1));
+        const nts = this.overlayEl.querySelector('.pnts');
+        nts.textContent = (typeof SPEAKER_NOTES !== 'undefined' && SPEAKER_NOTES[idx]) || '(no notes)';
+        nts.scrollTop = 0;
+        this.overlayEl.querySelector('.pnxt b').textContent =
+            (idx + 1 < this.slides.length) ? titles[idx + 1] : '— end —';
     }
 }
 
