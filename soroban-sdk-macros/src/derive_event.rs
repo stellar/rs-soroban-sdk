@@ -1,6 +1,10 @@
 use crate::{
-    attribute::remove_attributes_from_item, default_crate_path, doc::docs_from_attrs,
-    export_arg_v2_deprecation, map_type::map_type, shaking, symbol, DEFAULT_XDR_RW_LIMITS,
+    attribute::remove_attributes_from_item,
+    default_crate_path,
+    doc::docs_from_attrs,
+    export_arg_v2_deprecation,
+    map_type::{const_ref_string, const_ref_symbol, const_ref_type_def, map_type},
+    shaking, symbol, DEFAULT_XDR_RW_LIMITS,
 };
 use darling::{ast::NestedMeta, Error, FromMeta};
 use heck::ToSnakeCase;
@@ -179,7 +183,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     } else {
         None
     };
-    let spec_entry = ScSpecEntry::EventV0(ScSpecEventV0 {
+    let spec_entry = ScSpecEventV0 {
         data_format: args.data_format.into(),
         doc: docs_from_attrs(&input.attrs),
         lib: args.lib.as_deref().unwrap_or_default().try_into().unwrap(),
@@ -196,10 +200,42 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
             .collect::<Vec<_>>()
             .try_into()
             .unwrap(),
-    });
-    let spec_xdr = spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap();
-    let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
-    let spec_xdr_len = spec_xdr.len();
+    };
+
+    // The spec entry rendered as the equivalent const ScSpecEntryRef, which the
+    // contract crate encodes to XDR at compile time.
+    let spec_ref = {
+        let doc = const_ref_string(path, &spec_entry.doc);
+        let lib = const_ref_string(path, &spec_entry.lib);
+        let name = const_ref_symbol(path, &spec_entry.name);
+        let prefix_topics = spec_entry
+            .prefix_topics
+            .iter()
+            .map(|t| const_ref_symbol(path, t));
+        let params = spec_entry.params.iter().map(|p| {
+            let doc = const_ref_string(path, &p.doc);
+            let name = const_ref_string(path, &p.name);
+            let type_ = const_ref_type_def(path, &p.type_);
+            let location = format_ident!("{}", p.location.name());
+            quote!(#path::xdr::ScSpecEventParamV0Ref {
+                doc: #doc,
+                name: #name,
+                type_: #type_,
+                location: #path::xdr::ScSpecEventParamLocationV0::#location,
+            })
+        });
+        let data_format = format_ident!("{}", spec_entry.data_format.name());
+        quote! {
+            #path::xdr::ScSpecEntryRef::EventV0(#path::xdr::ScSpecEventV0Ref {
+                doc: #doc,
+                lib: #lib,
+                name: #name,
+                prefix_topics: #path::xdr::VecMRef::new(&[#(#prefix_topics),*]),
+                params: #path::xdr::VecMRef::new(&[#(#params),*]),
+                data_format: #path::xdr::ScSpecEventDataFormat::#data_format,
+            })
+        }
+    };
     let spec_ident = format_ident!(
         "__SPEC_XDR_EVENT_{}",
         input.ident.unraw().to_string().to_uppercase()
@@ -213,11 +249,14 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     // Generated code spec.
     let spec_gen = quote! {
         #export_gen
-        pub static #spec_ident: [u8; #spec_xdr_len] = #ident::spec_xdr();
+        pub static #spec_ident: [u8; #ident::__SPEC_XDR_REF.const_xdr_len()] = #ident::spec_xdr();
 
         impl #gen_impl #ident #gen_types #gen_where {
-            pub const fn spec_xdr() -> [u8; #spec_xdr_len] {
-                *#spec_xdr_lit
+            #[doc(hidden)]
+            pub const __SPEC_XDR_REF: #path::xdr::ScSpecEntryRef<'static> = #spec_ref;
+
+            pub const fn spec_xdr() -> [u8; #ident::__SPEC_XDR_REF.const_xdr_len()] {
+                #ident::__SPEC_XDR_REF.const_to_xdr()
             }
         }
     };
@@ -228,7 +267,9 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         Some(shaking::generate_marker_impl(
             path,
             quote!(#ident),
-            &spec_xdr,
+            &ScSpecEntry::EventV0(spec_entry.clone())
+                .to_xdr(DEFAULT_XDR_RW_LIMITS)
+                .unwrap(),
             field_types.iter().cloned(),
             Some(quote!(#gen_impl)),
             Some(quote!(#gen_types)),

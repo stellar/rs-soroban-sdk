@@ -9,7 +9,7 @@ use syn::{
 
 use stellar_xdr::{ScSpecEntry, ScSpecUdtEnumCaseV0, WriteXdr};
 
-use crate::{doc::docs_from_attrs, shaking, DEFAULT_XDR_RW_LIMITS};
+use crate::{doc::docs_from_attrs, map_type::const_ref_string, shaking, DEFAULT_XDR_RW_LIMITS};
 
 // TODO: Add conversions to/from ScVal types.
 
@@ -67,49 +67,68 @@ pub fn derive_type_enum_int(
         return quote! { #(#compile_errors)* };
     }
 
-    // Compute spec XDR once if spec is enabled.
-    let spec_xdr = if spec {
-        let spec_entry = ScSpecEntry::UdtEnumV0(ScSpecUdtEnumV0 {
+    // Build the spec entry once if spec is enabled.
+    let spec_entry = if spec {
+        Some(ScSpecUdtEnumV0 {
             doc: docs_from_attrs(attrs),
             lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
             name: enum_ident.unraw().to_string().try_into().unwrap(),
             cases: spec_cases.try_into().unwrap(),
-        });
-        Some(spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap())
-    } else {
-        None
-    };
-
-    // Generated code spec.
-    let spec_gen = if let Some(ref spec_xdr) = spec_xdr {
-        let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
-        let spec_xdr_len = spec_xdr.len();
-        let spec_ident = format_ident!(
-            "__SPEC_XDR_TYPE_{}",
-            enum_ident.unraw().to_string().to_uppercase()
-        );
-        Some(quote! {
-            #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
-            pub static #spec_ident: [u8; #spec_xdr_len] = #enum_ident::spec_xdr();
-
-            impl #enum_ident {
-                pub const fn spec_xdr() -> [u8; #spec_xdr_len] {
-                    *#spec_xdr_lit
-                }
-            }
         })
     } else {
         None
     };
 
+    // Generated code spec. The spec entry is rendered as the equivalent const
+    // ScSpecEntryRef, which the contract crate encodes to XDR at compile time.
+    let spec_gen = spec_entry.as_ref().map(|spec_entry| {
+        let doc = const_ref_string(path, &spec_entry.doc);
+        let lib = const_ref_string(path, &spec_entry.lib);
+        let name = const_ref_string(path, &spec_entry.name);
+        let cases = spec_entry.cases.iter().map(|c| {
+            let doc = const_ref_string(path, &c.doc);
+            let name = const_ref_string(path, &c.name);
+            let value = c.value;
+            quote!(#path::xdr::ScSpecUdtEnumCaseV0Ref { doc: #doc, name: #name, value: #value })
+        });
+        let spec_ref = quote! {
+            #path::xdr::ScSpecEntryRef::UdtEnumV0(#path::xdr::ScSpecUdtEnumV0Ref {
+                doc: #doc,
+                lib: #lib,
+                name: #name,
+                cases: #path::xdr::VecMRef::new(&[#(#cases),*]),
+            })
+        };
+        let spec_ident = format_ident!(
+            "__SPEC_XDR_TYPE_{}",
+            enum_ident.unraw().to_string().to_uppercase()
+        );
+        quote! {
+            #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
+            pub static #spec_ident: [u8; #enum_ident::__SPEC_XDR_REF.const_xdr_len()] = #enum_ident::spec_xdr();
+
+            impl #enum_ident {
+                #[doc(hidden)]
+                pub const __SPEC_XDR_REF: #path::xdr::ScSpecEntryRef<'static> = #spec_ref;
+
+                pub const fn spec_xdr() -> [u8; #enum_ident::__SPEC_XDR_REF.const_xdr_len()] {
+                    #enum_ident::__SPEC_XDR_REF.const_to_xdr()
+                }
+            }
+        }
+    });
+
     // SpecShakingMarker impl - only generated when spec is true and the
     // experimental_spec_shaking_v2 feature is enabled.
     let spec_shaking_impl = if cfg!(feature = "experimental_spec_shaking_v2") {
-        spec_xdr.as_ref().map(|spec_xdr| {
+        spec_entry.as_ref().map(|spec_entry| {
+            let spec_xdr = ScSpecEntry::UdtEnumV0(spec_entry.clone())
+                .to_xdr(DEFAULT_XDR_RW_LIMITS)
+                .unwrap();
             shaking::generate_marker_impl(
                 path,
                 quote!(#enum_ident),
-                spec_xdr,
+                &spec_xdr,
                 std::iter::empty(),
                 None,
                 None,

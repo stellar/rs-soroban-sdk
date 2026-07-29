@@ -11,7 +11,11 @@ use stellar_xdr::{
     ScSpecUdtUnionCaseVoidV0, ScSpecUdtUnionV0, StringM, VecM, WriteXdr, SCSYMBOL_LIMIT,
 };
 
-use crate::{doc::docs_from_attrs, map_type::map_type, shaking, DEFAULT_XDR_RW_LIMITS};
+use crate::{
+    doc::docs_from_attrs,
+    map_type::{const_ref_string, const_ref_type_def, map_type},
+    shaking, DEFAULT_XDR_RW_LIMITS,
+};
 
 pub fn derive_type_enum(
     path: &Path,
@@ -145,45 +149,79 @@ pub fn derive_type_enum(
         return quote! { #(#compile_errors)* };
     }
 
-    // Compute spec XDR once if spec is enabled.
-    let spec_xdr = if spec {
-        let spec_entry = ScSpecEntry::UdtUnionV0(ScSpecUdtUnionV0 {
+    // Build the spec entry once if spec is enabled.
+    let spec_entry = if spec {
+        Some(ScSpecUdtUnionV0 {
             doc: docs_from_attrs(attrs),
             lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
             name: enum_ident.unraw().to_string().try_into().unwrap(),
             cases: spec_cases.try_into().unwrap(),
-        });
-        Some(spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap())
-    } else {
-        None
-    };
-
-    // Generated code spec.
-    let spec_gen = if let Some(ref spec_xdr) = spec_xdr {
-        let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
-        let spec_xdr_len = spec_xdr.len();
-        let spec_ident = format_ident!(
-            "__SPEC_XDR_TYPE_{}",
-            enum_ident.unraw().to_string().to_uppercase()
-        );
-        Some(quote! {
-            #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
-            pub static #spec_ident: [u8; #spec_xdr_len] = #enum_ident::spec_xdr();
-
-            impl #enum_ident {
-                pub const fn spec_xdr() -> [u8; #spec_xdr_len] {
-                    *#spec_xdr_lit
-                }
-            }
         })
     } else {
         None
     };
 
+    // Generated code spec. The spec entry is rendered as the equivalent const
+    // ScSpecEntryRef, which the contract crate encodes to XDR at compile time.
+    let spec_gen = spec_entry.as_ref().map(|spec_entry| {
+        let doc = const_ref_string(path, &spec_entry.doc);
+        let lib = const_ref_string(path, &spec_entry.lib);
+        let name = const_ref_string(path, &spec_entry.name);
+        let cases = spec_entry.cases.iter().map(|c| match c {
+            ScSpecUdtUnionCaseV0::VoidV0(c) => {
+                let doc = const_ref_string(path, &c.doc);
+                let name = const_ref_string(path, &c.name);
+                quote!(#path::xdr::ScSpecUdtUnionCaseV0Ref::VoidV0(
+                    #path::xdr::ScSpecUdtUnionCaseVoidV0Ref { doc: #doc, name: #name }
+                ))
+            }
+            ScSpecUdtUnionCaseV0::TupleV0(c) => {
+                let doc = const_ref_string(path, &c.doc);
+                let name = const_ref_string(path, &c.name);
+                let type_ = c.type_.iter().map(|t| const_ref_type_def(path, t));
+                quote!(#path::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                    #path::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                        doc: #doc,
+                        name: #name,
+                        type_: #path::xdr::VecMRef::new(&[#(#type_),*]),
+                    }
+                ))
+            }
+        });
+        let spec_ref = quote! {
+            #path::xdr::ScSpecEntryRef::UdtUnionV0(#path::xdr::ScSpecUdtUnionV0Ref {
+                doc: #doc,
+                lib: #lib,
+                name: #name,
+                cases: #path::xdr::VecMRef::new(&[#(#cases),*]),
+            })
+        };
+        let spec_ident = format_ident!(
+            "__SPEC_XDR_TYPE_{}",
+            enum_ident.unraw().to_string().to_uppercase()
+        );
+        quote! {
+            #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
+            pub static #spec_ident: [u8; #enum_ident::__SPEC_XDR_REF.const_xdr_len()] = #enum_ident::spec_xdr();
+
+            impl #enum_ident {
+                #[doc(hidden)]
+                pub const __SPEC_XDR_REF: #path::xdr::ScSpecEntryRef<'static> = #spec_ref;
+
+                pub const fn spec_xdr() -> [u8; #enum_ident::__SPEC_XDR_REF.const_xdr_len()] {
+                    #enum_ident::__SPEC_XDR_REF.const_to_xdr()
+                }
+            }
+        }
+    });
+
     // SpecShakingMarker impl - only generated when spec is true and the
     // experimental_spec_shaking_v2 feature is enabled.
     let spec_shaking_impl = if cfg!(feature = "experimental_spec_shaking_v2") {
-        spec_xdr.as_ref().map(|spec_xdr| {
+        spec_entry.as_ref().map(|spec_entry| {
+            let spec_xdr = ScSpecEntry::UdtUnionV0(spec_entry.clone())
+                .to_xdr(DEFAULT_XDR_RW_LIMITS)
+                .unwrap();
             // Flatten all variant field types for shaking calls, deduplicating
             // to avoid redundant calls for types that appear in multiple variants.
             let all_field_types =
@@ -193,7 +231,7 @@ pub fn derive_type_enum(
             shaking::generate_marker_impl(
                 path,
                 quote!(#enum_ident),
-                spec_xdr,
+                &spec_xdr,
                 all_field_types.cloned(),
                 None,
                 None,
