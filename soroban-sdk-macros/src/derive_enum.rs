@@ -145,28 +145,27 @@ pub fn derive_type_enum(
         return quote! { #(#compile_errors)* };
     }
 
-    // Compute spec XDR once if spec is enabled.
-    let spec_xdr = if spec {
-        let spec_entry = ScSpecEntry::UdtUnionV0(ScSpecUdtUnionV0 {
+    // Build the spec entry once if spec is enabled.
+    let spec_entry = if spec {
+        Some(ScSpecEntry::UdtUnionV0(ScSpecUdtUnionV0 {
             doc: docs_from_attrs(attrs),
             lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
             name: enum_ident.unraw().to_string().try_into().unwrap(),
             cases: spec_cases.try_into().unwrap(),
-        });
-        Some(spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap())
+        }))
     } else {
         None
     };
 
     // Generated code spec.
-    let spec_gen = spec_xdr
+    let spec_gen = spec_entry
         .as_ref()
-        .map(|spec_xdr| spec::type_spec(enum_ident, spec_xdr));
+        .map(|spec_entry| spec::type_spec(path, enum_ident, spec_entry));
 
     // SpecShakingMarker impl - only generated when spec is true and the
     // experimental_spec_shaking_v2 feature is enabled.
     let spec_shaking_impl = if cfg!(feature = "experimental_spec_shaking_v2") {
-        spec_xdr.as_ref().map(|spec_xdr| {
+        spec_entry.as_ref().map(|spec_entry| {
             // Flatten all variant field types for shaking calls, deduplicating
             // to avoid redundant calls for types that appear in multiple variants.
             let all_field_types =
@@ -176,7 +175,7 @@ pub fn derive_type_enum(
             shaking::generate_marker_impl(
                 path,
                 quote!(#enum_ident),
-                spec_xdr,
+                &spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap(),
                 all_field_types.cloned(),
                 None,
                 None,

@@ -21,6 +21,10 @@ crate-git-revision = "0.0.9"
 
 [dependencies]
 soroban-sdk-macros = { workspace = true }
+# Not used directly. Enables the const XDR serializers on the `*Ref` types that
+# macro-generated contract specs use, on the stellar-xdr re-exported by
+# soroban-env-common as soroban_sdk::xdr.
+stellar-xdr = { workspace = true, features = ["const"] }
 stellar-strkey = { workspace = true }
 bytes-lit = "0.0.6"
 visibility = "0.1.1"

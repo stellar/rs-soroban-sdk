@@ -2,30 +2,32 @@ use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use stellar_xdr::{
     ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef, ScSymbol, StringM,
-    WriteXdr, SCSYMBOL_LIMIT,
+    SCSYMBOL_LIMIT,
 };
 use syn::TypeReference;
 use syn::{
     ext::IdentExt as _, punctuated::Punctuated, spanned::Spanned, token::Comma, Attribute, Error,
-    FnArg, Ident, Pat, ReturnType, Type, TypePath,
+    FnArg, Ident, Pat, Path, ReturnType, Type, TypePath,
 };
 
 use crate::attribute::pass_through_attr_to_gen_code;
 use crate::syn_ext::{self, ty_to_safe_ident_str};
-use crate::{doc::docs_from_attrs, map_type::map_type, DEFAULT_XDR_RW_LIMITS};
+use crate::{doc::docs_from_attrs, map_type::map_type, spec_ref};
 
 pub fn derive_fns_spec<'a>(
+    path: &Path,
     ty: &Type,
     fns: impl IntoIterator<Item = &'a syn_ext::Fn>,
     export: bool,
 ) -> Result<TokenStream2, TokenStream2> {
     fns.into_iter()
-        .map(|f| derive_fn_spec(ty, &f.ident, &f.attrs, &f.inputs, &f.output, export))
+        .map(|f| derive_fn_spec(path, ty, &f.ident, &f.attrs, &f.inputs, &f.output, export))
         .collect()
 }
 
 #[allow(clippy::too_many_arguments)]
 pub fn derive_fn_spec(
+    path: &Path,
     ty: &Type,
     ident: &Ident,
     attrs: &[Attribute],
@@ -158,10 +160,12 @@ pub fn derive_fn_spec(
         inputs: spec_args.try_into().unwrap(),
         outputs: spec_result.try_into().unwrap(),
     });
-    let spec_xdr = spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap();
-    let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
-    let spec_xdr_len = spec_xdr.len();
+    let spec_ref = spec_ref::spec_entry(path, &spec_entry);
     let spec_ident = format_ident!("__SPEC_XDR_FN_{}", ident.unraw().to_string().to_uppercase());
+    // Keeps the fn name's case, because unlike #spec_ident this const shares a
+    // scope with every other fn's, and fn names differing only in case must not
+    // collide.
+    let spec_ref_ident = format_ident!("__SPEC_XDR_REF_{}", ident);
     let spec_fn_ident = format_ident!("spec_xdr_{}", ident);
 
     // If errors have occurred, render them instead.
@@ -189,7 +193,7 @@ pub fn derive_fn_spec(
                 #[allow(non_upper_case_globals)]
                 #(#attrs)*
                 #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
-                pub static #spec_ident: [u8; #spec_xdr_len] = super::#ty::#spec_fn_ident();
+                pub static #spec_ident: [u8; super::#ty::#spec_ref_ident.const_xdr_len()] = super::#ty::#spec_fn_ident();
             }
         })
     } else {
@@ -201,10 +205,15 @@ pub fn derive_fn_spec(
         #exported
 
         impl #ty {
+            #[doc(hidden)]
+            #[allow(non_upper_case_globals)]
+            #(#attrs)*
+            pub const #spec_ref_ident: #path::xdr::ScSpecEntryRef<'static> = #spec_ref;
+
             #[allow(non_snake_case)]
             #(#attrs)*
-            pub const fn #spec_fn_ident() -> [u8; #spec_xdr_len] {
-                *#spec_xdr_lit
+            pub const fn #spec_fn_ident() -> [u8; #ty::#spec_ref_ident.const_xdr_len()] {
+                #ty::#spec_ref_ident.const_to_xdr()
             }
         }
     })

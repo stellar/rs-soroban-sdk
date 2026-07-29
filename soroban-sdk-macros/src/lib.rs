@@ -21,6 +21,7 @@ mod map_type;
 mod path;
 mod shaking;
 mod spec;
+mod spec_ref;
 mod symbol;
 mod syn_ext;
 
@@ -102,6 +103,8 @@ pub(crate) fn default_crate_path() -> Path {
 
 #[derive(Debug, FromMeta)]
 struct ContractSpecArgs {
+    #[darling(default = "default_crate_path")]
+    crate_path: Path,
     name: Type,
     export: Option<bool>,
 }
@@ -123,7 +126,7 @@ pub fn contractspecfn(metadata: TokenStream, input: TokenStream) -> TokenStream 
     let methods: Vec<_> = item.fns();
     let export = args.export.unwrap_or(true);
 
-    let derived = derive_fns_spec(&args.name, &methods, export);
+    let derived = derive_fns_spec(&args.crate_path, &args.name, &methods, export);
 
     match derived {
         Ok(derived_ok) => quote! {
@@ -283,7 +286,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
             let mut output = quote! {
                 #[#crate_path::contractargs(name = #args_ident, impl_only = true)]
                 #[#crate_path::contractclient(crate_path = #crate_path_str, name = #client_ident, impl_only = true)]
-                #[#crate_path::contractspecfn(name = #ty_str)]
+                #[#crate_path::contractspecfn(crate_path = #crate_path_str, name = #ty_str)]
                 #imp
                 #derived_ok
             };

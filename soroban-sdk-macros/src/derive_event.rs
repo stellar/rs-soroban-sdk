@@ -1,6 +1,7 @@
 use crate::{
     attribute::remove_attributes_from_item, default_crate_path, doc::docs_from_attrs,
-    export_arg_v2_deprecation, map_type::map_type, shaking, symbol, DEFAULT_XDR_RW_LIMITS,
+    export_arg_v2_deprecation, map_type::map_type, shaking, spec_ref, symbol,
+    DEFAULT_XDR_RW_LIMITS,
 };
 use darling::{ast::NestedMeta, Error, FromMeta};
 use heck::ToSnakeCase;
@@ -197,9 +198,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
             .try_into()
             .unwrap(),
     });
-    let spec_xdr = spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap();
-    let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
-    let spec_xdr_len = spec_xdr.len();
+    let spec_ref = spec_ref::spec_entry(path, &spec_entry);
     let spec_ident = format_ident!(
         "__SPEC_XDR_EVENT_{}",
         input.ident.unraw().to_string().to_uppercase()
@@ -213,11 +212,14 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     // Generated code spec.
     let spec_gen = quote! {
         #export_gen
-        pub static #spec_ident: [u8; #spec_xdr_len] = #ident::spec_xdr();
+        pub static #spec_ident: [u8; #ident::__SPEC_XDR_REF.const_xdr_len()] = #ident::spec_xdr();
 
         impl #gen_impl #ident #gen_types #gen_where {
-            pub const fn spec_xdr() -> [u8; #spec_xdr_len] {
-                *#spec_xdr_lit
+            #[doc(hidden)]
+            pub const __SPEC_XDR_REF: #path::xdr::ScSpecEntryRef<'static> = #spec_ref;
+
+            pub const fn spec_xdr() -> [u8; #ident::__SPEC_XDR_REF.const_xdr_len()] {
+                #ident::__SPEC_XDR_REF.const_to_xdr()
             }
         }
     };
@@ -228,7 +230,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         Some(shaking::generate_marker_impl(
             path,
             quote!(#ident),
-            &spec_xdr,
+            &spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap(),
             field_types.iter().cloned(),
             Some(quote!(#gen_impl)),
             Some(quote!(#gen_types)),

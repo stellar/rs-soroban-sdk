@@ -74,32 +74,31 @@ pub fn derive_type_struct(
         return quote! { #(#compile_errors)* };
     }
 
-    // Compute spec XDR once if spec is enabled.
-    let spec_xdr = if spec {
-        let spec_entry = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
+    // Build the spec entry once if spec is enabled.
+    let spec_entry = if spec {
+        Some(ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
             doc: docs_from_attrs(attrs),
             lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
             name: ident.unraw().to_string().try_into().unwrap(),
             fields: spec_fields.try_into().unwrap(),
-        });
-        Some(spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap())
+        }))
     } else {
         None
     };
 
     // Generated code spec.
-    let spec_gen = spec_xdr
+    let spec_gen = spec_entry
         .as_ref()
-        .map(|spec_xdr| spec::type_spec(ident, spec_xdr));
+        .map(|spec_entry| spec::type_spec(path, ident, spec_entry));
 
     // SpecShakingMarker impl - only generated when spec is true and the
     // experimental_spec_shaking_v2 feature is enabled.
     let spec_shaking_impl = if cfg!(feature = "experimental_spec_shaking_v2") {
-        spec_xdr.as_ref().map(|spec_xdr| {
+        spec_entry.as_ref().map(|spec_entry| {
             shaking::generate_marker_impl(
                 path,
                 quote!(#ident),
-                spec_xdr,
+                &spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap(),
                 field_types.iter().cloned(),
                 None,
                 None,
