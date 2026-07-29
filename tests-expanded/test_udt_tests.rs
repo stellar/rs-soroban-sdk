@@ -49,11 +49,34 @@ impl ::core::cmp::PartialEq for UdtEnum2 {
         __self_discr == __arg1_discr
     }
 }
-pub static __SPEC_XDR_TYPE_UDTENUM2: [u8; 60usize] = UdtEnum2::spec_xdr();
+pub static __SPEC_XDR_TYPE_UDTENUM2: [u8; UdtEnum2::__SPEC_XDR_REF.const_xdr_len()] =
+    UdtEnum2::spec_xdr();
 impl UdtEnum2 {
-    pub const fn spec_xdr() -> [u8; 60usize] {
-        *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08UdtEnum2\0\0\0\x02\0\0\0\0\0\0\0\x01A\0\0\0\0\0\0\n\0\0\0\0\0\0\0\x01B\0\0\0\0\0\0\x0f"
+    const __SPEC_XDR_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtEnumV0(soroban_sdk::xdr::ScSpecUdtEnumV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UdtEnum2"),
+            cases: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtEnumCaseV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"A"),
+                    value: 10u32,
+                },
+                soroban_sdk::xdr::ScSpecUdtEnumCaseV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"B"),
+                    value: 15u32,
+                },
+            ]),
+        });
+    pub const fn spec_xdr() -> [u8; UdtEnum2::__SPEC_XDR_REF.const_xdr_len()] {
+        UdtEnum2::__SPEC_XDR_REF.const_to_xdr()
     }
+}
+impl UdtEnum2 {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [175u8, 247u8, 147u8, 186u8, 158u8, 77u8, 222u8, 154u8];
 }
 impl soroban_sdk::SpecShakingMarker for UdtEnum2 {
     #[doc(hidden)]
@@ -398,11 +421,72 @@ impl ::core::cmp::PartialEq for UdtEnum {
             }
     }
 }
-pub static __SPEC_XDR_TYPE_UDTENUM: [u8; 156usize] = UdtEnum::spec_xdr();
+pub static __SPEC_XDR_TYPE_UDTENUM: [u8; UdtEnum::__SPEC_XDR_REF.const_xdr_len()] =
+    UdtEnum::spec_xdr();
 impl UdtEnum {
-    pub const fn spec_xdr() -> [u8; 156usize] {
-        *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x07UdtEnum\0\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x04UdtA\0\0\0\x01\0\0\0\0\0\0\0\x04UdtB\0\0\0\x01\0\0\x07\xd0\0\0\0\tUdtStruct\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04UdtC\0\0\0\x01\0\0\x07\xd0\0\0\0\x08UdtEnum2\0\0\0\x01\0\0\0\0\0\0\0\x04UdtD\0\0\0\x01\0\0\x07\xd0\0\0\0\x08UdtTuple"
+    const __SPEC_XDR_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UdtEnum"),
+            cases: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::VoidV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"UdtA"),
+                    },
+                ),
+                soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"UdtB"),
+                        type_: soroban_sdk::xdr::VecMRef::new(&[
+                            soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                    id: <UdtStruct>::SPEC_XDR_ID,
+                                    name: soroban_sdk::xdr::StringMRef::new(b"UdtStruct"),
+                                },
+                            ),
+                        ]),
+                    },
+                ),
+                soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"UdtC"),
+                        type_: soroban_sdk::xdr::VecMRef::new(&[
+                            soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                    id: <UdtEnum2>::SPEC_XDR_ID,
+                                    name: soroban_sdk::xdr::StringMRef::new(b"UdtEnum2"),
+                                },
+                            ),
+                        ]),
+                    },
+                ),
+                soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"UdtD"),
+                        type_: soroban_sdk::xdr::VecMRef::new(&[
+                            soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                    id: <UdtTuple>::SPEC_XDR_ID,
+                                    name: soroban_sdk::xdr::StringMRef::new(b"UdtTuple"),
+                                },
+                            ),
+                        ]),
+                    },
+                ),
+            ]),
+        });
+    pub const fn spec_xdr() -> [u8; UdtEnum::__SPEC_XDR_REF.const_xdr_len()] {
+        UdtEnum::__SPEC_XDR_REF.const_to_xdr()
     }
+}
+impl UdtEnum {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [173u8, 206u8, 71u8, 109u8, 193u8, 42u8, 125u8, 244u8];
 }
 impl soroban_sdk::SpecShakingMarker for UdtEnum {
     #[doc(hidden)]
@@ -1013,11 +1097,38 @@ impl ::core::cmp::PartialEq for UdtTuple {
         self.0 == other.0 && self.1 == other.1
     }
 }
-pub static __SPEC_XDR_TYPE_UDTTUPLE: [u8; 64usize] = UdtTuple::spec_xdr();
+pub static __SPEC_XDR_TYPE_UDTTUPLE: [u8; UdtTuple::__SPEC_XDR_REF.const_xdr_len()] =
+    UdtTuple::spec_xdr();
 impl UdtTuple {
-    pub const fn spec_xdr() -> [u8; 64usize] {
-        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x08UdtTuple\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x011\0\0\0\0\0\x03\xea\0\0\0\x07"
+    const __SPEC_XDR_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UdtTuple"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"0"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::I64,
+                },
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"1"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::Vec(
+                        &soroban_sdk::xdr::ScSpecTypeVecRef {
+                            element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::I64,
+                        },
+                    ),
+                },
+            ]),
+        });
+    pub const fn spec_xdr() -> [u8; UdtTuple::__SPEC_XDR_REF.const_xdr_len()] {
+        UdtTuple::__SPEC_XDR_REF.const_to_xdr()
     }
+}
+impl UdtTuple {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [235u8, 159u8, 18u8, 38u8, 154u8, 118u8, 40u8, 42u8];
 }
 impl soroban_sdk::SpecShakingMarker for UdtTuple {
     #[doc(hidden)]
@@ -1406,11 +1517,43 @@ impl ::core::cmp::PartialEq for UdtStruct {
         self.a == other.a && self.b == other.b && self.c == other.c
     }
 }
-pub static __SPEC_XDR_TYPE_UDTSTRUCT: [u8; 84usize] = UdtStruct::spec_xdr();
+pub static __SPEC_XDR_TYPE_UDTSTRUCT: [u8; UdtStruct::__SPEC_XDR_REF.const_xdr_len()] =
+    UdtStruct::spec_xdr();
 impl UdtStruct {
-    pub const fn spec_xdr() -> [u8; 84usize] {
-        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\tUdtStruct\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x01c\0\0\0\0\0\x03\xea\0\0\0\x07"
+    const __SPEC_XDR_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UdtStruct"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"a"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::I64,
+                },
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"b"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::I64,
+                },
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"c"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::Vec(
+                        &soroban_sdk::xdr::ScSpecTypeVecRef {
+                            element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::I64,
+                        },
+                    ),
+                },
+            ]),
+        });
+    pub const fn spec_xdr() -> [u8; UdtStruct::__SPEC_XDR_REF.const_xdr_len()] {
+        UdtStruct::__SPEC_XDR_REF.const_to_xdr()
     }
+}
+impl UdtStruct {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [22u8, 39u8, 100u8, 56u8, 255u8, 201u8, 177u8, 248u8];
 }
 impl soroban_sdk::SpecShakingMarker for UdtStruct {
     #[doc(hidden)]
@@ -1880,11 +2023,43 @@ impl ::core::cmp::PartialEq for UdtRecursive {
         self.a == other.a && self.b == other.b
     }
 }
-pub static __SPEC_XDR_TYPE_UDTRECURSIVE: [u8; 84usize] = UdtRecursive::spec_xdr();
+pub static __SPEC_XDR_TYPE_UDTRECURSIVE: [u8; UdtRecursive::__SPEC_XDR_REF.const_xdr_len()] =
+    UdtRecursive::spec_xdr();
 impl UdtRecursive {
-    pub const fn spec_xdr() -> [u8; 84usize] {
-        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cUdtRecursive\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x11\0\0\0\0\0\0\0\x01b\0\0\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x0cUdtRecursive"
+    const __SPEC_XDR_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UdtRecursive"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"a"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::Symbol,
+                },
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"b"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::Vec(
+                        &soroban_sdk::xdr::ScSpecTypeVecRef {
+                            element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                    id: <UdtRecursive>::SPEC_XDR_ID,
+                                    name: soroban_sdk::xdr::StringMRef::new(b"UdtRecursive"),
+                                },
+                            ),
+                        },
+                    ),
+                },
+            ]),
+        });
+    pub const fn spec_xdr() -> [u8; UdtRecursive::__SPEC_XDR_REF.const_xdr_len()] {
+        UdtRecursive::__SPEC_XDR_REF.const_to_xdr()
     }
+}
+impl UdtRecursive {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [154u8, 250u8, 201u8, 34u8, 187u8, 83u8, 255u8, 212u8];
 }
 impl soroban_sdk::SpecShakingMarker for UdtRecursive {
     #[doc(hidden)]
@@ -2305,11 +2480,44 @@ impl ::core::cmp::PartialEq for RecursiveToEnum {
         self.a == other.a && self.b == other.b
     }
 }
-pub static __SPEC_XDR_TYPE_RECURSIVETOENUM: [u8; 96usize] = RecursiveToEnum::spec_xdr();
+pub static __SPEC_XDR_TYPE_RECURSIVETOENUM: [u8; RecursiveToEnum::__SPEC_XDR_REF.const_xdr_len()] =
+    RecursiveToEnum::spec_xdr();
 impl RecursiveToEnum {
-    pub const fn spec_xdr() -> [u8; 96usize] {
-        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0fRecursiveToEnum\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x11\0\0\0\0\0\0\0\x01b\0\0\0\0\0\x03\xec\0\0\0\x04\0\0\x07\xd0\0\0\0\rRecursiveEnum\0\0\0"
+    const __SPEC_XDR_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"RecursiveToEnum"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"a"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::Symbol,
+                },
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"b"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::Map(
+                        &soroban_sdk::xdr::ScSpecTypeMapRef {
+                            key_type: &soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                            value_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                    id: <RecursiveEnum>::SPEC_XDR_ID,
+                                    name: soroban_sdk::xdr::StringMRef::new(b"RecursiveEnum"),
+                                },
+                            ),
+                        },
+                    ),
+                },
+            ]),
+        });
+    pub const fn spec_xdr() -> [u8; RecursiveToEnum::__SPEC_XDR_REF.const_xdr_len()] {
+        RecursiveToEnum::__SPEC_XDR_REF.const_to_xdr()
     }
+}
+impl RecursiveToEnum {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [152u8, 76u8, 131u8, 15u8, 173u8, 201u8, 54u8, 30u8];
 }
 impl soroban_sdk::SpecShakingMarker for RecursiveToEnum {
     #[doc(hidden)]
@@ -2744,11 +2952,44 @@ impl ::core::cmp::PartialEq for RecursiveEnum {
             }
     }
 }
-pub static __SPEC_XDR_TYPE_RECURSIVEENUM: [u8; 112usize] = RecursiveEnum::spec_xdr();
+pub static __SPEC_XDR_TYPE_RECURSIVEENUM: [u8; RecursiveEnum::__SPEC_XDR_REF.const_xdr_len()] =
+    RecursiveEnum::spec_xdr();
 impl RecursiveEnum {
-    pub const fn spec_xdr() -> [u8; 112usize] {
-        *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\rRecursiveEnum\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x0cNotRecursive\0\0\0\x01\0\0\0\0\0\0\0\tRecursive\0\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x0fRecursiveToEnum\0"
+    const __SPEC_XDR_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"RecursiveEnum"),
+            cases: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::VoidV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"NotRecursive"),
+                    },
+                ),
+                soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"Recursive"),
+                        type_: soroban_sdk::xdr::VecMRef::new(&[
+                            soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                    id: <RecursiveToEnum>::SPEC_XDR_ID,
+                                    name: soroban_sdk::xdr::StringMRef::new(b"RecursiveToEnum"),
+                                },
+                            ),
+                        ]),
+                    },
+                ),
+            ]),
+        });
+    pub const fn spec_xdr() -> [u8; RecursiveEnum::__SPEC_XDR_REF.const_xdr_len()] {
+        RecursiveEnum::__SPEC_XDR_REF.const_to_xdr()
     }
+}
+impl RecursiveEnum {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [199u8, 178u8, 255u8, 91u8, 251u8, 69u8, 36u8, 137u8];
 }
 impl soroban_sdk::SpecShakingMarker for RecursiveEnum {
     #[doc(hidden)]
@@ -3350,12 +3591,42 @@ pub mod __Contract__add__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_ADD: [u8; 84usize] = super::Contract::spec_xdr_add();
+    pub static __SPEC_XDR_FN_ADD: [u8; super::Contract::__SPEC_XDR_REF_add.const_xdr_len()] =
+        super::Contract::spec_xdr_add();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_REF_add: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::ScSymbolRef(soroban_sdk::xdr::StringMRef::new(b"add")),
+            inputs: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"a"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                            id: <UdtEnum>::SPEC_XDR_ID,
+                            name: soroban_sdk::xdr::StringMRef::new(b"UdtEnum"),
+                        },
+                    ),
+                },
+                soroban_sdk::xdr::ScSpecFunctionInputV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"b"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                            id: <UdtEnum>::SPEC_XDR_ID,
+                            name: soroban_sdk::xdr::StringMRef::new(b"UdtEnum"),
+                        },
+                    ),
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecTypeDefRef::I64]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_add() -> [u8; 84usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x03add\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\x07\xd0\0\0\0\x07UdtEnum\0\0\0\0\0\0\0\0\x01b\0\0\0\0\0\x07\xd0\0\0\0\x07UdtEnum\0\0\0\0\x01\0\0\0\x07"
+    pub const fn spec_xdr_add() -> [u8; Contract::__SPEC_XDR_REF_add.const_xdr_len()] {
+        Contract::__SPEC_XDR_REF_add.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -3364,12 +3635,39 @@ pub mod __Contract__recursive__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_RECURSIVE: [u8; 88usize] = super::Contract::spec_xdr_recursive();
+    pub static __SPEC_XDR_FN_RECURSIVE: [u8; super::Contract::__SPEC_XDR_REF_recursive
+        .const_xdr_len()] = super::Contract::spec_xdr_recursive();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_REF_recursive: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::ScSymbolRef(soroban_sdk::xdr::StringMRef::new(b"recursive")),
+            inputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecFunctionInputV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"a"),
+                type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                    soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                        id: <UdtRecursive>::SPEC_XDR_ID,
+                        name: soroban_sdk::xdr::StringMRef::new(b"UdtRecursive"),
+                    },
+                ),
+            }]),
+            outputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecTypeDefRef::Option(
+                &soroban_sdk::xdr::ScSpecTypeOptionRef {
+                    value_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                            id: <UdtRecursive>::SPEC_XDR_ID,
+                            name: soroban_sdk::xdr::StringMRef::new(b"UdtRecursive"),
+                        },
+                    ),
+                },
+            )]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_recursive() -> [u8; 88usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\trecursive\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01a\0\0\0\0\0\x07\xd0\0\0\0\x0cUdtRecursive\0\0\0\x01\0\0\x03\xe8\0\0\x07\xd0\0\0\0\x0cUdtRecursive"
+    pub const fn spec_xdr_recursive() -> [u8; Contract::__SPEC_XDR_REF_recursive.const_xdr_len()] {
+        Contract::__SPEC_XDR_REF_recursive.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -3378,13 +3676,54 @@ pub mod __Contract__recursive_enum__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_RECURSIVE_ENUM: [u8; 124usize] =
-        super::Contract::spec_xdr_recursive_enum();
+    pub static __SPEC_XDR_FN_RECURSIVE_ENUM: [u8; super::Contract::__SPEC_XDR_REF_recursive_enum
+        .const_xdr_len()] = super::Contract::spec_xdr_recursive_enum();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_REF_recursive_enum: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::ScSymbolRef(soroban_sdk::xdr::StringMRef::new(
+                b"recursive_enum",
+            )),
+            inputs: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"a"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                            id: <RecursiveEnum>::SPEC_XDR_ID,
+                            name: soroban_sdk::xdr::StringMRef::new(b"RecursiveEnum"),
+                        },
+                    ),
+                },
+                soroban_sdk::xdr::ScSpecFunctionInputV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"key"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecTypeDefRef::Result(
+                &soroban_sdk::xdr::ScSpecTypeResultRef {
+                    ok_type: &soroban_sdk::xdr::ScSpecTypeDefRef::Option(
+                        &soroban_sdk::xdr::ScSpecTypeOptionRef {
+                            value_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                    id: <RecursiveEnum>::SPEC_XDR_ID,
+                                    name: soroban_sdk::xdr::StringMRef::new(b"RecursiveEnum"),
+                                },
+                            ),
+                        },
+                    ),
+                    error_type: &soroban_sdk::xdr::ScSpecTypeDefRef::Error,
+                },
+            )]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_recursive_enum() -> [u8; 124usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0erecursive_enum\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\x07\xd0\0\0\0\rRecursiveEnum\0\0\0\0\0\0\0\0\0\0\x03key\0\0\0\0\x04\0\0\0\x01\0\0\x03\xe9\0\0\x03\xe8\0\0\x07\xd0\0\0\0\rRecursiveEnum\0\0\0\0\0\0\x03"
+    pub const fn spec_xdr_recursive_enum(
+    ) -> [u8; Contract::__SPEC_XDR_REF_recursive_enum.const_xdr_len()] {
+        Contract::__SPEC_XDR_REF_recursive_enum.const_to_xdr()
     }
 }
 impl<'a> ContractClient<'a> {
@@ -4190,7 +4529,7 @@ mod test {
 mod test_with_wasm {
     use soroban_sdk::{symbol_short, vec, Env, Map};
     mod contract {
-        pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01N\r`\x01~\x01~`\x03~~~\x01~`\x02~~\x01~`\x04~~~~\x01~`\x02\x7f\x7f\x00`\x00\x00`\x03~\x7f\x7f\x01~`\x02\x7f\x7f\x01\x7f`\x05~\x7f\x7f\x7f\x7f\x00`\x02\x7f~\x00`\x01\x7f\x01~`\x03\x7f\x7f\x7f\x00`\x02\x7f\x7f\x01~\x02O\r\x01v\x013\x00\x00\x01v\x01h\x00\x01\x01i\x012\x00\x00\x01v\x011\x00\x02\x01i\x011\x00\x00\x01v\x018\x00\x00\x01m\x014\x00\x02\x01m\x011\x00\x02\x01v\x01g\x00\x02\x01b\x01j\x00\x02\x01m\x019\x00\x01\x01m\x01a\x00\x03\x01b\x01m\x00\x01\x03\x15\x14\x04\x05\x04\x06\x07\x08\t\t\t\x05\x05\x04\x02\x05\x00\n\x02\x0b\x0c\x05\x04\x05\x01p\x01\x04\x04\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\xe8\x81\xc0\x00\x0b\x7f\x00A\xe8\x81\xc0\x00\x0b\x7f\x00A\xf0\x81\xc0\x00\x0b\x07L\x07\x06memory\x02\x00\x03add\x00\x19\trecursive\x00\x1b\x0erecursive_enum\x00\x1d\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\t\t\x01\x00A\x01\x0b\x03\x0e\x16\x17\n\xf1\x1d\x14\x85\x07\x04\x01\x7f\x02~\x01\x7f\x01~#\x80\x80\x80\x80\x00A\xc0\x00k\"\x02$\x80\x80\x80\x80\x00 \x02A\x81\x80\x80\x80\x006\x02\x18 \x02(\x02\x18\x1aA\x00-\x00\xaa\x80\xc0\x80\x00\x1aA\x00-\x00\x8e\x80\xc0\x80\x00\x1a \x02A\x81\x80\x80\x80\x006\x02\x18 \x02(\x02\x18\x1aA\x00-\x00\x9c\x80\xc0\x80\x00\x1aA\x00-\x00\x80\x80\xc0\x80\x00\x1a\x02@\x02@ \x01)\x03\x00\"\x03B\xff\x01\x83B\xcb\x00Q\r\x00 \x00A\x04:\x00\x00\x0c\x01\x0b \x03\x10\x80\x80\x80\x80\x00!\x04 \x02A\x006\x02\x10 \x02 \x037\x03\x08 \x02 \x04B \x88>\x02\x14 \x02A\x18j \x02A\x08j\x10\x8f\x80\x80\x80\x00\x02@\x02@\x02@\x02@ \x02)\x03\x18\"\x03B\x02Q\r\x00 \x03\xa7A\x01q\r\x00\x02@ \x02)\x03 \"\x03\xa7A\xff\x01q\"\x01A\xca\x00F\r\x00 \x01A\x0eG\r\x01\x0b\x02@\x02@\x02@\x02@ \x03A\xf4\x80\xc0\x80\x00A\x04\x10\x90\x80\x80\x80\x00B \x88\xa7\x0e\x04\x00\x01\x02\x03\x05\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x91\x80\x80\x80\x00\r\x04A\x00!\x05\x0c\x05\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x91\x80\x80\x80\x00A\x01K\r\x03 \x02A\x18j \x02A\x08j\x10\x8f\x80\x80\x80\x00 \x02)\x03\x18\"\x03B\x02Q\r\x03 \x03\xa7A\x01q\r\x03 \x02)\x03 !\x03A\x00!\x01\x02@\x03@ \x01A\x18F\r\x01 \x02A\x18j \x01jB\x027\x03\x00 \x01A\x08j!\x01\x0c\x00\x0b\x0b \x03B\xff\x01\x83B\xcc\x00R\r\x03 \x03A\x98\x81\xc0\x80\x00A\x03 \x02A\x18jA\x03\x10\x92\x80\x80\x80\x00 \x02A0j \x02)\x03\x18\x10\x93\x80\x80\x80\x00 \x02(\x020\r\x03 \x02)\x038!\x04 \x02A0j \x02)\x03 \x10\x93\x80\x80\x80\x00 \x02(\x020\r\x03 \x02)\x03(\"\x06B\xff\x01\x83B\xcb\x00R\r\x03 \x02)\x038!\x03A\x01!\x05\x0c\x04\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x91\x80\x80\x80\x00A\x01K\r\x02 \x02A\x18j \x02A\x08j\x10\x8f\x80\x80\x80\x00 \x02)\x03\x18\"\x03B\x02Q\r\x02 \x03\xa7A\x01q\r\x02 \x02)\x03 \"\x03B\xff\x01\x83B\x04R\r\x02A\nA\x0fA\t \x03B \x88\xa7\"\x01A\x0fF\x1b \x01A\nF\x1b\"\x01A\tF\r\x02A\x02!\x05\x0c\x04\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x91\x80\x80\x80\x00A\x01K\r\x01 \x02A\x18j \x02A\x08j\x10\x8f\x80\x80\x80\x00 \x02)\x03\x18\"\x03B\x02Q\r\x01 \x03\xa7A\x01q\r\x01 \x02)\x03 \"\x03B\xff\x01\x83B\xcb\x00R\r\x01A\x00!\x01\x02@\x03@ \x01A\x10F\r\x01 \x02A0j \x01jB\x027\x03\x00 \x01A\x08j!\x01\x0c\x00\x0b\x0b \x03 \x02A0j\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x81\x80\x80\x80\x00\x1a \x02A\x18j \x02)\x030\x10\x93\x80\x80\x80\x00 \x02(\x02\x18A\x01F\r\x01 \x02)\x038\"\x03B\xff\x01\x83B\xcb\x00R\r\x01 \x02)\x03 !\x04A\x03!\x05\x0c\x02\x0b \x00A\x04:\x00\x00\x0c\x03\x0b \x00A\x04:\x00\x00\x0c\x02\x0b\x0b \x00 \x067\x03\x18 \x00 \x037\x03\x10 \x00 \x047\x03\x08 \x00 \x01:\x00\x01 \x00 \x05:\x00\x00\x0b \x02A\xc0\x00j$\x80\x80\x80\x80\x00\x0b\x02\x00\x0bJ\x02\x01~\x01\x7fB\x02!\x02\x02@ \x01(\x02\x08\"\x03 \x01(\x02\x0cO\r\x00 \x00 \x01)\x03\x00 \x03\xadB \x86B\x04\x84\x10\x83\x80\x80\x80\x007\x03\x08 \x01 \x03A\x01j6\x02\x08B\x00!\x02\x0b \x00 \x027\x03\x00\x0b\x1c\x00 \x00 \x01\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x8c\x80\x80\x80\x00\x0b\x19\x00\x02@ \x01 \x00I\r\x00 \x01 \x00k\x0f\x0b\x10\x9a\x80\x80\x80\x00\x00\x0b1\x00\x02@ \x02 \x04F\r\x00\x00\x0b \x00 \x01\xadB \x86B\x04\x84 \x03\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x8b\x80\x80\x80\x00\x1a\x0b]\x02\x01\x7f\x01~\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc1\x00F\r\x00\x02@ \x02A\x07F\r\x00B\x01!\x03B\x83\x90\x80\x80\x80\x01!\x01\x0c\x02\x0b \x01B\x08\x87!\x01B\x00!\x03\x0c\x01\x0bB\x00!\x03 \x01\x10\x82\x80\x80\x80\x00!\x01\x0b \x00 \x037\x03\x00 \x00 \x017\x03\x08\x0b\xb5\x01\x02\x02\x7f\x02~#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02 \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0bB\x01!\x04\x02@ \x01B\xff\x01\x83B\xcc\x00R\r\x00 \x01A\xb0\x81\xc0\x80\x00A\x02 \x02A\x02\x10\x92\x80\x80\x80\x00\x02@ \x02)\x03\x00\"\x01\xa7A\xff\x01q\"\x03A\xca\x00F\r\x00 \x03A\x0eG\r\x01\x0b \x02)\x03\x08\"\x05B\xff\x01\x83B\xcb\x00R\r\x00 \x00 \x057\x03\x10 \x00 \x017\x03\x08B\x00!\x04\x0b \x00 \x047\x03\x00 \x02A\x10j$\x80\x80\x80\x80\x00\x0b\xb5\x01\x02\x02\x7f\x02~#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02 \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0bB\x01!\x04\x02@ \x01B\xff\x01\x83B\xcc\x00R\r\x00 \x01A\xb0\x81\xc0\x80\x00A\x02 \x02A\x02\x10\x92\x80\x80\x80\x00\x02@ \x02)\x03\x00\"\x01\xa7A\xff\x01q\"\x03A\xca\x00F\r\x00 \x03A\x0eG\r\x01\x0b \x02)\x03\x08\"\x05B\xff\x01\x83B\xcc\x00R\r\x00 \x00 \x057\x03\x10 \x00 \x017\x03\x08B\x00!\x04\x0b \x00 \x047\x03\x00 \x02A\x10j$\x80\x80\x80\x80\x00\x0b(\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00A\x82\x80\x80\x80\x006\x02\x0c \x00(\x02\x0c\x1aA\x00-\x00\xb8\x80\xc0\x80\x00\x1a\x0bC\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00A\x81\x80\x80\x80\x006\x02\x0c \x00(\x02\x0c\x1a \x00A\x83\x80\x80\x80\x006\x02\x08 \x00(\x02\x08\x1aA\x00-\x00\xd4\x80\xc0\x80\x00\x1aA\x00-\x00\xc6\x80\xc0\x80\x00\x1a\x0bx\x03\x01\x7f\x01~\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00B\x02!\x03\x02@ \x01(\x02\x08\"\x04 \x01(\x02\x0cO\r\x00 \x02 \x01)\x03\x00 \x04\xadB \x86B\x04\x84\x10\x83\x80\x80\x80\x00\x10\x93\x80\x80\x80\x00 \x02)\x03\x00!\x03 \x00 \x02)\x03\x087\x03\x08 \x01 \x04A\x01j6\x02\x08\x0b \x00 \x037\x03\x00 \x02A\x10j$\x80\x80\x80\x80\x00\x0b\xd6\x04\x04\x02\x7f\x01~\x01\x7f\x05~#\x80\x80\x80\x80\x00A\xc0\x00k\"\x02$\x80\x80\x80\x80\x00 \x02 \x017\x03\x08 \x02 \x007\x03\x00 \x02A\x10j \x02\x10\x8d\x80\x80\x80\x00\x02@\x02@\x02@ \x02-\x00\x10\"\x03A\x04F\r\x00 \x02)\x03 !\x01 \x02)\x03\x18!\x04 \x021\x00\x11!\x00 \x02A\x10j \x02A\x08j\x10\x8d\x80\x80\x80\x00 \x02-\x00\x10\"\x05A\x04F\r\x00 \x02)\x03 !\x06 \x02)\x03\x18!\x07 \x021\x00\x11!\x08B\x00!\tB\x00!\n\x02@\x02@\x02@\x02@ \x03\x0e\x04\x05\x02\x01\x00\x05\x0b \x01\x10\x80\x80\x80\x80\x00!\x00 \x02A\x006\x028 \x02 \x017\x030 \x02 \x00B \x88>\x02<B\x00!\x01\x03@ \x02A\x10j \x02A0j\x10\x98\x80\x80\x80\x00 \x02)\x03\x10\"\x00B\x02Q\r\x03 \x00\xa7A\x01q\r\x06 \x02)\x03\x18\"\x00B\x00S \x01 \x00|\"\x00 \x01SG\r\x06 \x00!\x01\x0c\x00\x0b\x0b \x00!\n\x0c\x03\x0b \x01B\x00S \x04 \x01|\"\n \x04SsE\r\x02\x0c\x03\x0b \x01B\x00S \x04 \x01|\"\n \x04SsE\r\x01\x0c\x02\x0b\x00\x0b\x02@\x02@\x02@\x02@\x02@ \x05\x0e\x04\x04\x02\x01\x00\x04\x0b \x06\x10\x80\x80\x80\x80\x00!\x01 \x02A\x006\x028 \x02 \x067\x030 \x02 \x01B \x88>\x02<B\x00!\x01\x03@ \x02A\x10j \x02A0j\x10\x98\x80\x80\x80\x00 \x02)\x03\x10\"\x00B\x02Q\r\x03 \x00\xa7A\x01q\r\x05 \x02)\x03\x18\"\x00B\x00S \x01 \x00|\"\x00 \x01SG\r\x05 \x00!\x01\x0c\x00\x0b\x0b \x08!\t\x0c\x02\x0b \x06B\x00S \x07 \x06|\"\t \x07Ss\r\x02\x0c\x01\x0b \x01B\x00S \x07 \x01|\"\t \x07Ss\r\x01\x0b \tB\x00S \n \t|\"\x01 \nSs\r\x00\x02@\x02@ \x01B\x80\x80\x80\x80\x80\x80\x80\xc0\x00|B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x01B\x08\x86B\x07\x84!\x01\x0c\x01\x0b \x01\x10\x84\x80\x80\x80\x00!\x01\x0b \x02A\xc0\x00j$\x80\x80\x80\x80\x00 \x01\x0f\x0b\x10\x9a\x80\x80\x80\x00\x00\x0b\t\x00\x10\xa0\x80\x80\x80\x00\x00\x0b\xf9\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A k\"\x01$\x80\x80\x80\x80\x00 \x01A\x82\x80\x80\x80\x006\x02\x08 \x01(\x02\x08\x1aA\x00-\x00\xb8\x80\xc0\x80\x00\x1a \x01A\x08j \x00\x10\x94\x80\x80\x80\x00\x02@ \x01(\x02\x08A\x01F\r\x00\x02@\x02@ \x01)\x03\x18\"\x00\x10\x80\x80\x80\x80\x00B\xff\xff\xff\xff\x0fV\r\x00 \x01A\x82\x80\x80\x80\x006\x02\x08 \x01(\x02\x08\x1aA\x00-\x00\xb8\x80\xc0\x80\x00\x1aB\x02!\x00\x0c\x01\x0b \x01A\x08j \x00\x10\x85\x80\x80\x80\x00\x10\x94\x80\x80\x80\x00 \x01(\x02\x08A\x01F\r\x01 \x01)\x03\x10!\x00 \x01)\x03\x18!\x02 \x01A\x82\x80\x80\x80\x006\x02\x08 \x01(\x02\x08\x1aA\x00-\x00\xb8\x80\xc0\x80\x00\x1a \x01 \x027\x03\x10 \x01 \x007\x03\x08 \x01A\x08j\x10\x9c\x80\x80\x80\x00!\x00\x0b \x01A j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b$\x00A\xb0\x81\xc0\x80\x00\xadB \x86B\x04\x84 \x00\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x8a\x80\x80\x80\x00\x0b\x85\x07\x04\x01\x7f\x01~\x01\x7f\x01~#\x80\x80\x80\x80\x00A\xc0\x00k\"\x02$\x80\x80\x80\x80\x00 \x02A\x81\x80\x80\x80\x006\x02\x18 \x02(\x02\x18\x1a \x02A\x83\x80\x80\x80\x006\x02\x18 \x02(\x02\x18\x1aA\x00-\x00\xd4\x80\xc0\x80\x00\x1aA\x00-\x00\xc6\x80\xc0\x80\x00\x1a\x02@ \x00B\xff\x01\x83B\xcb\x00R\r\x00 \x00\x10\x80\x80\x80\x80\x00!\x03 \x02A\x006\x02\x10 \x02 \x007\x03\x08 \x02 \x03B \x88>\x02\x14 \x02A\x18j \x02A\x08j\x10\x8f\x80\x80\x80\x00 \x02)\x03\x18\"\x00B\x02Q\r\x00 \x00\xa7A\x01q\r\x00\x02@ \x02)\x03 \"\x00\xa7A\xff\x01q\"\x04A\xca\x00F\r\x00 \x04A\x0eG\r\x01\x0b\x02@\x02@\x02@\x02@\x02@\x02@ \x00A\xd8\x81\xc0\x80\x00A\x02\x10\x90\x80\x80\x80\x00B \x88\xa7\x0e\x02\x01\x00\x06\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x91\x80\x80\x80\x00A\x01K\r\x05 \x02A0j \x02A\x08j\x10\x8f\x80\x80\x80\x00 \x02)\x030\"\x00B\x02Q\r\x05 \x00\xa7A\x01q\r\x05 \x02A\x18j \x02)\x038\x10\x95\x80\x80\x80\x00 \x02(\x02\x18A\x01F\r\x05 \x01B\xff\x01\x83B\x04R\r\x05 \x02)\x03(\"\x00 \x01B\x84\x80\x80\x80p\x83\"\x01\x10\x86\x80\x80\x80\x00B\x01R\r\x01 \x00 \x01\x10\x87\x80\x80\x80\x00\"\x00B\xff\x01\x83B\xcb\x00R\r\x05 \x00\x10\x80\x80\x80\x80\x00!\x01 \x02A\x006\x02\x10 \x02 \x007\x03\x08 \x02 \x01B \x88>\x02\x14 \x02A\x18j \x02A\x08j\x10\x8f\x80\x80\x80\x00 \x02)\x03\x18\"\x00B\x02Q\r\x05 \x00\xa7A\x01q\r\x05\x02@ \x02)\x03 \"\x00\xa7A\xff\x01q\"\x04A\xca\x00F\r\x00 \x04A\x0eG\r\x06\x0b \x00A\xd8\x81\xc0\x80\x00A\x02\x10\x90\x80\x80\x80\x00B \x88\xa7\x0e\x02\x02\x03\x05\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x91\x80\x80\x80\x00\r\x04 \x01B\xff\x01\x83B\x04R\r\x04\x0bB\x02!\x00\x0c\x02\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x91\x80\x80\x80\x00\r\x02B\x00!\x00\x0c\x01\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x91\x80\x80\x80\x00A\x01K\r\x01 \x02A0j \x02A\x08j\x10\x8f\x80\x80\x80\x00 \x02)\x030\"\x00B\x02Q\r\x01 \x00\xa7A\x01q\r\x01 \x02A\x18j \x02)\x038\x10\x95\x80\x80\x80\x00 \x02(\x02\x18\r\x01 \x02)\x03(!\x05 \x02)\x03 !\x03B\x01!\x00\x0b \x02A\x81\x80\x80\x80\x006\x02\x18 \x02(\x02\x18\x1a \x02A\x83\x80\x80\x80\x006\x02\x18 \x02(\x02\x18\x1aA\x00-\x00\xd4\x80\xc0\x80\x00\x1aA\x00-\x00\xc6\x80\xc0\x80\x00\x1aB\x02!\x01\x02@ \x00B\x02Q\r\x00\x02@ \x00\xa7A\x01qE\r\x00 \x02A\x18jA\xcc\x81\xc0\x80\x00A\t\x10\x9e\x80\x80\x80\x00 \x02(\x02\x18\r\x02 \x02)\x03 !\x00 \x02 \x057\x03  \x02 \x037\x03\x18 \x02 \x02A\x18j\x10\x9c\x80\x80\x80\x007\x03  \x02 \x007\x03\x18 \x02A\x18jA\x02\x10\x9f\x80\x80\x80\x00!\x01\x0c\x01\x0b \x02A\x18jA\xc0\x81\xc0\x80\x00A\x0c\x10\x9e\x80\x80\x80\x00 \x02(\x02\x18\r\x01 \x02 \x02)\x03 7\x03\x18 \x02A\x18jA\x01\x10\x9f\x80\x80\x80\x00!\x01\x0b \x02A\xc0\x00j$\x80\x80\x80\x80\x00 \x01\x0f\x0b\x00\x0b\xd6\x01\x02\x01~\x03\x7f\x02@\x02@ \x02A\tK\r\x00B\x00!\x03A\x00!\x04\x03@\x02@ \x04A\tG\r\x00 \x03B\x08\x86B\x0e\x84!\x03\x0c\x03\x0bA\x01!\x05\x02@ \x01 \x04j-\x00\x00\"\x06A\xdf\x00F\r\x00\x02@\x02@ \x06APjA\xff\x01qA\nI\r\x00 \x06A\xbf\x7fjA\xff\x01qA\x1aI\r\x01 \x06A\x9f\x7fjA\xff\x01qA\x1aO\r\x04 \x06AEj!\x05\x0c\x02\x0b \x06ARj!\x05\x0c\x01\x0b \x06AKj!\x05\x0b \x03B\x06\x86 \x05\xadB\xff\x01\x83\x84!\x03 \x04A\x01j!\x04\x0c\x00\x0b\x0b \x01\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x89\x80\x80\x80\x00!\x03\x0b \x00B\x007\x03\x00 \x00 \x037\x03\x08\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x88\x80\x80\x80\x00\x0b\x03\x00\x00\x0b\x0b\xf2\x01\x01\x00A\x80\x80\xc0\x00\x0b\xe8\x01SpEcV1\xf3\xb0\xab@i\rH\xb4SpEcV1\xaf\xf7\x93\xba\x9eM\xde\x9aSpEcV1\xeb\x9f\x12&\x9av(*SpEcV1\x16\'d8\xff\xc9\xb1\xf8SpEcV1\xc8\x12\x91\xfe\xd7\x13\xf5\x9cSpEcV1\xff{V \xab\r\xdcdSpEcV1\xe1oU\xdb\xd47\x98\x14UdtAUdtBUdtCUdtD\x00\x00b\x00\x10\x00\x04\x00\x00\x00f\x00\x10\x00\x04\x00\x00\x00j\x00\x10\x00\x04\x00\x00\x00n\x00\x10\x00\x04\x00\x00\x00abc\x00\x94\x00\x10\x00\x01\x00\x00\x00\x95\x00\x10\x00\x01\x00\x00\x00\x96\x00\x10\x00\x01\x00\x00\x00\x94\x00\x10\x00\x01\x00\x00\x00\x95\x00\x10\x00\x01\x00\x00\x00NotRecursiveRecursive\x00\x00\x00\xc0\x00\x10\x00\x0c\x00\x00\x00\xcc\x00\x10\x00\t\x00\x00\x00\x00\xdb\x1c\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03add\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x07UdtEnum\x00\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x07UdtEnum\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07UdtEnum\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04UdtA\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04UdtB\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\tUdtStruct\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04UdtC\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x08UdtEnum2\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04UdtD\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x08UdtTuple\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08UdtEnum2\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01A\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x01B\x00\x00\x00\x00\x00\x00\x0f\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08UdtTuple\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x03\xea\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\tUdtStruct\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x01c\x00\x00\x00\x00\x00\x03\xea\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\trecursive\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x0cUdtRecursive\x00\x00\x00\x01\x00\x00\x03\xe8\x00\x00\x07\xd0\x00\x00\x00\x0cUdtRecursive\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cUdtRecursive\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x11\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00\x0cUdtRecursive\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rRecursiveEnum\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cNotRecursive\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\tRecursive\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0fRecursiveToEnum\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fRecursiveToEnum\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x11\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x03\xec\x00\x00\x00\x04\x00\x00\x07\xd0\x00\x00\x00\rRecursiveEnum\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0erecursive_enum\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\rRecursiveEnum\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03key\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x03\xe8\x00\x00\x07\xd0\x00\x00\x00\rRecursiveEnum\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x02\x00\x00\x00\xe3Context of a single authorized call performed by an address.\n\nCustom account contracts that implement `__check_auth` special function\nreceive a list of `Context` values corresponding to all the calls that\nneed to be authorized.\x00\x00\x00\x00\x00\x00\x00\x00\x07Context\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x14Contract invocation.\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x01\x00\x00\x00=Contract that has a constructor with no arguments is created.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00DContract that has a constructor with 1 or more arguments is created.\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x01\x00\x00\x00\xbdAuthorization context of a single contract call.\n\nThis struct corresponds to a `require_auth_for_args` call for an address\nfrom `contract` function with `fn_name` name and `args` arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08contract\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x07fn_name\x00\x00\x00\x00\x11\x00\x00\x00\x02\x00\x00\x00_Contract executable used for creating a new contract and used in\n`CreateContractHostFnContext`.\x00\x00\x00\x00\x00\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x008Value of contract node in InvokerContractAuthEntry tree.\x00\x00\x00\x00\x00\x00\x00\x15SubContractInvocation\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x07\xd0\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x00\x00\x00\x00\x0fsub_invocations\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00\x18InvokerContractAuthEntry\x00\x00\x00\x02\x00\x00\x01/A node in the tree of authorizations performed on behalf of the current\ncontract as invoker of the contracts deeper in the call stack.\n\nThis is used as an argument of `authorize_as_current_contract` host function.\n\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\ncurrent contract.\x00\x00\x00\x00\x00\x00\x00\x00\x18InvokerContractAuthEntry\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x12Invoke a contract.\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x15SubContractInvocation\x00\x00\x00\x00\x00\x00\x01\x00\x00\x005Create a contract passing 0 arguments to constructor.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00=Create a contract passing 0 or more arguments to constructor.\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x01\x00\x00\x00vAuthorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\xd6Authorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\nThis is the same as `CreateContractHostFnContext`, but also has\ncontract constructor arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x10constructor_args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nExecutable\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStellarAsset\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Account\x00\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1b\x00\x00\x00\x00\x00O\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12rssdk_spec_shaking\x00\x00\x00\x00\x00\x012\x00\x00\x00";
+        pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01N\r`\x01~\x01~`\x03~~~\x01~`\x02~~\x01~`\x04~~~~\x01~`\x02\x7f\x7f\x00`\x00\x00`\x03~\x7f\x7f\x01~`\x02\x7f\x7f\x01\x7f`\x05~\x7f\x7f\x7f\x7f\x00`\x02\x7f~\x00`\x01\x7f\x01~`\x03\x7f\x7f\x7f\x00`\x02\x7f\x7f\x01~\x02O\r\x01v\x013\x00\x00\x01v\x01h\x00\x01\x01i\x012\x00\x00\x01v\x011\x00\x02\x01i\x011\x00\x00\x01v\x018\x00\x00\x01m\x014\x00\x02\x01m\x011\x00\x02\x01v\x01g\x00\x02\x01b\x01j\x00\x02\x01m\x019\x00\x01\x01m\x01a\x00\x03\x01b\x01m\x00\x01\x03\x15\x14\x04\x05\x04\x06\x07\x08\t\t\t\x05\x05\x04\x02\x05\x00\n\x02\x0b\x0c\x05\x04\x05\x01p\x01\x04\x04\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\xe8\x81\xc0\x00\x0b\x7f\x00A\xe8\x81\xc0\x00\x0b\x7f\x00A\xf0\x81\xc0\x00\x0b\x07L\x07\x06memory\x02\x00\x03add\x00\x19\trecursive\x00\x1b\x0erecursive_enum\x00\x1d\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\t\t\x01\x00A\x01\x0b\x03\x0e\x16\x17\n\xf1\x1d\x14\x85\x07\x04\x01\x7f\x02~\x01\x7f\x01~#\x80\x80\x80\x80\x00A\xc0\x00k\"\x02$\x80\x80\x80\x80\x00 \x02A\x81\x80\x80\x80\x006\x02\x18 \x02(\x02\x18\x1aA\x00-\x00\xaa\x80\xc0\x80\x00\x1aA\x00-\x00\x8e\x80\xc0\x80\x00\x1a \x02A\x81\x80\x80\x80\x006\x02\x18 \x02(\x02\x18\x1aA\x00-\x00\x9c\x80\xc0\x80\x00\x1aA\x00-\x00\x80\x80\xc0\x80\x00\x1a\x02@\x02@ \x01)\x03\x00\"\x03B\xff\x01\x83B\xcb\x00Q\r\x00 \x00A\x04:\x00\x00\x0c\x01\x0b \x03\x10\x80\x80\x80\x80\x00!\x04 \x02A\x006\x02\x10 \x02 \x037\x03\x08 \x02 \x04B \x88>\x02\x14 \x02A\x18j \x02A\x08j\x10\x8f\x80\x80\x80\x00\x02@\x02@\x02@\x02@ \x02)\x03\x18\"\x03B\x02Q\r\x00 \x03\xa7A\x01q\r\x00\x02@ \x02)\x03 \"\x03\xa7A\xff\x01q\"\x01A\xca\x00F\r\x00 \x01A\x0eG\r\x01\x0b\x02@\x02@\x02@\x02@ \x03A\xf4\x80\xc0\x80\x00A\x04\x10\x90\x80\x80\x80\x00B \x88\xa7\x0e\x04\x00\x01\x02\x03\x05\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x91\x80\x80\x80\x00\r\x04A\x00!\x05\x0c\x05\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x91\x80\x80\x80\x00A\x01K\r\x03 \x02A\x18j \x02A\x08j\x10\x8f\x80\x80\x80\x00 \x02)\x03\x18\"\x03B\x02Q\r\x03 \x03\xa7A\x01q\r\x03 \x02)\x03 !\x03A\x00!\x01\x02@\x03@ \x01A\x18F\r\x01 \x02A\x18j \x01jB\x027\x03\x00 \x01A\x08j!\x01\x0c\x00\x0b\x0b \x03B\xff\x01\x83B\xcc\x00R\r\x03 \x03A\x98\x81\xc0\x80\x00A\x03 \x02A\x18jA\x03\x10\x92\x80\x80\x80\x00 \x02A0j \x02)\x03\x18\x10\x93\x80\x80\x80\x00 \x02(\x020\r\x03 \x02)\x038!\x04 \x02A0j \x02)\x03 \x10\x93\x80\x80\x80\x00 \x02(\x020\r\x03 \x02)\x03(\"\x06B\xff\x01\x83B\xcb\x00R\r\x03 \x02)\x038!\x03A\x01!\x05\x0c\x04\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x91\x80\x80\x80\x00A\x01K\r\x02 \x02A\x18j \x02A\x08j\x10\x8f\x80\x80\x80\x00 \x02)\x03\x18\"\x03B\x02Q\r\x02 \x03\xa7A\x01q\r\x02 \x02)\x03 \"\x03B\xff\x01\x83B\x04R\r\x02A\nA\x0fA\t \x03B \x88\xa7\"\x01A\x0fF\x1b \x01A\nF\x1b\"\x01A\tF\r\x02A\x02!\x05\x0c\x04\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x91\x80\x80\x80\x00A\x01K\r\x01 \x02A\x18j \x02A\x08j\x10\x8f\x80\x80\x80\x00 \x02)\x03\x18\"\x03B\x02Q\r\x01 \x03\xa7A\x01q\r\x01 \x02)\x03 \"\x03B\xff\x01\x83B\xcb\x00R\r\x01A\x00!\x01\x02@\x03@ \x01A\x10F\r\x01 \x02A0j \x01jB\x027\x03\x00 \x01A\x08j!\x01\x0c\x00\x0b\x0b \x03 \x02A0j\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x81\x80\x80\x80\x00\x1a \x02A\x18j \x02)\x030\x10\x93\x80\x80\x80\x00 \x02(\x02\x18A\x01F\r\x01 \x02)\x038\"\x03B\xff\x01\x83B\xcb\x00R\r\x01 \x02)\x03 !\x04A\x03!\x05\x0c\x02\x0b \x00A\x04:\x00\x00\x0c\x03\x0b \x00A\x04:\x00\x00\x0c\x02\x0b\x0b \x00 \x067\x03\x18 \x00 \x037\x03\x10 \x00 \x047\x03\x08 \x00 \x01:\x00\x01 \x00 \x05:\x00\x00\x0b \x02A\xc0\x00j$\x80\x80\x80\x80\x00\x0b\x02\x00\x0bJ\x02\x01~\x01\x7fB\x02!\x02\x02@ \x01(\x02\x08\"\x03 \x01(\x02\x0cO\r\x00 \x00 \x01)\x03\x00 \x03\xadB \x86B\x04\x84\x10\x83\x80\x80\x80\x007\x03\x08 \x01 \x03A\x01j6\x02\x08B\x00!\x02\x0b \x00 \x027\x03\x00\x0b\x1c\x00 \x00 \x01\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x8c\x80\x80\x80\x00\x0b\x19\x00\x02@ \x01 \x00I\r\x00 \x01 \x00k\x0f\x0b\x10\x9a\x80\x80\x80\x00\x00\x0b1\x00\x02@ \x02 \x04F\r\x00\x00\x0b \x00 \x01\xadB \x86B\x04\x84 \x03\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x8b\x80\x80\x80\x00\x1a\x0b]\x02\x01\x7f\x01~\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc1\x00F\r\x00\x02@ \x02A\x07F\r\x00B\x01!\x03B\x83\x90\x80\x80\x80\x01!\x01\x0c\x02\x0b \x01B\x08\x87!\x01B\x00!\x03\x0c\x01\x0bB\x00!\x03 \x01\x10\x82\x80\x80\x80\x00!\x01\x0b \x00 \x037\x03\x00 \x00 \x017\x03\x08\x0b\xb5\x01\x02\x02\x7f\x02~#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02 \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0bB\x01!\x04\x02@ \x01B\xff\x01\x83B\xcc\x00R\r\x00 \x01A\xb0\x81\xc0\x80\x00A\x02 \x02A\x02\x10\x92\x80\x80\x80\x00\x02@ \x02)\x03\x00\"\x01\xa7A\xff\x01q\"\x03A\xca\x00F\r\x00 \x03A\x0eG\r\x01\x0b \x02)\x03\x08\"\x05B\xff\x01\x83B\xcb\x00R\r\x00 \x00 \x057\x03\x10 \x00 \x017\x03\x08B\x00!\x04\x0b \x00 \x047\x03\x00 \x02A\x10j$\x80\x80\x80\x80\x00\x0b\xb5\x01\x02\x02\x7f\x02~#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02 \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0bB\x01!\x04\x02@ \x01B\xff\x01\x83B\xcc\x00R\r\x00 \x01A\xb0\x81\xc0\x80\x00A\x02 \x02A\x02\x10\x92\x80\x80\x80\x00\x02@ \x02)\x03\x00\"\x01\xa7A\xff\x01q\"\x03A\xca\x00F\r\x00 \x03A\x0eG\r\x01\x0b \x02)\x03\x08\"\x05B\xff\x01\x83B\xcc\x00R\r\x00 \x00 \x057\x03\x10 \x00 \x017\x03\x08B\x00!\x04\x0b \x00 \x047\x03\x00 \x02A\x10j$\x80\x80\x80\x80\x00\x0b(\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00A\x82\x80\x80\x80\x006\x02\x0c \x00(\x02\x0c\x1aA\x00-\x00\xb8\x80\xc0\x80\x00\x1a\x0bC\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00A\x81\x80\x80\x80\x006\x02\x0c \x00(\x02\x0c\x1a \x00A\x83\x80\x80\x80\x006\x02\x08 \x00(\x02\x08\x1aA\x00-\x00\xd4\x80\xc0\x80\x00\x1aA\x00-\x00\xc6\x80\xc0\x80\x00\x1a\x0bx\x03\x01\x7f\x01~\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00B\x02!\x03\x02@ \x01(\x02\x08\"\x04 \x01(\x02\x0cO\r\x00 \x02 \x01)\x03\x00 \x04\xadB \x86B\x04\x84\x10\x83\x80\x80\x80\x00\x10\x93\x80\x80\x80\x00 \x02)\x03\x00!\x03 \x00 \x02)\x03\x087\x03\x08 \x01 \x04A\x01j6\x02\x08\x0b \x00 \x037\x03\x00 \x02A\x10j$\x80\x80\x80\x80\x00\x0b\xd6\x04\x04\x02\x7f\x01~\x01\x7f\x05~#\x80\x80\x80\x80\x00A\xc0\x00k\"\x02$\x80\x80\x80\x80\x00 \x02 \x017\x03\x08 \x02 \x007\x03\x00 \x02A\x10j \x02\x10\x8d\x80\x80\x80\x00\x02@\x02@\x02@ \x02-\x00\x10\"\x03A\x04F\r\x00 \x02)\x03 !\x01 \x02)\x03\x18!\x04 \x021\x00\x11!\x00 \x02A\x10j \x02A\x08j\x10\x8d\x80\x80\x80\x00 \x02-\x00\x10\"\x05A\x04F\r\x00 \x02)\x03 !\x06 \x02)\x03\x18!\x07 \x021\x00\x11!\x08B\x00!\tB\x00!\n\x02@\x02@\x02@\x02@ \x03\x0e\x04\x05\x02\x01\x00\x05\x0b \x01\x10\x80\x80\x80\x80\x00!\x00 \x02A\x006\x028 \x02 \x017\x030 \x02 \x00B \x88>\x02<B\x00!\x01\x03@ \x02A\x10j \x02A0j\x10\x98\x80\x80\x80\x00 \x02)\x03\x10\"\x00B\x02Q\r\x03 \x00\xa7A\x01q\r\x06 \x02)\x03\x18\"\x00B\x00S \x01 \x00|\"\x00 \x01SG\r\x06 \x00!\x01\x0c\x00\x0b\x0b \x00!\n\x0c\x03\x0b \x01B\x00S \x04 \x01|\"\n \x04SsE\r\x02\x0c\x03\x0b \x01B\x00S \x04 \x01|\"\n \x04SsE\r\x01\x0c\x02\x0b\x00\x0b\x02@\x02@\x02@\x02@\x02@ \x05\x0e\x04\x04\x02\x01\x00\x04\x0b \x06\x10\x80\x80\x80\x80\x00!\x01 \x02A\x006\x028 \x02 \x067\x030 \x02 \x01B \x88>\x02<B\x00!\x01\x03@ \x02A\x10j \x02A0j\x10\x98\x80\x80\x80\x00 \x02)\x03\x10\"\x00B\x02Q\r\x03 \x00\xa7A\x01q\r\x05 \x02)\x03\x18\"\x00B\x00S \x01 \x00|\"\x00 \x01SG\r\x05 \x00!\x01\x0c\x00\x0b\x0b \x08!\t\x0c\x02\x0b \x06B\x00S \x07 \x06|\"\t \x07Ss\r\x02\x0c\x01\x0b \x01B\x00S \x07 \x01|\"\t \x07Ss\r\x01\x0b \tB\x00S \n \t|\"\x01 \nSs\r\x00\x02@\x02@ \x01B\x80\x80\x80\x80\x80\x80\x80\xc0\x00|B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x01B\x08\x86B\x07\x84!\x01\x0c\x01\x0b \x01\x10\x84\x80\x80\x80\x00!\x01\x0b \x02A\xc0\x00j$\x80\x80\x80\x80\x00 \x01\x0f\x0b\x10\x9a\x80\x80\x80\x00\x00\x0b\t\x00\x10\xa0\x80\x80\x80\x00\x00\x0b\xf9\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A k\"\x01$\x80\x80\x80\x80\x00 \x01A\x82\x80\x80\x80\x006\x02\x08 \x01(\x02\x08\x1aA\x00-\x00\xb8\x80\xc0\x80\x00\x1a \x01A\x08j \x00\x10\x94\x80\x80\x80\x00\x02@ \x01(\x02\x08A\x01F\r\x00\x02@\x02@ \x01)\x03\x18\"\x00\x10\x80\x80\x80\x80\x00B\xff\xff\xff\xff\x0fV\r\x00 \x01A\x82\x80\x80\x80\x006\x02\x08 \x01(\x02\x08\x1aA\x00-\x00\xb8\x80\xc0\x80\x00\x1aB\x02!\x00\x0c\x01\x0b \x01A\x08j \x00\x10\x85\x80\x80\x80\x00\x10\x94\x80\x80\x80\x00 \x01(\x02\x08A\x01F\r\x01 \x01)\x03\x10!\x00 \x01)\x03\x18!\x02 \x01A\x82\x80\x80\x80\x006\x02\x08 \x01(\x02\x08\x1aA\x00-\x00\xb8\x80\xc0\x80\x00\x1a \x01 \x027\x03\x10 \x01 \x007\x03\x08 \x01A\x08j\x10\x9c\x80\x80\x80\x00!\x00\x0b \x01A j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b$\x00A\xb0\x81\xc0\x80\x00\xadB \x86B\x04\x84 \x00\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x8a\x80\x80\x80\x00\x0b\x85\x07\x04\x01\x7f\x01~\x01\x7f\x01~#\x80\x80\x80\x80\x00A\xc0\x00k\"\x02$\x80\x80\x80\x80\x00 \x02A\x81\x80\x80\x80\x006\x02\x18 \x02(\x02\x18\x1a \x02A\x83\x80\x80\x80\x006\x02\x18 \x02(\x02\x18\x1aA\x00-\x00\xd4\x80\xc0\x80\x00\x1aA\x00-\x00\xc6\x80\xc0\x80\x00\x1a\x02@ \x00B\xff\x01\x83B\xcb\x00R\r\x00 \x00\x10\x80\x80\x80\x80\x00!\x03 \x02A\x006\x02\x10 \x02 \x007\x03\x08 \x02 \x03B \x88>\x02\x14 \x02A\x18j \x02A\x08j\x10\x8f\x80\x80\x80\x00 \x02)\x03\x18\"\x00B\x02Q\r\x00 \x00\xa7A\x01q\r\x00\x02@ \x02)\x03 \"\x00\xa7A\xff\x01q\"\x04A\xca\x00F\r\x00 \x04A\x0eG\r\x01\x0b\x02@\x02@\x02@\x02@\x02@\x02@ \x00A\xd8\x81\xc0\x80\x00A\x02\x10\x90\x80\x80\x80\x00B \x88\xa7\x0e\x02\x01\x00\x06\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x91\x80\x80\x80\x00A\x01K\r\x05 \x02A0j \x02A\x08j\x10\x8f\x80\x80\x80\x00 \x02)\x030\"\x00B\x02Q\r\x05 \x00\xa7A\x01q\r\x05 \x02A\x18j \x02)\x038\x10\x95\x80\x80\x80\x00 \x02(\x02\x18A\x01F\r\x05 \x01B\xff\x01\x83B\x04R\r\x05 \x02)\x03(\"\x00 \x01B\x84\x80\x80\x80p\x83\"\x01\x10\x86\x80\x80\x80\x00B\x01R\r\x01 \x00 \x01\x10\x87\x80\x80\x80\x00\"\x00B\xff\x01\x83B\xcb\x00R\r\x05 \x00\x10\x80\x80\x80\x80\x00!\x01 \x02A\x006\x02\x10 \x02 \x007\x03\x08 \x02 \x01B \x88>\x02\x14 \x02A\x18j \x02A\x08j\x10\x8f\x80\x80\x80\x00 \x02)\x03\x18\"\x00B\x02Q\r\x05 \x00\xa7A\x01q\r\x05\x02@ \x02)\x03 \"\x00\xa7A\xff\x01q\"\x04A\xca\x00F\r\x00 \x04A\x0eG\r\x06\x0b \x00A\xd8\x81\xc0\x80\x00A\x02\x10\x90\x80\x80\x80\x00B \x88\xa7\x0e\x02\x02\x03\x05\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x91\x80\x80\x80\x00\r\x04 \x01B\xff\x01\x83B\x04R\r\x04\x0bB\x02!\x00\x0c\x02\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x91\x80\x80\x80\x00\r\x02B\x00!\x00\x0c\x01\x0b \x02(\x02\x10 \x02(\x02\x14\x10\x91\x80\x80\x80\x00A\x01K\r\x01 \x02A0j \x02A\x08j\x10\x8f\x80\x80\x80\x00 \x02)\x030\"\x00B\x02Q\r\x01 \x00\xa7A\x01q\r\x01 \x02A\x18j \x02)\x038\x10\x95\x80\x80\x80\x00 \x02(\x02\x18\r\x01 \x02)\x03(!\x05 \x02)\x03 !\x03B\x01!\x00\x0b \x02A\x81\x80\x80\x80\x006\x02\x18 \x02(\x02\x18\x1a \x02A\x83\x80\x80\x80\x006\x02\x18 \x02(\x02\x18\x1aA\x00-\x00\xd4\x80\xc0\x80\x00\x1aA\x00-\x00\xc6\x80\xc0\x80\x00\x1aB\x02!\x01\x02@ \x00B\x02Q\r\x00\x02@ \x00\xa7A\x01qE\r\x00 \x02A\x18jA\xcc\x81\xc0\x80\x00A\t\x10\x9e\x80\x80\x80\x00 \x02(\x02\x18\r\x02 \x02)\x03 !\x00 \x02 \x057\x03  \x02 \x037\x03\x18 \x02 \x02A\x18j\x10\x9c\x80\x80\x80\x007\x03  \x02 \x007\x03\x18 \x02A\x18jA\x02\x10\x9f\x80\x80\x80\x00!\x01\x0c\x01\x0b \x02A\x18jA\xc0\x81\xc0\x80\x00A\x0c\x10\x9e\x80\x80\x80\x00 \x02(\x02\x18\r\x01 \x02 \x02)\x03 7\x03\x18 \x02A\x18jA\x01\x10\x9f\x80\x80\x80\x00!\x01\x0b \x02A\xc0\x00j$\x80\x80\x80\x80\x00 \x01\x0f\x0b\x00\x0b\xd6\x01\x02\x01~\x03\x7f\x02@\x02@ \x02A\tK\r\x00B\x00!\x03A\x00!\x04\x03@\x02@ \x04A\tG\r\x00 \x03B\x08\x86B\x0e\x84!\x03\x0c\x03\x0bA\x01!\x05\x02@ \x01 \x04j-\x00\x00\"\x06A\xdf\x00F\r\x00\x02@\x02@ \x06APjA\xff\x01qA\nI\r\x00 \x06A\xbf\x7fjA\xff\x01qA\x1aI\r\x01 \x06A\x9f\x7fjA\xff\x01qA\x1aO\r\x04 \x06AEj!\x05\x0c\x02\x0b \x06ARj!\x05\x0c\x01\x0b \x06AKj!\x05\x0b \x03B\x06\x86 \x05\xadB\xff\x01\x83\x84!\x03 \x04A\x01j!\x04\x0c\x00\x0b\x0b \x01\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x89\x80\x80\x80\x00!\x03\x0b \x00B\x007\x03\x00 \x00 \x037\x03\x08\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x88\x80\x80\x80\x00\x0b\x03\x00\x00\x0b\x0b\xf2\x01\x01\x00A\x80\x80\xc0\x00\x0b\xe8\x01SpEcV1\xad\xceGm\xc1*}\xf4SpEcV1\xaf\xf7\x93\xba\x9eM\xde\x9aSpEcV1\xeb\x9f\x12&\x9av(*SpEcV1\x16\'d8\xff\xc9\xb1\xf8SpEcV1\x9a\xfa\xc9\"\xbbS\xff\xd4SpEcV1\xc7\xb2\xff[\xfbE$\x89SpEcV1\x98L\x83\x0f\xad\xc96\x1eUdtAUdtBUdtCUdtD\x00\x00b\x00\x10\x00\x04\x00\x00\x00f\x00\x10\x00\x04\x00\x00\x00j\x00\x10\x00\x04\x00\x00\x00n\x00\x10\x00\x04\x00\x00\x00abc\x00\x94\x00\x10\x00\x01\x00\x00\x00\x95\x00\x10\x00\x01\x00\x00\x00\x96\x00\x10\x00\x01\x00\x00\x00\x94\x00\x10\x00\x01\x00\x00\x00\x95\x00\x10\x00\x01\x00\x00\x00NotRecursiveRecursive\x00\x00\x00\xc0\x00\x10\x00\x0c\x00\x00\x00\xcc\x00\x10\x00\t\x00\x00\x00\x00\x8b\x1e\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03add\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x07\xd1\xad\xceGm\xc1*}\xf4\x00\x00\x00\x07UdtEnum\x00\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x07\xd1\xad\xceGm\xc1*}\xf4\x00\x00\x00\x07UdtEnum\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07UdtEnum\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04UdtA\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04UdtB\x00\x00\x00\x01\x00\x00\x07\xd1\x16\'d8\xff\xc9\xb1\xf8\x00\x00\x00\tUdtStruct\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04UdtC\x00\x00\x00\x01\x00\x00\x07\xd1\xaf\xf7\x93\xba\x9eM\xde\x9a\x00\x00\x00\x08UdtEnum2\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04UdtD\x00\x00\x00\x01\x00\x00\x07\xd1\xeb\x9f\x12&\x9av(*\x00\x00\x00\x08UdtTuple\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08UdtEnum2\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01A\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x01B\x00\x00\x00\x00\x00\x00\x0f\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08UdtTuple\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x03\xea\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\tUdtStruct\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x01c\x00\x00\x00\x00\x00\x03\xea\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\trecursive\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x07\xd1\x9a\xfa\xc9\"\xbbS\xff\xd4\x00\x00\x00\x0cUdtRecursive\x00\x00\x00\x01\x00\x00\x03\xe8\x00\x00\x07\xd1\x9a\xfa\xc9\"\xbbS\xff\xd4\x00\x00\x00\x0cUdtRecursive\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cUdtRecursive\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x11\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x03\xea\x00\x00\x07\xd1\x9a\xfa\xc9\"\xbbS\xff\xd4\x00\x00\x00\x0cUdtRecursive\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rRecursiveEnum\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cNotRecursive\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\tRecursive\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd1\x98L\x83\x0f\xad\xc96\x1e\x00\x00\x00\x0fRecursiveToEnum\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fRecursiveToEnum\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x11\x00\x00\x00\x00\x00\x00\x00\x01b\x00\x00\x00\x00\x00\x03\xec\x00\x00\x00\x04\x00\x00\x07\xd1\xc7\xb2\xff[\xfbE$\x89\x00\x00\x00\rRecursiveEnum\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0erecursive_enum\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x07\xd1\xc7\xb2\xff[\xfbE$\x89\x00\x00\x00\rRecursiveEnum\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x03key\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x03\xe8\x00\x00\x07\xd1\xc7\xb2\xff[\xfbE$\x89\x00\x00\x00\rRecursiveEnum\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x02\x00\x00\x00\xe3Context of a single authorized call performed by an address.\n\nCustom account contracts that implement `__check_auth` special function\nreceive a list of `Context` values corresponding to all the calls that\nneed to be authorized.\x00\x00\x00\x00\x00\x00\x00\x00\x07Context\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x14Contract invocation.\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd1\xf1\xf9\x90\x07E*e\xfd\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x01\x00\x00\x00=Contract that has a constructor with no arguments is created.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd1y\"\xf1\xf4$$\xd5\xa8\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00DContract that has a constructor with 1 or more arguments is created.\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\xd6d;y\x13\xca\xe7\x01\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x01\x00\x00\x00\xbdAuthorization context of a single contract call.\n\nThis struct corresponds to a `require_auth_for_args` call for an address\nfrom `contract` function with `fn_name` name and `args` arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08contract\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x07fn_name\x00\x00\x00\x00\x11\x00\x00\x00\x02\x00\x00\x00_Contract executable used for creating a new contract and used in\n`CreateContractHostFnContext`.\x00\x00\x00\x00\x00\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x008Value of contract node in InvokerContractAuthEntry tree.\x00\x00\x00\x00\x00\x00\x00\x15SubContractInvocation\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x07\xd1\xf1\xf9\x90\x07E*e\xfd\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x00\x00\x00\x00\x0fsub_invocations\x00\x00\x00\x03\xea\x00\x00\x07\xd1C<\xe5i\xf1\xf5\x06\xb8\x00\x00\x00\x18InvokerContractAuthEntry\x00\x00\x00\x02\x00\x00\x01/A node in the tree of authorizations performed on behalf of the current\ncontract as invoker of the contracts deeper in the call stack.\n\nThis is used as an argument of `authorize_as_current_contract` host function.\n\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\ncurrent contract.\x00\x00\x00\x00\x00\x00\x00\x00\x18InvokerContractAuthEntry\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x12Invoke a contract.\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd1\x86\xda\xf2\xf8\xf0d\xb3\xc4\x00\x00\x00\x15SubContractInvocation\x00\x00\x00\x00\x00\x00\x01\x00\x00\x005Create a contract passing 0 arguments to constructor.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd1y\"\xf1\xf4$$\xd5\xa8\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00=Create a contract passing 0 or more arguments to constructor.\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\xd6d;y\x13\xca\xe7\x01\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x01\x00\x00\x00vAuthorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd1\xb6\xb1Hy\xda\xca\xaf\xcc\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\xd6Authorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\nThis is the same as `CreateContractHostFnContext`, but also has\ncontract constructor arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x10constructor_args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd1\xb6\xb1Hy\xda\xca\xaf\xcc\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nExecutable\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStellarAsset\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Account\x00\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1b\x00\x00\x00\x00\x00O\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12rssdk_spec_shaking\x00\x00\x00\x00\x00\x012\x00\x00\x00";
         pub trait Contract {
             fn add(env: soroban_sdk::Env, a: UdtEnum, b: UdtEnum) -> i64;
             fn recursive(env: soroban_sdk::Env, a: UdtRecursive) -> Option<UdtRecursive>;
@@ -4646,11 +4985,40 @@ mod test_with_wasm {
                 }
             }
         }
-        pub static __SPEC_XDR_TYPE_UDTTUPLE: [u8; 64usize] = UdtTuple::spec_xdr();
+        pub static __SPEC_XDR_TYPE_UDTTUPLE: [u8; UdtTuple::__SPEC_XDR_REF.const_xdr_len()] =
+            UdtTuple::spec_xdr();
         impl UdtTuple {
-            pub const fn spec_xdr() -> [u8; 64usize] {
-                *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x08UdtTuple\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x011\0\0\0\0\0\x03\xea\0\0\0\x07"
+            const __SPEC_XDR_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+                soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(
+                    soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        lib: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"UdtTuple"),
+                        fields: soroban_sdk::xdr::VecMRef::new(&[
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                                name: soroban_sdk::xdr::StringMRef::new(b"0"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefRef::I64,
+                            },
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                                name: soroban_sdk::xdr::StringMRef::new(b"1"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefRef::Vec(
+                                    &soroban_sdk::xdr::ScSpecTypeVecRef {
+                                        element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::I64,
+                                    },
+                                ),
+                            },
+                        ]),
+                    },
+                );
+            pub const fn spec_xdr() -> [u8; UdtTuple::__SPEC_XDR_REF.const_xdr_len()] {
+                UdtTuple::__SPEC_XDR_REF.const_to_xdr()
             }
+        }
+        impl UdtTuple {
+            #[doc(hidden)]
+            pub const SPEC_XDR_ID: [u8; 8] = [235u8, 159u8, 18u8, 38u8, 154u8, 118u8, 40u8, 42u8];
         }
         impl soroban_sdk::SpecShakingMarker for UdtTuple {
             #[doc(hidden)]
@@ -5084,11 +5452,45 @@ mod test_with_wasm {
                 }
             }
         }
-        pub static __SPEC_XDR_TYPE_UDTSTRUCT: [u8; 84usize] = UdtStruct::spec_xdr();
+        pub static __SPEC_XDR_TYPE_UDTSTRUCT: [u8; UdtStruct::__SPEC_XDR_REF.const_xdr_len()] =
+            UdtStruct::spec_xdr();
         impl UdtStruct {
-            pub const fn spec_xdr() -> [u8; 84usize] {
-                *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\tUdtStruct\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x01c\0\0\0\0\0\x03\xea\0\0\0\x07"
+            const __SPEC_XDR_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+                soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(
+                    soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        lib: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"UdtStruct"),
+                        fields: soroban_sdk::xdr::VecMRef::new(&[
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                                name: soroban_sdk::xdr::StringMRef::new(b"a"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefRef::I64,
+                            },
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                                name: soroban_sdk::xdr::StringMRef::new(b"b"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefRef::I64,
+                            },
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                                name: soroban_sdk::xdr::StringMRef::new(b"c"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefRef::Vec(
+                                    &soroban_sdk::xdr::ScSpecTypeVecRef {
+                                        element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::I64,
+                                    },
+                                ),
+                            },
+                        ]),
+                    },
+                );
+            pub const fn spec_xdr() -> [u8; UdtStruct::__SPEC_XDR_REF.const_xdr_len()] {
+                UdtStruct::__SPEC_XDR_REF.const_to_xdr()
             }
+        }
+        impl UdtStruct {
+            #[doc(hidden)]
+            pub const SPEC_XDR_ID: [u8; 8] = [22u8, 39u8, 100u8, 56u8, 255u8, 201u8, 177u8, 248u8];
         }
         impl soroban_sdk::SpecShakingMarker for UdtStruct {
             #[doc(hidden)]
@@ -5595,11 +5997,47 @@ mod test_with_wasm {
                 }
             }
         }
-        pub static __SPEC_XDR_TYPE_UDTRECURSIVE: [u8; 84usize] = UdtRecursive::spec_xdr();
+        pub static __SPEC_XDR_TYPE_UDTRECURSIVE: [u8; UdtRecursive::__SPEC_XDR_REF
+            .const_xdr_len()] = UdtRecursive::spec_xdr();
         impl UdtRecursive {
-            pub const fn spec_xdr() -> [u8; 84usize] {
-                *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cUdtRecursive\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x11\0\0\0\0\0\0\0\x01b\0\0\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x0cUdtRecursive"
+            const __SPEC_XDR_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+                soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(
+                    soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        lib: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"UdtRecursive"),
+                        fields: soroban_sdk::xdr::VecMRef::new(&[
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                                name: soroban_sdk::xdr::StringMRef::new(b"a"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefRef::Symbol,
+                            },
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                                name: soroban_sdk::xdr::StringMRef::new(b"b"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefRef::Vec(
+                                    &soroban_sdk::xdr::ScSpecTypeVecRef {
+                                        element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                                            soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                                id: <UdtRecursive>::SPEC_XDR_ID,
+                                                name: soroban_sdk::xdr::StringMRef::new(
+                                                    b"UdtRecursive",
+                                                ),
+                                            },
+                                        ),
+                                    },
+                                ),
+                            },
+                        ]),
+                    },
+                );
+            pub const fn spec_xdr() -> [u8; UdtRecursive::__SPEC_XDR_REF.const_xdr_len()] {
+                UdtRecursive::__SPEC_XDR_REF.const_to_xdr()
             }
+        }
+        impl UdtRecursive {
+            #[doc(hidden)]
+            pub const SPEC_XDR_ID: [u8; 8] = [154u8, 250u8, 201u8, 34u8, 187u8, 83u8, 255u8, 212u8];
         }
         impl soroban_sdk::SpecShakingMarker for UdtRecursive {
             #[doc(hidden)]
@@ -6055,11 +6493,48 @@ mod test_with_wasm {
                 }
             }
         }
-        pub static __SPEC_XDR_TYPE_RECURSIVETOENUM: [u8; 96usize] = RecursiveToEnum::spec_xdr();
+        pub static __SPEC_XDR_TYPE_RECURSIVETOENUM: [u8; RecursiveToEnum::__SPEC_XDR_REF
+            .const_xdr_len()] = RecursiveToEnum::spec_xdr();
         impl RecursiveToEnum {
-            pub const fn spec_xdr() -> [u8; 96usize] {
-                *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0fRecursiveToEnum\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x11\0\0\0\0\0\0\0\x01b\0\0\0\0\0\x03\xec\0\0\0\x04\0\0\x07\xd0\0\0\0\rRecursiveEnum\0\0\0"
+            const __SPEC_XDR_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+                soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(
+                    soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        lib: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"RecursiveToEnum"),
+                        fields: soroban_sdk::xdr::VecMRef::new(&[
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                                name: soroban_sdk::xdr::StringMRef::new(b"a"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefRef::Symbol,
+                            },
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                                name: soroban_sdk::xdr::StringMRef::new(b"b"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefRef::Map(
+                                    &soroban_sdk::xdr::ScSpecTypeMapRef {
+                                        key_type: &soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                                        value_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                                            soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                                id: <RecursiveEnum>::SPEC_XDR_ID,
+                                                name: soroban_sdk::xdr::StringMRef::new(
+                                                    b"RecursiveEnum",
+                                                ),
+                                            },
+                                        ),
+                                    },
+                                ),
+                            },
+                        ]),
+                    },
+                );
+            pub const fn spec_xdr() -> [u8; RecursiveToEnum::__SPEC_XDR_REF.const_xdr_len()] {
+                RecursiveToEnum::__SPEC_XDR_REF.const_to_xdr()
             }
+        }
+        impl RecursiveToEnum {
+            #[doc(hidden)]
+            pub const SPEC_XDR_ID: [u8; 8] = [152u8, 76u8, 131u8, 15u8, 173u8, 201u8, 54u8, 30u8];
         }
         impl soroban_sdk::SpecShakingMarker for RecursiveToEnum {
             #[doc(hidden)]
@@ -6539,11 +7014,45 @@ mod test_with_wasm {
                 }
             }
         }
-        pub static __SPEC_XDR_TYPE_CONTRACTCONTEXT: [u8; 96usize] = ContractContext::spec_xdr();
+        pub static __SPEC_XDR_TYPE_CONTRACTCONTEXT: [u8; ContractContext::__SPEC_XDR_REF
+            .const_xdr_len()] = ContractContext::spec_xdr();
         impl ContractContext {
-            pub const fn spec_xdr() -> [u8; 96usize] {
-                *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0fContractContext\0\0\0\0\x03\0\0\0\0\0\0\0\x04args\0\0\x03\xea\0\0\0\0\0\0\0\0\0\0\0\x08contract\0\0\0\x13\0\0\0\0\0\0\0\x07fn_name\0\0\0\0\x11"
+            const __SPEC_XDR_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+                soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(
+                    soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        lib: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"ContractContext"),
+                        fields: soroban_sdk::xdr::VecMRef::new(&[
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                                name: soroban_sdk::xdr::StringMRef::new(b"args"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefRef::Vec(
+                                    &soroban_sdk::xdr::ScSpecTypeVecRef {
+                                        element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::Val,
+                                    },
+                                ),
+                            },
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                                name: soroban_sdk::xdr::StringMRef::new(b"contract"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefRef::Address,
+                            },
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                                name: soroban_sdk::xdr::StringMRef::new(b"fn_name"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefRef::Symbol,
+                            },
+                        ]),
+                    },
+                );
+            pub const fn spec_xdr() -> [u8; ContractContext::__SPEC_XDR_REF.const_xdr_len()] {
+                ContractContext::__SPEC_XDR_REF.const_to_xdr()
             }
+        }
+        impl ContractContext {
+            #[doc(hidden)]
+            pub const SPEC_XDR_ID: [u8; 8] = [3u8, 4u8, 117u8, 78u8, 234u8, 215u8, 91u8, 19u8];
         }
         impl soroban_sdk::SpecShakingMarker for ContractContext {
             #[doc(hidden)]
@@ -7077,12 +7586,53 @@ mod test_with_wasm {
                 }
             }
         }
-        pub static __SPEC_XDR_TYPE_SUBCONTRACTINVOCATION: [u8; 144usize] =
+        pub static __SPEC_XDR_TYPE_SUBCONTRACTINVOCATION: [u8;
+            SubContractInvocation::__SPEC_XDR_REF.const_xdr_len()] =
             SubContractInvocation::spec_xdr();
         impl SubContractInvocation {
-            pub const fn spec_xdr() -> [u8; 144usize] {
-                *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x15SubContractInvocation\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x07context\0\0\0\x07\xd0\0\0\0\x0fContractContext\0\0\0\0\0\0\0\0\x0fsub_invocations\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x18InvokerContractAuthEntry"
+            const __SPEC_XDR_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+                soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(
+                    soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        lib: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"SubContractInvocation"),
+                        fields: soroban_sdk::xdr::VecMRef::new(&[
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                                name: soroban_sdk::xdr::StringMRef::new(b"context"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                                    soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                        id: <ContractContext>::SPEC_XDR_ID,
+                                        name: soroban_sdk::xdr::StringMRef::new(b"ContractContext"),
+                                    },
+                                ),
+                            },
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                                name: soroban_sdk::xdr::StringMRef::new(b"sub_invocations"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefRef::Vec(
+                                    &soroban_sdk::xdr::ScSpecTypeVecRef {
+                                        element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                                            soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                                id: <InvokerContractAuthEntry>::SPEC_XDR_ID,
+                                                name: soroban_sdk::xdr::StringMRef::new(
+                                                    b"InvokerContractAuthEntry",
+                                                ),
+                                            },
+                                        ),
+                                    },
+                                ),
+                            },
+                        ]),
+                    },
+                );
+            pub const fn spec_xdr() -> [u8; SubContractInvocation::__SPEC_XDR_REF.const_xdr_len()] {
+                SubContractInvocation::__SPEC_XDR_REF.const_to_xdr()
             }
+        }
+        impl SubContractInvocation {
+            #[doc(hidden)]
+            pub const SPEC_XDR_ID: [u8; 8] = [55u8, 104u8, 146u8, 250u8, 151u8, 15u8, 63u8, 42u8];
         }
         impl soroban_sdk::SpecShakingMarker for SubContractInvocation {
             #[doc(hidden)]
@@ -7554,12 +8104,48 @@ mod test_with_wasm {
                 }
             }
         }
-        pub static __SPEC_XDR_TYPE_CREATECONTRACTHOSTFNCONTEXT: [u8; 116usize] =
+        pub static __SPEC_XDR_TYPE_CREATECONTRACTHOSTFNCONTEXT: [u8;
+            CreateContractHostFnContext::__SPEC_XDR_REF.const_xdr_len()] =
             CreateContractHostFnContext::spec_xdr();
         impl CreateContractHostFnContext {
-            pub const fn spec_xdr() -> [u8; 116usize] {
-                *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x1bCreateContractHostFnContext\0\0\0\0\x02\0\0\0\0\0\0\0\nexecutable\0\0\0\0\x07\xd0\0\0\0\x12ContractExecutable\0\0\0\0\0\0\0\0\0\x04salt\0\0\x03\xee\0\0\0 "
+            const __SPEC_XDR_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+                soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(
+                    soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        lib: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"CreateContractHostFnContext"),
+                        fields: soroban_sdk::xdr::VecMRef::new(&[
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                                name: soroban_sdk::xdr::StringMRef::new(b"executable"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                                    soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                        id: <ContractExecutable>::SPEC_XDR_ID,
+                                        name: soroban_sdk::xdr::StringMRef::new(
+                                            b"ContractExecutable",
+                                        ),
+                                    },
+                                ),
+                            },
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                                name: soroban_sdk::xdr::StringMRef::new(b"salt"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefRef::BytesN(
+                                    soroban_sdk::xdr::ScSpecTypeBytesN { n: 32u32 },
+                                ),
+                            },
+                        ]),
+                    },
+                );
+            pub const fn spec_xdr(
+            ) -> [u8; CreateContractHostFnContext::__SPEC_XDR_REF.const_xdr_len()] {
+                CreateContractHostFnContext::__SPEC_XDR_REF.const_to_xdr()
             }
+        }
+        impl CreateContractHostFnContext {
+            #[doc(hidden)]
+            pub const SPEC_XDR_ID: [u8; 8] =
+                [180u8, 130u8, 134u8, 76u8, 208u8, 117u8, 156u8, 138u8];
         }
         impl soroban_sdk::SpecShakingMarker for CreateContractHostFnContext {
             #[doc(hidden)]
@@ -8063,12 +8649,59 @@ mod test_with_wasm {
                 }
             }
         }
-        pub static __SPEC_XDR_TYPE_CREATECONTRACTWITHCONSTRUCTORHOSTFNCONTEXT: [u8; 164usize] =
+        pub static __SPEC_XDR_TYPE_CREATECONTRACTWITHCONSTRUCTORHOSTFNCONTEXT: [u8;
+            CreateContractWithConstructorHostFnContext::__SPEC_XDR_REF.const_xdr_len()] =
             CreateContractWithConstructorHostFnContext::spec_xdr();
         impl CreateContractWithConstructorHostFnContext {
-            pub const fn spec_xdr() -> [u8; 164usize] {
-                *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0*CreateContractWithConstructorHostFnContext\0\0\0\0\0\x03\0\0\0\0\0\0\0\x10constructor_args\0\0\x03\xea\0\0\0\0\0\0\0\0\0\0\0\nexecutable\0\0\0\0\x07\xd0\0\0\0\x12ContractExecutable\0\0\0\0\0\0\0\0\0\x04salt\0\0\x03\xee\0\0\0 "
+            const __SPEC_XDR_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+                soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(
+                    soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        lib: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(
+                            b"CreateContractWithConstructorHostFnContext",
+                        ),
+                        fields: soroban_sdk::xdr::VecMRef::new(&[
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                                name: soroban_sdk::xdr::StringMRef::new(b"constructor_args"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefRef::Vec(
+                                    &soroban_sdk::xdr::ScSpecTypeVecRef {
+                                        element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::Val,
+                                    },
+                                ),
+                            },
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                                name: soroban_sdk::xdr::StringMRef::new(b"executable"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                                    soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                        id: <ContractExecutable>::SPEC_XDR_ID,
+                                        name: soroban_sdk::xdr::StringMRef::new(
+                                            b"ContractExecutable",
+                                        ),
+                                    },
+                                ),
+                            },
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                                name: soroban_sdk::xdr::StringMRef::new(b"salt"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefRef::BytesN(
+                                    soroban_sdk::xdr::ScSpecTypeBytesN { n: 32u32 },
+                                ),
+                            },
+                        ]),
+                    },
+                );
+            pub const fn spec_xdr(
+            ) -> [u8; CreateContractWithConstructorHostFnContext::__SPEC_XDR_REF.const_xdr_len()]
+            {
+                CreateContractWithConstructorHostFnContext::__SPEC_XDR_REF.const_to_xdr()
             }
+        }
+        impl CreateContractWithConstructorHostFnContext {
+            #[doc(hidden)]
+            pub const SPEC_XDR_ID: [u8; 8] = [73u8, 117u8, 5u8, 129u8, 186u8, 200u8, 231u8, 226u8];
         }
         impl soroban_sdk::SpecShakingMarker for CreateContractWithConstructorHostFnContext {
             #[doc(hidden)]
@@ -8675,11 +9308,80 @@ mod test_with_wasm {
                 }
             }
         }
-        pub static __SPEC_XDR_TYPE_UDTENUM: [u8; 156usize] = UdtEnum::spec_xdr();
+        pub static __SPEC_XDR_TYPE_UDTENUM: [u8; UdtEnum::__SPEC_XDR_REF.const_xdr_len()] =
+            UdtEnum::spec_xdr();
         impl UdtEnum {
-            pub const fn spec_xdr() -> [u8; 156usize] {
-                *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x07UdtEnum\0\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x04UdtA\0\0\0\x01\0\0\0\0\0\0\0\x04UdtB\0\0\0\x01\0\0\x07\xd0\0\0\0\tUdtStruct\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04UdtC\0\0\0\x01\0\0\x07\xd0\0\0\0\x08UdtEnum2\0\0\0\x01\0\0\0\0\0\0\0\x04UdtD\0\0\0\x01\0\0\x07\xd0\0\0\0\x08UdtTuple"
+            const __SPEC_XDR_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+                soroban_sdk::xdr::ScSpecEntryRef::UdtUnionV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        lib: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"UdtEnum"),
+                        cases: soroban_sdk::xdr::VecMRef::new(&[
+                            soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::VoidV0(
+                                soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0Ref {
+                                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                                    name: soroban_sdk::xdr::StringMRef::new(b"UdtA"),
+                                },
+                            ),
+                            soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                                soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                                    name: soroban_sdk::xdr::StringMRef::new(b"UdtB"),
+                                    type_: soroban_sdk::xdr::VecMRef::new(&[
+                                        soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                                            soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                                id: <UdtStruct>::SPEC_XDR_ID,
+                                                name: soroban_sdk::xdr::StringMRef::new(
+                                                    b"UdtStruct",
+                                                ),
+                                            },
+                                        ),
+                                    ]),
+                                },
+                            ),
+                            soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                                soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                                    name: soroban_sdk::xdr::StringMRef::new(b"UdtC"),
+                                    type_: soroban_sdk::xdr::VecMRef::new(&[
+                                        soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                                            soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                                id: <UdtEnum2>::SPEC_XDR_ID,
+                                                name: soroban_sdk::xdr::StringMRef::new(
+                                                    b"UdtEnum2",
+                                                ),
+                                            },
+                                        ),
+                                    ]),
+                                },
+                            ),
+                            soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                                soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                                    name: soroban_sdk::xdr::StringMRef::new(b"UdtD"),
+                                    type_: soroban_sdk::xdr::VecMRef::new(&[
+                                        soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                                            soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                                id: <UdtTuple>::SPEC_XDR_ID,
+                                                name: soroban_sdk::xdr::StringMRef::new(
+                                                    b"UdtTuple",
+                                                ),
+                                            },
+                                        ),
+                                    ]),
+                                },
+                            ),
+                        ]),
+                    },
+                );
+            pub const fn spec_xdr() -> [u8; UdtEnum::__SPEC_XDR_REF.const_xdr_len()] {
+                UdtEnum::__SPEC_XDR_REF.const_to_xdr()
             }
+        }
+        impl UdtEnum {
+            #[doc(hidden)]
+            pub const SPEC_XDR_ID: [u8; 8] = [173u8, 206u8, 71u8, 109u8, 193u8, 42u8, 125u8, 244u8];
         }
         impl soroban_sdk::SpecShakingMarker for UdtEnum {
             #[doc(hidden)]
@@ -9365,11 +10067,48 @@ mod test_with_wasm {
                 }
             }
         }
-        pub static __SPEC_XDR_TYPE_RECURSIVEENUM: [u8; 112usize] = RecursiveEnum::spec_xdr();
+        pub static __SPEC_XDR_TYPE_RECURSIVEENUM: [u8; RecursiveEnum::__SPEC_XDR_REF
+            .const_xdr_len()] = RecursiveEnum::spec_xdr();
         impl RecursiveEnum {
-            pub const fn spec_xdr() -> [u8; 112usize] {
-                *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\rRecursiveEnum\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x0cNotRecursive\0\0\0\x01\0\0\0\0\0\0\0\tRecursive\0\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x0fRecursiveToEnum\0"
+            const __SPEC_XDR_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+                soroban_sdk::xdr::ScSpecEntryRef::UdtUnionV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        lib: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"RecursiveEnum"),
+                        cases: soroban_sdk::xdr::VecMRef::new(&[
+                            soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::VoidV0(
+                                soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0Ref {
+                                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                                    name: soroban_sdk::xdr::StringMRef::new(b"NotRecursive"),
+                                },
+                            ),
+                            soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                                soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                                    name: soroban_sdk::xdr::StringMRef::new(b"Recursive"),
+                                    type_: soroban_sdk::xdr::VecMRef::new(&[
+                                        soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                                            soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                                id: <RecursiveToEnum>::SPEC_XDR_ID,
+                                                name: soroban_sdk::xdr::StringMRef::new(
+                                                    b"RecursiveToEnum",
+                                                ),
+                                            },
+                                        ),
+                                    ]),
+                                },
+                            ),
+                        ]),
+                    },
+                );
+            pub const fn spec_xdr() -> [u8; RecursiveEnum::__SPEC_XDR_REF.const_xdr_len()] {
+                RecursiveEnum::__SPEC_XDR_REF.const_to_xdr()
             }
+        }
+        impl RecursiveEnum {
+            #[doc(hidden)]
+            pub const SPEC_XDR_ID: [u8; 8] = [199u8, 178u8, 255u8, 91u8, 251u8, 69u8, 36u8, 137u8];
         }
         impl soroban_sdk::SpecShakingMarker for RecursiveEnum {
             #[doc(hidden)]
@@ -9951,11 +10690,69 @@ mod test_with_wasm {
                 }
             }
         }
-        pub static __SPEC_XDR_TYPE_CONTEXT: [u8; 244usize] = Context::spec_xdr();
+        pub static __SPEC_XDR_TYPE_CONTEXT: [u8; Context::__SPEC_XDR_REF.const_xdr_len()] =
+            Context::spec_xdr();
         impl Context {
-            pub const fn spec_xdr() -> [u8; 244usize] {
-                *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x07Context\0\0\0\0\x03\0\0\0\x01\0\0\0\0\0\0\0\x08Contract\0\0\0\x01\0\0\x07\xd0\0\0\0\x0fContractContext\0\0\0\0\x01\0\0\0\0\0\0\0\x14CreateContractHostFn\0\0\0\x01\0\0\x07\xd0\0\0\0\x1bCreateContractHostFnContext\0\0\0\0\x01\0\0\0\0\0\0\0\x1cCreateContractWithCtorHostFn\0\0\0\x01\0\0\x07\xd0\0\0\0*CreateContractWithConstructorHostFnContext\0\0"
+            const __SPEC_XDR_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> = soroban_sdk::xdr::ScSpecEntryRef::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                lib: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"Context"),
+                cases: soroban_sdk::xdr::VecMRef::new(
+                    &[
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(b"Contract"),
+                            type_: soroban_sdk::xdr::VecMRef::new(
+                                &[
+                                    soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                        id: <ContractContext>::SPEC_XDR_ID,
+                                        name: soroban_sdk::xdr::StringMRef::new(b"ContractContext"),
+                                    }),
+                                ],
+                            ),
+                        }),
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(
+                                b"CreateContractHostFn",
+                            ),
+                            type_: soroban_sdk::xdr::VecMRef::new(
+                                &[
+                                    soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                        id: <CreateContractHostFnContext>::SPEC_XDR_ID,
+                                        name: soroban_sdk::xdr::StringMRef::new(
+                                            b"CreateContractHostFnContext",
+                                        ),
+                                    }),
+                                ],
+                            ),
+                        }),
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(
+                                b"CreateContractWithCtorHostFn",
+                            ),
+                            type_: soroban_sdk::xdr::VecMRef::new(
+                                &[
+                                    soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                        id: <CreateContractWithConstructorHostFnContext>::SPEC_XDR_ID,
+                                        name: soroban_sdk::xdr::StringMRef::new(
+                                            b"CreateContractWithConstructorHostFnContext",
+                                        ),
+                                    }),
+                                ],
+                            ),
+                        }),
+                    ],
+                ),
+            });
+            pub const fn spec_xdr() -> [u8; Context::__SPEC_XDR_REF.const_xdr_len()] {
+                Context::__SPEC_XDR_REF.const_to_xdr()
             }
+        }
+        impl Context {
+            #[doc(hidden)]
+            pub const SPEC_XDR_ID: [u8; 8] = [155u8, 5u8, 13u8, 38u8, 150u8, 62u8, 51u8, 225u8];
         }
         impl soroban_sdk::SpecShakingMarker for Context {
             #[doc(hidden)]
@@ -10622,12 +11419,37 @@ mod test_with_wasm {
                 }
             }
         }
-        pub static __SPEC_XDR_TYPE_CONTRACTEXECUTABLE: [u8; 68usize] =
-            ContractExecutable::spec_xdr();
+        pub static __SPEC_XDR_TYPE_CONTRACTEXECUTABLE: [u8; ContractExecutable::__SPEC_XDR_REF
+            .const_xdr_len()] = ContractExecutable::spec_xdr();
         impl ContractExecutable {
-            pub const fn spec_xdr() -> [u8; 68usize] {
-                *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x12ContractExecutable\0\0\0\0\0\x01\0\0\0\x01\0\0\0\0\0\0\0\x04Wasm\0\0\0\x01\0\0\x03\xee\0\0\0 "
+            const __SPEC_XDR_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+                soroban_sdk::xdr::ScSpecEntryRef::UdtUnionV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        lib: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"ContractExecutable"),
+                        cases: soroban_sdk::xdr::VecMRef::new(&[
+                            soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                                soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                                    name: soroban_sdk::xdr::StringMRef::new(b"Wasm"),
+                                    type_: soroban_sdk::xdr::VecMRef::new(&[
+                                        soroban_sdk::xdr::ScSpecTypeDefRef::BytesN(
+                                            soroban_sdk::xdr::ScSpecTypeBytesN { n: 32u32 },
+                                        ),
+                                    ]),
+                                },
+                            ),
+                        ]),
+                    },
+                );
+            pub const fn spec_xdr() -> [u8; ContractExecutable::__SPEC_XDR_REF.const_xdr_len()] {
+                ContractExecutable::__SPEC_XDR_REF.const_to_xdr()
             }
+        }
+        impl ContractExecutable {
+            #[doc(hidden)]
+            pub const SPEC_XDR_ID: [u8; 8] = [94u8, 190u8, 51u8, 52u8, 216u8, 153u8, 132u8, 145u8];
         }
         impl soroban_sdk::SpecShakingMarker for ContractExecutable {
             #[doc(hidden)]
@@ -11166,12 +11988,73 @@ mod test_with_wasm {
                 }
             }
         }
-        pub static __SPEC_XDR_TYPE_INVOKERCONTRACTAUTHENTRY: [u8; 268usize] =
+        pub static __SPEC_XDR_TYPE_INVOKERCONTRACTAUTHENTRY: [u8;
+            InvokerContractAuthEntry::__SPEC_XDR_REF.const_xdr_len()] =
             InvokerContractAuthEntry::spec_xdr();
         impl InvokerContractAuthEntry {
-            pub const fn spec_xdr() -> [u8; 268usize] {
-                *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x18InvokerContractAuthEntry\0\0\0\x03\0\0\0\x01\0\0\0\0\0\0\0\x08Contract\0\0\0\x01\0\0\x07\xd0\0\0\0\x15SubContractInvocation\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x14CreateContractHostFn\0\0\0\x01\0\0\x07\xd0\0\0\0\x1bCreateContractHostFnContext\0\0\0\0\x01\0\0\0\0\0\0\0\x1cCreateContractWithCtorHostFn\0\0\0\x01\0\0\x07\xd0\0\0\0*CreateContractWithConstructorHostFnContext\0\0"
+            const __SPEC_XDR_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> = soroban_sdk::xdr::ScSpecEntryRef::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                lib: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"InvokerContractAuthEntry"),
+                cases: soroban_sdk::xdr::VecMRef::new(
+                    &[
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(b"Contract"),
+                            type_: soroban_sdk::xdr::VecMRef::new(
+                                &[
+                                    soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                        id: <SubContractInvocation>::SPEC_XDR_ID,
+                                        name: soroban_sdk::xdr::StringMRef::new(
+                                            b"SubContractInvocation",
+                                        ),
+                                    }),
+                                ],
+                            ),
+                        }),
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(
+                                b"CreateContractHostFn",
+                            ),
+                            type_: soroban_sdk::xdr::VecMRef::new(
+                                &[
+                                    soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                        id: <CreateContractHostFnContext>::SPEC_XDR_ID,
+                                        name: soroban_sdk::xdr::StringMRef::new(
+                                            b"CreateContractHostFnContext",
+                                        ),
+                                    }),
+                                ],
+                            ),
+                        }),
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(
+                                b"CreateContractWithCtorHostFn",
+                            ),
+                            type_: soroban_sdk::xdr::VecMRef::new(
+                                &[
+                                    soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                        id: <CreateContractWithConstructorHostFnContext>::SPEC_XDR_ID,
+                                        name: soroban_sdk::xdr::StringMRef::new(
+                                            b"CreateContractWithConstructorHostFnContext",
+                                        ),
+                                    }),
+                                ],
+                            ),
+                        }),
+                    ],
+                ),
+            });
+            pub const fn spec_xdr() -> [u8; InvokerContractAuthEntry::__SPEC_XDR_REF.const_xdr_len()]
+            {
+                InvokerContractAuthEntry::__SPEC_XDR_REF.const_to_xdr()
             }
+        }
+        impl InvokerContractAuthEntry {
+            #[doc(hidden)]
+            pub const SPEC_XDR_ID: [u8; 8] = [19u8, 218u8, 204u8, 220u8, 114u8, 50u8, 230u8, 66u8];
         }
         impl soroban_sdk::SpecShakingMarker for InvokerContractAuthEntry {
             #[doc(hidden)]
@@ -11900,11 +12783,49 @@ mod test_with_wasm {
                 }
             }
         }
-        pub static __SPEC_XDR_TYPE_EXECUTABLE: [u8; 104usize] = Executable::spec_xdr();
+        pub static __SPEC_XDR_TYPE_EXECUTABLE: [u8; Executable::__SPEC_XDR_REF.const_xdr_len()] =
+            Executable::spec_xdr();
         impl Executable {
-            pub const fn spec_xdr() -> [u8; 104usize] {
-                *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\nExecutable\0\0\0\0\0\x03\0\0\0\x01\0\0\0\0\0\0\0\x04Wasm\0\0\0\x01\0\0\x03\xee\0\0\0 \0\0\0\0\0\0\0\0\0\0\0\x0cStellarAsset\0\0\0\0\0\0\0\0\0\0\0\x07Account\0"
+            const __SPEC_XDR_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+                soroban_sdk::xdr::ScSpecEntryRef::UdtUnionV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        lib: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"Executable"),
+                        cases: soroban_sdk::xdr::VecMRef::new(&[
+                            soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                                soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                                    name: soroban_sdk::xdr::StringMRef::new(b"Wasm"),
+                                    type_: soroban_sdk::xdr::VecMRef::new(&[
+                                        soroban_sdk::xdr::ScSpecTypeDefRef::BytesN(
+                                            soroban_sdk::xdr::ScSpecTypeBytesN { n: 32u32 },
+                                        ),
+                                    ]),
+                                },
+                            ),
+                            soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::VoidV0(
+                                soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0Ref {
+                                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                                    name: soroban_sdk::xdr::StringMRef::new(b"StellarAsset"),
+                                },
+                            ),
+                            soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::VoidV0(
+                                soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0Ref {
+                                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                                    name: soroban_sdk::xdr::StringMRef::new(b"Account"),
+                                },
+                            ),
+                        ]),
+                    },
+                );
+            pub const fn spec_xdr() -> [u8; Executable::__SPEC_XDR_REF.const_xdr_len()] {
+                Executable::__SPEC_XDR_REF.const_to_xdr()
             }
+        }
+        impl Executable {
+            #[doc(hidden)]
+            pub const SPEC_XDR_ID: [u8; 8] = [76u8, 124u8, 123u8, 13u8, 244u8, 242u8, 26u8, 168u8];
         }
         impl soroban_sdk::SpecShakingMarker for Executable {
             #[doc(hidden)]
@@ -12455,11 +13376,35 @@ mod test_with_wasm {
                 ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr)
             }
         }
-        pub static __SPEC_XDR_TYPE_UDTENUM2: [u8; 60usize] = UdtEnum2::spec_xdr();
+        pub static __SPEC_XDR_TYPE_UDTENUM2: [u8; UdtEnum2::__SPEC_XDR_REF.const_xdr_len()] =
+            UdtEnum2::spec_xdr();
         impl UdtEnum2 {
-            pub const fn spec_xdr() -> [u8; 60usize] {
-                *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08UdtEnum2\0\0\0\x02\0\0\0\0\0\0\0\x01A\0\0\0\0\0\0\n\0\0\0\0\0\0\0\x01B\0\0\0\0\0\0\x0f"
+            const __SPEC_XDR_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+                soroban_sdk::xdr::ScSpecEntryRef::UdtEnumV0(soroban_sdk::xdr::ScSpecUdtEnumV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    lib: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"UdtEnum2"),
+                    cases: soroban_sdk::xdr::VecMRef::new(&[
+                        soroban_sdk::xdr::ScSpecUdtEnumCaseV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(b"A"),
+                            value: 10u32,
+                        },
+                        soroban_sdk::xdr::ScSpecUdtEnumCaseV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(b"B"),
+                            value: 15u32,
+                        },
+                    ]),
+                });
+            pub const fn spec_xdr() -> [u8; UdtEnum2::__SPEC_XDR_REF.const_xdr_len()] {
+                UdtEnum2::__SPEC_XDR_REF.const_to_xdr()
             }
+        }
+        impl UdtEnum2 {
+            #[doc(hidden)]
+            pub const SPEC_XDR_ID: [u8; 8] =
+                [175u8, 247u8, 147u8, 186u8, 158u8, 77u8, 222u8, 154u8];
         }
         impl soroban_sdk::SpecShakingMarker for UdtEnum2 {
             #[doc(hidden)]

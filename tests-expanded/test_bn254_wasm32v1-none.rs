@@ -14,11 +14,46 @@ pub struct MockProof {
     pub g2: Vec<Bn254G2Affine>,
 }
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_MOCKPROOF: [u8; 80usize] = MockProof::spec_xdr();
+pub static __SPEC_XDR_TYPE_MOCKPROOF: [u8; MockProof::__SPEC_XDR_REF.const_xdr_len()] =
+    MockProof::spec_xdr();
 impl MockProof {
-    pub const fn spec_xdr() -> [u8; 80usize] {
-        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\tMockProof\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02g1\0\0\0\0\x03\xea\0\0\x03\xee\0\0\0@\0\0\0\0\0\0\0\x02g2\0\0\0\0\x03\xea\0\0\x03\xee\0\0\0\x80"
+    const __SPEC_XDR_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"MockProof"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"g1"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::Vec(
+                        &soroban_sdk::xdr::ScSpecTypeVecRef {
+                            element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::BytesN(
+                                soroban_sdk::xdr::ScSpecTypeBytesN { n: 64u32 },
+                            ),
+                        },
+                    ),
+                },
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"g2"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::Vec(
+                        &soroban_sdk::xdr::ScSpecTypeVecRef {
+                            element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::BytesN(
+                                soroban_sdk::xdr::ScSpecTypeBytesN { n: 128u32 },
+                            ),
+                        },
+                    ),
+                },
+            ]),
+        });
+    pub const fn spec_xdr() -> [u8; MockProof::__SPEC_XDR_REF.const_xdr_len()] {
+        MockProof::__SPEC_XDR_REF.const_to_xdr()
     }
+}
+impl MockProof {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [58u8, 129u8, 166u8, 160u8, 158u8, 231u8, 167u8, 31u8];
 }
 impl soroban_sdk::SpecShakingMarker for MockProof {
     #[doc(hidden)]
@@ -132,13 +167,33 @@ pub mod __Contract__verify_pairing__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_VERIFY_PAIRING: [u8; 76usize] =
-        super::Contract::spec_xdr_verify_pairing();
+    pub static __SPEC_XDR_FN_VERIFY_PAIRING: [u8; super::Contract::__SPEC_XDR_REF_verify_pairing
+        .const_xdr_len()] = super::Contract::spec_xdr_verify_pairing();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_REF_verify_pairing: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::ScSymbolRef(soroban_sdk::xdr::StringMRef::new(
+                b"verify_pairing",
+            )),
+            inputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecFunctionInputV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"proof"),
+                type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                    soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                        id: <MockProof>::SPEC_XDR_ID,
+                        name: soroban_sdk::xdr::StringMRef::new(b"MockProof"),
+                    },
+                ),
+            }]),
+            outputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecTypeDefRef::Bool]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_verify_pairing() -> [u8; 76usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0everify_pairing\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05proof\0\0\0\0\0\x07\xd0\0\0\0\tMockProof\0\0\0\0\0\0\x01\0\0\0\x01"
+    pub const fn spec_xdr_verify_pairing(
+    ) -> [u8; Contract::__SPEC_XDR_REF_verify_pairing.const_xdr_len()] {
+        Contract::__SPEC_XDR_REF_verify_pairing.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -148,12 +203,38 @@ pub mod __Contract__g1_add__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_G1_ADD: [u8; 76usize] = super::Contract::spec_xdr_g1_add();
+    pub static __SPEC_XDR_FN_G1_ADD: [u8; super::Contract::__SPEC_XDR_REF_g1_add.const_xdr_len()] =
+        super::Contract::spec_xdr_g1_add();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_REF_g1_add: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::ScSymbolRef(soroban_sdk::xdr::StringMRef::new(b"g1_add")),
+            inputs: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"a"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::BytesN(
+                        soroban_sdk::xdr::ScSpecTypeBytesN { n: 64u32 },
+                    ),
+                },
+                soroban_sdk::xdr::ScSpecFunctionInputV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"b"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::BytesN(
+                        soroban_sdk::xdr::ScSpecTypeBytesN { n: 64u32 },
+                    ),
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecTypeDefRef::BytesN(
+                soroban_sdk::xdr::ScSpecTypeBytesN { n: 64u32 },
+            )]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_g1_add() -> [u8; 76usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x06g1_add\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\x03\xee\0\0\0@\0\0\0\0\0\0\0\x01b\0\0\0\0\0\x03\xee\0\0\0@\0\0\0\x01\0\0\x03\xee\0\0\0@"
+    pub const fn spec_xdr_g1_add() -> [u8; Contract::__SPEC_XDR_REF_g1_add.const_xdr_len()] {
+        Contract::__SPEC_XDR_REF_g1_add.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -163,12 +244,36 @@ pub mod __Contract__g1_mul__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_G1_MUL: [u8; 72usize] = super::Contract::spec_xdr_g1_mul();
+    pub static __SPEC_XDR_FN_G1_MUL: [u8; super::Contract::__SPEC_XDR_REF_g1_mul.const_xdr_len()] =
+        super::Contract::spec_xdr_g1_mul();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_REF_g1_mul: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::ScSymbolRef(soroban_sdk::xdr::StringMRef::new(b"g1_mul")),
+            inputs: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"p"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::BytesN(
+                        soroban_sdk::xdr::ScSpecTypeBytesN { n: 64u32 },
+                    ),
+                },
+                soroban_sdk::xdr::ScSpecFunctionInputV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"s"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::U256,
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecTypeDefRef::BytesN(
+                soroban_sdk::xdr::ScSpecTypeBytesN { n: 64u32 },
+            )]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_g1_mul() -> [u8; 72usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x06g1_mul\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01p\0\0\0\0\0\x03\xee\0\0\0@\0\0\0\0\0\0\0\x01s\0\0\0\0\0\0\x0c\0\0\0\x01\0\0\x03\xee\0\0\0@"
+    pub const fn spec_xdr_g1_mul() -> [u8; Contract::__SPEC_XDR_REF_g1_mul.const_xdr_len()] {
+        Contract::__SPEC_XDR_REF_g1_mul.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -178,12 +283,37 @@ pub mod __Contract__fr_vec_get__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_FR_VEC_GET: [u8; 80usize] = super::Contract::spec_xdr_fr_vec_get();
+    pub static __SPEC_XDR_FN_FR_VEC_GET: [u8; super::Contract::__SPEC_XDR_REF_fr_vec_get
+        .const_xdr_len()] = super::Contract::spec_xdr_fr_vec_get();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_REF_fr_vec_get: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::ScSymbolRef(soroban_sdk::xdr::StringMRef::new(b"fr_vec_get")),
+            inputs: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"values"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::Vec(
+                        &soroban_sdk::xdr::ScSpecTypeVecRef {
+                            element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::U256,
+                        },
+                    ),
+                },
+                soroban_sdk::xdr::ScSpecFunctionInputV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"index"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecTypeDefRef::U256]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_fr_vec_get() -> [u8; 80usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\nfr_vec_get\0\0\0\0\0\x02\0\0\0\0\0\0\0\x06values\0\0\0\0\x03\xea\0\0\0\x0c\0\0\0\0\0\0\0\x05index\0\0\0\0\0\0\x04\0\0\0\x01\0\0\0\x0c"
+    pub const fn spec_xdr_fr_vec_get() -> [u8; Contract::__SPEC_XDR_REF_fr_vec_get.const_xdr_len()]
+    {
+        Contract::__SPEC_XDR_REF_fr_vec_get.const_to_xdr()
     }
 }
 impl<'a> ContractClient<'a> {

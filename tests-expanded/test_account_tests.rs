@@ -50,11 +50,30 @@ impl ::core::cmp::Ord for Error {
         ::core::cmp::Ordering::Equal
     }
 }
-pub static __SPEC_XDR_TYPE_ERROR: [u8; 44usize] = Error::spec_xdr();
+pub static __SPEC_XDR_TYPE_ERROR: [u8; Error::__SPEC_XDR_REF.const_xdr_len()] = Error::spec_xdr();
 impl Error {
-    pub const fn spec_xdr() -> [u8; 44usize] {
-        *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x05Error\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04Fail\0\0\0\x01"
+    const __SPEC_XDR_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtErrorEnumV0(
+            soroban_sdk::xdr::ScSpecUdtErrorEnumV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                lib: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"Error"),
+                cases: soroban_sdk::xdr::VecMRef::new(&[
+                    soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"Fail"),
+                        value: 1u32,
+                    },
+                ]),
+            },
+        );
+    pub const fn spec_xdr() -> [u8; Error::__SPEC_XDR_REF.const_xdr_len()] {
+        Error::__SPEC_XDR_REF.const_to_xdr()
     }
+}
+impl Error {
+    #[doc(hidden)]
+    pub const SPEC_XDR_ID: [u8; 8] = [168u8, 31u8, 196u8, 35u8, 156u8, 143u8, 235u8, 136u8];
 }
 impl soroban_sdk::SpecShakingMarker for Error {
     #[doc(hidden)]
@@ -316,14 +335,56 @@ pub mod __Contract____check_auth__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(non_snake_case)]
-    pub static __SPEC_XDR_FN___CHECK_AUTH: [u8; 148usize] =
-        super::Contract::spec_xdr___check_auth();
+    pub static __SPEC_XDR_FN___CHECK_AUTH: [u8; super::Contract::__SPEC_XDR_REF___check_auth
+        .const_xdr_len()] = super::Contract::spec_xdr___check_auth();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    #[allow(non_snake_case)]
+    const __SPEC_XDR_REF___check_auth: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::ScSymbolRef(soroban_sdk::xdr::StringMRef::new(b"__check_auth")),
+            inputs: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"signature_payload"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::BytesN(
+                        soroban_sdk::xdr::ScSpecTypeBytesN { n: 32u32 },
+                    ),
+                },
+                soroban_sdk::xdr::ScSpecFunctionInputV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"signatures"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::Void,
+                },
+                soroban_sdk::xdr::ScSpecFunctionInputV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"auth_contexts"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::Vec(
+                        &soroban_sdk::xdr::ScSpecTypeVecRef {
+                            element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                    id: <Context>::SPEC_XDR_ID,
+                                    name: soroban_sdk::xdr::StringMRef::new(b"Context"),
+                                },
+                            ),
+                        },
+                    ),
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecTypeDefRef::Result(
+                &soroban_sdk::xdr::ScSpecTypeResultRef {
+                    ok_type: &soroban_sdk::xdr::ScSpecTypeDefRef::Void,
+                    error_type: &soroban_sdk::xdr::ScSpecTypeDefRef::Error,
+                },
+            )]),
+        });
     #[allow(non_snake_case)]
     #[allow(non_snake_case)]
-    pub const fn spec_xdr___check_auth() -> [u8; 148usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0c__check_auth\0\0\0\x03\0\0\0\0\0\0\0\x11signature_payload\0\0\0\0\0\x03\xee\0\0\0 \0\0\0\0\0\0\0\nsignatures\0\0\0\0\0\x02\0\0\0\0\0\0\0\rauth_contexts\0\0\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x07Context\0\0\0\0\x01\0\0\x03\xe9\0\0\0\x02\0\0\0\x03"
+    pub const fn spec_xdr___check_auth(
+    ) -> [u8; Contract::__SPEC_XDR_REF___check_auth.const_xdr_len()] {
+        Contract::__SPEC_XDR_REF___check_auth.const_to_xdr()
     }
 }
 impl<'a> ContractClient<'a> {}

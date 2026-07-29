@@ -97,9 +97,17 @@ impl TraitArgs {
     }
 }
 impl TraitSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_REF_exec: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::ScSymbolRef(soroban_sdk::xdr::StringMRef::new(b"exec")),
+            inputs: soroban_sdk::xdr::VecMRef::new(&[]),
+            outputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecTypeDefRef::String]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_exec() -> [u8; 28usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x04exec\0\0\0\0\0\0\0\x01\0\0\0\x10"
+    pub const fn spec_xdr_exec() -> [u8; TraitSpec::__SPEC_XDR_REF_exec.const_xdr_len()] {
+        TraitSpec::__SPEC_XDR_REF_exec.const_to_xdr()
     }
 }
 impl Trait for DefaultImpl {
@@ -138,12 +146,21 @@ pub mod __Contract__exec__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_EXEC: [u8; 28usize] = super::Contract::spec_xdr_exec();
+    pub static __SPEC_XDR_FN_EXEC: [u8; super::Contract::__SPEC_XDR_REF_exec.const_xdr_len()] =
+        super::Contract::spec_xdr_exec();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_REF_exec: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::ScSymbolRef(soroban_sdk::xdr::StringMRef::new(b"exec")),
+            inputs: soroban_sdk::xdr::VecMRef::new(&[]),
+            outputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecTypeDefRef::String]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_exec() -> [u8; 28usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x04exec\0\0\0\0\0\0\0\x01\0\0\0\x10"
+    pub const fn spec_xdr_exec() -> [u8; Contract::__SPEC_XDR_REF_exec.const_xdr_len()] {
+        Contract::__SPEC_XDR_REF_exec.const_to_xdr()
     }
 }
 impl<'a> ContractClient<'a> {
@@ -215,12 +232,21 @@ pub mod __Contract__exec2__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_EXEC2: [u8; 32usize] = super::Contract::spec_xdr_exec2();
+    pub static __SPEC_XDR_FN_EXEC2: [u8; super::Contract::__SPEC_XDR_REF_exec2.const_xdr_len()] =
+        super::Contract::spec_xdr_exec2();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_REF_exec2: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::ScSymbolRef(soroban_sdk::xdr::StringMRef::new(b"exec2")),
+            inputs: soroban_sdk::xdr::VecMRef::new(&[]),
+            outputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecTypeDefRef::String]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_exec2() -> [u8; 32usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x05exec2\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\x10"
+    pub const fn spec_xdr_exec2() -> [u8; Contract::__SPEC_XDR_REF_exec2.const_xdr_len()] {
+        Contract::__SPEC_XDR_REF_exec2.const_to_xdr()
     }
 }
 impl<'a> ContractClient<'a> {

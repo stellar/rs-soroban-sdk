@@ -37,13 +37,28 @@ pub mod __Contract____constructor__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN___CONSTRUCTOR: [u8; 56usize] =
-        super::Contract::spec_xdr___constructor();
+    pub static __SPEC_XDR_FN___CONSTRUCTOR: [u8; super::Contract::__SPEC_XDR_REF___constructor
+        .const_xdr_len()] = super::Contract::spec_xdr___constructor();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_REF___constructor: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::ScSymbolRef(soroban_sdk::xdr::StringMRef::new(
+                b"__constructor",
+            )),
+            inputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecFunctionInputV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"admin"),
+                type_: soroban_sdk::xdr::ScSpecTypeDefRef::Address,
+            }]),
+            outputs: soroban_sdk::xdr::VecMRef::new(&[]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr___constructor() -> [u8; 56usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\r__constructor\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05admin\0\0\0\0\0\0\x13\0\0\0\0"
+    pub const fn spec_xdr___constructor(
+    ) -> [u8; Contract::__SPEC_XDR_REF___constructor.const_xdr_len()] {
+        Contract::__SPEC_XDR_REF___constructor.const_to_xdr()
     }
 }
 impl<'a> ContractClient<'a> {}
