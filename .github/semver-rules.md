@@ -38,10 +38,8 @@ single change is major, the whole change is major.
 
 ## Applying the rules to this repository
 
-The published crates are `soroban-sdk`, `soroban-sdk-macros`, `soroban-spec`,
-`soroban-spec-rust`, `soroban-ledger-snapshot`, `soroban-token-sdk`,
-`soroban-meta`, `soroban-token-spec`, and `stellar-asset-spec`. The crates under
-`tests/` are test vectors and are not published.
+The crates in the top level directories are published and are the ones being
+classified. The crates under `tests/` are test vectors and are not published.
 
 The public API of the SDK includes the code that the macros in
 `soroban-sdk-macros` generate. A change to what `#[contract]`,

@@ -37,23 +37,7 @@ safe-outputs:
     max: 1
 
 pre-agent-steps:
-  - name: Determine Rust n-2 version since cargo-semver-checks is rarely available for the latest version
-    id: rust-version
-    run: |
-      current_version=$(rustc +stable --version | grep -oE '[0-9]+\.[0-9]+' | head -1)
-      major=$(echo $current_version | cut -d. -f1)
-      minor=$(echo $current_version | cut -d. -f2)
-      prev_minor=$((minor - 2))
-      prev_version="${major}.${prev_minor}"
-      echo "Latest stable: $current_version, using n-2: $prev_version"
-      echo "version=$prev_version" >> $GITHUB_OUTPUT
-  - name: Install the n-2 Rust version
-    env:
-      RUST_VERSION: ${{ steps.rust-version.outputs.version }}
-    run: |
-      rustup install "$RUST_VERSION"
-      rustup override set "$RUST_VERSION"
-  - uses: stellar/binaries@6062607a5264454b21f7627a605371f1ca7bd62f # v55
+  - uses: stellar/binaries@v55
     with:
       name: cargo-semver-checks
       version: 0.46.0
