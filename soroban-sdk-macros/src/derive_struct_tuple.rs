@@ -1,13 +1,13 @@
 use itertools::MultiUnzip;
 use proc_macro2::{Literal, TokenStream as TokenStream2};
-use quote::{format_ident, quote};
+use quote::quote;
 use syn::{ext::IdentExt as _, Attribute, DataStruct, Error, Ident, Path, Visibility};
 
 use stellar_xdr::{
     ScSpecEntry, ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, StringM, WriteXdr,
 };
 
-use crate::{doc::docs_from_attrs, map_type::map_type, shaking, DEFAULT_XDR_RW_LIMITS};
+use crate::{doc::docs_from_attrs, map_type::map_type, shaking, spec, DEFAULT_XDR_RW_LIMITS};
 
 pub fn derive_type_struct_tuple(
     path: &Path,
@@ -77,26 +77,9 @@ pub fn derive_type_struct_tuple(
     };
 
     // Generated code spec.
-    let spec_gen = if let Some(ref spec_xdr) = spec_xdr {
-        let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
-        let spec_xdr_len = spec_xdr.len();
-        let spec_ident = format_ident!(
-            "__SPEC_XDR_TYPE_{}",
-            ident.unraw().to_string().to_uppercase()
-        );
-        Some(quote! {
-            #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
-            pub static #spec_ident: [u8; #spec_xdr_len] = #ident::spec_xdr();
-
-            impl #ident {
-                pub const fn spec_xdr() -> [u8; #spec_xdr_len] {
-                    *#spec_xdr_lit
-                }
-            }
-        })
-    } else {
-        None
-    };
+    let spec_gen = spec_xdr
+        .as_ref()
+        .map(|spec_xdr| spec::type_spec(ident, spec_xdr));
 
     // SpecShakingMarker impl - only generated when spec is true and the
     // experimental_spec_shaking_v2 feature is enabled.

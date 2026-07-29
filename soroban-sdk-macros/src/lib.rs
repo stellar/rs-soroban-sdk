@@ -20,6 +20,7 @@ mod doc;
 mod map_type;
 mod path;
 mod shaking;
+mod spec;
 mod symbol;
 mod syn_ext;
 
