@@ -229,10 +229,9 @@ pub fn derive_fn_spec(
         #exported
 
         impl #ty {
-            #[doc(hidden)]
             #[allow(non_upper_case_globals)]
             #(#attrs)*
-            pub const #spec_ref_ident: #path::xdr::ScSpecEntryRef<'static> = #spec_ref;
+            const #spec_ref_ident: #path::xdr::ScSpecEntryRef<'static> = #spec_ref;
 
             #[allow(non_snake_case)]
             #(#attrs)*

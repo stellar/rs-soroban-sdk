@@ -108,8 +108,7 @@ pub fn derive_type_struct_tuple(
             pub static #spec_ident: [u8; #ident::__SPEC_XDR_REF.const_xdr_len()] = #ident::spec_xdr();
 
             impl #ident {
-                #[doc(hidden)]
-                pub const __SPEC_XDR_REF: #path::xdr::ScSpecEntryRef<'static> = #spec_ref;
+                const __SPEC_XDR_REF: #path::xdr::ScSpecEntryRef<'static> = #spec_ref;
 
                 pub const fn spec_xdr() -> [u8; #ident::__SPEC_XDR_REF.const_xdr_len()] {
                     #ident::__SPEC_XDR_REF.const_to_xdr()
