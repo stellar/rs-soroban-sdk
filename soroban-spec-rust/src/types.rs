@@ -1,8 +1,8 @@
 use proc_macro2::{Literal, TokenStream};
 use quote::quote;
 use stellar_xdr::{
-    ScSpecEventParamLocationV0, ScSpecEventV0, ScSpecTypeDef, ScSpecUdtEnumV0,
-    ScSpecUdtErrorEnumV0, ScSpecUdtStructV0, ScSpecUdtUnionV0,
+    ScSpecEventParamLocationV0, ScSpecEventV0, ScSpecTypeDef, ScSpecTypeUdt, ScSpecTypeUdtv2,
+    ScSpecUdtEnumV0, ScSpecUdtErrorEnumV0, ScSpecUdtStructV0, ScSpecUdtUnionV0,
 };
 
 use crate::syn_ext::str_to_ident;
@@ -329,8 +329,12 @@ pub fn generate_type_ident(spec: &ScSpecTypeDef) -> Result<TokenStream, Generate
             let n = Literal::u32_unsuffixed(b.n);
             Ok(quote! { soroban_sdk::BytesN<#n> })
         }
-        ScSpecTypeDef::Udt(u) => {
-            let ident = str_to_ident(&u.name)?;
+        // Both forms of user-defined type reference name the type the same way.
+        // The id a UdtV2 also carries identifies the referenced type, and is not
+        // needed to name it.
+        ScSpecTypeDef::Udt(ScSpecTypeUdt { name })
+        | ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 { name, .. }) => {
+            let ident = str_to_ident(name)?;
             Ok(quote! { #ident })
         }
         ScSpecTypeDef::Void => Ok(quote! { () }),

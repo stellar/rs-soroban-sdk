@@ -10,7 +10,7 @@ use syn::{
 };
 
 use crate::attribute::pass_through_attr_to_gen_code;
-use crate::map_type::{const_ref_string, const_ref_symbol, const_ref_type_def};
+use crate::map_type::{const_ref_string, const_ref_symbol, const_ref_type_def, udt_ref_types};
 use crate::syn_ext::{self, ty_to_safe_ident_str};
 use crate::{doc::docs_from_attrs, map_type::map_type};
 
@@ -164,18 +164,32 @@ pub fn derive_fn_spec(
     // The spec entry rendered as the equivalent const ScSpecEntryRef, which the
     // contract crate encodes to XDR at compile time.
     let spec_ref = {
+        // The types the signature names, so a reference to a user-defined type
+        // resolves to that type's id.
+        let refs = udt_ref_types(
+            inputs
+                .iter()
+                .filter_map(|a| match a {
+                    FnArg::Typed(pat_type) => Some(&*pat_type.ty),
+                    FnArg::Receiver(_) => None,
+                })
+                .chain(match output {
+                    ReturnType::Type(_, ty) => Some(&**ty),
+                    ReturnType::Default => None,
+                }),
+        );
         let doc = const_ref_string(path, &spec_entry.doc);
         let name = const_ref_symbol(path, &spec_entry.name);
         let inputs = spec_entry.inputs.iter().map(|i| {
             let doc = const_ref_string(path, &i.doc);
             let name = const_ref_string(path, &i.name);
-            let type_ = const_ref_type_def(path, &i.type_);
+            let type_ = const_ref_type_def(path, &i.type_, &refs);
             quote!(#path::xdr::ScSpecFunctionInputV0Ref { doc: #doc, name: #name, type_: #type_ })
         });
         let outputs = spec_entry
             .outputs
             .iter()
-            .map(|o| const_ref_type_def(path, o));
+            .map(|o| const_ref_type_def(path, o, &refs));
         quote! {
             #path::xdr::ScSpecEntryRef::FunctionV0(#path::xdr::ScSpecFunctionV0Ref {
                 doc: #doc,

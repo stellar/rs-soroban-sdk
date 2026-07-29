@@ -13,7 +13,7 @@ use stellar_xdr::{
 
 use crate::{
     doc::docs_from_attrs,
-    map_type::{const_ref_string, const_ref_type_def, map_type},
+    map_type::{const_ref_string, const_ref_type_def, map_type, spec_xdr_id_gen, udt_ref_types},
     shaking, DEFAULT_XDR_RW_LIMITS,
 };
 
@@ -149,25 +149,28 @@ pub fn derive_type_enum(
         return quote! { #(#compile_errors)* };
     }
 
-    // Build the spec entry once if spec is enabled.
-    let spec_entry = if spec {
-        Some(ScSpecUdtUnionV0 {
-            doc: docs_from_attrs(attrs),
-            lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
-            name: enum_ident.unraw().to_string().try_into().unwrap(),
-            cases: spec_cases.try_into().unwrap(),
-        })
-    } else {
-        None
+    // Build the spec entry. Built even when spec is not enabled, because the
+    // type's identity is derived from it and other types' references to this
+    // type need that identity regardless.
+    let spec_entry = ScSpecEntry::UdtUnionV0(ScSpecUdtUnionV0 {
+        doc: docs_from_attrs(attrs),
+        lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
+        name: enum_ident.unraw().to_string().try_into().unwrap(),
+        cases: spec_cases.try_into().unwrap(),
+    });
+    let ScSpecEntry::UdtUnionV0(spec_union) = &spec_entry else {
+        unreachable!()
     };
+    let spec_id_gen = spec_xdr_id_gen(enum_ident, &spec_entry);
 
     // Generated code spec. The spec entry is rendered as the equivalent const
     // ScSpecEntryRef, which the contract crate encodes to XDR at compile time.
-    let spec_gen = spec_entry.as_ref().map(|spec_entry| {
-        let doc = const_ref_string(path, &spec_entry.doc);
-        let lib = const_ref_string(path, &spec_entry.lib);
-        let name = const_ref_string(path, &spec_entry.name);
-        let cases = spec_entry.cases.iter().map(|c| match c {
+    let spec_gen = spec.then(|| {
+        let refs = udt_ref_types(variant_field_types.iter().flatten().copied());
+        let doc = const_ref_string(path, &spec_union.doc);
+        let lib = const_ref_string(path, &spec_union.lib);
+        let name = const_ref_string(path, &spec_union.name);
+        let cases = spec_union.cases.iter().map(|c| match c {
             ScSpecUdtUnionCaseV0::VoidV0(c) => {
                 let doc = const_ref_string(path, &c.doc);
                 let name = const_ref_string(path, &c.name);
@@ -178,7 +181,7 @@ pub fn derive_type_enum(
             ScSpecUdtUnionCaseV0::TupleV0(c) => {
                 let doc = const_ref_string(path, &c.doc);
                 let name = const_ref_string(path, &c.name);
-                let type_ = c.type_.iter().map(|t| const_ref_type_def(path, t));
+                let type_ = c.type_.iter().map(|t| const_ref_type_def(path, t, &refs));
                 quote!(#path::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
                     #path::xdr::ScSpecUdtUnionCaseTupleV0Ref {
                         doc: #doc,
@@ -216,34 +219,30 @@ pub fn derive_type_enum(
 
     // SpecShakingMarker impl - only generated when spec is true and the
     // experimental_spec_shaking_v2 feature is enabled.
-    let spec_shaking_impl = if cfg!(feature = "experimental_spec_shaking_v2") {
-        spec_entry.as_ref().map(|spec_entry| {
-            let spec_xdr = ScSpecEntry::UdtUnionV0(spec_entry.clone())
-                .to_xdr(DEFAULT_XDR_RW_LIMITS)
-                .unwrap();
-            // Flatten all variant field types for shaking calls, deduplicating
-            // to avoid redundant calls for types that appear in multiple variants.
-            let all_field_types =
-                itertools::Itertools::unique_by(variant_field_types.iter().flatten(), |t| {
-                    t.to_token_stream().to_string()
-                });
-            shaking::generate_marker_impl(
-                path,
-                quote!(#enum_ident),
-                &spec_xdr,
-                all_field_types.cloned(),
-                None,
-                None,
-                None,
-            )
-        })
-    } else {
-        None
-    };
+    let spec_shaking_impl = (spec && cfg!(feature = "experimental_spec_shaking_v2")).then(|| {
+        let spec_xdr = spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap();
+        // Flatten all variant field types for shaking calls, deduplicating
+        // to avoid redundant calls for types that appear in multiple variants.
+        let all_field_types =
+            itertools::Itertools::unique_by(variant_field_types.iter().flatten(), |t| {
+                t.to_token_stream().to_string()
+            });
+        shaking::generate_marker_impl(
+            path,
+            quote!(#enum_ident),
+            &spec_xdr,
+            all_field_types.cloned(),
+            None,
+            None,
+            None,
+        )
+    });
 
     // Output.
     let mut output = quote! {
         #spec_gen
+
+        #spec_id_gen
 
         #spec_shaking_impl
 

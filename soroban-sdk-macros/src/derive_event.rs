@@ -3,7 +3,7 @@ use crate::{
     default_crate_path,
     doc::docs_from_attrs,
     export_arg_v2_deprecation,
-    map_type::{const_ref_string, const_ref_symbol, const_ref_type_def, map_type},
+    map_type::{const_ref_string, const_ref_symbol, const_ref_type_def, map_type, udt_ref_types},
     shaking, symbol, DEFAULT_XDR_RW_LIMITS,
 };
 use darling::{ast::NestedMeta, Error, FromMeta};
@@ -205,6 +205,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     // The spec entry rendered as the equivalent const ScSpecEntryRef, which the
     // contract crate encodes to XDR at compile time.
     let spec_ref = {
+        let refs = udt_ref_types(field_types.iter().copied());
         let doc = const_ref_string(path, &spec_entry.doc);
         let lib = const_ref_string(path, &spec_entry.lib);
         let name = const_ref_symbol(path, &spec_entry.name);
@@ -215,7 +216,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         let params = spec_entry.params.iter().map(|p| {
             let doc = const_ref_string(path, &p.doc);
             let name = const_ref_string(path, &p.name);
-            let type_ = const_ref_type_def(path, &p.type_);
+            let type_ = const_ref_type_def(path, &p.type_, &refs);
             let location = format_ident!("{}", p.location.name());
             quote!(#path::xdr::ScSpecEventParamV0Ref {
                 doc: #doc,

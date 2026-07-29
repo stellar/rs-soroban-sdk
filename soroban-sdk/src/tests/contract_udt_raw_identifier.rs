@@ -6,7 +6,7 @@ use soroban_sdk::{
 use stellar_xdr::{
     Limits, ReadXdr, ScSpecEntry, ScSpecEventDataFormat, ScSpecEventParamLocationV0,
     ScSpecEventParamV0, ScSpecEventV0, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef,
-    ScSpecTypeResult, ScSpecTypeUdt, ScSpecUdtEnumCaseV0, ScSpecUdtEnumV0,
+    ScSpecTypeResult, ScSpecTypeUdtv2, ScSpecUdtEnumCaseV0, ScSpecUdtEnumV0,
     ScSpecUdtErrorEnumCaseV0, ScSpecUdtErrorEnumV0, ScSpecUdtStructFieldV0, ScSpecUdtStructV0,
     ScSpecUdtUnionCaseTupleV0, ScSpecUdtUnionCaseV0, ScSpecUdtUnionV0, ScSymbol,
 };
@@ -125,17 +125,20 @@ fn test_spec_contract() {
             inputs: [ScSpecFunctionInputV0 {
                 doc: "".try_into().unwrap(),
                 name: "fn".try_into().unwrap(),
-                type_: ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                type_: ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
+                    id: TestEnum::SPEC_XDR_ID,
                     name: "TestEnum".try_into().unwrap(),
                 }),
             }]
             .try_into()
             .unwrap(),
             outputs: [ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
-                ok_type: Box::new(ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                ok_type: Box::new(ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
+                    id: TestType::SPEC_XDR_ID,
                     name: "TestType".try_into().unwrap(),
                 })),
-                error_type: Box::new(ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                error_type: Box::new(ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
+                    id: TestError::SPEC_XDR_ID,
                     name: "TestError".try_into().unwrap(),
                 })),
             }))]

@@ -9,7 +9,7 @@ use stellar_xdr::{
 
 use crate::{
     doc::docs_from_attrs,
-    map_type::{const_ref_string, const_ref_type_def, map_type},
+    map_type::{const_ref_string, const_ref_type_def, map_type, spec_xdr_id_gen, udt_ref_types},
     shaking, DEFAULT_XDR_RW_LIMITS,
 };
 
@@ -78,28 +78,31 @@ pub fn derive_type_struct(
         return quote! { #(#compile_errors)* };
     }
 
-    // Build the spec entry once if spec is enabled.
-    let spec_entry = if spec {
-        Some(ScSpecUdtStructV0 {
-            doc: docs_from_attrs(attrs),
-            lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
-            name: ident.unraw().to_string().try_into().unwrap(),
-            fields: spec_fields.try_into().unwrap(),
-        })
-    } else {
-        None
+    // Build the spec entry. Built even when spec is not enabled, because the
+    // type's identity is derived from it and other types' references to this
+    // type need that identity regardless.
+    let spec_entry = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
+        doc: docs_from_attrs(attrs),
+        lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
+        name: ident.unraw().to_string().try_into().unwrap(),
+        fields: spec_fields.try_into().unwrap(),
+    });
+    let ScSpecEntry::UdtStructV0(spec_struct) = &spec_entry else {
+        unreachable!()
     };
+    let spec_id_gen = spec_xdr_id_gen(ident, &spec_entry);
 
     // Generated code spec. The spec entry is rendered as the equivalent const
     // ScSpecEntryRef, which the contract crate encodes to XDR at compile time.
-    let spec_gen = spec_entry.as_ref().map(|spec_entry| {
-        let doc = const_ref_string(path, &spec_entry.doc);
-        let lib = const_ref_string(path, &spec_entry.lib);
-        let name = const_ref_string(path, &spec_entry.name);
-        let fields = spec_entry.fields.iter().map(|f| {
+    let spec_gen = spec.then(|| {
+        let refs = udt_ref_types(field_types.iter().copied());
+        let doc = const_ref_string(path, &spec_struct.doc);
+        let lib = const_ref_string(path, &spec_struct.lib);
+        let name = const_ref_string(path, &spec_struct.name);
+        let fields = spec_struct.fields.iter().map(|f| {
             let doc = const_ref_string(path, &f.doc);
             let name = const_ref_string(path, &f.name);
-            let type_ = const_ref_type_def(path, &f.type_);
+            let type_ = const_ref_type_def(path, &f.type_, &refs);
             quote!(#path::xdr::ScSpecUdtStructFieldV0Ref { doc: #doc, name: #name, type_: #type_ })
         });
         let spec_ref = quote! {
@@ -130,28 +133,24 @@ pub fn derive_type_struct(
 
     // SpecShakingMarker impl - only generated when spec is true and the
     // experimental_spec_shaking_v2 feature is enabled.
-    let spec_shaking_impl = if cfg!(feature = "experimental_spec_shaking_v2") {
-        spec_entry.as_ref().map(|spec_entry| {
-            let spec_xdr = ScSpecEntry::UdtStructV0(spec_entry.clone())
-                .to_xdr(DEFAULT_XDR_RW_LIMITS)
-                .unwrap();
-            shaking::generate_marker_impl(
-                path,
-                quote!(#ident),
-                &spec_xdr,
-                field_types.iter().cloned(),
-                None,
-                None,
-                None,
-            )
-        })
-    } else {
-        None
-    };
+    let spec_shaking_impl = (spec && cfg!(feature = "experimental_spec_shaking_v2")).then(|| {
+        let spec_xdr = spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap();
+        shaking::generate_marker_impl(
+            path,
+            quote!(#ident),
+            &spec_xdr,
+            field_types.iter().cloned(),
+            None,
+            None,
+            None,
+        )
+    });
 
     // Output.
     let mut output = quote! {
         #spec_gen
+
+        #spec_id_gen
 
         #spec_shaking_impl
 

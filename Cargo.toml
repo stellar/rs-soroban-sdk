@@ -57,7 +57,7 @@ default-features = false
 # Pending https://github.com/stellar/rs-stellar-xdr/pull/562, which adds the
 # borrowing `*Ref` types and their const XDR serializers that the contract spec
 # generation in soroban-sdk-macros builds on.
-stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "0c7bcaa9145d40de52d6592a1df785c2a4d0f1dc" }
+stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "72f3f76ea03189fa32b588c66fa0a461c6970e47" }
 #soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }
 #soroban-env-guest = { path = "../rs-soroban-env/soroban-env-guest" }
 #soroban-env-host = { path = "../rs-soroban-env/soroban-env-host" }

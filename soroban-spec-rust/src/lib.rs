@@ -555,7 +555,7 @@ pub enum MyError {
             matches!(r.ok_type.as_ref(), ScSpecTypeDef::U64),
             "ok_type should be U64"
         );
-        let ScSpecTypeDef::Udt(u) = r.error_type.as_ref() else {
+        let ScSpecTypeDef::UdtV2(u) = r.error_type.as_ref() else {
             panic!(
                 "error_type should be a UDT for MyError, got {:?}",
                 r.error_type

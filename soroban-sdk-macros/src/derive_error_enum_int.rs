@@ -6,7 +6,11 @@ use syn::{
     ext::IdentExt as _, spanned::Spanned, Attribute, DataEnum, Error, ExprLit, Ident, Lit, Path,
 };
 
-use crate::{doc::docs_from_attrs, map_type::const_ref_string, shaking, DEFAULT_XDR_RW_LIMITS};
+use crate::{
+    doc::docs_from_attrs,
+    map_type::{const_ref_string, spec_xdr_id_gen},
+    shaking, DEFAULT_XDR_RW_LIMITS,
+};
 
 pub fn derive_type_error_enum_int(
     path: &Path,
@@ -64,25 +68,27 @@ pub fn derive_type_error_enum_int(
         return quote! { #(#compile_errors)* };
     }
 
-    // Build the spec entry once if spec is enabled.
-    let spec_entry = if spec {
-        Some(ScSpecUdtErrorEnumV0 {
-            doc: docs_from_attrs(attrs),
-            lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
-            name: enum_ident.unraw().to_string().try_into().unwrap(),
-            cases: spec_cases.try_into().unwrap(),
-        })
-    } else {
-        None
+    // Build the spec entry. Built even when spec is not enabled, because the
+    // type's identity is derived from it and other types' references to this
+    // type need that identity regardless.
+    let spec_entry = ScSpecEntry::UdtErrorEnumV0(ScSpecUdtErrorEnumV0 {
+        doc: docs_from_attrs(attrs),
+        lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
+        name: enum_ident.unraw().to_string().try_into().unwrap(),
+        cases: spec_cases.try_into().unwrap(),
+    });
+    let ScSpecEntry::UdtErrorEnumV0(spec_enum) = &spec_entry else {
+        unreachable!()
     };
+    let spec_id_gen = spec_xdr_id_gen(enum_ident, &spec_entry);
 
     // Generated code spec. The spec entry is rendered as the equivalent const
     // ScSpecEntryRef, which the contract crate encodes to XDR at compile time.
-    let spec_gen = spec_entry.as_ref().map(|spec_entry| {
-        let doc = const_ref_string(path, &spec_entry.doc);
-        let lib = const_ref_string(path, &spec_entry.lib);
-        let name = const_ref_string(path, &spec_entry.name);
-        let cases = spec_entry.cases.iter().map(|c| {
+    let spec_gen = spec.then(|| {
+        let doc = const_ref_string(path, &spec_enum.doc);
+        let lib = const_ref_string(path, &spec_enum.lib);
+        let name = const_ref_string(path, &spec_enum.name);
+        let cases = spec_enum.cases.iter().map(|c| {
             let doc = const_ref_string(path, &c.doc);
             let name = const_ref_string(path, &c.name);
             let value = c.value;
@@ -116,28 +122,24 @@ pub fn derive_type_error_enum_int(
 
     // SpecShakingMarker impl - only generated when spec is true and the
     // experimental_spec_shaking_v2 feature is enabled.
-    let spec_shaking_impl = if cfg!(feature = "experimental_spec_shaking_v2") {
-        spec_entry.as_ref().map(|spec_entry| {
-            let spec_xdr = ScSpecEntry::UdtErrorEnumV0(spec_entry.clone())
-                .to_xdr(DEFAULT_XDR_RW_LIMITS)
-                .unwrap();
-            shaking::generate_marker_impl(
-                path,
-                quote!(#enum_ident),
-                &spec_xdr,
-                std::iter::empty(),
-                None,
-                None,
-                None,
-            )
-        })
-    } else {
-        None
-    };
+    let spec_shaking_impl = (spec && cfg!(feature = "experimental_spec_shaking_v2")).then(|| {
+        let spec_xdr = spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap();
+        shaking::generate_marker_impl(
+            path,
+            quote!(#enum_ident),
+            &spec_xdr,
+            std::iter::empty(),
+            None,
+            None,
+            None,
+        )
+    });
 
     // Output.
     quote! {
         #spec_gen
+
+        #spec_id_gen
 
         #spec_shaking_impl
 

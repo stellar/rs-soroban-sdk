@@ -36,7 +36,7 @@
 use std::collections::HashSet;
 
 use sha2::{Digest, Sha256};
-use stellar_xdr::{Limits, ScMetaEntry, ScSpecEntry, WriteXdr};
+use stellar_xdr::{ScMetaEntry, ScSpecEntry};
 
 /// The contract meta key that indicates the spec shaking version.
 ///
@@ -88,17 +88,13 @@ pub fn generate_marker_for_xdr(spec_entry_xdr: &[u8]) -> Marker {
 /// Generates a marker for a spec entry.
 ///
 /// The marker is the magic prefix `SpEcV1` followed by a truncated SHA256
-/// (first 8 bytes) of the spec entry's XDR bytes.
-///
-/// # Panics
-///
-/// Panics if the spec entry cannot be encoded to XDR, which should never happen
-/// for valid `ScSpecEntry` values.
+/// (first 8 bytes) of the spec entry's XDR bytes, in the canonical form
+/// [`crate::udt_id::canonical_xdr`] defines. Hashing the canonical form is what
+/// lets a marker generated here, from an entry read back out of a built wasm,
+/// match the marker the derive macros embed while compiling, which is generated
+/// before any referenced type's id is known.
 pub fn generate_marker_for_entry(entry: &ScSpecEntry) -> Marker {
-    let xdr_bytes = entry
-        .to_xdr(Limits::none())
-        .expect("XDR encoding should not fail");
-    generate_marker_for_xdr(&xdr_bytes)
+    generate_marker_for_xdr(&crate::udt_id::canonical_xdr(entry))
 }
 
 /// Finds all spec markers in a WASM binary's data section.
