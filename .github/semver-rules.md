@@ -10,11 +10,12 @@ single change is major, the whole change is major.
 
 - [Removing, renaming, or moving public items](https://doc.rust-lang.org/cargo/reference/semver.html#item-remove).
 - [Changing a trait's item signatures](https://doc.rust-lang.org/cargo/reference/semver.html#trait-item-signature), or [adding a non-defaulted trait item](https://doc.rust-lang.org/cargo/reference/semver.html#trait-new-item-no-default).
-- [Adding a public struct field](https://doc.rust-lang.org/cargo/reference/semver.html#struct-add-public-field-when-no-private) or [enum variant](https://doc.rust-lang.org/cargo/reference/semver.html#enum-variant-new) to a type that isn't `non_exhaustive`.
+- [Adding a field, public or private, to a struct whose fields are all public](https://doc.rust-lang.org/cargo/reference/semver.html#struct-add-public-field-when-no-private) and that isn't `non_exhaustive`. Once the struct has one private field, [adding more is minor](https://doc.rust-lang.org/cargo/reference/semver.html#struct-private-fields-with-private).
+- [Adding an enum variant](https://doc.rust-lang.org/cargo/reference/semver.html#enum-variant-new) to an enum that isn't `non_exhaustive`.
 - [Adding `non_exhaustive`](https://doc.rust-lang.org/cargo/reference/semver.html#attr-adding-non-exhaustive).
 - [Tightening generic bounds](https://doc.rust-lang.org/cargo/reference/semver.html#generic-bounds-tighten).
 - [Changing function arity](https://doc.rust-lang.org/cargo/reference/semver.html#fn-change-arity).
-- [Changing a type's layout, size, alignment, or `repr`](https://doc.rust-lang.org/cargo/reference/semver.html#type-layout).
+- [Changing the alignment, layout, or size of a type that was previously well-defined](https://doc.rust-lang.org/cargo/reference/semver.html#type-layout): removing `repr(C)`, `repr(transparent)`, or an enum's `repr(<int>)`, or adding or changing `repr(packed)` or `repr(align)`. A type with the default representation guarantees no layout, so its size changing is not on its own major.
 - [Requiring `std` where `no_std` worked](https://doc.rust-lang.org/cargo/reference/semver.html#attr-no-std-to-std).
 - [Removing a Cargo feature](https://doc.rust-lang.org/cargo/reference/semver.html#cargo-feature-remove).
 
