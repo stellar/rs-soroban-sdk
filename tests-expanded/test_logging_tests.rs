@@ -228,12 +228,21 @@ pub mod __Contract__hello__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_HELLO: [u8; 28usize] = super::Contract::spec_xdr_hello();
+    pub static __SPEC_XDR_FN_HELLO: [u8; super::Contract::__SPEC_XDR_REF_hello.const_xdr_len()] =
+        super::Contract::spec_xdr_hello();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_REF_hello: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::ScSymbolRef(soroban_sdk::xdr::StringMRef::new(b"hello")),
+            inputs: soroban_sdk::xdr::VecMRef::new(&[]),
+            outputs: soroban_sdk::xdr::VecMRef::new(&[]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_hello() -> [u8; 28usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x05hello\0\0\0\0\0\0\0\0\0\0\0"
+    pub const fn spec_xdr_hello() -> [u8; Contract::__SPEC_XDR_REF_hello.const_xdr_len()] {
+        Contract::__SPEC_XDR_REF_hello.const_to_xdr()
     }
 }
 impl<'a> ContractClient<'a> {

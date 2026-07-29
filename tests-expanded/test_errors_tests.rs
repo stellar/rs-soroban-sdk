@@ -157,10 +157,43 @@ impl ::core::cmp::PartialEq for Flag {
         __self_discr == __arg1_discr
     }
 }
-pub static __SPEC_XDR_TYPE_FLAG: [u8; 104usize] = Flag::spec_xdr();
+pub static __SPEC_XDR_TYPE_FLAG: [u8; Flag::__SPEC_XDR_REF.const_xdr_len()] = Flag::spec_xdr();
 impl Flag {
-    pub const fn spec_xdr() -> [u8; 104usize] {
-        *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x04Flag\0\0\0\x05\0\0\0\0\0\0\0\x01A\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01B\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01C\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01D\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\x01E\0\0\0\0\0\0\x04"
+    const __SPEC_XDR_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtEnumV0(soroban_sdk::xdr::ScSpecUdtEnumV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"Flag"),
+            cases: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtEnumCaseV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"A"),
+                    value: 0u32,
+                },
+                soroban_sdk::xdr::ScSpecUdtEnumCaseV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"B"),
+                    value: 1u32,
+                },
+                soroban_sdk::xdr::ScSpecUdtEnumCaseV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"C"),
+                    value: 2u32,
+                },
+                soroban_sdk::xdr::ScSpecUdtEnumCaseV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"D"),
+                    value: 3u32,
+                },
+                soroban_sdk::xdr::ScSpecUdtEnumCaseV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"E"),
+                    value: 4u32,
+                },
+            ]),
+        });
+    pub const fn spec_xdr() -> [u8; Flag::__SPEC_XDR_REF.const_xdr_len()] {
+        Flag::__SPEC_XDR_REF.const_to_xdr()
     }
 }
 impl soroban_sdk::SpecShakingMarker for Flag {
@@ -504,10 +537,25 @@ impl ::core::cmp::PartialEq for Error {
         true
     }
 }
-pub static __SPEC_XDR_TYPE_ERROR: [u8; 48usize] = Error::spec_xdr();
+pub static __SPEC_XDR_TYPE_ERROR: [u8; Error::__SPEC_XDR_REF.const_xdr_len()] = Error::spec_xdr();
 impl Error {
-    pub const fn spec_xdr() -> [u8; 48usize] {
-        *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x05Error\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x07AnError\0\0\0\0\x01"
+    const __SPEC_XDR_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtErrorEnumV0(
+            soroban_sdk::xdr::ScSpecUdtErrorEnumV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                lib: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"Error"),
+                cases: soroban_sdk::xdr::VecMRef::new(&[
+                    soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"AnError"),
+                        value: 1u32,
+                    },
+                ]),
+            },
+        );
+    pub const fn spec_xdr() -> [u8; Error::__SPEC_XDR_REF.const_xdr_len()] {
+        Error::__SPEC_XDR_REF.const_to_xdr()
     }
 }
 impl soroban_sdk::SpecShakingMarker for Error {
@@ -669,12 +717,34 @@ pub mod __Contract__hello__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_HELLO: [u8; 64usize] = super::Contract::spec_xdr_hello();
+    pub static __SPEC_XDR_FN_HELLO: [u8; super::Contract::__SPEC_XDR_REF_hello.const_xdr_len()] =
+        super::Contract::spec_xdr_hello();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_REF_hello: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::ScSymbolRef(soroban_sdk::xdr::StringMRef::new(b"hello")),
+            inputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecFunctionInputV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"flag"),
+                type_: soroban_sdk::xdr::ScSpecTypeDefRef::Udt(
+                    soroban_sdk::xdr::ScSpecTypeUdtRef {
+                        name: soroban_sdk::xdr::StringMRef::new(b"Flag"),
+                    },
+                ),
+            }]),
+            outputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecTypeDefRef::Result(
+                &soroban_sdk::xdr::ScSpecTypeResultRef {
+                    ok_type: &soroban_sdk::xdr::ScSpecTypeDefRef::Symbol,
+                    error_type: &soroban_sdk::xdr::ScSpecTypeDefRef::Error,
+                },
+            )]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_hello() -> [u8; 64usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x05hello\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04flag\0\0\x07\xd0\0\0\0\x04Flag\0\0\0\x01\0\0\x03\xe9\0\0\0\x11\0\0\0\x03"
+    pub const fn spec_xdr_hello() -> [u8; Contract::__SPEC_XDR_REF_hello.const_xdr_len()] {
+        Contract::__SPEC_XDR_REF_hello.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -683,12 +753,21 @@ pub mod __Contract__persisted__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_PERSISTED: [u8; 36usize] = super::Contract::spec_xdr_persisted();
+    pub static __SPEC_XDR_FN_PERSISTED: [u8; super::Contract::__SPEC_XDR_REF_persisted
+        .const_xdr_len()] = super::Contract::spec_xdr_persisted();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_REF_persisted: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::ScSymbolRef(soroban_sdk::xdr::StringMRef::new(b"persisted")),
+            inputs: soroban_sdk::xdr::VecMRef::new(&[]),
+            outputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecTypeDefRef::Bool]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_persisted() -> [u8; 36usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\tpersisted\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\x01"
+    pub const fn spec_xdr_persisted() -> [u8; Contract::__SPEC_XDR_REF_persisted.const_xdr_len()] {
+        Contract::__SPEC_XDR_REF_persisted.const_to_xdr()
     }
 }
 impl<'a> ContractClient<'a> {

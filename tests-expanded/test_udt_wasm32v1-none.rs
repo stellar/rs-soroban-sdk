@@ -50,10 +50,29 @@ impl ::core::cmp::PartialEq for UdtEnum2 {
     }
 }
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_UDTENUM2: [u8; 60usize] = UdtEnum2::spec_xdr();
+pub static __SPEC_XDR_TYPE_UDTENUM2: [u8; UdtEnum2::__SPEC_XDR_REF.const_xdr_len()] =
+    UdtEnum2::spec_xdr();
 impl UdtEnum2 {
-    pub const fn spec_xdr() -> [u8; 60usize] {
-        *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08UdtEnum2\0\0\0\x02\0\0\0\0\0\0\0\x01A\0\0\0\0\0\0\n\0\0\0\0\0\0\0\x01B\0\0\0\0\0\0\x0f"
+    const __SPEC_XDR_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtEnumV0(soroban_sdk::xdr::ScSpecUdtEnumV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UdtEnum2"),
+            cases: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtEnumCaseV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"A"),
+                    value: 10u32,
+                },
+                soroban_sdk::xdr::ScSpecUdtEnumCaseV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"B"),
+                    value: 15u32,
+                },
+            ]),
+        });
+    pub const fn spec_xdr() -> [u8; UdtEnum2::__SPEC_XDR_REF.const_xdr_len()] {
+        UdtEnum2::__SPEC_XDR_REF.const_to_xdr()
     }
 }
 impl soroban_sdk::SpecShakingMarker for UdtEnum2 {
@@ -170,10 +189,64 @@ impl ::core::cmp::PartialEq for UdtEnum {
     }
 }
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_UDTENUM: [u8; 156usize] = UdtEnum::spec_xdr();
+pub static __SPEC_XDR_TYPE_UDTENUM: [u8; UdtEnum::__SPEC_XDR_REF.const_xdr_len()] =
+    UdtEnum::spec_xdr();
 impl UdtEnum {
-    pub const fn spec_xdr() -> [u8; 156usize] {
-        *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x07UdtEnum\0\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x04UdtA\0\0\0\x01\0\0\0\0\0\0\0\x04UdtB\0\0\0\x01\0\0\x07\xd0\0\0\0\tUdtStruct\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04UdtC\0\0\0\x01\0\0\x07\xd0\0\0\0\x08UdtEnum2\0\0\0\x01\0\0\0\0\0\0\0\x04UdtD\0\0\0\x01\0\0\x07\xd0\0\0\0\x08UdtTuple"
+    const __SPEC_XDR_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UdtEnum"),
+            cases: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::VoidV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"UdtA"),
+                    },
+                ),
+                soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"UdtB"),
+                        type_: soroban_sdk::xdr::VecMRef::new(&[
+                            soroban_sdk::xdr::ScSpecTypeDefRef::Udt(
+                                soroban_sdk::xdr::ScSpecTypeUdtRef {
+                                    name: soroban_sdk::xdr::StringMRef::new(b"UdtStruct"),
+                                },
+                            ),
+                        ]),
+                    },
+                ),
+                soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"UdtC"),
+                        type_: soroban_sdk::xdr::VecMRef::new(&[
+                            soroban_sdk::xdr::ScSpecTypeDefRef::Udt(
+                                soroban_sdk::xdr::ScSpecTypeUdtRef {
+                                    name: soroban_sdk::xdr::StringMRef::new(b"UdtEnum2"),
+                                },
+                            ),
+                        ]),
+                    },
+                ),
+                soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"UdtD"),
+                        type_: soroban_sdk::xdr::VecMRef::new(&[
+                            soroban_sdk::xdr::ScSpecTypeDefRef::Udt(
+                                soroban_sdk::xdr::ScSpecTypeUdtRef {
+                                    name: soroban_sdk::xdr::StringMRef::new(b"UdtTuple"),
+                                },
+                            ),
+                        ]),
+                    },
+                ),
+            ]),
+        });
+    pub const fn spec_xdr() -> [u8; UdtEnum::__SPEC_XDR_REF.const_xdr_len()] {
+        UdtEnum::__SPEC_XDR_REF.const_to_xdr()
     }
 }
 impl soroban_sdk::SpecShakingMarker for UdtEnum {
@@ -335,10 +408,33 @@ impl ::core::cmp::PartialEq for UdtTuple {
     }
 }
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_UDTTUPLE: [u8; 64usize] = UdtTuple::spec_xdr();
+pub static __SPEC_XDR_TYPE_UDTTUPLE: [u8; UdtTuple::__SPEC_XDR_REF.const_xdr_len()] =
+    UdtTuple::spec_xdr();
 impl UdtTuple {
-    pub const fn spec_xdr() -> [u8; 64usize] {
-        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x08UdtTuple\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x011\0\0\0\0\0\x03\xea\0\0\0\x07"
+    const __SPEC_XDR_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UdtTuple"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"0"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::I64,
+                },
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"1"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::Vec(
+                        &soroban_sdk::xdr::ScSpecTypeVecRef {
+                            element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::I64,
+                        },
+                    ),
+                },
+            ]),
+        });
+    pub const fn spec_xdr() -> [u8; UdtTuple::__SPEC_XDR_REF.const_xdr_len()] {
+        UdtTuple::__SPEC_XDR_REF.const_to_xdr()
     }
 }
 impl soroban_sdk::SpecShakingMarker for UdtTuple {
@@ -451,10 +547,38 @@ impl ::core::cmp::PartialEq for UdtStruct {
     }
 }
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_UDTSTRUCT: [u8; 84usize] = UdtStruct::spec_xdr();
+pub static __SPEC_XDR_TYPE_UDTSTRUCT: [u8; UdtStruct::__SPEC_XDR_REF.const_xdr_len()] =
+    UdtStruct::spec_xdr();
 impl UdtStruct {
-    pub const fn spec_xdr() -> [u8; 84usize] {
-        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\tUdtStruct\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x01c\0\0\0\0\0\x03\xea\0\0\0\x07"
+    const __SPEC_XDR_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UdtStruct"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"a"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::I64,
+                },
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"b"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::I64,
+                },
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"c"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::Vec(
+                        &soroban_sdk::xdr::ScSpecTypeVecRef {
+                            element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::I64,
+                        },
+                    ),
+                },
+            ]),
+        });
+    pub const fn spec_xdr() -> [u8; UdtStruct::__SPEC_XDR_REF.const_xdr_len()] {
+        UdtStruct::__SPEC_XDR_REF.const_to_xdr()
     }
 }
 impl soroban_sdk::SpecShakingMarker for UdtStruct {
@@ -572,10 +696,37 @@ impl ::core::cmp::PartialEq for UdtRecursive {
     }
 }
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_UDTRECURSIVE: [u8; 84usize] = UdtRecursive::spec_xdr();
+pub static __SPEC_XDR_TYPE_UDTRECURSIVE: [u8; UdtRecursive::__SPEC_XDR_REF.const_xdr_len()] =
+    UdtRecursive::spec_xdr();
 impl UdtRecursive {
-    pub const fn spec_xdr() -> [u8; 84usize] {
-        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cUdtRecursive\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x11\0\0\0\0\0\0\0\x01b\0\0\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x0cUdtRecursive"
+    const __SPEC_XDR_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UdtRecursive"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"a"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::Symbol,
+                },
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"b"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::Vec(
+                        &soroban_sdk::xdr::ScSpecTypeVecRef {
+                            element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::Udt(
+                                soroban_sdk::xdr::ScSpecTypeUdtRef {
+                                    name: soroban_sdk::xdr::StringMRef::new(b"UdtRecursive"),
+                                },
+                            ),
+                        },
+                    ),
+                },
+            ]),
+        });
+    pub const fn spec_xdr() -> [u8; UdtRecursive::__SPEC_XDR_REF.const_xdr_len()] {
+        UdtRecursive::__SPEC_XDR_REF.const_to_xdr()
     }
 }
 impl soroban_sdk::SpecShakingMarker for UdtRecursive {
@@ -688,10 +839,38 @@ impl ::core::cmp::PartialEq for RecursiveToEnum {
     }
 }
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_RECURSIVETOENUM: [u8; 96usize] = RecursiveToEnum::spec_xdr();
+pub static __SPEC_XDR_TYPE_RECURSIVETOENUM: [u8; RecursiveToEnum::__SPEC_XDR_REF.const_xdr_len()] =
+    RecursiveToEnum::spec_xdr();
 impl RecursiveToEnum {
-    pub const fn spec_xdr() -> [u8; 96usize] {
-        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0fRecursiveToEnum\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x11\0\0\0\0\0\0\0\x01b\0\0\0\0\0\x03\xec\0\0\0\x04\0\0\x07\xd0\0\0\0\rRecursiveEnum\0\0\0"
+    const __SPEC_XDR_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"RecursiveToEnum"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"a"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::Symbol,
+                },
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"b"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::Map(
+                        &soroban_sdk::xdr::ScSpecTypeMapRef {
+                            key_type: &soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                            value_type: &soroban_sdk::xdr::ScSpecTypeDefRef::Udt(
+                                soroban_sdk::xdr::ScSpecTypeUdtRef {
+                                    name: soroban_sdk::xdr::StringMRef::new(b"RecursiveEnum"),
+                                },
+                            ),
+                        },
+                    ),
+                },
+            ]),
+        });
+    pub const fn spec_xdr() -> [u8; RecursiveToEnum::__SPEC_XDR_REF.const_xdr_len()] {
+        RecursiveToEnum::__SPEC_XDR_REF.const_to_xdr()
     }
 }
 impl soroban_sdk::SpecShakingMarker for RecursiveToEnum {
@@ -811,10 +990,38 @@ impl ::core::cmp::PartialEq for RecursiveEnum {
     }
 }
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_RECURSIVEENUM: [u8; 112usize] = RecursiveEnum::spec_xdr();
+pub static __SPEC_XDR_TYPE_RECURSIVEENUM: [u8; RecursiveEnum::__SPEC_XDR_REF.const_xdr_len()] =
+    RecursiveEnum::spec_xdr();
 impl RecursiveEnum {
-    pub const fn spec_xdr() -> [u8; 112usize] {
-        *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\rRecursiveEnum\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x0cNotRecursive\0\0\0\x01\0\0\0\0\0\0\0\tRecursive\0\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x0fRecursiveToEnum\0"
+    const __SPEC_XDR_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"RecursiveEnum"),
+            cases: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::VoidV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"NotRecursive"),
+                    },
+                ),
+                soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"Recursive"),
+                        type_: soroban_sdk::xdr::VecMRef::new(&[
+                            soroban_sdk::xdr::ScSpecTypeDefRef::Udt(
+                                soroban_sdk::xdr::ScSpecTypeUdtRef {
+                                    name: soroban_sdk::xdr::StringMRef::new(b"RecursiveToEnum"),
+                                },
+                            ),
+                        ]),
+                    },
+                ),
+            ]),
+        });
+    pub const fn spec_xdr() -> [u8; RecursiveEnum::__SPEC_XDR_REF.const_xdr_len()] {
+        RecursiveEnum::__SPEC_XDR_REF.const_to_xdr()
     }
 }
 impl soroban_sdk::SpecShakingMarker for RecursiveEnum {
@@ -958,12 +1165,40 @@ pub mod __Contract__add__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_ADD: [u8; 84usize] = super::Contract::spec_xdr_add();
+    pub static __SPEC_XDR_FN_ADD: [u8; super::Contract::__SPEC_XDR_REF_add.const_xdr_len()] =
+        super::Contract::spec_xdr_add();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_REF_add: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::ScSymbolRef(soroban_sdk::xdr::StringMRef::new(b"add")),
+            inputs: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"a"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::Udt(
+                        soroban_sdk::xdr::ScSpecTypeUdtRef {
+                            name: soroban_sdk::xdr::StringMRef::new(b"UdtEnum"),
+                        },
+                    ),
+                },
+                soroban_sdk::xdr::ScSpecFunctionInputV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"b"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::Udt(
+                        soroban_sdk::xdr::ScSpecTypeUdtRef {
+                            name: soroban_sdk::xdr::StringMRef::new(b"UdtEnum"),
+                        },
+                    ),
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecTypeDefRef::I64]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_add() -> [u8; 84usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x03add\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\x07\xd0\0\0\0\x07UdtEnum\0\0\0\0\0\0\0\0\x01b\0\0\0\0\0\x07\xd0\0\0\0\x07UdtEnum\0\0\0\0\x01\0\0\0\x07"
+    pub const fn spec_xdr_add() -> [u8; Contract::__SPEC_XDR_REF_add.const_xdr_len()] {
+        Contract::__SPEC_XDR_REF_add.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -973,12 +1208,37 @@ pub mod __Contract__recursive__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_RECURSIVE: [u8; 88usize] = super::Contract::spec_xdr_recursive();
+    pub static __SPEC_XDR_FN_RECURSIVE: [u8; super::Contract::__SPEC_XDR_REF_recursive
+        .const_xdr_len()] = super::Contract::spec_xdr_recursive();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_REF_recursive: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::ScSymbolRef(soroban_sdk::xdr::StringMRef::new(b"recursive")),
+            inputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecFunctionInputV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"a"),
+                type_: soroban_sdk::xdr::ScSpecTypeDefRef::Udt(
+                    soroban_sdk::xdr::ScSpecTypeUdtRef {
+                        name: soroban_sdk::xdr::StringMRef::new(b"UdtRecursive"),
+                    },
+                ),
+            }]),
+            outputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecTypeDefRef::Option(
+                &soroban_sdk::xdr::ScSpecTypeOptionRef {
+                    value_type: &soroban_sdk::xdr::ScSpecTypeDefRef::Udt(
+                        soroban_sdk::xdr::ScSpecTypeUdtRef {
+                            name: soroban_sdk::xdr::StringMRef::new(b"UdtRecursive"),
+                        },
+                    ),
+                },
+            )]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_recursive() -> [u8; 88usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\trecursive\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01a\0\0\0\0\0\x07\xd0\0\0\0\x0cUdtRecursive\0\0\0\x01\0\0\x03\xe8\0\0\x07\xd0\0\0\0\x0cUdtRecursive"
+    pub const fn spec_xdr_recursive() -> [u8; Contract::__SPEC_XDR_REF_recursive.const_xdr_len()] {
+        Contract::__SPEC_XDR_REF_recursive.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -988,13 +1248,52 @@ pub mod __Contract__recursive_enum__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_RECURSIVE_ENUM: [u8; 124usize] =
-        super::Contract::spec_xdr_recursive_enum();
+    pub static __SPEC_XDR_FN_RECURSIVE_ENUM: [u8; super::Contract::__SPEC_XDR_REF_recursive_enum
+        .const_xdr_len()] = super::Contract::spec_xdr_recursive_enum();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_REF_recursive_enum: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::ScSymbolRef(soroban_sdk::xdr::StringMRef::new(
+                b"recursive_enum",
+            )),
+            inputs: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"a"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::Udt(
+                        soroban_sdk::xdr::ScSpecTypeUdtRef {
+                            name: soroban_sdk::xdr::StringMRef::new(b"RecursiveEnum"),
+                        },
+                    ),
+                },
+                soroban_sdk::xdr::ScSpecFunctionInputV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"key"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecTypeDefRef::Result(
+                &soroban_sdk::xdr::ScSpecTypeResultRef {
+                    ok_type: &soroban_sdk::xdr::ScSpecTypeDefRef::Option(
+                        &soroban_sdk::xdr::ScSpecTypeOptionRef {
+                            value_type: &soroban_sdk::xdr::ScSpecTypeDefRef::Udt(
+                                soroban_sdk::xdr::ScSpecTypeUdtRef {
+                                    name: soroban_sdk::xdr::StringMRef::new(b"RecursiveEnum"),
+                                },
+                            ),
+                        },
+                    ),
+                    error_type: &soroban_sdk::xdr::ScSpecTypeDefRef::Error,
+                },
+            )]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_recursive_enum() -> [u8; 124usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0erecursive_enum\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\x07\xd0\0\0\0\rRecursiveEnum\0\0\0\0\0\0\0\0\0\0\x03key\0\0\0\0\x04\0\0\0\x01\0\0\x03\xe9\0\0\x03\xe8\0\0\x07\xd0\0\0\0\rRecursiveEnum\0\0\0\0\0\0\x03"
+    pub const fn spec_xdr_recursive_enum(
+    ) -> [u8; Contract::__SPEC_XDR_REF_recursive_enum.const_xdr_len()] {
+        Contract::__SPEC_XDR_REF_recursive_enum.const_to_xdr()
     }
 }
 impl<'a> ContractClient<'a> {

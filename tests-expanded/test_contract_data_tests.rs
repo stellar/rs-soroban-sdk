@@ -153,12 +153,32 @@ pub mod __Contract__put__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_PUT: [u8; 56usize] = super::Contract::spec_xdr_put();
+    pub static __SPEC_XDR_FN_PUT: [u8; super::Contract::__SPEC_XDR_REF_put.const_xdr_len()] =
+        super::Contract::spec_xdr_put();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_REF_put: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::ScSymbolRef(soroban_sdk::xdr::StringMRef::new(b"put")),
+            inputs: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"key"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::Symbol,
+                },
+                soroban_sdk::xdr::ScSpecFunctionInputV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"val"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::Symbol,
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMRef::new(&[]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_put() -> [u8; 56usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x03put\0\0\0\0\x02\0\0\0\0\0\0\0\x03key\0\0\0\0\x11\0\0\0\0\0\0\0\x03val\0\0\0\0\x11\0\0\0\0"
+    pub const fn spec_xdr_put() -> [u8; Contract::__SPEC_XDR_REF_put.const_xdr_len()] {
+        Contract::__SPEC_XDR_REF_put.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -167,12 +187,29 @@ pub mod __Contract__get__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_GET: [u8; 48usize] = super::Contract::spec_xdr_get();
+    pub static __SPEC_XDR_FN_GET: [u8; super::Contract::__SPEC_XDR_REF_get.const_xdr_len()] =
+        super::Contract::spec_xdr_get();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_REF_get: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::ScSymbolRef(soroban_sdk::xdr::StringMRef::new(b"get")),
+            inputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecFunctionInputV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"key"),
+                type_: soroban_sdk::xdr::ScSpecTypeDefRef::Symbol,
+            }]),
+            outputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecTypeDefRef::Option(
+                &soroban_sdk::xdr::ScSpecTypeOptionRef {
+                    value_type: &soroban_sdk::xdr::ScSpecTypeDefRef::Symbol,
+                },
+            )]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_get() -> [u8; 48usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x03get\0\0\0\0\x01\0\0\0\0\0\0\0\x03key\0\0\0\0\x11\0\0\0\x01\0\0\x03\xe8\0\0\0\x11"
+    pub const fn spec_xdr_get() -> [u8; Contract::__SPEC_XDR_REF_get.const_xdr_len()] {
+        Contract::__SPEC_XDR_REF_get.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -181,12 +218,25 @@ pub mod __Contract__del__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_DEL: [u8; 40usize] = super::Contract::spec_xdr_del();
+    pub static __SPEC_XDR_FN_DEL: [u8; super::Contract::__SPEC_XDR_REF_del.const_xdr_len()] =
+        super::Contract::spec_xdr_del();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_REF_del: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::ScSymbolRef(soroban_sdk::xdr::StringMRef::new(b"del")),
+            inputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecFunctionInputV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"key"),
+                type_: soroban_sdk::xdr::ScSpecTypeDefRef::Symbol,
+            }]),
+            outputs: soroban_sdk::xdr::VecMRef::new(&[]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_del() -> [u8; 40usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x03del\0\0\0\0\x01\0\0\0\0\0\0\0\x03key\0\0\0\0\x11\0\0\0\0"
+    pub const fn spec_xdr_del() -> [u8; Contract::__SPEC_XDR_REF_del.const_xdr_len()] {
+        Contract::__SPEC_XDR_REF_del.const_to_xdr()
     }
 }
 impl<'a> ContractClient<'a> {

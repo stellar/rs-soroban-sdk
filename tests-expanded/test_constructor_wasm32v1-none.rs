@@ -30,10 +30,46 @@ pub enum DataKey {
     Instance(u32),
 }
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_DATAKEY: [u8; 112usize] = DataKey::spec_xdr();
+pub static __SPEC_XDR_TYPE_DATAKEY: [u8; DataKey::__SPEC_XDR_REF.const_xdr_len()] =
+    DataKey::spec_xdr();
 impl DataKey {
-    pub const fn spec_xdr() -> [u8; 112usize] {
-        *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x07DataKey\0\0\0\0\x03\0\0\0\x01\0\0\0\0\0\0\0\nPersistent\0\0\0\0\0\x01\0\0\0\x04\0\0\0\x01\0\0\0\0\0\0\0\x04Temp\0\0\0\x01\0\0\0\x04\0\0\0\x01\0\0\0\0\0\0\0\x08Instance\0\0\0\x01\0\0\0\x04"
+    const __SPEC_XDR_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"DataKey"),
+            cases: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"Persistent"),
+                        type_: soroban_sdk::xdr::VecMRef::new(&[
+                            soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                        ]),
+                    },
+                ),
+                soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"Temp"),
+                        type_: soroban_sdk::xdr::VecMRef::new(&[
+                            soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                        ]),
+                    },
+                ),
+                soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"Instance"),
+                        type_: soroban_sdk::xdr::VecMRef::new(&[
+                            soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                        ]),
+                    },
+                ),
+            ]),
+        });
+    pub const fn spec_xdr() -> [u8; DataKey::__SPEC_XDR_REF.const_xdr_len()] {
+        DataKey::__SPEC_XDR_REF.const_to_xdr()
     }
 }
 impl soroban_sdk::SpecShakingMarker for DataKey {
@@ -171,13 +207,35 @@ pub mod __Contract____constructor__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN___CONSTRUCTOR: [u8; 80usize] =
-        super::Contract::spec_xdr___constructor();
+    pub static __SPEC_XDR_FN___CONSTRUCTOR: [u8; super::Contract::__SPEC_XDR_REF___constructor
+        .const_xdr_len()] = super::Contract::spec_xdr___constructor();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_REF___constructor: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::ScSymbolRef(soroban_sdk::xdr::StringMRef::new(
+                b"__constructor",
+            )),
+            inputs: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"init_key"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                },
+                soroban_sdk::xdr::ScSpecFunctionInputV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"init_value"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::I64,
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMRef::new(&[]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr___constructor() -> [u8; 80usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\r__constructor\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x08init_key\0\0\0\x04\0\0\0\0\0\0\0\ninit_value\0\0\0\0\0\x07\0\0\0\0"
+    pub const fn spec_xdr___constructor(
+    ) -> [u8; Contract::__SPEC_XDR_REF___constructor.const_xdr_len()] {
+        Contract::__SPEC_XDR_REF___constructor.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -187,12 +245,33 @@ pub mod __Contract__get_data__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_GET_DATA: [u8; 64usize] = super::Contract::spec_xdr_get_data();
+    pub static __SPEC_XDR_FN_GET_DATA: [u8; super::Contract::__SPEC_XDR_REF_get_data
+        .const_xdr_len()] = super::Contract::spec_xdr_get_data();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_REF_get_data: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::ScSymbolRef(soroban_sdk::xdr::StringMRef::new(b"get_data")),
+            inputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecFunctionInputV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"key"),
+                type_: soroban_sdk::xdr::ScSpecTypeDefRef::Udt(
+                    soroban_sdk::xdr::ScSpecTypeUdtRef {
+                        name: soroban_sdk::xdr::StringMRef::new(b"DataKey"),
+                    },
+                ),
+            }]),
+            outputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecTypeDefRef::Option(
+                &soroban_sdk::xdr::ScSpecTypeOptionRef {
+                    value_type: &soroban_sdk::xdr::ScSpecTypeDefRef::I64,
+                },
+            )]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_get_data() -> [u8; 64usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x08get_data\0\0\0\x01\0\0\0\0\0\0\0\x03key\0\0\0\x07\xd0\0\0\0\x07DataKey\0\0\0\0\x01\0\0\x03\xe8\0\0\0\x07"
+    pub const fn spec_xdr_get_data() -> [u8; Contract::__SPEC_XDR_REF_get_data.const_xdr_len()] {
+        Contract::__SPEC_XDR_REF_get_data.const_to_xdr()
     }
 }
 impl<'a> ContractClient<'a> {

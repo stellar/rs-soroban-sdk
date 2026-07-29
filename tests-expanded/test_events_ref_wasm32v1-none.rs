@@ -31,10 +31,51 @@ pub struct Transfer<'a> {
     to_muxed_id: Option<&'a u64>,
 }
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_EVENT_TRANSFER: [u8; 144usize] = Transfer::spec_xdr();
+pub static __SPEC_XDR_EVENT_TRANSFER: [u8; Transfer::__SPEC_XDR_REF.const_xdr_len()] =
+    Transfer::spec_xdr();
 impl<'a> Transfer<'a> {
-    pub const fn spec_xdr() -> [u8; 144usize] {
-        *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x08Transfer\0\0\0\x01\0\0\0\x08transfer\0\0\0\x04\0\0\0\0\0\0\0\x04from\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02to\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x06amount\0\0\0\0\0\x0b\0\0\0\0\0\0\0\0\0\0\0\x0bto_muxed_id\0\0\0\x03\xe8\0\0\0\x06\0\0\0\0\0\0\0\x02"
+    const __SPEC_XDR_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::EventV0(soroban_sdk::xdr::ScSpecEventV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::ScSymbolRef(soroban_sdk::xdr::StringMRef::new(b"Transfer")),
+            prefix_topics: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSymbolRef(
+                soroban_sdk::xdr::StringMRef::new(b"transfer"),
+            )]),
+            params: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecEventParamV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"from"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::Address,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
+                },
+                soroban_sdk::xdr::ScSpecEventParamV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"to"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::Address,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
+                },
+                soroban_sdk::xdr::ScSpecEventParamV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"amount"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::I128,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                },
+                soroban_sdk::xdr::ScSpecEventParamV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"to_muxed_id"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::Option(
+                        &soroban_sdk::xdr::ScSpecTypeOptionRef {
+                            value_type: &soroban_sdk::xdr::ScSpecTypeDefRef::U64,
+                        },
+                    ),
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                },
+            ]),
+            data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
+        });
+    pub const fn spec_xdr() -> [u8; Transfer::__SPEC_XDR_REF.const_xdr_len()] {
+        Transfer::__SPEC_XDR_REF.const_to_xdr()
     }
 }
 impl<'a> soroban_sdk::SpecShakingMarker for Transfer<'a> {
@@ -117,12 +158,37 @@ pub mod __Contract__transfer__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_TRANSFER: [u8; 80usize] = super::Contract::spec_xdr_transfer();
+    pub static __SPEC_XDR_FN_TRANSFER: [u8; super::Contract::__SPEC_XDR_REF_transfer
+        .const_xdr_len()] = super::Contract::spec_xdr_transfer();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_REF_transfer: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::ScSymbolRef(soroban_sdk::xdr::StringMRef::new(b"transfer")),
+            inputs: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"from"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::Address,
+                },
+                soroban_sdk::xdr::ScSpecFunctionInputV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"to"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::MuxedAddress,
+                },
+                soroban_sdk::xdr::ScSpecFunctionInputV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"amount"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::I128,
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMRef::new(&[]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_transfer() -> [u8; 80usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x08transfer\0\0\0\x03\0\0\0\0\0\0\0\x04from\0\0\0\x13\0\0\0\0\0\0\0\x02to\0\0\0\0\0\x14\0\0\0\0\0\0\0\x06amount\0\0\0\0\0\x0b\0\0\0\0"
+    pub const fn spec_xdr_transfer() -> [u8; Contract::__SPEC_XDR_REF_transfer.const_xdr_len()] {
+        Contract::__SPEC_XDR_REF_transfer.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -132,13 +198,41 @@ pub mod __Contract__failed_transfer__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_FAILED_TRANSFER: [u8; 88usize] =
+    pub static __SPEC_XDR_FN_FAILED_TRANSFER: [u8;
+        super::Contract::__SPEC_XDR_REF_failed_transfer.const_xdr_len()] =
         super::Contract::spec_xdr_failed_transfer();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_REF_failed_transfer: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::ScSymbolRef(soroban_sdk::xdr::StringMRef::new(
+                b"failed_transfer",
+            )),
+            inputs: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"from"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::Address,
+                },
+                soroban_sdk::xdr::ScSpecFunctionInputV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"to"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::Address,
+                },
+                soroban_sdk::xdr::ScSpecFunctionInputV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"amount"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::I128,
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMRef::new(&[]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_failed_transfer() -> [u8; 88usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0ffailed_transfer\0\0\0\0\x03\0\0\0\0\0\0\0\x04from\0\0\0\x13\0\0\0\0\0\0\0\x02to\0\0\0\0\0\x13\0\0\0\0\0\0\0\x06amount\0\0\0\0\0\x0b\0\0\0\0"
+    pub const fn spec_xdr_failed_transfer(
+    ) -> [u8; Contract::__SPEC_XDR_REF_failed_transfer.const_xdr_len()] {
+        Contract::__SPEC_XDR_REF_failed_transfer.const_to_xdr()
     }
 }
 impl<'a> ContractClient<'a> {
