@@ -119,9 +119,9 @@
 //!
 //! ## Mainnet Resource Limits
 //!
-//! The [`NetworkInvocationResourceLimits`] trait provides the `mainnet()` method on
-//! [`InvocationResourceLimits`] to get the mainnet limits. Its docs list the values that the SDK
-//! uses.
+//! The [`NetworkInvocationResourceLimits`] trait provides the [`mainnet()`] method on
+//! [`InvocationResourceLimits`], which returns a snapshot of the mainnet limits taken when the SDK
+//! was released.
 //!
 //! Note: These values are not pulled dynamically. The SDK will be updated from time-to-time to
 //! pick up changes to mainnet limits. These changes may occur in any major, minor, or patch
@@ -133,3 +133,4 @@
 //! [`CostEstimate::enforce_resource_limits()`]: crate::testutils::cost_estimate::CostEstimate::enforce_resource_limits
 //! [`InvocationResourceLimits`]: soroban_env_host::InvocationResourceLimits
 //! [`NetworkInvocationResourceLimits`]: crate::testutils::cost_estimate::NetworkInvocationResourceLimits
+//! [`mainnet()`]: crate::testutils::cost_estimate::NetworkInvocationResourceLimits::mainnet
