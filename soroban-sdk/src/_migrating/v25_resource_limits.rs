@@ -119,27 +119,18 @@
 //!
 //! ## Mainnet Resource Limits
 //!
-//! The [`NetworkInvocationResourceLimits`] trait provides the `mainnet()` method on
-//! [`InvocationResourceLimits`] to get the current mainnet limits:
-//!
-//! - Instructions: 600,000,000
-//! - Memory: 41,943,040 bytes
-//! - Disk read entries: 100
-//! - Write entries: 50
-//! - Ledger entries: 100
-//! - Disk read bytes: 200,000
-//! - Write bytes: 132,096
-//! - Contract events size: 16,384 bytes
-//! - Max contract data key size: 250 bytes
-//! - Max contract data entry size: 65,536 bytes
-//! - Max contract code entry size: 131,072 bytes
+//! The [`NetworkInvocationResourceLimits`] trait provides the [`mainnet()`] method on
+//! [`InvocationResourceLimits`], which returns a snapshot of the mainnet limits taken when the SDK
+//! was released.
 //!
 //! Note: These values are not pulled dynamically. The SDK will be updated from time-to-time to
 //! pick up changes to mainnet limits. These changes may occur in any major, minor, or patch
-//! release.
+//! release. The limits currently configured on mainnet and the test networks can be found on
+//! Stellar Lab: <https://lab.stellar.org/network-limits>.
 //!
 //! [`Env::default()`]: crate::Env::default
 //! [`CostEstimate::disable_resource_limits()`]: crate::testutils::cost_estimate::CostEstimate::disable_resource_limits
 //! [`CostEstimate::enforce_resource_limits()`]: crate::testutils::cost_estimate::CostEstimate::enforce_resource_limits
 //! [`InvocationResourceLimits`]: soroban_env_host::InvocationResourceLimits
 //! [`NetworkInvocationResourceLimits`]: crate::testutils::cost_estimate::NetworkInvocationResourceLimits
+//! [`mainnet()`]: crate::testutils::cost_estimate::NetworkInvocationResourceLimits::mainnet
