@@ -1,3 +1,9 @@
+// NOTE FOR EDITORS: These migration guides describe the breaking changes
+// between major versions and what a developer needs to change when upgrading
+// the SDK from one major version to another. They are not a changelog: not
+// every small change is captured here. This is the document a developer should
+// read to understand what they need to change when upgrading.
+
 //! # Migrating from v26 to v27
 //!
 //! 1. [`bytes!` and `bytesn!` no longer accept base10 (decimal) integer literals][v27_bytes_literals].

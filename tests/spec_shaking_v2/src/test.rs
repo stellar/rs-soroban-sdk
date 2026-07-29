@@ -187,6 +187,7 @@ fn test_spec_shaking_v2() {
         "EventA",
         "EventB",
         "EventC",
+        "EventD",
     ];
     let all_names: HashSet<std::string::String> = entries.iter().filter_map(entry_name).collect();
     for name in unused {

@@ -37,14 +37,14 @@ fn test_cost_estimate_with_storage() {
     .assert_eq(format!("{:#?}", e.cost_estimate().resources()).as_str());
     expect![[r#"
         FeeEstimate {
-            total: 29122,
-            instructions: 607,
-            disk_read_entries: 6250,
-            write_entries: 10000,
+            total: 10004,
+            instructions: 170,
+            disk_read_entries: 1563,
+            write_entries: 2500,
             disk_read_bytes: 0,
-            write_bytes: 274,
+            write_bytes: 69,
             contract_events: 0,
-            persistent_entry_rent: 11991,
+            persistent_entry_rent: 5702,
             temporary_entry_rent: 0,
         }"#]]
     .assert_eq(format!("{:#?}", e.cost_estimate().fee()).as_str());
@@ -70,8 +70,8 @@ fn test_cost_estimate_with_storage() {
     .assert_eq(format!("{:#?}", e.cost_estimate().resources()).as_str());
     expect![[r#"
         FeeEstimate {
-            total: 603,
-            instructions: 603,
+            total: 169,
+            instructions: 169,
             disk_read_entries: 0,
             write_entries: 0,
             disk_read_bytes: 0,
@@ -103,10 +103,10 @@ fn test_cost_estimate_with_storage() {
     .assert_eq(format!("{:#?}", e.cost_estimate().resources()).as_str());
     expect![[r#"
         FeeEstimate {
-            total: 16847,
-            instructions: 597,
-            disk_read_entries: 6250,
-            write_entries: 10000,
+            total: 4231,
+            instructions: 168,
+            disk_read_entries: 1563,
+            write_entries: 2500,
             disk_read_bytes: 0,
             write_bytes: 0,
             contract_events: 0,
@@ -136,8 +136,8 @@ fn test_cost_estimate_with_storage() {
     .assert_eq(format!("{:#?}", e.cost_estimate().resources()).as_str());
     expect![[r#"
         FeeEstimate {
-            total: 598,
-            instructions: 598,
+            total: 168,
+            instructions: 168,
             disk_read_entries: 0,
             write_entries: 0,
             disk_read_bytes: 0,

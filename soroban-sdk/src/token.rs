@@ -431,8 +431,8 @@ pub trait StellarAssetInterface {
     ///
     /// # Events
     ///
-    /// Emits an event with topics `["set_authorized", id: Address], data =
-    /// [authorize: bool]`
+    /// Emits an event with topics `["set_authorized", id: Address,
+    /// sep0011_asset: String], data = authorize: bool`
     fn set_authorized(env: Env, id: Address, authorize: bool);
 
     /// Returns true if `id` is authorized to use its balance.
@@ -451,8 +451,8 @@ pub trait StellarAssetInterface {
     ///
     /// # Events
     ///
-    /// Emits an event with topics `["mint", to: Address], data
-    /// = amount: i128`
+    /// Emits an event with topics `["mint", to: Address,
+    /// sep0011_asset: String], data = amount: i128`
     fn mint(env: Env, to: Address, amount: i128);
 
     /// Clawback `amount` from `from` account. `amount` is burned in the
@@ -466,8 +466,8 @@ pub trait StellarAssetInterface {
     ///
     /// # Events
     ///
-    /// Emits an event with topics `["clawback", admin: Address, to: Address],
-    /// data = amount: i128`
+    /// Emits an event with topics `["clawback", from: Address,
+    /// sep0011_asset: String], data = amount: i128`
     fn clawback(env: Env, from: Address, amount: i128);
 
     /// Creates this contract asset's unlimited trustline for the provided
