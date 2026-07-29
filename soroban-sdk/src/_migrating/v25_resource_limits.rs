@@ -125,7 +125,7 @@
 //!
 //! Note: These values are not pulled dynamically. The SDK will be updated from time-to-time to
 //! pick up changes to mainnet limits. These changes may occur in any major, minor, or patch
-//! release. The limits currently configured on Mainnet and the test networks can be found on
+//! release. The limits currently configured on mainnet and the test networks can be found on
 //! Stellar Lab: <https://lab.stellar.org/network-limits>.
 //!
 //! [`Env::default()`]: crate::Env::default
