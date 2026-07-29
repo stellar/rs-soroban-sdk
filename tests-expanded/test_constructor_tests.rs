@@ -185,7 +185,9 @@ impl DataKey {
 }
 impl DataKey {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [20u8, 148u8, 125u8, 126u8, 236u8, 21u8, 148u8, 132u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [20u8, 148u8, 125u8, 126u8, 236u8, 21u8, 148u8, 132u8]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for DataKey {
     #[doc(hidden)]
@@ -806,7 +808,7 @@ impl Contract {
                 name: soroban_sdk::xdr::StringMRef::new(b"key"),
                 type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                     soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                        id: <DataKey>::SPEC_XDR_ID,
+                        id: <DataKey>::spec_type_id(),
                         name: soroban_sdk::xdr::StringMRef::new(b"DataKey"),
                     },
                 ),

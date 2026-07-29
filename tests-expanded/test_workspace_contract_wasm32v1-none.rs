@@ -49,7 +49,7 @@ impl Contract {
             inputs: soroban_sdk::xdr::VecMRef::new(&[]),
             outputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                 soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                    id: <Value>::SPEC_XDR_ID,
+                    id: <Value>::spec_type_id(),
                     name: soroban_sdk::xdr::StringMRef::new(b"Value"),
                 },
             )]),

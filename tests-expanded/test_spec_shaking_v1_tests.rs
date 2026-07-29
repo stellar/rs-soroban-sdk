@@ -205,7 +205,7 @@ impl UsedParamStruct {
                     name: soroban_sdk::xdr::StringMRef::new(b"nested"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                         soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                            id: <UsedNestedInStruct>::SPEC_XDR_ID,
+                            id: <UsedNestedInStruct>::spec_type_id(),
                             name: soroban_sdk::xdr::StringMRef::new(b"UsedNestedInStruct"),
                         },
                     ),
@@ -218,7 +218,9 @@ impl UsedParamStruct {
 }
 impl UsedParamStruct {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [18u8, 195u8, 159u8, 208u8, 156u8, 149u8, 101u8, 143u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [18u8, 195u8, 159u8, 208u8, 156u8, 149u8, 101u8, 143u8]
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedParamStruct {
     type Error = soroban_sdk::ConversionError;
@@ -676,7 +678,9 @@ impl UsedReturnEnum {
 }
 impl UsedReturnEnum {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [231u8, 207u8, 155u8, 49u8, 110u8, 21u8, 19u8, 254u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [231u8, 207u8, 155u8, 49u8, 110u8, 21u8, 19u8, 254u8]
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedReturnEnum {
     type Error = soroban_sdk::ConversionError;
@@ -1207,7 +1211,9 @@ impl UsedParamIntEnum {
 }
 impl UsedParamIntEnum {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [194u8, 244u8, 78u8, 191u8, 235u8, 113u8, 118u8, 112u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [194u8, 244u8, 78u8, 191u8, 235u8, 113u8, 118u8, 112u8]
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedParamIntEnum {
     type Error = soroban_sdk::ConversionError;
@@ -1558,7 +1564,9 @@ impl UsedErrorEnum {
 }
 impl UsedErrorEnum {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [72u8, 104u8, 220u8, 170u8, 97u8, 141u8, 247u8, 13u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [72u8, 104u8, 220u8, 170u8, 97u8, 141u8, 247u8, 13u8]
+    }
 }
 impl TryFrom<soroban_sdk::Error> for UsedErrorEnum {
     type Error = soroban_sdk::Error;
@@ -1726,7 +1734,9 @@ impl UsedPanicErrorEnum {
 }
 impl UsedPanicErrorEnum {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [13u8, 183u8, 54u8, 174u8, 147u8, 68u8, 239u8, 26u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [13u8, 183u8, 54u8, 174u8, 147u8, 68u8, 239u8, 26u8]
+    }
 }
 impl TryFrom<soroban_sdk::Error> for UsedPanicErrorEnum {
     type Error = soroban_sdk::Error;
@@ -1892,7 +1902,9 @@ impl UsedAssertErrorEnum {
 }
 impl UsedAssertErrorEnum {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [139u8, 137u8, 31u8, 35u8, 189u8, 21u8, 55u8, 244u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [139u8, 137u8, 31u8, 35u8, 189u8, 21u8, 55u8, 244u8]
+    }
 }
 impl TryFrom<soroban_sdk::Error> for UsedAssertErrorEnum {
     type Error = soroban_sdk::Error;
@@ -2063,7 +2075,9 @@ impl UsedNestedInStruct {
 }
 impl UsedNestedInStruct {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [132u8, 8u8, 89u8, 174u8, 160u8, 241u8, 50u8, 56u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [132u8, 8u8, 89u8, 174u8, 160u8, 241u8, 50u8, 56u8]
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedNestedInStruct {
     type Error = soroban_sdk::ConversionError;
@@ -2438,7 +2452,9 @@ impl UsedVecElement {
 }
 impl UsedVecElement {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [226u8, 1u8, 121u8, 201u8, 154u8, 248u8, 237u8, 116u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [226u8, 1u8, 121u8, 201u8, 154u8, 248u8, 237u8, 116u8]
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedVecElement {
     type Error = soroban_sdk::ConversionError;
@@ -2823,7 +2839,9 @@ impl UsedMapKey {
 }
 impl UsedMapKey {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [91u8, 244u8, 82u8, 223u8, 221u8, 180u8, 176u8, 188u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [91u8, 244u8, 82u8, 223u8, 221u8, 180u8, 176u8, 188u8]
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedMapKey {
     type Error = soroban_sdk::ConversionError;
@@ -3158,7 +3176,9 @@ impl UsedMapVal {
 }
 impl UsedMapVal {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [170u8, 88u8, 56u8, 222u8, 239u8, 187u8, 54u8, 37u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [170u8, 88u8, 56u8, 222u8, 239u8, 187u8, 54u8, 37u8]
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedMapVal {
     type Error = soroban_sdk::ConversionError;
@@ -3532,7 +3552,9 @@ impl UsedOptionElement {
 }
 impl UsedOptionElement {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [179u8, 47u8, 151u8, 213u8, 6u8, 189u8, 51u8, 66u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [179u8, 47u8, 151u8, 213u8, 6u8, 189u8, 51u8, 66u8]
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedOptionElement {
     type Error = soroban_sdk::ConversionError;
@@ -3905,7 +3927,9 @@ impl UsedResultOk {
 }
 impl UsedResultOk {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [107u8, 228u8, 122u8, 120u8, 66u8, 209u8, 43u8, 2u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [107u8, 228u8, 122u8, 120u8, 66u8, 209u8, 43u8, 2u8]
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedResultOk {
     type Error = soroban_sdk::ConversionError;
@@ -4391,7 +4415,9 @@ impl UsedEventTopicType {
 }
 impl UsedEventTopicType {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [245u8, 212u8, 155u8, 163u8, 204u8, 73u8, 19u8, 247u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [245u8, 212u8, 155u8, 163u8, 204u8, 73u8, 19u8, 247u8]
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventTopicType {
     type Error = soroban_sdk::ConversionError;
@@ -4737,7 +4763,7 @@ impl UsedEventWithTopicType {
                     name: soroban_sdk::xdr::StringMRef::new(b"kind"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                         soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                            id: <UsedEventTopicType>::SPEC_XDR_ID,
+                            id: <UsedEventTopicType>::spec_type_id(),
                             name: soroban_sdk::xdr::StringMRef::new(b"UsedEventTopicType"),
                         },
                     ),
@@ -4855,7 +4881,9 @@ impl UsedEventDataType {
 }
 impl UsedEventDataType {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [194u8, 32u8, 27u8, 220u8, 200u8, 103u8, 120u8, 90u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [194u8, 32u8, 27u8, 220u8, 200u8, 103u8, 120u8, 90u8]
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventDataType {
     type Error = soroban_sdk::ConversionError;
@@ -5291,7 +5319,7 @@ impl UsedEventWithDataType {
                     name: soroban_sdk::xdr::StringMRef::new(b"payload"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                         soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                            id: <UsedEventDataType>::SPEC_XDR_ID,
+                            id: <UsedEventDataType>::spec_type_id(),
                             name: soroban_sdk::xdr::StringMRef::new(b"UsedEventDataType"),
                         },
                     ),
@@ -5386,7 +5414,7 @@ impl UsedEventTopicOuter {
                     name: soroban_sdk::xdr::StringMRef::new(b"inner"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                         soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                            id: <UsedEventTopicInner>::SPEC_XDR_ID,
+                            id: <UsedEventTopicInner>::spec_type_id(),
                             name: soroban_sdk::xdr::StringMRef::new(b"UsedEventTopicInner"),
                         },
                     ),
@@ -5399,7 +5427,9 @@ impl UsedEventTopicOuter {
 }
 impl UsedEventTopicOuter {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [81u8, 60u8, 225u8, 149u8, 0u8, 82u8, 154u8, 150u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [81u8, 60u8, 225u8, 149u8, 0u8, 82u8, 154u8, 150u8]
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventTopicOuter {
     type Error = soroban_sdk::ConversionError;
@@ -5784,7 +5814,9 @@ impl UsedEventTopicInner {
 }
 impl UsedEventTopicInner {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [54u8, 131u8, 63u8, 240u8, 205u8, 87u8, 177u8, 47u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [54u8, 131u8, 63u8, 240u8, 205u8, 87u8, 177u8, 47u8]
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventTopicInner {
     type Error = soroban_sdk::ConversionError;
@@ -6169,7 +6201,7 @@ impl UsedEventWithNestedTopic {
                     name: soroban_sdk::xdr::StringMRef::new(b"info"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                         soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                            id: <UsedEventTopicOuter>::SPEC_XDR_ID,
+                            id: <UsedEventTopicOuter>::spec_type_id(),
                             name: soroban_sdk::xdr::StringMRef::new(b"UsedEventTopicOuter"),
                         },
                     ),
@@ -6270,7 +6302,7 @@ impl UsedEventDataOuter {
                     name: soroban_sdk::xdr::StringMRef::new(b"inner"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                         soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                            id: <UsedEventDataInner>::SPEC_XDR_ID,
+                            id: <UsedEventDataInner>::spec_type_id(),
                             name: soroban_sdk::xdr::StringMRef::new(b"UsedEventDataInner"),
                         },
                     ),
@@ -6283,7 +6315,9 @@ impl UsedEventDataOuter {
 }
 impl UsedEventDataOuter {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [225u8, 223u8, 234u8, 32u8, 100u8, 73u8, 206u8, 139u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [225u8, 223u8, 234u8, 32u8, 100u8, 73u8, 206u8, 139u8]
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventDataOuter {
     type Error = soroban_sdk::ConversionError;
@@ -6666,7 +6700,9 @@ impl UsedEventDataInner {
 }
 impl UsedEventDataInner {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [12u8, 240u8, 246u8, 119u8, 253u8, 26u8, 27u8, 148u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [12u8, 240u8, 246u8, 119u8, 253u8, 26u8, 27u8, 148u8]
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventDataInner {
     type Error = soroban_sdk::ConversionError;
@@ -7054,7 +7090,7 @@ impl UsedEventWithNestedData {
                     name: soroban_sdk::xdr::StringMRef::new(b"payload"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                         soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                            id: <UsedEventDataOuter>::SPEC_XDR_ID,
+                            id: <UsedEventDataOuter>::spec_type_id(),
                             name: soroban_sdk::xdr::StringMRef::new(b"UsedEventDataOuter"),
                         },
                     ),
@@ -7164,7 +7200,9 @@ impl UsedRefTopicType {
 }
 impl UsedRefTopicType {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [64u8, 185u8, 76u8, 79u8, 249u8, 209u8, 232u8, 226u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [64u8, 185u8, 76u8, 79u8, 249u8, 209u8, 232u8, 226u8]
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRefTopicType {
     type Error = soroban_sdk::ConversionError;
@@ -7498,7 +7536,7 @@ impl UsedRefDataType {
                     name: soroban_sdk::xdr::StringMRef::new(b"nested"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                         soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                            id: <UsedRefDataInner>::SPEC_XDR_ID,
+                            id: <UsedRefDataInner>::spec_type_id(),
                             name: soroban_sdk::xdr::StringMRef::new(b"UsedRefDataInner"),
                         },
                     ),
@@ -7511,7 +7549,9 @@ impl UsedRefDataType {
 }
 impl UsedRefDataType {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [111u8, 109u8, 128u8, 122u8, 134u8, 55u8, 215u8, 0u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [111u8, 109u8, 128u8, 122u8, 134u8, 55u8, 215u8, 0u8]
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRefDataType {
     type Error = soroban_sdk::ConversionError;
@@ -7887,7 +7927,9 @@ impl UsedRefDataInner {
 }
 impl UsedRefDataInner {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [75u8, 223u8, 39u8, 56u8, 109u8, 47u8, 232u8, 29u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [75u8, 223u8, 39u8, 56u8, 109u8, 47u8, 232u8, 29u8]
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRefDataInner {
     type Error = soroban_sdk::ConversionError;
@@ -8267,7 +8309,7 @@ impl<'a> UsedEventWithRefs<'a> {
                     name: soroban_sdk::xdr::StringMRef::new(b"kind"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                         soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                            id: <UsedRefTopicType>::SPEC_XDR_ID,
+                            id: <UsedRefTopicType>::spec_type_id(),
                             name: soroban_sdk::xdr::StringMRef::new(b"UsedRefTopicType"),
                         },
                     ),
@@ -8278,7 +8320,7 @@ impl<'a> UsedEventWithRefs<'a> {
                     name: soroban_sdk::xdr::StringMRef::new(b"payload"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                         soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                            id: <UsedRefDataType>::SPEC_XDR_ID,
+                            id: <UsedRefDataType>::spec_type_id(),
                             name: soroban_sdk::xdr::StringMRef::new(b"UsedRefDataType"),
                         },
                     ),
@@ -8376,7 +8418,9 @@ impl UsedTupleElement {
 }
 impl UsedTupleElement {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [222u8, 29u8, 77u8, 97u8, 1u8, 236u8, 176u8, 65u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [222u8, 29u8, 77u8, 97u8, 1u8, 236u8, 176u8, 65u8]
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedTupleElement {
     type Error = soroban_sdk::ConversionError;
@@ -8754,7 +8798,9 @@ impl UsedTupleReturnElement {
 }
 impl UsedTupleReturnElement {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [89u8, 166u8, 54u8, 179u8, 236u8, 120u8, 69u8, 19u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [89u8, 166u8, 54u8, 179u8, 236u8, 120u8, 69u8, 19u8]
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedTupleReturnElement {
     type Error = soroban_sdk::ConversionError;
@@ -9136,7 +9182,9 @@ impl UsedVecInnerVecElement {
 }
 impl UsedVecInnerVecElement {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [207u8, 64u8, 37u8, 88u8, 222u8, 43u8, 74u8, 64u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [207u8, 64u8, 37u8, 88u8, 222u8, 43u8, 74u8, 64u8]
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedVecInnerVecElement {
     type Error = soroban_sdk::ConversionError;
@@ -9518,7 +9566,9 @@ impl UsedVecInnerElement {
 }
 impl UsedVecInnerElement {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [180u8, 171u8, 78u8, 93u8, 227u8, 234u8, 65u8, 214u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [180u8, 171u8, 78u8, 93u8, 227u8, 234u8, 65u8, 214u8]
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedVecInnerElement {
     type Error = soroban_sdk::ConversionError;
@@ -9902,7 +9952,7 @@ impl UsedVecElementNested {
                     name: soroban_sdk::xdr::StringMRef::new(b"inner"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                         soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                            id: <UsedVecInnerElement>::SPEC_XDR_ID,
+                            id: <UsedVecInnerElement>::spec_type_id(),
                             name: soroban_sdk::xdr::StringMRef::new(b"UsedVecInnerElement"),
                         },
                     ),
@@ -9919,7 +9969,7 @@ impl UsedVecElementNested {
                         &soroban_sdk::xdr::ScSpecTypeVecRef {
                             element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                                 soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                                    id: <UsedVecInnerVecElement>::SPEC_XDR_ID,
+                                    id: <UsedVecInnerVecElement>::spec_type_id(),
                                     name: soroban_sdk::xdr::StringMRef::new(
                                         b"UsedVecInnerVecElement",
                                     ),
@@ -9936,7 +9986,9 @@ impl UsedVecElementNested {
 }
 impl UsedVecElementNested {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [230u8, 190u8, 204u8, 81u8, 50u8, 238u8, 57u8, 163u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [230u8, 190u8, 204u8, 81u8, 50u8, 238u8, 57u8, 163u8]
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedVecElementNested {
     type Error = soroban_sdk::ConversionError;
@@ -10421,7 +10473,9 @@ mod export_false_used {
     }
     impl UsedExportFalseStruct {
         #[doc(hidden)]
-        pub const SPEC_XDR_ID: [u8; 8] = [127u8, 197u8, 206u8, 111u8, 195u8, 83u8, 84u8, 8u8];
+        pub const fn spec_type_id() -> [u8; 8] {
+            [127u8, 197u8, 206u8, 111u8, 195u8, 83u8, 84u8, 8u8]
+        }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedExportFalseStruct {
         type Error = soroban_sdk::ConversionError;
@@ -10779,7 +10833,9 @@ mod export_false_used {
     }
     impl UsedExportFalseError {
         #[doc(hidden)]
-        pub const SPEC_XDR_ID: [u8; 8] = [13u8, 214u8, 13u8, 32u8, 252u8, 219u8, 234u8, 243u8];
+        pub const fn spec_type_id() -> [u8; 8] {
+            [13u8, 214u8, 13u8, 32u8, 252u8, 219u8, 234u8, 243u8]
+        }
     }
     impl TryFrom<soroban_sdk::Error> for UsedExportFalseError {
         type Error = soroban_sdk::Error;
@@ -11032,7 +11088,9 @@ impl ::core::cmp::PartialEq for UsedNonPubStruct {
 }
 impl UsedNonPubStruct {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [112u8, 140u8, 15u8, 78u8, 33u8, 8u8, 50u8, 216u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [112u8, 140u8, 15u8, 78u8, 33u8, 8u8, 50u8, 216u8]
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedNonPubStruct {
     type Error = soroban_sdk::ConversionError;
@@ -11383,7 +11441,9 @@ impl ::core::cmp::PartialEq for UsedNonPubError {
 }
 impl UsedNonPubError {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [169u8, 60u8, 216u8, 43u8, 183u8, 167u8, 13u8, 23u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [169u8, 60u8, 216u8, 43u8, 183u8, 167u8, 13u8, 23u8]
+    }
 }
 impl TryFrom<soroban_sdk::Error> for UsedNonPubError {
     type Error = soroban_sdk::Error;
@@ -11544,7 +11604,7 @@ impl UsedRecursiveRoot {
                     name: soroban_sdk::xdr::StringMRef::new(b"val"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                         soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                            id: <UsedRecursiveNode>::SPEC_XDR_ID,
+                            id: <UsedRecursiveNode>::spec_type_id(),
                             name: soroban_sdk::xdr::StringMRef::new(b"UsedRecursiveNode"),
                         },
                     ),
@@ -11557,7 +11617,9 @@ impl UsedRecursiveRoot {
 }
 impl UsedRecursiveRoot {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [151u8, 194u8, 74u8, 125u8, 113u8, 185u8, 213u8, 7u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [151u8, 194u8, 74u8, 125u8, 113u8, 185u8, 213u8, 7u8]
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRecursiveRoot {
     type Error = soroban_sdk::ConversionError;
@@ -11951,7 +12013,7 @@ impl UsedRecursiveNode {
                         type_: soroban_sdk::xdr::VecMRef::new(&[
                             soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                                 soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                                    id: <UsedLeaf>::SPEC_XDR_ID,
+                                    id: <UsedLeaf>::spec_type_id(),
                                     name: soroban_sdk::xdr::StringMRef::new(b"UsedLeaf"),
                                 },
                             ),
@@ -11965,7 +12027,7 @@ impl UsedRecursiveNode {
                         type_: soroban_sdk::xdr::VecMRef::new(&[
                             soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                                 soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                                    id: <UsedRecursiveLeaf>::SPEC_XDR_ID,
+                                    id: <UsedRecursiveLeaf>::spec_type_id(),
                                     name: soroban_sdk::xdr::StringMRef::new(b"UsedRecursiveLeaf"),
                                 },
                             ),
@@ -11980,7 +12042,9 @@ impl UsedRecursiveNode {
 }
 impl UsedRecursiveNode {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [83u8, 18u8, 87u8, 195u8, 221u8, 64u8, 208u8, 65u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [83u8, 18u8, 87u8, 195u8, 221u8, 64u8, 208u8, 65u8]
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRecursiveNode {
     type Error = soroban_sdk::ConversionError;
@@ -12508,7 +12572,7 @@ impl UsedRecursiveLeaf {
                         &soroban_sdk::xdr::ScSpecTypeVecRef {
                             element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                                 soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                                    id: <UsedRecursiveRoot>::SPEC_XDR_ID,
+                                    id: <UsedRecursiveRoot>::spec_type_id(),
                                     name: soroban_sdk::xdr::StringMRef::new(b"UsedRecursiveRoot"),
                                 },
                             ),
@@ -12523,7 +12587,9 @@ impl UsedRecursiveLeaf {
 }
 impl UsedRecursiveLeaf {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [11u8, 222u8, 208u8, 20u8, 117u8, 211u8, 71u8, 232u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [11u8, 222u8, 208u8, 20u8, 117u8, 211u8, 71u8, 232u8]
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRecursiveLeaf {
     type Error = soroban_sdk::ConversionError;
@@ -12902,7 +12968,9 @@ impl UsedLeaf {
 }
 impl UsedLeaf {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [230u8, 81u8, 213u8, 84u8, 19u8, 138u8, 183u8, 108u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [230u8, 81u8, 213u8, 84u8, 19u8, 138u8, 183u8, 108u8]
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedLeaf {
     type Error = soroban_sdk::ConversionError;
@@ -13976,7 +14044,9 @@ mod wasm_imported {
     }
     impl StructA {
         #[doc(hidden)]
-        pub const SPEC_XDR_ID: [u8; 8] = [182u8, 28u8, 253u8, 223u8, 104u8, 89u8, 45u8, 100u8];
+        pub const fn spec_type_id() -> [u8; 8] {
+            [182u8, 28u8, 253u8, 223u8, 104u8, 89u8, 45u8, 100u8]
+        }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructA {
         type Error = soroban_sdk::ConversionError;
@@ -14406,7 +14476,9 @@ mod wasm_imported {
     }
     impl StructB {
         #[doc(hidden)]
-        pub const SPEC_XDR_ID: [u8; 8] = [243u8, 196u8, 211u8, 140u8, 193u8, 119u8, 233u8, 24u8];
+        pub const fn spec_type_id() -> [u8; 8] {
+            [243u8, 196u8, 211u8, 140u8, 193u8, 119u8, 233u8, 24u8]
+        }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructB {
         type Error = soroban_sdk::ConversionError;
@@ -14836,7 +14908,9 @@ mod wasm_imported {
     }
     impl StructC {
         #[doc(hidden)]
-        pub const SPEC_XDR_ID: [u8; 8] = [163u8, 22u8, 10u8, 143u8, 201u8, 146u8, 210u8, 17u8];
+        pub const fn spec_type_id() -> [u8; 8] {
+            [163u8, 22u8, 10u8, 143u8, 201u8, 146u8, 210u8, 17u8]
+        }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructC {
         type Error = soroban_sdk::ConversionError;
@@ -15269,7 +15343,9 @@ mod wasm_imported {
     }
     impl StructTupleA {
         #[doc(hidden)]
-        pub const SPEC_XDR_ID: [u8; 8] = [207u8, 41u8, 151u8, 93u8, 83u8, 178u8, 253u8, 41u8];
+        pub const fn spec_type_id() -> [u8; 8] {
+            [207u8, 41u8, 151u8, 93u8, 83u8, 178u8, 253u8, 41u8]
+        }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleA {
         type Error = soroban_sdk::ConversionError;
@@ -15664,7 +15740,9 @@ mod wasm_imported {
     }
     impl StructTupleB {
         #[doc(hidden)]
-        pub const SPEC_XDR_ID: [u8; 8] = [120u8, 217u8, 56u8, 156u8, 26u8, 111u8, 172u8, 140u8];
+        pub const fn spec_type_id() -> [u8; 8] {
+            [120u8, 217u8, 56u8, 156u8, 26u8, 111u8, 172u8, 140u8]
+        }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleB {
         type Error = soroban_sdk::ConversionError;
@@ -16060,7 +16138,9 @@ mod wasm_imported {
     }
     impl StructTupleC {
         #[doc(hidden)]
-        pub const SPEC_XDR_ID: [u8; 8] = [197u8, 61u8, 129u8, 193u8, 34u8, 175u8, 84u8, 217u8];
+        pub const fn spec_type_id() -> [u8; 8] {
+            [197u8, 61u8, 129u8, 193u8, 34u8, 175u8, 84u8, 217u8]
+        }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleC {
         type Error = soroban_sdk::ConversionError;
@@ -16460,7 +16540,9 @@ mod wasm_imported {
     }
     impl EnumA {
         #[doc(hidden)]
-        pub const SPEC_XDR_ID: [u8; 8] = [162u8, 61u8, 78u8, 193u8, 112u8, 149u8, 144u8, 178u8];
+        pub const fn spec_type_id() -> [u8; 8] {
+            [162u8, 61u8, 78u8, 193u8, 112u8, 149u8, 144u8, 178u8]
+        }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumA {
         type Error = soroban_sdk::ConversionError;
@@ -16975,7 +17057,9 @@ mod wasm_imported {
     }
     impl EnumB {
         #[doc(hidden)]
-        pub const SPEC_XDR_ID: [u8; 8] = [39u8, 27u8, 0u8, 68u8, 83u8, 72u8, 94u8, 204u8];
+        pub const fn spec_type_id() -> [u8; 8] {
+            [39u8, 27u8, 0u8, 68u8, 83u8, 72u8, 94u8, 204u8]
+        }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumB {
         type Error = soroban_sdk::ConversionError;
@@ -17606,7 +17690,9 @@ mod wasm_imported {
     }
     impl EnumC {
         #[doc(hidden)]
-        pub const SPEC_XDR_ID: [u8; 8] = [78u8, 41u8, 7u8, 10u8, 222u8, 187u8, 73u8, 191u8];
+        pub const fn spec_type_id() -> [u8; 8] {
+            [78u8, 41u8, 7u8, 10u8, 222u8, 187u8, 73u8, 191u8]
+        }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumC {
         type Error = soroban_sdk::ConversionError;
@@ -18165,7 +18251,9 @@ mod wasm_imported {
     }
     impl EnumIntA {
         #[doc(hidden)]
-        pub const SPEC_XDR_ID: [u8; 8] = [86u8, 93u8, 128u8, 92u8, 126u8, 26u8, 8u8, 47u8];
+        pub const fn spec_type_id() -> [u8; 8] {
+            [86u8, 93u8, 128u8, 92u8, 126u8, 26u8, 8u8, 47u8]
+        }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntA {
         type Error = soroban_sdk::ConversionError;
@@ -18523,7 +18611,9 @@ mod wasm_imported {
     }
     impl EnumIntB {
         #[doc(hidden)]
-        pub const SPEC_XDR_ID: [u8; 8] = [44u8, 156u8, 192u8, 95u8, 237u8, 95u8, 41u8, 133u8];
+        pub const fn spec_type_id() -> [u8; 8] {
+            [44u8, 156u8, 192u8, 95u8, 237u8, 95u8, 41u8, 133u8]
+        }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntB {
         type Error = soroban_sdk::ConversionError;
@@ -18881,7 +18971,9 @@ mod wasm_imported {
     }
     impl EnumIntC {
         #[doc(hidden)]
-        pub const SPEC_XDR_ID: [u8; 8] = [96u8, 202u8, 218u8, 25u8, 185u8, 99u8, 240u8, 47u8];
+        pub const fn spec_type_id() -> [u8; 8] {
+            [96u8, 202u8, 218u8, 25u8, 185u8, 99u8, 240u8, 47u8]
+        }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntC {
         type Error = soroban_sdk::ConversionError;
@@ -19239,7 +19331,9 @@ mod wasm_imported {
     }
     impl ErrorA {
         #[doc(hidden)]
-        pub const SPEC_XDR_ID: [u8; 8] = [233u8, 82u8, 167u8, 232u8, 98u8, 153u8, 162u8, 195u8];
+        pub const fn spec_type_id() -> [u8; 8] {
+            [233u8, 82u8, 167u8, 232u8, 98u8, 153u8, 162u8, 195u8]
+        }
     }
     impl TryFrom<soroban_sdk::Error> for ErrorA {
         type Error = soroban_sdk::Error;
@@ -19418,7 +19512,9 @@ mod wasm_imported {
     }
     impl ErrorB {
         #[doc(hidden)]
-        pub const SPEC_XDR_ID: [u8; 8] = [29u8, 49u8, 214u8, 251u8, 136u8, 210u8, 61u8, 227u8];
+        pub const fn spec_type_id() -> [u8; 8] {
+            [29u8, 49u8, 214u8, 251u8, 136u8, 210u8, 61u8, 227u8]
+        }
     }
     impl TryFrom<soroban_sdk::Error> for ErrorB {
         type Error = soroban_sdk::Error;
@@ -19597,7 +19693,9 @@ mod wasm_imported {
     }
     impl ErrorC {
         #[doc(hidden)]
-        pub const SPEC_XDR_ID: [u8; 8] = [185u8, 1u8, 175u8, 106u8, 224u8, 99u8, 163u8, 13u8];
+        pub const fn spec_type_id() -> [u8; 8] {
+            [185u8, 1u8, 175u8, 106u8, 224u8, 99u8, 163u8, 13u8]
+        }
     }
     impl TryFrom<soroban_sdk::Error> for ErrorC {
         type Error = soroban_sdk::Error;
@@ -20269,7 +20367,9 @@ impl UnusedStruct {
 }
 impl UnusedStruct {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [124u8, 156u8, 9u8, 30u8, 245u8, 168u8, 25u8, 160u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [124u8, 156u8, 9u8, 30u8, 245u8, 168u8, 25u8, 160u8]
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedStruct {
     type Error = soroban_sdk::ConversionError;
@@ -20661,7 +20761,9 @@ impl UnusedEnum {
 }
 impl UnusedEnum {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [47u8, 130u8, 154u8, 48u8, 190u8, 64u8, 14u8, 90u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [47u8, 130u8, 154u8, 48u8, 190u8, 64u8, 14u8, 90u8]
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedEnum {
     type Error = soroban_sdk::ConversionError;
@@ -21147,7 +21249,9 @@ impl UnusedIntEnum {
 }
 impl UnusedIntEnum {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [12u8, 221u8, 238u8, 126u8, 44u8, 131u8, 228u8, 156u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [12u8, 221u8, 238u8, 126u8, 44u8, 131u8, 228u8, 156u8]
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedIntEnum {
     type Error = soroban_sdk::ConversionError;
@@ -21585,7 +21689,9 @@ impl UnusedPubError {
 }
 impl UnusedPubError {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [231u8, 240u8, 123u8, 55u8, 221u8, 144u8, 122u8, 61u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [231u8, 240u8, 123u8, 55u8, 221u8, 144u8, 122u8, 61u8]
+    }
 }
 impl TryFrom<soroban_sdk::Error> for UnusedPubError {
     type Error = soroban_sdk::Error;
@@ -21755,7 +21861,9 @@ impl UnusedNonContractFnParam {
 }
 impl UnusedNonContractFnParam {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [129u8, 188u8, 219u8, 180u8, 193u8, 203u8, 189u8, 197u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [129u8, 188u8, 219u8, 180u8, 193u8, 203u8, 189u8, 197u8]
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedNonContractFnParam {
     type Error = soroban_sdk::ConversionError;
@@ -22140,7 +22248,9 @@ impl UnusedNonContractFnReturn {
 }
 impl UnusedNonContractFnReturn {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [127u8, 101u8, 28u8, 10u8, 135u8, 103u8, 29u8, 192u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [127u8, 101u8, 28u8, 10u8, 135u8, 103u8, 29u8, 192u8]
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedNonContractFnReturn {
     type Error = soroban_sdk::ConversionError;
@@ -22499,7 +22609,9 @@ impl ::core::cmp::PartialEq for UnusedNonPubStruct {
 }
 impl UnusedNonPubStruct {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [168u8, 59u8, 44u8, 37u8, 125u8, 93u8, 80u8, 65u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [168u8, 59u8, 44u8, 37u8, 125u8, 93u8, 80u8, 65u8]
+    }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedNonPubStruct {
     type Error = soroban_sdk::ConversionError;
@@ -22850,7 +22962,9 @@ impl ::core::cmp::PartialEq for UnusedNonPubError {
 }
 impl UnusedNonPubError {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [217u8, 95u8, 153u8, 34u8, 61u8, 198u8, 70u8, 77u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [217u8, 95u8, 153u8, 34u8, 61u8, 198u8, 70u8, 77u8]
+    }
 }
 impl TryFrom<soroban_sdk::Error> for UnusedNonPubError {
     type Error = soroban_sdk::Error;
@@ -23093,7 +23207,7 @@ impl Contract {
                     name: soroban_sdk::xdr::StringMRef::new(b"s"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                         soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                            id: <UsedParamStruct>::SPEC_XDR_ID,
+                            id: <UsedParamStruct>::spec_type_id(),
                             name: soroban_sdk::xdr::StringMRef::new(b"UsedParamStruct"),
                         },
                     ),
@@ -23103,7 +23217,7 @@ impl Contract {
                     name: soroban_sdk::xdr::StringMRef::new(b"ie"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                         soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                            id: <UsedParamIntEnum>::SPEC_XDR_ID,
+                            id: <UsedParamIntEnum>::spec_type_id(),
                             name: soroban_sdk::xdr::StringMRef::new(b"UsedParamIntEnum"),
                         },
                     ),
@@ -23135,7 +23249,7 @@ impl Contract {
             inputs: soroban_sdk::xdr::VecMRef::new(&[]),
             outputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                 soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                    id: <UsedReturnEnum>::SPEC_XDR_ID,
+                    id: <UsedReturnEnum>::spec_type_id(),
                     name: soroban_sdk::xdr::StringMRef::new(b"UsedReturnEnum"),
                 },
             )]),
@@ -23167,7 +23281,7 @@ impl Contract {
                     ok_type: &soroban_sdk::xdr::ScSpecTypeDefRef::U32,
                     error_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                         soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                            id: <UsedErrorEnum>::SPEC_XDR_ID,
+                            id: <UsedErrorEnum>::spec_type_id(),
                             name: soroban_sdk::xdr::StringMRef::new(b"UsedErrorEnum"),
                         },
                     ),
@@ -23295,7 +23409,7 @@ impl Contract {
                     &soroban_sdk::xdr::ScSpecTypeVecRef {
                         element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                             soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                                id: <UsedVecElement>::SPEC_XDR_ID,
+                                id: <UsedVecElement>::spec_type_id(),
                                 name: soroban_sdk::xdr::StringMRef::new(b"UsedVecElement"),
                             },
                         ),
@@ -23334,7 +23448,7 @@ impl Contract {
                     &soroban_sdk::xdr::ScSpecTypeVecRef {
                         element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                             soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                                id: <UsedVecElementNested>::SPEC_XDR_ID,
+                                id: <UsedVecElementNested>::spec_type_id(),
                                 name: soroban_sdk::xdr::StringMRef::new(b"UsedVecElementNested"),
                             },
                         ),
@@ -23371,13 +23485,13 @@ impl Contract {
                     &soroban_sdk::xdr::ScSpecTypeMapRef {
                         key_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                             soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                                id: <UsedMapKey>::SPEC_XDR_ID,
+                                id: <UsedMapKey>::spec_type_id(),
                                 name: soroban_sdk::xdr::StringMRef::new(b"UsedMapKey"),
                             },
                         ),
                         value_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                             soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                                id: <UsedMapVal>::SPEC_XDR_ID,
+                                id: <UsedMapVal>::spec_type_id(),
                                 name: soroban_sdk::xdr::StringMRef::new(b"UsedMapVal"),
                             },
                         ),
@@ -23413,7 +23527,7 @@ impl Contract {
                     &soroban_sdk::xdr::ScSpecTypeOptionRef {
                         value_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                             soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                                id: <UsedOptionElement>::SPEC_XDR_ID,
+                                id: <UsedOptionElement>::spec_type_id(),
                                 name: soroban_sdk::xdr::StringMRef::new(b"UsedOptionElement"),
                             },
                         ),
@@ -23448,13 +23562,13 @@ impl Contract {
                 &soroban_sdk::xdr::ScSpecTypeResultRef {
                     ok_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                         soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                            id: <UsedResultOk>::SPEC_XDR_ID,
+                            id: <UsedResultOk>::spec_type_id(),
                             name: soroban_sdk::xdr::StringMRef::new(b"UsedResultOk"),
                         },
                     ),
                     error_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                         soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                            id: <UsedErrorEnum>::SPEC_XDR_ID,
+                            id: <UsedErrorEnum>::spec_type_id(),
                             name: soroban_sdk::xdr::StringMRef::new(b"UsedErrorEnum"),
                         },
                     ),
@@ -23489,7 +23603,7 @@ impl Contract {
                 name: soroban_sdk::xdr::StringMRef::new(b"r"),
                 type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                     soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                        id: <UsedRecursiveRoot>::SPEC_XDR_ID,
+                        id: <UsedRecursiveRoot>::spec_type_id(),
                         name: soroban_sdk::xdr::StringMRef::new(b"UsedRecursiveRoot"),
                     },
                 ),
@@ -23527,7 +23641,7 @@ impl Contract {
                     &soroban_sdk::xdr::ScSpecTypeVecRef {
                         element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                             soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                                id: <soroban_sdk::auth::Context>::SPEC_XDR_ID,
+                                id: <soroban_sdk::auth::Context>::spec_type_id(),
                                 name: soroban_sdk::xdr::StringMRef::new(b"Context"),
                             },
                         ),
@@ -23565,7 +23679,7 @@ impl Contract {
                 name: soroban_sdk::xdr::StringMRef::new(b"i"),
                 type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                     soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                        id: <soroban_sdk::auth::InvokerContractAuthEntry>::SPEC_XDR_ID,
+                        id: <soroban_sdk::auth::InvokerContractAuthEntry>::spec_type_id(),
                         name: soroban_sdk::xdr::StringMRef::new(b"InvokerContractAuthEntry"),
                     },
                 ),
@@ -23601,7 +23715,7 @@ impl Contract {
                 name: soroban_sdk::xdr::StringMRef::new(b"e"),
                 type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                     soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                        id: <soroban_sdk::Executable>::SPEC_XDR_ID,
+                        id: <soroban_sdk::Executable>::spec_type_id(),
                         name: soroban_sdk::xdr::StringMRef::new(b"Executable"),
                     },
                 ),
@@ -23771,7 +23885,7 @@ impl Contract {
                 name: soroban_sdk::xdr::StringMRef::new(b"s"),
                 type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                     soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                        id: <test_spec_lib::StructC>::SPEC_XDR_ID,
+                        id: <test_spec_lib::StructC>::spec_type_id(),
                         name: soroban_sdk::xdr::StringMRef::new(b"StructC"),
                     },
                 ),
@@ -23807,7 +23921,7 @@ impl Contract {
                 name: soroban_sdk::xdr::StringMRef::new(b"s"),
                 type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                     soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                        id: <wasm_imported::StructA>::SPEC_XDR_ID,
+                        id: <wasm_imported::StructA>::spec_type_id(),
                         name: soroban_sdk::xdr::StringMRef::new(b"StructA"),
                     },
                 ),
@@ -23840,7 +23954,7 @@ impl Contract {
                 name: soroban_sdk::xdr::StringMRef::new(b"s"),
                 type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                     soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                        id: <UsedNonPubStruct>::SPEC_XDR_ID,
+                        id: <UsedNonPubStruct>::spec_type_id(),
                         name: soroban_sdk::xdr::StringMRef::new(b"UsedNonPubStruct"),
                     },
                 ),
@@ -23877,7 +23991,7 @@ impl Contract {
                     ok_type: &soroban_sdk::xdr::ScSpecTypeDefRef::U32,
                     error_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                         soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                            id: <UsedNonPubError>::SPEC_XDR_ID,
+                            id: <UsedNonPubError>::spec_type_id(),
                             name: soroban_sdk::xdr::StringMRef::new(b"UsedNonPubError"),
                         },
                     ),
@@ -23913,7 +24027,7 @@ impl Contract {
                         value_types: soroban_sdk::xdr::VecMRef::new(&[
                             soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                                 soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                                    id: <UsedTupleElement>::SPEC_XDR_ID,
+                                    id: <UsedTupleElement>::spec_type_id(),
                                     name: soroban_sdk::xdr::StringMRef::new(b"UsedTupleElement"),
                                 },
                             ),
@@ -23954,7 +24068,7 @@ impl Contract {
                     value_types: soroban_sdk::xdr::VecMRef::new(&[
                         soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                             soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                                id: <UsedTupleReturnElement>::SPEC_XDR_ID,
+                                id: <UsedTupleReturnElement>::spec_type_id(),
                                 name: soroban_sdk::xdr::StringMRef::new(b"UsedTupleReturnElement"),
                             },
                         ),
@@ -23992,7 +24106,7 @@ impl Contract {
                 name: soroban_sdk::xdr::StringMRef::new(b"s"),
                 type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                     soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                        id: <export_false_used::UsedExportFalseStruct>::SPEC_XDR_ID,
+                        id: <export_false_used::UsedExportFalseStruct>::spec_type_id(),
                         name: soroban_sdk::xdr::StringMRef::new(b"UsedExportFalseStruct"),
                     },
                 ),
@@ -24029,7 +24143,7 @@ impl Contract {
                     ok_type: &soroban_sdk::xdr::ScSpecTypeDefRef::U32,
                     error_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                         soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                            id: <export_false_used::UsedExportFalseError>::SPEC_XDR_ID,
+                            id: <export_false_used::UsedExportFalseError>::spec_type_id(),
                             name: soroban_sdk::xdr::StringMRef::new(b"UsedExportFalseError"),
                         },
                     ),

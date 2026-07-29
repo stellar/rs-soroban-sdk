@@ -13,7 +13,7 @@ use stellar_xdr::{
 
 use crate::{
     doc::docs_from_attrs,
-    map_type::{const_ref_string, const_ref_type_def, map_type, spec_xdr_id_gen, udt_ref_types},
+    map_type::{const_ref_string, const_ref_type_def, map_type, spec_type_id_gen},
     shaking, DEFAULT_XDR_RW_LIMITS,
 };
 
@@ -161,16 +161,21 @@ pub fn derive_type_enum(
     let ScSpecEntry::UdtUnionV0(spec_union) = &spec_entry else {
         unreachable!()
     };
-    let spec_id_gen = spec_xdr_id_gen(enum_ident, &spec_entry);
+    let spec_id_gen = spec_type_id_gen(enum_ident, &spec_entry);
 
     // Generated code spec. The spec entry is rendered as the equivalent const
     // ScSpecEntryRef, which the contract crate encodes to XDR at compile time.
     let spec_gen = spec.then(|| {
-        let refs = udt_ref_types(variant_field_types.iter().flatten().copied());
         let doc = const_ref_string(path, &spec_union.doc);
         let lib = const_ref_string(path, &spec_union.lib);
         let name = const_ref_string(path, &spec_union.name);
-        let cases = spec_union.cases.iter().map(|c| match c {
+        // Each case's Rust field types, so a reference to a user-defined type in
+        // a case resolves to that type's id.
+        let cases = spec_union
+            .cases
+            .iter()
+            .zip(&variant_field_types)
+            .map(|(c, field_types)| match c {
             ScSpecUdtUnionCaseV0::VoidV0(c) => {
                 let doc = const_ref_string(path, &c.doc);
                 let name = const_ref_string(path, &c.name);
@@ -181,7 +186,11 @@ pub fn derive_type_enum(
             ScSpecUdtUnionCaseV0::TupleV0(c) => {
                 let doc = const_ref_string(path, &c.doc);
                 let name = const_ref_string(path, &c.name);
-                let type_ = c.type_.iter().map(|t| const_ref_type_def(path, t, &refs));
+                let type_ = c
+                    .type_
+                    .iter()
+                    .zip(field_types.iter().copied())
+                    .map(|(t, rust)| const_ref_type_def(path, t, Some(rust)));
                 quote!(#path::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
                     #path::xdr::ScSpecUdtUnionCaseTupleV0Ref {
                         doc: #doc,

@@ -66,7 +66,9 @@ impl DummyProof {
 }
 impl DummyProof {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [133u8, 87u8, 0u8, 65u8, 220u8, 126u8, 183u8, 34u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [133u8, 87u8, 0u8, 65u8, 220u8, 126u8, 183u8, 34u8]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for DummyProof {
     #[doc(hidden)]
@@ -880,7 +882,7 @@ impl Contract {
                 name: soroban_sdk::xdr::StringMRef::new(b"proof"),
                 type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                     soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                        id: <DummyProof>::SPEC_XDR_ID,
+                        id: <DummyProof>::spec_type_id(),
                         name: soroban_sdk::xdr::StringMRef::new(b"DummyProof"),
                     },
                 ),

@@ -178,7 +178,9 @@ impl Error {
 }
 impl Error {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [214u8, 184u8, 96u8, 21u8, 172u8, 158u8, 105u8, 26u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [214u8, 184u8, 96u8, 21u8, 172u8, 158u8, 105u8, 26u8]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for Error {
     #[doc(hidden)]
@@ -331,7 +333,9 @@ impl MyError {
 }
 impl MyError {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [149u8, 208u8, 106u8, 42u8, 29u8, 250u8, 109u8, 163u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [149u8, 208u8, 106u8, 42u8, 29u8, 250u8, 109u8, 163u8]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for MyError {
     #[doc(hidden)]
@@ -557,7 +561,7 @@ impl Contract {
                     ok_type: &soroban_sdk::xdr::ScSpecTypeDefRef::U64,
                     error_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                         soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                            id: <MyError>::SPEC_XDR_ID,
+                            id: <MyError>::spec_type_id(),
                             name: soroban_sdk::xdr::StringMRef::new(b"MyError"),
                         },
                     ),

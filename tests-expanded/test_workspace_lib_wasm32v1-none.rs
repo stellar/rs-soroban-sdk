@@ -55,7 +55,9 @@ impl Value {
 }
 impl Value {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [130u8, 248u8, 116u8, 190u8, 9u8, 4u8, 98u8, 92u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [130u8, 248u8, 116u8, 190u8, 9u8, 4u8, 98u8, 92u8]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for Value {
     #[doc(hidden)]

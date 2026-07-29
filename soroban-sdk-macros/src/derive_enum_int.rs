@@ -11,7 +11,7 @@ use stellar_xdr::{ScSpecEntry, ScSpecUdtEnumCaseV0, WriteXdr};
 
 use crate::{
     doc::docs_from_attrs,
-    map_type::{const_ref_string, spec_xdr_id_gen},
+    map_type::{const_ref_string, spec_type_id_gen},
     shaking, DEFAULT_XDR_RW_LIMITS,
 };
 
@@ -83,7 +83,7 @@ pub fn derive_type_enum_int(
     let ScSpecEntry::UdtEnumV0(spec_enum) = &spec_entry else {
         unreachable!()
     };
-    let spec_id_gen = spec_xdr_id_gen(enum_ident, &spec_entry);
+    let spec_id_gen = spec_type_id_gen(enum_ident, &spec_entry);
 
     // Generated code spec. The spec entry is rendered as the equivalent const
     // ScSpecEntryRef, which the contract crate encodes to XDR at compile time.

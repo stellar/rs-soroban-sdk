@@ -198,7 +198,9 @@ impl Flag {
 }
 impl Flag {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [103u8, 25u8, 141u8, 198u8, 138u8, 80u8, 235u8, 183u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [103u8, 25u8, 141u8, 198u8, 138u8, 80u8, 235u8, 183u8]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for Flag {
     #[doc(hidden)]
@@ -564,7 +566,9 @@ impl Error {
 }
 impl Error {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [188u8, 4u8, 4u8, 234u8, 164u8, 158u8, 54u8, 40u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [188u8, 4u8, 4u8, 234u8, 164u8, 158u8, 54u8, 40u8]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for Error {
     #[doc(hidden)]
@@ -739,7 +743,7 @@ impl Contract {
                 name: soroban_sdk::xdr::StringMRef::new(b"flag"),
                 type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                     soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                        id: <Flag>::SPEC_XDR_ID,
+                        id: <Flag>::spec_type_id(),
                         name: soroban_sdk::xdr::StringMRef::new(b"Flag"),
                     },
                 ),

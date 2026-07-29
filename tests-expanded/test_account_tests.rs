@@ -73,7 +73,9 @@ impl Error {
 }
 impl Error {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [168u8, 31u8, 196u8, 35u8, 156u8, 143u8, 235u8, 136u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [168u8, 31u8, 196u8, 35u8, 156u8, 143u8, 235u8, 136u8]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for Error {
     #[doc(hidden)]
@@ -365,7 +367,7 @@ impl Contract {
                         &soroban_sdk::xdr::ScSpecTypeVecRef {
                             element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                                 soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                                    id: <Context>::SPEC_XDR_ID,
+                                    id: <Context>::spec_type_id(),
                                     name: soroban_sdk::xdr::StringMRef::new(b"Context"),
                                 },
                             ),

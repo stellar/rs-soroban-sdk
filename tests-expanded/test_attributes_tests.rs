@@ -69,7 +69,9 @@ impl AttributeType {
 }
 impl AttributeType {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [105u8, 9u8, 183u8, 6u8, 42u8, 136u8, 215u8, 248u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [105u8, 9u8, 183u8, 6u8, 42u8, 136u8, 215u8, 248u8]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for AttributeType {
     #[doc(hidden)]
@@ -1015,7 +1017,7 @@ impl Contract {
                 name: soroban_sdk::xdr::StringMRef::new(b"value"),
                 type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                     soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                        id: <AttributeType>::SPEC_XDR_ID,
+                        id: <AttributeType>::spec_type_id(),
                         name: soroban_sdk::xdr::StringMRef::new(b"AttributeType"),
                     },
                 ),

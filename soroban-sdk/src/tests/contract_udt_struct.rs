@@ -135,7 +135,7 @@ fn test_spec() {
                 doc: "".try_into().unwrap(),
                 name: "a".try_into().unwrap(),
                 type_: ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
-                    id: Udt::SPEC_XDR_ID,
+                    id: Udt::spec_type_id(),
                     name: "Udt".try_into().unwrap(),
                 }),
             },
@@ -143,7 +143,7 @@ fn test_spec() {
                 doc: "".try_into().unwrap(),
                 name: "b".try_into().unwrap(),
                 type_: ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
-                    id: Udt::SPEC_XDR_ID,
+                    id: Udt::spec_type_id(),
                     name: "Udt".try_into().unwrap(),
                 }),
             },
@@ -153,11 +153,11 @@ fn test_spec() {
         outputs: vec![ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
             value_types: vec![
                 ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
-                    id: Udt::SPEC_XDR_ID,
+                    id: Udt::spec_type_id(),
                     name: "Udt".try_into().unwrap(),
                 }),
                 ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
-                    id: Udt::SPEC_XDR_ID,
+                    id: Udt::spec_type_id(),
                     name: "Udt".try_into().unwrap(),
                 }),
             ]
@@ -182,7 +182,7 @@ fn test_spec_with_long_names() {
                 doc: "".try_into().unwrap(),
                 name: "a".try_into().unwrap(),
                 type_: ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
-                    id: UdtWithLongName::SPEC_XDR_ID,
+                    id: UdtWithLongName::spec_type_id(),
                     name: "UdtWithLongName".try_into().unwrap(),
                 }),
             },
@@ -190,7 +190,7 @@ fn test_spec_with_long_names() {
                 doc: "".try_into().unwrap(),
                 name: "b".try_into().unwrap(),
                 type_: ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
-                    id: UdtWithLongName::SPEC_XDR_ID,
+                    id: UdtWithLongName::spec_type_id(),
                     name: "UdtWithLongName".try_into().unwrap(),
                 }),
             },

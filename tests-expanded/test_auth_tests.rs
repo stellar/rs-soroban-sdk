@@ -1187,7 +1187,9 @@ mod test_a {
         }
         impl Error {
             #[doc(hidden)]
-            pub const SPEC_XDR_ID: [u8; 8] = [96u8, 252u8, 214u8, 206u8, 181u8, 1u8, 121u8, 133u8];
+            pub const fn spec_type_id() -> [u8; 8] {
+                [96u8, 252u8, 214u8, 206u8, 181u8, 1u8, 121u8, 133u8]
+            }
         }
         impl soroban_sdk::SpecShakingMarker for Error {
             #[doc(hidden)]
@@ -2780,7 +2782,9 @@ mod test_b {
         }
         impl Error {
             #[doc(hidden)]
-            pub const SPEC_XDR_ID: [u8; 8] = [96u8, 252u8, 214u8, 206u8, 181u8, 1u8, 121u8, 133u8];
+            pub const fn spec_type_id() -> [u8; 8] {
+                [96u8, 252u8, 214u8, 206u8, 181u8, 1u8, 121u8, 133u8]
+            }
         }
         impl soroban_sdk::SpecShakingMarker for Error {
             #[doc(hidden)]

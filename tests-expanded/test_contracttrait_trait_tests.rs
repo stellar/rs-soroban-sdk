@@ -76,7 +76,9 @@ impl MyStruct {
 }
 impl MyStruct {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [8u8, 212u8, 167u8, 98u8, 174u8, 49u8, 124u8, 221u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [8u8, 212u8, 167u8, 98u8, 174u8, 49u8, 124u8, 221u8]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for MyStruct {
     #[doc(hidden)]
@@ -517,7 +519,9 @@ impl MyEnumUnit {
 }
 impl MyEnumUnit {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [50u8, 69u8, 27u8, 52u8, 28u8, 131u8, 171u8, 235u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [50u8, 69u8, 27u8, 52u8, 28u8, 131u8, 171u8, 235u8]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for MyEnumUnit {
     #[doc(hidden)]
@@ -885,7 +889,7 @@ impl MyEnumVariants {
                         type_: soroban_sdk::xdr::VecMRef::new(&[
                             soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                                 soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                                    id: <MyStruct>::SPEC_XDR_ID,
+                                    id: <MyStruct>::spec_type_id(),
                                     name: soroban_sdk::xdr::StringMRef::new(b"MyStruct"),
                                 },
                             ),
@@ -899,7 +903,7 @@ impl MyEnumVariants {
                         type_: soroban_sdk::xdr::VecMRef::new(&[
                             soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                                 soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                                    id: <MyEnumUnit>::SPEC_XDR_ID,
+                                    id: <MyEnumUnit>::spec_type_id(),
                                     name: soroban_sdk::xdr::StringMRef::new(b"MyEnumUnit"),
                                 },
                             ),
@@ -914,7 +918,9 @@ impl MyEnumVariants {
 }
 impl MyEnumVariants {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [119u8, 27u8, 91u8, 66u8, 102u8, 190u8, 66u8, 142u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [119u8, 27u8, 91u8, 66u8, 102u8, 190u8, 66u8, 142u8]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for MyEnumVariants {
     #[doc(hidden)]
@@ -3833,14 +3839,14 @@ impl AllTypesSpec {
                 name: soroban_sdk::xdr::StringMRef::new(b"v"),
                 type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                     soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                        id: <MyStruct>::SPEC_XDR_ID,
+                        id: <MyStruct>::spec_type_id(),
                         name: soroban_sdk::xdr::StringMRef::new(b"MyStruct"),
                     },
                 ),
             }]),
             outputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                 soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                    id: <MyStruct>::SPEC_XDR_ID,
+                    id: <MyStruct>::spec_type_id(),
                     name: soroban_sdk::xdr::StringMRef::new(b"MyStruct"),
                 },
             )]),
@@ -3864,14 +3870,14 @@ impl AllTypesSpec {
                 name: soroban_sdk::xdr::StringMRef::new(b"v"),
                 type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                     soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                        id: <MyEnumUnit>::SPEC_XDR_ID,
+                        id: <MyEnumUnit>::spec_type_id(),
                         name: soroban_sdk::xdr::StringMRef::new(b"MyEnumUnit"),
                     },
                 ),
             }]),
             outputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                 soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                    id: <MyEnumUnit>::SPEC_XDR_ID,
+                    id: <MyEnumUnit>::spec_type_id(),
                     name: soroban_sdk::xdr::StringMRef::new(b"MyEnumUnit"),
                 },
             )]),
@@ -3895,14 +3901,14 @@ impl AllTypesSpec {
                 name: soroban_sdk::xdr::StringMRef::new(b"v"),
                 type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                     soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                        id: <MyEnumVariants>::SPEC_XDR_ID,
+                        id: <MyEnumVariants>::spec_type_id(),
                         name: soroban_sdk::xdr::StringMRef::new(b"MyEnumVariants"),
                     },
                 ),
             }]),
             outputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                 soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                    id: <MyEnumVariants>::SPEC_XDR_ID,
+                    id: <MyEnumVariants>::spec_type_id(),
                     name: soroban_sdk::xdr::StringMRef::new(b"MyEnumVariants"),
                 },
             )]),
@@ -5781,7 +5787,7 @@ mod test {
                         name: soroban_sdk::xdr::StringMRef::new(b"v"),
                         type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                             soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                                id: <MyStruct>::SPEC_XDR_ID,
+                                id: <MyStruct>::spec_type_id(),
                                 name: soroban_sdk::xdr::StringMRef::new(b"MyStruct"),
                             },
                         ),
@@ -5790,7 +5796,7 @@ mod test {
                 outputs: soroban_sdk::xdr::VecMRef::new(&[
                     soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                         soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                            id: <MyStruct>::SPEC_XDR_ID,
+                            id: <MyStruct>::spec_type_id(),
                             name: soroban_sdk::xdr::StringMRef::new(b"MyStruct"),
                         },
                     ),
@@ -5826,7 +5832,7 @@ mod test {
                         name: soroban_sdk::xdr::StringMRef::new(b"v"),
                         type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                             soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                                id: <MyEnumUnit>::SPEC_XDR_ID,
+                                id: <MyEnumUnit>::spec_type_id(),
                                 name: soroban_sdk::xdr::StringMRef::new(b"MyEnumUnit"),
                             },
                         ),
@@ -5835,7 +5841,7 @@ mod test {
                 outputs: soroban_sdk::xdr::VecMRef::new(&[
                     soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                         soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                            id: <MyEnumUnit>::SPEC_XDR_ID,
+                            id: <MyEnumUnit>::spec_type_id(),
                             name: soroban_sdk::xdr::StringMRef::new(b"MyEnumUnit"),
                         },
                     ),
@@ -5871,7 +5877,7 @@ mod test {
                         name: soroban_sdk::xdr::StringMRef::new(b"v"),
                         type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                             soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                                id: <MyEnumVariants>::SPEC_XDR_ID,
+                                id: <MyEnumVariants>::spec_type_id(),
                                 name: soroban_sdk::xdr::StringMRef::new(b"MyEnumVariants"),
                             },
                         ),
@@ -5880,7 +5886,7 @@ mod test {
                 outputs: soroban_sdk::xdr::VecMRef::new(&[
                     soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                         soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                            id: <MyEnumVariants>::SPEC_XDR_ID,
+                            id: <MyEnumVariants>::spec_type_id(),
                             name: soroban_sdk::xdr::StringMRef::new(b"MyEnumVariants"),
                         },
                     ),

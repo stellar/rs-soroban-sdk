@@ -1,6 +1,5 @@
 use proc_macro2::{Literal, Span, TokenStream as TokenStream2};
 use quote::{format_ident, quote, ToTokens};
-use std::collections::BTreeMap;
 use stellar_xdr::{
     ScSpecEntry, ScSpecTypeBytesN, ScSpecTypeDef, ScSpecTypeMap, ScSpecTypeOption,
     ScSpecTypeResult, ScSpecTypeTuple, ScSpecTypeUdtv2, ScSpecTypeVec, ScSymbol, StringM,
@@ -183,7 +182,7 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
                     "BnScalar" => Ok(ScSpecTypeDef::U256),
                     // A reference to a user-defined type. The id identifying the
                     // referenced type is not known here, and is filled in by
-                    // [const_ref_type_def] from that type's `SPEC_XDR_ID`.
+                    // [const_ref_type_def] from that type's `spec_type_id`.
                     s => Ok(ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
                         id: [0u8; 8],
                         name: s.try_into().map_err(|e| {
@@ -311,72 +310,61 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
     }
 }
 
-/// The Rust types that name the user-defined types a spec entry references,
-/// keyed by the name they map to in the spec. Used to render a reference's id as
-/// the referenced type's `SPEC_XDR_ID`.
-pub type UdtRefTypes<'a> = BTreeMap<String, &'a Type>;
-
-/// Collects the [UdtRefTypes] reachable from `types`, which are the Rust types
-/// of a spec entry's fields, params, or function signature. Collecting the whole
-/// type, not just its name, keeps any path qualification (e.g. the
-/// `othercontract::Flag` in a `Vec<othercontract::Flag>` field) that generated
-/// code needs to name the type. Mirrors the structure [map_type] walks, and
-/// defers to it to tell a user-defined type from a built-in one.
-pub fn udt_ref_types<'a>(types: impl IntoIterator<Item = &'a Type>) -> UdtRefTypes<'a> {
-    fn walk<'a>(t: &'a Type, out: &mut UdtRefTypes<'a>) {
-        match t {
-            Type::Reference(TypeReference { elem, .. }) => walk(elem, out),
-            Type::Tuple(TypeTuple { elems, .. }) => elems.iter().for_each(|e| walk(e, out)),
-            Type::Path(TypePath {
-                qself: None,
-                path: Path { segments, .. },
-            }) => match segments.last() {
-                Some(PathSegment {
-                    ident,
-                    arguments: PathArguments::None,
-                }) => {
-                    if let Ok(ScSpecTypeDef::UdtV2(_)) = map_type(t, true, true) {
-                        out.insert(ident.unraw().to_string(), t);
-                    }
-                }
-                // Containers whose type arguments can themselves be UDTs. Every
-                // other parameterized type (BytesN<N>, Hash<N>) cannot be.
-                Some(PathSegment {
-                    ident,
-                    arguments: PathArguments::AngleBracketed(args),
-                }) if matches!(
-                    &ident.unraw().to_string()[..],
-                    "Option" | "Result" | "Vec" | "Map"
-                ) =>
-                {
-                    for arg in &args.args {
-                        if let GenericArgument::Type(ty) = arg {
-                            walk(ty, out);
-                        }
-                    }
-                }
-                _ => {}
-            },
-            _ => {}
-        }
+/// Strips any outer references from a Rust type, so a `&Vec<T>` param descends
+/// like the `Vec<T>` it maps to.
+fn unref(t: &Type) -> &Type {
+    match t {
+        Type::Reference(TypeReference { elem, .. }) => unref(elem),
+        _ => t,
     }
-    let mut out = UdtRefTypes::new();
-    for t in types {
-        walk(t, &mut out);
-    }
-    out
 }
 
-/// Emits the `SPEC_XDR_ID` const on a user-defined type: the 8-byte identity
+/// The Rust type arguments that line up, in order, with the type arguments of
+/// the spec type [map_type] produced for `t`: the arguments of a container
+/// (`Option<T>`, `Result<T, E>`, `Vec<T>`, `Map<K, V>`) or the elements of a
+/// tuple. Empty for anything else, including the parameterized types whose
+/// arguments are not types in the spec (`BytesN<N>`, `Hash<N>`).
+fn type_args(t: &Type) -> Vec<&Type> {
+    match unref(t) {
+        Type::Tuple(TypeTuple { elems, .. }) => elems.iter().collect(),
+        Type::Path(TypePath {
+            qself: None,
+            path: Path { segments, .. },
+        }) => match segments.last() {
+            Some(PathSegment {
+                ident,
+                arguments: PathArguments::AngleBracketed(args),
+            }) if matches!(
+                &ident.unraw().to_string()[..],
+                "Option" | "Result" | "Vec" | "Map"
+            ) =>
+            {
+                args.args
+                    .iter()
+                    .filter_map(|a| match a {
+                        GenericArgument::Type(ty) => Some(ty),
+                        _ => None,
+                    })
+                    .collect()
+            }
+            _ => Vec::new(),
+        },
+        _ => Vec::new(),
+    }
+}
+
+/// Emits the `spec_type_id` const fn on a user-defined type: the 8-byte identity
 /// that references to it carry, which is the truncated SHA256 of its own spec
 /// entry. Emitted for every user-defined type, even one whose spec is not
 /// exported, because a reference to it from anywhere needs the id.
-pub fn spec_xdr_id_gen(ident: &Ident, entry: &ScSpecEntry) -> TokenStream2 {
+pub fn spec_type_id_gen(ident: &Ident, entry: &ScSpecEntry) -> TokenStream2 {
     let id = soroban_spec::udt_id::canonical_id(entry);
     quote! {
         impl #ident {
             #[doc(hidden)]
-            pub const SPEC_XDR_ID: [u8; 8] = [#(#id),*];
+            pub const fn spec_type_id() -> [u8; 8] {
+                [#(#id),*]
+            }
         }
     }
 }
@@ -384,33 +372,39 @@ pub fn spec_xdr_id_gen(ident: &Ident, entry: &ScSpecEntry) -> TokenStream2 {
 /// Renders a [ScSpecTypeDef] as a const expression of type
 /// `#path::xdr::ScSpecTypeDefRef`, so the containing spec entry can be encoded
 /// to XDR at compile time by the contract crate. A reference to a user-defined
-/// type takes its id from that type's `SPEC_XDR_ID`, resolving the reference at
-/// const evaluation time even when the type lives in another crate. `refs` names
-/// the Rust types being referenced, see [udt_ref_types].
-pub fn const_ref_type_def(path: &Path, t: &ScSpecTypeDef, refs: &UdtRefTypes) -> TokenStream2 {
+/// type takes its id from that type's `spec_type_id`, resolving the reference at
+/// const evaluation time even when the type lives in another crate.
+///
+/// `rust` is the Rust type `t` was mapped from, descended in step with `t` so a
+/// reference is reached holding the type that names it, keeping any path
+/// qualification (e.g. the `othercontract::Flag` in a `Vec<othercontract::Flag>`)
+/// that the rendered expression needs to name it.
+pub fn const_ref_type_def(path: &Path, t: &ScSpecTypeDef, rust: Option<&Type>) -> TokenStream2 {
     let xdr = quote!(#path::xdr);
     let variant = format_ident!("{}", t.name());
+    let args = rust.map(type_args).unwrap_or_default();
+    let arg = |i: usize| args.get(i).copied();
     // Variants that hold a value. The recursive ones sit behind a reference in
     // the Ref type, matching the Box in the owned type.
     let value = match t {
         ScSpecTypeDef::Option(o) => {
-            let value_type = const_ref_type_def(path, &o.value_type, refs);
+            let value_type = const_ref_type_def(path, &o.value_type, arg(0));
             Some(quote!((&#xdr::ScSpecTypeOptionRef { value_type: &#value_type })))
         }
         ScSpecTypeDef::Result(r) => {
-            let ok_type = const_ref_type_def(path, &r.ok_type, refs);
-            let error_type = const_ref_type_def(path, &r.error_type, refs);
+            let ok_type = const_ref_type_def(path, &r.ok_type, arg(0));
+            let error_type = const_ref_type_def(path, &r.error_type, arg(1));
             Some(
                 quote!((&#xdr::ScSpecTypeResultRef { ok_type: &#ok_type, error_type: &#error_type })),
             )
         }
         ScSpecTypeDef::Vec(v) => {
-            let element_type = const_ref_type_def(path, &v.element_type, refs);
+            let element_type = const_ref_type_def(path, &v.element_type, arg(0));
             Some(quote!((&#xdr::ScSpecTypeVecRef { element_type: &#element_type })))
         }
         ScSpecTypeDef::Map(m) => {
-            let key_type = const_ref_type_def(path, &m.key_type, refs);
-            let value_type = const_ref_type_def(path, &m.value_type, refs);
+            let key_type = const_ref_type_def(path, &m.key_type, arg(0));
+            let value_type = const_ref_type_def(path, &m.value_type, arg(1));
             Some(
                 quote!((&#xdr::ScSpecTypeMapRef { key_type: &#key_type, value_type: &#value_type })),
             )
@@ -419,7 +413,8 @@ pub fn const_ref_type_def(path: &Path, t: &ScSpecTypeDef, refs: &UdtRefTypes) ->
             let value_types = t
                 .value_types
                 .iter()
-                .map(|t| const_ref_type_def(path, t, refs));
+                .enumerate()
+                .map(|(i, t)| const_ref_type_def(path, t, arg(i)));
             Some(
                 quote!((&#xdr::ScSpecTypeTupleRef { value_types: #xdr::VecMRef::new(&[#(#value_types),*]) })),
             )
@@ -433,20 +428,21 @@ pub fn const_ref_type_def(path: &Path, t: &ScSpecTypeDef, refs: &UdtRefTypes) ->
             Some(quote!((#xdr::ScSpecTypeUdtRef { name: #name })))
         }
         ScSpecTypeDef::UdtV2(u) => {
-            let name_str = u.name.to_utf8_string_lossy();
-            // A referenced type collected from the Rust signature keeps its path
-            // qualification. Anything else can only be named bare, which is the
-            // case for a reference the caller did not collect a type for.
-            let ty = match refs.get(&name_str) {
+            // The Rust type this reference was mapped from names it as written,
+            // path qualification and all. Absent one, it can only be named bare
+            // from the spec name, which is the case for a reference reachable in
+            // the spec but not in the types it was mapped from.
+            let ty = match rust.map(unref) {
                 Some(t) => quote!(#t),
                 None => {
+                    let name_str = u.name.to_utf8_string_lossy();
                     let ident = syn::parse_str::<Ident>(&name_str)
                         .unwrap_or_else(|_| Ident::new_raw(&name_str, Span::call_site()));
                     quote!(#ident)
                 }
             };
             let name = const_ref_string(path, &u.name);
-            Some(quote!((#xdr::ScSpecTypeUdtv2Ref { id: <#ty>::SPEC_XDR_ID, name: #name })))
+            Some(quote!((#xdr::ScSpecTypeUdtv2Ref { id: <#ty>::spec_type_id(), name: #name })))
         }
         // All remaining variants are void.
         _ => None,

@@ -298,7 +298,9 @@ mod addcontract {
     }
     impl ContractContext {
         #[doc(hidden)]
-        pub const SPEC_XDR_ID: [u8; 8] = [3u8, 4u8, 117u8, 78u8, 234u8, 215u8, 91u8, 19u8];
+        pub const fn spec_type_id() -> [u8; 8] {
+            [3u8, 4u8, 117u8, 78u8, 234u8, 215u8, 91u8, 19u8]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for ContractContext {
         #[doc(hidden)]
@@ -467,7 +469,7 @@ mod addcontract {
                         name: soroban_sdk::xdr::StringMRef::new(b"context"),
                         type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                             soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                                id: <ContractContext>::SPEC_XDR_ID,
+                                id: <ContractContext>::spec_type_id(),
                                 name: soroban_sdk::xdr::StringMRef::new(b"ContractContext"),
                             },
                         ),
@@ -479,7 +481,7 @@ mod addcontract {
                             &soroban_sdk::xdr::ScSpecTypeVecRef {
                                 element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                                     soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                                        id: <InvokerContractAuthEntry>::SPEC_XDR_ID,
+                                        id: <InvokerContractAuthEntry>::spec_type_id(),
                                         name: soroban_sdk::xdr::StringMRef::new(
                                             b"InvokerContractAuthEntry",
                                         ),
@@ -496,7 +498,9 @@ mod addcontract {
     }
     impl SubContractInvocation {
         #[doc(hidden)]
-        pub const SPEC_XDR_ID: [u8; 8] = [55u8, 104u8, 146u8, 250u8, 151u8, 15u8, 63u8, 42u8];
+        pub const fn spec_type_id() -> [u8; 8] {
+            [55u8, 104u8, 146u8, 250u8, 151u8, 15u8, 63u8, 42u8]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for SubContractInvocation {
         #[doc(hidden)]
@@ -656,7 +660,7 @@ mod addcontract {
                         name: soroban_sdk::xdr::StringMRef::new(b"executable"),
                         type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                             soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                                id: <ContractExecutable>::SPEC_XDR_ID,
+                                id: <ContractExecutable>::spec_type_id(),
                                 name: soroban_sdk::xdr::StringMRef::new(b"ContractExecutable"),
                             },
                         ),
@@ -677,7 +681,9 @@ mod addcontract {
     }
     impl CreateContractHostFnContext {
         #[doc(hidden)]
-        pub const SPEC_XDR_ID: [u8; 8] = [180u8, 130u8, 134u8, 76u8, 208u8, 117u8, 156u8, 138u8];
+        pub const fn spec_type_id() -> [u8; 8] {
+            [180u8, 130u8, 134u8, 76u8, 208u8, 117u8, 156u8, 138u8]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for CreateContractHostFnContext {
         #[doc(hidden)]
@@ -868,7 +874,7 @@ mod addcontract {
                         name: soroban_sdk::xdr::StringMRef::new(b"executable"),
                         type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                             soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                                id: <ContractExecutable>::SPEC_XDR_ID,
+                                id: <ContractExecutable>::spec_type_id(),
                                 name: soroban_sdk::xdr::StringMRef::new(b"ContractExecutable"),
                             },
                         ),
@@ -890,7 +896,9 @@ mod addcontract {
     }
     impl CreateContractWithConstructorHostFnContext {
         #[doc(hidden)]
-        pub const SPEC_XDR_ID: [u8; 8] = [73u8, 117u8, 5u8, 129u8, 186u8, 200u8, 231u8, 226u8];
+        pub const fn spec_type_id() -> [u8; 8] {
+            [73u8, 117u8, 5u8, 129u8, 186u8, 200u8, 231u8, 226u8]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for CreateContractWithConstructorHostFnContext {
         #[doc(hidden)]
@@ -1120,7 +1128,7 @@ mod addcontract {
                         type_: soroban_sdk::xdr::VecMRef::new(
                             &[
                                 soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                                    id: <ContractContext>::SPEC_XDR_ID,
+                                    id: <ContractContext>::spec_type_id(),
                                     name: soroban_sdk::xdr::StringMRef::new(b"ContractContext"),
                                 }),
                             ],
@@ -1132,7 +1140,7 @@ mod addcontract {
                         type_: soroban_sdk::xdr::VecMRef::new(
                             &[
                                 soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                                    id: <CreateContractHostFnContext>::SPEC_XDR_ID,
+                                    id: <CreateContractHostFnContext>::spec_type_id(),
                                     name: soroban_sdk::xdr::StringMRef::new(
                                         b"CreateContractHostFnContext",
                                     ),
@@ -1148,7 +1156,7 @@ mod addcontract {
                         type_: soroban_sdk::xdr::VecMRef::new(
                             &[
                                 soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                                    id: <CreateContractWithConstructorHostFnContext>::SPEC_XDR_ID,
+                                    id: <CreateContractWithConstructorHostFnContext>::spec_type_id(),
                                     name: soroban_sdk::xdr::StringMRef::new(
                                         b"CreateContractWithConstructorHostFnContext",
                                     ),
@@ -1165,7 +1173,9 @@ mod addcontract {
     }
     impl Context {
         #[doc(hidden)]
-        pub const SPEC_XDR_ID: [u8; 8] = [155u8, 5u8, 13u8, 38u8, 150u8, 62u8, 51u8, 225u8];
+        pub const fn spec_type_id() -> [u8; 8] {
+            [155u8, 5u8, 13u8, 38u8, 150u8, 62u8, 51u8, 225u8]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for Context {
         #[doc(hidden)]
@@ -1384,7 +1394,9 @@ mod addcontract {
     }
     impl ContractExecutable {
         #[doc(hidden)]
-        pub const SPEC_XDR_ID: [u8; 8] = [94u8, 190u8, 51u8, 52u8, 216u8, 153u8, 132u8, 145u8];
+        pub const fn spec_type_id() -> [u8; 8] {
+            [94u8, 190u8, 51u8, 52u8, 216u8, 153u8, 132u8, 145u8]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for ContractExecutable {
         #[doc(hidden)]
@@ -1620,7 +1632,7 @@ mod addcontract {
                         type_: soroban_sdk::xdr::VecMRef::new(
                             &[
                                 soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                                    id: <SubContractInvocation>::SPEC_XDR_ID,
+                                    id: <SubContractInvocation>::spec_type_id(),
                                     name: soroban_sdk::xdr::StringMRef::new(
                                         b"SubContractInvocation",
                                     ),
@@ -1634,7 +1646,7 @@ mod addcontract {
                         type_: soroban_sdk::xdr::VecMRef::new(
                             &[
                                 soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                                    id: <CreateContractHostFnContext>::SPEC_XDR_ID,
+                                    id: <CreateContractHostFnContext>::spec_type_id(),
                                     name: soroban_sdk::xdr::StringMRef::new(
                                         b"CreateContractHostFnContext",
                                     ),
@@ -1650,7 +1662,7 @@ mod addcontract {
                         type_: soroban_sdk::xdr::VecMRef::new(
                             &[
                                 soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                                    id: <CreateContractWithConstructorHostFnContext>::SPEC_XDR_ID,
+                                    id: <CreateContractWithConstructorHostFnContext>::spec_type_id(),
                                     name: soroban_sdk::xdr::StringMRef::new(
                                         b"CreateContractWithConstructorHostFnContext",
                                     ),
@@ -1667,7 +1679,9 @@ mod addcontract {
     }
     impl InvokerContractAuthEntry {
         #[doc(hidden)]
-        pub const SPEC_XDR_ID: [u8; 8] = [19u8, 218u8, 204u8, 220u8, 114u8, 50u8, 230u8, 66u8];
+        pub const fn spec_type_id() -> [u8; 8] {
+            [19u8, 218u8, 204u8, 220u8, 114u8, 50u8, 230u8, 66u8]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for InvokerContractAuthEntry {
         #[doc(hidden)]
@@ -1916,7 +1930,9 @@ mod addcontract {
     }
     impl Executable {
         #[doc(hidden)]
-        pub const SPEC_XDR_ID: [u8; 8] = [76u8, 124u8, 123u8, 13u8, 244u8, 242u8, 26u8, 168u8];
+        pub const fn spec_type_id() -> [u8; 8] {
+            [76u8, 124u8, 123u8, 13u8, 244u8, 242u8, 26u8, 168u8]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for Executable {
         #[doc(hidden)]
@@ -2089,7 +2105,9 @@ mod addcontract {
     }
     impl Error {
         #[doc(hidden)]
-        pub const SPEC_XDR_ID: [u8; 8] = [214u8, 184u8, 96u8, 21u8, 172u8, 158u8, 105u8, 26u8];
+        pub const fn spec_type_id() -> [u8; 8] {
+            [214u8, 184u8, 96u8, 21u8, 172u8, 158u8, 105u8, 26u8]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for Error {
         #[doc(hidden)]
@@ -2278,7 +2296,9 @@ mod addcontract {
     }
     impl MyError {
         #[doc(hidden)]
-        pub const SPEC_XDR_ID: [u8; 8] = [149u8, 208u8, 106u8, 42u8, 29u8, 250u8, 109u8, 163u8];
+        pub const fn spec_type_id() -> [u8; 8] {
+            [149u8, 208u8, 106u8, 42u8, 29u8, 250u8, 109u8, 163u8]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for MyError {
         #[doc(hidden)]
@@ -2451,7 +2471,9 @@ impl Error {
 }
 impl Error {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [126u8, 131u8, 71u8, 78u8, 88u8, 159u8, 195u8, 253u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [126u8, 131u8, 71u8, 78u8, 88u8, 159u8, 195u8, 253u8]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for Error {
     #[doc(hidden)]

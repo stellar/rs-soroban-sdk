@@ -53,7 +53,9 @@ impl MockProof {
 }
 impl MockProof {
     #[doc(hidden)]
-    pub const SPEC_XDR_ID: [u8; 8] = [58u8, 129u8, 166u8, 160u8, 158u8, 231u8, 167u8, 31u8];
+    pub const fn spec_type_id() -> [u8; 8] {
+        [58u8, 129u8, 166u8, 160u8, 158u8, 231u8, 167u8, 31u8]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for MockProof {
     #[doc(hidden)]
@@ -183,7 +185,7 @@ impl Contract {
                 name: soroban_sdk::xdr::StringMRef::new(b"proof"),
                 type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
                     soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
-                        id: <MockProof>::SPEC_XDR_ID,
+                        id: <MockProof>::spec_type_id(),
                         name: soroban_sdk::xdr::StringMRef::new(b"MockProof"),
                     },
                 ),
