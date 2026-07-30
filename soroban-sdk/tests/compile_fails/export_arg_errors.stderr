@@ -1,0 +1,23 @@
+error: `export` is no longer supported and must be removed, because the contract spec is determined by reachability from the contract boundary
+ --> tests/compile_fails/export_arg_errors.rs:3:25
+  |
+3 | #[contracttype(export = false)]
+  |                         ^^^^^
+
+error: `export` is no longer supported and must be removed, because the contract spec is determined by reachability from the contract boundary
+ --> tests/compile_fails/export_arg_errors.rs:8:25
+  |
+8 | #[contracttype(export = true)]
+  |                         ^^^^
+
+error: `export` is no longer supported and must be removed, because the contract spec is determined by reachability from the contract boundary
+  --> tests/compile_fails/export_arg_errors.rs:13:26
+   |
+13 | #[contracterror(export = false)]
+   |                          ^^^^^
+
+error: `export` is no longer supported and must be removed, because the contract spec is determined by reachability from the contract boundary
+  --> tests/compile_fails/export_arg_errors.rs:19:26
+   |
+19 | #[contractevent(export = false)]
+   |                          ^^^^^

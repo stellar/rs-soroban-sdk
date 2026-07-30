@@ -22,11 +22,7 @@
 //!
 //! Build contracts with `stellar contract build` from [stellar-cli], which targets `wasm32v1-none`
 //! and applies the build settings the Soroban runtime requires. Do not build contracts with
-//! `cargo build`.
-//!
-//! Building a contract for wasm with a build system that does not support spec shaking produces a
-//! build error, because the SDK relies on the build system to shake the contract's spec. See
-//! [_spec_shaking].
+//! `cargo build`. As of soroban-sdk v28, stellar-cli v25.2.0 or newer is required.
 //!
 //! The `wasm32-unknown-unknown` target is not supported when building with Rust 1.82 or newer,
 //! because on those versions the target enables wasm features (reference-types, multi-value) that
@@ -85,7 +81,6 @@
 
 pub mod _features;
 pub mod _migrating;
-pub mod _spec_shaking;
 
 #[cfg(all(target_family = "wasm", feature = "testutils"))]
 compile_error!("'testutils' feature is not supported on 'wasm' target");
@@ -231,9 +226,8 @@ pub use soroban_sdk_macros::symbol_short;
 /// Spec entries are generated for all types regardless of visibility, and
 /// markers are embedded that allow post-build tools to strip entries for errors
 /// that are neither used at a contract boundary nor thrown at one. The
-/// `export = ...` argument is a no-op and emits a deprecation warning at the
-/// macro call site; it will be removed in a future release. See
-/// [`_spec_shaking`] for details.
+/// `export = ...` argument is no longer supported and is a compile error. See
+/// [`_migrating::v28_spec_shaking`] for details.
 ///
 /// ### Examples
 ///
@@ -344,7 +338,7 @@ pub use soroban_sdk_macros::contracterror;
 ///
 /// Imported types produce spec entries and markers in the importing contract.
 /// Post-build tools strip entries for imported types that are not used at the
-/// importing contract's boundary. See [`_spec_shaking`] for details.
+/// importing contract's boundary. See [`_migrating::v28_spec_shaking`] for details.
 ///
 /// ### SHA-256 Verification
 ///
@@ -648,9 +642,9 @@ pub use soroban_sdk_macros::contractmeta;
 ///
 /// Spec entries are generated for all types regardless of visibility, and
 /// markers are embedded that allow post-build tools to strip entries for types
-/// that are not used at a contract boundary. The `export = ...` argument is a
-/// no-op and emits a deprecation warning at the macro call site; it will be
-/// removed in a future release. See [`_spec_shaking`] for details.
+/// that are not used at a contract boundary. The `export = ...` argument is no
+/// longer supported and is a compile error. See
+/// [`_migrating::v28_spec_shaking`] for details.
 ///
 /// ### Examples
 ///
@@ -803,8 +797,8 @@ pub use soroban_sdk_macros::contracttype;
 ///
 /// Markers are embedded that allow post-build tools to strip spec entries for
 /// events that are never published at a contract boundary. The `export = ...`
-/// argument is a no-op and emits a deprecation warning at the macro call site;
-/// it will be removed in a future release. See [`_spec_shaking`] for details.
+/// argument is no longer supported and is a compile error. See
+/// [`_migrating::v28_spec_shaking`] for details.
 ///
 /// ### Examples
 ///

@@ -4,6 +4,17 @@
 // every small change is captured here. This is the document a developer should
 // read to understand what they need to change when upgrading.
 
+//! # Migrating from v27 to v28
+//!
+//! 1. [Spec shaking is always on, and the `export` argument has been removed][v28_spec_shaking].
+//!    The `experimental_spec_shaking_v2` feature is gone and the behaviour it enabled is now the
+//!    only behaviour: the SDK emits a spec entry and a marker for every type and event, and the
+//!    build system strips the entries that are not reachable from the contract boundary. Remove
+//!    the feature from the `soroban-sdk` dependency in `Cargo.toml` if it is enabled, remove any
+//!    `export = ...` argument from [`contracttype`], [`contracterror`], and [`contractevent`]
+//!    (it is now a compile error), and build contracts with `stellar contract build` from
+//!    `stellar-cli` v25.2.0 or newer, which is now required.
+//!
 //! # Migrating from v26 to v27
 //!
 //! 1. [`bytes!` and `bytesn!` no longer accept base10 (decimal) integer literals][v27_bytes_literals].
@@ -11,20 +22,18 @@
 //!    passed to [`bytes!`] or [`bytesn!`] in hex or binary form (e.g. `bytes!(&env, 1)` becomes
 //!    `bytes!(&env, 0x1)`). Array literals such as `bytes!(&env, [3, 2, 1])` are unaffected.
 //!
-//! 2. [Spec shaking v2 is always on, and the `export` argument is deprecated][v27_export].
-//!    The final spec is determined by reachability from the contract boundary, so `export` no
-//!    longer has any effect on [`contracttype`], [`contracterror`], or [`contractevent`] and now
-//!    emits a deprecation warning. Remove `export = ...` from these annotations; it will be
-//!    removed entirely in a future release. Because the SDK now always relies on post-build
-//!    tooling to shake the spec, contracts must be built with `stellar contract build` from
-//!    `stellar-cli` v25.2.0 or newer. See [`_spec_shaking`] for details.
+//! 2. [The `export` argument is deprecated under the `experimental_spec_shaking_v2`
+//!    feature][v27_export]. Under spec shaking v2 the final spec is determined by
+//!    reachability from the contract boundary, so `export` no longer has any effect on
+//!    [`contracttype`], [`contracterror`], or [`contractevent`] and now emits a deprecation
+//!    warning. Remove `export = ...` from these annotations; it will be removed entirely in a
+//!    future release. Default (v1) builds are unaffected.
 //!
 //! [`bytes!`]: crate::bytes
 //! [`bytesn!`]: crate::bytesn
 //! [`contracttype`]: crate::contracttype
 //! [`contracterror`]: crate::contracterror
 //! [`contractevent`]: crate::contractevent
-//! [`_spec_shaking`]: crate::_spec_shaking
 //!
 //! # Migrating from v25 to v26
 //!
@@ -352,3 +361,4 @@ pub mod v25_poseidon;
 pub mod v25_resource_limits;
 pub mod v27_bytes_literals;
 pub mod v27_export;
+pub mod v28_spec_shaking;

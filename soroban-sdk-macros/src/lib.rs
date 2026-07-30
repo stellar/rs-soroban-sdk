@@ -39,7 +39,7 @@ use derive_struct::derive_type_struct;
 use derive_struct_tuple::derive_type_struct_tuple;
 use derive_trait::derive_trait;
 
-use darling::{ast::NestedMeta, FromMeta};
+use darling::{ast::NestedMeta, util::SpannedValue, FromMeta};
 use macro_string::MacroString;
 use map_type::is_mapped_type_udt;
 use proc_macro::TokenStream;
@@ -53,7 +53,7 @@ use syn::{
 };
 use syn_ext::HasFnsItem;
 
-use soroban_spec_rust::{generate_from_wasm_with_options, GenerateFromFileError, GenerateOptions};
+use soroban_spec_rust::{generate_from_wasm, GenerateFromFileError};
 
 use stellar_xdr::{Limits, ScMetaEntry, ScMetaV0, StringM, WriteXdr};
 
@@ -62,21 +62,17 @@ pub(crate) const DEFAULT_XDR_RW_LIMITS: Limits = Limits {
     len: 0x1000000,
 };
 
-/// Emit a deprecation warning when `export` is set. The spec is determined by
-/// reachability, so the argument has no effect and will be removed in a future
-/// release.
-pub(crate) fn export_arg_deprecation(export: &Option<bool>, ident: &syn::Ident) -> TokenStream2 {
-    if export.is_some() {
-        let marker = format_ident!("__SOROBAN_EXPORT_ARG_DEPRECATED_FOR_{}", ident);
-        quote! {
-            #[doc(hidden)]
-            #[allow(non_upper_case_globals)]
-            #[deprecated = "`export` is a no-op (specs are determined by reachability) and will be removed in a future release"]
-            const #marker: () = ();
-            const _: () = #marker;
-        }
-    } else {
-        TokenStream2::new()
+/// Emit a compile error when `export` is set. The spec is determined by
+/// reachability, so the argument has no meaning and is no longer accepted.
+pub(crate) fn export_arg_error(export: &Option<SpannedValue<bool>>) -> TokenStream2 {
+    match export {
+        Some(export) => Error::new(
+            export.span(),
+            "`export` is no longer supported and must be removed, because the contract spec is \
+             determined by reachability from the contract boundary",
+        )
+        .to_compile_error(),
+        None => TokenStream2::new(),
     }
 }
 
@@ -431,7 +427,7 @@ struct ContractTypeArgs {
     #[darling(default = "default_crate_path")]
     crate_path: Path,
     lib: Option<String>,
-    export: Option<bool>,
+    export: Option<SpannedValue<bool>>,
 }
 
 #[proc_macro_attribute]
@@ -455,8 +451,8 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
         Err(e) => return e.to_compile_error().into(),
     }
     // The spec is always emitted and reachability determines what is retained,
-    // so the `export` argument is ignored, and deprecated.
-    let export_deprecation = export_arg_deprecation(&args.export, ident);
+    // so the `export` argument is no longer accepted.
+    let export_error = export_arg_error(&args.export);
     let derived = match &input.data {
         Data::Struct(s) => match s.fields {
             Fields::Named(_) => {
@@ -495,7 +491,7 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
     };
     quote! {
         #input
-        #export_deprecation
+        #export_error
         #derived
     }
     .into()
@@ -517,8 +513,8 @@ pub fn contracterror(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let ident = &input.ident;
     let attrs = &input.attrs;
     // The spec is always emitted and reachability determines what is retained,
-    // so the `export` argument is ignored, and deprecated.
-    let export_deprecation = export_arg_deprecation(&args.export, ident);
+    // so the `export` argument is no longer accepted.
+    let export_error = export_arg_error(&args.export);
     let derived = match &input.data {
         Data::Enum(e) => {
             if e.variants.iter().all(|v| v.discriminant.is_some()) {
@@ -541,7 +537,7 @@ pub fn contracterror(metadata: TokenStream, input: TokenStream) -> TokenStream {
     };
     quote! {
         #input
-        #export_deprecation
+        #export_error
         #derived
     }
     .into()
@@ -704,8 +700,7 @@ pub fn contractimport(metadata: TokenStream) -> TokenStream {
     // Imported types produce spec entries and markers in the importing
     // contract, and spec shaking strips the entries for imported types that are
     // not used at the importing contract's boundary.
-    let opts = GenerateOptions { export: true };
-    match generate_from_wasm_with_options(&wasm, &args.file, args.sha256.as_deref(), &opts) {
+    match generate_from_wasm(&wasm, &args.file, args.sha256.as_deref()) {
         Ok(code) => quote! { #code },
         Err(e @ GenerateFromFileError::VerifySha256 { .. }) => {
             Error::new(args.sha256.span(), e.to_string()).into_compile_error()

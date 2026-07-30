@@ -33,14 +33,7 @@ pub fn main() {
             "\
 \nerror: soroban-sdk requires stellar-cli v25.2.0+ to build a contract\
 \n\
-\nThe soroban-sdk embeds spec shaking markers that the build system must use\
-\nto shake the contract's spec, so contracts must be built with\
-\n`stellar contract build` from stellar-cli v25.2.0 or newer.\
-\n\
-\nTo fix, either:\
-\n  - Build with `stellar contract build` using stellar-cli v25.2.0+\
-\n  - If you are using another build system that shakes the spec, set the\
-\n    SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2 env var to signal it.\
+\nTo fix, build with `stellar contract build` using stellar-cli v25.2.0+.\
 "
         );
         std::process::exit(1);

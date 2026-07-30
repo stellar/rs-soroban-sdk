@@ -1,8 +1,8 @@
 use crate::{
     attribute::remove_attributes_from_item, default_crate_path, doc::docs_from_attrs,
-    export_arg_deprecation, map_type::map_type, shaking, symbol, DEFAULT_XDR_RW_LIMITS,
+    export_arg_error, map_type::map_type, shaking, symbol, DEFAULT_XDR_RW_LIMITS,
 };
-use darling::{ast::NestedMeta, Error, FromMeta};
+use darling::{ast::NestedMeta, util::SpannedValue, Error, FromMeta};
 use heck::ToSnakeCase;
 use proc_macro2::Span;
 use proc_macro2::TokenStream as TokenStream2;
@@ -18,7 +18,7 @@ struct ContractEventArgs {
     #[darling(default = "default_crate_path")]
     crate_path: Path,
     lib: Option<String>,
-    export: Option<bool>,
+    export: Option<SpannedValue<bool>>,
     #[darling(default)]
     topics: Option<Vec<LitStr>>,
     #[darling(default)]
@@ -67,13 +67,13 @@ fn derive_event_or_err(metadata: TokenStream2, input: TokenStream2) -> Result<To
     let args = NestedMeta::parse_meta_list(metadata.into())?;
     let args = ContractEventArgs::from_list(&args)?;
     let input = parse2::<DeriveInput>(input)?;
-    let export_deprecation = export_arg_deprecation(&args.export, &input.ident);
+    let export_error = export_arg_error(&args.export);
     let derived = derive_impls(&args, &input)?;
     let mut input = input;
     remove_attributes_from_item(&mut input.data, &["topic", "data"]);
     Ok(quote! {
         #input
-        #export_deprecation
+        #export_error
         #derived
     }
     .into())
@@ -169,9 +169,8 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     // If errors have occurred, return them.
     let mut errors = errors.checkpoint()?;
 
-    // Generated code spec. The spec is always emitted and reachability
-    // determines what is retained, so an explicit `export = false` is ignored (a
-    // deprecation warning is emitted separately).
+    // Generated code spec. The spec is always emitted and reachability determines
+    // what is retained.
     let export_gen =
         quote! { #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")] };
     let spec_entry = ScSpecEntry::EventV0(ScSpecEventV0 {

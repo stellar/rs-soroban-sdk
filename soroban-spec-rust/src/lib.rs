@@ -13,11 +13,8 @@ use syn::Error;
 
 use soroban_spec::read::{from_wasm, FromWasmError};
 
-use types::{
-    generate_enum_with_options, generate_error_enum_with_options, generate_event_with_options,
-    generate_struct_with_options, generate_union_with_options,
-};
-pub use types::{GenerateError, GenerateOptions};
+pub use types::GenerateError;
+use types::{generate_enum, generate_error_enum, generate_event, generate_struct, generate_union};
 
 // IMPORTANT: The "docs" fields of spec entries are not output in Rust token
 // streams as rustdocs, because rustdocs can contain Rust code, and that code
@@ -55,15 +52,6 @@ pub fn generate_from_wasm(
     file: &str,
     verify_sha256: Option<&str>,
 ) -> Result<TokenStream, GenerateFromFileError> {
-    generate_from_wasm_with_options(wasm, file, verify_sha256, &GenerateOptions::default())
-}
-
-pub fn generate_from_wasm_with_options(
-    wasm: &[u8],
-    file: &str,
-    verify_sha256: Option<&str>,
-    opts: &GenerateOptions,
-) -> Result<TokenStream, GenerateFromFileError> {
     let sha256 = Sha256::digest(wasm);
     let sha256 = format!("{:x}", sha256);
     if let Some(verify_sha256) = verify_sha256 {
@@ -73,8 +61,7 @@ pub fn generate_from_wasm_with_options(
     }
 
     let spec = from_wasm(wasm).map_err(GenerateFromFileError::GetSpec)?;
-    let code = generate_with_options(&spec, file, &sha256, opts)
-        .map_err(GenerateFromFileError::Generate)?;
+    let code = generate(&spec, file, &sha256).map_err(GenerateFromFileError::Generate)?;
     Ok(code)
 }
 
@@ -83,16 +70,7 @@ pub fn generate(
     file: &str,
     sha256: &str,
 ) -> Result<TokenStream, GenerateError> {
-    generate_with_options(specs, file, sha256, &GenerateOptions::default())
-}
-
-pub fn generate_with_options(
-    specs: &[ScSpecEntry],
-    file: &str,
-    sha256: &str,
-    opts: &GenerateOptions,
-) -> Result<TokenStream, GenerateError> {
-    let generated = generate_without_file_with_options(specs, opts)?;
+    let generated = generate_without_file(specs)?;
     Ok(quote! {
         pub const WASM: &[u8] = soroban_sdk::contractfile!(file = #file, sha256 = #sha256);
         #generated
@@ -100,13 +78,6 @@ pub fn generate_with_options(
 }
 
 pub fn generate_without_file(specs: &[ScSpecEntry]) -> Result<TokenStream, GenerateError> {
-    generate_without_file_with_options(specs, &GenerateOptions::default())
-}
-
-pub fn generate_without_file_with_options(
-    specs: &[ScSpecEntry],
-    opts: &GenerateOptions,
-) -> Result<TokenStream, GenerateError> {
     let specs = apply_error_udt_override(specs);
     let specs: &[ScSpecEntry] = &specs;
 
@@ -132,23 +103,23 @@ pub fn generate_without_file_with_options(
     let trait_ = r#trait::generate_trait(trait_name, &spec_fns)?;
     let structs = spec_structs
         .iter()
-        .map(|s| generate_struct_with_options(s, opts))
+        .map(|s| generate_struct(s))
         .collect::<Result<Vec<_>, _>>()?;
     let unions = spec_unions
         .iter()
-        .map(|s| generate_union_with_options(s, opts))
+        .map(|s| generate_union(s))
         .collect::<Result<Vec<_>, _>>()?;
     let enums = spec_enums
         .iter()
-        .map(|s| generate_enum_with_options(s, opts))
+        .map(|s| generate_enum(s))
         .collect::<Result<Vec<_>, _>>()?;
     let error_enums = spec_error_enums
         .iter()
-        .map(|s| generate_error_enum_with_options(s, opts))
+        .map(|s| generate_error_enum(s))
         .collect::<Result<Vec<_>, _>>()?;
     let events = spec_events
         .iter()
-        .map(|s| generate_event_with_options(s, opts))
+        .map(|s| generate_event(s))
         .collect::<Result<Vec<_>, _>>()?;
 
     Ok(quote! {
@@ -305,55 +276,55 @@ pub trait Contract {
         key: u32,
     ) -> Result<Option<RecursiveEnum>, soroban_sdk::Error>;
 }
-#[soroban_sdk::contracttype(export = false)]
+#[soroban_sdk::contracttype]
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub struct UdtTuple(pub i64, pub soroban_sdk::Vec<i64>);
-#[soroban_sdk::contracttype(export = false)]
+#[soroban_sdk::contracttype]
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub struct UdtStruct {
     pub a: i64,
     pub b: i64,
     pub c: soroban_sdk::Vec<i64>,
 }
-#[soroban_sdk::contracttype(export = false)]
+#[soroban_sdk::contracttype]
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub struct UdtRecursive {
     pub a: soroban_sdk::Symbol,
     pub b: soroban_sdk::Vec<UdtRecursive>,
 }
-#[soroban_sdk::contracttype(export = false)]
+#[soroban_sdk::contracttype]
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub struct RecursiveToEnum {
     pub a: soroban_sdk::Symbol,
     pub b: soroban_sdk::Map<u32, RecursiveEnum>,
 }
-#[soroban_sdk::contracttype(export = false)]
+#[soroban_sdk::contracttype]
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub struct ContractContext {
     pub args: soroban_sdk::Vec<soroban_sdk::Val>,
     pub contract: soroban_sdk::Address,
     pub fn_name: soroban_sdk::Symbol,
 }
-#[soroban_sdk::contracttype(export = false)]
+#[soroban_sdk::contracttype]
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub struct SubContractInvocation {
     pub context: ContractContext,
     pub sub_invocations: soroban_sdk::Vec<InvokerContractAuthEntry>,
 }
-#[soroban_sdk::contracttype(export = false)]
+#[soroban_sdk::contracttype]
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub struct CreateContractHostFnContext {
     pub executable: ContractExecutable,
     pub salt: soroban_sdk::BytesN<32>,
 }
-#[soroban_sdk::contracttype(export = false)]
+#[soroban_sdk::contracttype]
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub struct CreateContractWithConstructorHostFnContext {
     pub constructor_args: soroban_sdk::Vec<soroban_sdk::Val>,
     pub executable: ContractExecutable,
     pub salt: soroban_sdk::BytesN<32>,
 }
-#[soroban_sdk::contracttype(export = false)]
+#[soroban_sdk::contracttype]
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub enum UdtEnum {
     UdtA,
@@ -361,39 +332,39 @@ pub enum UdtEnum {
     UdtC(UdtEnum2),
     UdtD(UdtTuple),
 }
-#[soroban_sdk::contracttype(export = false)]
+#[soroban_sdk::contracttype]
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub enum RecursiveEnum {
     NotRecursive,
     Recursive(RecursiveToEnum),
 }
-#[soroban_sdk::contracttype(export = false)]
+#[soroban_sdk::contracttype]
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub enum Context {
     Contract(ContractContext),
     CreateContractHostFn(CreateContractHostFnContext),
     CreateContractWithCtorHostFn(CreateContractWithConstructorHostFnContext),
 }
-#[soroban_sdk::contracttype(export = false)]
+#[soroban_sdk::contracttype]
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub enum ContractExecutable {
     Wasm(soroban_sdk::BytesN<32>),
 }
-#[soroban_sdk::contracttype(export = false)]
+#[soroban_sdk::contracttype]
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub enum InvokerContractAuthEntry {
     Contract(SubContractInvocation),
     CreateContractHostFn(CreateContractHostFnContext),
     CreateContractWithCtorHostFn(CreateContractWithConstructorHostFnContext),
 }
-#[soroban_sdk::contracttype(export = false)]
+#[soroban_sdk::contracttype]
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub enum Executable {
     Wasm(soroban_sdk::BytesN<32>),
     StellarAsset,
     Account,
 }
-#[soroban_sdk::contracttype(export = false)]
+#[soroban_sdk::contracttype]
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub enum UdtEnum2 {
     A = 10,
@@ -427,64 +398,64 @@ pub trait Contract {
     fn safe_add(env: soroban_sdk::Env, a: u64, b: u64) -> Result<u64, Error>;
     fn safe_add_two(env: soroban_sdk::Env, a: u64, b: u64) -> Result<u64, MyError>;
 }
-#[soroban_sdk::contracttype(export = false)]
+#[soroban_sdk::contracttype]
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub struct ContractContext {
     pub args: soroban_sdk::Vec<soroban_sdk::Val>,
     pub contract: soroban_sdk::Address,
     pub fn_name: soroban_sdk::Symbol,
 }
-#[soroban_sdk::contracttype(export = false)]
+#[soroban_sdk::contracttype]
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub struct SubContractInvocation {
     pub context: ContractContext,
     pub sub_invocations: soroban_sdk::Vec<InvokerContractAuthEntry>,
 }
-#[soroban_sdk::contracttype(export = false)]
+#[soroban_sdk::contracttype]
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub struct CreateContractHostFnContext {
     pub executable: ContractExecutable,
     pub salt: soroban_sdk::BytesN<32>,
 }
-#[soroban_sdk::contracttype(export = false)]
+#[soroban_sdk::contracttype]
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub struct CreateContractWithConstructorHostFnContext {
     pub constructor_args: soroban_sdk::Vec<soroban_sdk::Val>,
     pub executable: ContractExecutable,
     pub salt: soroban_sdk::BytesN<32>,
 }
-#[soroban_sdk::contracttype(export = false)]
+#[soroban_sdk::contracttype]
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub enum Context {
     Contract(ContractContext),
     CreateContractHostFn(CreateContractHostFnContext),
     CreateContractWithCtorHostFn(CreateContractWithConstructorHostFnContext),
 }
-#[soroban_sdk::contracttype(export = false)]
+#[soroban_sdk::contracttype]
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub enum ContractExecutable {
     Wasm(soroban_sdk::BytesN<32>),
 }
-#[soroban_sdk::contracttype(export = false)]
+#[soroban_sdk::contracttype]
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub enum InvokerContractAuthEntry {
     Contract(SubContractInvocation),
     CreateContractHostFn(CreateContractHostFnContext),
     CreateContractWithCtorHostFn(CreateContractWithConstructorHostFnContext),
 }
-#[soroban_sdk::contracttype(export = false)]
+#[soroban_sdk::contracttype]
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub enum Executable {
     Wasm(soroban_sdk::BytesN<32>),
     StellarAsset,
     Account,
 }
-#[soroban_sdk::contracterror(export = false)]
+#[soroban_sdk::contracterror]
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub enum Error {
     Overflow = 1,
 }
-#[soroban_sdk::contracterror(export = false)]
+#[soroban_sdk::contracterror]
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub enum MyError {
     Overflow = 1,
@@ -656,7 +627,7 @@ pub trait Contract {
 pub trait Contract {
     fn safe_add(env: soroban_sdk::Env) -> Result<u64, Error>;
 }
-#[soroban_sdk::contracterror(export = false)]
+#[soroban_sdk::contracterror]
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub enum Error {
     Overflow = 1,
@@ -713,7 +684,7 @@ pub enum Error {
 pub trait Contract {
     fn errors(env: soroban_sdk::Env) -> soroban_sdk::Vec<Error>;
 }
-#[soroban_sdk::contracterror(export = false)]
+#[soroban_sdk::contracterror]
 #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub enum Error {
     Overflow = 1,
