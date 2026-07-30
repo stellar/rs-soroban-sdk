@@ -117,6 +117,40 @@ jobs:
           sed -i 's|'"$crate"' = { \(.*\)version = "[^"]*"\(.*\)|'"$crate"' = { \1path = "'"$rel_path"'" \2|g' Cargo.toml
         done < "$RUNNER_TEMP/sdk-crates.tsv"
 
+    - name: Remove the experimental_spec_shaking_v2 feature
+      working-directory: stellar-contracts
+      run: |
+        # soroban-sdk no longer has this feature, but stellar-contracts v0.7.x manifests
+        # enable it, and cargo refuses to resolve a dependency on a feature that does not
+        # exist, so every job would fail before building anything. Strip each reference:
+        # array elements that enable the feature (bare, or as `<crate>/<feature>`) and any
+        # single-line definition of it in a [features] table.
+        python3 - <<'PY'
+        import pathlib, re
+
+        FEATURE = "experimental_spec_shaking_v2"
+        # An array element enabling the feature, plus a trailing comma and any whitespace.
+        element = re.compile(r'"[A-Za-z0-9_-]*/?' + FEATURE + r'"\s*,?\s*')
+        # A single-line definition of the feature in a [features] table.
+        definition = re.compile(r'^[ \t]*' + FEATURE + r'[ \t]*=[ \t]*\[[^\]]*\][ \t]*\r?\n', re.M)
+
+        for manifest in sorted(pathlib.Path(".").rglob("Cargo.toml")):
+            before = manifest.read_text()
+            after = element.sub("", definition.sub("", before))
+            # Tidy a dangling comma left when the feature was the last array element.
+            after = re.sub(r",(\s*\])", r"\1", after)
+            if after != before:
+                manifest.write_text(after)
+                print(f"patched {manifest}")
+        PY
+        # Fail here rather than leaving cargo to fail later with a resolution error that
+        # does not say which manifest is at fault. Matches only outside comments, so a
+        # comment that mentions the feature does not fail the job.
+        if grep -rn --include=Cargo.toml -E '^[^#]*experimental_spec_shaking_v2' .; then
+          echo "::error::experimental_spec_shaking_v2 is still referenced above"
+          exit 1
+        fi
+
     - name: Patch transitive crates.io dependencies
       working-directory: stellar-contracts
       run: |
