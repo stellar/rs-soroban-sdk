@@ -53,7 +53,7 @@ use syn::{
 };
 use syn_ext::HasFnsItem;
 
-use soroban_spec_rust::{generate_from_wasm, GenerateFromFileError};
+use soroban_spec_rust::{generate_from_wasm_with_options, GenerateFromFileError, GenerateOptions};
 
 use stellar_xdr::{Limits, ScMetaEntry, ScMetaV0, StringM, WriteXdr};
 
@@ -700,7 +700,8 @@ pub fn contractimport(metadata: TokenStream) -> TokenStream {
     // Imported types produce spec entries and markers in the importing
     // contract, and spec shaking strips the entries for imported types that are
     // not used at the importing contract's boundary.
-    match generate_from_wasm(&wasm, &args.file, args.sha256.as_deref()) {
+    let opts = GenerateOptions::default();
+    match generate_from_wasm_with_options(&wasm, &args.file, args.sha256.as_deref(), &opts) {
         Ok(code) => quote! { #code },
         Err(e @ GenerateFromFileError::VerifySha256 { .. }) => {
             Error::new(args.sha256.span(), e.to_string()).into_compile_error()

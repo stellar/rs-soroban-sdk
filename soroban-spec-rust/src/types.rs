@@ -20,9 +20,26 @@ pub enum GenerateError {
     InvalidIdent(String),
 }
 
+/// Options for controlling code generation behavior.
+///
+/// Construct with [`Default::default`]. The type is `non_exhaustive` so that
+/// options can be added without breaking callers.
+#[derive(Default)]
+#[non_exhaustive]
+pub struct GenerateOptions {}
+
 /// Constructs a token stream containing a single struct that mirrors the struct
 /// spec.
 pub fn generate_struct(spec: &ScSpecUdtStructV0) -> Result<TokenStream, GenerateError> {
+    generate_struct_with_options(spec, &GenerateOptions::default())
+}
+
+/// Constructs a token stream containing a single struct that mirrors the struct
+/// spec, with configurable options.
+pub fn generate_struct_with_options(
+    spec: &ScSpecUdtStructV0,
+    _opts: &GenerateOptions,
+) -> Result<TokenStream, GenerateError> {
     let ident = str_to_ident(&spec.name)?;
 
     if spec.lib.len() > 0 {
@@ -77,6 +94,15 @@ pub fn generate_struct(spec: &ScSpecUdtStructV0) -> Result<TokenStream, Generate
 /// Constructs a token stream containing a single enum that mirrors the union
 /// spec.
 pub fn generate_union(spec: &ScSpecUdtUnionV0) -> Result<TokenStream, GenerateError> {
+    generate_union_with_options(spec, &GenerateOptions::default())
+}
+
+/// Constructs a token stream containing a single enum that mirrors the union
+/// spec, with configurable options.
+pub fn generate_union_with_options(
+    spec: &ScSpecUdtUnionV0,
+    _opts: &GenerateOptions,
+) -> Result<TokenStream, GenerateError> {
     let ident = str_to_ident(&spec.name)?;
     if spec.lib.len() > 0 {
         let lib_ident = str_to_ident(&spec.lib)?;
@@ -117,6 +143,15 @@ pub fn generate_union(spec: &ScSpecUdtUnionV0) -> Result<TokenStream, GenerateEr
 /// Constructs a token stream containing a single enum that mirrors the enum
 /// spec.
 pub fn generate_enum(spec: &ScSpecUdtEnumV0) -> Result<TokenStream, GenerateError> {
+    generate_enum_with_options(spec, &GenerateOptions::default())
+}
+
+/// Constructs a token stream containing a single enum that mirrors the enum
+/// spec, with configurable options.
+pub fn generate_enum_with_options(
+    spec: &ScSpecUdtEnumV0,
+    _opts: &GenerateOptions,
+) -> Result<TokenStream, GenerateError> {
     let ident = str_to_ident(&spec.name)?;
     if spec.lib.len() > 0 {
         let lib_ident = str_to_ident(&spec.lib)?;
@@ -144,6 +179,15 @@ pub fn generate_enum(spec: &ScSpecUdtEnumV0) -> Result<TokenStream, GenerateErro
 /// Constructs a token stream containing a single enum that mirrors the enum
 /// spec, that is intended for use with errors.
 pub fn generate_error_enum(spec: &ScSpecUdtErrorEnumV0) -> Result<TokenStream, GenerateError> {
+    generate_error_enum_with_options(spec, &GenerateOptions::default())
+}
+
+/// Constructs a token stream containing a single enum that mirrors the enum
+/// spec, that is intended for use with errors, with configurable options.
+pub fn generate_error_enum_with_options(
+    spec: &ScSpecUdtErrorEnumV0,
+    _opts: &GenerateOptions,
+) -> Result<TokenStream, GenerateError> {
     let ident = str_to_ident(&spec.name)?;
     if spec.lib.len() > 0 {
         let lib_ident = str_to_ident(&spec.lib)?;
@@ -171,6 +215,15 @@ pub fn generate_error_enum(spec: &ScSpecUdtErrorEnumV0) -> Result<TokenStream, G
 /// Constructs a token stream containing a single struct that mirrors the event
 /// spec.
 pub fn generate_event(spec: &ScSpecEventV0) -> Result<TokenStream, GenerateError> {
+    generate_event_with_options(spec, &GenerateOptions::default())
+}
+
+/// Constructs a token stream containing a single struct that mirrors the event
+/// spec, with configurable options.
+pub fn generate_event_with_options(
+    spec: &ScSpecEventV0,
+    _opts: &GenerateOptions,
+) -> Result<TokenStream, GenerateError> {
     let ident = str_to_ident(&spec.name)?;
 
     if spec.lib.len() > 0 {
