@@ -3681,9 +3681,8 @@ impl EnumC {
                         name: soroban_sdk::xdr::StringMRef::new(b"V2"),
                         type_: soroban_sdk::xdr::VecMRef::new(&[
                             soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                                soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                soroban_sdk::xdr::ScSpecTypeUdtv2 {
                                     id: <StructA>::spec_type_id(),
-                                    name: soroban_sdk::xdr::StringMRef::new(b"StructA"),
                                 },
                             ),
                         ]),
@@ -3695,9 +3694,8 @@ impl EnumC {
                         name: soroban_sdk::xdr::StringMRef::new(b"V3"),
                         type_: soroban_sdk::xdr::VecMRef::new(&[
                             soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                                soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                soroban_sdk::xdr::ScSpecTypeUdtv2 {
                                     id: <StructTupleA>::spec_type_id(),
-                                    name: soroban_sdk::xdr::StringMRef::new(b"StructTupleA"),
                                 },
                             ),
                         ]),
@@ -3712,7 +3710,7 @@ impl EnumC {
 impl EnumC {
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [78u8, 41u8, 7u8, 10u8, 222u8, 187u8, 73u8, 191u8]
+        [119u8, 3u8, 73u8, 44u8, 147u8, 187u8, 67u8, 235u8]
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumC {

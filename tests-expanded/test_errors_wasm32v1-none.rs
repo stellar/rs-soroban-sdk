@@ -368,9 +368,8 @@ impl Contract {
                 doc: soroban_sdk::xdr::StringMRef::new(b""),
                 name: soroban_sdk::xdr::StringMRef::new(b"flag"),
                 type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                    soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                    soroban_sdk::xdr::ScSpecTypeUdtv2 {
                         id: <Flag>::spec_type_id(),
-                        name: soroban_sdk::xdr::StringMRef::new(b"Flag"),
                     },
                 ),
             }]),

@@ -93,9 +93,8 @@ impl UsedParamStruct {
                     doc: soroban_sdk::xdr::StringMRef::new(b""),
                     name: soroban_sdk::xdr::StringMRef::new(b"nested"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                        soroban_sdk::xdr::ScSpecTypeUdtv2 {
                             id: <UsedNestedInStruct>::spec_type_id(),
-                            name: soroban_sdk::xdr::StringMRef::new(b"UsedNestedInStruct"),
                         },
                     ),
                 },
@@ -108,7 +107,7 @@ impl UsedParamStruct {
 impl UsedParamStruct {
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [18u8, 195u8, 159u8, 208u8, 156u8, 149u8, 101u8, 143u8]
+        [109u8, 44u8, 86u8, 10u8, 47u8, 201u8, 58u8, 71u8]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedParamStruct {
@@ -118,7 +117,7 @@ impl soroban_sdk::SpecShakingMarker for UsedParamStruct {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <UsedNestedInStruct as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x12\xc3\x9f\xd0\x9c\x95e\x8f";
+            static MARKER: [u8; 14usize] = *b"SpEcV1m,V\n/\xc9:G";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -2081,9 +2080,8 @@ impl UsedEventWithTopicType {
                     doc: soroban_sdk::xdr::StringMRef::new(b""),
                     name: soroban_sdk::xdr::StringMRef::new(b"kind"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                        soroban_sdk::xdr::ScSpecTypeUdtv2 {
                             id: <UsedEventTopicType>::spec_type_id(),
-                            name: soroban_sdk::xdr::StringMRef::new(b"UsedEventTopicType"),
                         },
                     ),
                     location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
@@ -2108,7 +2106,7 @@ impl soroban_sdk::SpecShakingMarker for UsedEventWithTopicType {
         <UsedEventTopicType as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x17\xaa\x8c\"\xc9J\xfe\xa3";
+            static MARKER: [u8; 14usize] = *b"SpEcV1\xf4\xa1{'\x12#\x1em";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -2352,9 +2350,8 @@ impl UsedEventWithDataType {
                     doc: soroban_sdk::xdr::StringMRef::new(b""),
                     name: soroban_sdk::xdr::StringMRef::new(b"payload"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                        soroban_sdk::xdr::ScSpecTypeUdtv2 {
                             id: <UsedEventDataType>::spec_type_id(),
-                            name: soroban_sdk::xdr::StringMRef::new(b"UsedEventDataType"),
                         },
                     ),
                     location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
@@ -2373,7 +2370,7 @@ impl soroban_sdk::SpecShakingMarker for UsedEventWithDataType {
         <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <UsedEventDataType as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1q-\xba\x17/\x83\xa9u";
+            static MARKER: [u8; 14usize] = *b"SpEcV1\x15\xbf\xd0+\x01\x18\x88\xdd";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -2461,9 +2458,8 @@ impl UsedEventTopicOuter {
                     doc: soroban_sdk::xdr::StringMRef::new(b""),
                     name: soroban_sdk::xdr::StringMRef::new(b"inner"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                        soroban_sdk::xdr::ScSpecTypeUdtv2 {
                             id: <UsedEventTopicInner>::spec_type_id(),
-                            name: soroban_sdk::xdr::StringMRef::new(b"UsedEventTopicInner"),
                         },
                     ),
                 },
@@ -2476,7 +2472,7 @@ impl UsedEventTopicOuter {
 impl UsedEventTopicOuter {
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [81u8, 60u8, 225u8, 149u8, 0u8, 82u8, 154u8, 150u8]
+        [99u8, 99u8, 88u8, 156u8, 66u8, 93u8, 198u8, 74u8]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventTopicOuter {
@@ -2485,7 +2481,7 @@ impl soroban_sdk::SpecShakingMarker for UsedEventTopicOuter {
     fn spec_shaking_marker() {
         <UsedEventTopicInner as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1Q<\xe1\x95\0R\x9a\x96";
+            static MARKER: [u8; 14usize] = *b"SpEcV1ccX\x9cB]\xc6J";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -2731,9 +2727,8 @@ impl UsedEventWithNestedTopic {
                     doc: soroban_sdk::xdr::StringMRef::new(b""),
                     name: soroban_sdk::xdr::StringMRef::new(b"info"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                        soroban_sdk::xdr::ScSpecTypeUdtv2 {
                             id: <UsedEventTopicOuter>::spec_type_id(),
-                            name: soroban_sdk::xdr::StringMRef::new(b"UsedEventTopicOuter"),
                         },
                     ),
                     location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
@@ -2758,7 +2753,7 @@ impl soroban_sdk::SpecShakingMarker for UsedEventWithNestedTopic {
         <UsedEventTopicOuter as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xc33\xd0\x12\xab\xee\x8dW";
+            static MARKER: [u8; 14usize] = *b"SpEcV1{\xc7\xf1}\x81S\x11\xeb";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -2846,9 +2841,8 @@ impl UsedEventDataOuter {
                     doc: soroban_sdk::xdr::StringMRef::new(b""),
                     name: soroban_sdk::xdr::StringMRef::new(b"inner"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                        soroban_sdk::xdr::ScSpecTypeUdtv2 {
                             id: <UsedEventDataInner>::spec_type_id(),
-                            name: soroban_sdk::xdr::StringMRef::new(b"UsedEventDataInner"),
                         },
                     ),
                 },
@@ -2861,7 +2855,7 @@ impl UsedEventDataOuter {
 impl UsedEventDataOuter {
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [225u8, 223u8, 234u8, 32u8, 100u8, 73u8, 206u8, 139u8]
+        [147u8, 155u8, 219u8, 214u8, 88u8, 150u8, 216u8, 241u8]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventDataOuter {
@@ -2870,7 +2864,7 @@ impl soroban_sdk::SpecShakingMarker for UsedEventDataOuter {
     fn spec_shaking_marker() {
         <UsedEventDataInner as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xe1\xdf\xea dI\xce\x8b";
+            static MARKER: [u8; 14usize] = *b"SpEcV1\x93\x9b\xdb\xd6X\x96\xd8\xf1";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -3121,9 +3115,8 @@ impl UsedEventWithNestedData {
                     doc: soroban_sdk::xdr::StringMRef::new(b""),
                     name: soroban_sdk::xdr::StringMRef::new(b"payload"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                        soroban_sdk::xdr::ScSpecTypeUdtv2 {
                             id: <UsedEventDataOuter>::spec_type_id(),
-                            name: soroban_sdk::xdr::StringMRef::new(b"UsedEventDataOuter"),
                         },
                     ),
                     location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
@@ -3142,7 +3135,7 @@ impl soroban_sdk::SpecShakingMarker for UsedEventWithNestedData {
         <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <UsedEventDataOuter as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1jX\x18\xb9\xf4\x8bg2";
+            static MARKER: [u8; 14usize] = *b"SpEcV1\xcc9\xe3\xc8w$\x0b\x8e";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -3355,9 +3348,8 @@ impl UsedRefDataType {
                     doc: soroban_sdk::xdr::StringMRef::new(b""),
                     name: soroban_sdk::xdr::StringMRef::new(b"nested"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                        soroban_sdk::xdr::ScSpecTypeUdtv2 {
                             id: <UsedRefDataInner>::spec_type_id(),
-                            name: soroban_sdk::xdr::StringMRef::new(b"UsedRefDataInner"),
                         },
                     ),
                 },
@@ -3370,7 +3362,7 @@ impl UsedRefDataType {
 impl UsedRefDataType {
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [111u8, 109u8, 128u8, 122u8, 134u8, 55u8, 215u8, 0u8]
+        [172u8, 165u8, 255u8, 26u8, 121u8, 238u8, 128u8, 181u8]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedRefDataType {
@@ -3379,7 +3371,7 @@ impl soroban_sdk::SpecShakingMarker for UsedRefDataType {
     fn spec_shaking_marker() {
         <UsedRefDataInner as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1om\x80z\x867\xd7\0";
+            static MARKER: [u8; 14usize] = *b"SpEcV1\xac\xa5\xff\x1ay\xee\x80\xb5";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -3615,9 +3607,8 @@ impl<'a> UsedEventWithRefs<'a> {
                     doc: soroban_sdk::xdr::StringMRef::new(b""),
                     name: soroban_sdk::xdr::StringMRef::new(b"kind"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                        soroban_sdk::xdr::ScSpecTypeUdtv2 {
                             id: <UsedRefTopicType>::spec_type_id(),
-                            name: soroban_sdk::xdr::StringMRef::new(b"UsedRefTopicType"),
                         },
                     ),
                     location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
@@ -3626,9 +3617,8 @@ impl<'a> UsedEventWithRefs<'a> {
                     doc: soroban_sdk::xdr::StringMRef::new(b""),
                     name: soroban_sdk::xdr::StringMRef::new(b"payload"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                        soroban_sdk::xdr::ScSpecTypeUdtv2 {
                             id: <UsedRefDataType>::spec_type_id(),
-                            name: soroban_sdk::xdr::StringMRef::new(b"UsedRefDataType"),
                         },
                     ),
                     location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
@@ -3647,7 +3637,7 @@ impl<'a> soroban_sdk::SpecShakingMarker for UsedEventWithRefs<'a> {
         <&'a UsedRefTopicType as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <&'a UsedRefDataType as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1e\x07o\xce\xaa)\xa0n";
+            static MARKER: [u8; 14usize] = *b"SpEcV1\x99\xc4\xff\x8aS\x94*L";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -4242,9 +4232,8 @@ impl UsedVecElementNested {
                     doc: soroban_sdk::xdr::StringMRef::new(b""),
                     name: soroban_sdk::xdr::StringMRef::new(b"inner"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                        soroban_sdk::xdr::ScSpecTypeUdtv2 {
                             id: <UsedVecInnerElement>::spec_type_id(),
-                            name: soroban_sdk::xdr::StringMRef::new(b"UsedVecInnerElement"),
                         },
                     ),
                 },
@@ -4259,11 +4248,8 @@ impl UsedVecElementNested {
                     type_: soroban_sdk::xdr::ScSpecTypeDefRef::Vec(
                         &soroban_sdk::xdr::ScSpecTypeVecRef {
                             element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                                soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                soroban_sdk::xdr::ScSpecTypeUdtv2 {
                                     id: <UsedVecInnerVecElement>::spec_type_id(),
-                                    name: soroban_sdk::xdr::StringMRef::new(
-                                        b"UsedVecInnerVecElement",
-                                    ),
                                 },
                             ),
                         },
@@ -4278,7 +4264,7 @@ impl UsedVecElementNested {
 impl UsedVecElementNested {
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [230u8, 190u8, 204u8, 81u8, 50u8, 238u8, 57u8, 163u8]
+        [15u8, 178u8, 62u8, 63u8, 149u8, 98u8, 90u8, 112u8]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedVecElementNested {
@@ -4289,7 +4275,7 @@ impl soroban_sdk::SpecShakingMarker for UsedVecElementNested {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <Vec<UsedVecInnerVecElement> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xe6\xbe\xccQ2\xee9\xa3";
+            static MARKER: [u8; 14usize] = *b"SpEcV1\x0f\xb2>?\x95bZp";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -5151,9 +5137,8 @@ impl UsedRecursiveRoot {
                     doc: soroban_sdk::xdr::StringMRef::new(b""),
                     name: soroban_sdk::xdr::StringMRef::new(b"val"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                        soroban_sdk::xdr::ScSpecTypeUdtv2 {
                             id: <UsedRecursiveNode>::spec_type_id(),
-                            name: soroban_sdk::xdr::StringMRef::new(b"UsedRecursiveNode"),
                         },
                     ),
                 },
@@ -5166,7 +5151,7 @@ impl UsedRecursiveRoot {
 impl UsedRecursiveRoot {
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [151u8, 194u8, 74u8, 125u8, 113u8, 185u8, 213u8, 7u8]
+        [160u8, 106u8, 88u8, 171u8, 93u8, 5u8, 0u8, 254u8]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedRecursiveRoot {
@@ -5175,7 +5160,7 @@ impl soroban_sdk::SpecShakingMarker for UsedRecursiveRoot {
     fn spec_shaking_marker() {
         <UsedRecursiveNode as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x97\xc2J}q\xb9\xd5\x07";
+            static MARKER: [u8; 14usize] = *b"SpEcV1\xa0jX\xab]\x05\0\xfe";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -5304,9 +5289,8 @@ impl UsedRecursiveNode {
                         name: soroban_sdk::xdr::StringMRef::new(b"NotRecursive"),
                         type_: soroban_sdk::xdr::VecMRef::new(&[
                             soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                                soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                soroban_sdk::xdr::ScSpecTypeUdtv2 {
                                     id: <UsedLeaf>::spec_type_id(),
-                                    name: soroban_sdk::xdr::StringMRef::new(b"UsedLeaf"),
                                 },
                             ),
                         ]),
@@ -5318,9 +5302,8 @@ impl UsedRecursiveNode {
                         name: soroban_sdk::xdr::StringMRef::new(b"Recursive"),
                         type_: soroban_sdk::xdr::VecMRef::new(&[
                             soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                                soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                soroban_sdk::xdr::ScSpecTypeUdtv2 {
                                     id: <UsedRecursiveLeaf>::spec_type_id(),
-                                    name: soroban_sdk::xdr::StringMRef::new(b"UsedRecursiveLeaf"),
                                 },
                             ),
                         ]),
@@ -5335,7 +5318,7 @@ impl UsedRecursiveNode {
 impl UsedRecursiveNode {
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [83u8, 18u8, 87u8, 195u8, 221u8, 64u8, 208u8, 65u8]
+        [228u8, 55u8, 191u8, 68u8, 152u8, 243u8, 64u8, 49u8]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedRecursiveNode {
@@ -5345,7 +5328,7 @@ impl soroban_sdk::SpecShakingMarker for UsedRecursiveNode {
         <UsedLeaf as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <UsedRecursiveLeaf as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1S\x12W\xc3\xdd@\xd0A";
+            static MARKER: [u8; 14usize] = *b"SpEcV1\xe47\xbfD\x98\xf3@1";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -5488,9 +5471,8 @@ impl UsedRecursiveLeaf {
                     type_: soroban_sdk::xdr::ScSpecTypeDefRef::Vec(
                         &soroban_sdk::xdr::ScSpecTypeVecRef {
                             element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                                soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                soroban_sdk::xdr::ScSpecTypeUdtv2 {
                                     id: <UsedRecursiveRoot>::spec_type_id(),
-                                    name: soroban_sdk::xdr::StringMRef::new(b"UsedRecursiveRoot"),
                                 },
                             ),
                         },
@@ -5505,7 +5487,7 @@ impl UsedRecursiveLeaf {
 impl UsedRecursiveLeaf {
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [11u8, 222u8, 208u8, 20u8, 117u8, 211u8, 71u8, 232u8]
+        [204u8, 122u8, 188u8, 147u8, 35u8, 162u8, 174u8, 167u8]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedRecursiveLeaf {
@@ -5514,7 +5496,7 @@ impl soroban_sdk::SpecShakingMarker for UsedRecursiveLeaf {
     fn spec_shaking_marker() {
         <Vec<UsedRecursiveRoot> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x0b\xde\xd0\x14u\xd3G\xe8";
+            static MARKER: [u8; 14usize] = *b"SpEcV1\xccz\xbc\x93#\xa2\xae\xa7";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -5683,7 +5665,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedLeaf> for soroban_sdk::Val {
     }
 }
 mod wasm_imported {
-    pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01*\x07`\x02~~\x01~`\x03~~~\x01~`\x01~\x01~`\x00\x01~`\x02\x7f\x7f\x01~`\x04\x7f\x7f\x7f\x7f\x01~`\x02\x7f~\x00\x02%\x06\x01b\x01j\x00\x00\x01x\x011\x00\x00\x01v\x01g\x00\x00\x01m\x019\x00\x01\x01i\x012\x00\x02\x01i\x011\x00\x02\x03\x0c\x0b\x03\x04\x03\x02\x00\x05\x03\x00\x00\x06\x06\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x82\x80\xc0\x00\x0b\x7f\x00A\xa0\x80\xc0\x00\x0b\x7f\x00A\xa0\x80\xc0\x00\x0b\x07\x8e\x01\x0b\x06memory\x02\x00\tfn_enum_a\x00\x06\rfn_enum_int_a\x00\x08\nfn_error_a\x00\t\nfn_event_a\x00\n\nfn_event_d\x00\x0c\x0bfn_struct_a\x00\r\x11fn_struct_tuple_a\x00\x0e\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\xc6\t\x0b\x8b\x02\x03\x01\x7f\x01~\x03\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00B\x00!\x01A~!\x02\x03~\x02@\x02@\x02@\x02@\x02@ \x02E\r\x00A\x01!\x03 \x02A\x82\x80\xc0\x80\x00j-\x00\x00\"\x04A\xdf\x00F\r\x04 \x04APjA\xff\x01qA\nI\r\x02 \x04A\xbf\x7fjA\xff\x01qA\x1aI\r\x03\x02@ \x04A\x9f\x7fjA\xff\x01qA\x1aO\r\x00 \x04AEj!\x03\x0c\x05\x0b \x00 \x04\xadB\x08\x86B\x01\x847\x03\x00A\x80\x80\xc0\x80\x00\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x80\x80\x80\x80\x00!\x01\x0c\x01\x0b \x00 \x01B\x08\x86B\x0e\x84\"\x017\x02\x04\x0b \x00 \x017\x03\x00 \x00A\x01\x10\x87\x80\x80\x80\x00!\x01 \x00A\x10j$\x80\x80\x80\x80\x00 \x01\x0f\x0b \x04ARj!\x03\x0c\x01\x0b \x04AKj!\x03\x0b \x01B\x06\x86 \x03\xadB\xff\x01\x83\x84!\x01 \x02A\x01j!\x02\x0c\x00\x0b\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x82\x80\x80\x80\x00\x0b\x08\x00B\x84\x80\x80\x800\x0b*\x00\x02@ \x00B\xff\x01\x83B\x04Q\r\x00\x00\x0bB\x83\x80\x80\x80  \x00B\x84\x80\x80\x80p\x83 \x00B\x80\x80\x80\x80\x10T\x1b\x0b\xdc\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcd\x00R\r\x00 \x01B\xff\x01\x83B\xc9\x00R\r\x00 \x02 \x007\x03\x08 \x02B\x8e\xcc\xc1\xfc\xac\xdd\xab\x017\x03\x00A\x00!\x03\x03@\x02@ \x03A\x10G\r\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02A\x10j \x03j \x02 \x03j)\x03\x007\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x02A\x10jA\x02\x10\x87\x80\x80\x80\x00!\x00 \x02 \x017\x03\x10 \x00A\x98\x80\xc0\x80\x00A\x01 \x02A\x10jA\x01\x10\x8b\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x02A j$\x80\x80\x80\x80\x00B\x02\x0f\x0b \x02A\x10j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b\x00\x0b.\x00\x02@ \x01 \x03F\r\x00\x00\x0b \x00\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x83\x80\x80\x80\x00\x0b\x87\x01\x03\x01\x7f\x01~\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00 \x00B\x8e\xd2\xc1\xfc\xac\xdd\xab\x017\x03\x00B\x02!\x01A\x01!\x02\x02@\x03@ \x02E\r\x01 \x02A\x7fj!\x02B\x8e\xd2\xc1\xfc\xac\xdd\xab\x01!\x01\x0c\x00\x0b\x0b \x00 \x017\x03\x08 \x00A\x08jA\x01\x10\x87\x80\x80\x80\x00A\x04A\x00 \x00A\x08jA\x00\x10\x8b\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0by\x01\x02\x7f#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\x04R\r\x00A\x01A\x02A\x00 \x01\xa7A\xff\x01q\"\x03\x1b \x03A\x01F\x1b\"\x03A\x02F\r\x00 \x02 \x03\xad7\x03\x08 \x02 \x00B\x84\x80\x80\x80p\x837\x03\x00A\x88\x80\xc0\x80\x00A\x02 \x02A\x02\x10\x8b\x80\x80\x80\x00!\x00 \x02A\x10j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b\xb2\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00 \x02A\x10j \x00\x10\x8f\x80\x80\x80\x00\x02@ \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x8f\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x01 \x02A\x10j \x00\x10\x90\x80\x80\x80\x00 \x02(\x02\x10\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x90\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02 \x02)\x03\x187\x03\x08 \x02 \x007\x03\x00 \x02A\x02\x10\x87\x80\x80\x80\x00!\x00 \x02A j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b]\x02\x01\x7f\x01~\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc1\x00F\r\x00\x02@ \x02A\x07F\r\x00B\x01!\x03B\x83\x90\x80\x80\x80\x01!\x01\x0c\x02\x0b \x01B\x08\x87!\x01B\x00!\x03\x0c\x01\x0bB\x00!\x03 \x01\x10\x84\x80\x80\x80\x00!\x01\x0b \x00 \x037\x03\x00 \x00 \x017\x03\x08\x0bF\x00\x02@\x02@ \x01B\x80\x80\x80\x80\x80\x80\x80\xc0\x00|B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x01B\x08\x86B\x07\x84!\x01\x0c\x01\x0b \x01\x10\x85\x80\x80\x80\x00!\x01\x0b \x00B\x007\x03\x00 \x00 \x017\x03\x08\x0b\x0b)\x01\x00A\x80\x80\xc0\x00\x0b V2f1f2\x00\x00\x02\x00\x10\x00\x02\x00\x00\x00\x04\x00\x10\x00\x02\x00\x00\x00\x04\x00\x10\x00\x02\x00\x00\x00\x00\xc7\x0f\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\tfn_enum_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd1\xa2=N\xc1p\x95\x90\xb2\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_error_a\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05input\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd1\xe9R\xa7\xe8b\x99\xa2\xc3\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_event_a\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_event_d\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bfn_struct_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x07\xd1\xb6\x1c\xfd\xdfhY-d\x00\x00\x00\x07StructA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rfn_enum_int_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd1V]\x80\\~\x1a\x08/\x00\x00\x00\x08EnumIntA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11fn_struct_tuple_a\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x07\xd1\xcf)\x97]S\xb2\xfd)\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumB\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x07\x00\x00\x00\x07\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumC\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd1\xb6\x1c\xfd\xdfhY-d\x00\x00\x00\x07StructA\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd1\xcf)\x97]S\xb2\xfd)\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorB\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x0c\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorC\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00e\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00f\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventA\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventB\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_b\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventC\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_c\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventD\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_d\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructA\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructB\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructC\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x03\xea\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntA\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntB\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntC\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\xc8\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x01,\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleB\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleC\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x0b\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1b\x00\x00\x00\x00\x00+\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00";
+    pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01*\x07`\x02~~\x01~`\x03~~~\x01~`\x01~\x01~`\x00\x01~`\x02\x7f\x7f\x01~`\x04\x7f\x7f\x7f\x7f\x01~`\x02\x7f~\x00\x02%\x06\x01b\x01j\x00\x00\x01x\x011\x00\x00\x01v\x01g\x00\x00\x01m\x019\x00\x01\x01i\x012\x00\x02\x01i\x011\x00\x02\x03\x0c\x0b\x03\x04\x03\x02\x00\x05\x03\x00\x00\x06\x06\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x82\x80\xc0\x00\x0b\x7f\x00A\xa0\x80\xc0\x00\x0b\x7f\x00A\xa0\x80\xc0\x00\x0b\x07\x8e\x01\x0b\x06memory\x02\x00\tfn_enum_a\x00\x06\rfn_enum_int_a\x00\x08\nfn_error_a\x00\t\nfn_event_a\x00\n\nfn_event_d\x00\x0c\x0bfn_struct_a\x00\r\x11fn_struct_tuple_a\x00\x0e\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\xc6\t\x0b\x8b\x02\x03\x01\x7f\x01~\x03\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00B\x00!\x01A~!\x02\x03~\x02@\x02@\x02@\x02@\x02@ \x02E\r\x00A\x01!\x03 \x02A\x82\x80\xc0\x80\x00j-\x00\x00\"\x04A\xdf\x00F\r\x04 \x04APjA\xff\x01qA\nI\r\x02 \x04A\xbf\x7fjA\xff\x01qA\x1aI\r\x03\x02@ \x04A\x9f\x7fjA\xff\x01qA\x1aO\r\x00 \x04AEj!\x03\x0c\x05\x0b \x00 \x04\xadB\x08\x86B\x01\x847\x03\x00A\x80\x80\xc0\x80\x00\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x80\x80\x80\x80\x00!\x01\x0c\x01\x0b \x00 \x01B\x08\x86B\x0e\x84\"\x017\x02\x04\x0b \x00 \x017\x03\x00 \x00A\x01\x10\x87\x80\x80\x80\x00!\x01 \x00A\x10j$\x80\x80\x80\x80\x00 \x01\x0f\x0b \x04ARj!\x03\x0c\x01\x0b \x04AKj!\x03\x0b \x01B\x06\x86 \x03\xadB\xff\x01\x83\x84!\x01 \x02A\x01j!\x02\x0c\x00\x0b\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x82\x80\x80\x80\x00\x0b\x08\x00B\x84\x80\x80\x800\x0b*\x00\x02@ \x00B\xff\x01\x83B\x04Q\r\x00\x00\x0bB\x83\x80\x80\x80  \x00B\x84\x80\x80\x80p\x83 \x00B\x80\x80\x80\x80\x10T\x1b\x0b\xdc\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcd\x00R\r\x00 \x01B\xff\x01\x83B\xc9\x00R\r\x00 \x02 \x007\x03\x08 \x02B\x8e\xcc\xc1\xfc\xac\xdd\xab\x017\x03\x00A\x00!\x03\x03@\x02@ \x03A\x10G\r\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02A\x10j \x03j \x02 \x03j)\x03\x007\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x02A\x10jA\x02\x10\x87\x80\x80\x80\x00!\x00 \x02 \x017\x03\x10 \x00A\x98\x80\xc0\x80\x00A\x01 \x02A\x10jA\x01\x10\x8b\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x02A j$\x80\x80\x80\x80\x00B\x02\x0f\x0b \x02A\x10j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b\x00\x0b.\x00\x02@ \x01 \x03F\r\x00\x00\x0b \x00\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x83\x80\x80\x80\x00\x0b\x87\x01\x03\x01\x7f\x01~\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00 \x00B\x8e\xd2\xc1\xfc\xac\xdd\xab\x017\x03\x00B\x02!\x01A\x01!\x02\x02@\x03@ \x02E\r\x01 \x02A\x7fj!\x02B\x8e\xd2\xc1\xfc\xac\xdd\xab\x01!\x01\x0c\x00\x0b\x0b \x00 \x017\x03\x08 \x00A\x08jA\x01\x10\x87\x80\x80\x80\x00A\x04A\x00 \x00A\x08jA\x00\x10\x8b\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0by\x01\x02\x7f#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\x04R\r\x00A\x01A\x02A\x00 \x01\xa7A\xff\x01q\"\x03\x1b \x03A\x01F\x1b\"\x03A\x02F\r\x00 \x02 \x03\xad7\x03\x08 \x02 \x00B\x84\x80\x80\x80p\x837\x03\x00A\x88\x80\xc0\x80\x00A\x02 \x02A\x02\x10\x8b\x80\x80\x80\x00!\x00 \x02A\x10j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b\xb2\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00 \x02A\x10j \x00\x10\x8f\x80\x80\x80\x00\x02@ \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x8f\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x01 \x02A\x10j \x00\x10\x90\x80\x80\x80\x00 \x02(\x02\x10\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x90\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02 \x02)\x03\x187\x03\x08 \x02 \x007\x03\x00 \x02A\x02\x10\x87\x80\x80\x80\x00!\x00 \x02A j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b]\x02\x01\x7f\x01~\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc1\x00F\r\x00\x02@ \x02A\x07F\r\x00B\x01!\x03B\x83\x90\x80\x80\x80\x01!\x01\x0c\x02\x0b \x01B\x08\x87!\x01B\x00!\x03\x0c\x01\x0bB\x00!\x03 \x01\x10\x84\x80\x80\x80\x00!\x01\x0b \x00 \x037\x03\x00 \x00 \x017\x03\x08\x0bF\x00\x02@\x02@ \x01B\x80\x80\x80\x80\x80\x80\x80\xc0\x00|B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x01B\x08\x86B\x07\x84!\x01\x0c\x01\x0b \x01\x10\x85\x80\x80\x80\x00!\x01\x0b \x00B\x007\x03\x00 \x00 \x017\x03\x08\x0b\x0b)\x01\x00A\x80\x80\xc0\x00\x0b V2f1f2\x00\x00\x02\x00\x10\x00\x02\x00\x00\x00\x04\x00\x10\x00\x02\x00\x00\x00\x04\x00\x10\x00\x02\x00\x00\x00\x00\xeb\x0e\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\tfn_enum_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd1\xa2=N\xc1p\x95\x90\xb2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_error_a\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05input\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd1\xe9R\xa7\xe8b\x99\xa2\xc3\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_event_a\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_event_d\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bfn_struct_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x07\xd1\xb6\x1c\xfd\xdfhY-d\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rfn_enum_int_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd1V]\x80\\~\x1a\x08/\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11fn_struct_tuple_a\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x07\xd1\xcf)\x97]S\xb2\xfd)\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumB\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x07\x00\x00\x00\x07\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumC\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd1\xb6\x1c\xfd\xdfhY-d\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd1\xcf)\x97]S\xb2\xfd)\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorB\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x0c\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorC\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00e\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00f\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventA\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventB\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_b\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventC\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_c\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventD\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_d\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructA\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructB\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructC\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x03\xea\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntA\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntB\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntC\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\xc8\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x01,\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleB\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleC\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x0b\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1b\x00\x00\x00\x00\x00+\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00";
     pub trait Contract {
         fn fn_enum_a(env: soroban_sdk::Env) -> EnumA;
         fn fn_error_a(env: soroban_sdk::Env, input: u32) -> Result<u32, ErrorA>;
@@ -7478,9 +7460,8 @@ mod wasm_imported {
                             name: soroban_sdk::xdr::StringMRef::new(b"V2"),
                             type_: soroban_sdk::xdr::VecMRef::new(&[
                                 soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                                    soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                    soroban_sdk::xdr::ScSpecTypeUdtv2 {
                                         id: <StructA>::spec_type_id(),
-                                        name: soroban_sdk::xdr::StringMRef::new(b"StructA"),
                                     },
                                 ),
                             ]),
@@ -7492,9 +7473,8 @@ mod wasm_imported {
                             name: soroban_sdk::xdr::StringMRef::new(b"V3"),
                             type_: soroban_sdk::xdr::VecMRef::new(&[
                                 soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                                    soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                    soroban_sdk::xdr::ScSpecTypeUdtv2 {
                                         id: <StructTupleA>::spec_type_id(),
-                                        name: soroban_sdk::xdr::StringMRef::new(b"StructTupleA"),
                                     },
                                 ),
                             ]),
@@ -7509,7 +7489,7 @@ mod wasm_imported {
     impl EnumC {
         #[doc(hidden)]
         pub const fn spec_type_id() -> [u8; 8] {
-            [78u8, 41u8, 7u8, 10u8, 222u8, 187u8, 73u8, 191u8]
+            [119u8, 3u8, 73u8, 44u8, 147u8, 187u8, 67u8, 235u8]
         }
     }
     impl soroban_sdk::SpecShakingMarker for EnumC {
@@ -7519,7 +7499,7 @@ mod wasm_imported {
             <StructA as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <StructTupleA as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1N)\x07\n\xde\xbbI\xbf";
+                static MARKER: [u8; 14usize] = *b"SpEcV1w\x03I,\x93\xbbC\xeb";
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
             }
         }
@@ -10698,9 +10678,8 @@ impl Contract {
                     doc: soroban_sdk::xdr::StringMRef::new(b""),
                     name: soroban_sdk::xdr::StringMRef::new(b"s"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                        soroban_sdk::xdr::ScSpecTypeUdtv2 {
                             id: <UsedParamStruct>::spec_type_id(),
-                            name: soroban_sdk::xdr::StringMRef::new(b"UsedParamStruct"),
                         },
                     ),
                 },
@@ -10708,9 +10687,8 @@ impl Contract {
                     doc: soroban_sdk::xdr::StringMRef::new(b""),
                     name: soroban_sdk::xdr::StringMRef::new(b"ie"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                        soroban_sdk::xdr::ScSpecTypeUdtv2 {
                             id: <UsedParamIntEnum>::spec_type_id(),
-                            name: soroban_sdk::xdr::StringMRef::new(b"UsedParamIntEnum"),
                         },
                     ),
                 },
@@ -10741,9 +10719,8 @@ impl Contract {
             name: soroban_sdk::xdr::ScSymbolRef(soroban_sdk::xdr::StringMRef::new(b"with_return")),
             inputs: soroban_sdk::xdr::VecMRef::new(&[]),
             outputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                soroban_sdk::xdr::ScSpecTypeUdtv2 {
                     id: <UsedReturnEnum>::spec_type_id(),
-                    name: soroban_sdk::xdr::StringMRef::new(b"UsedReturnEnum"),
                 },
             )]),
         });
@@ -10774,9 +10751,8 @@ impl Contract {
                 &soroban_sdk::xdr::ScSpecTypeResultRef {
                     ok_type: &soroban_sdk::xdr::ScSpecTypeDefRef::U32,
                     error_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                        soroban_sdk::xdr::ScSpecTypeUdtv2 {
                             id: <UsedErrorEnum>::spec_type_id(),
-                            name: soroban_sdk::xdr::StringMRef::new(b"UsedErrorEnum"),
                         },
                     ),
                 },
@@ -10906,9 +10882,8 @@ impl Contract {
                 type_: soroban_sdk::xdr::ScSpecTypeDefRef::Vec(
                     &soroban_sdk::xdr::ScSpecTypeVecRef {
                         element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                            soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                            soroban_sdk::xdr::ScSpecTypeUdtv2 {
                                 id: <UsedVecElement>::spec_type_id(),
-                                name: soroban_sdk::xdr::StringMRef::new(b"UsedVecElement"),
                             },
                         ),
                     },
@@ -10946,9 +10921,8 @@ impl Contract {
                 type_: soroban_sdk::xdr::ScSpecTypeDefRef::Vec(
                     &soroban_sdk::xdr::ScSpecTypeVecRef {
                         element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                            soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                            soroban_sdk::xdr::ScSpecTypeUdtv2 {
                                 id: <UsedVecElementNested>::spec_type_id(),
-                                name: soroban_sdk::xdr::StringMRef::new(b"UsedVecElementNested"),
                             },
                         ),
                     },
@@ -10984,15 +10958,13 @@ impl Contract {
                 type_: soroban_sdk::xdr::ScSpecTypeDefRef::Map(
                     &soroban_sdk::xdr::ScSpecTypeMapRef {
                         key_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                            soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                            soroban_sdk::xdr::ScSpecTypeUdtv2 {
                                 id: <UsedMapKey>::spec_type_id(),
-                                name: soroban_sdk::xdr::StringMRef::new(b"UsedMapKey"),
                             },
                         ),
                         value_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                            soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                            soroban_sdk::xdr::ScSpecTypeUdtv2 {
                                 id: <UsedMapVal>::spec_type_id(),
-                                name: soroban_sdk::xdr::StringMRef::new(b"UsedMapVal"),
                             },
                         ),
                     },
@@ -11027,9 +10999,8 @@ impl Contract {
                 type_: soroban_sdk::xdr::ScSpecTypeDefRef::Option(
                     &soroban_sdk::xdr::ScSpecTypeOptionRef {
                         value_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                            soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                            soroban_sdk::xdr::ScSpecTypeUdtv2 {
                                 id: <UsedOptionElement>::spec_type_id(),
-                                name: soroban_sdk::xdr::StringMRef::new(b"UsedOptionElement"),
                             },
                         ),
                     },
@@ -11063,15 +11034,13 @@ impl Contract {
             outputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecTypeDefRef::Result(
                 &soroban_sdk::xdr::ScSpecTypeResultRef {
                     ok_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                        soroban_sdk::xdr::ScSpecTypeUdtv2 {
                             id: <UsedResultOk>::spec_type_id(),
-                            name: soroban_sdk::xdr::StringMRef::new(b"UsedResultOk"),
                         },
                     ),
                     error_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                        soroban_sdk::xdr::ScSpecTypeUdtv2 {
                             id: <UsedErrorEnum>::spec_type_id(),
-                            name: soroban_sdk::xdr::StringMRef::new(b"UsedErrorEnum"),
                         },
                     ),
                 },
@@ -11105,9 +11074,8 @@ impl Contract {
                 doc: soroban_sdk::xdr::StringMRef::new(b""),
                 name: soroban_sdk::xdr::StringMRef::new(b"r"),
                 type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                    soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                    soroban_sdk::xdr::ScSpecTypeUdtv2 {
                         id: <UsedRecursiveRoot>::spec_type_id(),
-                        name: soroban_sdk::xdr::StringMRef::new(b"UsedRecursiveRoot"),
                     },
                 ),
             }]),
@@ -11144,9 +11112,8 @@ impl Contract {
                 type_: soroban_sdk::xdr::ScSpecTypeDefRef::Vec(
                     &soroban_sdk::xdr::ScSpecTypeVecRef {
                         element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                            soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                            soroban_sdk::xdr::ScSpecTypeUdtv2 {
                                 id: <soroban_sdk::auth::Context>::spec_type_id(),
-                                name: soroban_sdk::xdr::StringMRef::new(b"Context"),
                             },
                         ),
                     },
@@ -11183,9 +11150,8 @@ impl Contract {
                 doc: soroban_sdk::xdr::StringMRef::new(b""),
                 name: soroban_sdk::xdr::StringMRef::new(b"i"),
                 type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                    soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                    soroban_sdk::xdr::ScSpecTypeUdtv2 {
                         id: <soroban_sdk::auth::InvokerContractAuthEntry>::spec_type_id(),
-                        name: soroban_sdk::xdr::StringMRef::new(b"InvokerContractAuthEntry"),
                     },
                 ),
             }]),
@@ -11220,9 +11186,8 @@ impl Contract {
                 doc: soroban_sdk::xdr::StringMRef::new(b""),
                 name: soroban_sdk::xdr::StringMRef::new(b"e"),
                 type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                    soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                    soroban_sdk::xdr::ScSpecTypeUdtv2 {
                         id: <soroban_sdk::Executable>::spec_type_id(),
-                        name: soroban_sdk::xdr::StringMRef::new(b"Executable"),
                     },
                 ),
             }]),
@@ -11396,9 +11361,8 @@ impl Contract {
                 doc: soroban_sdk::xdr::StringMRef::new(b""),
                 name: soroban_sdk::xdr::StringMRef::new(b"s"),
                 type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                    soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                    soroban_sdk::xdr::ScSpecTypeUdtv2 {
                         id: <test_spec_lib::StructC>::spec_type_id(),
-                        name: soroban_sdk::xdr::StringMRef::new(b"StructC"),
                     },
                 ),
             }]),
@@ -11433,9 +11397,8 @@ impl Contract {
                 doc: soroban_sdk::xdr::StringMRef::new(b""),
                 name: soroban_sdk::xdr::StringMRef::new(b"s"),
                 type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                    soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                    soroban_sdk::xdr::ScSpecTypeUdtv2 {
                         id: <wasm_imported::StructA>::spec_type_id(),
-                        name: soroban_sdk::xdr::StringMRef::new(b"StructA"),
                     },
                 ),
             }]),
@@ -11467,9 +11430,8 @@ impl Contract {
                 doc: soroban_sdk::xdr::StringMRef::new(b""),
                 name: soroban_sdk::xdr::StringMRef::new(b"s"),
                 type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                    soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                    soroban_sdk::xdr::ScSpecTypeUdtv2 {
                         id: <UsedNonPubStruct>::spec_type_id(),
-                        name: soroban_sdk::xdr::StringMRef::new(b"UsedNonPubStruct"),
                     },
                 ),
             }]),
@@ -11505,9 +11467,8 @@ impl Contract {
                 &soroban_sdk::xdr::ScSpecTypeResultRef {
                     ok_type: &soroban_sdk::xdr::ScSpecTypeDefRef::U32,
                     error_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                        soroban_sdk::xdr::ScSpecTypeUdtv2 {
                             id: <UsedNonPubError>::spec_type_id(),
-                            name: soroban_sdk::xdr::StringMRef::new(b"UsedNonPubError"),
                         },
                     ),
                 },
@@ -11542,9 +11503,8 @@ impl Contract {
                     &soroban_sdk::xdr::ScSpecTypeTupleRef {
                         value_types: soroban_sdk::xdr::VecMRef::new(&[
                             soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                                soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                soroban_sdk::xdr::ScSpecTypeUdtv2 {
                                     id: <UsedTupleElement>::spec_type_id(),
-                                    name: soroban_sdk::xdr::StringMRef::new(b"UsedTupleElement"),
                                 },
                             ),
                             soroban_sdk::xdr::ScSpecTypeDefRef::U32,
@@ -11584,9 +11544,8 @@ impl Contract {
                 &soroban_sdk::xdr::ScSpecTypeTupleRef {
                     value_types: soroban_sdk::xdr::VecMRef::new(&[
                         soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                            soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                            soroban_sdk::xdr::ScSpecTypeUdtv2 {
                                 id: <UsedTupleReturnElement>::spec_type_id(),
-                                name: soroban_sdk::xdr::StringMRef::new(b"UsedTupleReturnElement"),
                             },
                         ),
                         soroban_sdk::xdr::ScSpecTypeDefRef::U32,
@@ -11623,9 +11582,8 @@ impl Contract {
                 doc: soroban_sdk::xdr::StringMRef::new(b""),
                 name: soroban_sdk::xdr::StringMRef::new(b"s"),
                 type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                    soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                    soroban_sdk::xdr::ScSpecTypeUdtv2 {
                         id: <export_false_used::UsedExportFalseStruct>::spec_type_id(),
-                        name: soroban_sdk::xdr::StringMRef::new(b"UsedExportFalseStruct"),
                     },
                 ),
             }]),
@@ -11661,9 +11619,8 @@ impl Contract {
                 &soroban_sdk::xdr::ScSpecTypeResultRef {
                     ok_type: &soroban_sdk::xdr::ScSpecTypeDefRef::U32,
                     error_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                        soroban_sdk::xdr::ScSpecTypeUdtv2 {
                             id: <export_false_used::UsedExportFalseError>::spec_type_id(),
-                            name: soroban_sdk::xdr::StringMRef::new(b"UsedExportFalseError"),
                         },
                     ),
                 },

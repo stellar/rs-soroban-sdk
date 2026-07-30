@@ -463,9 +463,8 @@ impl Contract {
                 &soroban_sdk::xdr::ScSpecTypeResultRef {
                     ok_type: &soroban_sdk::xdr::ScSpecTypeDefRef::U64,
                     error_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                        soroban_sdk::xdr::ScSpecTypeUdtv2 {
                             id: <MyError>::spec_type_id(),
-                            name: soroban_sdk::xdr::StringMRef::new(b"MyError"),
                         },
                     ),
                 },

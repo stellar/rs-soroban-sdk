@@ -18,6 +18,8 @@ pub enum GenerateError {
     InvalidUtf8,
     #[error("invalid Rust identifier: {0:?}")]
     InvalidIdent(String),
+    #[error("no user-defined type in the spec has the id {0:?} that a type reference carries")]
+    UnresolvedUdtId([u8; 8]),
 }
 
 /// Options for controlling code generation behavior.
@@ -329,14 +331,15 @@ pub fn generate_type_ident(spec: &ScSpecTypeDef) -> Result<TokenStream, Generate
             let n = Literal::u32_unsuffixed(b.n);
             Ok(quote! { soroban_sdk::BytesN<#n> })
         }
-        // Both forms of user-defined type reference name the type the same way.
-        // The id a UdtV2 also carries identifies the referenced type, and is not
-        // needed to name it.
-        ScSpecTypeDef::Udt(ScSpecTypeUdt { name })
-        | ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 { name, .. }) => {
+        ScSpecTypeDef::Udt(ScSpecTypeUdt { name }) => {
             let ident = str_to_ident(name)?;
             Ok(quote! { #ident })
         }
+        // A UdtV2 identifies the type it references only by id, so it carries no
+        // name to generate an ident from. Generation runs after every UdtV2 has
+        // been resolved to the Udt naming the type its id identifies, leaving
+        // one here only when the spec has no definition carrying that id.
+        ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 { id }) => Err(GenerateError::UnresolvedUdtId(*id)),
         ScSpecTypeDef::Void => Ok(quote! { () }),
         ScSpecTypeDef::Timepoint => Ok(quote! { soroban_sdk::Timepoint }),
         ScSpecTypeDef::Duration => Ok(quote! { soroban_sdk::Duration }),

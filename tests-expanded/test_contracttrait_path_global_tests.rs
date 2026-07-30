@@ -1828,16 +1828,14 @@ impl ContractGlobalPath {
                 doc: soroban_sdk::xdr::StringMRef::new(b""),
                 name: soroban_sdk::xdr::StringMRef::new(b"v"),
                 type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                    soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                    soroban_sdk::xdr::ScSpecTypeUdtv2 {
                         id: <MyStruct>::spec_type_id(),
-                        name: soroban_sdk::xdr::StringMRef::new(b"MyStruct"),
                     },
                 ),
             }]),
             outputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                soroban_sdk::xdr::ScSpecTypeUdtv2 {
                     id: <MyStruct>::spec_type_id(),
-                    name: soroban_sdk::xdr::StringMRef::new(b"MyStruct"),
                 },
             )]),
         });
@@ -1869,16 +1867,14 @@ impl ContractGlobalPath {
                 doc: soroban_sdk::xdr::StringMRef::new(b""),
                 name: soroban_sdk::xdr::StringMRef::new(b"v"),
                 type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                    soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                    soroban_sdk::xdr::ScSpecTypeUdtv2 {
                         id: <MyEnumUnit>::spec_type_id(),
-                        name: soroban_sdk::xdr::StringMRef::new(b"MyEnumUnit"),
                     },
                 ),
             }]),
             outputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                soroban_sdk::xdr::ScSpecTypeUdtv2 {
                     id: <MyEnumUnit>::spec_type_id(),
-                    name: soroban_sdk::xdr::StringMRef::new(b"MyEnumUnit"),
                 },
             )]),
         });
@@ -1910,16 +1906,14 @@ impl ContractGlobalPath {
                 doc: soroban_sdk::xdr::StringMRef::new(b""),
                 name: soroban_sdk::xdr::StringMRef::new(b"v"),
                 type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                    soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                    soroban_sdk::xdr::ScSpecTypeUdtv2 {
                         id: <MyEnumVariants>::spec_type_id(),
-                        name: soroban_sdk::xdr::StringMRef::new(b"MyEnumVariants"),
                     },
                 ),
             }]),
             outputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                soroban_sdk::xdr::ScSpecTypeUdtv2 {
                     id: <MyEnumVariants>::spec_type_id(),
-                    name: soroban_sdk::xdr::StringMRef::new(b"MyEnumVariants"),
                 },
             )]),
         });

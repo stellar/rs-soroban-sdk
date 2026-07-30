@@ -1,14 +1,14 @@
 //! Computes the `id` field of [`ScSpecTypeUdtv2`] references.
 //!
-//! A `ScSpecTypeUdtv2` reference names another user-defined type and carries an
-//! 8-byte `id` identifying that referenced type. The id is the truncated (first
-//! 8 bytes) SHA256 of the referenced type's own [`ScSpecEntry`], computed over a
-//! canonical form in which all `UdtV2` ids the entry itself contains are zeroed.
-//! Zeroing the ids in the preimage keeps the identity independent of other
-//! types' ids, so it is well-defined even for mutually- or self-recursive types.
+//! A `ScSpecTypeUdtv2` reference identifies another user-defined type solely by
+//! an 8-byte `id`. The id is the truncated (first 8 bytes) SHA256 of the
+//! referenced type's own [`ScSpecEntry`], computed over a canonical form in
+//! which all `UdtV2` ids the entry itself contains are zeroed. Zeroing the ids
+//! in the preimage keeps the identity independent of other types' ids, so it is
+//! well-defined even for mutually- or self-recursive types.
 //!
 //! So for `struct A { b: B }`, the field `b` in `A`'s spec entry is a
-//! `ScSpecTypeUdtv2 { name: "B", id: canonical_id(B's entry) }`.
+//! `ScSpecTypeUdtv2 { id: canonical_id(B's entry) }`.
 
 use sha2::{Digest, Sha256};
 use stellar_xdr::{
@@ -104,10 +104,7 @@ mod test {
             fields: vec![ScSpecUdtStructFieldV0 {
                 doc: "".try_into().unwrap(),
                 name: "b".try_into().unwrap(),
-                type_: ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
-                    id: ref_id,
-                    name: "B".try_into().unwrap(),
-                }),
+                type_: ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 { id: ref_id }),
             }]
             .try_into()
             .unwrap(),

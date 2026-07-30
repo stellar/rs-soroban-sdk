@@ -127,7 +127,6 @@ fn test_spec_contract() {
                 name: "fn".try_into().unwrap(),
                 type_: ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
                     id: TestEnum::spec_type_id(),
-                    name: "TestEnum".try_into().unwrap(),
                 }),
             }]
             .try_into()
@@ -135,11 +134,9 @@ fn test_spec_contract() {
             outputs: [ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
                 ok_type: Box::new(ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
                     id: TestType::spec_type_id(),
-                    name: "TestType".try_into().unwrap(),
                 })),
                 error_type: Box::new(ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
                     id: TestError::spec_type_id(),
-                    name: "TestError".try_into().unwrap(),
                 })),
             }))]
             .try_into()

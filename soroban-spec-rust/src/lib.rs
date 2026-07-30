@@ -3,15 +3,17 @@ pub mod r#trait;
 pub mod types;
 
 use std::borrow::Cow;
+use std::collections::BTreeMap;
 use std::{fs, io};
 
 use proc_macro2::TokenStream;
 use quote::quote;
 use sha2::{Digest, Sha256};
-use stellar_xdr::{ScSpecEntry, ScSpecTypeDef, ScSpecTypeUdt, ScSpecUdtUnionCaseV0};
+use stellar_xdr::{ScSpecEntry, ScSpecTypeDef, ScSpecTypeUdt, ScSpecUdtUnionCaseV0, StringM};
 use syn::Error;
 
 use soroban_spec::read::{from_wasm, FromWasmError};
+use soroban_spec::udt_id::canonical_id;
 
 use types::{
     generate_enum_with_options, generate_error_enum_with_options, generate_event_with_options,
@@ -107,7 +109,11 @@ pub fn generate_without_file_with_options(
     specs: &[ScSpecEntry],
     opts: &GenerateOptions,
 ) -> Result<TokenStream, GenerateError> {
-    let specs = apply_error_udt_override(specs);
+    // Collected before the rewrites below, because the id a reference carries is
+    // derived from the referenced entry's own contents.
+    let names = udt_names(specs);
+    let mut specs = apply_error_udt_override(specs).into_owned();
+    resolve_udt_v2_names(&mut specs, &names);
     let specs: &[ScSpecEntry] = &specs;
 
     let mut spec_fns = Vec::new();
@@ -200,26 +206,34 @@ fn apply_error_udt_override(specs: &[ScSpecEntry]) -> Cow<'_, [ScSpecEntry]> {
 /// a user-defined error enum named `Error`, so the UDT reference resolves to
 /// that enum during code generation.
 fn rewrite_error_to_udt(entries: &mut [ScSpecEntry]) {
-    fn rewrite_ty(t: &mut ScSpecTypeDef) {
+    for_each_type_def(entries, &mut |t| {
+        if matches!(t, ScSpecTypeDef::Error) {
+            *t = ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                name: "Error".try_into().unwrap(),
+            });
+        }
+    });
+}
+
+/// Calls `f` on every type in `entries`, including the types nested inside the
+/// parameterized ones.
+fn for_each_type_def(entries: &mut [ScSpecEntry], f: &mut impl FnMut(&mut ScSpecTypeDef)) {
+    fn visit(t: &mut ScSpecTypeDef, f: &mut impl FnMut(&mut ScSpecTypeDef)) {
+        f(t);
         match t {
-            ScSpecTypeDef::Error => {
-                *t = ScSpecTypeDef::Udt(ScSpecTypeUdt {
-                    name: "Error".try_into().unwrap(),
-                });
-            }
-            ScSpecTypeDef::Option(o) => rewrite_ty(&mut o.value_type),
+            ScSpecTypeDef::Option(o) => visit(&mut o.value_type, f),
             ScSpecTypeDef::Result(r) => {
-                rewrite_ty(&mut r.ok_type);
-                rewrite_ty(&mut r.error_type);
+                visit(&mut r.ok_type, f);
+                visit(&mut r.error_type, f);
             }
-            ScSpecTypeDef::Vec(v) => rewrite_ty(&mut v.element_type),
+            ScSpecTypeDef::Vec(v) => visit(&mut v.element_type, f),
             ScSpecTypeDef::Map(m) => {
-                rewrite_ty(&mut m.key_type);
-                rewrite_ty(&mut m.value_type);
+                visit(&mut m.key_type, f);
+                visit(&mut m.value_type, f);
             }
             ScSpecTypeDef::Tuple(tu) => {
                 for vt in tu.value_types.iter_mut() {
-                    rewrite_ty(vt);
+                    visit(vt, f);
                 }
             }
             _ => {}
@@ -227,24 +241,24 @@ fn rewrite_error_to_udt(entries: &mut [ScSpecEntry]) {
     }
     for entry in entries.iter_mut() {
         match entry {
-            ScSpecEntry::FunctionV0(f) => {
-                for input in f.inputs.iter_mut() {
-                    rewrite_ty(&mut input.type_);
+            ScSpecEntry::FunctionV0(fun) => {
+                for input in fun.inputs.iter_mut() {
+                    visit(&mut input.type_, f);
                 }
-                for output in f.outputs.iter_mut() {
-                    rewrite_ty(output);
+                for output in fun.outputs.iter_mut() {
+                    visit(output, f);
                 }
             }
             ScSpecEntry::UdtStructV0(s) => {
                 for field in s.fields.iter_mut() {
-                    rewrite_ty(&mut field.type_);
+                    visit(&mut field.type_, f);
                 }
             }
             ScSpecEntry::UdtUnionV0(u) => {
                 for case in u.cases.iter_mut() {
                     if let ScSpecUdtUnionCaseV0::TupleV0(t) = case {
                         for ty in t.type_.iter_mut() {
-                            rewrite_ty(ty);
+                            visit(ty, f);
                         }
                     }
                 }
@@ -252,11 +266,46 @@ fn rewrite_error_to_udt(entries: &mut [ScSpecEntry]) {
             ScSpecEntry::UdtEnumV0(_) | ScSpecEntry::UdtErrorEnumV0(_) => {}
             ScSpecEntry::EventV0(e) => {
                 for p in e.params.iter_mut() {
-                    rewrite_ty(&mut p.type_);
+                    visit(&mut p.type_, f);
                 }
             }
         }
     }
+}
+
+/// Rewrites every `ScSpecTypeDef::UdtV2` reference in `entries`, which
+/// identifies the type it references only by an id, to the `ScSpecTypeDef::Udt`
+/// naming that type, so that generation has a name to build an ident from.
+///
+/// `names` maps the id of every user-defined type the spec defines to its name,
+/// and must be built from the entries as they were read, because an entry's id
+/// is derived from its own contents.
+fn resolve_udt_v2_names(entries: &mut [ScSpecEntry], names: &BTreeMap<[u8; 8], StringM<60>>) {
+    for_each_type_def(entries, &mut |t| {
+        if let ScSpecTypeDef::UdtV2(u) = t {
+            if let Some(name) = names.get(&u.id) {
+                *t = ScSpecTypeDef::Udt(ScSpecTypeUdt { name: name.clone() });
+            }
+        }
+    });
+}
+
+/// The name of every user-defined type the spec defines, keyed by the id that
+/// references to it carry.
+fn udt_names(entries: &[ScSpecEntry]) -> BTreeMap<[u8; 8], StringM<60>> {
+    entries
+        .iter()
+        .filter_map(|entry| {
+            let name = match entry {
+                ScSpecEntry::UdtStructV0(s) => &s.name,
+                ScSpecEntry::UdtUnionV0(u) => &u.name,
+                ScSpecEntry::UdtEnumV0(e) => &e.name,
+                ScSpecEntry::UdtErrorEnumV0(e) => &e.name,
+                ScSpecEntry::FunctionV0(_) | ScSpecEntry::EventV0(_) => return None,
+            };
+            Some((canonical_id(entry), name.clone()))
+        })
+        .collect()
 }
 
 /// Implemented by types that can be converted into pretty formatted Strings of
@@ -561,10 +610,19 @@ pub enum MyError {
                 r.error_type
             );
         };
+        // The reference carries only an id, so it is the id of the MyError
+        // entry in the same spec that identifies it as the referenced type.
+        let my_error = entries
+            .iter()
+            .find(|e| {
+                matches!(e, ScSpecEntry::UdtErrorEnumV0(err)
+                    if err.name.to_utf8_string().unwrap() == "MyError")
+            })
+            .expect("MyError error enum not found");
         assert_eq!(
-            u.name.to_utf8_string().unwrap(),
-            "MyError",
-            "error_type should be MyError UDT"
+            u.id,
+            super::canonical_id(my_error),
+            "error_type should reference the MyError UDT"
         );
     }
 

@@ -82,7 +82,6 @@ fn test_spec() {
                 name: "a".try_into().unwrap(),
                 type_: ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
                     id: Udt::spec_type_id(),
-                    name: "Udt".try_into().unwrap(),
                 }),
             },
             ScSpecFunctionInputV0 {
@@ -90,7 +89,6 @@ fn test_spec() {
                 name: "b".try_into().unwrap(),
                 type_: ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
                     id: Udt::spec_type_id(),
-                    name: "Udt".try_into().unwrap(),
                 }),
             },
         ]
@@ -100,11 +98,9 @@ fn test_spec() {
             value_types: std::vec![
                 ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
                     id: Udt::spec_type_id(),
-                    name: "Udt".try_into().unwrap(),
                 }),
                 ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
                     id: Udt::spec_type_id(),
-                    name: "Udt".try_into().unwrap(),
                 }),
             ]
             .try_into()

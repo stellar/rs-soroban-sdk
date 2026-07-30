@@ -261,9 +261,8 @@ impl Contract {
                     type_: soroban_sdk::xdr::ScSpecTypeDefRef::Vec(
                         &soroban_sdk::xdr::ScSpecTypeVecRef {
                             element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                                soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                soroban_sdk::xdr::ScSpecTypeUdtv2 {
                                     id: <Context>::spec_type_id(),
-                                    name: soroban_sdk::xdr::StringMRef::new(b"Context"),
                                 },
                             ),
                         },

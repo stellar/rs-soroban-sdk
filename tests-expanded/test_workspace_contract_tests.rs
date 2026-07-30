@@ -159,9 +159,8 @@ impl Contract {
             name: soroban_sdk::xdr::ScSymbolRef(soroban_sdk::xdr::StringMRef::new(b"value")),
             inputs: soroban_sdk::xdr::VecMRef::new(&[]),
             outputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                soroban_sdk::xdr::ScSpecTypeUdtv2 {
                     id: <Value>::spec_type_id(),
-                    name: soroban_sdk::xdr::StringMRef::new(b"Value"),
                 },
             )]),
         });

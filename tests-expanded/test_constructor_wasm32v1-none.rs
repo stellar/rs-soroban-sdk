@@ -264,9 +264,8 @@ impl Contract {
                 doc: soroban_sdk::xdr::StringMRef::new(b""),
                 name: soroban_sdk::xdr::StringMRef::new(b"key"),
                 type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                    soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                    soroban_sdk::xdr::ScSpecTypeUdtv2 {
                         id: <DataKey>::spec_type_id(),
-                        name: soroban_sdk::xdr::StringMRef::new(b"DataKey"),
                     },
                 ),
             }]),

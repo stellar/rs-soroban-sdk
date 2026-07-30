@@ -216,9 +216,8 @@ impl UdtEnum {
                         name: soroban_sdk::xdr::StringMRef::new(b"UdtB"),
                         type_: soroban_sdk::xdr::VecMRef::new(&[
                             soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                                soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                soroban_sdk::xdr::ScSpecTypeUdtv2 {
                                     id: <UdtStruct>::spec_type_id(),
-                                    name: soroban_sdk::xdr::StringMRef::new(b"UdtStruct"),
                                 },
                             ),
                         ]),
@@ -230,9 +229,8 @@ impl UdtEnum {
                         name: soroban_sdk::xdr::StringMRef::new(b"UdtC"),
                         type_: soroban_sdk::xdr::VecMRef::new(&[
                             soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                                soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                soroban_sdk::xdr::ScSpecTypeUdtv2 {
                                     id: <UdtEnum2>::spec_type_id(),
-                                    name: soroban_sdk::xdr::StringMRef::new(b"UdtEnum2"),
                                 },
                             ),
                         ]),
@@ -244,9 +242,8 @@ impl UdtEnum {
                         name: soroban_sdk::xdr::StringMRef::new(b"UdtD"),
                         type_: soroban_sdk::xdr::VecMRef::new(&[
                             soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                                soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                soroban_sdk::xdr::ScSpecTypeUdtv2 {
                                     id: <UdtTuple>::spec_type_id(),
-                                    name: soroban_sdk::xdr::StringMRef::new(b"UdtTuple"),
                                 },
                             ),
                         ]),
@@ -261,7 +258,7 @@ impl UdtEnum {
 impl UdtEnum {
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [173u8, 206u8, 71u8, 109u8, 193u8, 42u8, 125u8, 244u8]
+        [54u8, 193u8, 233u8, 74u8, 59u8, 202u8, 219u8, 158u8]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UdtEnum {
@@ -272,7 +269,7 @@ impl soroban_sdk::SpecShakingMarker for UdtEnum {
         <UdtEnum2 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <UdtTuple as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xad\xceGm\xc1*}\xf4";
+            static MARKER: [u8; 14usize] = *b"SpEcV16\xc1\xe9J;\xca\xdb\x9e";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -743,9 +740,8 @@ impl UdtRecursive {
                     type_: soroban_sdk::xdr::ScSpecTypeDefRef::Vec(
                         &soroban_sdk::xdr::ScSpecTypeVecRef {
                             element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                                soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                soroban_sdk::xdr::ScSpecTypeUdtv2 {
                                     id: <UdtRecursive>::spec_type_id(),
-                                    name: soroban_sdk::xdr::StringMRef::new(b"UdtRecursive"),
                                 },
                             ),
                         },
@@ -760,7 +756,7 @@ impl UdtRecursive {
 impl UdtRecursive {
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [154u8, 250u8, 201u8, 34u8, 187u8, 83u8, 255u8, 212u8]
+        [128u8, 8u8, 129u8, 79u8, 154u8, 21u8, 57u8, 26u8]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UdtRecursive {
@@ -770,7 +766,7 @@ impl soroban_sdk::SpecShakingMarker for UdtRecursive {
         <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <Vec<UdtRecursive> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x9a\xfa\xc9\"\xbbS\xff\xd4";
+            static MARKER: [u8; 14usize] = *b"SpEcV1\x80\x08\x81O\x9a\x159\x1a";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -894,9 +890,8 @@ impl RecursiveToEnum {
                         &soroban_sdk::xdr::ScSpecTypeMapRef {
                             key_type: &soroban_sdk::xdr::ScSpecTypeDefRef::U32,
                             value_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                                soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                soroban_sdk::xdr::ScSpecTypeUdtv2 {
                                     id: <RecursiveEnum>::spec_type_id(),
-                                    name: soroban_sdk::xdr::StringMRef::new(b"RecursiveEnum"),
                                 },
                             ),
                         },
@@ -911,7 +906,7 @@ impl RecursiveToEnum {
 impl RecursiveToEnum {
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [152u8, 76u8, 131u8, 15u8, 173u8, 201u8, 54u8, 30u8]
+        [105u8, 211u8, 73u8, 101u8, 123u8, 162u8, 113u8, 186u8]
     }
 }
 impl soroban_sdk::SpecShakingMarker for RecursiveToEnum {
@@ -921,7 +916,7 @@ impl soroban_sdk::SpecShakingMarker for RecursiveToEnum {
         <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <Map<u32, RecursiveEnum> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x98L\x83\x0f\xad\xc96\x1e";
+            static MARKER: [u8; 14usize] = *b"SpEcV1i\xd3Ie{\xa2q\xba";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -1052,9 +1047,8 @@ impl RecursiveEnum {
                         name: soroban_sdk::xdr::StringMRef::new(b"Recursive"),
                         type_: soroban_sdk::xdr::VecMRef::new(&[
                             soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                                soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                soroban_sdk::xdr::ScSpecTypeUdtv2 {
                                     id: <RecursiveToEnum>::spec_type_id(),
-                                    name: soroban_sdk::xdr::StringMRef::new(b"RecursiveToEnum"),
                                 },
                             ),
                         ]),
@@ -1069,7 +1063,7 @@ impl RecursiveEnum {
 impl RecursiveEnum {
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [199u8, 178u8, 255u8, 91u8, 251u8, 69u8, 36u8, 137u8]
+        [87u8, 44u8, 17u8, 232u8, 33u8, 122u8, 168u8, 170u8]
     }
 }
 impl soroban_sdk::SpecShakingMarker for RecursiveEnum {
@@ -1078,7 +1072,7 @@ impl soroban_sdk::SpecShakingMarker for RecursiveEnum {
     fn spec_shaking_marker() {
         <RecursiveToEnum as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xc7\xb2\xff[\xfbE$\x89";
+            static MARKER: [u8; 14usize] = *b"SpEcV1W,\x11\xe8!z\xa8\xaa";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -1227,9 +1221,8 @@ impl Contract {
                     doc: soroban_sdk::xdr::StringMRef::new(b""),
                     name: soroban_sdk::xdr::StringMRef::new(b"a"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                        soroban_sdk::xdr::ScSpecTypeUdtv2 {
                             id: <UdtEnum>::spec_type_id(),
-                            name: soroban_sdk::xdr::StringMRef::new(b"UdtEnum"),
                         },
                     ),
                 },
@@ -1237,9 +1230,8 @@ impl Contract {
                     doc: soroban_sdk::xdr::StringMRef::new(b""),
                     name: soroban_sdk::xdr::StringMRef::new(b"b"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                        soroban_sdk::xdr::ScSpecTypeUdtv2 {
                             id: <UdtEnum>::spec_type_id(),
-                            name: soroban_sdk::xdr::StringMRef::new(b"UdtEnum"),
                         },
                     ),
                 },
@@ -1271,18 +1263,16 @@ impl Contract {
                 doc: soroban_sdk::xdr::StringMRef::new(b""),
                 name: soroban_sdk::xdr::StringMRef::new(b"a"),
                 type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                    soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                    soroban_sdk::xdr::ScSpecTypeUdtv2 {
                         id: <UdtRecursive>::spec_type_id(),
-                        name: soroban_sdk::xdr::StringMRef::new(b"UdtRecursive"),
                     },
                 ),
             }]),
             outputs: soroban_sdk::xdr::VecMRef::new(&[soroban_sdk::xdr::ScSpecTypeDefRef::Option(
                 &soroban_sdk::xdr::ScSpecTypeOptionRef {
                     value_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                        soroban_sdk::xdr::ScSpecTypeUdtv2 {
                             id: <UdtRecursive>::spec_type_id(),
-                            name: soroban_sdk::xdr::StringMRef::new(b"UdtRecursive"),
                         },
                     ),
                 },
@@ -1316,9 +1306,8 @@ impl Contract {
                     doc: soroban_sdk::xdr::StringMRef::new(b""),
                     name: soroban_sdk::xdr::StringMRef::new(b"a"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                        soroban_sdk::xdr::ScSpecTypeUdtv2 {
                             id: <RecursiveEnum>::spec_type_id(),
-                            name: soroban_sdk::xdr::StringMRef::new(b"RecursiveEnum"),
                         },
                     ),
                 },
@@ -1333,9 +1322,8 @@ impl Contract {
                     ok_type: &soroban_sdk::xdr::ScSpecTypeDefRef::Option(
                         &soroban_sdk::xdr::ScSpecTypeOptionRef {
                             value_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
-                                soroban_sdk::xdr::ScSpecTypeUdtv2Ref {
+                                soroban_sdk::xdr::ScSpecTypeUdtv2 {
                                     id: <RecursiveEnum>::spec_type_id(),
-                                    name: soroban_sdk::xdr::StringMRef::new(b"RecursiveEnum"),
                                 },
                             ),
                         },

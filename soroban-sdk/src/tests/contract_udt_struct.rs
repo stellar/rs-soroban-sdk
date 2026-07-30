@@ -136,7 +136,6 @@ fn test_spec() {
                 name: "a".try_into().unwrap(),
                 type_: ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
                     id: Udt::spec_type_id(),
-                    name: "Udt".try_into().unwrap(),
                 }),
             },
             ScSpecFunctionInputV0 {
@@ -144,7 +143,6 @@ fn test_spec() {
                 name: "b".try_into().unwrap(),
                 type_: ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
                     id: Udt::spec_type_id(),
-                    name: "Udt".try_into().unwrap(),
                 }),
             },
         ]
@@ -154,11 +152,9 @@ fn test_spec() {
             value_types: vec![
                 ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
                     id: Udt::spec_type_id(),
-                    name: "Udt".try_into().unwrap(),
                 }),
                 ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
                     id: Udt::spec_type_id(),
-                    name: "Udt".try_into().unwrap(),
                 }),
             ]
             .try_into()
@@ -183,7 +179,6 @@ fn test_spec_with_long_names() {
                 name: "a".try_into().unwrap(),
                 type_: ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
                     id: UdtWithLongName::spec_type_id(),
-                    name: "UdtWithLongName".try_into().unwrap(),
                 }),
             },
             ScSpecFunctionInputV0 {
@@ -191,7 +186,6 @@ fn test_spec_with_long_names() {
                 name: "b".try_into().unwrap(),
                 type_: ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
                     id: UdtWithLongName::spec_type_id(),
-                    name: "UdtWithLongName".try_into().unwrap(),
                 }),
             },
         ]

@@ -1,4 +1,4 @@
-use proc_macro2::{Literal, Span, TokenStream as TokenStream2};
+use proc_macro2::{Literal, TokenStream as TokenStream2};
 use quote::{format_ident, quote, ToTokens};
 use stellar_xdr::{
     ScSpecEntry, ScSpecTypeBytesN, ScSpecTypeDef, ScSpecTypeMap, ScSpecTypeOption,
@@ -24,6 +24,11 @@ pub const BN254_FP_SERIALIZED_SIZE: u32 = 32;
 pub const BN254_G1_SERIALIZED_SIZE: u32 = BN254_FP_SERIALIZED_SIZE * 2; // 64
 pub const BN254_G2_SERIALIZED_SIZE: u32 = BN254_G1_SERIALIZED_SIZE * 2; // 128
 
+// The limit on the `name` of every UDT definition entry in the contract spec
+// XDR, i.e. the `name<60>` of SCSpecUDTStructV0 and its union, enum, and error
+// enum counterparts.
+const UDT_NAME_LIMIT: u32 = 60;
+
 /// Checks if an `ident` and `generics` input type maps to a user-defined type (UDT).
 ///
 /// Returns Ok if the input will be parsed as a UDT, and returns an Err with a message if not.
@@ -43,6 +48,15 @@ pub fn is_mapped_type_udt(ident: &Ident, generics: &Generics) -> Result<(), Erro
     let ty = ident_to_type(ident.clone());
     match map_type(&ty, false, false) {
         Ok(ScSpecTypeDef::UdtV2(_)) => {
+            // A reference carries only the id, so the name is bounded by the
+            // limit on the name of the definition entry that the type gets.
+            let name = ident.unraw().to_string();
+            StringM::<UDT_NAME_LIMIT>::try_from(name).map_err(|e| {
+                Error::new(
+                    ident.span(),
+                    format!("type `{}` cannot be used in XDR spec: {}", ident, e),
+                )
+            })?;
             // `ty` does not contain the generics, so check manually here
             if generics.params.len() > 0 {
                 Err(Error::new(
@@ -53,23 +67,10 @@ pub fn is_mapped_type_udt(ident: &Ident, generics: &Generics) -> Result<(), Erro
                 Ok(())
             }
         }
-        _ => {
-            // Check if the error originated from the UDT-arm of `map_type`
-            let name = ident.unraw().to_string();
-            let _ = ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
-                id: [0u8; 8],
-                name: name.try_into().map_err(|e| {
-                    Error::new(
-                        ident.span(),
-                        format!("type `{}` cannot be used in XDR spec: {}", ident, e),
-                    )
-                })?,
-            });
-            Err(Error::new(
-                ident.span(),
-                format!("type `{}` conflicts with a soroban_sdk type and cannot be used as a user-defined type", ident),
-            ))
-        }
+        _ => Err(Error::new(
+            ident.span(),
+            format!("type `{}` conflicts with a soroban_sdk type and cannot be used as a user-defined type", ident),
+        )),
     }
 }
 
@@ -183,15 +184,7 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
                     // A reference to a user-defined type. The id identifying the
                     // referenced type is not known here, and is filled in by
                     // [const_ref_type_def] from that type's `spec_type_id`.
-                    s => Ok(ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
-                        id: [0u8; 8],
-                        name: s.try_into().map_err(|e| {
-                            Error::new(
-                                t.span(),
-                                format!("type `{}` cannot be used in XDR spec: {}", s, e),
-                            )
-                        })?,
-                    })),
+                    _ => Ok(ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 { id: [0u8; 8] })),
                 },
                 Some(PathSegment {
                     ident,
@@ -427,22 +420,19 @@ pub fn const_ref_type_def(path: &Path, t: &ScSpecTypeDef, rust: Option<&Type>) -
             let name = const_ref_string(path, &u.name);
             Some(quote!((#xdr::ScSpecTypeUdtRef { name: #name })))
         }
-        ScSpecTypeDef::UdtV2(u) => {
-            // The Rust type this reference was mapped from names it as written,
-            // path qualification and all. Absent one, it can only be named bare
-            // from the spec name, which is the case for a reference reachable in
-            // the spec but not in the types it was mapped from.
-            let ty = match rust.map(unref) {
-                Some(t) => quote!(#t),
-                None => {
-                    let name_str = u.name.to_utf8_string_lossy();
-                    let ident = syn::parse_str::<Ident>(&name_str)
-                        .unwrap_or_else(|_| Ident::new_raw(&name_str, Span::call_site()));
-                    quote!(#ident)
-                }
-            };
-            let name = const_ref_string(path, &u.name);
-            Some(quote!((#xdr::ScSpecTypeUdtv2Ref { id: <#ty>::spec_type_id(), name: #name })))
+        ScSpecTypeDef::UdtV2(_) => {
+            // The reference carries only the id, which is the referenced type's
+            // own `spec_type_id`. Naming that type is the only way to reach it,
+            // so the Rust type the reference was mapped from is required, named
+            // as written with its path qualification and all.
+            match rust.map(unref) {
+                Some(ty) => Some(quote!((#xdr::ScSpecTypeUdtv2 { id: <#ty>::spec_type_id() }))),
+                None => Some(quote!(
+                    (compile_error!(
+                        "user-defined type reference has no Rust type to take its id from"
+                    ))
+                )),
+            }
         }
         // All remaining variants are void.
         _ => None,
