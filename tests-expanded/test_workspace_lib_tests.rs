@@ -53,9 +53,29 @@ impl Value {
     }
 }
 impl Value {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"Value"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"value"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::I32,
+                },
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [130u8, 248u8, 116u8, 190u8, 9u8, 4u8, 98u8, 92u8]
+        let xdr: [u8; Value::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            Value::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for Value {

@@ -66,9 +66,57 @@ impl DummyProof {
     }
 }
 impl DummyProof {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"DummyProof"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"fp"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::BytesN(
+                        soroban_sdk::xdr::ScSpecTypeBytesN { n: 48u32 },
+                    ),
+                },
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"fp2"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::BytesN(
+                        soroban_sdk::xdr::ScSpecTypeBytesN { n: 96u32 },
+                    ),
+                },
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"fr"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::U256,
+                },
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"g1"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::BytesN(
+                        soroban_sdk::xdr::ScSpecTypeBytesN { n: 96u32 },
+                    ),
+                },
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"g2"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::BytesN(
+                        soroban_sdk::xdr::ScSpecTypeBytesN { n: 192u32 },
+                    ),
+                },
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [133u8, 87u8, 0u8, 65u8, 220u8, 126u8, 183u8, 34u8]
+        let xdr: [u8; DummyProof::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            DummyProof::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for DummyProof {

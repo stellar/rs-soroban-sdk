@@ -83,11 +83,11 @@ pub fn derive_type_enum_int(
     let ScSpecEntry::UdtEnumV0(spec_enum) = &spec_entry else {
         unreachable!()
     };
-    let spec_id_gen = spec_type_id_gen(enum_ident, &spec_entry);
-
-    // Generated code spec. The spec entry is rendered as the equivalent const
-    // ScSpecEntryRef, which the contract crate encodes to XDR at compile time.
-    let spec_gen = spec.then(|| {
+    // The spec entry rendered as the equivalent const ScSpecEntryRef, which the
+    // contract crate encodes to XDR at compile time. An enum holds no types, so
+    // it contains no reference to carry an id and this is already the canonical
+    // form the type's identity is computed over.
+    let entry_ref = || {
         let doc = const_ref_string(path, &spec_enum.doc);
         let lib = const_ref_string(path, &spec_enum.lib);
         let name = const_ref_string(path, &spec_enum.name);
@@ -97,14 +97,19 @@ pub fn derive_type_enum_int(
             let value = c.value;
             quote!(#path::xdr::ScSpecUdtEnumCaseV0Ref { doc: #doc, name: #name, value: #value })
         });
-        let spec_ref = quote! {
+        quote! {
             #path::xdr::ScSpecEntryRef::UdtEnumV0(#path::xdr::ScSpecUdtEnumV0Ref {
                 doc: #doc,
                 lib: #lib,
                 name: #name,
                 cases: #path::xdr::VecMRef::new(&[#(#cases),*]),
             })
-        };
+        }
+    };
+    let spec_id_gen = spec_type_id_gen(path, enum_ident, &entry_ref());
+
+    let spec_gen = spec.then(|| {
+        let spec_ref = entry_ref();
         let spec_ident = format_ident!(
             "__SPEC_XDR_TYPE_{}",
             enum_ident.unraw().to_string().to_uppercase()

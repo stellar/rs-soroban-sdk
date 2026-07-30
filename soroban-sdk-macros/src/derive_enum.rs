@@ -2,7 +2,7 @@ use itertools::MultiUnzip;
 use proc_macro2::{Literal, TokenStream as TokenStream2};
 use quote::{format_ident, quote, ToTokens};
 use syn::{
-    ext::IdentExt as _, spanned::Spanned, Attribute, DataEnum, Error, Fields, Ident, Path,
+    ext::IdentExt as _, spanned::Spanned, Attribute, DataEnum, Error, Fields, Ident, Path, Type,
     Visibility,
 };
 
@@ -13,7 +13,10 @@ use stellar_xdr::{
 
 use crate::{
     doc::docs_from_attrs,
-    map_type::{const_ref_string, const_ref_type_def, map_type, spec_type_id_gen},
+    map_type::{
+        const_ref_string, const_ref_type_def, const_ref_type_def_canonical, map_type,
+        spec_type_id_gen,
+    },
     shaking, DEFAULT_XDR_RW_LIMITS,
 };
 
@@ -161,53 +164,63 @@ pub fn derive_type_enum(
     let ScSpecEntry::UdtUnionV0(spec_union) = &spec_entry else {
         unreachable!()
     };
-    let spec_id_gen = spec_type_id_gen(enum_ident, &spec_entry);
-
-    // Generated code spec. The spec entry is rendered as the equivalent const
-    // ScSpecEntryRef, which the contract crate encodes to XDR at compile time.
-    let spec_gen = spec.then(|| {
+    // The spec entry rendered as the equivalent const ScSpecEntryRef, which the
+    // contract crate encodes to XDR at compile time. `case_type` renders each
+    // tuple case's types, and is all that differs between the exported form and
+    // the canonical form the type's identity is computed over.
+    let entry_ref = |case_type: &dyn Fn(&ScSpecTypeDef, &Type) -> TokenStream2| {
         let doc = const_ref_string(path, &spec_union.doc);
         let lib = const_ref_string(path, &spec_union.lib);
         let name = const_ref_string(path, &spec_union.name);
         // Each case's Rust field types, so a reference to a user-defined type in
         // a case resolves to that type's id.
-        let cases = spec_union
-            .cases
-            .iter()
-            .zip(&variant_field_types)
-            .map(|(c, field_types)| match c {
-            ScSpecUdtUnionCaseV0::VoidV0(c) => {
-                let doc = const_ref_string(path, &c.doc);
-                let name = const_ref_string(path, &c.name);
-                quote!(#path::xdr::ScSpecUdtUnionCaseV0Ref::VoidV0(
-                    #path::xdr::ScSpecUdtUnionCaseVoidV0Ref { doc: #doc, name: #name }
-                ))
-            }
-            ScSpecUdtUnionCaseV0::TupleV0(c) => {
-                let doc = const_ref_string(path, &c.doc);
-                let name = const_ref_string(path, &c.name);
-                let type_ = c
-                    .type_
-                    .iter()
-                    .zip(field_types.iter().copied())
-                    .map(|(t, rust)| const_ref_type_def(path, t, Some(rust)));
-                quote!(#path::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
-                    #path::xdr::ScSpecUdtUnionCaseTupleV0Ref {
-                        doc: #doc,
-                        name: #name,
-                        type_: #path::xdr::VecMRef::new(&[#(#type_),*]),
+        let cases =
+            spec_union
+                .cases
+                .iter()
+                .zip(&variant_field_types)
+                .map(|(c, field_types)| match c {
+                    ScSpecUdtUnionCaseV0::VoidV0(c) => {
+                        let doc = const_ref_string(path, &c.doc);
+                        let name = const_ref_string(path, &c.name);
+                        quote!(#path::xdr::ScSpecUdtUnionCaseV0Ref::VoidV0(
+                            #path::xdr::ScSpecUdtUnionCaseVoidV0Ref { doc: #doc, name: #name }
+                        ))
                     }
-                ))
-            }
-        });
-        let spec_ref = quote! {
+                    ScSpecUdtUnionCaseV0::TupleV0(c) => {
+                        let doc = const_ref_string(path, &c.doc);
+                        let name = const_ref_string(path, &c.name);
+                        let type_ = c
+                            .type_
+                            .iter()
+                            .zip(field_types.iter().copied())
+                            .map(|(t, rust)| case_type(t, rust));
+                        quote!(#path::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                            #path::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                                doc: #doc,
+                                name: #name,
+                                type_: #path::xdr::VecMRef::new(&[#(#type_),*]),
+                            }
+                        ))
+                    }
+                });
+        quote! {
             #path::xdr::ScSpecEntryRef::UdtUnionV0(#path::xdr::ScSpecUdtUnionV0Ref {
                 doc: #doc,
                 lib: #lib,
                 name: #name,
                 cases: #path::xdr::VecMRef::new(&[#(#cases),*]),
             })
-        };
+        }
+    };
+    let spec_id_gen = spec_type_id_gen(
+        path,
+        enum_ident,
+        &entry_ref(&|t, _| const_ref_type_def_canonical(path, t)),
+    );
+
+    let spec_gen = spec.then(|| {
+        let spec_ref = entry_ref(&|t, rust| const_ref_type_def(path, t, Some(rust)));
         let spec_ident = format_ident!(
             "__SPEC_XDR_TYPE_{}",
             enum_ident.unraw().to_string().to_uppercase()

@@ -1,8 +1,8 @@
 use proc_macro2::{Literal, TokenStream as TokenStream2};
 use quote::{format_ident, quote, ToTokens};
 use stellar_xdr::{
-    ScSpecEntry, ScSpecTypeBytesN, ScSpecTypeDef, ScSpecTypeMap, ScSpecTypeOption,
-    ScSpecTypeResult, ScSpecTypeTuple, ScSpecTypeUdtv2, ScSpecTypeVec, ScSymbol, StringM,
+    ScSpecTypeBytesN, ScSpecTypeDef, ScSpecTypeMap, ScSpecTypeOption, ScSpecTypeResult,
+    ScSpecTypeTuple, ScSpecTypeUdtv2, ScSpecTypeVec, ScSymbol, StringM,
 };
 use syn::{
     ext::IdentExt as _, spanned::Spanned, Error, Expr, ExprLit, GenericArgument, Ident, Lit, Path,
@@ -348,15 +348,29 @@ fn type_args(t: &Type) -> Vec<&Type> {
 
 /// Emits the `spec_type_id` const fn on a user-defined type: the 8-byte identity
 /// that references to it carry, which is the truncated SHA256 of its own spec
-/// entry. Emitted for every user-defined type, even one whose spec is not
-/// exported, because a reference to it from anywhere needs the id.
-pub fn spec_type_id_gen(ident: &Ident, entry: &ScSpecEntry) -> TokenStream2 {
-    let id = soroban_spec::udt_id::canonical_id(entry);
+/// entry in canonical form. Emitted for every user-defined type, even one whose
+/// spec is not exported, because a reference to it from anywhere needs the id.
+///
+/// `canonical_ref` is the type's spec entry rendered as a const
+/// `ScSpecEntryRef`, with the id of every reference it contains zeroed. Both the
+/// encoding and the hashing happen at const evaluation time, so the id is
+/// computed from the very bytes the contract emits rather than from a second
+/// encoding of them made here.
+pub fn spec_type_id_gen(path: &Path, ident: &Ident, canonical_ref: &TokenStream2) -> TokenStream2 {
     quote! {
         impl #ident {
+            const __SPEC_XDR_CANONICAL_REF: #path::xdr::ScSpecEntryRef<'static> = #canonical_ref;
+
             #[doc(hidden)]
             pub const fn spec_type_id() -> [u8; 8] {
-                [#(#id),*]
+                let xdr: [u8; #ident::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+                    #ident::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+                let hash = #path::reexports_for_macros::sha2_const::Sha256::new()
+                    .update(&xdr)
+                    .finalize();
+                [
+                    hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+                ]
             }
         }
     }
@@ -373,6 +387,35 @@ pub fn spec_type_id_gen(ident: &Ident, entry: &ScSpecEntry) -> TokenStream2 {
 /// qualification (e.g. the `othercontract::Flag` in a `Vec<othercontract::Flag>`)
 /// that the rendered expression needs to name it.
 pub fn const_ref_type_def(path: &Path, t: &ScSpecTypeDef, rust: Option<&Type>) -> TokenStream2 {
+    const_ref_type_def_with(path, t, rust, RefIds::Resolved)
+}
+
+/// Renders a [ScSpecTypeDef] the same way [const_ref_type_def] does, except that
+/// every reference to a user-defined type carries a zeroed id rather than the
+/// referenced type's own. This is the form a type's id is computed over, so that
+/// a type's identity does not depend on the identities of the types it
+/// references, which is what makes it well-defined for types that reference each
+/// other or themselves.
+///
+/// Needing no id to render, it needs no Rust type to take one from.
+pub fn const_ref_type_def_canonical(path: &Path, t: &ScSpecTypeDef) -> TokenStream2 {
+    const_ref_type_def_with(path, t, None, RefIds::Zeroed)
+}
+
+/// Whether a rendered reference to a user-defined type carries the referenced
+/// type's id, or a zeroed one.
+#[derive(Clone, Copy)]
+enum RefIds {
+    Resolved,
+    Zeroed,
+}
+
+fn const_ref_type_def_with(
+    path: &Path,
+    t: &ScSpecTypeDef,
+    rust: Option<&Type>,
+    ids: RefIds,
+) -> TokenStream2 {
     let xdr = quote!(#path::xdr);
     let variant = format_ident!("{}", t.name());
     let args = rust.map(type_args).unwrap_or_default();
@@ -381,23 +424,23 @@ pub fn const_ref_type_def(path: &Path, t: &ScSpecTypeDef, rust: Option<&Type>) -
     // the Ref type, matching the Box in the owned type.
     let value = match t {
         ScSpecTypeDef::Option(o) => {
-            let value_type = const_ref_type_def(path, &o.value_type, arg(0));
+            let value_type = const_ref_type_def_with(path, &o.value_type, arg(0), ids);
             Some(quote!((&#xdr::ScSpecTypeOptionRef { value_type: &#value_type })))
         }
         ScSpecTypeDef::Result(r) => {
-            let ok_type = const_ref_type_def(path, &r.ok_type, arg(0));
-            let error_type = const_ref_type_def(path, &r.error_type, arg(1));
+            let ok_type = const_ref_type_def_with(path, &r.ok_type, arg(0), ids);
+            let error_type = const_ref_type_def_with(path, &r.error_type, arg(1), ids);
             Some(
                 quote!((&#xdr::ScSpecTypeResultRef { ok_type: &#ok_type, error_type: &#error_type })),
             )
         }
         ScSpecTypeDef::Vec(v) => {
-            let element_type = const_ref_type_def(path, &v.element_type, arg(0));
+            let element_type = const_ref_type_def_with(path, &v.element_type, arg(0), ids);
             Some(quote!((&#xdr::ScSpecTypeVecRef { element_type: &#element_type })))
         }
         ScSpecTypeDef::Map(m) => {
-            let key_type = const_ref_type_def(path, &m.key_type, arg(0));
-            let value_type = const_ref_type_def(path, &m.value_type, arg(1));
+            let key_type = const_ref_type_def_with(path, &m.key_type, arg(0), ids);
+            let value_type = const_ref_type_def_with(path, &m.value_type, arg(1), ids);
             Some(
                 quote!((&#xdr::ScSpecTypeMapRef { key_type: &#key_type, value_type: &#value_type })),
             )
@@ -407,7 +450,7 @@ pub fn const_ref_type_def(path: &Path, t: &ScSpecTypeDef, rust: Option<&Type>) -
                 .value_types
                 .iter()
                 .enumerate()
-                .map(|(i, t)| const_ref_type_def(path, t, arg(i)));
+                .map(|(i, t)| const_ref_type_def_with(path, t, arg(i), ids));
             Some(
                 quote!((&#xdr::ScSpecTypeTupleRef { value_types: #xdr::VecMRef::new(&[#(#value_types),*]) })),
             )
@@ -420,20 +463,22 @@ pub fn const_ref_type_def(path: &Path, t: &ScSpecTypeDef, rust: Option<&Type>) -
             let name = const_ref_string(path, &u.name);
             Some(quote!((#xdr::ScSpecTypeUdtRef { name: #name })))
         }
-        ScSpecTypeDef::UdtV2(_) => {
-            // The reference carries only the id, which is the referenced type's
-            // own `spec_type_id`. Naming that type is the only way to reach it,
-            // so the Rust type the reference was mapped from is required, named
-            // as written with its path qualification and all.
-            match rust.map(unref) {
-                Some(ty) => Some(quote!((#xdr::ScSpecTypeUdtv2 { id: <#ty>::spec_type_id() }))),
-                None => Some(quote!(
+        // The reference carries only the id, which is the referenced type's own
+        // `spec_type_id`. Naming that type is the only way to reach it, so the
+        // Rust type the reference was mapped from is required, named as written
+        // with its path qualification and all. The canonical form zeroes the id,
+        // so it needs neither.
+        ScSpecTypeDef::UdtV2(_) => Some(match ids {
+            RefIds::Zeroed => quote!((#xdr::ScSpecTypeUdtv2 { id: [0u8; 8] })),
+            RefIds::Resolved => match rust.map(unref) {
+                Some(ty) => quote!((#xdr::ScSpecTypeUdtv2 { id: <#ty>::spec_type_id() })),
+                None => quote!(
                     (compile_error!(
                         "user-defined type reference has no Rust type to take its id from"
                     ))
-                )),
-            }
-        }
+                ),
+            },
+        }),
         // All remaining variants are void.
         _ => None,
     };

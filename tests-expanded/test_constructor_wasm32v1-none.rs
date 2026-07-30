@@ -73,9 +73,51 @@ impl DataKey {
     }
 }
 impl DataKey {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"DataKey"),
+            cases: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"Persistent"),
+                        type_: soroban_sdk::xdr::VecMRef::new(&[
+                            soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                        ]),
+                    },
+                ),
+                soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"Temp"),
+                        type_: soroban_sdk::xdr::VecMRef::new(&[
+                            soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                        ]),
+                    },
+                ),
+                soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"Instance"),
+                        type_: soroban_sdk::xdr::VecMRef::new(&[
+                            soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                        ]),
+                    },
+                ),
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [20u8, 148u8, 125u8, 126u8, 236u8, 21u8, 148u8, 132u8]
+        let xdr: [u8; DataKey::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            DataKey::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for DataKey {

@@ -51,9 +51,46 @@ impl MockProof {
     }
 }
 impl MockProof {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"MockProof"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"g1"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::Vec(
+                        &soroban_sdk::xdr::ScSpecTypeVecRef {
+                            element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::BytesN(
+                                soroban_sdk::xdr::ScSpecTypeBytesN { n: 64u32 },
+                            ),
+                        },
+                    ),
+                },
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"g2"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::Vec(
+                        &soroban_sdk::xdr::ScSpecTypeVecRef {
+                            element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::BytesN(
+                                soroban_sdk::xdr::ScSpecTypeBytesN { n: 128u32 },
+                            ),
+                        },
+                    ),
+                },
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [58u8, 129u8, 166u8, 160u8, 158u8, 231u8, 167u8, 31u8]
+        let xdr: [u8; MockProof::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            MockProof::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for MockProof {

@@ -105,9 +105,36 @@ impl UsedParamStruct {
     }
 }
 impl UsedParamStruct {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UsedParamStruct"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"a"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                },
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"nested"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2 { id: [0u8; 8] },
+                    ),
+                },
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [109u8, 44u8, 86u8, 10u8, 47u8, 201u8, 58u8, 71u8]
+        let xdr: [u8; UsedParamStruct::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UsedParamStruct::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedParamStruct {
@@ -263,9 +290,42 @@ impl UsedReturnEnum {
     }
 }
 impl UsedReturnEnum {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UsedReturnEnum"),
+            cases: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"A"),
+                        type_: soroban_sdk::xdr::VecMRef::new(&[
+                            soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                        ]),
+                    },
+                ),
+                soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"B"),
+                        type_: soroban_sdk::xdr::VecMRef::new(&[
+                            soroban_sdk::xdr::ScSpecTypeDefRef::I64,
+                        ]),
+                    },
+                ),
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [231u8, 207u8, 155u8, 49u8, 110u8, 21u8, 19u8, 254u8]
+        let xdr: [u8; UsedReturnEnum::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UsedReturnEnum::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedReturnEnum {
@@ -431,9 +491,34 @@ impl UsedParamIntEnum {
     }
 }
 impl UsedParamIntEnum {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtEnumV0(soroban_sdk::xdr::ScSpecUdtEnumV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UsedParamIntEnum"),
+            cases: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtEnumCaseV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"X"),
+                    value: 1u32,
+                },
+                soroban_sdk::xdr::ScSpecUdtEnumCaseV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"Y"),
+                    value: 2u32,
+                },
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [194u8, 244u8, 78u8, 191u8, 235u8, 113u8, 118u8, 112u8]
+        let xdr: [u8; UsedParamIntEnum::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UsedParamIntEnum::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedParamIntEnum {
@@ -558,9 +643,36 @@ impl UsedErrorEnum {
     }
 }
 impl UsedErrorEnum {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtErrorEnumV0(
+            soroban_sdk::xdr::ScSpecUdtErrorEnumV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                lib: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"UsedErrorEnum"),
+                cases: soroban_sdk::xdr::VecMRef::new(&[
+                    soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"NotFound"),
+                        value: 1u32,
+                    },
+                    soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"Invalid"),
+                        value: 2u32,
+                    },
+                ]),
+            },
+        );
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [72u8, 104u8, 220u8, 170u8, 97u8, 141u8, 247u8, 13u8]
+        let xdr: [u8; UsedErrorEnum::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UsedErrorEnum::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedErrorEnum {
@@ -739,9 +851,31 @@ impl UsedPanicErrorEnum {
     }
 }
 impl UsedPanicErrorEnum {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtErrorEnumV0(
+            soroban_sdk::xdr::ScSpecUdtErrorEnumV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                lib: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"UsedPanicErrorEnum"),
+                cases: soroban_sdk::xdr::VecMRef::new(&[
+                    soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"Boom"),
+                        value: 1u32,
+                    },
+                ]),
+            },
+        );
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [13u8, 183u8, 54u8, 174u8, 147u8, 68u8, 239u8, 26u8]
+        let xdr: [u8; UsedPanicErrorEnum::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UsedPanicErrorEnum::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedPanicErrorEnum {
@@ -918,9 +1052,31 @@ impl UsedAssertErrorEnum {
     }
 }
 impl UsedAssertErrorEnum {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtErrorEnumV0(
+            soroban_sdk::xdr::ScSpecUdtErrorEnumV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                lib: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"UsedAssertErrorEnum"),
+                cases: soroban_sdk::xdr::VecMRef::new(&[
+                    soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"Bad"),
+                        value: 1u32,
+                    },
+                ]),
+            },
+        );
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [139u8, 137u8, 31u8, 35u8, 189u8, 21u8, 55u8, 244u8]
+        let xdr: [u8; UsedAssertErrorEnum::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UsedAssertErrorEnum::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedAssertErrorEnum {
@@ -1102,9 +1258,29 @@ impl UsedNestedInStruct {
     }
 }
 impl UsedNestedInStruct {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UsedNestedInStruct"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"val"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::I64,
+                },
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [132u8, 8u8, 89u8, 174u8, 160u8, 241u8, 50u8, 56u8]
+        let xdr: [u8; UsedNestedInStruct::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UsedNestedInStruct::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedNestedInStruct {
@@ -1223,9 +1399,29 @@ impl UsedVecElement {
     }
 }
 impl UsedVecElement {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UsedVecElement"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"data"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                },
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [226u8, 1u8, 121u8, 201u8, 154u8, 248u8, 237u8, 116u8]
+        let xdr: [u8; UsedVecElement::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UsedVecElement::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedVecElement {
@@ -1354,9 +1550,34 @@ impl UsedMapKey {
     }
 }
 impl UsedMapKey {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtEnumV0(soroban_sdk::xdr::ScSpecUdtEnumV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UsedMapKey"),
+            cases: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtEnumCaseV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"K1"),
+                    value: 1u32,
+                },
+                soroban_sdk::xdr::ScSpecUdtEnumCaseV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"K2"),
+                    value: 2u32,
+                },
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [91u8, 244u8, 82u8, 223u8, 221u8, 180u8, 176u8, 188u8]
+        let xdr: [u8; UsedMapKey::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UsedMapKey::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedMapKey {
@@ -1467,9 +1688,29 @@ impl UsedMapVal {
     }
 }
 impl UsedMapVal {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UsedMapVal"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"v"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                },
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [170u8, 88u8, 56u8, 222u8, 239u8, 187u8, 54u8, 37u8]
+        let xdr: [u8; UsedMapVal::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UsedMapVal::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedMapVal {
@@ -1591,9 +1832,29 @@ impl UsedOptionElement {
     }
 }
 impl UsedOptionElement {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UsedOptionElement"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"data"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                },
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [179u8, 47u8, 151u8, 213u8, 6u8, 189u8, 51u8, 66u8]
+        let xdr: [u8; UsedOptionElement::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UsedOptionElement::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedOptionElement {
@@ -1710,9 +1971,29 @@ impl UsedResultOk {
     }
 }
 impl UsedResultOk {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UsedResultOk"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"data"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                },
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [107u8, 228u8, 122u8, 120u8, 66u8, 209u8, 43u8, 2u8]
+        let xdr: [u8; UsedResultOk::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UsedResultOk::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedResultOk {
@@ -1958,9 +2239,34 @@ impl UsedEventTopicType {
     }
 }
 impl UsedEventTopicType {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtEnumV0(soroban_sdk::xdr::ScSpecUdtEnumV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UsedEventTopicType"),
+            cases: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtEnumCaseV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"Transfer"),
+                    value: 1u32,
+                },
+                soroban_sdk::xdr::ScSpecUdtEnumCaseV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"Mint"),
+                    value: 2u32,
+                },
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [245u8, 212u8, 155u8, 163u8, 204u8, 73u8, 19u8, 247u8]
+        let xdr: [u8; UsedEventTopicType::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UsedEventTopicType::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventTopicType {
@@ -2211,9 +2517,34 @@ impl UsedEventDataType {
     }
 }
 impl UsedEventDataType {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UsedEventDataType"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"x"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                },
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"y"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                },
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [194u8, 32u8, 27u8, 220u8, 200u8, 103u8, 120u8, 90u8]
+        let xdr: [u8; UsedEventDataType::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UsedEventDataType::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventDataType {
@@ -2470,9 +2801,31 @@ impl UsedEventTopicOuter {
     }
 }
 impl UsedEventTopicOuter {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UsedEventTopicOuter"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"inner"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2 { id: [0u8; 8] },
+                    ),
+                },
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [99u8, 99u8, 88u8, 156u8, 66u8, 93u8, 198u8, 74u8]
+        let xdr: [u8; UsedEventTopicOuter::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UsedEventTopicOuter::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventTopicOuter {
@@ -2598,9 +2951,29 @@ impl UsedEventTopicInner {
     }
 }
 impl UsedEventTopicInner {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UsedEventTopicInner"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"val"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                },
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [54u8, 131u8, 63u8, 240u8, 205u8, 87u8, 177u8, 47u8]
+        let xdr: [u8; UsedEventTopicInner::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UsedEventTopicInner::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventTopicInner {
@@ -2853,9 +3226,31 @@ impl UsedEventDataOuter {
     }
 }
 impl UsedEventDataOuter {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UsedEventDataOuter"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"inner"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2 { id: [0u8; 8] },
+                    ),
+                },
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [147u8, 155u8, 219u8, 214u8, 88u8, 150u8, 216u8, 241u8]
+        let xdr: [u8; UsedEventDataOuter::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UsedEventDataOuter::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventDataOuter {
@@ -2981,9 +3376,29 @@ impl UsedEventDataInner {
     }
 }
 impl UsedEventDataInner {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UsedEventDataInner"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"val"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                },
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [12u8, 240u8, 246u8, 119u8, 253u8, 26u8, 27u8, 148u8]
+        let xdr: [u8; UsedEventDataInner::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UsedEventDataInner::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventDataInner {
@@ -3238,9 +3653,34 @@ impl UsedRefTopicType {
     }
 }
 impl UsedRefTopicType {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtEnumV0(soroban_sdk::xdr::ScSpecUdtEnumV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UsedRefTopicType"),
+            cases: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtEnumCaseV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"Send"),
+                    value: 1u32,
+                },
+                soroban_sdk::xdr::ScSpecUdtEnumCaseV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"Recv"),
+                    value: 2u32,
+                },
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [64u8, 185u8, 76u8, 79u8, 249u8, 209u8, 232u8, 226u8]
+        let xdr: [u8; UsedRefTopicType::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UsedRefTopicType::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedRefTopicType {
@@ -3360,9 +3800,31 @@ impl UsedRefDataType {
     }
 }
 impl UsedRefDataType {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UsedRefDataType"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"nested"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2 { id: [0u8; 8] },
+                    ),
+                },
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [172u8, 165u8, 255u8, 26u8, 121u8, 238u8, 128u8, 181u8]
+        let xdr: [u8; UsedRefDataType::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UsedRefDataType::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedRefDataType {
@@ -3481,9 +3943,29 @@ impl UsedRefDataInner {
     }
 }
 impl UsedRefDataInner {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UsedRefDataInner"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"val"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                },
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [75u8, 223u8, 39u8, 56u8, 109u8, 47u8, 232u8, 29u8]
+        let xdr: [u8; UsedRefDataInner::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UsedRefDataInner::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedRefDataInner {
@@ -3728,9 +4210,29 @@ impl UsedTupleElement {
     }
 }
 impl UsedTupleElement {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UsedTupleElement"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"val"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                },
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [222u8, 29u8, 77u8, 97u8, 1u8, 236u8, 176u8, 65u8]
+        let xdr: [u8; UsedTupleElement::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UsedTupleElement::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedTupleElement {
@@ -3852,9 +4354,29 @@ impl UsedTupleReturnElement {
     }
 }
 impl UsedTupleReturnElement {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UsedTupleReturnElement"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"val"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                },
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [89u8, 166u8, 54u8, 179u8, 236u8, 120u8, 69u8, 19u8]
+        let xdr: [u8; UsedTupleReturnElement::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UsedTupleReturnElement::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedTupleReturnElement {
@@ -3978,9 +4500,29 @@ impl UsedVecInnerVecElement {
     }
 }
 impl UsedVecInnerVecElement {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UsedVecInnerVecElement"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"val"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                },
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [207u8, 64u8, 37u8, 88u8, 222u8, 43u8, 74u8, 64u8]
+        let xdr: [u8; UsedVecInnerVecElement::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UsedVecInnerVecElement::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedVecInnerVecElement {
@@ -4104,9 +4646,29 @@ impl UsedVecInnerElement {
     }
 }
 impl UsedVecInnerElement {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UsedVecInnerElement"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"val"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                },
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [180u8, 171u8, 78u8, 93u8, 227u8, 234u8, 65u8, 214u8]
+        let xdr: [u8; UsedVecInnerElement::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UsedVecInnerElement::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedVecInnerElement {
@@ -4262,9 +4824,47 @@ impl UsedVecElementNested {
     }
 }
 impl UsedVecElementNested {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UsedVecElementNested"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"inner"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2 { id: [0u8; 8] },
+                    ),
+                },
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"val"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                },
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"vec_inner"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::Vec(
+                        &soroban_sdk::xdr::ScSpecTypeVecRef {
+                            element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2 { id: [0u8; 8] },
+                            ),
+                        },
+                    ),
+                },
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [15u8, 178u8, 62u8, 63u8, 149u8, 98u8, 90u8, 112u8]
+        let xdr: [u8; UsedVecElementNested::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UsedVecElementNested::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedVecElementNested {
@@ -4412,9 +5012,29 @@ mod export_false_used {
         }
     }
     impl UsedExportFalseStruct {
+        const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+            soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                lib: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"UsedExportFalseStruct"),
+                fields: soroban_sdk::xdr::VecMRef::new(&[
+                    soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"val"),
+                        type_: soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                    },
+                ]),
+            });
         #[doc(hidden)]
         pub const fn spec_type_id() -> [u8; 8] {
-            [127u8, 197u8, 206u8, 111u8, 195u8, 83u8, 84u8, 8u8]
+            let xdr: [u8; UsedExportFalseStruct::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+                UsedExportFalseStruct::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
         }
     }
     impl soroban_sdk::SpecShakingMarker for UsedExportFalseStruct {
@@ -4539,9 +5159,31 @@ mod export_false_used {
         }
     }
     impl UsedExportFalseError {
+        const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+            soroban_sdk::xdr::ScSpecEntryRef::UdtErrorEnumV0(
+                soroban_sdk::xdr::ScSpecUdtErrorEnumV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    lib: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"UsedExportFalseError"),
+                    cases: soroban_sdk::xdr::VecMRef::new(&[
+                        soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(b"Fail"),
+                            value: 1u32,
+                        },
+                    ]),
+                },
+            );
         #[doc(hidden)]
         pub const fn spec_type_id() -> [u8; 8] {
-            [13u8, 214u8, 13u8, 32u8, 252u8, 219u8, 234u8, 243u8]
+            let xdr: [u8; UsedExportFalseError::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+                UsedExportFalseError::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
         }
     }
     impl soroban_sdk::SpecShakingMarker for UsedExportFalseError {
@@ -4844,9 +5486,29 @@ impl UsedNonPubStruct {
     }
 }
 impl UsedNonPubStruct {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UsedNonPubStruct"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"val"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                },
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [112u8, 140u8, 15u8, 78u8, 33u8, 8u8, 50u8, 216u8]
+        let xdr: [u8; UsedNonPubStruct::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UsedNonPubStruct::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedNonPubStruct {
@@ -4963,9 +5625,31 @@ impl UsedNonPubError {
     }
 }
 impl UsedNonPubError {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtErrorEnumV0(
+            soroban_sdk::xdr::ScSpecUdtErrorEnumV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                lib: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"UsedNonPubError"),
+                cases: soroban_sdk::xdr::VecMRef::new(&[
+                    soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"Fail"),
+                        value: 1u32,
+                    },
+                ]),
+            },
+        );
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [169u8, 60u8, 216u8, 43u8, 183u8, 167u8, 13u8, 23u8]
+        let xdr: [u8; UsedNonPubError::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UsedNonPubError::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedNonPubError {
@@ -5149,9 +5833,31 @@ impl UsedRecursiveRoot {
     }
 }
 impl UsedRecursiveRoot {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UsedRecursiveRoot"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"val"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2 { id: [0u8; 8] },
+                    ),
+                },
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [160u8, 106u8, 88u8, 171u8, 93u8, 5u8, 0u8, 254u8]
+        let xdr: [u8; UsedRecursiveRoot::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UsedRecursiveRoot::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedRecursiveRoot {
@@ -5316,9 +6022,46 @@ impl UsedRecursiveNode {
     }
 }
 impl UsedRecursiveNode {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UsedRecursiveNode"),
+            cases: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"NotRecursive"),
+                        type_: soroban_sdk::xdr::VecMRef::new(&[
+                            soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2 { id: [0u8; 8] },
+                            ),
+                        ]),
+                    },
+                ),
+                soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"Recursive"),
+                        type_: soroban_sdk::xdr::VecMRef::new(&[
+                            soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2 { id: [0u8; 8] },
+                            ),
+                        ]),
+                    },
+                ),
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [228u8, 55u8, 191u8, 68u8, 152u8, 243u8, 64u8, 49u8]
+        let xdr: [u8; UsedRecursiveNode::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UsedRecursiveNode::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedRecursiveNode {
@@ -5485,9 +6228,35 @@ impl UsedRecursiveLeaf {
     }
 }
 impl UsedRecursiveLeaf {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UsedRecursiveLeaf"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"val"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::Vec(
+                        &soroban_sdk::xdr::ScSpecTypeVecRef {
+                            element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2 { id: [0u8; 8] },
+                            ),
+                        },
+                    ),
+                },
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [204u8, 122u8, 188u8, 147u8, 35u8, 162u8, 174u8, 167u8]
+        let xdr: [u8; UsedRecursiveLeaf::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UsedRecursiveLeaf::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedRecursiveLeaf {
@@ -5604,9 +6373,29 @@ impl UsedLeaf {
     }
 }
 impl UsedLeaf {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UsedLeaf"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"val"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                },
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [230u8, 81u8, 213u8, 84u8, 19u8, 138u8, 183u8, 108u8]
+        let xdr: [u8; UsedLeaf::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UsedLeaf::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedLeaf {
@@ -6045,9 +6834,34 @@ mod wasm_imported {
         }
     }
     impl StructA {
+        const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+            soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                lib: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"StructA"),
+                fields: soroban_sdk::xdr::VecMRef::new(&[
+                    soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"f1"),
+                        type_: soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                    },
+                    soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"f2"),
+                        type_: soroban_sdk::xdr::ScSpecTypeDefRef::Bool,
+                    },
+                ]),
+            });
         #[doc(hidden)]
         pub const fn spec_type_id() -> [u8; 8] {
-            [182u8, 28u8, 253u8, 223u8, 104u8, 89u8, 45u8, 100u8]
+            let xdr: [u8; StructA::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+                StructA::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
         }
     }
     impl soroban_sdk::SpecShakingMarker for StructA {
@@ -6203,9 +7017,34 @@ mod wasm_imported {
         }
     }
     impl StructB {
+        const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+            soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                lib: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"StructB"),
+                fields: soroban_sdk::xdr::VecMRef::new(&[
+                    soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"f1"),
+                        type_: soroban_sdk::xdr::ScSpecTypeDefRef::I64,
+                    },
+                    soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"f2"),
+                        type_: soroban_sdk::xdr::ScSpecTypeDefRef::String,
+                    },
+                ]),
+            });
         #[doc(hidden)]
         pub const fn spec_type_id() -> [u8; 8] {
-            [243u8, 196u8, 211u8, 140u8, 193u8, 119u8, 233u8, 24u8]
+            let xdr: [u8; StructB::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+                StructB::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
         }
     }
     impl soroban_sdk::SpecShakingMarker for StructB {
@@ -6365,9 +7204,38 @@ mod wasm_imported {
         }
     }
     impl StructC {
+        const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+            soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                lib: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"StructC"),
+                fields: soroban_sdk::xdr::VecMRef::new(&[
+                    soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"f1"),
+                        type_: soroban_sdk::xdr::ScSpecTypeDefRef::Vec(
+                            &soroban_sdk::xdr::ScSpecTypeVecRef {
+                                element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                            },
+                        ),
+                    },
+                    soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"f2"),
+                        type_: soroban_sdk::xdr::ScSpecTypeDefRef::Address,
+                    },
+                ]),
+            });
         #[doc(hidden)]
         pub const fn spec_type_id() -> [u8; 8] {
-            [163u8, 22u8, 10u8, 143u8, 201u8, 146u8, 210u8, 17u8]
+            let xdr: [u8; StructC::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+                StructC::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
         }
     }
     impl soroban_sdk::SpecShakingMarker for StructC {
@@ -6520,9 +7388,34 @@ mod wasm_imported {
         }
     }
     impl StructTupleA {
+        const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+            soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                lib: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"StructTupleA"),
+                fields: soroban_sdk::xdr::VecMRef::new(&[
+                    soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"0"),
+                        type_: soroban_sdk::xdr::ScSpecTypeDefRef::I64,
+                    },
+                    soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"1"),
+                        type_: soroban_sdk::xdr::ScSpecTypeDefRef::I64,
+                    },
+                ]),
+            });
         #[doc(hidden)]
         pub const fn spec_type_id() -> [u8; 8] {
-            [207u8, 41u8, 151u8, 93u8, 83u8, 178u8, 253u8, 41u8]
+            let xdr: [u8; StructTupleA::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+                StructTupleA::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
         }
     }
     impl soroban_sdk::SpecShakingMarker for StructTupleA {
@@ -6671,9 +7564,34 @@ mod wasm_imported {
         }
     }
     impl StructTupleB {
+        const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+            soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                lib: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"StructTupleB"),
+                fields: soroban_sdk::xdr::VecMRef::new(&[
+                    soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"0"),
+                        type_: soroban_sdk::xdr::ScSpecTypeDefRef::U128,
+                    },
+                    soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"1"),
+                        type_: soroban_sdk::xdr::ScSpecTypeDefRef::U128,
+                    },
+                ]),
+            });
         #[doc(hidden)]
         pub const fn spec_type_id() -> [u8; 8] {
-            [120u8, 217u8, 56u8, 156u8, 26u8, 111u8, 172u8, 140u8]
+            let xdr: [u8; StructTupleB::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+                StructTupleB::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
         }
     }
     impl soroban_sdk::SpecShakingMarker for StructTupleB {
@@ -6823,9 +7741,34 @@ mod wasm_imported {
         }
     }
     impl StructTupleC {
+        const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+            soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                lib: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"StructTupleC"),
+                fields: soroban_sdk::xdr::VecMRef::new(&[
+                    soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"0"),
+                        type_: soroban_sdk::xdr::ScSpecTypeDefRef::Address,
+                    },
+                    soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"1"),
+                        type_: soroban_sdk::xdr::ScSpecTypeDefRef::I128,
+                    },
+                ]),
+            });
         #[doc(hidden)]
         pub const fn spec_type_id() -> [u8; 8] {
-            [197u8, 61u8, 129u8, 193u8, 34u8, 175u8, 84u8, 217u8]
+            let xdr: [u8; StructTupleC::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+                StructTupleC::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
         }
     }
     impl soroban_sdk::SpecShakingMarker for StructTupleC {
@@ -6987,9 +7930,42 @@ mod wasm_imported {
         }
     }
     impl EnumA {
+        const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+            soroban_sdk::xdr::ScSpecEntryRef::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                lib: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"EnumA"),
+                cases: soroban_sdk::xdr::VecMRef::new(&[
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::VoidV0(
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(b"V1"),
+                        },
+                    ),
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::VoidV0(
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(b"V2"),
+                        },
+                    ),
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::VoidV0(
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(b"V3"),
+                        },
+                    ),
+                ]),
+            });
         #[doc(hidden)]
         pub const fn spec_type_id() -> [u8; 8] {
-            [162u8, 61u8, 78u8, 193u8, 112u8, 149u8, 144u8, 178u8]
+            let xdr: [u8; EnumA::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+                EnumA::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
         }
     }
     impl soroban_sdk::SpecShakingMarker for EnumA {
@@ -7232,9 +8208,49 @@ mod wasm_imported {
         }
     }
     impl EnumB {
+        const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+            soroban_sdk::xdr::ScSpecEntryRef::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                lib: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"EnumB"),
+                cases: soroban_sdk::xdr::VecMRef::new(&[
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::VoidV0(
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(b"V1"),
+                        },
+                    ),
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(b"V2"),
+                            type_: soroban_sdk::xdr::VecMRef::new(&[
+                                soroban_sdk::xdr::ScSpecTypeDefRef::I64,
+                            ]),
+                        },
+                    ),
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(b"V3"),
+                            type_: soroban_sdk::xdr::VecMRef::new(&[
+                                soroban_sdk::xdr::ScSpecTypeDefRef::I64,
+                                soroban_sdk::xdr::ScSpecTypeDefRef::I64,
+                            ]),
+                        },
+                    ),
+                ]),
+            });
         #[doc(hidden)]
         pub const fn spec_type_id() -> [u8; 8] {
-            [39u8, 27u8, 0u8, 68u8, 83u8, 72u8, 94u8, 204u8]
+            let xdr: [u8; EnumB::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+                EnumB::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
         }
     }
     impl soroban_sdk::SpecShakingMarker for EnumB {
@@ -7487,9 +8503,52 @@ mod wasm_imported {
         }
     }
     impl EnumC {
+        const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+            soroban_sdk::xdr::ScSpecEntryRef::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                lib: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"EnumC"),
+                cases: soroban_sdk::xdr::VecMRef::new(&[
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::VoidV0(
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(b"V1"),
+                        },
+                    ),
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(b"V2"),
+                            type_: soroban_sdk::xdr::VecMRef::new(&[
+                                soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                                    soroban_sdk::xdr::ScSpecTypeUdtv2 { id: [0u8; 8] },
+                                ),
+                            ]),
+                        },
+                    ),
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(b"V3"),
+                            type_: soroban_sdk::xdr::VecMRef::new(&[
+                                soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                                    soroban_sdk::xdr::ScSpecTypeUdtv2 { id: [0u8; 8] },
+                                ),
+                            ]),
+                        },
+                    ),
+                ]),
+            });
         #[doc(hidden)]
         pub const fn spec_type_id() -> [u8; 8] {
-            [119u8, 3u8, 73u8, 44u8, 147u8, 187u8, 67u8, 235u8]
+            let xdr: [u8; EnumC::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+                EnumC::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
         }
     }
     impl soroban_sdk::SpecShakingMarker for EnumC {
@@ -7692,9 +8751,39 @@ mod wasm_imported {
         }
     }
     impl EnumIntA {
+        const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+            soroban_sdk::xdr::ScSpecEntryRef::UdtEnumV0(soroban_sdk::xdr::ScSpecUdtEnumV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                lib: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"EnumIntA"),
+                cases: soroban_sdk::xdr::VecMRef::new(&[
+                    soroban_sdk::xdr::ScSpecUdtEnumCaseV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"V1"),
+                        value: 1u32,
+                    },
+                    soroban_sdk::xdr::ScSpecUdtEnumCaseV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"V2"),
+                        value: 2u32,
+                    },
+                    soroban_sdk::xdr::ScSpecUdtEnumCaseV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"V3"),
+                        value: 3u32,
+                    },
+                ]),
+            });
         #[doc(hidden)]
         pub const fn spec_type_id() -> [u8; 8] {
-            [86u8, 93u8, 128u8, 92u8, 126u8, 26u8, 8u8, 47u8]
+            let xdr: [u8; EnumIntA::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+                EnumIntA::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
         }
     }
     impl soroban_sdk::SpecShakingMarker for EnumIntA {
@@ -7844,9 +8933,39 @@ mod wasm_imported {
         }
     }
     impl EnumIntB {
+        const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+            soroban_sdk::xdr::ScSpecEntryRef::UdtEnumV0(soroban_sdk::xdr::ScSpecUdtEnumV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                lib: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"EnumIntB"),
+                cases: soroban_sdk::xdr::VecMRef::new(&[
+                    soroban_sdk::xdr::ScSpecUdtEnumCaseV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"V1"),
+                        value: 10u32,
+                    },
+                    soroban_sdk::xdr::ScSpecUdtEnumCaseV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"V2"),
+                        value: 20u32,
+                    },
+                    soroban_sdk::xdr::ScSpecUdtEnumCaseV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"V3"),
+                        value: 30u32,
+                    },
+                ]),
+            });
         #[doc(hidden)]
         pub const fn spec_type_id() -> [u8; 8] {
-            [44u8, 156u8, 192u8, 95u8, 237u8, 95u8, 41u8, 133u8]
+            let xdr: [u8; EnumIntB::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+                EnumIntB::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
         }
     }
     impl soroban_sdk::SpecShakingMarker for EnumIntB {
@@ -7996,9 +9115,39 @@ mod wasm_imported {
         }
     }
     impl EnumIntC {
+        const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+            soroban_sdk::xdr::ScSpecEntryRef::UdtEnumV0(soroban_sdk::xdr::ScSpecUdtEnumV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                lib: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"EnumIntC"),
+                cases: soroban_sdk::xdr::VecMRef::new(&[
+                    soroban_sdk::xdr::ScSpecUdtEnumCaseV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"V1"),
+                        value: 100u32,
+                    },
+                    soroban_sdk::xdr::ScSpecUdtEnumCaseV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"V2"),
+                        value: 200u32,
+                    },
+                    soroban_sdk::xdr::ScSpecUdtEnumCaseV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"V3"),
+                        value: 300u32,
+                    },
+                ]),
+            });
         #[doc(hidden)]
         pub const fn spec_type_id() -> [u8; 8] {
-            [96u8, 202u8, 218u8, 25u8, 185u8, 99u8, 240u8, 47u8]
+            let xdr: [u8; EnumIntC::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+                EnumIntC::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
         }
     }
     impl soroban_sdk::SpecShakingMarker for EnumIntC {
@@ -8150,9 +9299,41 @@ mod wasm_imported {
         }
     }
     impl ErrorA {
+        const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+            soroban_sdk::xdr::ScSpecEntryRef::UdtErrorEnumV0(
+                soroban_sdk::xdr::ScSpecUdtErrorEnumV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    lib: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"ErrorA"),
+                    cases: soroban_sdk::xdr::VecMRef::new(&[
+                        soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(b"E1"),
+                            value: 1u32,
+                        },
+                        soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(b"E2"),
+                            value: 2u32,
+                        },
+                        soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(b"E3"),
+                            value: 3u32,
+                        },
+                    ]),
+                },
+            );
         #[doc(hidden)]
         pub const fn spec_type_id() -> [u8; 8] {
-            [233u8, 82u8, 167u8, 232u8, 98u8, 153u8, 162u8, 195u8]
+            let xdr: [u8; ErrorA::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+                ErrorA::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
         }
     }
     impl soroban_sdk::SpecShakingMarker for ErrorA {
@@ -8374,9 +9555,41 @@ mod wasm_imported {
         }
     }
     impl ErrorB {
+        const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+            soroban_sdk::xdr::ScSpecEntryRef::UdtErrorEnumV0(
+                soroban_sdk::xdr::ScSpecUdtErrorEnumV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    lib: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"ErrorB"),
+                    cases: soroban_sdk::xdr::VecMRef::new(&[
+                        soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(b"E1"),
+                            value: 10u32,
+                        },
+                        soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(b"E2"),
+                            value: 11u32,
+                        },
+                        soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(b"E3"),
+                            value: 12u32,
+                        },
+                    ]),
+                },
+            );
         #[doc(hidden)]
         pub const fn spec_type_id() -> [u8; 8] {
-            [29u8, 49u8, 214u8, 251u8, 136u8, 210u8, 61u8, 227u8]
+            let xdr: [u8; ErrorB::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+                ErrorB::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
         }
     }
     impl soroban_sdk::SpecShakingMarker for ErrorB {
@@ -8598,9 +9811,41 @@ mod wasm_imported {
         }
     }
     impl ErrorC {
+        const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+            soroban_sdk::xdr::ScSpecEntryRef::UdtErrorEnumV0(
+                soroban_sdk::xdr::ScSpecUdtErrorEnumV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    lib: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"ErrorC"),
+                    cases: soroban_sdk::xdr::VecMRef::new(&[
+                        soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(b"E1"),
+                            value: 100u32,
+                        },
+                        soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(b"E2"),
+                            value: 101u32,
+                        },
+                        soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(b"E3"),
+                            value: 102u32,
+                        },
+                    ]),
+                },
+            );
         #[doc(hidden)]
         pub const fn spec_type_id() -> [u8; 8] {
-            [185u8, 1u8, 175u8, 106u8, 224u8, 99u8, 163u8, 13u8]
+            let xdr: [u8; ErrorC::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+                ErrorC::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
         }
     }
     impl soroban_sdk::SpecShakingMarker for ErrorC {
@@ -9339,9 +10584,29 @@ impl UnusedStruct {
     }
 }
 impl UnusedStruct {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UnusedStruct"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"x"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                },
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [124u8, 156u8, 9u8, 30u8, 245u8, 168u8, 25u8, 160u8]
+        let xdr: [u8; UnusedStruct::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UnusedStruct::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UnusedStruct {
@@ -9481,9 +10746,39 @@ impl UnusedEnum {
     }
 }
 impl UnusedEnum {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UnusedEnum"),
+            cases: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::VoidV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"A"),
+                    },
+                ),
+                soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"B"),
+                        type_: soroban_sdk::xdr::VecMRef::new(&[
+                            soroban_sdk::xdr::ScSpecTypeDefRef::I64,
+                        ]),
+                    },
+                ),
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [47u8, 130u8, 154u8, 48u8, 190u8, 64u8, 14u8, 90u8]
+        let xdr: [u8; UnusedEnum::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UnusedEnum::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UnusedEnum {
@@ -9642,9 +10937,34 @@ impl UnusedIntEnum {
     }
 }
 impl UnusedIntEnum {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtEnumV0(soroban_sdk::xdr::ScSpecUdtEnumV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UnusedIntEnum"),
+            cases: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtEnumCaseV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"U1"),
+                    value: 1u32,
+                },
+                soroban_sdk::xdr::ScSpecUdtEnumCaseV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"U2"),
+                    value: 2u32,
+                },
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [12u8, 221u8, 238u8, 126u8, 44u8, 131u8, 228u8, 156u8]
+        let xdr: [u8; UnusedIntEnum::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UnusedIntEnum::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UnusedIntEnum {
@@ -9870,9 +11190,31 @@ impl UnusedPubError {
     }
 }
 impl UnusedPubError {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtErrorEnumV0(
+            soroban_sdk::xdr::ScSpecUdtErrorEnumV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                lib: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"UnusedPubError"),
+                cases: soroban_sdk::xdr::VecMRef::new(&[
+                    soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"Nope"),
+                        value: 1u32,
+                    },
+                ]),
+            },
+        );
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [231u8, 240u8, 123u8, 55u8, 221u8, 144u8, 122u8, 61u8]
+        let xdr: [u8; UnusedPubError::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UnusedPubError::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UnusedPubError {
@@ -10053,9 +11395,29 @@ impl UnusedNonContractFnParam {
     }
 }
 impl UnusedNonContractFnParam {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UnusedNonContractFnParam"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"x"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                },
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [129u8, 188u8, 219u8, 180u8, 193u8, 203u8, 189u8, 197u8]
+        let xdr: [u8; UnusedNonContractFnParam::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UnusedNonContractFnParam::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UnusedNonContractFnParam {
@@ -10180,9 +11542,29 @@ impl UnusedNonContractFnReturn {
     }
 }
 impl UnusedNonContractFnReturn {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UnusedNonContractFnReturn"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"x"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                },
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [127u8, 101u8, 28u8, 10u8, 135u8, 103u8, 29u8, 192u8]
+        let xdr: [u8; UnusedNonContractFnReturn::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UnusedNonContractFnReturn::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UnusedNonContractFnReturn {
@@ -10301,9 +11683,29 @@ impl UnusedNonPubStruct {
     }
 }
 impl UnusedNonPubStruct {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+            doc: soroban_sdk::xdr::StringMRef::new(b""),
+            lib: soroban_sdk::xdr::StringMRef::new(b""),
+            name: soroban_sdk::xdr::StringMRef::new(b"UnusedNonPubStruct"),
+            fields: soroban_sdk::xdr::VecMRef::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"x"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefRef::U32,
+                },
+            ]),
+        });
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [168u8, 59u8, 44u8, 37u8, 125u8, 93u8, 80u8, 65u8]
+        let xdr: [u8; UnusedNonPubStruct::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UnusedNonPubStruct::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UnusedNonPubStruct {
@@ -10422,9 +11824,31 @@ impl UnusedNonPubError {
     }
 }
 impl UnusedNonPubError {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtErrorEnumV0(
+            soroban_sdk::xdr::ScSpecUdtErrorEnumV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                lib: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"UnusedNonPubError"),
+                cases: soroban_sdk::xdr::VecMRef::new(&[
+                    soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"Bad"),
+                        value: 1u32,
+                    },
+                ]),
+            },
+        );
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [217u8, 95u8, 153u8, 34u8, 61u8, 198u8, 70u8, 77u8]
+        let xdr: [u8; UnusedNonPubError::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            UnusedNonPubError::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UnusedNonPubError {

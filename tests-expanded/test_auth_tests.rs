@@ -1186,9 +1186,31 @@ mod test_a {
             }
         }
         impl Error {
+            const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+                soroban_sdk::xdr::ScSpecEntryRef::UdtErrorEnumV0(
+                    soroban_sdk::xdr::ScSpecUdtErrorEnumV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        lib: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"Error"),
+                        cases: soroban_sdk::xdr::VecMRef::new(&[
+                            soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0Ref {
+                                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                                name: soroban_sdk::xdr::StringMRef::new(b"Decline"),
+                                value: 1u32,
+                            },
+                        ]),
+                    },
+                );
             #[doc(hidden)]
             pub const fn spec_type_id() -> [u8; 8] {
-                [96u8, 252u8, 214u8, 206u8, 181u8, 1u8, 121u8, 133u8]
+                let xdr: [u8; Error::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+                    Error::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+                let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                    .update(&xdr)
+                    .finalize();
+                [
+                    hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+                ]
             }
         }
         impl soroban_sdk::SpecShakingMarker for Error {
@@ -2781,9 +2803,31 @@ mod test_b {
             }
         }
         impl Error {
+            const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+                soroban_sdk::xdr::ScSpecEntryRef::UdtErrorEnumV0(
+                    soroban_sdk::xdr::ScSpecUdtErrorEnumV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        lib: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"Error"),
+                        cases: soroban_sdk::xdr::VecMRef::new(&[
+                            soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0Ref {
+                                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                                name: soroban_sdk::xdr::StringMRef::new(b"Decline"),
+                                value: 1u32,
+                            },
+                        ]),
+                    },
+                );
             #[doc(hidden)]
             pub const fn spec_type_id() -> [u8; 8] {
-                [96u8, 252u8, 214u8, 206u8, 181u8, 1u8, 121u8, 133u8]
+                let xdr: [u8; Error::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+                    Error::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+                let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                    .update(&xdr)
+                    .finalize();
+                [
+                    hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+                ]
             }
         }
         impl soroban_sdk::SpecShakingMarker for Error {

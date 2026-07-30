@@ -1,7 +1,7 @@
 use itertools::MultiUnzip;
 use proc_macro2::{Literal, TokenStream as TokenStream2};
 use quote::{format_ident, quote};
-use syn::{ext::IdentExt as _, Attribute, DataStruct, Error, Ident, Path, Visibility};
+use syn::{ext::IdentExt as _, Attribute, DataStruct, Error, Ident, Path, Type, Visibility};
 
 use stellar_xdr::{
     ScSpecEntry, ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, StringM, WriteXdr,
@@ -9,7 +9,10 @@ use stellar_xdr::{
 
 use crate::{
     doc::docs_from_attrs,
-    map_type::{const_ref_string, const_ref_type_def, map_type, spec_type_id_gen},
+    map_type::{
+        const_ref_string, const_ref_type_def, const_ref_type_def_canonical, map_type,
+        spec_type_id_gen,
+    },
     shaking, DEFAULT_XDR_RW_LIMITS,
 };
 
@@ -79,11 +82,11 @@ pub fn derive_type_struct_tuple(
     let ScSpecEntry::UdtStructV0(spec_struct) = &spec_entry else {
         unreachable!()
     };
-    let spec_id_gen = spec_type_id_gen(ident, &spec_entry);
-
-    // Generated code spec. The spec entry is rendered as the equivalent const
-    // ScSpecEntryRef, which the contract crate encodes to XDR at compile time.
-    let spec_gen = spec.then(|| {
+    // The spec entry rendered as the equivalent const ScSpecEntryRef, which the
+    // contract crate encodes to XDR at compile time. `field_type` renders each
+    // field's type, and is all that differs between the exported form and the
+    // canonical form the type's identity is computed over.
+    let entry_ref = |field_type: &dyn Fn(&ScSpecTypeDef, &Type) -> TokenStream2| {
         let doc = const_ref_string(path, &spec_struct.doc);
         let lib = const_ref_string(path, &spec_struct.lib);
         let name = const_ref_string(path, &spec_struct.name);
@@ -94,17 +97,26 @@ pub fn derive_type_struct_tuple(
             .map(|(f, rust)| {
             let doc = const_ref_string(path, &f.doc);
             let name = const_ref_string(path, &f.name);
-            let type_ = const_ref_type_def(path, &f.type_, Some(rust));
+            let type_ = field_type(&f.type_, rust);
             quote!(#path::xdr::ScSpecUdtStructFieldV0Ref { doc: #doc, name: #name, type_: #type_ })
         });
-        let spec_ref = quote! {
+        quote! {
             #path::xdr::ScSpecEntryRef::UdtStructV0(#path::xdr::ScSpecUdtStructV0Ref {
                 doc: #doc,
                 lib: #lib,
                 name: #name,
                 fields: #path::xdr::VecMRef::new(&[#(#fields),*]),
             })
-        };
+        }
+    };
+    let spec_id_gen = spec_type_id_gen(
+        path,
+        ident,
+        &entry_ref(&|t, _| const_ref_type_def_canonical(path, t)),
+    );
+
+    let spec_gen = spec.then(|| {
+        let spec_ref = entry_ref(&|t, rust| const_ref_type_def(path, t, Some(rust)));
         let spec_ident = format_ident!(
             "__SPEC_XDR_TYPE_{}",
             ident.unraw().to_string().to_uppercase()

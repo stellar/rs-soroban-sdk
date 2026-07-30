@@ -514,9 +514,43 @@ mod addcontract {
         }
     }
     impl ContractContext {
+        const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+            soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                lib: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"ContractContext"),
+                fields: soroban_sdk::xdr::VecMRef::new(&[
+                    soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"args"),
+                        type_: soroban_sdk::xdr::ScSpecTypeDefRef::Vec(
+                            &soroban_sdk::xdr::ScSpecTypeVecRef {
+                                element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::Val,
+                            },
+                        ),
+                    },
+                    soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"contract"),
+                        type_: soroban_sdk::xdr::ScSpecTypeDefRef::Address,
+                    },
+                    soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"fn_name"),
+                        type_: soroban_sdk::xdr::ScSpecTypeDefRef::Symbol,
+                    },
+                ]),
+            });
         #[doc(hidden)]
         pub const fn spec_type_id() -> [u8; 8] {
-            [3u8, 4u8, 117u8, 78u8, 234u8, 215u8, 91u8, 19u8]
+            let xdr: [u8; ContractContext::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+                ContractContext::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
         }
     }
     impl soroban_sdk::SpecShakingMarker for ContractContext {
@@ -1084,9 +1118,42 @@ mod addcontract {
         }
     }
     impl SubContractInvocation {
+        const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+            soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                lib: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"SubContractInvocation"),
+                fields: soroban_sdk::xdr::VecMRef::new(&[
+                    soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"context"),
+                        type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                            soroban_sdk::xdr::ScSpecTypeUdtv2 { id: [0u8; 8] },
+                        ),
+                    },
+                    soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"sub_invocations"),
+                        type_: soroban_sdk::xdr::ScSpecTypeDefRef::Vec(
+                            &soroban_sdk::xdr::ScSpecTypeVecRef {
+                                element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                                    soroban_sdk::xdr::ScSpecTypeUdtv2 { id: [0u8; 8] },
+                                ),
+                            },
+                        ),
+                    },
+                ]),
+            });
         #[doc(hidden)]
         pub const fn spec_type_id() -> [u8; 8] {
-            [96u8, 183u8, 250u8, 12u8, 242u8, 123u8, 216u8, 114u8]
+            let xdr: [u8; SubContractInvocation::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+                SubContractInvocation::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
         }
     }
     impl soroban_sdk::SpecShakingMarker for SubContractInvocation {
@@ -1592,9 +1659,38 @@ mod addcontract {
         }
     }
     impl CreateContractHostFnContext {
+        const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+            soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                lib: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"CreateContractHostFnContext"),
+                fields: soroban_sdk::xdr::VecMRef::new(&[
+                    soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"executable"),
+                        type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                            soroban_sdk::xdr::ScSpecTypeUdtv2 { id: [0u8; 8] },
+                        ),
+                    },
+                    soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"salt"),
+                        type_: soroban_sdk::xdr::ScSpecTypeDefRef::BytesN(
+                            soroban_sdk::xdr::ScSpecTypeBytesN { n: 32u32 },
+                        ),
+                    },
+                ]),
+            });
         #[doc(hidden)]
         pub const fn spec_type_id() -> [u8; 8] {
-            [2u8, 235u8, 154u8, 164u8, 231u8, 232u8, 121u8, 138u8]
+            let xdr: [u8; CreateContractHostFnContext::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+                CreateContractHostFnContext::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
         }
     }
     impl soroban_sdk::SpecShakingMarker for CreateContractHostFnContext {
@@ -2131,9 +2227,50 @@ mod addcontract {
         }
     }
     impl CreateContractWithConstructorHostFnContext {
+        const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+            soroban_sdk::xdr::ScSpecEntryRef::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                lib: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(
+                    b"CreateContractWithConstructorHostFnContext",
+                ),
+                fields: soroban_sdk::xdr::VecMRef::new(&[
+                    soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"constructor_args"),
+                        type_: soroban_sdk::xdr::ScSpecTypeDefRef::Vec(
+                            &soroban_sdk::xdr::ScSpecTypeVecRef {
+                                element_type: &soroban_sdk::xdr::ScSpecTypeDefRef::Val,
+                            },
+                        ),
+                    },
+                    soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"executable"),
+                        type_: soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                            soroban_sdk::xdr::ScSpecTypeUdtv2 { id: [0u8; 8] },
+                        ),
+                    },
+                    soroban_sdk::xdr::ScSpecUdtStructFieldV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"salt"),
+                        type_: soroban_sdk::xdr::ScSpecTypeDefRef::BytesN(
+                            soroban_sdk::xdr::ScSpecTypeBytesN { n: 32u32 },
+                        ),
+                    },
+                ]),
+            });
         #[doc(hidden)]
         pub const fn spec_type_id() -> [u8; 8] {
-            [92u8, 166u8, 201u8, 25u8, 246u8, 203u8, 6u8, 146u8]
+            let xdr: [u8; CreateContractWithConstructorHostFnContext::__SPEC_XDR_CANONICAL_REF
+                .const_xdr_len()] =
+                CreateContractWithConstructorHostFnContext::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
         }
     }
     impl soroban_sdk::SpecShakingMarker for CreateContractWithConstructorHostFnContext {
@@ -2817,9 +2954,59 @@ mod addcontract {
         }
     }
     impl Context {
+        const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+            soroban_sdk::xdr::ScSpecEntryRef::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                lib: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"Context"),
+                cases: soroban_sdk::xdr::VecMRef::new(&[
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(b"Contract"),
+                            type_: soroban_sdk::xdr::VecMRef::new(&[
+                                soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                                    soroban_sdk::xdr::ScSpecTypeUdtv2 { id: [0u8; 8] },
+                                ),
+                            ]),
+                        },
+                    ),
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(b"CreateContractHostFn"),
+                            type_: soroban_sdk::xdr::VecMRef::new(&[
+                                soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                                    soroban_sdk::xdr::ScSpecTypeUdtv2 { id: [0u8; 8] },
+                                ),
+                            ]),
+                        },
+                    ),
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(
+                                b"CreateContractWithCtorHostFn",
+                            ),
+                            type_: soroban_sdk::xdr::VecMRef::new(&[
+                                soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                                    soroban_sdk::xdr::ScSpecTypeUdtv2 { id: [0u8; 8] },
+                                ),
+                            ]),
+                        },
+                    ),
+                ]),
+            });
         #[doc(hidden)]
         pub const fn spec_type_id() -> [u8; 8] {
-            [201u8, 52u8, 98u8, 76u8, 136u8, 149u8, 155u8, 231u8]
+            let xdr: [u8; Context::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+                Context::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
         }
     }
     impl soroban_sdk::SpecShakingMarker for Context {
@@ -3503,9 +3690,35 @@ mod addcontract {
         }
     }
     impl ContractExecutable {
+        const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+            soroban_sdk::xdr::ScSpecEntryRef::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                lib: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"ContractExecutable"),
+                cases: soroban_sdk::xdr::VecMRef::new(&[
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(b"Wasm"),
+                            type_: soroban_sdk::xdr::VecMRef::new(&[
+                                soroban_sdk::xdr::ScSpecTypeDefRef::BytesN(
+                                    soroban_sdk::xdr::ScSpecTypeBytesN { n: 32u32 },
+                                ),
+                            ]),
+                        },
+                    ),
+                ]),
+            });
         #[doc(hidden)]
         pub const fn spec_type_id() -> [u8; 8] {
-            [94u8, 190u8, 51u8, 52u8, 216u8, 153u8, 132u8, 145u8]
+            let xdr: [u8; ContractExecutable::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+                ContractExecutable::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
         }
     }
     impl soroban_sdk::SpecShakingMarker for ContractExecutable {
@@ -4097,9 +4310,59 @@ mod addcontract {
         }
     }
     impl InvokerContractAuthEntry {
+        const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+            soroban_sdk::xdr::ScSpecEntryRef::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                lib: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"InvokerContractAuthEntry"),
+                cases: soroban_sdk::xdr::VecMRef::new(&[
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(b"Contract"),
+                            type_: soroban_sdk::xdr::VecMRef::new(&[
+                                soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                                    soroban_sdk::xdr::ScSpecTypeUdtv2 { id: [0u8; 8] },
+                                ),
+                            ]),
+                        },
+                    ),
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(b"CreateContractHostFn"),
+                            type_: soroban_sdk::xdr::VecMRef::new(&[
+                                soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                                    soroban_sdk::xdr::ScSpecTypeUdtv2 { id: [0u8; 8] },
+                                ),
+                            ]),
+                        },
+                    ),
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(
+                                b"CreateContractWithCtorHostFn",
+                            ),
+                            type_: soroban_sdk::xdr::VecMRef::new(&[
+                                soroban_sdk::xdr::ScSpecTypeDefRef::UdtV2(
+                                    soroban_sdk::xdr::ScSpecTypeUdtv2 { id: [0u8; 8] },
+                                ),
+                            ]),
+                        },
+                    ),
+                ]),
+            });
         #[doc(hidden)]
         pub const fn spec_type_id() -> [u8; 8] {
-            [38u8, 241u8, 220u8, 219u8, 17u8, 94u8, 190u8, 175u8]
+            let xdr: [u8; InvokerContractAuthEntry::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+                InvokerContractAuthEntry::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
         }
     }
     impl soroban_sdk::SpecShakingMarker for InvokerContractAuthEntry {
@@ -4839,9 +5102,47 @@ mod addcontract {
         }
     }
     impl Executable {
+        const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+            soroban_sdk::xdr::ScSpecEntryRef::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                lib: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"Executable"),
+                cases: soroban_sdk::xdr::VecMRef::new(&[
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::TupleV0(
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(b"Wasm"),
+                            type_: soroban_sdk::xdr::VecMRef::new(&[
+                                soroban_sdk::xdr::ScSpecTypeDefRef::BytesN(
+                                    soroban_sdk::xdr::ScSpecTypeBytesN { n: 32u32 },
+                                ),
+                            ]),
+                        },
+                    ),
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::VoidV0(
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(b"StellarAsset"),
+                        },
+                    ),
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0Ref::VoidV0(
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(b"Account"),
+                        },
+                    ),
+                ]),
+            });
         #[doc(hidden)]
         pub const fn spec_type_id() -> [u8; 8] {
-            [76u8, 124u8, 123u8, 13u8, 244u8, 242u8, 26u8, 168u8]
+            let xdr: [u8; Executable::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+                Executable::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
         }
     }
     impl soroban_sdk::SpecShakingMarker for Executable {
@@ -5394,9 +5695,31 @@ mod addcontract {
         }
     }
     impl Error {
+        const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+            soroban_sdk::xdr::ScSpecEntryRef::UdtErrorEnumV0(
+                soroban_sdk::xdr::ScSpecUdtErrorEnumV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    lib: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"Error"),
+                    cases: soroban_sdk::xdr::VecMRef::new(&[
+                        soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(b"Overflow"),
+                            value: 1u32,
+                        },
+                    ]),
+                },
+            );
         #[doc(hidden)]
         pub const fn spec_type_id() -> [u8; 8] {
-            [214u8, 184u8, 96u8, 21u8, 172u8, 158u8, 105u8, 26u8]
+            let xdr: [u8; Error::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+                Error::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
         }
     }
     impl soroban_sdk::SpecShakingMarker for Error {
@@ -5579,9 +5902,31 @@ mod addcontract {
         }
     }
     impl MyError {
+        const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+            soroban_sdk::xdr::ScSpecEntryRef::UdtErrorEnumV0(
+                soroban_sdk::xdr::ScSpecUdtErrorEnumV0Ref {
+                    doc: soroban_sdk::xdr::StringMRef::new(b""),
+                    lib: soroban_sdk::xdr::StringMRef::new(b""),
+                    name: soroban_sdk::xdr::StringMRef::new(b"MyError"),
+                    cases: soroban_sdk::xdr::VecMRef::new(&[
+                        soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0Ref {
+                            doc: soroban_sdk::xdr::StringMRef::new(b""),
+                            name: soroban_sdk::xdr::StringMRef::new(b"Overflow"),
+                            value: 1u32,
+                        },
+                    ]),
+                },
+            );
         #[doc(hidden)]
         pub const fn spec_type_id() -> [u8; 8] {
-            [149u8, 208u8, 106u8, 42u8, 29u8, 250u8, 109u8, 163u8]
+            let xdr: [u8; MyError::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+                MyError::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
         }
     }
     impl soroban_sdk::SpecShakingMarker for MyError {
@@ -5748,9 +6093,36 @@ impl Error {
     }
 }
 impl Error {
+    const __SPEC_XDR_CANONICAL_REF: soroban_sdk::xdr::ScSpecEntryRef<'static> =
+        soroban_sdk::xdr::ScSpecEntryRef::UdtErrorEnumV0(
+            soroban_sdk::xdr::ScSpecUdtErrorEnumV0Ref {
+                doc: soroban_sdk::xdr::StringMRef::new(b""),
+                lib: soroban_sdk::xdr::StringMRef::new(b""),
+                name: soroban_sdk::xdr::StringMRef::new(b"Error"),
+                cases: soroban_sdk::xdr::VecMRef::new(&[
+                    soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"Abort"),
+                        value: 0u32,
+                    },
+                    soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0Ref {
+                        doc: soroban_sdk::xdr::StringMRef::new(b""),
+                        name: soroban_sdk::xdr::StringMRef::new(b"Overflow"),
+                        value: 1u32,
+                    },
+                ]),
+            },
+        );
     #[doc(hidden)]
     pub const fn spec_type_id() -> [u8; 8] {
-        [126u8, 131u8, 71u8, 78u8, 88u8, 159u8, 195u8, 253u8]
+        let xdr: [u8; Error::__SPEC_XDR_CANONICAL_REF.const_xdr_len()] =
+            Error::__SPEC_XDR_CANONICAL_REF.const_to_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for Error {
