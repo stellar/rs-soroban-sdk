@@ -221,14 +221,6 @@ pub use soroban_sdk_macros::symbol_short;
 /// Includes the type in the contract spec so that clients can generate bindings
 /// for the type.
 ///
-/// ### Spec Shaking
-///
-/// Spec entries are generated for all types regardless of visibility, and
-/// markers are embedded that allow post-build tools to strip entries for errors
-/// that are neither used at a contract boundary nor thrown at one. The
-/// `export = ...` argument is no longer supported and is a compile error. See
-/// [`_migrating::v28_spec_shaking`] for details.
-///
 /// ### Examples
 ///
 /// Defining an error and capturing errors using the `try_` variant.
@@ -333,12 +325,6 @@ pub use soroban_sdk_macros::contracterror;
 /// - A `ContractClient` struct that has functions for each function in the
 /// contract.
 /// - Types for all contract types defined in the contract.
-///
-/// ### Spec Shaking
-///
-/// Imported types produce spec entries and markers in the importing contract.
-/// Post-build tools strip entries for imported types that are not used at the
-/// importing contract's boundary. See [`_migrating::v28_spec_shaking`] for details.
 ///
 /// ### SHA-256 Verification
 ///
@@ -638,14 +624,6 @@ pub use soroban_sdk_macros::contractmeta;
 /// Includes the type in the contract spec so that clients can generate bindings
 /// for the type.
 ///
-/// ### Spec Shaking
-///
-/// Spec entries are generated for all types regardless of visibility, and
-/// markers are embedded that allow post-build tools to strip entries for types
-/// that are not used at a contract boundary. The `export = ...` argument is no
-/// longer supported and is a compile error. See
-/// [`_migrating::v28_spec_shaking`] for details.
-///
 /// ### Examples
 ///
 /// Defining a contract type that is a struct and use it in a contract.
@@ -792,13 +770,6 @@ pub use soroban_sdk_macros::contracttype;
 ///
 /// Includes the event in the contract spec so that clients can generate bindings
 /// for the type and downstream systems can understand the meaning of the event.
-///
-/// ### Spec Shaking
-///
-/// Markers are embedded that allow post-build tools to strip spec entries for
-/// events that are never published at a contract boundary. The `export = ...`
-/// argument is no longer supported and is a compile error. See
-/// [`_migrating::v28_spec_shaking`] for details.
 ///
 /// ### Examples
 ///

@@ -3,13 +3,15 @@
 //! A contract's spec (the `contractspecv0` custom section in the Wasm binary) contains entries for
 //! every function, type, and event defined by the contract. When types or events are defined but
 //! not actually used at a contract boundary (parameters, return values, error returns, or event
-//! publishes), their spec entries are dead weight. Spec shaking removes them.
+//! publishes), their spec entries unnecessarily increase the size of the Wasm file. Spec shaking
+//! removes them.
 //!
 //! Prior to v28 the SDK decided what to put in the spec from Rust visibility and the `export`
 //! argument: `pub` types and all events got an entry, non-`pub` types did not, and `export` could
-//! override either way. The `experimental_spec_shaking_v2` feature offered an alternative, where
-//! the SDK emits an entry for everything and post-build tooling removes what the contract does not
-//! actually use. That feature is now the only behaviour, and the feature flag has been removed.
+//! override either way. In soroban-sdk v27 the `experimental_spec_shaking_v2` feature offered an
+//! alternative, where the SDK emits an entry for everything and post-build tooling within the
+//! stellar-cli removes what the contract does not actually use. That feature is now the only
+//! behaviour, and the feature flag has been removed.
 //!
 //! ## How It Works
 //!
@@ -21,6 +23,9 @@
 //! - **Function parameters**: marker is triggered when deserializing the input.
 //! - **Function return values**: marker is triggered when serializing the output.
 //! - **Error returns**: marker is triggered via `Result<T, E>` serialization.
+//! - **Error panics**: marker is triggered by [`panic_with_error!`] and
+//!   [`Env::panic_with_error`], so an error type reaching the boundary by panic is marked even
+//!   when it is never returned in a `Result`.
 //! - **Event publishes**: marker is triggered inside the `publish()` call.
 //! - **Nested types**: a type's marker function calls the marker functions of its field types, so
 //!   nested types are transitively marked.
@@ -34,9 +39,9 @@
 //!
 //! ## Build Requirements
 //!
-//! Because the SDK relies on the build system to do that final strip, contracts must be built with
-//! `stellar contract build` from `stellar-cli` v25.2.0 or newer. Building a contract for wasm with
-//! any other build system produces a build error:
+//! Because the SDK relies on the stellar-cli build system to do that final strip, contracts must be
+//! built with `stellar contract build` from `stellar-cli` v25.2.0 or newer. Building a contract for
+//! wasm with any other build system produces a build error:
 //!
 //! ```text
 //! error: soroban-sdk requires stellar-cli v25.2.0+ to build a contract
@@ -54,8 +59,8 @@
 //!
 //! ### [`contractevent`]
 //!
-//! Markers are embedded for all events, so post-build tooling strips spec entries for events that
-//! are never published at a contract boundary.
+//! Markers are embedded for all published events, so post-build tooling strips spec entries for
+//! events that are never published at a contract boundary.
 //!
 //! ### [`contractimport!`]
 //!
@@ -74,15 +79,14 @@
 //! Build contracts with `stellar contract build` from `stellar-cli` v25.2.0 or newer.
 //!
 //! If the `experimental_spec_shaking_v2` feature is enabled, remove it from the `soroban-sdk`
-//! dependency's feature list in `Cargo.toml`. The behaviour it enabled is now the default, and
-//! naming a feature that no longer exists is an error.
+//! dependency's feature list in `Cargo.toml`. The behaviour it enabled is now the default.
 //!
 //! Remove the `export` argument from [`contracttype`], [`contracterror`], and [`contractevent`]
 //! annotations. It was deprecated in v27, and is now rejected:
 //!
 //! ```text
-//! error: `export` is no longer supported and must be removed, because the contract spec is
-//! determined by reachability from the contract boundary
+//! error: `export` is no longer supported, and contract spec export is now determined by
+//! reachability from the contract boundary (functions, events, errors)
 //! ```
 //!
 //! A type that was hidden with `export = false` is filtered from the spec automatically when it is
@@ -117,3 +121,5 @@
 //! [`contracterror`]: crate::contracterror
 //! [`contractevent`]: crate::contractevent
 //! [`contractimport!`]: crate::contractimport
+//! [`panic_with_error!`]: crate::panic_with_error
+//! [`Env::panic_with_error`]: crate::Env::panic_with_error

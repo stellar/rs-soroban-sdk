@@ -68,8 +68,8 @@ pub(crate) fn export_arg_error(export: &Option<SpannedValue<bool>>) -> TokenStre
     match export {
         Some(export) => Error::new(
             export.span(),
-            "`export` is no longer supported and must be removed, because the contract spec is \
-             determined by reachability from the contract boundary",
+            "`export` is no longer supported, and contract spec export is now determined by \
+             reachability from the contract boundary (functions, events, errors)",
         )
         .to_compile_error(),
         None => TokenStream2::new(),

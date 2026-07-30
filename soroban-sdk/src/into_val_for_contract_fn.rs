@@ -6,7 +6,7 @@
 //! IntoVal<Env, Val>.
 //!
 //! The trait also calls `SpecShakingMarker::spec_shaking_marker()` to ensure
-//! that type specs are included in the WASM when types are used at external
+//! that type specs are included in the Wasm when types are used at external
 //! boundaries (function return values).
 
 use crate::{Env, IntoVal, Val};
