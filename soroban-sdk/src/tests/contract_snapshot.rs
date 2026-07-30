@@ -17,7 +17,7 @@ impl Contract {
 #[test]
 fn test() {
     let e = Env::default();
-    let contract_id = e.register_contract(None, Contract);
+    let contract_id = e.register(Contract, ());
     let contract_id_xdr = xdr::ScAddress::try_from(&contract_id).unwrap();
     let client = ContractClient::new(&e, &contract_id);
 
@@ -28,7 +28,7 @@ fn test() {
 
     let e = Env::from_ledger_snapshot(snapshot);
     let contract_id = Address::try_from_val(&e, &contract_id_xdr).unwrap();
-    e.register_contract(&contract_id, Contract);
+    e.register_at(&contract_id, Contract, ());
     let client = ContractClient::new(&e, &contract_id);
 
     assert_eq!(client.get(&2), 4);

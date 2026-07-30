@@ -2,7 +2,7 @@ use core::{cmp::Ordering, convert::Infallible, fmt::Debug};
 
 use super::{
     env::internal::{Env as _, EnvBase as _, StringObject},
-    ConversionError, Env, TryFromVal, TryIntoVal, Val,
+    Bytes, ConversionError, Env, IntoVal, TryFromVal, TryIntoVal, Val,
 };
 
 use crate::unwrap::{UnwrapInfallible, UnwrapOptimized};
@@ -44,7 +44,7 @@ impl Debug for String {
         #[cfg(target_family = "wasm")]
         write!(f, "String(..)")?;
         #[cfg(not(target_family = "wasm"))]
-        write!(f, "String({})", self.to_string())?;
+        write!(f, "String({self})")?;
         Ok(())
     }
 }
@@ -65,7 +65,10 @@ impl PartialOrd for String {
 
 impl Ord for String {
     fn cmp(&self, other: &Self) -> core::cmp::Ordering {
-        self.env.check_same_env(&other.env).unwrap_infallible();
+        #[cfg(not(target_family = "wasm"))]
+        if !self.env.is_same_env(&other.env) {
+            return ScVal::from(self).cmp(&ScVal::from(other));
+        }
         let v = self
             .env
             .obj_cmp(self.obj.to_val(), other.obj.to_val())
@@ -108,6 +111,14 @@ impl TryFromVal<Env, String> for Val {
     }
 }
 
+impl TryFromVal<Env, &String> for Val {
+    type Error = ConversionError;
+
+    fn try_from_val(_env: &Env, v: &&String) -> Result<Self, Self::Error> {
+        Ok(v.to_val())
+    }
+}
+
 impl From<String> for Val {
     #[inline(always)]
     fn from(v: String) -> Self {
@@ -136,19 +147,36 @@ impl From<&String> for String {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
-impl TryFrom<&String> for ScVal {
-    type Error = ConversionError;
-    fn try_from(v: &String) -> Result<Self, ConversionError> {
-        Ok(ScVal::try_from_val(&v.env, &v.obj.to_val())?)
+impl From<&String> for Bytes {
+    fn from(v: &String) -> Self {
+        Env::string_to_bytes(&v.env, v.obj.clone())
+            .unwrap_infallible()
+            .into_val(&v.env)
+    }
+}
+
+impl From<String> for Bytes {
+    fn from(v: String) -> Self {
+        (&v).into()
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl TryFrom<String> for ScVal {
-    type Error = ConversionError;
-    fn try_from(v: String) -> Result<Self, ConversionError> {
-        (&v).try_into()
+impl From<&String> for ScVal {
+    fn from(v: &String) -> Self {
+        // This conversion occurs only in test utilities, and theoretically all
+        // values should convert to an ScVal because the Env won't let the host
+        // type to exist otherwise, unwrapping. Even if there are edge cases
+        // that don't, this is a trade off for a better test developer
+        // experience.
+        ScVal::try_from_val(&v.env, &v.obj.to_val()).unwrap()
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl From<String> for ScVal {
+    fn from(v: String) -> Self {
+        (&v).into()
     }
 }
 
@@ -173,14 +201,16 @@ impl TryFromVal<Env, &str> for String {
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl ToString for String {
-    fn to_string(&self) -> std::string::String {
+impl core::fmt::Display for String {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> Result<(), core::fmt::Error> {
         let sc_val: ScVal = self.try_into().unwrap();
         if let ScVal::String(ScString(s)) = sc_val {
-            s.to_utf8_string().unwrap()
+            let utf8_s = s.to_utf8_string().unwrap();
+            write!(f, "{utf8_s}")?;
         } else {
             panic!("value is not a string");
         }
+        Ok(())
     }
 }
 
@@ -258,11 +288,17 @@ impl String {
         env.string_copy_to_slice(self.to_object(), Val::U32_ZERO, slice)
             .unwrap_optimized();
     }
+
+    /// Converts the contents of the String into a respective Bytes object.
+    pub fn to_bytes(&self) -> Bytes {
+        self.into()
+    }
 }
 
 #[cfg(test)]
 mod test {
     use super::*;
+    use crate::IntoVal;
 
     #[test]
     fn string_from_and_to_slices() {
@@ -304,5 +340,78 @@ mod test {
         let s = String::from_str(&env, msg);
         let mut out = [0u8; 10];
         s.copy_into_slice(&mut out);
+    }
+
+    #[test]
+    fn string_to_val() {
+        let env = Env::default();
+
+        let s = String::from_str(&env, "abcdef");
+        let val: Val = s.clone().into_val(&env);
+        let rt: String = val.into_val(&env);
+
+        assert_eq!(s, rt);
+    }
+
+    #[test]
+    fn ref_string_to_val() {
+        let env = Env::default();
+
+        let s = String::from_str(&env, "abcdef");
+        let val: Val = (&s).into_val(&env);
+        let rt: String = val.into_val(&env);
+
+        assert_eq!(s, rt);
+    }
+
+    #[test]
+    fn double_ref_string_to_val() {
+        let env = Env::default();
+
+        let s = String::from_str(&env, "abcdef");
+        let val: Val = (&&s).into_val(&env);
+        let rt: String = val.into_val(&env);
+
+        assert_eq!(s, rt);
+    }
+
+    #[test]
+    fn test_string_to_bytes() {
+        let env = Env::default();
+        let s = String::from_str(&env, "abcdef");
+        let b: Bytes = s.clone().into();
+        assert_eq!(b.len(), 6);
+        let mut slice = [0u8; 6];
+        b.copy_into_slice(&mut slice);
+        assert_eq!(&slice, b"abcdef");
+        let b2 = s.to_bytes();
+        assert_eq!(b, b2);
+    }
+
+    #[test]
+    fn test_string_accepts_any_bytes_even_invalid_utf8() {
+        let env = Env::default();
+        let input = b"a\xc3\x28d"; // \xc3 is invalid utf8
+        let s = String::from_bytes(&env, &input[..]);
+        let b = s.to_bytes().to_buffer::<4>();
+        assert_eq!(b.as_slice(), input);
+    }
+
+    #[test]
+    fn test_string_display_to_string() {
+        let env = Env::default();
+        let input = "abcdef";
+        let s = String::from_str(&env, input);
+        let rt = s.to_string();
+        assert_eq!(input, &rt);
+    }
+
+    #[test]
+    #[should_panic = "Utf8Error"]
+    fn test_string_display_to_string_invalid_utf8() {
+        let env = Env::default();
+        let input = b"a\xc3\x28d"; // \xc3 is invalid utf8
+        let s = String::from_bytes(&env, &input[..]);
+        let _ = s.to_string();
     }
 }

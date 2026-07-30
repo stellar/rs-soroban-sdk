@@ -21,7 +21,7 @@ impl CustomAccountInterface for Contract {
     fn __check_auth(
         _env: Env,
         _signature_payload: Hash<32>,
-        _signatures: (),
+        _signatures: Self::Signature,
         _auth_contexts: Vec<Context>,
     ) -> Result<(), Error> {
         Ok(())
@@ -44,8 +44,8 @@ mod test {
     #[test]
     fn test() {
         let e = Env::default();
-        let test_contract_id = e.register_contract(None, TestContract);
-        let contract_id = e.register_contract(None, Contract);
+        let test_contract_id = e.register(TestContract, ());
+        let contract_id = e.register(Contract, ());
 
         e.set_auths(&[MockAuth {
             address: &contract_id,

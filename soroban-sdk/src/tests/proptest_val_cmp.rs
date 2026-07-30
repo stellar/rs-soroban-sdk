@@ -20,7 +20,7 @@ proptest! {
         rawval_proto_2 in arb::<<Val as SorobanArbitrary>::Prototype>(),
     ) {
         let env = &Env::default();
-        let budget = env.budget().0;
+        let budget = env.cost_estimate().budget().0;
 
         let rawval_1 = Val::from_val(env, &rawval_proto_1);
         let rawval_2 = Val::from_val(env, &rawval_proto_2);

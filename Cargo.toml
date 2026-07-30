@@ -4,54 +4,59 @@ resolver = "2"
 members = [
     "soroban-sdk",
     "soroban-sdk-macros",
+    "soroban-meta",
     "soroban-spec",
     "soroban-spec-rust",
     "soroban-ledger-snapshot",
     "soroban-token-sdk",
+    "soroban-token-spec",
+    "stellar-asset-spec",
     "tests/*",
 ]
 
 [workspace.package]
-version = "21.5.1"
-rust-version = "1.74.0"
+version = "27.0.3"
+rust-version = "1.91.0"
 
 [workspace.dependencies]
-soroban-sdk = { version = "21.5.1", path = "soroban-sdk" }
-soroban-sdk-macros = { version = "21.5.1", path = "soroban-sdk-macros" }
-soroban-spec = { version = "21.5.1", path = "soroban-spec" }
-soroban-spec-rust = { version = "21.5.1", path = "soroban-spec-rust" }
-soroban-ledger-snapshot = { version = "21.5.1", path = "soroban-ledger-snapshot" }
-soroban-token-sdk = { version = "21.5.1", path = "soroban-token-sdk" }
+soroban-sdk = { version = "27.0.3", path = "soroban-sdk" }
+soroban-sdk-macros = { version = "27.0.3", path = "soroban-sdk-macros" }
+soroban-meta = { version = "27.0.3", path = "soroban-meta" }
+soroban-spec = { version = "27.0.3", path = "soroban-spec" }
+soroban-spec-rust = { version = "27.0.3", path = "soroban-spec-rust" }
+soroban-ledger-snapshot = { version = "27.0.3", path = "soroban-ledger-snapshot" }
+soroban-token-sdk = { version = "27.0.3", path = "soroban-token-sdk" }
+soroban-token-spec = { version = "27.0.3", path = "soroban-token-spec" }
+stellar-asset-spec = { version = "27.0.3", path = "stellar-asset-spec" }
 
 [workspace.dependencies.soroban-env-common]
-version = "=21.2.0"
-# git = "https://github.com/stellar/rs-soroban-env"
-# rev = "0c918ac2bd808ba1a850281c6b1c731e7fe50c53"
+version = "=27.0.1"
+#git = "https://github.com/stellar/rs-soroban-env"
+#rev = "7fb0a840812fe8921bb48bebf7b4aa7160467ec8"
 
 [workspace.dependencies.soroban-env-guest]
-version = "=21.2.0"
-# git = "https://github.com/stellar/rs-soroban-env"
-# rev = "0c918ac2bd808ba1a850281c6b1c731e7fe50c53"
+version = "=27.0.1"
+#git = "https://github.com/stellar/rs-soroban-env"
+#rev = "7fb0a840812fe8921bb48bebf7b4aa7160467ec8"
 
 [workspace.dependencies.soroban-env-host]
-version = "=21.2.0"
-# git = "https://github.com/stellar/rs-soroban-env"
-# rev = "0c918ac2bd808ba1a850281c6b1c731e7fe50c53"
+version = "=27.0.1"
+#git = "https://github.com/stellar/rs-soroban-env"
+#rev = "7fb0a840812fe8921bb48bebf7b4aa7160467ec8"
 
 [workspace.dependencies.stellar-strkey]
-version = "=0.0.8"
+version = "=0.0.16"
 
 [workspace.dependencies.stellar-xdr]
-version = "=21.2.0"
+version = "=27.0.0"
+#git = "https://github.com/stellar/rs-stellar-xdr"
+#rev = "a749b69b3471aec0c20ec431b0297f3414d66421"
 default-features = false
-features = ["curr"]
-# git = "https://github.com/stellar/rs-stellar-xdr"
-# rev = "d0138770652a615e3cd99447f2f2727658c17450"
 
-#[patch."https://github.com/stellar/rs-soroban-env"]
+#[patch.crates-io]
 #soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }
 #soroban-env-guest = { path = "../rs-soroban-env/soroban-env-guest" }
-#soroban-env-host = { path = "../rs-soroban-env/soroban-env-host/" }
+#soroban-env-host = { path = "../rs-soroban-env/soroban-env-host" }
 #[patch."https://github.com/stellar/rs-stellar-xdr"]
 #stellar-xdr = { path = "../rs-stellar-xdr/" }
 
@@ -72,3 +77,10 @@ lto = true
 [profile.release-with-logs]
 inherits = "release"
 debug-assertions = true
+
+# The release-without-lto profile is useful for testing build cases when lto
+# are disabled, such as those like the test_zero test vector. See the test_zero
+# README for more details.
+[profile.release-without-lto]
+inherits = "release"
+lto = "off"

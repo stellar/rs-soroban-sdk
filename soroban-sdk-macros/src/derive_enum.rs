@@ -1,15 +1,17 @@
 use itertools::MultiUnzip;
 use proc_macro2::{Literal, TokenStream as TokenStream2};
-use quote::{format_ident, quote};
-use syn::{spanned::Spanned, Attribute, DataEnum, Error, Fields, Ident, Path, Visibility};
+use quote::{format_ident, quote, ToTokens};
+use syn::{
+    ext::IdentExt as _, spanned::Spanned, Attribute, DataEnum, Error, Fields, Ident, Path,
+    Visibility,
+};
 
-use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{
     Error as XdrError, ScSpecEntry, ScSpecTypeDef, ScSpecUdtUnionCaseTupleV0, ScSpecUdtUnionCaseV0,
     ScSpecUdtUnionCaseVoidV0, ScSpecUdtUnionV0, StringM, VecM, WriteXdr, SCSYMBOL_LIMIT,
 };
 
-use crate::{doc::docs_from_attrs, map_type::map_type, DEFAULT_XDR_RW_LIMITS};
+use crate::{doc::docs_from_attrs, map_type::map_type, shaking, DEFAULT_XDR_RW_LIMITS};
 
 pub fn derive_type_enum(
     path: &Path,
@@ -30,21 +32,22 @@ pub fn derive_type_enum(
             format!("enum {} must have variants", enum_ident),
         ));
     }
-    let (spec_cases, case_name_str_lits, try_froms, try_intos, try_from_xdrs, into_xdrs): (
-        Vec<_>,
-        Vec<_>,
-        Vec<_>,
-        Vec<_>,
-        Vec<_>,
-        Vec<_>,
-    ) = variants
+    let (
+        spec_cases,
+        case_name_str_lits,
+        variant_field_types,
+        try_froms,
+        try_intos,
+        try_from_xdrs,
+        into_xdrs,
+    ): (Vec<_>, Vec<_>, Vec<Vec<_>>, Vec<_>, Vec<_>, Vec<_>, Vec<_>) = variants
         .iter()
         .enumerate()
         .map(|(case_num, variant)| {
             // TODO: Choose discriminant type based on repr type of enum.
             // TODO: Use attributes tagged on variant to control whether field is included.
             let case_ident = &variant.ident;
-            let case_name = &case_ident.to_string();
+            let case_name = &case_ident.unraw().to_string();
             let case_name_str_lit = Literal::string(case_name);
             let case_num_lit = Literal::usize_unsuffixed(case_num);
             if case_name.len() > SCSYMBOL_LIMIT as usize {
@@ -75,6 +78,10 @@ pub fn derive_type_enum(
                 }
                 _ => {}
             }
+
+            // Collect field types for SpecShakingMarker
+            let field_types: Vec<_> = variant.fields.iter().map(|f| &f.ty).collect();
+
             let is_unit_variant = variant.fields == Fields::Unit;
             if !is_unit_variant {
                 let VariantTokens {
@@ -97,6 +104,7 @@ pub fn derive_type_enum(
                 (
                     spec_case,
                     case_name_str_lit,
+                    field_types,
                     try_from,
                     try_into,
                     try_from_xdr,
@@ -121,6 +129,7 @@ pub fn derive_type_enum(
                 (
                     spec_case,
                     case_name_str_lit,
+                    field_types,
                     try_from,
                     try_into,
                     try_from_xdr,
@@ -136,18 +145,27 @@ pub fn derive_type_enum(
         return quote! { #(#compile_errors)* };
     }
 
-    // Generated code spec.
-    let spec_gen = if spec {
+    // Compute spec XDR once if spec is enabled.
+    let spec_xdr = if spec {
         let spec_entry = ScSpecEntry::UdtUnionV0(ScSpecUdtUnionV0 {
             doc: docs_from_attrs(attrs),
             lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
-            name: enum_ident.to_string().try_into().unwrap(),
+            name: enum_ident.unraw().to_string().try_into().unwrap(),
             cases: spec_cases.try_into().unwrap(),
         });
-        let spec_xdr = spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap();
+        Some(spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap())
+    } else {
+        None
+    };
+
+    // Generated code spec.
+    let spec_gen = if let Some(ref spec_xdr) = spec_xdr {
         let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
         let spec_xdr_len = spec_xdr.len();
-        let spec_ident = format_ident!("__SPEC_XDR_TYPE_{}", enum_ident.to_string().to_uppercase());
+        let spec_ident = format_ident!(
+            "__SPEC_XDR_TYPE_{}",
+            enum_ident.unraw().to_string().to_uppercase()
+        );
         Some(quote! {
             #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
             pub static #spec_ident: [u8; #spec_xdr_len] = #enum_ident::spec_xdr();
@@ -162,9 +180,35 @@ pub fn derive_type_enum(
         None
     };
 
+    // SpecShakingMarker impl - only generated when spec is true and the
+    // experimental_spec_shaking_v2 feature is enabled.
+    let spec_shaking_impl = if cfg!(feature = "experimental_spec_shaking_v2") {
+        spec_xdr.as_ref().map(|spec_xdr| {
+            // Flatten all variant field types for shaking calls, deduplicating
+            // to avoid redundant calls for types that appear in multiple variants.
+            let all_field_types =
+                itertools::Itertools::unique_by(variant_field_types.iter().flatten(), |t| {
+                    t.to_token_stream().to_string()
+                });
+            shaking::generate_marker_impl(
+                path,
+                quote!(#enum_ident),
+                spec_xdr,
+                all_field_types.cloned(),
+                None,
+                None,
+                None,
+            )
+        })
+    } else {
+        None
+    };
+
     // Output.
     let mut output = quote! {
         #spec_gen
+
+        #spec_shaking_impl
 
         impl #path::TryFromVal<#path::Env, #path::Val> for #enum_ident {
             type Error = #path::ConversionError;
@@ -190,6 +234,14 @@ pub fn derive_type_enum(
                 match val {
                     #(#try_intos,)*
                 }
+            }
+        }
+
+        impl #path::TryFromVal<#path::Env, &#enum_ident> for #path::Val {
+            type Error = #path::ConversionError;
+            #[inline(always)]
+            fn try_from_val(env: &#path::Env, val: &&#enum_ident) -> Result<Self, #path::ConversionError> {
+                <_ as #path::TryFromVal<#path::Env, #enum_ident>>::try_from_val(env, *val)
             }
         }
     };
@@ -344,7 +396,7 @@ fn map_tuple_variant(
     let spec_case = {
         let field_types = fields
             .iter()
-            .map(|f| match map_type(&f.ty, false) {
+            .map(|f| match map_type(&f.ty, false, false) {
                 Ok(t) => t,
                 Err(e) => {
                     errors.push(e);

@@ -21,7 +21,7 @@ impl Contract {
 #[test]
 fn test_functional() {
     let env = Env::default();
-    let contract_id = env.register_contract(None, Contract);
+    let contract_id = env.register(Contract, ());
 
     let a = Udt { a: 5, b: None };
     let b = Udt { a: 10, b: Some(1) };

@@ -1,9 +1,43 @@
-//! Soroban SDK supports writing programs for the Soroban smart contract
-//! platform.
+//! Soroban SDK supports writing smart contracts for the Wasm-powered [Soroban] smart contract
+//! runtime, deployed on [Stellar].
 //!
 //! ### Docs
 //!
-//! See [soroban.stellar.org](https://soroban.stellar.org) for documentation.
+//! See [developers.stellar.org] for documentation about building smart contracts for [Stellar].
+//!
+//! [developers.stellar.org]: https://developers.stellar.org
+//! [Stellar]: https://stellar.org
+//! [Soroban]: https://stellar.org/soroban
+//!
+//! ### Support
+//!
+//! The two most recent soroban-sdk major releases are supported with critical security fixes.
+//! Critical security issues may be backported to earlier versions if practical, but not guaranteed.
+//! General bugs are only fixed on, and new features are only added to, the latest major release.
+//!
+//! ### Build Target
+//!
+//! Contracts must be built for the `wasm32v1-none` target, available with Rust 1.84+. It is the
+//! only wasm target supported by the Soroban runtime on Stellar.
+//!
+//! Build contracts with `stellar contract build` from [stellar-cli], which targets `wasm32v1-none`
+//! and applies the build settings the Soroban runtime requires. Do not build contracts with
+//! `cargo build`.
+//!
+//! The `wasm32-unknown-unknown` target is not supported when building with Rust 1.82 or newer,
+//! because on those versions the target enables wasm features (reference-types, multi-value) that
+//! the Soroban environment does not support and that cannot be easily disabled. Building for
+//! `wasm32-unknown-unknown` on Rust 1.82+ produces a build error.
+//!
+//! [stellar-cli]: https://github.com/stellar/stellar-cli
+//!
+//! ### Features
+//!
+//! See [_features] for a list of all Cargo features and what they do.
+//!
+//! ### Migrating Major Versions
+//!
+//! See [_migrating] for a summary of how to migrate from one major version to another.
 //!
 //! ### Examples
 //!
@@ -11,10 +45,10 @@
 //! use soroban_sdk::{contract, contractimpl, vec, symbol_short, BytesN, Env, Symbol, Vec};
 //!
 //! #[contract]
-//! pub struct HelloContract;
+//! pub struct Contract;
 //!
 //! #[contractimpl]
-//! impl HelloContract {
+//! impl Contract {
 //!     pub fn hello(env: Env, to: Symbol) -> Vec<Symbol> {
 //!         vec![&env, symbol_short!("Hello"), to]
 //!     }
@@ -26,8 +60,8 @@
 //! # #[cfg(feature = "testutils")]
 //! # fn main() {
 //!     let env = Env::default();
-//!     let contract_id = env.register_contract(None, HelloContract);
-//!     let client = HelloContractClient::new(&env, &contract_id);
+//!     let contract_id = env.register(Contract, ());
+//!     let client = ContractClient::new(&env, &contract_id);
 //!
 //!     let words = client.hello(&symbol_short!("Dev"));
 //!
@@ -37,89 +71,113 @@
 //! # fn main() { }
 //! ```
 //!
-//! More examples are available at <https://soroban.stellar.org/docs/category/basic-tutorials>
-//! and <https://soroban.stellar.org/docs/category/advanced-tutorials>.
+//! More examples are available at:
+//! - <https://developers.stellar.org/docs/build/smart-contracts/example-contracts>
+//! - <https://developers.stellar.org/docs/build/guides>
 
 #![cfg_attr(target_family = "wasm", no_std)]
 #![cfg_attr(feature = "docs", feature(doc_cfg))]
 #![allow(dead_code)]
 
+pub mod _features;
+pub mod _migrating;
+
 #[cfg(all(target_family = "wasm", feature = "testutils"))]
 compile_error!("'testutils' feature is not supported on 'wasm' target");
 
 // When used in a no_std contract, provide a panic handler as one is required.
-#[cfg(all(not(feature = "alloc"), target_family = "wasm"))]
+#[cfg(target_family = "wasm")]
 #[panic_handler]
 fn handle_panic(_: &core::panic::PanicInfo) -> ! {
     core::arch::wasm32::unreachable()
 }
 
-// This is a bit subtle: we want to provide a narrowly-scoped feature `"alloc"`
-// that provides support for the `alloc` crate and its types, while using our
-// allocator (defined below in module `alloc`). We want to do this without
-// changing the user-interface a lot (in particular keeping users writing
-// `#[no_std]` and mostly not-using the stdlib casually, because it has many
-// components that produce large code footprint).
-//
-// This is _almost_ possible without involving `std` but unfortunately there's
-// still an allocation-error handler (`alloc_error_handler`) that there's no
-// stable way to install if one only uses the `alloc` crate, so we pull in a
-// dependency on `std` here (for now). When the stabilization of the allocation
-// error handler registration function happens in some future Rust version, or
-// it gets removed which it looks like work is heading towards instead, we can
-// remove std.
-//
-// See these issues for more details:
-// - https://github.com/rust-lang/rust/issues/51540
-// - https://github.com/rust-lang/rust/issues/66740
-// - https://github.com/rust-lang/rust/issues/66741
-#[cfg(all(feature = "alloc", target_family = "wasm"))]
-extern crate std;
+#[cfg(feature = "alloc")]
+#[cfg_attr(feature = "docs", doc(cfg(feature = "alloc")))]
+pub mod alloc;
 
-// Here we provide a `#[global_allocator]` that is a minimal non-freeing bump
-// allocator, appropriate for a WASM blob that runs a single contract call.
-#[cfg(all(feature = "alloc", target_family = "wasm"))]
-mod alloc;
-
-/// __link_sections returns and does nothing, but it contains link sections that
-/// should be ensured end up in the final build of any contract using the SDK.
+/// This const block contains link sections that need to end up in the final
+/// build of any contract using the SDK.
 ///
 /// In Rust's build system sections only get included into the final build if
 /// the object file containing those sections are processed by the linker, but
 /// as an optimization step if no code is called in an object file it is
 /// discarded.  This has the unfortunate effect of causing anything else in
 /// those object files, such as link sections, to be discarded. Placing anything
-/// that must be included in the build inside an exported function ensures the
-/// object files won't be discarded. wasm-bindgen does a similar thing to this,
-/// and so this seems to be a reasonably accepted way to work around this
-/// limitation in the build system.
+/// that must be included in the build inside an exported static or function
+/// ensures the object files won't be discarded. wasm-bindgen does a similar
+/// thing to this with a function, and so this seems to be a reasonably
+/// accepted way to work around this limitation in the build system. The SDK
+/// uses a static exported with name `_` that becomes a global because a global
+/// is more unnoticeable, and takes up less bytes.
 ///
-/// This has an unfortunate side-effect that all contracts will have a function
-/// in the resulting WASM named `_`, however this function won't be rendered in
-/// the contract specification. The overhead of this is very minimal on file
-/// size.
+/// The const block has no affect on the above problem and exists only to group
+/// the static and link sections under a shared cfg.
 ///
 /// See https://github.com/stellar/rs-soroban-sdk/issues/383 for more details.
 #[cfg(target_family = "wasm")]
-#[export_name = "_"]
-fn __link_sections() {
+const _: () = {
+    /// This exported static is guaranteed to end up in the final binary of any
+    /// importer, as a global. It exists to ensure the link sections are
+    /// included in the final build artifact. See notes above.
+    #[export_name = "_"]
+    static __: () = ();
+
     #[link_section = "contractenvmetav0"]
     static __ENV_META_XDR: [u8; env::internal::meta::XDR.len()] = env::internal::meta::XDR;
 
-    soroban_sdk_macros::contractmetabuiltin!();
-}
+    // Rustc version.
+    contractmeta!(key = "rsver", val = env!("RUSTC_VERSION"),);
+
+    // Rust Soroban SDK version. Don't emit when the cfg is set. The cfg is set when building test
+    // wasms in this repository, so that every commit in this repo does not cause the test wasms in
+    // this repo to have a new hash due to the revision being embedded. The wasm hash gets embedded
+    // into a few places, such as test snapshots, or get used in test themselves where if they are
+    // constantly changing creates repetitive diffs.
+    #[cfg(not(soroban_sdk_internal_no_rssdkver_meta))]
+    contractmeta!(
+        key = "rssdkver",
+        val = concat!(env!("CARGO_PKG_VERSION"), "#", env!("GIT_REVISION")),
+    );
+
+    // An indicator of the spec shaking version in use. Signals to the stellar-cli that the .wasm
+    // needs to have its spec shaken. See soroban_spec::shaking for constants and version detection.
+    // The contractmeta! macro requires string literals, so we assert the literals match the
+    // constants defined in soroban_spec::shaking.
+    #[cfg(feature = "experimental_spec_shaking_v2")]
+    contractmeta!(key = "rssdk_spec_shaking", val = "2");
+};
 
 // Re-exports of dependencies used by macros.
 #[doc(hidden)]
 pub mod reexports_for_macros {
-    pub use ::bytes_lit;
+    pub use bytes_lit;
     #[cfg(any(test, feature = "testutils"))]
-    pub use ::ctor;
+    pub use ctor;
 }
 
+/// `debug_assert_in_contract!` asserts that the contract is currently executing within a
+/// contract. The macro expands to an assertion when testutils are enabled or in tests,
+/// otherwise it expands to nothing.
+macro_rules! debug_assert_in_contract {
+    ($env:expr $(,)?) => {{
+        {
+            #[cfg(any(test, feature = "testutils"))]
+            assert!(
+                ($env).in_contract(),
+                "this function is not accessible outside of a contract, wrap \
+                the call with `env.as_contract()` to access it from a \
+                particular contract"
+            );
+        }
+    }};
+}
+
+// For internal use, use `debug_assert_in_contract!` instead.
 /// Assert in contract asserts that the contract is currently executing within a
 /// contract. The macro maps to code when testutils are enabled or in tests,
 /// otherwise maps to nothing.
+#[deprecated(note = "this macro is deprecated and will be removed in a future release")]
 #[macro_export]
 macro_rules! assert_in_contract {
     ($env:expr $(,)?) => {{
@@ -162,7 +220,18 @@ pub use soroban_sdk_macros::symbol_short;
 /// - Enum variants must have a value convertible to u32.
 ///
 /// Includes the type in the contract spec so that clients can generate bindings
-/// for the type.
+/// for the type. By default, spec entries are only generated for `pub` types
+/// (or when `export = true` is explicitly set).
+///
+/// ### `experimental_spec_shaking_v2`
+///
+/// When the [`experimental_spec_shaking_v2`][_features#experimental_spec_shaking_v2]
+/// feature is enabled, spec entries are generated for all types regardless of
+/// visibility, and markers are embedded that allow post-build tools to strip
+/// entries for errors that are neither used at a contract boundary nor thrown
+/// at one. The `export = ...` argument is a no-op under this feature and emits
+/// a deprecation warning at the macro call site; it will be removed in a future
+/// release. See [`_features`] for details.
 ///
 /// ### Examples
 ///
@@ -197,7 +266,7 @@ pub use soroban_sdk_macros::symbol_short;
 ///     let env = Env::default();
 ///
 ///     // Register the contract defined in this crate.
-///     let contract_id = env.register_contract(None, Contract);
+///     let contract_id = env.register(Contract, ());
 ///
 ///     // Create a client for calling the contract.
 ///     let client = ContractClient::new(&env, &contract_id);
@@ -244,7 +313,7 @@ pub use soroban_sdk_macros::symbol_short;
 ///     let env = Env::default();
 ///
 ///     // Register the contract defined in this crate.
-///     let contract_id = env.register_contract(None, Contract);
+///     let contract_id = env.register(Contract, ());
 ///
 ///     // Create a client for calling the contract.
 ///     let client = ContractClient::new(&env, &contract_id);
@@ -268,6 +337,33 @@ pub use soroban_sdk_macros::contracterror;
 /// - A `ContractClient` struct that has functions for each function in the
 /// contract.
 /// - Types for all contract types defined in the contract.
+///
+/// ### `experimental_spec_shaking_v2`
+///
+/// When the [`experimental_spec_shaking_v2`][_features#experimental_spec_shaking_v2]
+/// feature is enabled, imported types are generated with `export = true` so
+/// they produce spec entries and markers in the importing contract. Post-build
+/// tools strip entries for imported types that are not used at the importing
+/// contract's boundary. Without this feature, imported types use
+/// `export = false` and do not produce spec entries. See [`_features`] for
+/// details.
+///
+/// ### SHA-256 Verification
+///
+/// An optional `sha256` parameter can be provided to verify the integrity of
+/// the WASM file at compile time. When provided, the macro computes the
+/// SHA-256 hash of the WASM file at compile time and produces a compile error
+/// if it does not match the provided value. The `sha256` argument must
+/// be a hex-encoded SHA-256 digest (64 hex chars, no 0x prefix).
+///
+/// ```ignore
+/// mod contract_a {
+///     soroban_sdk::contractimport!(
+///         file = "contract_a.wasm",
+///         sha256 = "d5bc0a5b4...",
+///     );
+/// }
+/// ```
 ///
 /// ### Examples
 ///
@@ -296,7 +392,7 @@ pub use soroban_sdk_macros::contracterror;
 ///     let contract_a_id = env.register_contract_wasm(None, contract_a::WASM);
 ///
 ///     // Register contract B defined in this crate.
-///     let contract_b_id = env.register_contract(None, ContractB);
+///     let contract_b_id = env.register(ContractB, ());
 ///
 ///     // Create a client for calling contract B.
 ///     let client = ContractBClient::new(&env, &contract_b_id);
@@ -342,7 +438,7 @@ pub use soroban_sdk_macros::contractimport;
 /// # #[cfg(feature = "testutils")]
 /// # fn main() {
 ///     let env = Env::default();
-///     let contract_id = env.register_contract(None, HelloContract);
+///     let contract_id = env.register(HelloContract, ());
 ///     let client = HelloContractClient::new(&env, &contract_id);
 ///
 ///     let words = client.hello(&symbol_short!("Dev"));
@@ -358,6 +454,22 @@ pub use soroban_sdk_macros::contract;
 ///
 /// Functions that are publicly accessible in the implementation are invocable
 /// by other contracts, or directly by transactions, when deployed.
+///
+/// ### Notes
+///
+/// Each public function's export name is derived from the function name alone,
+/// without any type prefix or namespace. This means:
+///
+/// - **Function names must be unique across all `#[contractimpl]` blocks in a
+///   crate.** If two impl blocks define a function with the same name, their
+///   Wasm exports will collide, producing build or linker errors.
+///
+/// - **Importing a crate that contains `#[contractimpl]` blocks will pull its
+///   exported functions into the importing crate's Wasm binary.** This is a
+///   limitation of Rust — any `#[export_name = "..."]` function in a dependency
+///   is included in the final binary. This can cause unexpected exports or name
+///   collisions that are hard to diagnose. For this reason it is usually
+///   inadvisable to import dependencies that use `#[contractimpl]`.
 ///
 /// ### Examples
 ///
@@ -383,7 +495,7 @@ pub use soroban_sdk_macros::contract;
 /// # #[cfg(feature = "testutils")]
 /// # fn main() {
 ///     let env = Env::default();
-///     let contract_id = env.register_contract(None, HelloContract);
+///     let contract_id = env.register(HelloContract, ());
 ///     let client = HelloContractClient::new(&env, &contract_id);
 ///
 ///     let words = client.hello(&symbol_short!("Dev"));
@@ -394,6 +506,87 @@ pub use soroban_sdk_macros::contract;
 /// # fn main() { }
 /// ```
 pub use soroban_sdk_macros::contractimpl;
+
+/// Defines a contract trait with default function implementations that can be
+/// used by contracts.
+///
+/// The `contracttrait` macro generates a trait that contracts can implement
+/// using `contractimpl`. Functions defined with default implementations in
+/// the trait will be automatically exported as contract functions when a
+/// contract implements the trait using `#[contractimpl(contracttrait)]`.
+///
+/// This is useful for defining standard interfaces where some functions have
+/// default implementations that can be optionally overridden.
+///
+/// Note: The `contracttrait` macro is not required on traits, but without it
+/// default functions will not be exported by contracts that implement the
+/// trait.
+///
+/// `cfg` and `cfg_attr` attributes are not supported on `#[contracttrait]`
+/// default functions. Direct `cfg` attributes are supported on overriding
+/// methods in `#[contractimpl(contracttrait)]` impls, but `cfg_attr` is not.
+/// Default-function metadata is captured when the trait is defined, but wrappers
+/// for non-overridden defaults are generated later where the trait is
+/// implemented, so carrying cfgs through that handoff could evaluate them in a
+/// different crate's cfg context.
+///
+/// ### Macro Arguments
+///
+/// - `crate_path` - The path to the soroban-sdk crate. Defaults to `soroban_sdk`.
+/// - `spec_name` - The name for the spec type. Defaults to `{TraitName}Spec`.
+/// - `spec_export` - Whether to export the spec for default functions. Defaults to `false`.
+/// - `args_name` - The name for the args type. Defaults to `{TraitName}Args`.
+/// - `client_name` - The name for the client type. Defaults to `{TraitName}Client`.
+///
+/// ### Examples
+///
+/// Define a trait with a default function and implement it in a contract:
+///
+/// ```
+/// use soroban_sdk::{contract, contractimpl, contracttrait, Address, Env};
+///
+/// #[contracttrait]
+/// pub trait Token {
+///     fn balance(env: &Env, id: Address) -> i128 {
+///         // ...
+///         # todo!()
+///     }
+///
+///     // Default function.
+///     fn transfer(env: &Env, from: Address, to: Address, amount: i128) {
+///         // ...
+///         # todo!()
+///     }
+/// }
+///
+/// #[contract]
+/// pub struct TokenContract;
+///
+/// #[contractimpl(contracttrait)]
+/// impl Token for TokenContract {
+///     fn balance(env: &Env, id: Address) -> i128 {
+///         // Provide a custom impl of balance.
+///         // ...
+///         # todo!()
+///     }
+/// }
+/// # fn main() { }
+/// ```
+pub use soroban_sdk_macros::contracttrait;
+
+/// Generates a macro for a trait that calls
+/// contractimpl_trait_default_fns_not_overridden with information about the trait.
+///
+/// This macro is used internally and is not intended to be used directly by contracts.
+#[doc(hidden)]
+pub use soroban_sdk_macros::contractimpl_trait_macro;
+
+/// Generates code the same as contractimpl does, but for the default functions of a trait that are
+/// not overridden.
+///
+/// This macro is used internally and is not intended to be used directly by contracts.
+#[doc(hidden)]
+pub use soroban_sdk_macros::contractimpl_trait_default_fns_not_overridden;
 
 /// Adds a serialized SCMetaEntry::SCMetaV0 to the WASM contracts custom section
 /// under the section name 'contractmetav0'. Contract developers can use this to
@@ -423,7 +616,7 @@ pub use soroban_sdk_macros::contractimpl;
 /// # #[cfg(feature = "testutils")]
 /// # fn main() {
 ///     let env = Env::default();
-///     let contract_id = env.register_contract(None, HelloContract);
+///     let contract_id = env.register(HelloContract, ());
 ///     let client = HelloContractClient::new(&env, &contract_id);
 ///
 ///     let words = client.hello(&symbol_short!("Dev"));
@@ -451,7 +644,18 @@ pub use soroban_sdk_macros::contractmeta;
 /// less in length.
 ///
 /// Includes the type in the contract spec so that clients can generate bindings
-/// for the type.
+/// for the type. By default, spec entries are only generated for `pub` types
+/// (or when `export = true` is explicitly set).
+///
+/// ### `experimental_spec_shaking_v2`
+///
+/// When the [`experimental_spec_shaking_v2`][_features#experimental_spec_shaking_v2]
+/// feature is enabled, spec entries are generated for all types regardless of
+/// visibility, and markers are embedded that allow post-build tools to strip
+/// entries for types that are not used at a contract boundary. The
+/// `export = ...` argument is a no-op under this feature and emits a
+/// deprecation warning at the macro call site; it will be removed in a future
+/// release. See [`_features`] for details.
 ///
 /// ### Examples
 ///
@@ -503,7 +707,7 @@ pub use soroban_sdk_macros::contractmeta;
 /// # #[cfg(feature = "testutils")]
 /// # fn main() {
 ///     let env = Env::default();
-///     let contract_id = env.register_contract(None, Contract);
+///     let contract_id = env.register(Contract, ());
 ///     let client = ContractClient::new(&env, &contract_id);
 ///
 ///     assert_eq!(client.increment(&1), 1);
@@ -577,7 +781,7 @@ pub use soroban_sdk_macros::contractmeta;
 /// # #[cfg(feature = "testutils")]
 /// # fn main() {
 ///     let env = Env::default();
-///     let contract_id = env.register_contract(None, Contract);
+///     let contract_id = env.register(Contract, ());
 ///     let client = ContractClient::new(&env, &contract_id);
 ///
 ///     assert_eq!(client.get(), None);
@@ -592,6 +796,233 @@ pub use soroban_sdk_macros::contractmeta;
 /// # fn main() { }
 /// ```
 pub use soroban_sdk_macros::contracttype;
+
+/// Generates conversions from the struct into a published event.
+///
+/// Fields of the struct become topics and data parameters in the published event.
+///
+/// Includes the event in the contract spec so that clients can generate bindings
+/// for the type and downstream systems can understand the meaning of the event.
+///
+/// ### `experimental_spec_shaking_v2`
+///
+/// When the [`experimental_spec_shaking_v2`][_features#experimental_spec_shaking_v2]
+/// feature is enabled, markers are embedded that allow post-build tools to strip
+/// spec entries for events that are never published at a contract boundary. The
+/// `export = ...` argument is a no-op under this feature and emits a
+/// deprecation warning at the macro call site; it will be removed in a future
+/// release. See [`_features`] for details.
+///
+/// ### Examples
+///
+/// #### Define an Event
+///
+/// The event will have a single fixed topic matching the name of the struct in lower snake
+/// case. The fixed topic will appear before any topics listed as fields. In the example
+/// below, the topics for the event will be:
+/// - `"my_event"`
+/// - u32 value from the `my_topic` field
+///
+/// The event's data will be a [`Map`], containing a key-value pair for each field with the key
+/// being the name as a [`Symbol`]. In the example below, the data for the event will be:
+/// - key: my_event_data => val: u32
+/// - key: more_event_data => val: u64
+///
+/// ```
+/// #![no_std]
+/// use soroban_sdk::contractevent;
+///
+/// // Define the event using the `contractevent` attribute macro.
+/// #[contractevent]
+/// #[derive(Clone, Default, Debug, Eq, PartialEq)]
+/// pub struct MyEvent {
+///     // Mark fields as topics, for the value to be included in the events topic list so
+///     // that downstream systems know to index it.
+///     #[topic]
+///     pub my_topic: u32,
+///     // Fields not marked as topics will appear in the events data section.
+///     pub my_event_data: u32,
+///     pub more_event_data: u64,
+/// }
+///
+/// # fn main() { }
+/// ```
+///
+/// #### Define an Event with Custom Topics
+///
+/// Define a contract event with a custom list of fixed topics.
+///
+/// The fixed topics can be change to another value. In the example
+/// below, the topics for the event will be:
+/// - `"my_contract"`
+/// - `"an_event"`
+/// - u32 value from the `my_topic` field
+///
+/// ```
+/// #![no_std]
+/// use soroban_sdk::contractevent;
+///
+/// // Define the event using the `contractevent` attribute macro.
+/// #[contractevent(topics = ["my_contract", "an_event"])]
+/// #[derive(Clone, Default, Debug, Eq, PartialEq)]
+/// pub struct MyEvent {
+///     // Mark fields as topics, for the value to be included in the events topic list so
+///     // that downstream systems know to index it.
+///     #[topic]
+///     pub my_topic: u32,
+///     // Fields not marked as topics will appear in the events data section.
+///     pub my_event_data: u32,
+///     pub more_event_data: u64,
+/// }
+///
+/// # fn main() { }
+/// ```
+///
+/// #### Define an Event with Other Data Formats
+///
+/// The data format of the event is a map by default, but can alternatively be defined as a `vec`
+/// or `single-value`.
+///
+/// ##### Vec
+///
+/// In the example below, the data for the event will be a [`Vec`] containing:
+/// - u32
+/// - u64
+///
+/// ```
+/// #![no_std]
+/// use soroban_sdk::contractevent;
+///
+/// // Define the event using the `contractevent` attribute macro.
+/// #[contractevent(data_format = "vec")]
+/// #[derive(Clone, Default, Debug, Eq, PartialEq)]
+/// pub struct MyEvent {
+///     // Mark fields as topics, for the value to be included in the events topic list so
+///     // that downstream systems know to index it.
+///     #[topic]
+///     pub my_topic: u32,
+///     // Fields not marked as topics will appear in the events data section.
+///     pub my_event_data: u32,
+///     pub more_event_data: u64,
+/// }
+///
+/// # fn main() { }
+/// ```
+///
+/// ##### Single Value
+///
+/// In the example below, the data for the event will be a u32.
+///
+/// When the data format is a single value there must be no more than one data field.
+///
+/// ```
+/// #![no_std]
+/// use soroban_sdk::contractevent;
+///
+/// // Define the event using the `contractevent` attribute macro.
+/// #[contractevent(data_format = "single-value")]
+/// #[derive(Clone, Default, Debug, Eq, PartialEq)]
+/// pub struct MyEvent {
+///     // Mark fields as topics, for the value to be included in the events topic list so
+///     // that downstream systems know to index it.
+///     #[topic]
+///     pub my_topic: u32,
+///     // Fields not marked as topics will appear in the events data section.
+///     pub my_event_data: u32,
+/// }
+///
+/// # fn main() { }
+/// ```
+///
+/// #### A Full Example
+///
+/// Defining an event, publishing it in a contract, and testing it.
+///
+/// ```
+/// #![no_std]
+/// use soroban_sdk::{contract, contractevent, contractimpl, contracttype, symbol_short, Env, Symbol};
+///
+/// // Define the event using the `contractevent` attribute macro.
+/// #[contractevent]
+/// #[derive(Clone, Default, Debug, Eq, PartialEq)]
+/// pub struct Increment {
+///     // Mark fields as topics, for the value to be included in the events topic list so
+///     // that downstream systems know to index it.
+///     #[topic]
+///     pub change: u32,
+///     // Fields not marked as topics will appear in the events data section.
+///     pub count: u32,
+/// }
+///
+/// #[contracttype]
+/// #[derive(Clone, Default, Debug, Eq, PartialEq)]
+/// pub struct State {
+///     pub count: u32,
+///     pub last_incr: u32,
+/// }
+///
+/// #[contract]
+/// pub struct Contract;
+///
+/// #[contractimpl]
+/// impl Contract {
+///     /// Increment increments an internal counter, and returns the value.
+///     /// Publishes an event about the change in the counter.
+///     pub fn increment(env: Env, incr: u32) -> u32 {
+///         // Get the current count.
+///         let mut state = Self::get_state(env.clone());
+///
+///         // Increment the count.
+///         state.count += incr;
+///         state.last_incr = incr;
+///
+///         // Save the count.
+///         env.storage().persistent().set(&symbol_short!("STATE"), &state);
+///
+///         // Publish an event about the change.
+///         Increment {
+///             change: incr,
+///             count: state.count,
+///         }.publish(&env);
+///
+///         // Return the count to the caller.
+///         state.count
+///     }
+///
+///     /// Return the current state.
+///     pub fn get_state(env: Env) -> State {
+///         env.storage().persistent()
+///             .get(&symbol_short!("STATE"))
+///             .unwrap_or_else(|| State::default()) // If no value set, assume 0.
+///     }
+/// }
+///
+/// #[test]
+/// fn test() {
+/// # }
+/// # #[cfg(feature = "testutils")]
+/// # fn main() {
+///     let env = Env::default();
+///     let contract_id = env.register(Contract, ());
+///     let client = ContractClient::new(&env, &contract_id);
+///
+///     assert_eq!(client.increment(&1), 1);
+///     assert_eq!(client.increment(&10), 11);
+///     assert_eq!(
+///         client.get_state(),
+///         State {
+///             count: 11,
+///             last_incr: 10,
+///         },
+///     );
+/// }
+/// # #[cfg(not(feature = "testutils"))]
+/// # fn main() { }
+/// ```
+pub use soroban_sdk_macros::contractevent;
+
+/// Generates a type that helps build function args for a contract trait.
+pub use soroban_sdk_macros::contractargs;
 
 /// Generates a client for a contract trait.
 ///
@@ -637,7 +1068,7 @@ pub use soroban_sdk_macros::contracttype;
 ///     let env = Env::default();
 ///
 ///     // Register the hello contract.
-///     let contract_id = env.register_contract(None, HelloContract);
+///     let contract_id = env.register(HelloContract, ());
 ///
 ///     // Create a client for the hello contract, that was constructed using
 ///     // the trait.
@@ -665,6 +1096,20 @@ pub use soroban_sdk_macros::contractspecfn;
 /// into a constant, and so it is usually unnecessary to use [`contractfile`]
 /// directly, unless you specifically want to only load the contract file
 /// without generating a client for it.
+///
+/// ### SHA-256 Verification
+///
+/// Unlike [`contractimport`], `contractfile` **requires** a `sha256`
+/// parameter. The macro computes the SHA-256 hash of the WASM file at compile
+/// time and produces a compile error if it does not match the provided value.
+/// The `sha256` argument must be a hex-encoded SHA-256 digest (64 hex chars, no 0x prefix).
+///
+/// ```ignore
+/// soroban_sdk::contractfile!(
+///     file = "contract_a.wasm",
+///     sha256 = "d5bc0a5b4...",
+/// );
+/// ```
 pub use soroban_sdk_macros::contractfile;
 
 /// Panic with the given error.
@@ -744,6 +1189,8 @@ pub mod unwrap;
 mod env;
 
 mod address;
+pub mod address_payload;
+mod muxed_address;
 mod symbol;
 
 pub use env::{ConversionError, Env};
@@ -779,6 +1226,17 @@ mod try_from_val_for_contract_fn;
 #[allow(deprecated)]
 pub use try_from_val_for_contract_fn::TryFromValForContractFn;
 
+mod into_val_for_contract_fn;
+#[doc(hidden)]
+#[allow(deprecated)]
+pub use into_val_for_contract_fn::IntoValForContractFn;
+
+#[cfg(feature = "experimental_spec_shaking_v2")]
+mod spec_shaking;
+#[cfg(feature = "experimental_spec_shaking_v2")]
+#[doc(hidden)]
+pub use spec_shaking::SpecShakingMarker;
+
 #[doc(hidden)]
 #[deprecated(note = "use storage")]
 pub mod data {
@@ -787,13 +1245,15 @@ pub mod data {
     pub use super::storage::Storage as Data;
 }
 pub mod auth;
+#[macro_use]
 mod bytes;
 pub mod crypto;
+pub mod custom_account;
 pub mod deploy;
 mod error;
 pub use error::InvokeError;
 pub mod events;
-pub use events::Topics;
+pub use events::{Event, Topics};
 pub mod iter;
 pub mod ledger;
 pub mod logs;
@@ -802,9 +1262,10 @@ pub mod prng;
 pub mod storage;
 pub mod token;
 mod vec;
-pub use address::Address;
+pub use address::{Address, Executable};
 pub use bytes::{Bytes, BytesN};
 pub use map::Map;
+pub use muxed_address::MuxedAddress;
 pub use symbol::Symbol;
 pub use vec::Vec;
 mod num;
@@ -812,6 +1273,9 @@ pub use num::{Duration, Timepoint, I256, U256};
 mod string;
 pub use string::String;
 mod tuple;
+
+mod constructor_args;
+pub use constructor_args::ConstructorArgs;
 
 pub mod xdr;
 

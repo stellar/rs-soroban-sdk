@@ -31,8 +31,8 @@ impl ContractB {
 #[test]
 fn test() {
     let e = Env::default();
-    let contract_a_id = e.register_contract(None, ContractA);
-    let contract_b_id = e.register_contract(None, ContractB);
+    let contract_a_id = e.register(ContractA, ());
+    let contract_b_id = e.register(ContractB, ());
     let client = ContractAClient::new(&e, &contract_a_id);
 
     let a = Address::generate(&e);
@@ -61,8 +61,8 @@ fn test() {
 #[should_panic = "HostError: Error(Auth, InvalidAction)"]
 fn test_auth_tree() {
     let e = Env::default();
-    let contract_a_id = e.register_contract(None, ContractA);
-    let contract_b_id = e.register_contract(None, ContractB);
+    let contract_a_id = e.register(ContractA, ());
+    let contract_b_id = e.register(ContractB, ());
     let client = ContractAClient::new(&e, &contract_a_id);
 
     let a = Address::generate(&e);

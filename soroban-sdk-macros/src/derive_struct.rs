@@ -1,14 +1,13 @@
 use itertools::Itertools;
 use proc_macro2::{Literal, TokenStream as TokenStream2};
 use quote::{format_ident, quote};
-use syn::{Attribute, DataStruct, Error, Ident, Path, Visibility};
+use syn::{ext::IdentExt as _, Attribute, DataStruct, Error, Ident, Path, Visibility};
 
-use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{
     ScSpecEntry, ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, StringM, WriteXdr,
 };
 
-use crate::{doc::docs_from_attrs, map_type::map_type, DEFAULT_XDR_RW_LIMITS};
+use crate::{doc::docs_from_attrs, map_type::map_type, shaking, DEFAULT_XDR_RW_LIMITS};
 
 // TODO: Add field attribute for including/excluding fields in types.
 // TODO: Better handling of partial types and types without all their fields and
@@ -27,14 +26,15 @@ pub fn derive_type_struct(
     let mut errors = Vec::<Error>::new();
     let fields = &data.fields;
     let field_count_usize: usize = fields.len();
-    let (spec_fields, field_idents, field_names, field_idx_lits, try_from_xdrs, try_into_xdrs): (Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>) = fields
+    let (spec_fields, field_idents, field_names, field_idx_lits, field_types, try_from_xdrs, try_into_xdrs): (Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>) = fields
         .iter()
-        .sorted_by_key(|field| field.ident.as_ref().unwrap().to_string())
+        .sorted_by_key(|field| field.ident.as_ref().unwrap().unraw().to_string())
         .enumerate()
         .map(|(field_num, field)| {
             let field_ident = field.ident.as_ref().unwrap();
-            let field_name = field_ident.to_string();
+            let field_name = field_ident.unraw().to_string();
             let field_idx_lit = Literal::usize_unsuffixed(field_num);
+            let field_type = &field.ty;
             let spec_field = ScSpecUdtStructFieldV0 {
                 doc: docs_from_attrs(&field.attrs),
                 name: field_name.clone().try_into().unwrap_or_else(|_| {
@@ -42,7 +42,7 @@ pub fn derive_type_struct(
                     errors.push(Error::new(field_ident.span(), format!("struct field name is too long: {}, max is {MAX}", field_name.len())));
                     StringM::<MAX>::default()
                 }),
-                type_: match map_type(&field.ty, false) {
+                type_: match map_type(&field.ty,false, false) {
                     Ok(t) => t,
                     Err(e) => {
                         errors.push(e);
@@ -64,7 +64,7 @@ pub fn derive_type_struct(
                     val: (&val.#field_ident).try_into().map_err(|_| #path::xdr::Error::Invalid)?,
                 }
             };
-            (spec_field, field_ident, field_name, field_idx_lit, try_from_xdr, try_into_xdr)
+            (spec_field, field_ident, field_name, field_idx_lit, field_type, try_from_xdr, try_into_xdr)
         })
         .multiunzip();
 
@@ -74,18 +74,27 @@ pub fn derive_type_struct(
         return quote! { #(#compile_errors)* };
     }
 
-    // Generated code spec.
-    let spec_gen = if spec {
+    // Compute spec XDR once if spec is enabled.
+    let spec_xdr = if spec {
         let spec_entry = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
             doc: docs_from_attrs(attrs),
             lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
-            name: ident.to_string().try_into().unwrap(),
+            name: ident.unraw().to_string().try_into().unwrap(),
             fields: spec_fields.try_into().unwrap(),
         });
-        let spec_xdr = spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap();
+        Some(spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap())
+    } else {
+        None
+    };
+
+    // Generated code spec.
+    let spec_gen = if let Some(ref spec_xdr) = spec_xdr {
         let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
         let spec_xdr_len = spec_xdr.len();
-        let spec_ident = format_ident!("__SPEC_XDR_TYPE_{}", ident.to_string().to_uppercase());
+        let spec_ident = format_ident!(
+            "__SPEC_XDR_TYPE_{}",
+            ident.unraw().to_string().to_uppercase()
+        );
         Some(quote! {
             #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
             pub static #spec_ident: [u8; #spec_xdr_len] = #ident::spec_xdr();
@@ -100,9 +109,29 @@ pub fn derive_type_struct(
         None
     };
 
+    // SpecShakingMarker impl - only generated when spec is true and the
+    // experimental_spec_shaking_v2 feature is enabled.
+    let spec_shaking_impl = if cfg!(feature = "experimental_spec_shaking_v2") {
+        spec_xdr.as_ref().map(|spec_xdr| {
+            shaking::generate_marker_impl(
+                path,
+                quote!(#ident),
+                spec_xdr,
+                field_types.iter().cloned(),
+                None,
+                None,
+                None,
+            )
+        })
+    } else {
+        None
+    };
+
     // Output.
     let mut output = quote! {
         #spec_gen
+
+        #spec_shaking_impl
 
         impl #path::TryFromVal<#path::Env, #path::Val> for #ident {
             type Error = #path::ConversionError;
@@ -127,6 +156,14 @@ pub fn derive_type_struct(
                     #((&val.#field_idents).try_into_val(env).map_err(|_| ConversionError)?),*
                 ];
                 Ok(env.map_new_from_slices(&KEYS, &vals).map_err(|_| ConversionError)?.into())
+            }
+        }
+
+        impl #path::TryFromVal<#path::Env, &#ident> for #path::Val {
+            type Error = #path::ConversionError;
+            #[inline(always)]
+            fn try_from_val(env: &#path::Env, val: &&#ident) -> Result<Self, #path::ConversionError> {
+                <_ as #path::TryFromVal<#path::Env, #ident>>::try_from_val(env, *val)
             }
         }
     };

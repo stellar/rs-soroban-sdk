@@ -15,11 +15,8 @@ rust-version.workspace = true
 crate-type = ["cdylib", "rlib"]
 doctest = false
 
-[features]
-testutils = ["soroban-sdk/testutils"]
-
 [dependencies]
-soroban-sdk = {path = "../../soroban-sdk"}
+soroban-sdk = {path = "../../soroban-sdk", features = ["experimental_spec_shaking_v2"]}
 
 [dev-dependencies]
 soroban-sdk = {path = "../../soroban-sdk", features = ["testutils"]}

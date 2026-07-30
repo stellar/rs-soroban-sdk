@@ -2,7 +2,7 @@
 use core::fmt::Debug;
 
 use crate::{
-    env::internal::{self, StorageType, Val},
+    env::internal::{self, ContractTtlExtension, StorageType, Val},
     unwrap::{UnwrapInfallible, UnwrapOptimized},
     Env, IntoVal, TryFromVal,
 };
@@ -53,7 +53,7 @@ use crate::{
 /// # #[cfg(feature = "testutils")]
 /// # fn main() {
 /// #     let env = Env::default();
-/// #     let contract_id = env.register_contract(None, Contract);
+/// #     let contract_id = env.register(Contract, ());
 /// #     ContractClient::new(&env, &contract_id).f();
 /// # }
 /// # #[cfg(not(feature = "testutils"))]
@@ -86,7 +86,7 @@ impl Storage {
     /// This should be used for data that requires persistency, such as token
     /// balances, user properties etc.
     pub fn persistent(&self) -> Persistent {
-        assert_in_contract!(self.env);
+        debug_assert_in_contract!(self.env);
 
         Persistent {
             storage: self.clone(),
@@ -105,7 +105,7 @@ impl Storage {
     /// This should be used for data that needs to only exist for a limited
     /// period of time, such as oracle data, claimable balances, offer, etc.
     pub fn temporary(&self) -> Temporary {
-        assert_in_contract!(self.env);
+        debug_assert_in_contract!(self.env);
 
         Temporary {
             storage: self.clone(),
@@ -138,7 +138,7 @@ impl Storage {
     /// operates on etc. Do not use this with any data that can scale in
     /// unbounded fashion (such as user balances).
     pub fn instance(&self) -> Instance {
-        assert_in_contract!(self.env);
+        debug_assert_in_contract!(self.env);
 
         Instance {
             storage: self.clone(),
@@ -153,7 +153,7 @@ impl Storage {
     pub fn max_ttl(&self) -> u32 {
         let seq = self.env.ledger().sequence();
         let max = self.env.ledger().max_live_until_ledger();
-        max - seq
+        max.saturating_sub(seq)
     }
 
     /// Returns if there is a value stored for the given key in the currently
@@ -274,6 +274,36 @@ impl Storage {
         .unwrap_infallible();
     }
 
+    /// Extend the TTL of the data with limits on the extension.
+    ///
+    /// Extends the TTL of the data to be up to `extend_to` ledgers. The extension
+    /// only happens if it exceeds `min_extension` ledgers, otherwise this is a no-op.
+    /// The amount of extension will not exceed `max_extension` ledgers.
+    ///
+    /// The TTL is the number of ledgers between the current ledger and the final
+    /// ledger the data can still be accessed.
+    pub(crate) fn extend_ttl_with_limits<K>(
+        &self,
+        key: &K,
+        storage_type: StorageType,
+        extend_to: u32,
+        min_extension: u32,
+        max_extension: u32,
+    ) where
+        K: IntoVal<Env, Val>,
+    {
+        let env = &self.env;
+        internal::Env::extend_contract_data_ttl_v2(
+            env,
+            key.into_val(env),
+            storage_type,
+            extend_to.into(),
+            min_extension.into(),
+            max_extension.into(),
+        )
+        .unwrap_infallible();
+    }
+
     /// Removes the key and the corresponding value from the currently executing
     /// contract's storage.
     ///
@@ -376,6 +406,32 @@ impl Persistent {
     {
         self.storage
             .extend_ttl(key, StorageType::Persistent, threshold, extend_to)
+    }
+
+    /// Extend the TTL of the data under the key with limits on the extension.
+    ///
+    /// Extends the TTL of the data to be up to `extend_to` ledgers. The extension
+    /// only happens if it exceeds `min_extension` ledgers, otherwise this is a no-op.
+    /// The amount of extension will not exceed `max_extension` ledgers.
+    ///
+    /// The TTL is the number of ledgers between the current ledger and the final
+    /// ledger the data can still be accessed.
+    pub fn extend_ttl_with_limits<K>(
+        &self,
+        key: &K,
+        extend_to: u32,
+        min_extension: u32,
+        max_extension: u32,
+    ) where
+        K: IntoVal<Env, Val>,
+    {
+        self.storage.extend_ttl_with_limits(
+            key,
+            StorageType::Persistent,
+            extend_to,
+            min_extension,
+            max_extension,
+        )
     }
 
     #[inline(always)]
@@ -566,6 +622,29 @@ impl Instance {
         )
         .unwrap_infallible();
     }
+
+    /// Extend the TTL of the contract instance and code with limits on the extension.
+    ///
+    /// Extends the TTL of the instance and code to be up to `extend_to` ledgers.
+    /// The extension only happens if it exceeds `min_extension` ledgers, otherwise
+    /// this is a no-op. The amount of extension will not exceed `max_extension` ledgers.
+    ///
+    /// Note that the extension is applied to both the contract code and contract instance,
+    /// so it's possible that one is extended but not the other depending on their current TTLs.
+    ///
+    /// The TTL is the number of ledgers between the current ledger and the final ledger
+    /// the data can still be accessed.
+    pub fn extend_ttl_with_limits(&self, extend_to: u32, min_extension: u32, max_extension: u32) {
+        internal::Env::extend_contract_instance_and_code_ttl_v2(
+            &self.storage.env,
+            self.storage.env.current_contract_address().to_object(),
+            ContractTtlExtension::InstanceAndCode,
+            extend_to.into(),
+            min_extension.into(),
+            max_extension.into(),
+        )
+        .unwrap_infallible();
+    }
 }
 
 #[cfg(any(test, feature = "testutils"))]
@@ -577,7 +656,7 @@ mod testutils {
     impl testutils::storage::Instance for Instance {
         fn all(&self) -> Map<Val, Val> {
             let env = &self.storage.env;
-            let storage = env.host().with_mut_storage(|s| Ok(s.map.clone())).unwrap();
+            let storage = env.host().get_stored_entries().unwrap();
             let address: xdr::ScAddress = env.current_contract_address().try_into().unwrap();
             for entry in storage {
                 let (k, Some((v, _))) = entry else {
@@ -661,7 +740,7 @@ mod testutils {
     }
 
     fn all(env: &Env, d: xdr::ContractDataDurability) -> Map<Val, Val> {
-        let storage = env.host().with_mut_storage(|s| Ok(s.map.clone())).unwrap();
+        let storage = env.host().get_stored_entries().unwrap();
         let mut map = Map::<Val, Val>::new(env);
         for entry in storage {
             let (_, Some((v, _))) = entry else {

@@ -1,8 +1,11 @@
+use soroban_sdk_macros::contracterror;
+
 use crate::{
     self as soroban_sdk, contract, contractimpl,
     env::EnvTestConfig,
-    testutils::{Address as _, Logs as _},
-    Address, Env, Error,
+    testutils::{Address as _, Logs},
+    xdr::{ScErrorCode, ScErrorType},
+    Address, Env, Error, InvokeError, Symbol,
 };
 
 #[test]
@@ -11,7 +14,7 @@ use crate::{
 // configured for real. Some functions in Env have in the past or may now make
 // assumptions about a source account being set. This is something small we do
 // to make sure we don't accidentally introduce Env functionality that will
-// panick in SDK tests.
+// panic in SDK tests.
 fn default_has_source_account_configured_in_host() {
     let env = Env::default();
     assert!(env.host().source_account_address().unwrap().is_some());
@@ -35,6 +38,17 @@ impl Contract {
     }
 }
 
+#[contracterror]
+#[derive(Debug, Eq, PartialEq)]
+enum ContractError {
+    AnError = 1,
+}
+
+mod constructor_contract {
+    use crate as soroban_sdk;
+    soroban_sdk::contractimport!(file = "../target/wasm32v1-none/release/test_constructor.wasm");
+}
+
 #[test]
 fn default_and_from_snapshot_same_settings() {
     let env1 = Env::default();
@@ -43,14 +57,18 @@ fn default_and_from_snapshot_same_settings() {
     assert!(env1.host().source_account_address().unwrap().is_some());
     assert!(env2.host().source_account_address().unwrap().is_some());
 
-    let c1addr = env1.register_contract(None, Contract);
-    let c2addr = env2.register_contract(None, Contract);
+    let c1addr = env1.register(Contract, ());
+    let c2addr = env2.register(Contract, ());
 
     let c1client = ContractClient::new(&env1, &c1addr);
     let c2client = ContractClient::new(&env2, &c2addr);
 
     c1client.test();
     c2client.test();
+    let logs1 = env1.logs().all();
+    let logs2 = env2.logs().all();
+    assert_eq!(logs1, &["[Diagnostic Event] contract:CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM, topics:[log], data:\"test\""]);
+    assert_eq!(logs2, &["[Diagnostic Event] contract:CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM, topics:[log], data:\"test\""]);
 
     let c1addr2 = Address::generate(&env1);
     let c2addr2 = Address::generate(&env2);
@@ -59,22 +77,17 @@ fn default_and_from_snapshot_same_settings() {
     assert_eq!(
         r1,
         Err(Ok(Error::from_type_and_code(
-            stellar_xdr::curr::ScErrorType::Context,
-            stellar_xdr::curr::ScErrorCode::InvalidAction
+            ScErrorType::Context,
+            ScErrorCode::InvalidAction
         )))
     );
     assert_eq!(
         r2,
         Err(Ok(Error::from_type_and_code(
-            stellar_xdr::curr::ScErrorType::Context,
-            stellar_xdr::curr::ScErrorCode::InvalidAction
+            ScErrorType::Context,
+            ScErrorCode::InvalidAction
         )))
     );
-
-    let logs1 = env1.logs().all();
-    let logs2 = env2.logs().all();
-    assert_eq!(logs1, &["[Diagnostic Event] contract:CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM, topics:[log], data:\"test\""]);
-    assert_eq!(logs2, &["[Diagnostic Event] contract:CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD2KM, topics:[log], data:\"test\""]);
 }
 
 #[test]
@@ -82,21 +95,21 @@ fn register_contract_deploys_predictable_contract_ids() {
     let env1 = Env::default();
     let env2 = Env::from_snapshot(env1.to_snapshot());
 
-    let env1addr1 = env1.register_contract(None, Contract);
+    let env1addr1 = env1.register(Contract, ());
     println!("env1 addr1 {:?}", env1addr1.contract_id());
-    let env1addr2 = env1.register_contract(None, Contract);
+    let env1addr2 = env1.register(Contract, ());
     println!("env1 addr2 {:?}", env1addr2.contract_id());
-    let env2addr1 = env2.register_contract(None, Contract);
+    let env2addr1 = env2.register(Contract, ());
     println!("env2 addr1 {:?}", env2addr1.contract_id());
-    let env2addr2 = env2.register_contract(None, Contract);
+    let env2addr2 = env2.register(Contract, ());
     println!("env2 addr2 {:?}", env2addr2.contract_id());
 
     let env3 = Env::from_snapshot(env1.to_snapshot());
-    let env1addr3 = env1.register_contract(None, Contract);
+    let env1addr3 = env1.register(Contract, ());
     println!("env1 addr3 {:?}", env1addr3.contract_id());
-    let env2addr3 = env2.register_contract(None, Contract);
+    let env2addr3 = env2.register(Contract, ());
     println!("env2 addr3 {:?}", env2addr3.contract_id());
-    let env3addr3 = env3.register_contract(None, Contract);
+    let env3addr3 = env3.register(Contract, ());
     println!("env3 addr3 {:?}", env3addr3.contract_id());
 
     // Check that contracts deployed in the envs are consistent and predictable.
@@ -115,38 +128,48 @@ fn test_snapshot_file() {
         .join("test_snapshot_file");
     let p1 = p.with_extension("1.json");
     let p2 = p.with_extension("2.json");
-    assert!(!p1.exists());
-    assert!(!p2.exists());
+    let p3 = p.with_extension("3.json");
+    let _ = std::fs::remove_file(&p1);
+    let _ = std::fs::remove_file(&p2);
+    let _ = std::fs::remove_file(&p3);
     {
         let e1 = Env::default();
         assert!(!p1.exists());
         assert!(!p2.exists());
+        assert!(!p3.exists());
         let e2 = e1.clone();
         assert!(!p1.exists());
         assert!(!p2.exists());
+        assert!(!p3.exists());
         {
             let _ = Env::default(); // When dropped won't be written because empty.
         } // Env dropped, nothing written.
         assert!(!p1.exists());
         assert!(!p2.exists());
+        assert!(!p3.exists());
         {
             let e3 = Env::default(); // When dropped will be written to p1.
-            let _ = e3.register_contract(None, Contract);
-        } // Env dropped, written to p1.
-        let c = e1.register_contract(None, Contract);
-        assert!(p1.exists());
+            let _ = e3.register(Contract, ());
+        } // Env dropped, written to p3.
+        let c = e1.register(Contract, ());
+        assert!(!p1.exists());
         assert!(!p2.exists());
+        assert!(p3.exists());
         e1.as_contract(&c, || {});
-        assert!(p1.exists());
+        assert!(!p1.exists());
         assert!(!p2.exists());
+        assert!(p3.exists());
         e2.as_contract(&c, || {});
-        assert!(p1.exists());
+        assert!(!p1.exists());
         assert!(!p2.exists());
-    } // Env dropped, written to p2.
+        assert!(p3.exists());
+    } // Env dropped, written to p1.
     assert!(p1.exists());
-    assert!(p2.exists());
+    assert!(!p2.exists());
+    assert!(p3.exists());
     let _ = std::fs::remove_file(&p1);
     let _ = std::fs::remove_file(&p2);
+    let _ = std::fs::remove_file(&p3);
 }
 
 /// Test that the test snapshot file is not written when disabled.
@@ -157,23 +180,22 @@ fn test_snapshot_file_disabled() {
         .join("env")
         .join("test_snapshot_file_disabled");
     let p1 = p.with_extension("1.json");
-    assert!(!p1.exists());
     let p2 = p.with_extension("2.json");
-    assert!(!p2.exists());
+    let _ = std::fs::remove_file(&p1);
+    let _ = std::fs::remove_file(&p2);
     {
         let e1 = Env::default();
-        let _ = e1.register_contract(None, Contract);
+        let _ = e1.register(Contract, ());
         let e2 = Env::new_with_config(EnvTestConfig {
             capture_snapshot_at_drop: false,
         });
-        let _ = e2.register_contract(None, Contract);
+        let _ = e2.register(Contract, ());
         assert!(!p1.exists());
         assert!(!p2.exists());
     }
     assert!(p1.exists());
     assert!(!p2.exists());
     let _ = std::fs::remove_file(&p1);
-    let _ = std::fs::remove_file(&p2);
 }
 
 /// Test that the test snapshot file is not written when disabled after
@@ -185,22 +207,152 @@ fn test_snapshot_file_disabled_after_creation() {
         .join("env")
         .join("test_snapshot_file_disabled_after_creation");
     let p1 = p.with_extension("1.json");
-    assert!(!p1.exists());
     let p2 = p.with_extension("2.json");
-    assert!(!p2.exists());
+    let _ = std::fs::remove_file(&p1);
+    let _ = std::fs::remove_file(&p2);
     {
         let e1 = Env::default();
-        let _ = e1.register_contract(None, Contract);
+        let _ = e1.register(Contract, ());
         let mut e2 = Env::default();
         e2.set_config(EnvTestConfig {
             capture_snapshot_at_drop: false,
         });
-        let _ = e2.register_contract(None, Contract);
+        let _ = e2.register(Contract, ());
         assert!(!p1.exists());
         assert!(!p2.exists());
     }
     assert!(p1.exists());
     assert!(!p2.exists());
     let _ = std::fs::remove_file(&p1);
-    let _ = std::fs::remove_file(&p2);
+}
+
+#[test]
+fn test_try_as_contract() {
+    let env = Env::default();
+
+    let addr = Address::generate(&env);
+    env.register_at(&addr, Contract, ());
+
+    let key = Symbol::new(&env, "foo");
+    let val = Symbol::new(&env, "bar");
+
+    env.as_contract(&addr, || {
+        env.storage().persistent().set(&key, &val);
+    });
+
+    let result = env.try_as_contract::<Symbol, Error>(&addr, || {
+        env.storage()
+            .persistent()
+            .get::<Symbol, Symbol>(&key)
+            .unwrap()
+    });
+    assert_eq!(result, Ok(val));
+}
+
+#[test]
+fn test_try_as_contract_host_error() {
+    let env = Env::default();
+
+    let addr = Address::generate(&env);
+    env.register_at(&addr, Contract, ());
+
+    let key = Symbol::new(&env, "foo");
+
+    let result = env.try_as_contract::<_, Error>(&addr, || {
+        // should error as key doesn't exist in storage
+        env.storage().persistent().extend_ttl(&key, 1, 100);
+    });
+    assert_eq!(
+        result,
+        Err(Ok(Error::from_type_and_code(
+            ScErrorType::Storage,
+            ScErrorCode::MissingValue
+        )))
+    );
+}
+
+#[test]
+fn test_try_as_contract_host_error_contract_error_expected() {
+    let env = Env::default();
+
+    let addr = Address::generate(&env);
+    env.register_at(&addr, Contract, ());
+
+    let key = Symbol::new(&env, "foo");
+
+    let result = env.try_as_contract::<_, ContractError>(&addr, || {
+        // should error as key doesn't exist in storage
+        env.storage().persistent().extend_ttl(&key, 1, 100);
+    });
+    assert_eq!(result, Err(Err(InvokeError::Abort)));
+}
+
+#[test]
+fn test_try_as_contract_contract_error() {
+    let env = Env::default();
+
+    let addr = Address::generate(&env);
+    env.register_at(&addr, Contract, ());
+
+    let result = env.try_as_contract::<_, ContractError>(&addr, || {
+        panic_with_error!(&env, ContractError::AnError);
+    });
+    assert_eq!(result, Err(Ok(ContractError::AnError)));
+}
+
+#[test]
+fn test_try_as_contract_contract_error_unexpected_error() {
+    let env = Env::default();
+
+    let addr = Address::generate(&env);
+    env.register_at(&addr, Contract, ());
+
+    let result = env.try_as_contract::<_, ContractError>(&addr, || {
+        panic_with_error!(&env, Error::from_contract_error(99));
+    });
+    assert_eq!(result, Err(Err(InvokeError::Contract(99))));
+}
+
+#[test]
+fn test_try_as_contract_panic() {
+    let env = Env::default();
+
+    let addr = Address::generate(&env);
+    env.register_at(&addr, Contract, ());
+
+    let result = env.try_as_contract::<_, Error>(&addr, || {
+        panic!("please don't do this when writing contracts");
+    });
+    assert_eq!(
+        result,
+        Err(Ok(Error::from_type_and_code(
+            ScErrorType::WasmVm,
+            ScErrorCode::InvalidAction
+        )))
+    );
+}
+
+#[test]
+fn test_register_restores_auth_before_panics() {
+    let env = Env::default();
+
+    let address = env.register(Contract, ());
+    let client = ContractClient::new(&env, &address);
+    let user = Address::generate(&env);
+
+    let pre_register = client.try_need_auth(&user);
+    assert!(pre_register.is_err());
+
+    // This is contrived to cause a panic inside register_contract_with_source.
+    // Don't actually do things like this!
+    let another_contract = env.register(Contract, ());
+    let register_result = env.try_as_contract::<_, Error>(&another_contract, || {
+        // This expects arguments for the constructor, but none are provided, so it will panic
+        env.register(constructor_contract::WASM, ());
+    });
+    assert!(register_result.is_err());
+
+    let post_register = client.try_need_auth(&user);
+    assert!(post_register.is_err());
+    assert_eq!(pre_register, post_register);
 }

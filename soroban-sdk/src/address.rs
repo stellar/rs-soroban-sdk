@@ -1,15 +1,17 @@
 use core::{cmp::Ordering, convert::Infallible, fmt::Debug};
 
 use super::{
-    env::internal::{AddressObject, Env as _, EnvBase as _},
-    ConversionError, Env, String, TryFromVal, TryIntoVal, Val,
+    contracttype, env::internal::AddressObject, env::internal::Env as _, unwrap::UnwrapInfallible,
+    Bytes, BytesN, ConversionError, Env, IntoVal, String, TryFromVal, TryIntoVal, Val, Vec,
 };
 
+#[cfg(any(test, feature = "hazmat-address"))]
+use crate::address_payload::AddressPayload;
+
 #[cfg(not(target_family = "wasm"))]
-use crate::env::internal::xdr::ScVal;
+use crate::env::internal::xdr::{AccountId, ScVal};
 #[cfg(any(test, feature = "testutils", not(target_family = "wasm")))]
 use crate::env::xdr::ScAddress;
-use crate::{unwrap::UnwrapInfallible, Bytes, Vec};
 
 /// Address is a universal opaque identifier to use in contracts.
 ///
@@ -51,9 +53,14 @@ impl Debug for Address {
                         let strkey = Strkey::PublicKeyEd25519(ed25519::PublicKey(ed25519));
                         write!(f, "AccountId({})", strkey.to_string())?;
                     }
-                    xdr::ScAddress::Contract(contract_id) => {
+                    xdr::ScAddress::Contract(xdr::ContractId(contract_id)) => {
                         let strkey = Strkey::Contract(Contract(contract_id.0));
                         write!(f, "Contract({})", strkey.to_string())?;
+                    }
+                    ScAddress::MuxedAccount(_)
+                    | ScAddress::ClaimableBalance(_)
+                    | ScAddress::LiquidityPool(_) => {
+                        return Err(core::fmt::Error);
                     }
                 }
             } else {
@@ -80,7 +87,10 @@ impl PartialOrd for Address {
 
 impl Ord for Address {
     fn cmp(&self, other: &Self) -> Ordering {
-        self.env.check_same_env(&other.env).unwrap_infallible();
+        #[cfg(not(target_family = "wasm"))]
+        if !self.env.is_same_env(&other.env) {
+            return ScVal::from(self).cmp(&ScVal::from(other));
+        }
         let v = self
             .env
             .obj_cmp(self.obj.to_val(), other.obj.to_val())
@@ -124,18 +134,21 @@ impl TryFromVal<Env, &Address> for Val {
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl TryFrom<&Address> for ScVal {
-    type Error = ConversionError;
-    fn try_from(v: &Address) -> Result<Self, ConversionError> {
-        Ok(ScVal::try_from_val(&v.env, &v.obj.to_val())?)
+impl From<&Address> for ScVal {
+    fn from(v: &Address) -> Self {
+        // This conversion occurs only in test utilities, and theoretically all
+        // values should convert to an ScVal because the Env won't let the host
+        // type to exist otherwise, unwrapping. Even if there are edge cases
+        // that don't, this is a trade off for a better test developer
+        // experience.
+        ScVal::try_from_val(&v.env, &v.obj.to_val()).unwrap()
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl TryFrom<Address> for ScVal {
-    type Error = ConversionError;
-    fn try_from(v: Address) -> Result<Self, ConversionError> {
-        (&v).try_into()
+impl From<Address> for ScVal {
+    fn from(v: Address) -> Self {
+        (&v).into()
     }
 }
 
@@ -152,21 +165,19 @@ impl TryFromVal<Env, ScVal> for Address {
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl TryFrom<&Address> for ScAddress {
-    type Error = ConversionError;
-    fn try_from(v: &Address) -> Result<Self, Self::Error> {
-        match ScVal::try_from_val(&v.env, &v.obj.to_val())? {
-            ScVal::Address(a) => Ok(a),
-            _ => Err(ConversionError),
+impl From<&Address> for ScAddress {
+    fn from(v: &Address) -> Self {
+        match ScVal::try_from_val(&v.env, &v.obj.to_val()).unwrap() {
+            ScVal::Address(a) => a,
+            _ => panic!("expected ScVal::Address"),
         }
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl TryFrom<Address> for ScAddress {
-    type Error = ConversionError;
-    fn try_from(v: Address) -> Result<Self, Self::Error> {
-        (&v).try_into()
+impl From<Address> for ScAddress {
+    fn from(v: Address) -> Self {
+        (&v).into()
     }
 }
 
@@ -181,6 +192,41 @@ impl TryFromVal<Env, ScAddress> for Address {
         .try_into_val(env)
         .unwrap_infallible())
     }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl TryFrom<&Address> for AccountId {
+    type Error = ConversionError;
+    fn try_from(v: &Address) -> Result<Self, Self::Error> {
+        let sc: ScAddress = v.into();
+        match sc {
+            ScAddress::Account(aid) => Ok(aid),
+            _ => Err(ConversionError),
+        }
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl TryFrom<Address> for AccountId {
+    type Error = ConversionError;
+    fn try_from(v: Address) -> Result<Self, Self::Error> {
+        (&v).try_into()
+    }
+}
+
+#[cfg_attr(
+    feature = "experimental_spec_shaking_v2",
+    contracttype(crate_path = "crate")
+)]
+#[cfg_attr(
+    not(feature = "experimental_spec_shaking_v2"),
+    contracttype(crate_path = "crate", export = false)
+)]
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub enum Executable {
+    Wasm(BytesN<32>),
+    StellarAsset,
+    Account,
 }
 
 impl Address {
@@ -231,6 +277,18 @@ impl Address {
     /// Prefer using the `Address` directly as input or output argument. Only
     /// use this in special cases when addresses need to be shared between
     /// different environments (e.g. different chains).
+    pub fn from_str(env: &Env, strkey: &str) -> Address {
+        Address::from_string(&String::from_str(env, strkey))
+    }
+
+    /// Creates an `Address` corresponding to the provided Stellar strkey.
+    ///
+    /// The only supported strkey types are account keys (`G...`) and contract keys (`C...`). Any
+    /// other valid or invalid strkey will cause this to panic.
+    ///
+    /// Prefer using the `Address` directly as input or output argument. Only
+    /// use this in special cases when addresses need to be shared between
+    /// different environments (e.g. different chains).
     pub fn from_string(strkey: &String) -> Self {
         let env = strkey.env();
         unsafe {
@@ -264,6 +322,31 @@ impl Address {
         }
     }
 
+    /// Returns the executable type of this address, if any.
+    ///
+    /// Returns None when the contract or account does not exist.   
+    ///
+    /// For Wasm contracts, this also returns the hash of the contract code.
+    /// Otherwise, this just returns which kind of 'built-in' executable this is
+    /// (StellarAsset or Account).
+    pub fn executable(&self) -> Option<Executable> {
+        let executable_val: Val =
+            Env::get_address_executable(&self.env, self.obj).unwrap_infallible();
+        executable_val.into_val(&self.env)
+    }
+
+    /// Returns whether this address exists in the ledger.
+    ///
+    /// For the contract addresses, this means that there is a corresponding
+    /// contract instance deployed. For account addresses, this means that the
+    /// account entry exists in the ledger.
+    pub fn exists(&self) -> bool {
+        let executable_val: Val =
+            Env::get_address_executable(&self.env, self.obj).unwrap_infallible();
+        !executable_val.is_void()
+    }
+
+    /// Converts this `Address` into the corresponding Stellar strkey.
     pub fn to_string(&self) -> String {
         String::try_from_val(
             &self.env,
@@ -297,10 +380,52 @@ impl Address {
     pub fn to_object(&self) -> AddressObject {
         self.obj
     }
+
+    /// Extracts the payload from the address.
+    ///
+    /// Returns:
+    /// - For contract addresses (C...), returns [`AddressPayload::ContractIdHash`]
+    ///   containing the 32-byte contract hash.
+    /// - For account addresses (G...), returns [`AddressPayload::AccountIdPublicKeyEd25519`]
+    ///   containing the 32-byte Ed25519 public key.
+    ///
+    /// Returns `None` if the address type is not recognized. This may occur if
+    /// a new address type has been introduced to the network that this version
+    /// of this library is not aware of.
+    ///
+    /// # Warning
+    ///
+    /// For account addresses, the returned Ed25519 public key corresponds to
+    /// the account's master key, which depending on the configuration of that
+    /// account may or may not be a signer of the account. Do not use this for
+    /// custom Ed25519 signature verification as a form of authentication
+    /// because the master key may not be configured the signer of the account.
+    #[cfg(any(test, feature = "hazmat-address"))]
+    #[cfg_attr(feature = "docs", doc(cfg(feature = "hazmat-address")))]
+    pub fn to_payload(&self) -> Option<AddressPayload> {
+        AddressPayload::from_address(self)
+    }
+
+    /// Constructs an [`Address`] from an [`AddressPayload`].
+    ///
+    /// This is the inverse of [`to_payload`][Address::to_payload].
+    ///
+    /// # Warning
+    ///
+    /// For account addresses, the returned Ed25519 public key corresponds to
+    /// the account's master key, which depending on the configuration of that
+    /// account may or may not be a signer of the account. Do not use this for
+    /// custom Ed25519 signature verification as a form of authentication
+    /// because the master key may not be configured the signer of the account.
+    #[cfg(any(test, feature = "hazmat-address"))]
+    #[cfg_attr(feature = "docs", doc(cfg(feature = "hazmat-address")))]
+    pub fn from_payload(env: &Env, payload: AddressPayload) -> Address {
+        payload.to_address(env)
+    }
 }
 
 #[cfg(any(not(target_family = "wasm"), test, feature = "testutils"))]
-use crate::env::xdr::Hash;
+use crate::env::xdr::{ContractId, Hash};
 use crate::unwrap::UnwrapOptimized;
 
 #[cfg(any(test, feature = "testutils"))]
@@ -309,7 +434,7 @@ impl crate::testutils::Address for Address {
     fn generate(env: &Env) -> Self {
         Self::try_from_val(
             env,
-            &ScAddress::Contract(Hash(env.with_generator(|mut g| g.address()))),
+            &ScAddress::Contract(ContractId(Hash(env.with_generator(|mut g| g.address())))),
         )
         .unwrap()
     }
@@ -317,7 +442,7 @@ impl crate::testutils::Address for Address {
 
 #[cfg(not(target_family = "wasm"))]
 impl Address {
-    pub(crate) fn contract_id(&self) -> Hash {
+    pub(crate) fn contract_id(&self) -> ContractId {
         let sc_address: ScAddress = self.try_into().unwrap();
         if let ScAddress::Contract(c) = sc_address {
             c
@@ -327,6 +452,6 @@ impl Address {
     }
 
     pub(crate) fn from_contract_id(env: &Env, contract_id: [u8; 32]) -> Self {
-        Self::try_from_val(env, &ScAddress::Contract(Hash(contract_id))).unwrap()
+        Self::try_from_val(env, &ScAddress::Contract(ContractId(Hash(contract_id)))).unwrap()
     }
 }

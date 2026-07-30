@@ -1,4 +1,4 @@
-use crate::{bytes, bytesn, Env};
+use crate::Env;
 
 #[test]
 fn test_verify_sig_ed25519() {

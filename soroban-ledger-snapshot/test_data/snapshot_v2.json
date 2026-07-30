@@ -1,0 +1,211 @@
+{
+  "protocol_version": 24,
+  "sequence_number": 60328703,
+  "timestamp": 1765900876,
+  "network_id": "7ac33997544e3175d266bd022439b22cdb16508c01163f26e5cb2a3e1045a979",
+  "base_reserve": 5000000,
+  "min_persistent_entry_ttl": 2073600,
+  "min_temp_entry_ttl": 17280,
+  "max_entry_ttl": 3110400,
+  "ledger_entries": [
+    {
+      "entry": {
+        "last_modified_ledger_seq": 50463386,
+        "data": {
+          "contract_data": {
+            "ext": "v0",
+            "contract": "CAS3J7GYLGXMF6TDJBBYYSE3HQ6BBSMLNUQ34T6TZMYMW2EVH34XOWMA",
+            "key": "ledger_key_contract_instance",
+            "durability": "persistent",
+            "val": {
+              "contract_instance": {
+                "executable": "stellar_asset",
+                "storage": [
+                  {
+                    "key": {
+                      "symbol": "METADATA"
+                    },
+                    "val": {
+                      "map": [
+                        {
+                          "key": {
+                            "symbol": "decimal"
+                          },
+                          "val": {
+                            "u32": 7
+                          }
+                        },
+                        {
+                          "key": {
+                            "symbol": "name"
+                          },
+                          "val": {
+                            "string": "native"
+                          }
+                        },
+                        {
+                          "key": {
+                            "symbol": "symbol"
+                          },
+                          "val": {
+                            "string": "native"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "key": {
+                      "vec": [
+                        {
+                          "symbol": "AssetInfo"
+                        }
+                      ]
+                    },
+                    "val": {
+                      "vec": [
+                        {
+                          "symbol": "Native"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "ext": "v0"
+      },
+      "live_until": 10000000
+    },
+    {
+      "entry": {
+        "last_modified_ledger_seq": 59363318,
+        "data": {
+          "contract_data": {
+            "ext": "v0",
+            "contract": "CAS3J7GYLGXMF6TDJBBYYSE3HQ6BBSMLNUQ34T6TZMYMW2EVH34XOWMA",
+            "key": {
+              "vec": [
+                {
+                  "symbol": "Balance"
+                },
+                {
+                  "address": "CCW67TSZV3SSS2HXMBQ5JFGCKJNXKZM7UQUWUZPUTHXSTZLEO7SJMI75"
+                }
+              ]
+            },
+            "durability": "persistent",
+            "val": {
+              "map": [
+                {
+                  "key": {
+                    "symbol": "amount"
+                  },
+                  "val": {
+                    "i128": "123456789"
+                  }
+                },
+                {
+                  "key": {
+                    "symbol": "authorized"
+                  },
+                  "val": {
+                    "bool": true
+                  }
+                },
+                {
+                  "key": {
+                    "symbol": "clawback"
+                  },
+                  "val": {
+                    "bool": false
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "ext": "v0"
+      },
+      "live_until": 10000001
+    },
+    {
+      "entry": {
+        "last_modified_ledger_seq": 57941156,
+        "data": {
+          "config_setting": {
+            "contract_max_size_bytes": 131072
+          }
+        },
+        "ext": "v0"
+      },
+      "live_until": 10000002
+    },
+    {
+      "entry": {
+        "last_modified_ledger_seq": 60325375,
+        "data": {
+          "account": {
+            "account_id": "GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN",
+            "balance": "212834013420",
+            "seq_num": "144373126631784460",
+            "num_sub_entries": 6,
+            "inflation_dest": null,
+            "flags": 2,
+            "home_domain": "circle.com",
+            "thresholds": "00020202",
+            "signers": [
+              {
+                "key": "GAUKFO2NIYEFO773KJZKLPSPYNQ6M7INPEAIQIJCIH7EEVP2KSVQWGH4",
+                "weight": 1
+              },
+              {
+                "key": "GAXFRO4MH6FSBJMNECVZJ6R3ZXANI7CFCMVN47IDNRQDHII3J5HTOZGB",
+                "weight": 1
+              },
+              {
+                "key": "GB73YPMX5R5673G35HHAXYUNRS4R4QZEUHCRT3OUAMSH2NUM6KT4N3KO",
+                "weight": 1
+              },
+              {
+                "key": "GC6ANHZDMCPKU55BUQIJKI3VOYEMETF7Z46HXQRCNONQXPEXQHCVIAFP",
+                "weight": 1
+              }
+            ],
+            "ext": {
+              "v1": {
+                "liabilities": {
+                  "buying": "0",
+                  "selling": "0"
+                },
+                "ext": {
+                  "v2": {
+                    "num_sponsored": 0,
+                    "num_sponsoring": 0,
+                    "signer_sponsoring_i_ds": [
+                      null,
+                      null,
+                      null,
+                      null
+                    ],
+                    "ext": {
+                      "v3": {
+                        "ext": "v0",
+                        "seq_ledger": 60242247,
+                        "seq_time": "1765402980"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "ext": "v0"
+      },
+      "live_until": 10000003
+    }
+  ]
+}

@@ -1,9 +1,43 @@
-Soroban SDK supports writing programs for the Soroban smart contract
-platform.
+Soroban SDK supports writing smart contracts for the Wasm-powered [Soroban] smart contract
+runtime, deployed on [Stellar].
 
 ### Docs
 
-See [soroban.stellar.org](https://soroban.stellar.org) for documentation.
+See [developers.stellar.org] for documentation about building smart contracts for [Stellar].
+
+[developers.stellar.org]: https://developers.stellar.org
+[Stellar]: https://stellar.org
+[Soroban]: https://stellar.org/soroban
+
+### Support
+
+The two most recent soroban-sdk major releases are supported with critical security fixes.
+Critical security issues may be backported to earlier versions if practical, but not guaranteed.
+General bugs are only fixed on, and new features are only added to, the latest major release.
+
+### Build Target
+
+Contracts must be built for the `wasm32v1-none` target, available with Rust 1.84+. It is the
+only wasm target supported by the Soroban runtime on Stellar.
+
+Build contracts with `stellar contract build` from [stellar-cli], which targets `wasm32v1-none`
+and applies the build settings the Soroban runtime requires. Do not build contracts with
+`cargo build`.
+
+The `wasm32-unknown-unknown` target is not supported when building with Rust 1.82 or newer,
+because on those versions the target enables wasm features (reference-types, multi-value) that
+the Soroban environment does not support and that cannot be easily disabled. Building for
+`wasm32-unknown-unknown` on Rust 1.82+ produces a build error.
+
+[stellar-cli]: https://github.com/stellar/stellar-cli
+
+### Features
+
+See [_features] for a list of all Cargo features and what they do.
+
+### Migrating Major Versions
+
+See [_migrating] for a summary of how to migrate from one major version to another.
 
 ### Examples
 
@@ -11,10 +45,10 @@ See [soroban.stellar.org](https://soroban.stellar.org) for documentation.
 use soroban_sdk::{contract, contractimpl, vec, symbol_short, BytesN, Env, Symbol, Vec};
 
 #[contract]
-pub struct HelloContract;
+pub struct Contract;
 
 #[contractimpl]
-impl HelloContract {
+impl Contract {
     pub fn hello(env: Env, to: Symbol) -> Vec<Symbol> {
         vec![&env, symbol_short!("Hello"), to]
     }
@@ -26,8 +60,8 @@ fn test() {
 # #[cfg(feature = "testutils")]
 # fn main() {
     let env = Env::default();
-    let contract_id = env.register_contract(None, HelloContract);
-    let client = HelloContractClient::new(&env, &contract_id);
+    let contract_id = env.register(Contract, ());
+    let client = ContractClient::new(&env, &contract_id);
 
     let words = client.hello(&symbol_short!("Dev"));
 
@@ -37,5 +71,6 @@ fn test() {
 # fn main() { }
 ```
 
-More examples are available at <https://soroban.stellar.org/docs/category/basic-tutorials>
-and <https://soroban.stellar.org/docs/category/advanced-tutorials>.
+More examples are available at:
+- <https://developers.stellar.org/docs/build/smart-contracts/example-contracts>
+- <https://developers.stellar.org/docs/build/guides>

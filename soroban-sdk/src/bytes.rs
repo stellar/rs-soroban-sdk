@@ -13,7 +13,7 @@ use core::{
 use super::{
     env::internal::{BytesObject, Env as _, EnvBase as _},
     env::IntoVal,
-    ConversionError, Env, TryFromVal, TryIntoVal, Val,
+    ConversionError, Env, String, TryFromVal, TryIntoVal, Val,
 };
 
 use crate::unwrap::{UnwrapInfallible, UnwrapOptimized};
@@ -23,12 +23,12 @@ use crate::{storage::Storage, Map, Vec};
 #[cfg(not(target_family = "wasm"))]
 use super::xdr::ScVal;
 
-/// Create a [Bytes] with an array, or an integer or hex literal.
+/// Create a [Bytes] with an array, or a hex or binary integer literal.
 ///
 /// The first argument in the list must be a reference to an [Env].
 ///
 /// The second argument can be an [u8] array, or an integer literal of unbounded
-/// size in any form: base10, hex, etc.
+/// size in hex (`0x`) or binary (`0b`) form.
 ///
 /// ### Examples
 ///
@@ -68,12 +68,12 @@ macro_rules! bytes {
     };
 }
 
-/// Create a [BytesN] with an array, or an integer or hex literal.
+/// Create a [BytesN] with an array, or a hex or binary integer literal.
 ///
 /// The first argument in the list must be a reference to an [Env].
 ///
 /// The second argument can be an [u8] array, or an integer literal of unbounded
-/// size in any form: base10, hex, etc.
+/// size in hex (`0x`) or binary (`0b`) form.
 ///
 /// ### Examples
 ///
@@ -99,6 +99,129 @@ macro_rules! bytesn {
     };
     ($env:expr, $x:tt $(,)?) => {
         $crate::BytesN::from_array($env, &$crate::reexports_for_macros::bytes_lit::bytes!($x))
+    };
+}
+
+/// Internal macro that generates all `BytesN` wrapper methods and trait impls
+/// *except* `from_bytes`. Types using this macro must provide their own
+/// `from_bytes(BytesN<$size>) -> Self` (e.g. to add validation).
+#[doc(hidden)]
+macro_rules! impl_bytesn_repr {
+    ($elem: ident, $size: expr) => {
+        impl $elem {
+            pub fn into_bytes(self) -> BytesN<$size> {
+                self.0
+            }
+
+            pub fn to_bytes(&self) -> BytesN<$size> {
+                self.0.clone()
+            }
+
+            pub fn as_bytes(&self) -> &BytesN<$size> {
+                &self.0
+            }
+
+            pub fn to_array(&self) -> [u8; $size] {
+                self.0.to_array()
+            }
+
+            pub fn from_array(env: &Env, array: &[u8; $size]) -> Self {
+                Self::from_bytes(BytesN::from_array(env, array))
+            }
+
+            pub fn as_val(&self) -> &Val {
+                self.0.as_val()
+            }
+
+            pub fn to_val(&self) -> Val {
+                self.0.to_val()
+            }
+
+            pub fn as_object(&self) -> &BytesObject {
+                self.0.as_object()
+            }
+
+            pub fn to_object(&self) -> BytesObject {
+                self.0.to_object()
+            }
+        }
+
+        impl TryFromVal<Env, Val> for $elem {
+            type Error = ConversionError;
+
+            fn try_from_val(env: &Env, val: &Val) -> Result<Self, Self::Error> {
+                let bytes = BytesN::try_from_val(env, val)?;
+                Ok(Self::from_bytes(bytes))
+            }
+        }
+
+        impl TryFromVal<Env, $elem> for Val {
+            type Error = ConversionError;
+
+            fn try_from_val(_env: &Env, elt: &$elem) -> Result<Self, Self::Error> {
+                Ok(elt.to_val())
+            }
+        }
+
+        impl TryFromVal<Env, &$elem> for Val {
+            type Error = ConversionError;
+
+            fn try_from_val(_env: &Env, elt: &&$elem) -> Result<Self, Self::Error> {
+                Ok(elt.to_val())
+            }
+        }
+
+        #[cfg(not(target_family = "wasm"))]
+        impl From<&$elem> for ScVal {
+            fn from(v: &$elem) -> Self {
+                Self::from(&v.0)
+            }
+        }
+
+        #[cfg(not(target_family = "wasm"))]
+        impl From<$elem> for ScVal {
+            fn from(v: $elem) -> Self {
+                (&v).into()
+            }
+        }
+
+        impl IntoVal<Env, BytesN<$size>> for $elem {
+            fn into_val(&self, _e: &Env) -> BytesN<$size> {
+                self.0.clone()
+            }
+        }
+
+        impl From<$elem> for Bytes {
+            fn from(v: $elem) -> Self {
+                v.0.into()
+            }
+        }
+
+        impl From<$elem> for BytesN<$size> {
+            fn from(v: $elem) -> Self {
+                v.0
+            }
+        }
+
+        impl Into<[u8; $size]> for $elem {
+            fn into(self) -> [u8; $size] {
+                self.0.into()
+            }
+        }
+
+        impl Eq for $elem {}
+
+        impl PartialEq for $elem {
+            fn eq(&self, other: &Self) -> bool {
+                self.0.partial_cmp(other.as_bytes()) == Some(Ordering::Equal)
+            }
+        }
+
+        impl Debug for $elem {
+            fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+                write!(f, "{}({:?})", stringify!($elem), self.to_array())
+            }
+        }
     };
 }
 
@@ -160,7 +283,10 @@ impl PartialOrd for Bytes {
 
 impl Ord for Bytes {
     fn cmp(&self, other: &Self) -> core::cmp::Ordering {
-        self.env.check_same_env(&other.env).unwrap_infallible();
+        #[cfg(not(target_family = "wasm"))]
+        if !self.env.is_same_env(&other.env) {
+            return ScVal::from(self).cmp(&ScVal::from(other));
+        }
         let v = self
             .env
             .obj_cmp(self.obj.to_val(), other.obj.to_val())
@@ -203,6 +329,14 @@ impl TryFromVal<Env, Bytes> for Val {
     }
 }
 
+impl TryFromVal<Env, &Bytes> for Val {
+    type Error = ConversionError;
+
+    fn try_from_val(_env: &Env, v: &&Bytes) -> Result<Self, Self::Error> {
+        Ok(v.to_val())
+    }
+}
+
 impl From<Bytes> for Val {
     #[inline(always)]
     fn from(v: Bytes) -> Self {
@@ -231,19 +365,36 @@ impl From<&Bytes> for Bytes {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
-impl TryFrom<&Bytes> for ScVal {
-    type Error = ConversionError;
-    fn try_from(v: &Bytes) -> Result<Self, ConversionError> {
-        Ok(ScVal::try_from_val(&v.env, &v.obj.to_val())?)
+impl From<&Bytes> for String {
+    fn from(v: &Bytes) -> Self {
+        Env::bytes_to_string(&v.env, v.obj.clone())
+            .unwrap_infallible()
+            .into_val(&v.env)
+    }
+}
+
+impl From<Bytes> for String {
+    fn from(v: Bytes) -> Self {
+        (&v).into()
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl TryFrom<Bytes> for ScVal {
-    type Error = ConversionError;
-    fn try_from(v: Bytes) -> Result<Self, ConversionError> {
-        (&v).try_into()
+impl From<&Bytes> for ScVal {
+    fn from(v: &Bytes) -> Self {
+        // This conversion occurs only in test utilities, and theoretically all
+        // values should convert to an ScVal because the Env won't let the host
+        // type to exist otherwise, unwrapping. Even if there are edge cases
+        // that don't, this is a trade off for a better test developer
+        // experience.
+        ScVal::try_from_val(&v.env, &v.obj.to_val()).unwrap()
+    }
+}
+
+#[cfg(not(target_family = "wasm"))]
+impl From<Bytes> for ScVal {
+    fn from(v: Bytes) -> Self {
+        (&v).into()
     }
 }
 
@@ -587,11 +738,15 @@ impl Bytes {
     pub fn slice(&self, r: impl RangeBounds<u32>) -> Self {
         let start_bound = match r.start_bound() {
             Bound::Included(s) => *s,
-            Bound::Excluded(s) => *s + 1,
+            Bound::Excluded(s) => s
+                .checked_add(1)
+                .expect_optimized("attempt to add with overflow"),
             Bound::Unbounded => 0,
         };
         let end_bound = match r.end_bound() {
-            Bound::Included(s) => *s + 1,
+            Bound::Included(s) => s
+                .checked_add(1)
+                .expect_optimized("attempt to add with overflow"),
             Bound::Excluded(s) => *s,
             Bound::Unbounded => self.len(),
         };
@@ -644,6 +799,14 @@ impl Bytes {
         self.copy_into_slice(&mut vec);
         vec
     }
+
+    /// Converts the contents of the Bytes into a respective String object.
+    ///
+    /// The conversion doesn't try to interpret the bytes as any particular
+    /// encoding, as the SDK `String` type doesn't assume any encoding either.
+    pub fn to_string(&self) -> String {
+        self.into()
+    }
 }
 
 /// A `BytesBuffer` stores a variable number of bytes, up to a fixed limit `B`.
@@ -676,16 +839,24 @@ impl IntoIterator for Bytes {
     type IntoIter = BytesIter;
 
     fn into_iter(self) -> Self::IntoIter {
-        BytesIter(self)
+        BytesIter::new(self)
     }
 }
 
 #[derive(Clone)]
-pub struct BytesIter(Bytes);
+pub struct BytesIter {
+    bin: Bytes,
+    start: u32, // inclusive
+    end: u32,   // exclusive
+}
 
 impl BytesIter {
-    fn into_bin(self) -> Bytes {
-        self.0
+    fn new(bin: Bytes) -> Self {
+        Self {
+            start: 0,
+            end: bin.len(),
+            bin,
+        }
     }
 }
 
@@ -693,40 +864,28 @@ impl Iterator for BytesIter {
     type Item = u8;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.0.is_empty() {
-            None
+        if self.start < self.end {
+            let val = self.bin.get_unchecked(self.start);
+            self.start += 1;
+            Some(val)
         } else {
-            let val: u32 = self
-                .0
-                .env()
-                .bytes_front(self.0.obj)
-                .unwrap_infallible()
-                .into();
-            self.0 = self.0.slice(1..);
-            Some(val as u8)
+            None
         }
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
-        let len = self.0.len() as usize;
+        let len = (self.end - self.start) as usize;
         (len, Some(len))
     }
 }
 
 impl DoubleEndedIterator for BytesIter {
     fn next_back(&mut self) -> Option<Self::Item> {
-        let len = self.0.len();
-        if len == 0 {
-            None
+        if self.start < self.end {
+            self.end -= 1;
+            Some(self.bin.get_unchecked(self.end))
         } else {
-            let val: u32 = self
-                .0
-                .env()
-                .bytes_back(self.0.obj)
-                .unwrap_infallible()
-                .into();
-            self.0 = self.0.slice(..len - 1);
-            Some(val as u8)
+            None
         }
     }
 }
@@ -735,7 +894,7 @@ impl FusedIterator for BytesIter {}
 
 impl ExactSizeIterator for BytesIter {
     fn len(&self) -> usize {
-        self.0.len() as usize
+        (self.end - self.start) as usize
     }
 }
 
@@ -914,6 +1073,14 @@ impl<const N: usize> TryFromVal<Env, BytesN<N>> for Val {
     }
 }
 
+impl<const N: usize> TryFromVal<Env, &BytesN<N>> for Val {
+    type Error = ConversionError;
+
+    fn try_from_val(_env: &Env, v: &&BytesN<N>) -> Result<Self, Self::Error> {
+        Ok(v.to_val())
+    }
+}
+
 impl<const N: usize> TryFrom<Bytes> for BytesN<N> {
     type Error = ConversionError;
 
@@ -946,30 +1113,33 @@ impl<const N: usize> From<BytesN<N>> for Val {
 impl<const N: usize> From<BytesN<N>> for Bytes {
     #[inline(always)]
     fn from(v: BytesN<N>) -> Self {
-        v.0
+        v.into_bytes()
     }
 }
 
 impl<const N: usize> From<&BytesN<N>> for Bytes {
     #[inline(always)]
     fn from(v: &BytesN<N>) -> Self {
-        v.0.clone()
+        v.to_bytes()
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl<const N: usize> TryFrom<&BytesN<N>> for ScVal {
-    type Error = ConversionError;
-    fn try_from(v: &BytesN<N>) -> Result<Self, ConversionError> {
-        Ok(ScVal::try_from_val(&v.0.env, &v.0.obj.to_val())?)
+impl<const N: usize> From<&BytesN<N>> for ScVal {
+    fn from(v: &BytesN<N>) -> Self {
+        // This conversion occurs only in test utilities, and theoretically all
+        // values should convert to an ScVal because the Env won't let the host
+        // type to exist otherwise, unwrapping. Even if there are edge cases
+        // that don't, this is a trade off for a better test developer
+        // experience.
+        ScVal::try_from_val(&v.0.env, &v.0.obj.to_val()).unwrap()
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl<const N: usize> TryFrom<BytesN<N>> for ScVal {
-    type Error = ConversionError;
-    fn try_from(v: BytesN<N>) -> Result<Self, ConversionError> {
-        (&v).try_into()
+impl<const N: usize> From<BytesN<N>> for ScVal {
+    fn from(v: BytesN<N>) -> Self {
+        (&v).into()
     }
 }
 
@@ -989,6 +1159,18 @@ impl<const N: usize> BytesN<N> {
 
     pub fn env(&self) -> &Env {
         self.0.env()
+    }
+
+    pub fn as_bytes(&self) -> &Bytes {
+        &self.0
+    }
+
+    pub fn into_bytes(self) -> Bytes {
+        self.0
+    }
+
+    pub fn to_bytes(&self) -> Bytes {
+        self.0.clone()
     }
 
     pub fn as_val(&self) -> &Val {
@@ -1042,7 +1224,7 @@ impl<const N: usize> BytesN<N> {
     /// Returns true if the Bytes is empty and has a length of zero.
     #[inline(always)]
     pub fn is_empty(&self) -> bool {
-        false
+        N == 0
     }
 
     /// Returns the number of bytes are in the Bytes.
@@ -1118,7 +1300,7 @@ impl<const N: usize> IntoIterator for BytesN<N> {
     type IntoIter = BytesIter;
 
     fn into_iter(self) -> Self::IntoIter {
-        BytesIter(self.0)
+        BytesIter::new(self.0)
     }
 }
 
@@ -1142,21 +1324,13 @@ impl<const N: usize> TryFrom<&Bytes> for [u8; N] {
 
 impl<const N: usize> From<BytesN<N>> for [u8; N] {
     fn from(bin: BytesN<N>) -> Self {
-        let mut res = [0u8; N];
-        for (i, b) in bin.into_iter().enumerate() {
-            res[i] = b;
-        }
-        res
+        bin.to_array()
     }
 }
 
 impl<const N: usize> From<&BytesN<N>> for [u8; N] {
     fn from(bin: &BytesN<N>) -> Self {
-        let mut res = [0u8; N];
-        for (i, b) in bin.iter().enumerate() {
-            res[i] = b;
-        }
-        res
+        bin.to_array()
     }
 }
 
@@ -1217,12 +1391,12 @@ mod test {
     fn macro_bytes() {
         let env = Env::default();
         assert_eq!(bytes!(&env), Bytes::new(&env));
-        assert_eq!(bytes!(&env, 1), {
+        assert_eq!(bytes!(&env, 0x1), {
             let mut b = Bytes::new(&env);
             b.push_back(1);
             b
         });
-        assert_eq!(bytes!(&env, 1,), {
+        assert_eq!(bytes!(&env, 0x1,), {
             let mut b = Bytes::new(&env);
             b.push_back(1);
             b
@@ -1240,12 +1414,12 @@ mod test {
     fn macro_bytes_hex() {
         let env = Env::default();
         assert_eq!(bytes!(&env), Bytes::new(&env));
-        assert_eq!(bytes!(&env, 1), {
+        assert_eq!(bytes!(&env, 0x1), {
             let mut b = Bytes::new(&env);
             b.push_back(1);
             b
         });
-        assert_eq!(bytes!(&env, 1,), {
+        assert_eq!(bytes!(&env, 0x1,), {
             let mut b = Bytes::new(&env);
             b.push_back(1);
             b
@@ -1265,8 +1439,8 @@ mod test {
     #[test]
     fn macro_bytesn() {
         let env = Env::default();
-        assert_eq!(bytesn!(&env, 1), { BytesN::from_array(&env, &[1]) });
-        assert_eq!(bytesn!(&env, 1,), { BytesN::from_array(&env, &[1]) });
+        assert_eq!(bytesn!(&env, 0x1), { BytesN::from_array(&env, &[1]) });
+        assert_eq!(bytesn!(&env, 0x1,), { BytesN::from_array(&env, &[1]) });
         assert_eq!(bytesn!(&env, [3, 2, 1,]), {
             BytesN::from_array(&env, &[3, 2, 1])
         });
@@ -1352,6 +1526,80 @@ mod test {
         assert_eq!(iter.next_back(), Some(20));
         assert_eq!(iter.next_back(), None);
         assert_eq!(iter.next_back(), None);
+    }
+
+    #[test]
+    fn test_bin_iter_large() {
+        let env = Env::default();
+        const N: usize = 100;
+        let mut data = [0u8; N];
+        for i in 0..N {
+            data[i] = i as u8;
+        }
+        let bin = Bytes::from_slice(&env, &data);
+
+        // Forward yields every byte in order, exactly N of them.
+        let mut count = 0usize;
+        for (i, b) in bin.iter().enumerate() {
+            assert_eq!(b, data[i]);
+            count += 1;
+        }
+        assert_eq!(count, N);
+
+        // Reverse yields every byte in reverse order.
+        let mut expect = N;
+        for b in bin.iter().rev() {
+            expect -= 1;
+            assert_eq!(b, data[expect]);
+        }
+        assert_eq!(expect, 0);
+
+        // ExactSizeIterator length tracks remaining across a bulk chunk read.
+        let mut it = bin.iter();
+        assert_eq!(it.len(), N);
+        assert_eq!(it.size_hint(), (N, Some(N)));
+        it.next();
+        assert_eq!(it.len(), N - 1);
+
+        // Interleaved double-ended iteration: the front and back cursors must
+        // meet correctly in the middle.
+        let mut it = bin.iter();
+        let mut lo = 0usize;
+        let mut hi = N;
+        let mut front = true;
+        while lo < hi {
+            if front {
+                assert_eq!(it.next(), Some(data[lo]));
+                lo += 1;
+            } else {
+                assert_eq!(it.next_back(), Some(data[hi - 1]));
+                hi -= 1;
+            }
+            front = !front;
+        }
+        assert_eq!(it.next(), None);
+        assert_eq!(it.next_back(), None);
+        assert_eq!(it.len(), 0);
+
+        for len in [32usize, 33] {
+            let mut d = [0u8; 33];
+            for i in 0..len {
+                d[i] = (200 - i) as u8;
+            }
+            let b = Bytes::from_slice(&env, &d[..len]);
+            let mut i = 0;
+            for x in b.iter() {
+                assert_eq!(x, d[i]);
+                i += 1;
+            }
+            assert_eq!(i, len);
+            let mut j = len;
+            for x in b.iter().rev() {
+                j -= 1;
+                assert_eq!(x, d[j]);
+            }
+            assert_eq!(j, 0);
+        }
     }
 
     #[test]
@@ -1666,5 +1914,18 @@ mod test {
         let env = Env::default();
         let bin = bytes![&env, [0, 1, 2, 3, 4]];
         let _ = bin.slice(..=bin.len());
+    }
+
+    #[test]
+    fn test_bytes_to_string() {
+        let env = Env::default();
+        let b: Bytes = bytes![&env, [0, 1, 2, 3, 4]];
+        let s: String = b.clone().into();
+        assert_eq!(s.len(), 5);
+        let mut slice = [0u8; 5];
+        s.copy_into_slice(&mut slice);
+        assert_eq!(slice, [0, 1, 2, 3, 4]);
+        let s2 = b.to_string();
+        assert_eq!(s, s2);
     }
 }

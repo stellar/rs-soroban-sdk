@@ -8,7 +8,7 @@ use crate::{
 };
 
 use super::{
-    env::internal::{Env as _, EnvBase as _, MapObject, U32Val},
+    env::internal::{Env as _, MapObject, U32Val},
     ConversionError, Env, IntoVal, TryFromVal, TryIntoVal, Val, Vec,
 };
 
@@ -53,8 +53,9 @@ macro_rules! map {
 /// converted from [Val] back into their type.
 ///
 /// The pairs of keys and values in a Map are not guaranteed to be of type
-/// `K`/`V` and conversion will fail if they are not. Most functions on Map
-/// return a `Result` due to this.
+/// `K`/`V` and conversion will fail if they are not. Most functions on Map have
+/// a try_ variation that returns a Result that will be Err if the conversion fails.
+/// Functions that are not prefixed with try_ will panic if conversion fails."
 ///
 /// There are some cases where this lack of guarantee is important:
 ///
@@ -139,7 +140,10 @@ where
     V: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     fn cmp(&self, other: &Self) -> core::cmp::Ordering {
-        self.env.check_same_env(&other.env).unwrap_infallible();
+        #[cfg(not(target_family = "wasm"))]
+        if !self.env.is_same_env(&other.env) {
+            return ScVal::from(self).cmp(&ScVal::from(other));
+        }
         let v = self
             .env
             .obj_cmp(self.obj.to_val(), other.obj.to_val())
@@ -213,6 +217,18 @@ where
     }
 }
 
+impl<K, V> TryFromVal<Env, &Map<K, V>> for Val
+where
+    K: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+    V: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+{
+    type Error = Infallible;
+
+    fn try_from_val(_env: &Env, v: &&Map<K, V>) -> Result<Self, Self::Error> {
+        Ok(v.to_val())
+    }
+}
+
 impl<K, V> From<Map<K, V>> for Val
 where
     K: IntoVal<Env, Val> + TryFromVal<Env, Val>,
@@ -225,18 +241,21 @@ where
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl<K, V> TryFrom<&Map<K, V>> for ScVal {
-    type Error = ConversionError;
-    fn try_from(v: &Map<K, V>) -> Result<Self, ConversionError> {
-        Ok(ScVal::try_from_val(&v.env, &v.obj.to_val())?)
+impl<K, V> From<&Map<K, V>> for ScVal {
+    fn from(v: &Map<K, V>) -> Self {
+        // This conversion occurs only in test utilities, and theoretically all
+        // values should convert to an ScVal because the Env won't let the host
+        // type to exist otherwise, unwrapping. Even if there are edge cases
+        // that don't, this is a trade off for a better test developer
+        // experience.
+        ScVal::try_from_val(&v.env, &v.obj.to_val()).unwrap()
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl<K, V> TryFrom<Map<K, V>> for ScVal {
-    type Error = ConversionError;
-    fn try_from(v: Map<K, V>) -> Result<Self, ConversionError> {
-        (&v).try_into()
+impl<K, V> From<Map<K, V>> for ScVal {
+    fn from(v: Map<K, V>) -> Self {
+        (&v).into()
     }
 }
 
@@ -244,7 +263,7 @@ impl<K, V> TryFrom<Map<K, V>> for ScVal {
 impl<K, V> TryFromVal<Env, Map<K, V>> for ScVal {
     type Error = ConversionError;
     fn try_from_val(_e: &Env, v: &Map<K, V>) -> Result<Self, ConversionError> {
-        v.try_into()
+        Ok(v.into())
     }
 }
 
@@ -427,7 +446,11 @@ where
         self.obj = env.map_del(self.obj, k.into_val(env)).unwrap_infallible();
     }
 
-    /// Returns a [Vec] of all keys in the map.
+    /// Returns a [Vec] of all keys in the map, ordered in the map's key-sorted order.
+    ///
+    /// This method does not validate that the keys in the map are of type `K`. Since [Map]
+    /// keys are not guaranteed to be of type `K`, it is not guaranteed that all values
+    /// in the returned [Vec] will be of type `K`.
     #[inline(always)]
     pub fn keys(&self) -> Vec<K> {
         let env = self.env();
@@ -435,7 +458,11 @@ where
         Vec::<K>::try_from_val(env, &vec).unwrap()
     }
 
-    /// Returns a [Vec] of all values in the map.
+    /// Returns a [Vec] of all values in the map, ordered in the map's key-sorted order.
+    ///
+    /// This method does not validate that the values in the map are of type `V`. Since [Map]
+    /// values are not guaranteed to be of type `V`, it is not guaranteed that all values
+    /// in the returned [Vec] will be of type `V`.
     #[inline(always)]
     pub fn values(&self) -> Vec<V> {
         let env = self.env();
@@ -477,6 +504,14 @@ where
     K: IntoVal<Env, Val> + TryFromVal<Env, Val>,
     V: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
+    /// Returns an iterator over the key-value pairs of the map.
+    ///
+    /// Each entry is converted from [Val] to `(K, V)` as it is yielded.
+    ///
+    /// ### Panics
+    ///
+    /// If any key or value cannot be converted to its declared type.
+    /// Use [`try_iter`](Map::try_iter) to handle conversion errors.
     #[inline(always)]
     pub fn iter(&self) -> UnwrappedIter<MapTryIter<K, V>, (K, V), ConversionError>
     where
@@ -486,6 +521,8 @@ where
         self.clone().into_iter()
     }
 
+    /// Returns an iterator over the key-value pairs of the map, yielding
+    /// `Result<(K, V), ConversionError>` for each entry.
     #[inline(always)]
     pub fn try_iter(&self) -> MapTryIter<K, V>
     where
@@ -501,7 +538,7 @@ where
         K: IntoVal<Env, Val> + TryFromVal<Env, Val> + Clone,
         V: IntoVal<Env, Val> + TryFromVal<Env, Val> + Clone,
     {
-        MapTryIter::new(self.clone())
+        MapTryIter::new(self)
     }
 }
 
@@ -649,6 +686,39 @@ mod test {
 
         let map: Map<(), ()> = map![&env];
         assert_eq!(map.len(), 0);
+    }
+
+    #[test]
+    fn test_map_to_val() {
+        let env = Env::default();
+
+        let map = Map::<u32, ()>::from_array(&env, [(0, ()), (1, ()), (2, ()), (3, ())]);
+        let val: Val = map.clone().into_val(&env);
+        let rt: Map<u32, ()> = val.into_val(&env);
+
+        assert_eq!(map, rt);
+    }
+
+    #[test]
+    fn test_ref_map_to_val() {
+        let env = Env::default();
+
+        let map = Map::<u32, ()>::from_array(&env, [(0, ()), (1, ()), (2, ()), (3, ())]);
+        let val: Val = (&map).into_val(&env);
+        let rt: Map<u32, ()> = val.into_val(&env);
+
+        assert_eq!(map, rt);
+    }
+
+    #[test]
+    fn test_double_ref_map_to_val() {
+        let env = Env::default();
+
+        let map = Map::<u32, ()>::from_array(&env, [(0, ()), (1, ()), (2, ()), (3, ())]);
+        let val: Val = (&&map).into_val(&env);
+        let rt: Map<u32, ()> = val.into_val(&env);
+
+        assert_eq!(map, rt);
     }
 
     #[test]

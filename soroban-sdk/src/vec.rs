@@ -126,7 +126,10 @@ where
     T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
     fn cmp(&self, other: &Self) -> core::cmp::Ordering {
-        self.env.check_same_env(&other.env).unwrap_infallible();
+        #[cfg(not(target_family = "wasm"))]
+        if !self.env.is_same_env(&other.env) {
+            return ScVal::from(self).cmp(&ScVal::from(other));
+        }
         let v = self
             .env
             .obj_cmp(self.obj.to_val(), other.obj.to_val())
@@ -207,6 +210,14 @@ impl<T> TryFromVal<Env, Vec<T>> for Val {
     }
 }
 
+impl<T> TryFromVal<Env, &Vec<T>> for Val {
+    type Error = ConversionError;
+
+    fn try_from_val(_env: &Env, v: &&Vec<T>) -> Result<Self, Self::Error> {
+        Ok(v.to_val())
+    }
+}
+
 impl<T> From<Vec<T>> for Val
 where
     T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
@@ -231,46 +242,46 @@ where
 use super::xdr::{ScVal, ScVec, VecM};
 
 #[cfg(not(target_family = "wasm"))]
-impl<T> TryFrom<&Vec<T>> for ScVal {
-    type Error = ConversionError;
-    fn try_from(v: &Vec<T>) -> Result<Self, ConversionError> {
-        Ok(ScVal::try_from_val(&v.env, &v.obj.to_val())?)
+impl<T> From<&Vec<T>> for ScVal {
+    fn from(v: &Vec<T>) -> Self {
+        // This conversion occurs only in test utilities, and theoretically all
+        // values should convert to an ScVal because the Env won't let the host
+        // type to exist otherwise, unwrapping. Even if there are edge cases
+        // that don't, this is a trade off for a better test developer
+        // experience.
+        ScVal::try_from_val(&v.env, &v.obj.to_val()).unwrap()
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl<T> TryFrom<&Vec<T>> for ScVec {
-    type Error = ConversionError;
-    fn try_from(v: &Vec<T>) -> Result<Self, ConversionError> {
-        if let ScVal::Vec(Some(vec)) = ScVal::try_from(v)? {
-            Ok(vec)
+impl<T> From<&Vec<T>> for ScVec {
+    fn from(v: &Vec<T>) -> Self {
+        if let ScVal::Vec(Some(vec)) = ScVal::try_from(v).unwrap() {
+            vec
         } else {
-            Err(ConversionError)
+            panic!("expected ScVec")
         }
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl<T> TryFrom<Vec<T>> for VecM<ScVal> {
-    type Error = ConversionError;
-    fn try_from(v: Vec<T>) -> Result<Self, ConversionError> {
-        Ok(ScVec::try_from(v)?.0)
+impl<T> From<Vec<T>> for VecM<ScVal> {
+    fn from(v: Vec<T>) -> Self {
+        ScVec::from(v).0
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl<T> TryFrom<Vec<T>> for ScVal {
-    type Error = ConversionError;
-    fn try_from(v: Vec<T>) -> Result<Self, ConversionError> {
-        (&v).try_into()
+impl<T> From<Vec<T>> for ScVal {
+    fn from(v: Vec<T>) -> Self {
+        (&v).into()
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
-impl<T> TryFrom<Vec<T>> for ScVec {
-    type Error = ConversionError;
-    fn try_from(v: Vec<T>) -> Result<Self, ConversionError> {
-        (&v).try_into()
+impl<T> From<Vec<T>> for ScVec {
+    fn from(v: Vec<T>) -> Self {
+        (&v).into()
     }
 }
 
@@ -363,6 +374,31 @@ where
         }
         let vec = env.vec_new_from_slice(&tmp).unwrap_infallible();
         unsafe { Self::unchecked_new(env.clone(), vec) }
+    }
+
+    /// Create a Vec from an iterator of items.
+    ///
+    /// This provides FromIterator-like functionality but requires an Env parameter.
+    ///
+    /// Note: This function iteratively adds each item one at a time, making a call to the Soroban
+    /// environment for each item making it inefficient for joining two [`Vec`]s. Use
+    /// [`Vec::append`] to join two [`Vec`]s.
+    ///
+    /// ### Examples
+    ///
+    /// ```
+    /// use soroban_sdk::{Env, Vec};
+    ///
+    /// let env = Env::default();
+    /// let items = vec![1, 2, 3, 4];
+    /// let vec = Vec::from_iter(&env, items.into_iter());
+    /// assert_eq!(vec.len(), 4);
+    /// ```
+    #[inline(always)]
+    pub fn from_iter<I: IntoIterator<Item = T>>(env: &Env, iter: I) -> Vec<T> {
+        let mut vec = Self::new(env);
+        vec.extend(iter);
+        vec
     }
 
     /// Create a Vec from the slice of items.
@@ -747,11 +783,15 @@ impl<T> Vec<T> {
     pub fn slice(&self, r: impl RangeBounds<u32>) -> Self {
         let start_bound = match r.start_bound() {
             Bound::Included(s) => *s,
-            Bound::Excluded(s) => *s + 1,
+            Bound::Excluded(s) => s
+                .checked_add(1)
+                .expect_optimized("attempt to add with overflow"),
             Bound::Unbounded => 0,
         };
         let end_bound = match r.end_bound() {
-            Bound::Included(s) => *s + 1,
+            Bound::Included(s) => s
+                .checked_add(1)
+                .expect_optimized("attempt to add with overflow"),
             Bound::Excluded(s) => *s,
             Bound::Unbounded => self.len(),
         };
@@ -894,10 +934,41 @@ where
     }
 }
 
+impl<T> IntoIterator for &Vec<T>
+where
+    T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+{
+    type Item = T;
+    type IntoIter = UnwrappedIter<VecTryIter<T>, T, T::Error>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.clone().into_iter()
+    }
+}
+
+impl<T> Extend<T> for Vec<T>
+where
+    T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
+{
+    fn extend<I: IntoIterator<Item = T>>(&mut self, iter: I) {
+        for item in iter {
+            self.push_back(item);
+        }
+    }
+}
+
 impl<T> Vec<T>
 where
     T: IntoVal<Env, Val> + TryFromVal<Env, Val>,
 {
+    /// Returns an iterator over the elements of the vec.
+    ///
+    /// Each element is converted from [Val] to `T` as it is yielded.
+    ///
+    /// ### Panics
+    ///
+    /// If any element cannot be converted to type `T`. Use
+    /// [`try_iter`](Vec::try_iter) to handle conversion errors.
     #[inline(always)]
     pub fn iter(&self) -> UnwrappedIter<VecTryIter<T>, T, T::Error>
     where
@@ -907,6 +978,8 @@ where
         self.try_iter().unwrapped()
     }
 
+    /// Returns an iterator over the elements of the vec, yielding
+    /// `Result<T, ConversionError>` for each element.
     #[inline(always)]
     pub fn try_iter(&self) -> VecTryIter<T>
     where
@@ -921,7 +994,7 @@ where
         T: IntoVal<Env, Val> + TryFromVal<Env, Val> + Clone,
         T::Error: Debug,
     {
-        VecTryIter::new(self.clone())
+        VecTryIter::new(self)
     }
 }
 
@@ -1026,6 +1099,39 @@ mod test {
             v.push_back(1);
             v
         });
+    }
+
+    #[test]
+    fn test_vec_to_val() {
+        let env = Env::default();
+
+        let vec = Vec::<u32>::from_slice(&env, &[0, 1, 2, 3]);
+        let val: Val = vec.clone().into_val(&env);
+        let rt: Vec<u32> = val.into_val(&env);
+
+        assert_eq!(vec, rt);
+    }
+
+    #[test]
+    fn test_ref_vec_to_val() {
+        let env = Env::default();
+
+        let vec = Vec::<u32>::from_slice(&env, &[0, 1, 2, 3]);
+        let val: Val = (&vec).into_val(&env);
+        let rt: Vec<u32> = val.into_val(&env);
+
+        assert_eq!(vec, rt);
+    }
+
+    #[test]
+    fn test_double_ref_vec_to_val() {
+        let env = Env::default();
+
+        let vec = Vec::<u32>::from_slice(&env, &[0, 1, 2, 3]);
+        let val: Val = (&&vec).into_val(&env);
+        let rt: Vec<u32> = val.into_val(&env);
+
+        assert_eq!(vec, rt);
     }
 
     #[test]
@@ -1794,5 +1900,101 @@ mod test {
         let env = Env::default();
         let mut v: Vec<i64> = vec![&env, 0, 3, 5, 5, 7, 9];
         v.remove_unchecked(v.len())
+    }
+
+    #[test]
+    fn test_extend() {
+        let env = Env::default();
+        let mut v: Vec<i64> = vec![&env, 1, 2, 3];
+
+        // Extend with a std vector
+        let items = std::vec![4, 5, 6];
+        v.extend(items);
+        assert_eq!(v, vec![&env, 1, 2, 3, 4, 5, 6]);
+        assert_eq!(v.len(), 6);
+
+        // Extend with an array
+        v.extend([7, 8, 9]);
+        assert_eq!(v, vec![&env, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+        assert_eq!(v.len(), 9);
+
+        // Extend with an empty iterator
+        let empty: std::vec::Vec<i64> = std::vec::Vec::new();
+        v.extend(empty);
+        assert_eq!(v, vec![&env, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+        assert_eq!(v.len(), 9);
+    }
+
+    #[test]
+    fn test_extend_empty_vec() {
+        let env = Env::default();
+        let mut v: Vec<i64> = vec![&env];
+
+        // Extend empty vec with items
+        v.extend([1, 2, 3, 4, 5]);
+        assert_eq!(v, vec![&env, 1, 2, 3, 4, 5]);
+        assert_eq!(v.len(), 5);
+    }
+
+    #[test]
+    fn test_from_iter() {
+        let env = Env::default();
+
+        // Create from std vector iterator
+        let items = std::vec![1, 2, 3, 4, 5];
+        let v = Vec::from_iter(&env, items);
+        assert_eq!(v, vec![&env, 1, 2, 3, 4, 5]);
+        assert_eq!(v.len(), 5);
+
+        // Create from array iterator
+        let v2 = Vec::from_iter(&env, [10, 20, 30]);
+        assert_eq!(v2, vec![&env, 10, 20, 30]);
+        assert_eq!(v2.len(), 3);
+
+        // Create from range
+        let v3 = Vec::from_iter(&env, 1..=4);
+        assert_eq!(v3, vec![&env, 1, 2, 3, 4]);
+        assert_eq!(v3.len(), 4);
+    }
+
+    #[test]
+    fn test_from_iter_empty() {
+        let env = Env::default();
+
+        // Create from empty iterator
+        let empty: std::vec::Vec<i64> = std::vec::Vec::new();
+        let v = Vec::from_iter(&env, empty);
+        assert_eq!(v, vec![&env]);
+        assert_eq!(v.len(), 0);
+
+        // Create from empty range
+        let v2 = Vec::from_iter(&env, 1..1);
+        assert_eq!(v2, vec![&env]);
+        assert_eq!(v2.len(), 0);
+    }
+
+    #[test]
+    fn test_from_iter_different_types() {
+        let env = Env::default();
+
+        // Test with strings
+        let strings = std::vec!["hello".to_string(), "world".to_string(), "test".to_string()];
+        let v = Vec::from_iter(&env, strings);
+        assert_eq!(
+            v,
+            vec![
+                &env,
+                "hello".to_string(),
+                "world".to_string(),
+                "test".to_string()
+            ]
+        );
+        assert_eq!(v.len(), 3);
+
+        // Test with booleans
+        let bools = [true, false, true, false];
+        let v2 = Vec::from_iter(&env, bools.into_iter());
+        assert_eq!(v2, vec![&env, true, false, true, false]);
+        assert_eq!(v2.len(), 4);
     }
 }

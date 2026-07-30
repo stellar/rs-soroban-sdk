@@ -12,7 +12,7 @@ impl Contract {
 #[test]
 fn test_functional() {
     let env = Env::default();
-    let contract_id = env.register_contract(None, Contract);
+    let contract_id = env.register(Contract, ());
     let client = ContractClient::new(&env, &contract_id);
 
     let t: Timepoint = xdr::ScVal::Timepoint(xdr::TimePoint(0)).into_val(&env);
@@ -21,13 +21,14 @@ fn test_functional() {
 
 #[test]
 fn test_spec() {
-    let entries = xdr::ScSpecEntry::from_xdr(__SPEC_XDR_FN_EXEC, xdr::Limits::none()).unwrap();
+    let entries =
+        xdr::ScSpecEntry::from_xdr(Contract::spec_xdr_exec(), xdr::Limits::none()).unwrap();
     let expect = xdr::ScSpecEntry::FunctionV0(xdr::ScSpecFunctionV0 {
         doc: "".try_into().unwrap(),
         name: "exec".try_into().unwrap(),
         inputs: [xdr::ScSpecFunctionInputV0 {
             doc: "".try_into().unwrap(),
-            name: "_t".try_into().unwrap(),
+            name: "t".try_into().unwrap(),
             type_: xdr::ScSpecTypeDef::Timepoint,
         }]
         .try_into()

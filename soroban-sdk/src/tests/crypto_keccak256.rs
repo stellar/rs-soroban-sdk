@@ -1,4 +1,4 @@
-use crate::{bytesn, BytesN, Env, IntoVal};
+use crate::{BytesN, Env, IntoVal};
 
 #[test]
 fn test_keccak256() {

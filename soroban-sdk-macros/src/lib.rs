@@ -1,50 +1,85 @@
+use stellar_xdr;
 extern crate proc_macro;
 
 mod arbitrary;
+mod attribute;
+mod derive_args;
 mod derive_client;
+mod derive_contractimpl_trait_default_fns_not_overridden;
+mod derive_contractimpl_trait_macro;
 mod derive_enum;
 mod derive_enum_int;
 mod derive_error_enum_int;
+mod derive_event;
 mod derive_fn;
 mod derive_spec_fn;
 mod derive_struct;
 mod derive_struct_tuple;
+mod derive_trait;
 mod doc;
 mod map_type;
 mod path;
+mod shaking;
 mod symbol;
 mod syn_ext;
 
+use derive_args::{derive_args_impl, derive_args_type};
 use derive_client::{derive_client_impl, derive_client_type};
+use derive_contractimpl_trait_default_fns_not_overridden::derive_contractimpl_trait_default_fns_not_overridden;
+use derive_contractimpl_trait_macro::{
+    derive_contractimpl_trait_macro, generate_call_to_contractimpl_for_trait,
+};
 use derive_enum::derive_type_enum;
 use derive_enum_int::derive_type_enum_int;
 use derive_error_enum_int::derive_type_error_enum_int;
-use derive_fn::{derive_contract_function_registration_ctor, derive_pub_fn};
-use derive_spec_fn::derive_fn_spec;
+use derive_event::derive_event;
+use derive_fn::{derive_contract_function_registration_ctor, derive_pub_fns};
+use derive_spec_fn::derive_fns_spec;
 use derive_struct::derive_type_struct;
 use derive_struct_tuple::derive_type_struct_tuple;
+use derive_trait::derive_trait;
 
 use darling::{ast::NestedMeta, FromMeta};
+use macro_string::MacroString;
+use map_type::is_mapped_type_udt;
 use proc_macro::TokenStream;
-use proc_macro2::{Literal, Span, TokenStream as TokenStream2};
-use quote::{format_ident, quote};
+use proc_macro2::{Span, TokenStream as TokenStream2};
+use quote::{format_ident, quote, ToTokens};
 use sha2::{Digest, Sha256};
 use std::{fmt::Write, fs};
 use syn::{
-    parse_macro_input, parse_str, spanned::Spanned, Data, DeriveInput, Error, Fields, ItemImpl,
-    ItemStruct, LitStr, Path, Type, Visibility,
+    ext::IdentExt as _, parse_macro_input, parse_str, spanned::Spanned, Data, DeriveInput, Error,
+    Expr, Fields, ItemImpl, ItemStruct, LitStr, Path, Type, Visibility,
 };
 use syn_ext::HasFnsItem;
 
-use soroban_spec_rust::{generate_from_wasm, GenerateFromFileError};
+use soroban_spec_rust::{generate_from_wasm_with_options, GenerateFromFileError, GenerateOptions};
 
-use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{Limits, ScMetaEntry, ScMetaV0, StringM, WriteXdr};
 
 pub(crate) const DEFAULT_XDR_RW_LIMITS: Limits = Limits {
     depth: 500,
     len: 0x1000000,
 };
+
+/// Emit a deprecation warning when `export` is set with the
+/// `experimental_spec_shaking_v2` feature enabled. Under v2 the spec is
+/// determined by reachability, so the argument has no effect and will be
+/// removed in a future release.
+pub(crate) fn export_arg_v2_deprecation(export: &Option<bool>, ident: &syn::Ident) -> TokenStream2 {
+    if cfg!(feature = "experimental_spec_shaking_v2") && export.is_some() {
+        let marker = format_ident!("__SOROBAN_EXPORT_ARG_DEPRECATED_FOR_{}", ident);
+        quote! {
+            #[doc(hidden)]
+            #[allow(non_upper_case_globals)]
+            #[deprecated = "`export` is a no-op under `experimental_spec_shaking_v2` (specs are determined by reachability) and will be removed in a future release"]
+            const #marker: () = ();
+            const _: () = #marker;
+        }
+    } else {
+        TokenStream2::new()
+    }
+}
 
 #[proc_macro]
 pub fn internal_symbol_short(input: TokenStream) -> TokenStream {
@@ -60,13 +95,13 @@ pub fn symbol_short(input: TokenStream) -> TokenStream {
     symbol::short(&crate_path, &input).into()
 }
 
-fn default_crate_path() -> Path {
+pub(crate) fn default_crate_path() -> Path {
     parse_str("soroban_sdk").unwrap()
 }
 
 #[derive(Debug, FromMeta)]
 struct ContractSpecArgs {
-    name: String,
+    name: Type,
     export: Option<bool>,
 }
 
@@ -87,11 +122,7 @@ pub fn contractspecfn(metadata: TokenStream, input: TokenStream) -> TokenStream 
     let methods: Vec<_> = item.fns();
     let export = args.export.unwrap_or(true);
 
-    let ty = format_ident!("{}", args.name);
-    let derived: Result<proc_macro2::TokenStream, proc_macro2::TokenStream> = methods
-        .iter()
-        .map(|m| derive_fn_spec(&ty, m.ident, m.attrs, m.inputs, m.output, export))
-        .collect();
+    let derived = derive_fns_spec(&args.name, &methods, export);
 
     match derived {
         Ok(derived_ok) => quote! {
@@ -131,14 +162,17 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let item = parse_macro_input!(input as ItemStruct);
 
     let ty = &item.ident;
-    let ty_str = quote!(#ty).to_string();
+    let ty_str = ty.unraw().to_string();
 
     let client_ident = format!("{ty_str}Client");
-    let fn_set_registry_ident = format_ident!("__{ty_str}_fn_set_registry");
+    let fn_set_registry_ident = format_ident!("__{}_fn_set_registry", ty_str.to_lowercase());
     let crate_path = &args.crate_path;
     let client = derive_client_type(&args.crate_path, &ty_str, &client_ident);
+    let args_ident = format!("{ty_str}Args");
+    let contract_args = derive_args_type(&ty_str, &args_ident);
     let mut output = quote! {
         #input2
+        #contract_args
         #client
     };
     if cfg!(feature = "testutils") {
@@ -150,17 +184,23 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 use std::sync::Mutex;
                 use std::collections::BTreeMap;
 
-                type F = dyn Send + Sync + Fn(#crate_path::Env, &[#crate_path::Val]) -> #crate_path::Val;
+                pub type F = #crate_path::testutils::ContractFunctionF;
 
                 static FUNCS: Mutex<BTreeMap<&'static str, &'static F>> = Mutex::new(BTreeMap::new());
 
-                pub(crate) fn register(name: &'static str, func: &'static F) {
+                pub fn register(name: &'static str, func: &'static F) {
                     FUNCS.lock().unwrap().insert(name, func);
                 }
 
-                pub(crate) fn call(name: &str, env: #crate_path::Env, args: &[#crate_path::Val]) -> Option<#crate_path::Val> {
+                pub fn call(name: &str, env: #crate_path::Env, args: &[#crate_path::Val]) -> Option<#crate_path::Val> {
                     let fopt: Option<&'static F> = FUNCS.lock().unwrap().get(name).map(|f| f.clone());
                     fopt.map(|f| f(env, args))
+                }
+            }
+
+            impl #crate_path::testutils::ContractFunctionRegister for #ty {
+                fn register(name: &'static str, func: &'static #fn_set_registry_ident::F) {
+                    #fn_set_registry_ident::register(name, func);
                 }
             }
 
@@ -179,6 +219,8 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
 struct ContractImplArgs {
     #[darling(default = "default_crate_path")]
     crate_path: Path,
+    #[darling(default)]
+    contracttrait: bool,
 }
 
 #[proc_macro_attribute]
@@ -197,9 +239,21 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let crate_path_str = quote!(#crate_path).to_string();
 
     let imp = parse_macro_input!(input as ItemImpl);
-    let trait_ident = imp.trait_.as_ref().and_then(|x| x.1.get_ident());
+    let trait_ident = imp.trait_.as_ref().map(|x| &x.1);
     let ty = &imp.self_ty;
     let ty_str = quote!(#ty).to_string();
+
+    // TODO: Use imp.trait_ in generating the args ident, to create a unique
+    // args for each trait impl for a contract, to avoid conflicts.
+    let args_ident = if let Type::Path(path) = &**ty {
+        path.path
+            .segments
+            .last()
+            .map(|name| format!("{}Args", name.ident.unraw()))
+    } else {
+        None
+    }
+    .unwrap_or_else(|| "Args".to_string());
 
     // TODO: Use imp.trait_ in generating the client ident, to create a unique
     // client for each trait impl for a contract, to avoid conflicts.
@@ -207,47 +261,58 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
         path.path
             .segments
             .last()
-            .map(|name| format!("{}Client", name.ident))
+            .map(|name| format!("{}Client", name.ident.unraw()))
     } else {
         None
     }
     .unwrap_or_else(|| "Client".to_string());
 
-    let pub_methods: Vec<_> = syn_ext::impl_pub_methods(&imp).collect();
-    let derived: Result<proc_macro2::TokenStream, proc_macro2::TokenStream> = pub_methods
-        .iter()
-        .map(|m| {
-            let ident = &m.sig.ident;
-            let call = quote! { <super::#ty>::#ident };
-            derive_pub_fn(
-                crate_path,
-                &call,
-                ident,
-                &m.attrs,
-                &m.sig.inputs,
-                trait_ident,
-                &client_ident,
-            )
-        })
-        .collect();
+    let pub_methods: Vec<_> = syn_ext::impl_pub_methods(&imp);
+    let pub_methods_fns: Vec<syn_ext::Fn> = pub_methods.iter().map(Into::into).collect();
+    let derived = derive_pub_fns(
+        crate_path,
+        &ty,
+        &pub_methods_fns,
+        trait_ident,
+        &client_ident,
+    );
 
     match derived {
         Ok(derived_ok) => {
             let mut output = quote! {
+                #[#crate_path::contractargs(name = #args_ident, impl_only = true)]
                 #[#crate_path::contractclient(crate_path = #crate_path_str, name = #client_ident, impl_only = true)]
                 #[#crate_path::contractspecfn(name = #ty_str)]
                 #imp
                 #derived_ok
             };
-            if cfg!(feature = "testutils") {
-                let cfs = derive_contract_function_registration_ctor(
-                    crate_path,
-                    ty,
-                    trait_ident,
-                    pub_methods.into_iter(),
-                );
-                output.extend(quote! { #cfs });
-            }
+
+            // See soroban-sdk/docs/contracttrait.md for documentation on how
+            // contractimpl interacts with contracttrait.
+            let contractimpl_for_trait =
+                trait_ident
+                    .filter(|_| args.contracttrait)
+                    .map(|trait_ident| {
+                        generate_call_to_contractimpl_for_trait(
+                            trait_ident,
+                            ty,
+                            &pub_methods,
+                            &client_ident,
+                            &args_ident,
+                            &ty_str,
+                        )
+                        .unwrap_or_else(|err| err.to_compile_error())
+                    });
+            output.extend(quote! { #contractimpl_for_trait });
+
+            let cfs = derive_contract_function_registration_ctor(
+                crate_path,
+                ty,
+                trait_ident,
+                &pub_methods_fns,
+            );
+            output.extend(quote! { #cfs });
+
             output.into()
         }
         Err(derived_err) => quote! {
@@ -258,34 +323,26 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
     }
 }
 
+#[proc_macro_attribute]
+pub fn contracttrait(metadata: TokenStream, input: TokenStream) -> TokenStream {
+    derive_trait(metadata.into(), input.into()).into()
+}
+
+#[proc_macro_attribute]
+pub fn contractimpl_trait_macro(metadata: TokenStream, input: TokenStream) -> TokenStream {
+    derive_contractimpl_trait_macro(metadata.into(), input.into()).into()
+}
+
 #[proc_macro]
-pub fn contractmetabuiltin(_metadata: TokenStream) -> TokenStream {
-    // The following two lines assume that the soroban-sdk-macros crate always
-    // has the same version as the soroban-sdk, and lives in the same
-    // repository.
-    let rustc_version = env!("RUSTC_VERSION");
-    let sdk_pkg_version = env!("CARGO_PKG_VERSION");
-    let sdk_git_revision = env!("GIT_REVISION");
-    let sdk_version = format!("{sdk_pkg_version}#{sdk_git_revision}");
-    quote! {
-        contractmeta!(
-            // Rustc version.
-            key = "rsver",
-            val = #rustc_version,
-        );
-        contractmeta!(
-            // Rust Soroban SDK version.
-            key = "rssdkver",
-            val = #sdk_version,
-        );
-    }
-    .into()
+pub fn contractimpl_trait_default_fns_not_overridden(input: TokenStream) -> TokenStream {
+    derive_contractimpl_trait_default_fns_not_overridden(input.into()).into()
 }
 
 #[derive(Debug, FromMeta)]
 struct MetadataArgs {
     key: String,
-    val: String,
+    #[darling(with = darling::util::parse_expr::preserve_str_literal)]
+    val: Expr,
 }
 
 #[proc_macro]
@@ -311,7 +368,9 @@ pub fn contractmeta(metadata: TokenStream) -> TokenStream {
             }
         };
 
-        let val: StringM = match args.val.try_into() {
+        let val = args.val.to_token_stream().into();
+        let MacroString(val) = parse_macro_input!(val);
+        let val: StringM = match val.try_into() {
             Ok(k) => k,
             Err(e) => {
                 return Error::new(Span::call_site(), e.to_string())
@@ -341,7 +400,16 @@ pub fn contractmeta(metadata: TokenStream) -> TokenStream {
                 s
             })
         );
+        let val_expr = &args.val;
         quote! {
+            // Required to ensure that any env!, include!, and include_str! usage within the val
+            // parameter that gets evaluated by the MacroString above, also gets surfaced to rustc and
+            // included in dep-info for the build artifact so that changes to the environment
+            // variable or included file update the artifact's dep-info and invalidate artifacts that
+            // get stored in caches like sccache.
+            // See https://github.com/dtolnay/macro-string/issues/29
+            const _: () = { let _ = { #val_expr }; };
+
             #[doc(hidden)]
             #[cfg_attr(target_family = "wasm", link_section = "contractmetav0")]
             static #ident: [u8; #metadata_xdr_len] = *#metadata_xdr_lit;
@@ -352,6 +420,11 @@ pub fn contractmeta(metadata: TokenStream) -> TokenStream {
         #gen
     }
     .into()
+}
+
+#[proc_macro_attribute]
+pub fn contractevent(metadata: TokenStream, input: TokenStream) -> TokenStream {
+    derive_event(metadata.into(), input.into()).into()
 }
 
 #[derive(Debug, FromMeta)]
@@ -378,9 +451,18 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let vis = &input.vis;
     let ident = &input.ident;
     let attrs = &input.attrs;
-    // If the export argument has a value, do as it instructs regarding
-    // exporting. If it does not have a value, export if the type is pub.
-    let gen_spec = if let Some(export) = args.export {
+    match is_mapped_type_udt(ident, &input.generics) {
+        Ok(()) => {}
+        Err(e) => return e.to_compile_error().into(),
+    }
+    let export_deprecation = export_arg_v2_deprecation(&args.export, ident);
+    // Under `experimental_spec_shaking_v2` the spec is always emitted and
+    // reachability determines what is retained, so the `export` argument is
+    // ignored (a deprecation warning is emitted above). Otherwise, honor an
+    // explicit `export` value, falling back to exporting only `pub` types.
+    let gen_spec = if cfg!(feature = "experimental_spec_shaking_v2") {
+        true
+    } else if let Some(export) = args.export {
         export
     } else {
         matches!(input.vis, Visibility::Public(_))
@@ -429,6 +511,7 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
     };
     quote! {
         #input
+        #export_deprecation
         #derived
     }
     .into()
@@ -449,9 +532,14 @@ pub fn contracterror(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
     let ident = &input.ident;
     let attrs = &input.attrs;
-    // If the export argument has a value, do as it instructs regarding
-    // exporting. If it does not have a value, export if the type is pub.
-    let gen_spec = if let Some(export) = args.export {
+    let export_deprecation = export_arg_v2_deprecation(&args.export, ident);
+    // Under `experimental_spec_shaking_v2` the spec is always emitted and
+    // reachability determines what is retained, so the `export` argument is
+    // ignored (a deprecation warning is emitted above). Otherwise, honor an
+    // explicit `export` value, falling back to exporting only `pub` types.
+    let gen_spec = if cfg!(feature = "experimental_spec_shaking_v2") {
+        true
+    } else if let Some(export) = args.export {
         export
     } else {
         matches!(input.vis, Visibility::Public(_))
@@ -478,6 +566,7 @@ pub fn contracterror(metadata: TokenStream, input: TokenStream) -> TokenStream {
     };
     quote! {
         #input
+        #export_deprecation
         #derived
     }
     .into()
@@ -502,9 +591,19 @@ pub fn contractfile(metadata: TokenStream) -> TokenStream {
         Err(e) => return e.write_errors().into(),
     };
 
-    // Read WASM from file.
+    // Determine absolute path to file.
     let file_abs = path::abs_from_rel_to_manifest(&args.file);
-    let wasm = match fs::read(file_abs) {
+    let file_abs_str = match file_abs.to_str() {
+        Some(s) => s,
+        None => {
+            return Error::new(args.file.span(), "file path is not valid UTF-8")
+                .into_compile_error()
+                .into()
+        }
+    };
+
+    // Read WASM from file to verify SHA256 hash at compile time.
+    let wasm = match fs::read(&file_abs) {
         Ok(wasm) => wasm,
         Err(e) => {
             return Error::new(Span::call_site(), e.to_string())
@@ -525,9 +624,41 @@ pub fn contractfile(metadata: TokenStream) -> TokenStream {
         .into();
     }
 
-    // Render bytes.
-    let contents_lit = Literal::byte_string(&wasm);
-    quote! { #contents_lit }.into()
+    // Use include_bytes! with the absolute path so that Cargo tracks the file
+    // as a dependency.
+    quote! { include_bytes!(#file_abs_str) }.into()
+}
+
+#[derive(Debug, FromMeta)]
+struct ContractArgsArgs {
+    name: String,
+    #[darling(default)]
+    impl_only: bool,
+}
+
+#[proc_macro_attribute]
+pub fn contractargs(metadata: TokenStream, input: TokenStream) -> TokenStream {
+    let args = match NestedMeta::parse_meta_list(metadata.into()) {
+        Ok(v) => v,
+        Err(e) => {
+            return TokenStream::from(darling::Error::from(e).write_errors());
+        }
+    };
+    let args = match ContractArgsArgs::from_list(&args) {
+        Ok(v) => v,
+        Err(e) => return e.write_errors().into(),
+    };
+    let input2: TokenStream2 = input.clone().into();
+    let item = parse_macro_input!(input as HasFnsItem);
+    let methods: Vec<_> = item.fns();
+    let args_type = (!args.impl_only).then(|| derive_args_type(&item.name(), &args.name));
+    let args_impl = derive_args_impl(&args.name, &methods);
+    quote! {
+        #input2
+        #args_type
+        #args_impl
+    }
+    .into()
 }
 
 #[derive(Debug, FromMeta)]
@@ -595,8 +726,12 @@ pub fn contractimport(metadata: TokenStream) -> TokenStream {
         }
     };
 
-    // Generate.
-    match generate_from_wasm(&wasm, &args.file, args.sha256.as_deref()) {
+    // Generate with options based on whether the experimental_spec_shaking_v2
+    // feature is enabled.
+    let opts = GenerateOptions {
+        export: cfg!(feature = "experimental_spec_shaking_v2"),
+    };
+    match generate_from_wasm_with_options(&wasm, &args.file, args.sha256.as_deref(), &opts) {
         Ok(code) => quote! { #code },
         Err(e @ GenerateFromFileError::VerifySha256 { .. }) => {
             Error::new(args.sha256.span(), e.to_string()).into_compile_error()

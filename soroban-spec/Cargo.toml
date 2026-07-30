@@ -11,10 +11,11 @@ edition = "2021"
 rust-version.workspace = true
 
 [dependencies]
-stellar-xdr = { workspace = true, features = ["curr", "std", "serde"] }
-base64 = "0.13.0"
+stellar-xdr = { workspace = true, features = ["std", "serde"] }
+base64 = "0.22.1"
 thiserror = "1.0.32"
 wasmparser = "0.116.1"
+sha2 = "0.10.7"
 
 [dev-dependencies]
 pretty_assertions = "1.2.1"

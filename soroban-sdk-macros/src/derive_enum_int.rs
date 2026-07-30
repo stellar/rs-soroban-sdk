@@ -1,13 +1,15 @@
 use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
-use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{ScSpecUdtEnumV0, StringM};
-use syn::{spanned::Spanned, Attribute, DataEnum, Error, ExprLit, Ident, Lit, Path, Visibility};
+use syn::{
+    ext::IdentExt as _, spanned::Spanned, Attribute, DataEnum, Error, ExprLit, Ident, Lit, Path,
+    Visibility,
+};
 
 use stellar_xdr::{ScSpecEntry, ScSpecUdtEnumCaseV0, WriteXdr};
 
-use crate::{doc::docs_from_attrs, DEFAULT_XDR_RW_LIMITS};
+use crate::{doc::docs_from_attrs, shaking, DEFAULT_XDR_RW_LIMITS};
 
 // TODO: Add conversions to/from ScVal types.
 
@@ -28,7 +30,7 @@ pub fn derive_type_enum_int(
         .iter()
         .map(|v| {
             let ident = &v.ident;
-            let name = &ident.to_string();
+            let name = &ident.unraw().to_string();
             let discriminant: u32 = if let syn::Expr::Lit(ExprLit {
                 lit: Lit::Int(ref lit_int),
                 ..
@@ -65,18 +67,27 @@ pub fn derive_type_enum_int(
         return quote! { #(#compile_errors)* };
     }
 
-    // Generated code spec.
-    let spec_gen = if spec {
+    // Compute spec XDR once if spec is enabled.
+    let spec_xdr = if spec {
         let spec_entry = ScSpecEntry::UdtEnumV0(ScSpecUdtEnumV0 {
             doc: docs_from_attrs(attrs),
             lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
-            name: enum_ident.to_string().try_into().unwrap(),
+            name: enum_ident.unraw().to_string().try_into().unwrap(),
             cases: spec_cases.try_into().unwrap(),
         });
-        let spec_xdr = spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap();
+        Some(spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap())
+    } else {
+        None
+    };
+
+    // Generated code spec.
+    let spec_gen = if let Some(ref spec_xdr) = spec_xdr {
         let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
         let spec_xdr_len = spec_xdr.len();
-        let spec_ident = format_ident!("__SPEC_XDR_TYPE_{}", enum_ident.to_string().to_uppercase());
+        let spec_ident = format_ident!(
+            "__SPEC_XDR_TYPE_{}",
+            enum_ident.unraw().to_string().to_uppercase()
+        );
         Some(quote! {
             #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
             pub static #spec_ident: [u8; #spec_xdr_len] = #enum_ident::spec_xdr();
@@ -91,10 +102,29 @@ pub fn derive_type_enum_int(
         None
     };
 
+    // SpecShakingMarker impl - only generated when spec is true and the
+    // experimental_spec_shaking_v2 feature is enabled.
+    let spec_shaking_impl = if cfg!(feature = "experimental_spec_shaking_v2") {
+        spec_xdr.as_ref().map(|spec_xdr| {
+            shaking::generate_marker_impl(
+                path,
+                quote!(#enum_ident),
+                spec_xdr,
+                std::iter::empty(),
+                None,
+                None,
+                None,
+            )
+        })
+    } else {
+        None
+    };
+
     // Output.
     let mut output = quote! {
         #spec_gen
-        const _: () = { fn assert_copy(v: #enum_ident) -> impl Copy { v } };
+
+        #spec_shaking_impl
 
         impl #path::TryFromVal<#path::Env, #path::Val> for #enum_ident {
             type Error = #path::ConversionError;
@@ -116,6 +146,14 @@ pub fn derive_type_enum_int(
                 Ok(match val {
                     #(#try_intos,)*
                 })
+            }
+        }
+
+        impl #path::TryFromVal<#path::Env, &#enum_ident> for #path::Val {
+            type Error = #path::ConversionError;
+            #[inline(always)]
+            fn try_from_val(env: &#path::Env, val: &&#enum_ident) -> Result<Self, #path::ConversionError> {
+                <_ as #path::TryFromVal<#path::Env, #enum_ident>>::try_from_val(env, *val)
             }
         }
     };
@@ -144,7 +182,9 @@ pub fn derive_type_enum_int(
                 type Error = #path::xdr::Error;
                 #[inline(always)]
                 fn try_into(self) -> Result<#path::xdr::ScVal, #path::xdr::Error> {
-                    Ok((*self as u32).into())
+                    Ok(match self {
+                        #(#try_intos,)*
+                    })
                 }
             }
 
@@ -152,7 +192,9 @@ pub fn derive_type_enum_int(
                 type Error = #path::xdr::Error;
                 #[inline(always)]
                 fn try_into(self) -> Result<#path::xdr::ScVal, #path::xdr::Error> {
-                    Ok((self as u32).into())
+                    Ok(match self {
+                        #(#try_intos,)*
+                    })
                 }
             }
 

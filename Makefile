@@ -1,43 +1,84 @@
-all: check test
+LIB_CRATES = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.name | startswith("test_") | not) | .name' | tr '\n' ' ')
+TEST_CRATES = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.name | startswith("test_")) | .name' | tr '\n' ' ')
 
-export RUSTFLAGS=-Dwarnings
+MSRV = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.name == "soroban-sdk") | .rust_version')
+TEST_CRATES_RUSTUP_TOOLCHAIN?=$(MSRV)
 
 CARGO_DOC_ARGS?=--open
 
+default: test
+
 doc: fmt
-	cargo test --doc -p soroban-sdk -p soroban-sdk-macros --features testutils,hazmat
-    # TODO: Upgrade to latest nightly after problem that was introduced in nightly-2024-02-05 (https://github.com/dalek-cryptography/curve25519-dalek/issues/618) is resolved.
-	cargo +nightly doc -p soroban-sdk --no-deps --all-features $(CARGO_DOC_ARGS)
+	cargo test --doc $(foreach c,$(LIB_CRATES),--package $(c)) --features testutils,alloc,hazmat
+	cargo +nightly doc --no-deps $(foreach c,$(LIB_CRATES),--package $(c)) --all-features $(CARGO_DOC_ARGS)
 
-test: fmt build
-	cargo hack --feature-powerset --ignore-unknown-features --features testutils --exclude-features docs test
+test: fmt build-test-wasms test-only
 
-build: fmt
-	cargo hack build --target wasm32-unknown-unknown --release
-	cd target/wasm32-unknown-unknown/release/ && \
+# Run tests. 
+# The docs feature is excluded because it is a market for docs builds. The
+# hazmat granular features are excluded because all hazmat features are tested
+# together with the umbrella hazmat feature.
+test-only:
+	SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2=1 \
+		cargo hack --feature-powerset --ignore-unknown-features --features testutils \
+			--exclude-features docs \
+			--exclude-features hazmat-crypto \
+			--exclude-features hazmat-address \
+			test
+
+build: build-libs build-test-wasms
+
+build-libs: fmt
+	cargo hack build --release $(foreach c,$(LIB_CRATES),--package $(c))
+
+build-test-wasms: fmt
+	# Build the test wasms with MSRV by default, with some meta disabled for
+	# binary stability for tests.
+	SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2=1 \
+	RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
+	RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
+		cargo hack build --release --target wasm32v1-none $(foreach c,$(TEST_CRATES),--package $(c)) ; \
+	cd target/wasm32v1-none/release/ && \
 		for i in *.wasm ; do \
 			ls -l "$$i"; \
 		done
-
-check: build fmt
-	cargo hack --feature-powerset --exclude-features docs check
-	cargo hack check --release --target wasm32-unknown-unknown
 
 build-fuzz:
 	cd tests/fuzz/fuzz && cargo +nightly fuzz check
 
 readme:
 	cd soroban-sdk \
-		&& cargo +nightly rustdoc -- -Zunstable-options -wjson \
+		&& cargo +nightly rustdoc --features testutils -- -Zunstable-options -wjson \
 		&& cat ../target/doc/soroban_sdk.json \
-		| jq -r '.index[.root].docs' \
+		| jq -r '.index[.root|tostring].docs' \
 		> README.md
 
-watch:
-	cargo watch --clear --watch-when-idle --shell '$(MAKE)'
+# Expands the generated code within each test vector contract that lives in the
+# tests/ directory. Serves to surface visible changes in generated code that
+# may not be obvious when making changes to sdk macros.
+expand-tests: build-test-wasms
+	rm -fr tests-expanded
+	mkdir -p tests-expanded
+	for package in $(TEST_CRATES); do \
+		if [ "$$package" = "test_alloc" ]; then \
+			continue; \
+		fi; \
+		echo "Expanding $$package for linux target including tests"; \
+    RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
+      RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
+      cargo expand --package $$package --tests --target x86_64-unknown-linux-gnu | rustfmt > tests-expanded/$${package}_tests.rs; \
+		echo "Expanding $$package for wasm32v1-none target without tests"; \
+    SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2=1 \
+    RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
+      RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
+			cargo expand --package $$package --release --target wasm32v1-none | rustfmt > tests-expanded/$${package}_wasm32v1-none.rs; \
+	done
 
-watch-doc:
-	cargo +nightly watch --clear --watch-when-idle --shell '$(MAKE) doc CARGO_DOC_ARGS='
+miri:
+	RUST_BACKTRACE=1 \
+	MIRIFLAGS="-Zmiri-disable-isolation -Zmiri-strict-provenance" \
+	PROPTEST_CASES=1 \
+	cargo +nightly miri nextest run
 
 fmt:
 	cargo fmt --all
@@ -45,8 +86,5 @@ fmt:
 clean:
 	cargo clean
 
-bump-version:
-	cargo workspaces version --all --force '*' --no-git-commit --yes custom $(VERSION)
-
-publish:
-	cargo workspaces publish --all --force '*' --from-git --yes
+msrv:
+	@echo $(MSRV)

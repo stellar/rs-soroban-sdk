@@ -1,6 +1,5 @@
 use crate as soroban_sdk;
 use soroban_sdk::{contract, contractimpl, Env};
-use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{
     Limits, ReadXdr, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef,
 };
@@ -18,7 +17,7 @@ impl Contract {
 #[test]
 fn test_functional() {
     let e = Env::default();
-    let contract_id = e.register_contract(None, Contract);
+    let contract_id = e.register(Contract, ());
 
     let a = 10i32;
     let b = 12i32;
@@ -28,7 +27,7 @@ fn test_functional() {
 
 #[test]
 fn test_spec() {
-    let entries = ScSpecEntry::from_xdr(__SPEC_XDR_FN_ADD, Limits::none()).unwrap();
+    let entries = ScSpecEntry::from_xdr(Contract::spec_xdr_add(), Limits::none()).unwrap();
     let expect = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
         doc: "".try_into().unwrap(),
         name: "add".try_into().unwrap(),

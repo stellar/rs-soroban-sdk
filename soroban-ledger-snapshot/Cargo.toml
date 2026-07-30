@@ -20,3 +20,6 @@ thiserror = "1.0"
 
 [dev-dependencies]
 pretty_assertions = "1.2.1"
+
+[features]
+testutils = ["soroban-env-host/testutils"]

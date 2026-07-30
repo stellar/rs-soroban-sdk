@@ -1,0 +1,220 @@
+name: Test with soroban-examples
+
+on:
+  push:
+    branches: [main, release/**]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref_protected == 'true' && github.sha || github.ref }}-{{ github.event_name }}
+  cancel-in-progress: true
+
+# No permissions. This workflow downloads code from outside this repository and
+# compiles it. No permissions ensures that any exploit in an external
+# repository does not gain access to anything in this repo.
+permissions: {}
+
+jobs:
+  collect-examples:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v5
+      with:
+        repository: stellar/soroban-examples
+        ref: main
+    - id: dirs
+      run: |
+        dirs=$(
+          for dir in $(find . -type f -name 'Makefile' -mindepth 2 | xargs dirname | sed 's|^\./||'); do
+            if (cargo metadata --manifest-path "$dir/Cargo.toml" --no-deps --format-version 1 | jq -r --arg pwd "$(pwd)" '.packages[0] | (any(.dependencies[]; .name == "soroban-sdk") and any(.targets[]; any(.crate_types[]; . == "cdylib")))' | grep -q '^true$'); then
+              echo "$dir"
+            fi
+          done | jq -Rnc '[inputs | "\(.)"]'
+        )
+        echo "dirs=$dirs" >> $GITHUB_OUTPUT
+    outputs:
+      dirs: ${{ steps.dirs.outputs.dirs }}
+
+  test-example:
+    needs: collect-examples
+    strategy:
+      fail-fast: false
+      matrix:
+        working-directory: ${{ fromJSON(needs.collect-examples.outputs.dirs) }}
+        experimental_spec_shaking_v2: [true, false]
+    defaults:
+      run:
+        working-directory: soroban-examples/${{ matrix.working-directory }}
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout rs-soroban-sdk
+      uses: actions/checkout@v5
+      with:
+        path: rs-soroban-sdk
+
+    - name: Checkout soroban-examples
+      uses: actions/checkout@v5
+      with:
+        repository: stellar/soroban-examples
+        ref: main
+        path: soroban-examples
+
+    - name: Install Rust
+      run: |
+        rustup update
+        rustup target add wasm32v1-none
+
+    - uses: denoland/setup-deno@909cc5acb0fdd60627fb858598759246509fa755 # v2.0.2
+      with:
+        deno-version: v2.x
+
+    - uses: stellar/stellar-cli@v23.1.4
+
+    - uses: stellar/actions/rust-cache@main
+
+    - name: Align the local soroban-sdk version with the example
+      working-directory: ${{ github.workspace }}
+      run: |
+        # The example pins soroban-sdk and may pull crates such as soroban-poseidon
+        # from crates.io that depend on a specific soroban-sdk major. When the local
+        # checkout has bumped to a newer major (for example a 27.0.0-rc release), the
+        # [patch.crates-io] + `cargo update --precise` step below can't redirect those
+        # transitive soroban-sdk edges, because Cargo only applies a patch when the
+        # local version satisfies the requirement (for example soroban-poseidon's ^25
+        # in privacy-pools). Relabel the local crates with the version the example
+        # already resolves so the patch satisfies the requirement, collapsing every
+        # soroban-sdk edge onto the local checkout's code regardless of the bump.
+        dest_version=$(
+          cargo metadata --manifest-path "soroban-examples/${{ matrix.working-directory }}/Cargo.toml" --format-version 1 \
+            | jq -r '.packages[] | select(.name == "soroban-sdk") | .version' \
+            | head -n1
+        )
+        local_version=$(
+          cargo metadata --manifest-path rs-soroban-sdk/Cargo.toml --format-version 1 --no-deps \
+            | jq -r '.packages[] | select(.name == "soroban-sdk") | .version'
+        )
+        echo "example soroban-sdk version: ${dest_version:?could not determine the example soroban-sdk version}"
+        echo "local soroban-sdk version: $local_version"
+        if [ "$dest_version" != "$local_version" ]; then
+          escaped=$(printf '%s' "$local_version" | sed 's/[.]/\\./g')
+          sed -i "s|\"$escaped\"|\"$dest_version\"|g" rs-soroban-sdk/Cargo.toml
+          echo "Relabelled local rs-soroban-sdk crates from $local_version to $dest_version"
+        fi
+
+    - name: Collect publishable rs-soroban-sdk crates
+      run: |
+        # Collect the publishable rs-soroban-sdk crates, their directories, and their
+        # versions once, from the authoritative cargo metadata, deriving the path from
+        # manifest_path rather than assuming the package name matches the directory
+        # name. The list (name<TAB>dir<TAB>version) is reused by the patching steps
+        # below.
+        (cd ${{ github.workspace }}/rs-soroban-sdk && cargo metadata --format-version 1 --no-deps) \
+          | jq -r '.packages[] | select(.publish != []) | "\(.name)\t\(.manifest_path | sub("/Cargo.toml$"; ""))\t\(.version)"' \
+          > "$RUNNER_TEMP/sdk-crates.tsv"
+
+    - name: Patch SDK versions
+      run: |
+        # TODO: Update this patch logic to use `cargo add` once this issue is resolved: https://github.com/rust-lang/cargo/issues/16101
+        # Find Cargo.toml files to patch
+        local_files=$(find . -name Cargo.toml)
+        workspace_root=$(cargo metadata --format-version 1 --no-deps | jq -r '.workspace_root')
+        files=$(echo "$local_files"; echo "$workspace_root/Cargo.toml")
+
+        # Patch local files and workspace root (sort -u to deduplicate)
+        echo "$files" | sort -u | while read -r file; do
+          echo Patching "$file" ...
+          dir=$(dirname "$file")
+          while IFS=$'\t' read -r crate crate_dir version; do
+            rel_path=$(realpath --relative-to="$dir" "$crate_dir")
+            sed -i 's|'"$crate"' = "\([^"]*\)"|'"$crate"' = { path = "'"$rel_path"'" }|g' "$file"
+            sed -i 's|'"$crate"' = {.*version = "[^"]*"\(.*\)|'"$crate"' = { path = "'"$rel_path"'" \1|g' "$file"
+          done < "$RUNNER_TEMP/sdk-crates.tsv"
+        done
+
+    - name: Enable experimental_spec_shaking_v2 feature
+      if: matrix.experimental_spec_shaking_v2
+      working-directory: soroban-examples
+      run: |
+        find . -name Cargo.toml | while read -r file; do
+          # Add feature to path-patched entries with existing features
+          sed -i '/soroban-sdk = {.*path = /s|features = \[|features = ["experimental_spec_shaking_v2", |' "$file"
+          # Add features field to path-patched entries without features
+          sed -i '/soroban-sdk = {.*path = /{/features/!s| }|, features = ["experimental_spec_shaking_v2"] }|}' "$file"
+        done
+
+    # This step must run *after* "Enable experimental_spec_shaking_v2": that step's
+    # sed matches every `soroban-sdk = { ... path = ... }` line, so if the
+    # [patch.crates-io] entries below already existed it would add a `features` field
+    # to them, which Cargo ignores on patch entries and warns about.
+    - name: Patch transitive crates.io dependencies
+      run: |
+        # Crates such as soroban-poseidon are pulled from crates.io and depend on
+        # soroban-sdk from crates.io. The path rewrites above only redirect directly
+        # named dependency edges, so those transitive copies stay on crates.io and two
+        # soroban-sdk crates get linked -> duplicate `panic_impl` lang item (E0152,
+        # #1723). Collapse them in two moves, both over the crate list collected in
+        # "Patch SDK versions":
+        #   1. Add a [patch.crates-io] table pointing each crate at the local checkout.
+        #      A [patch] entry adds the path crate's version to crates.io resolution,
+        #      but on its own it leaves a transitive edge the lock pinned to a
+        #      different registry version untouched.
+        #   2. Pin each patched crate that the lock already references to the local
+        #      checkout's version with `cargo update --precise`, so the transitive
+        #      edges move onto it. Pinning (rather than letting cargo pick the highest
+        #      compatible version) stops a newer *published* SDK from being chosen for a
+        #      transitive edge and re-splitting the graph. (When the local checkout is
+        #      an incompatible major, the "Align the local soroban-sdk version with the
+        #      example" step above first relabels it to the example's version, so these
+        #      requirements stay satisfiable; see #1723.)
+        workspace_root=$(cargo metadata --format-version 1 --no-deps | jq -r '.workspace_root')
+        if [ -s "$RUNNER_TEMP/sdk-crates.tsv" ]; then
+          # Don't emit a second [patch.crates-io] header if one already exists upstream.
+          grep -q '^\[patch\.crates-io\]' "$workspace_root/Cargo.toml" || printf '\n[patch.crates-io]\n' >> "$workspace_root/Cargo.toml"
+          while IFS=$'\t' read -r crate crate_dir version; do
+            rel_path=$(realpath --relative-to="$workspace_root" "$crate_dir")
+            echo "$crate = { path = \"$rel_path\" }" >> "$workspace_root/Cargo.toml"
+          done < "$RUNNER_TEMP/sdk-crates.tsv"
+          # Build the -p specs from crates the committed lock already references.
+          # All crates share one workspace version, so a single --precise re-resolves
+          # everything in one pass (no stale intermediate locks).
+          specs=()
+          precise=
+          while IFS=$'\t' read -r crate crate_dir version; do
+            if grep -q "^name = \"$crate\"\$" "$workspace_root/Cargo.lock"; then
+              specs+=( -p "$crate" )
+              precise=$version
+            fi
+          done < "$RUNNER_TEMP/sdk-crates.tsv"
+          if [ "${#specs[@]}" -gt 0 ]; then
+            cargo update "${specs[@]}" --precise "$precise"
+          fi
+        fi
+
+    - name: Diff
+      run: (! git diff --exit-code) || (echo 'A diff is expected'; exit 1)
+
+    - name: Build soroban-examples
+      env:
+        CARGO_BUILD_RUSTFLAGS: "-A deprecated"
+        SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2: "true"
+      run: make build
+
+    - name: Set artifact name
+      id: artifact-name
+      run: echo "name=wasm-$(echo ${{ matrix.working-directory }} | sed 's/\//-/g')${{ matrix.experimental_spec_shaking_v2 && '-spec-shaking-v2' || '' }}" | tee -a $GITHUB_OUTPUT
+
+    - name: Upload WASM artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ steps.artifact-name.outputs.name }}
+        path: 'soroban-examples/${{ matrix.working-directory }}/**/*.wasm'
+        retention-days: 3
+
+    - name: Test soroban-examples
+      env:
+        CARGO_BUILD_RUSTFLAGS: "-A deprecated"
+        SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2: "true"
+      run: make test
+        
+    - name: Diff
+      run: git add -N . && git diff HEAD

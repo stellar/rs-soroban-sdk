@@ -1,8 +1,8 @@
-use crate as soroban_sdk;
+use crate::{self as soroban_sdk};
 use soroban_sdk::{
-    contract, contractimpl, contracttype, map, symbol_short, ConversionError, Env, TryFromVal,
+    contract, contractimpl, contracttype, map, symbol_short, ConversionError, Env, IntoVal,
+    TryFromVal, Val,
 };
-use stellar_xdr::curr as stellar_xdr;
 use stellar_xdr::{
     Limits, ReadXdr, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef,
     ScSpecTypeTuple, ScSpecTypeUdt,
@@ -47,7 +47,7 @@ impl Contract {
 #[test]
 fn test_functional() {
     let env = Env::default();
-    let contract_id = env.register_contract(None, Contract);
+    let contract_id = env.register(Contract, ());
 
     let a = Udt { a: 5, b: 7 };
     let b = Udt { a: 10, b: 14 };
@@ -58,7 +58,7 @@ fn test_functional() {
 #[test]
 fn test_long_names_functional() {
     let env = Env::default();
-    let contract_id = env.register_contract(None, Contract);
+    let contract_id = env.register(Contract, ());
 
     let a = UdtWithLongName {
         this_is_a_very_long_name_12345: 1_000_000_000_000,
@@ -126,7 +126,7 @@ fn test_error_on_partial_decode() {
 
 #[test]
 fn test_spec() {
-    let entries = ScSpecEntry::from_xdr(__SPEC_XDR_FN_ADD, Limits::none()).unwrap();
+    let entries = ScSpecEntry::from_xdr(Contract::spec_xdr_add(), Limits::none()).unwrap();
     let expect = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
         doc: "".try_into().unwrap(),
         name: "add".try_into().unwrap(),
@@ -169,7 +169,7 @@ fn test_spec() {
 #[test]
 fn test_spec_with_long_names() {
     let entries =
-        ScSpecEntry::from_xdr(__SPEC_XDR_FN_ADD_UDT_WITH_LONG_NAME, Limits::none()).unwrap();
+        ScSpecEntry::from_xdr(Contract::spec_xdr_add_udt_with_long_name(), Limits::none()).unwrap();
     let expect = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
         doc: "".try_into().unwrap(),
         name: "add_udt_with_long_name".try_into().unwrap(),
@@ -194,4 +194,37 @@ fn test_spec_with_long_names() {
         outputs: vec![ScSpecTypeDef::U64].try_into().unwrap(),
     });
     assert_eq!(entries, expect);
+}
+
+#[test]
+fn test_owned_to_val() {
+    let env = Env::default();
+
+    let u = Udt { a: 1, b: 2 };
+    let val: Val = u.clone().into_val(&env);
+    let rt: Udt = val.into_val(&env);
+
+    assert_eq!(u, rt);
+}
+
+#[test]
+fn test_ref_to_val() {
+    let env = Env::default();
+
+    let u = Udt { a: 1, b: 2 };
+    let val: Val = (&u).into_val(&env);
+    let rt: Udt = val.into_val(&env);
+
+    assert_eq!(u, rt);
+}
+
+#[test]
+fn test_double_ref_to_val() {
+    let env = Env::default();
+
+    let u = Udt { a: 1, b: 2 };
+    let val: Val = (&&u).into_val(&env);
+    let rt: Udt = val.into_val(&env);
+
+    assert_eq!(u, rt);
 }
