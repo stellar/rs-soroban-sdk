@@ -24,6 +24,29 @@ pub enum GenerateError {
 ///
 /// Construct with [`Default::default`]. The type is `non_exhaustive` so that
 /// options can be added without breaking callers.
+///
+/// ```
+/// use soroban_spec_rust::{types::generate_struct_with_options, GenerateOptions};
+/// use stellar_xdr::ScSpecUdtStructV0;
+///
+/// let spec = ScSpecUdtStructV0 {
+///     doc: "".try_into().unwrap(),
+///     lib: "".try_into().unwrap(),
+///     name: "Point".try_into().unwrap(),
+///     fields: Default::default(),
+/// };
+/// let tokens = generate_struct_with_options(&spec, &GenerateOptions::default()).unwrap();
+/// assert!(tokens.to_string().contains("struct Point"));
+/// ```
+///
+/// Because the type is `non_exhaustive`, callers outside this crate cannot
+/// construct it with a struct expression:
+///
+/// ```compile_fail
+/// use soroban_spec_rust::GenerateOptions;
+///
+/// let options = GenerateOptions {};
+/// ```
 #[derive(Default)]
 #[non_exhaustive]
 pub struct GenerateOptions {}

@@ -1,5 +1,8 @@
 //! Spec shaking is always on, and the `export` argument has been removed.
 //!
+//! The way the SDK decides which types to include in contract specs has changed, with spec shaking
+//! enabled and always on in v28.
+//!
 //! A contract's spec (the `contractspecv0` custom section in the Wasm binary) contains entries for
 //! every function, type, and event defined by the contract. When types or events are defined but
 //! not actually used at a contract boundary (parameters, return values, error returns, or event
@@ -11,7 +14,13 @@
 //! override either way. In soroban-sdk v27 the `experimental_spec_shaking_v2` feature offered an
 //! alternative, where the SDK emits an entry for everything and post-build tooling within the
 //! stellar-cli removes what the contract does not actually use. That feature is now the only
-//! behaviour, and the feature flag has been removed.
+//! behaviour, and the feature flag has been removed. A contract already using
+//! `OpenZeppelin/stellar-contracts` v0.7.0 or newer has the feature enabled automatically, and so
+//! already builds with the v28 behaviour.
+//!
+//! As a result the `export` parameter, available on some contract macros to control whether a type
+//! showed up in the contract spec, is no longer supported. It was deprecated in v27 when the
+//! `experimental_spec_shaking_v2` feature was enabled.
 //!
 //! ## How It Works
 //!
