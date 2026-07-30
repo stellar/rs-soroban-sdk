@@ -246,9 +246,8 @@ pub struct UsedVecElementNested {
     pub vec_inner: Vec<UsedVecInnerVecElement>,
 }
 
-// Used types declared with `export = false`: the argument is a no-op under
-// `experimental_spec_shaking_v2` (a deprecation warning is emitted by the
-// macro).
+// Used types declared with `export = false`: the argument is a no-op (a
+// deprecation warning is emitted by the macro).
 #[allow(deprecated)]
 mod export_false_used {
     use soroban_sdk::{contracterror, contractevent, contracttype, Symbol};

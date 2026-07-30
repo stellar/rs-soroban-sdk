@@ -21,6 +21,9 @@ wasm target supported by the Soroban runtime on Stellar.
 Build contracts with `stellar contract build` from [stellar-cli], which targets `wasm32v1-none` and
 applies the build settings the Soroban runtime requires. Do not build contracts with `cargo build`.
 
+Building a contract for wasm with a build system that does not support spec shaking produces a build
+error, because the SDK relies on the build system to shake the contract's spec.
+
 The `wasm32-unknown-unknown` target is not supported when building with Rust 1.82 or newer, because
 on those versions the target enables wasm features (reference-types, multi-value) that the Soroban
 environment does not support and that cannot be easily disabled. Building for

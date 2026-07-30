@@ -11,18 +11,20 @@
 //!    passed to [`bytes!`] or [`bytesn!`] in hex or binary form (e.g. `bytes!(&env, 1)` becomes
 //!    `bytes!(&env, 0x1)`). Array literals such as `bytes!(&env, [3, 2, 1])` are unaffected.
 //!
-//! 2. [The `export` argument is deprecated under the `experimental_spec_shaking_v2`
-//!    feature][v27_export]. Under spec shaking v2 the final spec is determined by
-//!    reachability from the contract boundary, so `export` no longer has any effect on
-//!    [`contracttype`], [`contracterror`], or [`contractevent`] and now emits a deprecation
-//!    warning. Remove `export = ...` from these annotations; it will be removed entirely in a
-//!    future release. Default (v1) builds are unaffected.
+//! 2. [Spec shaking v2 is always on, and the `export` argument is deprecated][v27_export].
+//!    The final spec is determined by reachability from the contract boundary, so `export` no
+//!    longer has any effect on [`contracttype`], [`contracterror`], or [`contractevent`] and now
+//!    emits a deprecation warning. Remove `export = ...` from these annotations; it will be
+//!    removed entirely in a future release. Because the SDK now always relies on post-build
+//!    tooling to shake the spec, contracts must be built with `stellar contract build` from
+//!    `stellar-cli` v25.2.0 or newer. See [`_spec_shaking`] for details.
 //!
 //! [`bytes!`]: crate::bytes
 //! [`bytesn!`]: crate::bytesn
 //! [`contracttype`]: crate::contracttype
 //! [`contracterror`]: crate::contracterror
 //! [`contractevent`]: crate::contractevent
+//! [`_spec_shaking`]: crate::_spec_shaking
 //!
 //! # Migrating from v25 to v26
 //!

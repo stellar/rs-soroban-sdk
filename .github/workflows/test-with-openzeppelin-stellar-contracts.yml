@@ -36,7 +36,6 @@ jobs:
       fail-fast: false
       matrix:
         working-directory: ${{ fromJSON(needs.collect-crates.outputs.dirs) }}
-        experimental_spec_shaking_v2: [true, false]
     defaults:
       run:
         working-directory: stellar-contracts/${{ matrix.working-directory }}
@@ -118,19 +117,6 @@ jobs:
           sed -i 's|'"$crate"' = { \(.*\)version = "[^"]*"\(.*\)|'"$crate"' = { \1path = "'"$rel_path"'" \2|g' Cargo.toml
         done < "$RUNNER_TEMP/sdk-crates.tsv"
 
-    - name: Enable experimental_spec_shaking_v2 feature
-      if: matrix.experimental_spec_shaking_v2
-      working-directory: stellar-contracts
-      run: |
-        # Add feature to path-patched entries with existing features
-        sed -i '/soroban-sdk = {.*path = /s|features = \[|features = ["experimental_spec_shaking_v2", |' Cargo.toml
-        # Add features field to path-patched entries without features
-        sed -i '/soroban-sdk = {.*path = /{/features/!s| }|, features = ["experimental_spec_shaking_v2"] }|}' Cargo.toml
-
-    # This step must run *after* "Enable experimental_spec_shaking_v2": that step's
-    # sed matches every `soroban-sdk = { ... path = ... }` line, so if the
-    # [patch.crates-io] entries below already existed it would add a `features` field
-    # to them, which Cargo ignores on patch entries and warns about.
     - name: Patch transitive crates.io dependencies
       working-directory: stellar-contracts
       run: |
@@ -188,7 +174,7 @@ jobs:
     - name: Set artifact name
       if: steps.check-if-contract.outputs.is-a-contract == 'true'
       id: artifact-name
-      run: echo "name=wasm-$(echo ${{ matrix.working-directory }} | sed 's/\//-/g')${{ matrix.experimental_spec_shaking_v2 && '-spec-shaking-v2' || '' }}" | tee -a $GITHUB_OUTPUT
+      run: echo "name=wasm-$(echo ${{ matrix.working-directory }} | sed 's/\//-/g')" | tee -a $GITHUB_OUTPUT
 
     - name: Upload WASM artifacts
       if: steps.check-if-contract.outputs.is-a-contract == 'true'

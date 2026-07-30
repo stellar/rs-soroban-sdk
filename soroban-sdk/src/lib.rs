@@ -24,6 +24,10 @@
 //! and applies the build settings the Soroban runtime requires. Do not build contracts with
 //! `cargo build`.
 //!
+//! Building a contract for wasm with a build system that does not support spec shaking produces a
+//! build error, because the SDK relies on the build system to shake the contract's spec. See
+//! [_spec_shaking].
+//!
 //! The `wasm32-unknown-unknown` target is not supported when building with Rust 1.82 or newer,
 //! because on those versions the target enables wasm features (reference-types, multi-value) that
 //! the Soroban environment does not support and that cannot be easily disabled. Building for
@@ -81,6 +85,7 @@
 
 pub mod _features;
 pub mod _migrating;
+pub mod _spec_shaking;
 
 #[cfg(all(target_family = "wasm", feature = "testutils"))]
 compile_error!("'testutils' feature is not supported on 'wasm' target");
@@ -144,7 +149,6 @@ const _: () = {
     // needs to have its spec shaken. See soroban_spec::shaking for constants and version detection.
     // The contractmeta! macro requires string literals, so we assert the literals match the
     // constants defined in soroban_spec::shaking.
-    #[cfg(feature = "experimental_spec_shaking_v2")]
     contractmeta!(key = "rssdk_spec_shaking", val = "2");
 };
 
@@ -220,18 +224,16 @@ pub use soroban_sdk_macros::symbol_short;
 /// - Enum variants must have a value convertible to u32.
 ///
 /// Includes the type in the contract spec so that clients can generate bindings
-/// for the type. By default, spec entries are only generated for `pub` types
-/// (or when `export = true` is explicitly set).
+/// for the type.
 ///
-/// ### `experimental_spec_shaking_v2`
+/// ### Spec Shaking
 ///
-/// When the [`experimental_spec_shaking_v2`][_features#experimental_spec_shaking_v2]
-/// feature is enabled, spec entries are generated for all types regardless of
-/// visibility, and markers are embedded that allow post-build tools to strip
-/// entries for errors that are neither used at a contract boundary nor thrown
-/// at one. The `export = ...` argument is a no-op under this feature and emits
-/// a deprecation warning at the macro call site; it will be removed in a future
-/// release. See [`_features`] for details.
+/// Spec entries are generated for all types regardless of visibility, and
+/// markers are embedded that allow post-build tools to strip entries for errors
+/// that are neither used at a contract boundary nor thrown at one. The
+/// `export = ...` argument is a no-op and emits a deprecation warning at the
+/// macro call site; it will be removed in a future release. See
+/// [`_spec_shaking`] for details.
 ///
 /// ### Examples
 ///
@@ -338,15 +340,11 @@ pub use soroban_sdk_macros::contracterror;
 /// contract.
 /// - Types for all contract types defined in the contract.
 ///
-/// ### `experimental_spec_shaking_v2`
+/// ### Spec Shaking
 ///
-/// When the [`experimental_spec_shaking_v2`][_features#experimental_spec_shaking_v2]
-/// feature is enabled, imported types are generated with `export = true` so
-/// they produce spec entries and markers in the importing contract. Post-build
-/// tools strip entries for imported types that are not used at the importing
-/// contract's boundary. Without this feature, imported types use
-/// `export = false` and do not produce spec entries. See [`_features`] for
-/// details.
+/// Imported types produce spec entries and markers in the importing contract.
+/// Post-build tools strip entries for imported types that are not used at the
+/// importing contract's boundary. See [`_spec_shaking`] for details.
 ///
 /// ### SHA-256 Verification
 ///
@@ -644,18 +642,15 @@ pub use soroban_sdk_macros::contractmeta;
 /// less in length.
 ///
 /// Includes the type in the contract spec so that clients can generate bindings
-/// for the type. By default, spec entries are only generated for `pub` types
-/// (or when `export = true` is explicitly set).
+/// for the type.
 ///
-/// ### `experimental_spec_shaking_v2`
+/// ### Spec Shaking
 ///
-/// When the [`experimental_spec_shaking_v2`][_features#experimental_spec_shaking_v2]
-/// feature is enabled, spec entries are generated for all types regardless of
-/// visibility, and markers are embedded that allow post-build tools to strip
-/// entries for types that are not used at a contract boundary. The
-/// `export = ...` argument is a no-op under this feature and emits a
-/// deprecation warning at the macro call site; it will be removed in a future
-/// release. See [`_features`] for details.
+/// Spec entries are generated for all types regardless of visibility, and
+/// markers are embedded that allow post-build tools to strip entries for types
+/// that are not used at a contract boundary. The `export = ...` argument is a
+/// no-op and emits a deprecation warning at the macro call site; it will be
+/// removed in a future release. See [`_spec_shaking`] for details.
 ///
 /// ### Examples
 ///
@@ -804,14 +799,12 @@ pub use soroban_sdk_macros::contracttype;
 /// Includes the event in the contract spec so that clients can generate bindings
 /// for the type and downstream systems can understand the meaning of the event.
 ///
-/// ### `experimental_spec_shaking_v2`
+/// ### Spec Shaking
 ///
-/// When the [`experimental_spec_shaking_v2`][_features#experimental_spec_shaking_v2]
-/// feature is enabled, markers are embedded that allow post-build tools to strip
-/// spec entries for events that are never published at a contract boundary. The
-/// `export = ...` argument is a no-op under this feature and emits a
-/// deprecation warning at the macro call site; it will be removed in a future
-/// release. See [`_features`] for details.
+/// Markers are embedded that allow post-build tools to strip spec entries for
+/// events that are never published at a contract boundary. The `export = ...`
+/// argument is a no-op and emits a deprecation warning at the macro call site;
+/// it will be removed in a future release. See [`_spec_shaking`] for details.
 ///
 /// ### Examples
 ///
@@ -1231,9 +1224,7 @@ mod into_val_for_contract_fn;
 #[allow(deprecated)]
 pub use into_val_for_contract_fn::IntoValForContractFn;
 
-#[cfg(feature = "experimental_spec_shaking_v2")]
 mod spec_shaking;
-#[cfg(feature = "experimental_spec_shaking_v2")]
 #[doc(hidden)]
 pub use spec_shaking::SpecShakingMarker;
 
