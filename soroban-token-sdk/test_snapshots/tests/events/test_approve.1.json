@@ -336,7 +336,7 @@
       "event": {
         "ext": "v0",
         "contract_id": "CDLDVFKHEZ2RVB3NG4UQA4VPD3TSHV6XMHXMHP2BSGCJ2IIWVTOHGDSG",
-        "type_": "contract",
+        "type": "contract",
         "body": {
           "v0": {
             "topics": [

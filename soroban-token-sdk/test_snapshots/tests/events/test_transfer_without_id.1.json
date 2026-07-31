@@ -62,7 +62,7 @@
       "event": {
         "ext": "v0",
         "contract_id": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHK3M",
-        "type_": "contract",
+        "type": "contract",
         "body": {
           "v0": {
             "topics": [
