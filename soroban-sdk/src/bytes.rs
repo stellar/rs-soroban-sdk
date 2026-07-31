@@ -1859,6 +1859,36 @@ mod test {
     }
 
     #[test]
+    fn test_append() {
+        let env = Env::default();
+
+        // append to empty bytes
+        let mut bin = Bytes::new(&env);
+        bin.append(&bytes![&env, [1, 2, 3]]);
+        assert_eq!(bin, bytes![&env, [1, 2, 3]]);
+        assert_eq!(bin.len(), 3);
+
+        // append to non-empty bytes
+        let mut bin = bytes![&env, [1, 2, 3]];
+        bin.append(&bytes![&env, [4, 5]]);
+        assert_eq!(bin, bytes![&env, [1, 2, 3, 4, 5]]);
+        assert_eq!(bin.len(), 5);
+
+        // append empty bytes is a no-op
+        let mut bin = bytes![&env, [1, 2, 3]];
+        bin.append(&bytes![&env]);
+        assert_eq!(bin, bytes![&env, [1, 2, 3]]);
+        assert_eq!(bin.len(), 3);
+
+        // appending does not modify the source
+        let mut bin = bytes![&env, [1, 2, 3]];
+        let other = bytes![&env, [4, 5]];
+        bin.append(&other);
+        assert_eq!(other, bytes![&env, [4, 5]]);
+        assert_eq!(other.len(), 2);
+    }
+
+    #[test]
     fn test_slice() {
         let env = Env::default();
         let bin = bytes![&env, [0, 1, 2, 3, 4]];
