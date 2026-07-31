@@ -410,8 +410,8 @@ pub trait StellarAssetInterface {
     ///
     /// # Events
     ///
-    /// Emits an event with topics `["set_admin", admin: Address], data =
-    /// [new_admin: Address]`
+    /// Emits an event with topics `["set_admin", admin: Address,
+    /// sep0011_asset: String], data = new_admin: Address`
     fn set_admin(env: Env, new_admin: Address);
 
     /// Returns the admin of the contract.
