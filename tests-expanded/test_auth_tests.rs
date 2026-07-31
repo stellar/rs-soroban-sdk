@@ -1184,6 +1184,15 @@ mod test_a {
             pub const fn spec_xdr() -> [u8; Error::__SPEC_XDR_REF.const_xdr_len()] {
                 Error::__SPEC_XDR_REF.const_to_xdr()
             }
+            pub const fn spec_id() -> [u8; 8usize] {
+                let xdr = Self::spec_xdr();
+                let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                    .update(&xdr)
+                    .finalize();
+                [
+                    hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+                ]
+            }
         }
         impl soroban_sdk::SpecShakingMarker for Error {
             #[doc(hidden)]
@@ -2772,6 +2781,15 @@ mod test_b {
                 );
             pub const fn spec_xdr() -> [u8; Error::__SPEC_XDR_REF.const_xdr_len()] {
                 Error::__SPEC_XDR_REF.const_to_xdr()
+            }
+            pub const fn spec_id() -> [u8; 8usize] {
+                let xdr = Self::spec_xdr();
+                let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                    .update(&xdr)
+                    .finalize();
+                [
+                    hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+                ]
             }
         }
         impl soroban_sdk::SpecShakingMarker for Error {

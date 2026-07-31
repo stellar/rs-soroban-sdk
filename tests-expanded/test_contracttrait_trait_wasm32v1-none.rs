@@ -74,6 +74,15 @@ impl MyStruct {
     pub const fn spec_xdr() -> [u8; MyStruct::__SPEC_XDR_REF.const_xdr_len()] {
         MyStruct::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for MyStruct {
     #[doc(hidden)]
@@ -82,7 +91,13 @@ impl soroban_sdk::SpecShakingMarker for MyStruct {
         <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x08\xd4\xa7b\xae1|\xdd";
+            static MARKER: [u8; 14usize] = {
+                let id = MyStruct::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -206,13 +221,28 @@ impl MyEnumUnit {
     pub const fn spec_xdr() -> [u8; MyEnumUnit::__SPEC_XDR_REF.const_xdr_len()] {
         MyEnumUnit::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for MyEnumUnit {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV12E\x1b4\x1c\x83\xab\xeb";
+            static MARKER: [u8; 14usize] = {
+                let id = MyEnumUnit::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -368,6 +398,15 @@ impl MyEnumVariants {
     pub const fn spec_xdr() -> [u8; MyEnumVariants::__SPEC_XDR_REF.const_xdr_len()] {
         MyEnumVariants::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for MyEnumVariants {
     #[doc(hidden)]
@@ -376,7 +415,13 @@ impl soroban_sdk::SpecShakingMarker for MyEnumVariants {
         <MyStruct as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <MyEnumUnit as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xceHo\xd4mpUm";
+            static MARKER: [u8; 14usize] = {
+                let id = MyEnumVariants::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }

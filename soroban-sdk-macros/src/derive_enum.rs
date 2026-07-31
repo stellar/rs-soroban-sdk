@@ -7,14 +7,14 @@ use syn::{
 };
 
 use stellar_xdr::{
-    Error as XdrError, ScSpecEntry, ScSpecTypeDef, ScSpecUdtUnionCaseTupleV0, ScSpecUdtUnionCaseV0,
-    ScSpecUdtUnionCaseVoidV0, ScSpecUdtUnionV0, StringM, VecM, WriteXdr, SCSYMBOL_LIMIT,
+    Error as XdrError, ScSpecTypeDef, ScSpecUdtUnionCaseTupleV0, ScSpecUdtUnionCaseV0,
+    ScSpecUdtUnionCaseVoidV0, ScSpecUdtUnionV0, StringM, VecM, SCSYMBOL_LIMIT,
 };
 
 use crate::{
     doc::docs_from_attrs,
     map_type::{const_ref_string, const_ref_type_def, map_type},
-    shaking, DEFAULT_XDR_RW_LIMITS,
+    shaking,
 };
 
 pub fn derive_type_enum(
@@ -200,6 +200,7 @@ pub fn derive_type_enum(
             "__SPEC_XDR_TYPE_{}",
             enum_ident.unraw().to_string().to_uppercase()
         );
+        let spec_id = shaking::generate_spec_id(path);
         quote! {
             #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
             pub static #spec_ident: [u8; #enum_ident::__SPEC_XDR_REF.const_xdr_len()] = #enum_ident::spec_xdr();
@@ -210,6 +211,8 @@ pub fn derive_type_enum(
                 pub const fn spec_xdr() -> [u8; #enum_ident::__SPEC_XDR_REF.const_xdr_len()] {
                     #enum_ident::__SPEC_XDR_REF.const_to_xdr()
                 }
+
+                #spec_id
             }
         }
     });
@@ -217,10 +220,7 @@ pub fn derive_type_enum(
     // SpecShakingMarker impl - only generated when spec is true and the
     // experimental_spec_shaking_v2 feature is enabled.
     let spec_shaking_impl = if cfg!(feature = "experimental_spec_shaking_v2") {
-        spec_entry.as_ref().map(|spec_entry| {
-            let spec_xdr = ScSpecEntry::UdtUnionV0(spec_entry.clone())
-                .to_xdr(DEFAULT_XDR_RW_LIMITS)
-                .unwrap();
+        spec_entry.as_ref().map(|_spec_entry| {
             // Flatten all variant field types for shaking calls, deduplicating
             // to avoid redundant calls for types that appear in multiple variants.
             let all_field_types =
@@ -230,7 +230,6 @@ pub fn derive_type_enum(
             shaking::generate_marker_impl(
                 path,
                 quote!(#enum_ident),
-                &spec_xdr,
                 all_field_types.cloned(),
                 None,
                 None,

@@ -103,6 +103,15 @@ impl UsedParamStruct {
     pub const fn spec_xdr() -> [u8; UsedParamStruct::__SPEC_XDR_REF.const_xdr_len()] {
         UsedParamStruct::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedParamStruct {
     #[doc(hidden)]
@@ -111,7 +120,13 @@ impl soroban_sdk::SpecShakingMarker for UsedParamStruct {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <UsedNestedInStruct as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1X\x03\xf6t\xc7\xd0\x01\"";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedParamStruct::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -255,6 +270,15 @@ impl UsedReturnEnum {
     pub const fn spec_xdr() -> [u8; UsedReturnEnum::__SPEC_XDR_REF.const_xdr_len()] {
         UsedReturnEnum::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedReturnEnum {
     #[doc(hidden)]
@@ -263,7 +287,13 @@ impl soroban_sdk::SpecShakingMarker for UsedReturnEnum {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xe7\xcf\x9b1n\x15\x13\xfe";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedReturnEnum::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -417,13 +447,28 @@ impl UsedParamIntEnum {
     pub const fn spec_xdr() -> [u8; UsedParamIntEnum::__SPEC_XDR_REF.const_xdr_len()] {
         UsedParamIntEnum::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedParamIntEnum {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xc2\xf4N\xbf\xebqvp";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedParamIntEnum::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -538,13 +583,28 @@ impl UsedErrorEnum {
     pub const fn spec_xdr() -> [u8; UsedErrorEnum::__SPEC_XDR_REF.const_xdr_len()] {
         UsedErrorEnum::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedErrorEnum {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1Hh\xdc\xaaa\x8d\xf7\r";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedErrorEnum::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -713,13 +773,28 @@ impl UsedPanicErrorEnum {
     pub const fn spec_xdr() -> [u8; UsedPanicErrorEnum::__SPEC_XDR_REF.const_xdr_len()] {
         UsedPanicErrorEnum::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedPanicErrorEnum {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\r\xb76\xae\x93D\xef\x1a";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedPanicErrorEnum::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -886,13 +961,28 @@ impl UsedAssertErrorEnum {
     pub const fn spec_xdr() -> [u8; UsedAssertErrorEnum::__SPEC_XDR_REF.const_xdr_len()] {
         UsedAssertErrorEnum::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedAssertErrorEnum {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x8b\x89\x1f#\xbd\x157\xf4";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedAssertErrorEnum::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -1064,6 +1154,15 @@ impl UsedNestedInStruct {
     pub const fn spec_xdr() -> [u8; UsedNestedInStruct::__SPEC_XDR_REF.const_xdr_len()] {
         UsedNestedInStruct::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedNestedInStruct {
     #[doc(hidden)]
@@ -1071,7 +1170,13 @@ impl soroban_sdk::SpecShakingMarker for UsedNestedInStruct {
     fn spec_shaking_marker() {
         <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x84\x08Y\xae\xa0\xf128";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedNestedInStruct::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -1179,6 +1284,15 @@ impl UsedVecElement {
     pub const fn spec_xdr() -> [u8; UsedVecElement::__SPEC_XDR_REF.const_xdr_len()] {
         UsedVecElement::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedVecElement {
     #[doc(hidden)]
@@ -1186,7 +1300,13 @@ impl soroban_sdk::SpecShakingMarker for UsedVecElement {
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xe2\x01y\xc9\x9a\xf8\xedt";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedVecElement::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -1304,13 +1424,28 @@ impl UsedMapKey {
     pub const fn spec_xdr() -> [u8; UsedMapKey::__SPEC_XDR_REF.const_xdr_len()] {
         UsedMapKey::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedMapKey {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1[\xf4R\xdf\xdd\xb4\xb0\xbc";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedMapKey::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -1411,6 +1546,15 @@ impl UsedMapVal {
     pub const fn spec_xdr() -> [u8; UsedMapVal::__SPEC_XDR_REF.const_xdr_len()] {
         UsedMapVal::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedMapVal {
     #[doc(hidden)]
@@ -1418,7 +1562,13 @@ impl soroban_sdk::SpecShakingMarker for UsedMapVal {
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xaaX8\xde\xef\xbb6%";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedMapVal::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -1529,6 +1679,15 @@ impl UsedOptionElement {
     pub const fn spec_xdr() -> [u8; UsedOptionElement::__SPEC_XDR_REF.const_xdr_len()] {
         UsedOptionElement::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedOptionElement {
     #[doc(hidden)]
@@ -1536,7 +1695,13 @@ impl soroban_sdk::SpecShakingMarker for UsedOptionElement {
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xb3/\x97\xd5\x06\xbd3B";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedOptionElement::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -1642,6 +1807,15 @@ impl UsedResultOk {
     pub const fn spec_xdr() -> [u8; UsedResultOk::__SPEC_XDR_REF.const_xdr_len()] {
         UsedResultOk::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedResultOk {
     #[doc(hidden)]
@@ -1649,7 +1823,13 @@ impl soroban_sdk::SpecShakingMarker for UsedResultOk {
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1k\xe4zxB\xd1+\x02";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedResultOk::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -1778,6 +1958,15 @@ impl UsedEventSimple {
     pub const fn spec_xdr() -> [u8; UsedEventSimple::__SPEC_XDR_REF.const_xdr_len()] {
         UsedEventSimple::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventSimple {
     #[doc(hidden)]
@@ -1786,7 +1975,13 @@ impl soroban_sdk::SpecShakingMarker for UsedEventSimple {
         <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1v1\x0eP\xa9C\xc7*";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedEventSimple::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -1884,13 +2079,28 @@ impl UsedEventTopicType {
     pub const fn spec_xdr() -> [u8; UsedEventTopicType::__SPEC_XDR_REF.const_xdr_len()] {
         UsedEventTopicType::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventTopicType {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xf5\xd4\x9b\xa3\xccI\x13\xf7";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedEventTopicType::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -2020,6 +2230,15 @@ impl UsedEventWithTopicType {
     pub const fn spec_xdr() -> [u8; UsedEventWithTopicType::__SPEC_XDR_REF.const_xdr_len()] {
         UsedEventWithTopicType::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventWithTopicType {
     #[doc(hidden)]
@@ -2028,7 +2247,13 @@ impl soroban_sdk::SpecShakingMarker for UsedEventWithTopicType {
         <UsedEventTopicType as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1q^\xe2&\x9di\x9d\x0e";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedEventWithTopicType::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -2131,6 +2356,15 @@ impl UsedEventDataType {
     pub const fn spec_xdr() -> [u8; UsedEventDataType::__SPEC_XDR_REF.const_xdr_len()] {
         UsedEventDataType::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventDataType {
     #[doc(hidden)]
@@ -2139,7 +2373,13 @@ impl soroban_sdk::SpecShakingMarker for UsedEventDataType {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xc2 \x1b\xdc\xc8gxZ";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedEventDataType::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -2278,6 +2518,15 @@ impl UsedEventWithDataType {
     pub const fn spec_xdr() -> [u8; UsedEventWithDataType::__SPEC_XDR_REF.const_xdr_len()] {
         UsedEventWithDataType::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventWithDataType {
     #[doc(hidden)]
@@ -2286,7 +2535,13 @@ impl soroban_sdk::SpecShakingMarker for UsedEventWithDataType {
         <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <UsedEventDataType as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1q\xa3z;6\xa6R\x01";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedEventWithDataType::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -2384,6 +2639,15 @@ impl UsedEventTopicOuter {
     pub const fn spec_xdr() -> [u8; UsedEventTopicOuter::__SPEC_XDR_REF.const_xdr_len()] {
         UsedEventTopicOuter::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventTopicOuter {
     #[doc(hidden)]
@@ -2391,7 +2655,13 @@ impl soroban_sdk::SpecShakingMarker for UsedEventTopicOuter {
     fn spec_shaking_marker() {
         <UsedEventTopicInner as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x94\xc7w/_\xebXc";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedEventTopicOuter::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -2506,6 +2776,15 @@ impl UsedEventTopicInner {
     pub const fn spec_xdr() -> [u8; UsedEventTopicInner::__SPEC_XDR_REF.const_xdr_len()] {
         UsedEventTopicInner::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventTopicInner {
     #[doc(hidden)]
@@ -2513,7 +2792,13 @@ impl soroban_sdk::SpecShakingMarker for UsedEventTopicInner {
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV16\x83?\xf0\xcdW\xb1/";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedEventTopicInner::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -2649,6 +2934,15 @@ impl UsedEventWithNestedTopic {
     pub const fn spec_xdr() -> [u8; UsedEventWithNestedTopic::__SPEC_XDR_REF.const_xdr_len()] {
         UsedEventWithNestedTopic::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventWithNestedTopic {
     #[doc(hidden)]
@@ -2657,7 +2951,13 @@ impl soroban_sdk::SpecShakingMarker for UsedEventWithNestedTopic {
         <UsedEventTopicOuter as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xe3\xf2\x9b5%a\xfb\xd6";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedEventWithNestedTopic::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -2755,6 +3055,15 @@ impl UsedEventDataOuter {
     pub const fn spec_xdr() -> [u8; UsedEventDataOuter::__SPEC_XDR_REF.const_xdr_len()] {
         UsedEventDataOuter::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventDataOuter {
     #[doc(hidden)]
@@ -2762,7 +3071,13 @@ impl soroban_sdk::SpecShakingMarker for UsedEventDataOuter {
     fn spec_shaking_marker() {
         <UsedEventDataInner as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1'\xf2\xa2\xb9\xd0)\xc0u";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedEventDataOuter::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -2877,6 +3192,15 @@ impl UsedEventDataInner {
     pub const fn spec_xdr() -> [u8; UsedEventDataInner::__SPEC_XDR_REF.const_xdr_len()] {
         UsedEventDataInner::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventDataInner {
     #[doc(hidden)]
@@ -2884,7 +3208,13 @@ impl soroban_sdk::SpecShakingMarker for UsedEventDataInner {
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x0c\xf0\xf6w\xfd\x1a\x1b\x94";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedEventDataInner::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -3019,6 +3349,15 @@ impl UsedEventWithNestedData {
     pub const fn spec_xdr() -> [u8; UsedEventWithNestedData::__SPEC_XDR_REF.const_xdr_len()] {
         UsedEventWithNestedData::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventWithNestedData {
     #[doc(hidden)]
@@ -3027,7 +3366,13 @@ impl soroban_sdk::SpecShakingMarker for UsedEventWithNestedData {
         <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <UsedEventDataOuter as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1 \xfbl\x04B\x82\xc0\xb4";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedEventWithNestedData::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -3128,13 +3473,28 @@ impl UsedRefTopicType {
     pub const fn spec_xdr() -> [u8; UsedRefTopicType::__SPEC_XDR_REF.const_xdr_len()] {
         UsedRefTopicType::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedRefTopicType {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1@\xb9LO\xf9\xd1\xe8\xe2";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedRefTopicType::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -3244,6 +3604,15 @@ impl UsedRefDataType {
     pub const fn spec_xdr() -> [u8; UsedRefDataType::__SPEC_XDR_REF.const_xdr_len()] {
         UsedRefDataType::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedRefDataType {
     #[doc(hidden)]
@@ -3251,7 +3620,13 @@ impl soroban_sdk::SpecShakingMarker for UsedRefDataType {
     fn spec_shaking_marker() {
         <UsedRefDataInner as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1'\xbd_A\r\x9a\x89\x02";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedRefDataType::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -3359,6 +3734,15 @@ impl UsedRefDataInner {
     pub const fn spec_xdr() -> [u8; UsedRefDataInner::__SPEC_XDR_REF.const_xdr_len()] {
         UsedRefDataInner::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedRefDataInner {
     #[doc(hidden)]
@@ -3366,7 +3750,13 @@ impl soroban_sdk::SpecShakingMarker for UsedRefDataInner {
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1K\xdf'8m/\xe8\x1d";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedRefDataInner::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -3503,6 +3893,15 @@ impl<'a> UsedEventWithRefs<'a> {
     pub const fn spec_xdr() -> [u8; UsedEventWithRefs::__SPEC_XDR_REF.const_xdr_len()] {
         UsedEventWithRefs::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl<'a> soroban_sdk::SpecShakingMarker for UsedEventWithRefs<'a> {
     #[doc(hidden)]
@@ -3511,7 +3910,13 @@ impl<'a> soroban_sdk::SpecShakingMarker for UsedEventWithRefs<'a> {
         <&'a UsedRefTopicType as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <&'a UsedRefDataType as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1[Q+\xe9\xde\xd5\xf2>";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedEventWithRefs::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -3600,6 +4005,15 @@ impl UsedTupleElement {
     pub const fn spec_xdr() -> [u8; UsedTupleElement::__SPEC_XDR_REF.const_xdr_len()] {
         UsedTupleElement::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedTupleElement {
     #[doc(hidden)]
@@ -3607,7 +4021,13 @@ impl soroban_sdk::SpecShakingMarker for UsedTupleElement {
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xde\x1dMa\x01\xec\xb0A";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedTupleElement::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -3718,6 +4138,15 @@ impl UsedTupleReturnElement {
     pub const fn spec_xdr() -> [u8; UsedTupleReturnElement::__SPEC_XDR_REF.const_xdr_len()] {
         UsedTupleReturnElement::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedTupleReturnElement {
     #[doc(hidden)]
@@ -3725,7 +4154,13 @@ impl soroban_sdk::SpecShakingMarker for UsedTupleReturnElement {
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1Y\xa66\xb3\xecxE\x13";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedTupleReturnElement::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -3838,6 +4273,15 @@ impl UsedVecInnerVecElement {
     pub const fn spec_xdr() -> [u8; UsedVecInnerVecElement::__SPEC_XDR_REF.const_xdr_len()] {
         UsedVecInnerVecElement::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedVecInnerVecElement {
     #[doc(hidden)]
@@ -3845,7 +4289,13 @@ impl soroban_sdk::SpecShakingMarker for UsedVecInnerVecElement {
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xcf@%X\xde+J@";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedVecInnerVecElement::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -3958,6 +4408,15 @@ impl UsedVecInnerElement {
     pub const fn spec_xdr() -> [u8; UsedVecInnerElement::__SPEC_XDR_REF.const_xdr_len()] {
         UsedVecInnerElement::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedVecInnerElement {
     #[doc(hidden)]
@@ -3965,7 +4424,13 @@ impl soroban_sdk::SpecShakingMarker for UsedVecInnerElement {
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xb4\xabN]\xe3\xeaA\xd6";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedVecInnerElement::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -4112,6 +4577,15 @@ impl UsedVecElementNested {
     pub const fn spec_xdr() -> [u8; UsedVecElementNested::__SPEC_XDR_REF.const_xdr_len()] {
         UsedVecElementNested::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedVecElementNested {
     #[doc(hidden)]
@@ -4121,7 +4595,13 @@ impl soroban_sdk::SpecShakingMarker for UsedVecElementNested {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <Vec<UsedVecInnerVecElement> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x13?J\x12d\xden|";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedVecElementNested::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -4256,6 +4736,15 @@ mod export_false_used {
         pub const fn spec_xdr() -> [u8; UsedExportFalseStruct::__SPEC_XDR_REF.const_xdr_len()] {
             UsedExportFalseStruct::__SPEC_XDR_REF.const_to_xdr()
         }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for UsedExportFalseStruct {
         #[doc(hidden)]
@@ -4263,7 +4752,13 @@ mod export_false_used {
         fn spec_shaking_marker() {
             <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1\x7f\xc5\xceo\xc3ST\x08";
+                static MARKER: [u8; 14usize] = {
+                    let id = UsedExportFalseStruct::spec_id();
+                    [
+                        83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4],
+                        id[5], id[6], id[7],
+                    ]
+                };
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
             }
         }
@@ -4377,13 +4872,28 @@ mod export_false_used {
         pub const fn spec_xdr() -> [u8; UsedExportFalseError::__SPEC_XDR_REF.const_xdr_len()] {
             UsedExportFalseError::__SPEC_XDR_REF.const_to_xdr()
         }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for UsedExportFalseError {
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1\r\xd6\r \xfc\xdb\xea\xf3";
+                static MARKER: [u8; 14usize] = {
+                    let id = UsedExportFalseError::spec_id();
+                    [
+                        83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4],
+                        id[5], id[6], id[7],
+                    ]
+                };
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
             }
         }
@@ -4578,6 +5088,15 @@ mod export_false_used {
         pub const fn spec_xdr() -> [u8; UsedExportFalseEvent::__SPEC_XDR_REF.const_xdr_len()] {
             UsedExportFalseEvent::__SPEC_XDR_REF.const_to_xdr()
         }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for UsedExportFalseEvent {
         #[doc(hidden)]
@@ -4586,7 +5105,13 @@ mod export_false_used {
             <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1\x9a\x14*\xbc\x82a\x08X";
+                static MARKER: [u8; 14usize] = {
+                    let id = UsedExportFalseEvent::spec_id();
+                    [
+                        83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4],
+                        id[5], id[6], id[7],
+                    ]
+                };
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
             }
         }
@@ -4676,6 +5201,15 @@ impl UsedNonPubStruct {
     pub const fn spec_xdr() -> [u8; UsedNonPubStruct::__SPEC_XDR_REF.const_xdr_len()] {
         UsedNonPubStruct::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedNonPubStruct {
     #[doc(hidden)]
@@ -4683,7 +5217,13 @@ impl soroban_sdk::SpecShakingMarker for UsedNonPubStruct {
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1p\x8c\x0fN!\x082\xd8";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedNonPubStruct::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -4789,13 +5329,28 @@ impl UsedNonPubError {
     pub const fn spec_xdr() -> [u8; UsedNonPubError::__SPEC_XDR_REF.const_xdr_len()] {
         UsedNonPubError::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedNonPubError {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xa9<\xd8+\xb7\xa7\r\x17";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedNonPubError::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -4969,6 +5524,15 @@ impl UsedRecursiveRoot {
     pub const fn spec_xdr() -> [u8; UsedRecursiveRoot::__SPEC_XDR_REF.const_xdr_len()] {
         UsedRecursiveRoot::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedRecursiveRoot {
     #[doc(hidden)]
@@ -4976,7 +5540,13 @@ impl soroban_sdk::SpecShakingMarker for UsedRecursiveRoot {
     fn spec_shaking_marker() {
         <UsedRecursiveNode as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1u2\x0b\x97\xae\xcd\x86\xbf";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedRecursiveRoot::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -5130,6 +5700,15 @@ impl UsedRecursiveNode {
     pub const fn spec_xdr() -> [u8; UsedRecursiveNode::__SPEC_XDR_REF.const_xdr_len()] {
         UsedRecursiveNode::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedRecursiveNode {
     #[doc(hidden)]
@@ -5138,7 +5717,13 @@ impl soroban_sdk::SpecShakingMarker for UsedRecursiveNode {
         <UsedLeaf as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <UsedRecursiveLeaf as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1*\\\x9c\xf4e\xaa\x1e]";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedRecursiveNode::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -5293,6 +5878,15 @@ impl UsedRecursiveLeaf {
     pub const fn spec_xdr() -> [u8; UsedRecursiveLeaf::__SPEC_XDR_REF.const_xdr_len()] {
         UsedRecursiveLeaf::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedRecursiveLeaf {
     #[doc(hidden)]
@@ -5300,7 +5894,13 @@ impl soroban_sdk::SpecShakingMarker for UsedRecursiveLeaf {
     fn spec_shaking_marker() {
         <Vec<UsedRecursiveRoot> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1?\xd9\xb3q\xdep>\xf3";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedRecursiveLeaf::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -5406,6 +6006,15 @@ impl UsedLeaf {
     pub const fn spec_xdr() -> [u8; UsedLeaf::__SPEC_XDR_REF.const_xdr_len()] {
         UsedLeaf::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedLeaf {
     #[doc(hidden)]
@@ -5413,7 +6022,13 @@ impl soroban_sdk::SpecShakingMarker for UsedLeaf {
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xe6Q\xd5T\x13\x8a\xb7l";
+            static MARKER: [u8; 14usize] = {
+                let id = UsedLeaf::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -5841,6 +6456,15 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; StructA::__SPEC_XDR_REF.const_xdr_len()] {
             StructA::__SPEC_XDR_REF.const_to_xdr()
         }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for StructA {
         #[doc(hidden)]
@@ -5849,7 +6473,13 @@ mod wasm_imported {
             <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <bool as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1\xb6\x1c\xfd\xdfhY-d";
+                static MARKER: [u8; 14usize] = {
+                    let id = StructA::spec_id();
+                    [
+                        83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4],
+                        id[5], id[6], id[7],
+                    ]
+                };
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
             }
         }
@@ -5993,6 +6623,15 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; StructB::__SPEC_XDR_REF.const_xdr_len()] {
             StructB::__SPEC_XDR_REF.const_to_xdr()
         }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for StructB {
         #[doc(hidden)]
@@ -6001,7 +6640,13 @@ mod wasm_imported {
             <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <soroban_sdk::String as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1\xf3\xc4\xd3\x8c\xc1w\xe9\x18";
+                static MARKER: [u8; 14usize] = {
+                    let id = StructB::spec_id();
+                    [
+                        83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4],
+                        id[5], id[6], id[7],
+                    ]
+                };
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
             }
         }
@@ -6149,6 +6794,15 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; StructC::__SPEC_XDR_REF.const_xdr_len()] {
             StructC::__SPEC_XDR_REF.const_to_xdr()
         }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for StructC {
         #[doc(hidden)]
@@ -6157,7 +6811,13 @@ mod wasm_imported {
             <soroban_sdk::Vec<u32> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1\xa3\x16\n\x8f\xc9\x92\xd2\x11";
+                static MARKER: [u8; 14usize] = {
+                    let id = StructC::spec_id();
+                    [
+                        83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4],
+                        id[5], id[6], id[7],
+                    ]
+                };
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
             }
         }
@@ -6298,6 +6958,15 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; StructTupleA::__SPEC_XDR_REF.const_xdr_len()] {
             StructTupleA::__SPEC_XDR_REF.const_to_xdr()
         }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for StructTupleA {
         #[doc(hidden)]
@@ -6306,7 +6975,13 @@ mod wasm_imported {
             <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1\xcf)\x97]S\xb2\xfd)";
+                static MARKER: [u8; 14usize] = {
+                    let id = StructTupleA::spec_id();
+                    [
+                        83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4],
+                        id[5], id[6], id[7],
+                    ]
+                };
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
             }
         }
@@ -6443,6 +7118,15 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; StructTupleB::__SPEC_XDR_REF.const_xdr_len()] {
             StructTupleB::__SPEC_XDR_REF.const_to_xdr()
         }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for StructTupleB {
         #[doc(hidden)]
@@ -6451,7 +7135,13 @@ mod wasm_imported {
             <u128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <u128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1x\xd98\x9c\x1ao\xac\x8c";
+                static MARKER: [u8; 14usize] = {
+                    let id = StructTupleB::spec_id();
+                    [
+                        83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4],
+                        id[5], id[6], id[7],
+                    ]
+                };
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
             }
         }
@@ -6589,6 +7279,15 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; StructTupleC::__SPEC_XDR_REF.const_xdr_len()] {
             StructTupleC::__SPEC_XDR_REF.const_to_xdr()
         }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for StructTupleC {
         #[doc(hidden)]
@@ -6597,7 +7296,13 @@ mod wasm_imported {
             <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1\xc5=\x81\xc1\"\xafT\xd9";
+                static MARKER: [u8; 14usize] = {
+                    let id = StructTupleC::spec_id();
+                    [
+                        83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4],
+                        id[5], id[6], id[7],
+                    ]
+                };
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
             }
         }
@@ -6747,13 +7452,28 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; EnumA::__SPEC_XDR_REF.const_xdr_len()] {
             EnumA::__SPEC_XDR_REF.const_to_xdr()
         }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for EnumA {
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1\xa2=N\xc1p\x95\x90\xb2";
+                static MARKER: [u8; 14usize] = {
+                    let id = EnumA::spec_id();
+                    [
+                        83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4],
+                        id[5], id[6], id[7],
+                    ]
+                };
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
             }
         }
@@ -6986,6 +7706,15 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; EnumB::__SPEC_XDR_REF.const_xdr_len()] {
             EnumB::__SPEC_XDR_REF.const_to_xdr()
         }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for EnumB {
         #[doc(hidden)]
@@ -6993,7 +7722,13 @@ mod wasm_imported {
         fn spec_shaking_marker() {
             <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1'\x1b\0DSH^\xcc";
+                static MARKER: [u8; 14usize] = {
+                    let id = EnumB::spec_id();
+                    [
+                        83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4],
+                        id[5], id[6], id[7],
+                    ]
+                };
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
             }
         }
@@ -7235,6 +7970,15 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; EnumC::__SPEC_XDR_REF.const_xdr_len()] {
             EnumC::__SPEC_XDR_REF.const_to_xdr()
         }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for EnumC {
         #[doc(hidden)]
@@ -7243,7 +7987,13 @@ mod wasm_imported {
             <StructA as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <StructTupleA as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1\xa0\xdd\x8f\xdc\xc9W\xbe\xc2";
+                static MARKER: [u8; 14usize] = {
+                    let id = EnumC::spec_id();
+                    [
+                        83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4],
+                        id[5], id[6], id[7],
+                    ]
+                };
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
             }
         }
@@ -7434,13 +8184,28 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; EnumIntA::__SPEC_XDR_REF.const_xdr_len()] {
             EnumIntA::__SPEC_XDR_REF.const_to_xdr()
         }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for EnumIntA {
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1V]\x80\\~\x1a\x08/";
+                static MARKER: [u8; 14usize] = {
+                    let id = EnumIntA::spec_id();
+                    [
+                        83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4],
+                        id[5], id[6], id[7],
+                    ]
+                };
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
             }
         }
@@ -7580,13 +8345,28 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; EnumIntB::__SPEC_XDR_REF.const_xdr_len()] {
             EnumIntB::__SPEC_XDR_REF.const_to_xdr()
         }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for EnumIntB {
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1,\x9c\xc0_\xed_)\x85";
+                static MARKER: [u8; 14usize] = {
+                    let id = EnumIntB::spec_id();
+                    [
+                        83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4],
+                        id[5], id[6], id[7],
+                    ]
+                };
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
             }
         }
@@ -7726,13 +8506,28 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; EnumIntC::__SPEC_XDR_REF.const_xdr_len()] {
             EnumIntC::__SPEC_XDR_REF.const_to_xdr()
         }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for EnumIntC {
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1`\xca\xda\x19\xb9c\xf0/";
+                static MARKER: [u8; 14usize] = {
+                    let id = EnumIntC::spec_id();
+                    [
+                        83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4],
+                        id[5], id[6], id[7],
+                    ]
+                };
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
             }
         }
@@ -7874,13 +8669,28 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; ErrorA::__SPEC_XDR_REF.const_xdr_len()] {
             ErrorA::__SPEC_XDR_REF.const_to_xdr()
         }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for ErrorA {
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1\xe9R\xa7\xe8b\x99\xa2\xc3";
+                static MARKER: [u8; 14usize] = {
+                    let id = ErrorA::spec_id();
+                    [
+                        83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4],
+                        id[5], id[6], id[7],
+                    ]
+                };
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
             }
         }
@@ -8092,13 +8902,28 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; ErrorB::__SPEC_XDR_REF.const_xdr_len()] {
             ErrorB::__SPEC_XDR_REF.const_to_xdr()
         }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for ErrorB {
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1\x1d1\xd6\xfb\x88\xd2=\xe3";
+                static MARKER: [u8; 14usize] = {
+                    let id = ErrorB::spec_id();
+                    [
+                        83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4],
+                        id[5], id[6], id[7],
+                    ]
+                };
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
             }
         }
@@ -8310,13 +9135,28 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; ErrorC::__SPEC_XDR_REF.const_xdr_len()] {
             ErrorC::__SPEC_XDR_REF.const_to_xdr()
         }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for ErrorC {
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1\xb9\x01\xafj\xe0c\xa3\r";
+                static MARKER: [u8; 14usize] = {
+                    let id = ErrorC::spec_id();
+                    [
+                        83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4],
+                        id[5], id[6], id[7],
+                    ]
+                };
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
             }
         }
@@ -8527,6 +9367,15 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; EventA::__SPEC_XDR_REF.const_xdr_len()] {
             EventA::__SPEC_XDR_REF.const_to_xdr()
         }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for EventA {
         #[doc(hidden)]
@@ -8535,7 +9384,13 @@ mod wasm_imported {
             <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <soroban_sdk::String as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1K\xe6\x8ej\x19\x9en\xbd";
+                static MARKER: [u8; 14usize] = {
+                    let id = EventA::spec_id();
+                    [
+                        83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4],
+                        id[5], id[6], id[7],
+                    ]
+                };
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
             }
         }
@@ -8683,6 +9538,15 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; EventB::__SPEC_XDR_REF.const_xdr_len()] {
             EventB::__SPEC_XDR_REF.const_to_xdr()
         }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for EventB {
         #[doc(hidden)]
@@ -8692,7 +9556,13 @@ mod wasm_imported {
             <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1\xe6\xaa\xefz\x17i$\x15";
+                static MARKER: [u8; 14usize] = {
+                    let id = EventB::spec_id();
+                    [
+                        83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4],
+                        id[5], id[6], id[7],
+                    ]
+                };
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
             }
         }
@@ -8843,6 +9713,15 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; EventC::__SPEC_XDR_REF.const_xdr_len()] {
             EventC::__SPEC_XDR_REF.const_to_xdr()
         }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for EventC {
         #[doc(hidden)]
@@ -8852,7 +9731,13 @@ mod wasm_imported {
             <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1\x16\xd6\xdf\xe7\xdb\xb4W@";
+                static MARKER: [u8; 14usize] = {
+                    let id = EventC::spec_id();
+                    [
+                        83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4],
+                        id[5], id[6], id[7],
+                    ]
+                };
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
             }
         }
@@ -8951,13 +9836,28 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; EventD::__SPEC_XDR_REF.const_xdr_len()] {
             EventD::__SPEC_XDR_REF.const_to_xdr()
         }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for EventD {
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
             {
-                static MARKER: [u8; 14usize] = *b"SpEcV1\x15\xf0Wx\x15\x83\xc0:";
+                static MARKER: [u8; 14usize] = {
+                    let id = EventD::spec_id();
+                    [
+                        83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4],
+                        id[5], id[6], id[7],
+                    ]
+                };
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
             }
         }
@@ -9045,6 +9945,15 @@ impl UnusedStruct {
     pub const fn spec_xdr() -> [u8; UnusedStruct::__SPEC_XDR_REF.const_xdr_len()] {
         UnusedStruct::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UnusedStruct {
     #[doc(hidden)]
@@ -9052,7 +9961,13 @@ impl soroban_sdk::SpecShakingMarker for UnusedStruct {
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1|\x9c\t\x1e\xf5\xa8\x19\xa0";
+            static MARKER: [u8; 14usize] = {
+                let id = UnusedStruct::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -9181,6 +10096,15 @@ impl UnusedEnum {
     pub const fn spec_xdr() -> [u8; UnusedEnum::__SPEC_XDR_REF.const_xdr_len()] {
         UnusedEnum::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UnusedEnum {
     #[doc(hidden)]
@@ -9188,7 +10112,13 @@ impl soroban_sdk::SpecShakingMarker for UnusedEnum {
     fn spec_shaking_marker() {
         <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1/\x82\x9a0\xbe@\x0eZ";
+            static MARKER: [u8; 14usize] = {
+                let id = UnusedEnum::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -9336,13 +10266,28 @@ impl UnusedIntEnum {
     pub const fn spec_xdr() -> [u8; UnusedIntEnum::__SPEC_XDR_REF.const_xdr_len()] {
         UnusedIntEnum::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UnusedIntEnum {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x0c\xdd\xee~,\x83\xe4\x9c";
+            static MARKER: [u8; 14usize] = {
+                let id = UnusedIntEnum::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -9464,6 +10409,15 @@ impl UnusedEvent {
     pub const fn spec_xdr() -> [u8; UnusedEvent::__SPEC_XDR_REF.const_xdr_len()] {
         UnusedEvent::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UnusedEvent {
     #[doc(hidden)]
@@ -9472,7 +10426,13 @@ impl soroban_sdk::SpecShakingMarker for UnusedEvent {
         <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x10\xe8\xf6\xcc\xea\xc3Sb";
+            static MARKER: [u8; 14usize] = {
+                let id = UnusedEvent::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -9558,13 +10518,28 @@ impl UnusedPubError {
     pub const fn spec_xdr() -> [u8; UnusedPubError::__SPEC_XDR_REF.const_xdr_len()] {
         UnusedPubError::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UnusedPubError {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xe7\xf0{7\xdd\x90z=";
+            static MARKER: [u8; 14usize] = {
+                let id = UnusedPubError::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -9735,6 +10710,15 @@ impl UnusedNonContractFnParam {
     pub const fn spec_xdr() -> [u8; UnusedNonContractFnParam::__SPEC_XDR_REF.const_xdr_len()] {
         UnusedNonContractFnParam::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UnusedNonContractFnParam {
     #[doc(hidden)]
@@ -9742,7 +10726,13 @@ impl soroban_sdk::SpecShakingMarker for UnusedNonContractFnParam {
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x81\xbc\xdb\xb4\xc1\xcb\xbd\xc5";
+            static MARKER: [u8; 14usize] = {
+                let id = UnusedNonContractFnParam::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -9856,6 +10846,15 @@ impl UnusedNonContractFnReturn {
     pub const fn spec_xdr() -> [u8; UnusedNonContractFnReturn::__SPEC_XDR_REF.const_xdr_len()] {
         UnusedNonContractFnReturn::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UnusedNonContractFnReturn {
     #[doc(hidden)]
@@ -9863,7 +10862,13 @@ impl soroban_sdk::SpecShakingMarker for UnusedNonContractFnReturn {
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x7fe\x1c\n\x87g\x1d\xc0";
+            static MARKER: [u8; 14usize] = {
+                let id = UnusedNonContractFnReturn::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -9971,6 +10976,15 @@ impl UnusedNonPubStruct {
     pub const fn spec_xdr() -> [u8; UnusedNonPubStruct::__SPEC_XDR_REF.const_xdr_len()] {
         UnusedNonPubStruct::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UnusedNonPubStruct {
     #[doc(hidden)]
@@ -9978,7 +10992,13 @@ impl soroban_sdk::SpecShakingMarker for UnusedNonPubStruct {
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xa8;,%}]PA";
+            static MARKER: [u8; 14usize] = {
+                let id = UnusedNonPubStruct::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -10086,13 +11106,28 @@ impl UnusedNonPubError {
     pub const fn spec_xdr() -> [u8; UnusedNonPubError::__SPEC_XDR_REF.const_xdr_len()] {
         UnusedNonPubError::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UnusedNonPubError {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xd9_\x99\"=\xc6FM";
+            static MARKER: [u8; 14usize] = {
+                let id = UnusedNonPubError::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }

@@ -73,6 +73,15 @@ impl MyStruct {
     pub const fn spec_xdr() -> [u8; MyStruct::__SPEC_XDR_REF.const_xdr_len()] {
         MyStruct::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for MyStruct {
     #[doc(hidden)]
@@ -510,6 +519,15 @@ impl MyEnumUnit {
     pub const fn spec_xdr() -> [u8; MyEnumUnit::__SPEC_XDR_REF.const_xdr_len()] {
         MyEnumUnit::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for MyEnumUnit {
     #[doc(hidden)]
@@ -900,6 +918,15 @@ impl MyEnumVariants {
         });
     pub const fn spec_xdr() -> [u8; MyEnumVariants::__SPEC_XDR_REF.const_xdr_len()] {
         MyEnumVariants::__SPEC_XDR_REF.const_to_xdr()
+    }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for MyEnumVariants {

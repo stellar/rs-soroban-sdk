@@ -3,14 +3,12 @@ use proc_macro2::{Literal, TokenStream as TokenStream2};
 use quote::{format_ident, quote};
 use syn::{ext::IdentExt as _, Attribute, DataStruct, Error, Ident, Path, Visibility};
 
-use stellar_xdr::{
-    ScSpecEntry, ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, StringM, WriteXdr,
-};
+use stellar_xdr::{ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, StringM};
 
 use crate::{
     doc::docs_from_attrs,
     map_type::{const_ref_string, const_ref_type_def, map_type},
-    shaking, DEFAULT_XDR_RW_LIMITS,
+    shaking,
 };
 
 // TODO: Add field attribute for including/excluding fields in types.
@@ -114,6 +112,7 @@ pub fn derive_type_struct(
             "__SPEC_XDR_TYPE_{}",
             ident.unraw().to_string().to_uppercase()
         );
+        let spec_id = shaking::generate_spec_id(path);
         quote! {
             #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
             pub static #spec_ident: [u8; #ident::__SPEC_XDR_REF.const_xdr_len()] = #ident::spec_xdr();
@@ -124,6 +123,8 @@ pub fn derive_type_struct(
                 pub const fn spec_xdr() -> [u8; #ident::__SPEC_XDR_REF.const_xdr_len()] {
                     #ident::__SPEC_XDR_REF.const_to_xdr()
                 }
+
+                #spec_id
             }
         }
     });
@@ -131,14 +132,10 @@ pub fn derive_type_struct(
     // SpecShakingMarker impl - only generated when spec is true and the
     // experimental_spec_shaking_v2 feature is enabled.
     let spec_shaking_impl = if cfg!(feature = "experimental_spec_shaking_v2") {
-        spec_entry.as_ref().map(|spec_entry| {
-            let spec_xdr = ScSpecEntry::UdtStructV0(spec_entry.clone())
-                .to_xdr(DEFAULT_XDR_RW_LIMITS)
-                .unwrap();
+        spec_entry.as_ref().map(|_spec_entry| {
             shaking::generate_marker_impl(
                 path,
                 quote!(#ident),
-                &spec_xdr,
                 field_types.iter().cloned(),
                 None,
                 None,

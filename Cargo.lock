@@ -1371,6 +1371,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "sha2-const"
+version = "0.1.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dbb83f144cbda94be5d2278400eee9e0a03eb68b5504349943655b7b1603c4af"
+
+[[package]]
 name = "sha3"
 version = "0.10.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1541,6 +1547,7 @@ dependencies = [
  "serde",
  "serde_json",
  "sha2",
+ "sha2-const",
  "soroban-env-guest",
  "soroban-env-host",
  "soroban-ledger-snapshot",

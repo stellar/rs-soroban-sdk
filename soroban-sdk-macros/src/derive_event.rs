@@ -4,7 +4,7 @@ use crate::{
     doc::docs_from_attrs,
     export_arg_v2_deprecation,
     map_type::{const_ref_string, const_ref_symbol, const_ref_type_def, map_type},
-    shaking, symbol, DEFAULT_XDR_RW_LIMITS,
+    shaking, symbol,
 };
 use darling::{ast::NestedMeta, Error, FromMeta};
 use heck::ToSnakeCase;
@@ -12,8 +12,8 @@ use proc_macro2::Span;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use stellar_xdr::{
-    ScSpecEntry, ScSpecEventDataFormat, ScSpecEventParamLocationV0, ScSpecEventParamV0,
-    ScSpecEventV0, ScSymbol, StringM, WriteXdr,
+    ScSpecEventDataFormat, ScSpecEventParamLocationV0, ScSpecEventParamV0, ScSpecEventV0, ScSymbol,
+    StringM,
 };
 use syn::{ext::IdentExt as _, parse2, spanned::Spanned, Data, DeriveInput, Fields, LitStr, Path};
 
@@ -247,6 +247,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     };
 
     // Generated code spec.
+    let spec_id = shaking::generate_spec_id(path);
     let spec_gen = quote! {
         #export_gen
         pub static #spec_ident: [u8; #ident::__SPEC_XDR_REF.const_xdr_len()] = #ident::spec_xdr();
@@ -257,6 +258,8 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
             pub const fn spec_xdr() -> [u8; #ident::__SPEC_XDR_REF.const_xdr_len()] {
                 #ident::__SPEC_XDR_REF.const_to_xdr()
             }
+
+            #spec_id
         }
     };
 
@@ -266,9 +269,6 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         Some(shaking::generate_marker_impl(
             path,
             quote!(#ident),
-            &ScSpecEntry::EventV0(spec_entry.clone())
-                .to_xdr(DEFAULT_XDR_RW_LIMITS)
-                .unwrap(),
             field_types.iter().cloned(),
             Some(quote!(#gen_impl)),
             Some(quote!(#gen_types)),

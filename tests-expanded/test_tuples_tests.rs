@@ -1213,6 +1213,15 @@ mod test {
             pub const fn spec_xdr() -> [u8; ContractContext::__SPEC_XDR_REF.const_xdr_len()] {
                 ContractContext::__SPEC_XDR_REF.const_to_xdr()
             }
+            pub const fn spec_id() -> [u8; 8usize] {
+                let xdr = Self::spec_xdr();
+                let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                    .update(&xdr)
+                    .finalize();
+                [
+                    hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+                ]
+            }
         }
         impl soroban_sdk::SpecShakingMarker for ContractContext {
             #[doc(hidden)]
@@ -1787,6 +1796,15 @@ mod test {
             pub const fn spec_xdr() -> [u8; SubContractInvocation::__SPEC_XDR_REF.const_xdr_len()] {
                 SubContractInvocation::__SPEC_XDR_REF.const_to_xdr()
             }
+            pub const fn spec_id() -> [u8; 8usize] {
+                let xdr = Self::spec_xdr();
+                let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                    .update(&xdr)
+                    .finalize();
+                [
+                    hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+                ]
+            }
         }
         impl soroban_sdk::SpecShakingMarker for SubContractInvocation {
             #[doc(hidden)]
@@ -2293,6 +2311,15 @@ mod test {
             pub const fn spec_xdr(
             ) -> [u8; CreateContractHostFnContext::__SPEC_XDR_REF.const_xdr_len()] {
                 CreateContractHostFnContext::__SPEC_XDR_REF.const_to_xdr()
+            }
+            pub const fn spec_id() -> [u8; 8usize] {
+                let xdr = Self::spec_xdr();
+                let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                    .update(&xdr)
+                    .finalize();
+                [
+                    hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+                ]
             }
         }
         impl soroban_sdk::SpecShakingMarker for CreateContractHostFnContext {
@@ -2844,6 +2871,15 @@ mod test {
             ) -> [u8; CreateContractWithConstructorHostFnContext::__SPEC_XDR_REF.const_xdr_len()]
             {
                 CreateContractWithConstructorHostFnContext::__SPEC_XDR_REF.const_to_xdr()
+            }
+            pub const fn spec_id() -> [u8; 8usize] {
+                let xdr = Self::spec_xdr();
+                let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                    .update(&xdr)
+                    .finalize();
+                [
+                    hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+                ]
             }
         }
         impl soroban_sdk::SpecShakingMarker for CreateContractWithConstructorHostFnContext {
@@ -3539,6 +3575,15 @@ mod test {
             pub const fn spec_xdr() -> [u8; Context::__SPEC_XDR_REF.const_xdr_len()] {
                 Context::__SPEC_XDR_REF.const_to_xdr()
             }
+            pub const fn spec_id() -> [u8; 8usize] {
+                let xdr = Self::spec_xdr();
+                let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                    .update(&xdr)
+                    .finalize();
+                [
+                    hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+                ]
+            }
         }
         impl soroban_sdk::SpecShakingMarker for Context {
             #[doc(hidden)]
@@ -4232,6 +4277,15 @@ mod test {
             pub const fn spec_xdr() -> [u8; ContractExecutable::__SPEC_XDR_REF.const_xdr_len()] {
                 ContractExecutable::__SPEC_XDR_REF.const_to_xdr()
             }
+            pub const fn spec_id() -> [u8; 8usize] {
+                let xdr = Self::spec_xdr();
+                let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                    .update(&xdr)
+                    .finalize();
+                [
+                    hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+                ]
+            }
         }
         impl soroban_sdk::SpecShakingMarker for ContractExecutable {
             #[doc(hidden)]
@@ -4836,6 +4890,15 @@ mod test {
             pub const fn spec_xdr() -> [u8; InvokerContractAuthEntry::__SPEC_XDR_REF.const_xdr_len()]
             {
                 InvokerContractAuthEntry::__SPEC_XDR_REF.const_to_xdr()
+            }
+            pub const fn spec_id() -> [u8; 8usize] {
+                let xdr = Self::spec_xdr();
+                let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                    .update(&xdr)
+                    .finalize();
+                [
+                    hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+                ]
             }
         }
         impl soroban_sdk::SpecShakingMarker for InvokerContractAuthEntry {
@@ -5603,6 +5666,15 @@ mod test {
                 );
             pub const fn spec_xdr() -> [u8; Executable::__SPEC_XDR_REF.const_xdr_len()] {
                 Executable::__SPEC_XDR_REF.const_to_xdr()
+            }
+            pub const fn spec_id() -> [u8; 8usize] {
+                let xdr = Self::spec_xdr();
+                let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                    .update(&xdr)
+                    .finalize();
+                [
+                    hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+                ]
             }
         }
         impl soroban_sdk::SpecShakingMarker for Executable {

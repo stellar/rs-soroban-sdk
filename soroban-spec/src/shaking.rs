@@ -66,7 +66,7 @@ pub fn spec_shaking_version_for_meta(meta: &[ScMetaEntry]) -> u32 {
 }
 
 /// Magic bytes that identify a spec marker: `SpEcV1`
-const MAGIC: &[u8; 6] = b"SpEcV1";
+pub const MAGIC: &[u8; 6] = b"SpEcV1";
 
 /// Total length of a spec marker (6-byte prefix + 8-byte hash).
 const LEN: usize = 14;

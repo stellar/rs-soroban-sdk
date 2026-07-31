@@ -84,13 +84,28 @@ impl Flag {
     pub const fn spec_xdr() -> [u8; Flag::__SPEC_XDR_REF.const_xdr_len()] {
         Flag::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for Flag {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1g\x19\x8d\xc6\x8aP\xeb\xb7";
+            static MARKER: [u8; 14usize] = {
+                let id = Flag::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -187,13 +202,28 @@ impl Error {
     pub const fn spec_xdr() -> [u8; Error::__SPEC_XDR_REF.const_xdr_len()] {
         Error::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for Error {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xbc\x04\x04\xea\xa4\x9e6(";
+            static MARKER: [u8; 14usize] = {
+                let id = Error::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }

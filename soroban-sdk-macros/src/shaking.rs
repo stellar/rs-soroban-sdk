@@ -1,8 +1,11 @@
-//! Generates the `SpecShakingMarker` impl for contract types.
+//! Generates the `spec_id` const fn and the `SpecShakingMarker` impl for
+//! contract types.
 //!
-//! The marker is a byte array in the data section with a distinctive pattern:
+//! Every type gets a `spec_id()`, which is the first 64 bits of the SHA256 of
+//! its spec entry's XDR. The marker is a byte array in the data section with a
+//! distinctive pattern, built from that id:
 //! - 6 bytes: "SpEcV1" prefix
-//! - 8 bytes: first 64 bits of SHA256 hash of the spec entry XDR
+//! - 8 bytes: the type's `spec_id()`
 //!
 //! Markers are embedded in `spec_shaking_marker()` functions with a volatile read.
 //! When the type is used, the function is called and the marker is included.
@@ -14,9 +17,36 @@
 //! 3. Match against specs in contractspecv0 section (by hashing each spec)
 //! 4. Strip unused specs from contractspecv0
 
-use proc_macro2::TokenStream as TokenStream2;
+use proc_macro2::{Literal, TokenStream as TokenStream2};
 use quote::quote;
 use syn::{Path, Type};
+
+/// Length of a spec id: the truncated SHA256 that a marker carries after its
+/// magic prefix.
+const ID_LEN: usize = 8;
+
+/// Generates the `spec_id` const fn for a type.
+///
+/// The id is the first `ID_LEN` bytes of the SHA256 of the spec entry's XDR. It
+/// is the value a marker carries after its magic prefix, and the value
+/// post-processing tools match against the entries in `contractspecv0`.
+///
+/// The hash is taken at const evaluation time over the very bytes the spec
+/// entry encodes to, because parts of an entry, such as the fully qualified
+/// name of the type, are only known once const evaluation resolves them.
+pub fn generate_spec_id(path: &Path) -> TokenStream2 {
+    let id_len = ID_LEN;
+    let hash_bytes = (0..ID_LEN).map(Literal::usize_unsuffixed);
+    quote! {
+        pub const fn spec_id() -> [u8; #id_len] {
+            let xdr = Self::spec_xdr();
+            let hash = #path::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [#(hash[#hash_bytes]),*]
+        }
+    }
+}
 
 /// Generates the `SpecShakingMarker` impl for a type.
 ///
@@ -36,7 +66,6 @@ use syn::{Path, Type};
 pub fn generate_marker_impl<'a, I>(
     path: &Path,
     ident: TokenStream2,
-    spec_xdr: &[u8],
     field_types: I,
     gen_impl: Option<TokenStream2>,
     gen_types: Option<TokenStream2>,
@@ -45,9 +74,11 @@ pub fn generate_marker_impl<'a, I>(
 where
     I: Iterator<Item = &'a Type>,
 {
-    let marker = soroban_spec::shaking::generate_marker_for_xdr(spec_xdr);
-    let marker_lit = proc_macro2::Literal::byte_string(&marker);
-    let marker_len = marker.len();
+    // The marker's magic prefix, emitted a byte at a time so the marker can be
+    // assembled from the id.
+    let magic = soroban_spec::shaking::MAGIC.iter().map(|b| *b);
+    let marker_len = soroban_spec::shaking::MAGIC.len() + ID_LEN;
+    let id_bytes = (0..ID_LEN).map(Literal::usize_unsuffixed);
 
     let field_type_markers: Vec<_> = field_types.collect();
     let gen_impl = gen_impl.unwrap_or_default();
@@ -64,7 +95,14 @@ where
                 {
                     // Marker in data section. Post-build tools can scan for "SpEcV1"
                     // patterns and match against specs in contractspecv0.
-                    static MARKER: [u8; #marker_len] = *#marker_lit;
+                    //
+                    // The type is named rather than reached through `Self`
+                    // because a static is an item, and an item does not inherit
+                    // `Self` from the scope it is written in.
+                    static MARKER: [u8; #marker_len] = {
+                        let id = #ident::spec_id();
+                        [#(#magic,)* #(id[#id_bytes]),*]
+                    };
                     // Volatile read prevents DCE of this function and keeps MARKER
                     // in the data section. We only read a single `u8` from the start
                     // of the array because merely taking a volatile reference to the

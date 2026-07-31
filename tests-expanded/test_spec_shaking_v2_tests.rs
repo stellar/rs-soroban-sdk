@@ -214,6 +214,15 @@ impl UsedParamStruct {
     pub const fn spec_xdr() -> [u8; UsedParamStruct::__SPEC_XDR_REF.const_xdr_len()] {
         UsedParamStruct::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedParamStruct {
     #[doc(hidden)]
@@ -675,6 +684,15 @@ impl UsedReturnEnum {
         });
     pub const fn spec_xdr() -> [u8; UsedReturnEnum::__SPEC_XDR_REF.const_xdr_len()] {
         UsedReturnEnum::__SPEC_XDR_REF.const_to_xdr()
+    }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedReturnEnum {
@@ -1211,6 +1229,15 @@ impl UsedParamIntEnum {
     pub const fn spec_xdr() -> [u8; UsedParamIntEnum::__SPEC_XDR_REF.const_xdr_len()] {
         UsedParamIntEnum::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedParamIntEnum {
     #[doc(hidden)]
@@ -1563,6 +1590,15 @@ impl UsedErrorEnum {
     pub const fn spec_xdr() -> [u8; UsedErrorEnum::__SPEC_XDR_REF.const_xdr_len()] {
         UsedErrorEnum::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedErrorEnum {
     #[doc(hidden)]
@@ -1732,6 +1768,15 @@ impl UsedPanicErrorEnum {
     pub const fn spec_xdr() -> [u8; UsedPanicErrorEnum::__SPEC_XDR_REF.const_xdr_len()] {
         UsedPanicErrorEnum::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedPanicErrorEnum {
     #[doc(hidden)]
@@ -1898,6 +1943,15 @@ impl UsedAssertErrorEnum {
         );
     pub const fn spec_xdr() -> [u8; UsedAssertErrorEnum::__SPEC_XDR_REF.const_xdr_len()] {
         UsedAssertErrorEnum::__SPEC_XDR_REF.const_to_xdr()
+    }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedAssertErrorEnum {
@@ -2070,6 +2124,15 @@ impl UsedNestedInStruct {
         });
     pub const fn spec_xdr() -> [u8; UsedNestedInStruct::__SPEC_XDR_REF.const_xdr_len()] {
         UsedNestedInStruct::__SPEC_XDR_REF.const_to_xdr()
+    }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedNestedInStruct {
@@ -2448,6 +2511,15 @@ impl UsedVecElement {
         });
     pub const fn spec_xdr() -> [u8; UsedVecElement::__SPEC_XDR_REF.const_xdr_len()] {
         UsedVecElement::__SPEC_XDR_REF.const_to_xdr()
+    }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedVecElement {
@@ -2837,6 +2909,15 @@ impl UsedMapKey {
     pub const fn spec_xdr() -> [u8; UsedMapKey::__SPEC_XDR_REF.const_xdr_len()] {
         UsedMapKey::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedMapKey {
     #[doc(hidden)]
@@ -3172,6 +3253,15 @@ impl UsedMapVal {
         });
     pub const fn spec_xdr() -> [u8; UsedMapVal::__SPEC_XDR_REF.const_xdr_len()] {
         UsedMapVal::__SPEC_XDR_REF.const_to_xdr()
+    }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedMapVal {
@@ -3550,6 +3640,15 @@ impl UsedOptionElement {
     pub const fn spec_xdr() -> [u8; UsedOptionElement::__SPEC_XDR_REF.const_xdr_len()] {
         UsedOptionElement::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedOptionElement {
     #[doc(hidden)]
@@ -3925,6 +4024,15 @@ impl UsedResultOk {
         });
     pub const fn spec_xdr() -> [u8; UsedResultOk::__SPEC_XDR_REF.const_xdr_len()] {
         UsedResultOk::__SPEC_XDR_REF.const_to_xdr()
+    }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedResultOk {
@@ -4323,6 +4431,15 @@ impl UsedEventSimple {
     pub const fn spec_xdr() -> [u8; UsedEventSimple::__SPEC_XDR_REF.const_xdr_len()] {
         UsedEventSimple::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventSimple {
     #[doc(hidden)]
@@ -4423,6 +4540,15 @@ impl UsedEventTopicType {
         });
     pub const fn spec_xdr() -> [u8; UsedEventTopicType::__SPEC_XDR_REF.const_xdr_len()] {
         UsedEventTopicType::__SPEC_XDR_REF.const_to_xdr()
+    }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventTopicType {
@@ -4791,6 +4917,15 @@ impl UsedEventWithTopicType {
     pub const fn spec_xdr() -> [u8; UsedEventWithTopicType::__SPEC_XDR_REF.const_xdr_len()] {
         UsedEventWithTopicType::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventWithTopicType {
     #[doc(hidden)]
@@ -4896,6 +5031,15 @@ impl UsedEventDataType {
         });
     pub const fn spec_xdr() -> [u8; UsedEventDataType::__SPEC_XDR_REF.const_xdr_len()] {
         UsedEventDataType::__SPEC_XDR_REF.const_to_xdr()
+    }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventDataType {
@@ -5351,6 +5495,15 @@ impl UsedEventWithDataType {
     pub const fn spec_xdr() -> [u8; UsedEventWithDataType::__SPEC_XDR_REF.const_xdr_len()] {
         UsedEventWithDataType::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventWithDataType {
     #[doc(hidden)]
@@ -5451,6 +5604,15 @@ impl UsedEventTopicOuter {
         });
     pub const fn spec_xdr() -> [u8; UsedEventTopicOuter::__SPEC_XDR_REF.const_xdr_len()] {
         UsedEventTopicOuter::__SPEC_XDR_REF.const_to_xdr()
+    }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventTopicOuter {
@@ -5839,6 +6001,15 @@ impl UsedEventTopicInner {
         });
     pub const fn spec_xdr() -> [u8; UsedEventTopicInner::__SPEC_XDR_REF.const_xdr_len()] {
         UsedEventTopicInner::__SPEC_XDR_REF.const_to_xdr()
+    }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventTopicInner {
@@ -6248,6 +6419,15 @@ impl UsedEventWithNestedTopic {
     pub const fn spec_xdr() -> [u8; UsedEventWithNestedTopic::__SPEC_XDR_REF.const_xdr_len()] {
         UsedEventWithNestedTopic::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventWithNestedTopic {
     #[doc(hidden)]
@@ -6348,6 +6528,15 @@ impl UsedEventDataOuter {
         });
     pub const fn spec_xdr() -> [u8; UsedEventDataOuter::__SPEC_XDR_REF.const_xdr_len()] {
         UsedEventDataOuter::__SPEC_XDR_REF.const_to_xdr()
+    }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventDataOuter {
@@ -6734,6 +6923,15 @@ impl UsedEventDataInner {
         });
     pub const fn spec_xdr() -> [u8; UsedEventDataInner::__SPEC_XDR_REF.const_xdr_len()] {
         UsedEventDataInner::__SPEC_XDR_REF.const_to_xdr()
+    }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventDataInner {
@@ -7140,6 +7338,15 @@ impl UsedEventWithNestedData {
     pub const fn spec_xdr() -> [u8; UsedEventWithNestedData::__SPEC_XDR_REF.const_xdr_len()] {
         UsedEventWithNestedData::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedEventWithNestedData {
     #[doc(hidden)]
@@ -7243,6 +7450,15 @@ impl UsedRefTopicType {
         });
     pub const fn spec_xdr() -> [u8; UsedRefTopicType::__SPEC_XDR_REF.const_xdr_len()] {
         UsedRefTopicType::__SPEC_XDR_REF.const_to_xdr()
+    }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedRefTopicType {
@@ -7590,6 +7806,15 @@ impl UsedRefDataType {
         });
     pub const fn spec_xdr() -> [u8; UsedRefDataType::__SPEC_XDR_REF.const_xdr_len()] {
         UsedRefDataType::__SPEC_XDR_REF.const_to_xdr()
+    }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedRefDataType {
@@ -7969,6 +8194,15 @@ impl UsedRefDataInner {
         });
     pub const fn spec_xdr() -> [u8; UsedRefDataInner::__SPEC_XDR_REF.const_xdr_len()] {
         UsedRefDataInner::__SPEC_XDR_REF.const_to_xdr()
+    }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedRefDataInner {
@@ -8377,6 +8611,15 @@ impl<'a> UsedEventWithRefs<'a> {
     pub const fn spec_xdr() -> [u8; UsedEventWithRefs::__SPEC_XDR_REF.const_xdr_len()] {
         UsedEventWithRefs::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl<'a> soroban_sdk::SpecShakingMarker for UsedEventWithRefs<'a> {
     #[doc(hidden)]
@@ -8468,6 +8711,15 @@ impl UsedTupleElement {
         });
     pub const fn spec_xdr() -> [u8; UsedTupleElement::__SPEC_XDR_REF.const_xdr_len()] {
         UsedTupleElement::__SPEC_XDR_REF.const_to_xdr()
+    }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedTupleElement {
@@ -8849,6 +9101,15 @@ impl UsedTupleReturnElement {
         });
     pub const fn spec_xdr() -> [u8; UsedTupleReturnElement::__SPEC_XDR_REF.const_xdr_len()] {
         UsedTupleReturnElement::__SPEC_XDR_REF.const_to_xdr()
+    }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedTupleReturnElement {
@@ -9235,6 +9496,15 @@ impl UsedVecInnerVecElement {
     pub const fn spec_xdr() -> [u8; UsedVecInnerVecElement::__SPEC_XDR_REF.const_xdr_len()] {
         UsedVecInnerVecElement::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedVecInnerVecElement {
     #[doc(hidden)]
@@ -9619,6 +9889,15 @@ impl UsedVecInnerElement {
         });
     pub const fn spec_xdr() -> [u8; UsedVecInnerElement::__SPEC_XDR_REF.const_xdr_len()] {
         UsedVecInnerElement::__SPEC_XDR_REF.const_to_xdr()
+    }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedVecInnerElement {
@@ -10038,6 +10317,15 @@ impl UsedVecElementNested {
         });
     pub const fn spec_xdr() -> [u8; UsedVecElementNested::__SPEC_XDR_REF.const_xdr_len()] {
         UsedVecElementNested::__SPEC_XDR_REF.const_to_xdr()
+    }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedVecElementNested {
@@ -10554,6 +10842,15 @@ mod export_false_used {
         pub const fn spec_xdr() -> [u8; UsedExportFalseStruct::__SPEC_XDR_REF.const_xdr_len()] {
             UsedExportFalseStruct::__SPEC_XDR_REF.const_to_xdr()
         }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for UsedExportFalseStruct {
         #[doc(hidden)]
@@ -10942,6 +11239,15 @@ mod export_false_used {
         pub const fn spec_xdr() -> [u8; UsedExportFalseError::__SPEC_XDR_REF.const_xdr_len()] {
             UsedExportFalseError::__SPEC_XDR_REF.const_to_xdr()
         }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for UsedExportFalseError {
         #[doc(hidden)]
@@ -11137,6 +11443,15 @@ mod export_false_used {
         pub const fn spec_xdr() -> [u8; UsedExportFalseEvent::__SPEC_XDR_REF.const_xdr_len()] {
             UsedExportFalseEvent::__SPEC_XDR_REF.const_to_xdr()
         }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for UsedExportFalseEvent {
         #[doc(hidden)]
@@ -11229,6 +11544,15 @@ impl UsedNonPubStruct {
         });
     pub const fn spec_xdr() -> [u8; UsedNonPubStruct::__SPEC_XDR_REF.const_xdr_len()] {
         UsedNonPubStruct::__SPEC_XDR_REF.const_to_xdr()
+    }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedNonPubStruct {
@@ -11606,6 +11930,15 @@ impl UsedNonPubError {
     pub const fn spec_xdr() -> [u8; UsedNonPubError::__SPEC_XDR_REF.const_xdr_len()] {
         UsedNonPubError::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedNonPubError {
     #[doc(hidden)]
@@ -11779,6 +12112,15 @@ impl UsedRecursiveRoot {
         });
     pub const fn spec_xdr() -> [u8; UsedRecursiveRoot::__SPEC_XDR_REF.const_xdr_len()] {
         UsedRecursiveRoot::__SPEC_XDR_REF.const_to_xdr()
+    }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedRecursiveRoot {
@@ -12203,6 +12545,15 @@ impl UsedRecursiveNode {
         });
     pub const fn spec_xdr() -> [u8; UsedRecursiveNode::__SPEC_XDR_REF.const_xdr_len()] {
         UsedRecursiveNode::__SPEC_XDR_REF.const_to_xdr()
+    }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedRecursiveNode {
@@ -12750,6 +13101,15 @@ impl UsedRecursiveLeaf {
     pub const fn spec_xdr() -> [u8; UsedRecursiveLeaf::__SPEC_XDR_REF.const_xdr_len()] {
         UsedRecursiveLeaf::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UsedRecursiveLeaf {
     #[doc(hidden)]
@@ -13131,6 +13491,15 @@ impl UsedLeaf {
         });
     pub const fn spec_xdr() -> [u8; UsedLeaf::__SPEC_XDR_REF.const_xdr_len()] {
         UsedLeaf::__SPEC_XDR_REF.const_to_xdr()
+    }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UsedLeaf {
@@ -14234,6 +14603,15 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; StructA::__SPEC_XDR_REF.const_xdr_len()] {
             StructA::__SPEC_XDR_REF.const_to_xdr()
         }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for StructA {
         #[doc(hidden)]
@@ -14692,6 +15070,15 @@ mod wasm_imported {
             });
         pub const fn spec_xdr() -> [u8; StructB::__SPEC_XDR_REF.const_xdr_len()] {
             StructB::__SPEC_XDR_REF.const_to_xdr()
+        }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
         }
     }
     impl soroban_sdk::SpecShakingMarker for StructB {
@@ -15156,6 +15543,15 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; StructC::__SPEC_XDR_REF.const_xdr_len()] {
             StructC::__SPEC_XDR_REF.const_to_xdr()
         }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for StructC {
         #[doc(hidden)]
@@ -15618,6 +16014,15 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; StructTupleA::__SPEC_XDR_REF.const_xdr_len()] {
             StructTupleA::__SPEC_XDR_REF.const_to_xdr()
         }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for StructTupleA {
         #[doc(hidden)]
@@ -16041,6 +16446,15 @@ mod wasm_imported {
             });
         pub const fn spec_xdr() -> [u8; StructTupleB::__SPEC_XDR_REF.const_xdr_len()] {
             StructTupleB::__SPEC_XDR_REF.const_to_xdr()
+        }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
         }
     }
     impl soroban_sdk::SpecShakingMarker for StructTupleB {
@@ -16466,6 +16880,15 @@ mod wasm_imported {
             });
         pub const fn spec_xdr() -> [u8; StructTupleC::__SPEC_XDR_REF.const_xdr_len()] {
             StructTupleC::__SPEC_XDR_REF.const_to_xdr()
+        }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
         }
     }
     impl soroban_sdk::SpecShakingMarker for StructTupleC {
@@ -16903,6 +17326,15 @@ mod wasm_imported {
             });
         pub const fn spec_xdr() -> [u8; EnumA::__SPEC_XDR_REF.const_xdr_len()] {
             EnumA::__SPEC_XDR_REF.const_to_xdr()
+        }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
         }
     }
     impl soroban_sdk::SpecShakingMarker for EnumA {
@@ -17459,6 +17891,15 @@ mod wasm_imported {
             });
         pub const fn spec_xdr() -> [u8; EnumB::__SPEC_XDR_REF.const_xdr_len()] {
             EnumB::__SPEC_XDR_REF.const_to_xdr()
+        }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
         }
     }
     impl soroban_sdk::SpecShakingMarker for EnumB {
@@ -18141,6 +18582,15 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; EnumC::__SPEC_XDR_REF.const_xdr_len()] {
             EnumC::__SPEC_XDR_REF.const_to_xdr()
         }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for EnumC {
         #[doc(hidden)]
@@ -18734,6 +19184,15 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; EnumIntA::__SPEC_XDR_REF.const_xdr_len()] {
             EnumIntA::__SPEC_XDR_REF.const_to_xdr()
         }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for EnumIntA {
         #[doc(hidden)]
@@ -19123,6 +19582,15 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; EnumIntB::__SPEC_XDR_REF.const_xdr_len()] {
             EnumIntB::__SPEC_XDR_REF.const_to_xdr()
         }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for EnumIntB {
         #[doc(hidden)]
@@ -19511,6 +19979,15 @@ mod wasm_imported {
             });
         pub const fn spec_xdr() -> [u8; EnumIntC::__SPEC_XDR_REF.const_xdr_len()] {
             EnumIntC::__SPEC_XDR_REF.const_to_xdr()
+        }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
         }
     }
     impl soroban_sdk::SpecShakingMarker for EnumIntC {
@@ -19903,6 +20380,15 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; ErrorA::__SPEC_XDR_REF.const_xdr_len()] {
             ErrorA::__SPEC_XDR_REF.const_to_xdr()
         }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for ErrorA {
         #[doc(hidden)]
@@ -20114,6 +20600,15 @@ mod wasm_imported {
             );
         pub const fn spec_xdr() -> [u8; ErrorB::__SPEC_XDR_REF.const_xdr_len()] {
             ErrorB::__SPEC_XDR_REF.const_to_xdr()
+        }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
         }
     }
     impl soroban_sdk::SpecShakingMarker for ErrorB {
@@ -20327,6 +20822,15 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; ErrorC::__SPEC_XDR_REF.const_xdr_len()] {
             ErrorC::__SPEC_XDR_REF.const_to_xdr()
         }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for ErrorC {
         #[doc(hidden)]
@@ -20538,6 +21042,15 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; EventA::__SPEC_XDR_REF.const_xdr_len()] {
             EventA::__SPEC_XDR_REF.const_to_xdr()
         }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for EventA {
         #[doc(hidden)]
@@ -20688,6 +21201,15 @@ mod wasm_imported {
             });
         pub const fn spec_xdr() -> [u8; EventB::__SPEC_XDR_REF.const_xdr_len()] {
             EventB::__SPEC_XDR_REF.const_to_xdr()
+        }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
         }
     }
     impl soroban_sdk::SpecShakingMarker for EventB {
@@ -20844,6 +21366,15 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; EventC::__SPEC_XDR_REF.const_xdr_len()] {
             EventC::__SPEC_XDR_REF.const_to_xdr()
         }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for EventC {
         #[doc(hidden)]
@@ -20947,6 +21478,15 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; EventD::__SPEC_XDR_REF.const_xdr_len()] {
             EventD::__SPEC_XDR_REF.const_to_xdr()
         }
+        pub const fn spec_id() -> [u8; 8usize] {
+            let xdr = Self::spec_xdr();
+            let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+                .update(&xdr)
+                .finalize();
+            [
+                hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+            ]
+        }
     }
     impl soroban_sdk::SpecShakingMarker for EventD {
         #[doc(hidden)]
@@ -21034,6 +21574,15 @@ impl UnusedStruct {
         });
     pub const fn spec_xdr() -> [u8; UnusedStruct::__SPEC_XDR_REF.const_xdr_len()] {
         UnusedStruct::__SPEC_XDR_REF.const_to_xdr()
+    }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UnusedStruct {
@@ -21429,6 +21978,15 @@ impl UnusedEnum {
         });
     pub const fn spec_xdr() -> [u8; UnusedEnum::__SPEC_XDR_REF.const_xdr_len()] {
         UnusedEnum::__SPEC_XDR_REF.const_to_xdr()
+    }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UnusedEnum {
@@ -21919,6 +22477,15 @@ impl UnusedIntEnum {
     pub const fn spec_xdr() -> [u8; UnusedIntEnum::__SPEC_XDR_REF.const_xdr_len()] {
         UnusedIntEnum::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UnusedIntEnum {
     #[doc(hidden)]
@@ -22278,6 +22845,15 @@ impl UnusedEvent {
     pub const fn spec_xdr() -> [u8; UnusedEvent::__SPEC_XDR_REF.const_xdr_len()] {
         UnusedEvent::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UnusedEvent {
     #[doc(hidden)]
@@ -22366,6 +22942,15 @@ impl UnusedPubError {
         );
     pub const fn spec_xdr() -> [u8; UnusedPubError::__SPEC_XDR_REF.const_xdr_len()] {
         UnusedPubError::__SPEC_XDR_REF.const_to_xdr()
+    }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UnusedPubError {
@@ -22537,6 +23122,15 @@ impl UnusedNonContractFnParam {
         });
     pub const fn spec_xdr() -> [u8; UnusedNonContractFnParam::__SPEC_XDR_REF.const_xdr_len()] {
         UnusedNonContractFnParam::__SPEC_XDR_REF.const_to_xdr()
+    }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UnusedNonContractFnParam {
@@ -22926,6 +23520,15 @@ impl UnusedNonContractFnReturn {
     pub const fn spec_xdr() -> [u8; UnusedNonContractFnReturn::__SPEC_XDR_REF.const_xdr_len()] {
         UnusedNonContractFnReturn::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UnusedNonContractFnReturn {
     #[doc(hidden)]
@@ -23308,6 +23911,15 @@ impl UnusedNonPubStruct {
     pub const fn spec_xdr() -> [u8; UnusedNonPubStruct::__SPEC_XDR_REF.const_xdr_len()] {
         UnusedNonPubStruct::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl soroban_sdk::SpecShakingMarker for UnusedNonPubStruct {
     #[doc(hidden)]
@@ -23683,6 +24295,15 @@ impl UnusedNonPubError {
         );
     pub const fn spec_xdr() -> [u8; UnusedNonPubError::__SPEC_XDR_REF.const_xdr_len()] {
         UnusedNonPubError::__SPEC_XDR_REF.const_to_xdr()
+    }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
     }
 }
 impl soroban_sdk::SpecShakingMarker for UnusedNonPubError {

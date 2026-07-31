@@ -28,6 +28,9 @@ stellar-xdr = { workspace = true, features = ["const"] }
 stellar-strkey = { workspace = true }
 bytes-lit = "0.0.6"
 visibility = "0.1.1"
+# Used by macro-generated code to hash a spec entry at const evaluation time,
+# which the sha2 crate cannot do because it has no const API.
+sha2-const = "0.1.3"
 
 [target.'cfg(target_family="wasm")'.dependencies]
 soroban-env-guest = { workspace = true }

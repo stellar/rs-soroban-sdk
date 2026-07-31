@@ -7,9 +7,9 @@ use syn::{
     Visibility,
 };
 
-use stellar_xdr::{ScSpecEntry, ScSpecUdtEnumCaseV0, WriteXdr};
+use stellar_xdr::ScSpecUdtEnumCaseV0;
 
-use crate::{doc::docs_from_attrs, map_type::const_ref_string, shaking, DEFAULT_XDR_RW_LIMITS};
+use crate::{doc::docs_from_attrs, map_type::const_ref_string, shaking};
 
 // TODO: Add conversions to/from ScVal types.
 
@@ -103,6 +103,7 @@ pub fn derive_type_enum_int(
             "__SPEC_XDR_TYPE_{}",
             enum_ident.unraw().to_string().to_uppercase()
         );
+        let spec_id = shaking::generate_spec_id(path);
         quote! {
             #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
             pub static #spec_ident: [u8; #enum_ident::__SPEC_XDR_REF.const_xdr_len()] = #enum_ident::spec_xdr();
@@ -113,6 +114,8 @@ pub fn derive_type_enum_int(
                 pub const fn spec_xdr() -> [u8; #enum_ident::__SPEC_XDR_REF.const_xdr_len()] {
                     #enum_ident::__SPEC_XDR_REF.const_to_xdr()
                 }
+
+                #spec_id
             }
         }
     });
@@ -120,14 +123,10 @@ pub fn derive_type_enum_int(
     // SpecShakingMarker impl - only generated when spec is true and the
     // experimental_spec_shaking_v2 feature is enabled.
     let spec_shaking_impl = if cfg!(feature = "experimental_spec_shaking_v2") {
-        spec_entry.as_ref().map(|spec_entry| {
-            let spec_xdr = ScSpecEntry::UdtEnumV0(spec_entry.clone())
-                .to_xdr(DEFAULT_XDR_RW_LIMITS)
-                .unwrap();
+        spec_entry.as_ref().map(|_spec_entry| {
             shaking::generate_marker_impl(
                 path,
                 quote!(#enum_ident),
-                &spec_xdr,
                 std::iter::empty(),
                 None,
                 None,

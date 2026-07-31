@@ -77,6 +77,15 @@ impl<'a> Transfer<'a> {
     pub const fn spec_xdr() -> [u8; Transfer::__SPEC_XDR_REF.const_xdr_len()] {
         Transfer::__SPEC_XDR_REF.const_to_xdr()
     }
+    pub const fn spec_id() -> [u8; 8usize] {
+        let xdr = Self::spec_xdr();
+        let hash = soroban_sdk::reexports_for_macros::sha2_const::Sha256::new()
+            .update(&xdr)
+            .finalize();
+        [
+            hash[0], hash[1], hash[2], hash[3], hash[4], hash[5], hash[6], hash[7],
+        ]
+    }
 }
 impl<'a> soroban_sdk::SpecShakingMarker for Transfer<'a> {
     #[doc(hidden)]
@@ -87,7 +96,13 @@ impl<'a> soroban_sdk::SpecShakingMarker for Transfer<'a> {
         <&'a i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <Option<&'a u64> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1;\xc1i\xa0H>\x8d\xf1";
+            static MARKER: [u8; 14usize] = {
+                let id = Transfer::spec_id();
+                [
+                    83u8, 112u8, 69u8, 99u8, 86u8, 49u8, id[0], id[1], id[2], id[3], id[4], id[5],
+                    id[6], id[7],
+                ]
+            };
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
