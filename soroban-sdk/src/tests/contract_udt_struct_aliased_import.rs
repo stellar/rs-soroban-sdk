@@ -1,19 +1,24 @@
-//! Tests that `#[contracttype]` works on a struct with a field whose type
+//! Demonstrates how `#[contracttype]` works on a struct with a field whose type
 //! is a struct imported into scope under an alias, i.e. `use path::Type as
 //! Renamed;`.
 //!
-//! - `test_functional` and `test_functional_with_original_type` confirm the
-//!   generated type round-trips through a contract call correctly, whether
-//!   values are constructed using the aliased name (`Renamed`) or the
-//!   type's original name (`inner::Inner`) — they are the same type.
+//! - `test_functional` and `test_functional_with_original_type` confirm that,
+//!   used directly within this crate (not via a client generated from the
+//!   contract spec), the generated type round-trips through a contract call
+//!   correctly, whether values are constructed using the aliased name
+//!   (`Renamed`) or the type's original name (`inner::Inner`) — they are the
+//!   same type, so Rust's own type checking is what makes this work.
 //! - `test_spec` documents a limitation of the macros: the spec generated
 //!   for a field names its UDT after whatever identifier is written at the
 //!   field-declaration site (`Renamed`), while the referenced type's own
 //!   spec entry is generated under its original definition name (`Inner`).
 //!   The macros have no way to resolve an aliased import back to the UDT
 //!   entry of the type it refers to, so the spec for `Outer` ends up
-//!   referencing a UDT name, `Renamed`, that no `UdtStructV0` entry actually
-//!   defines.
+//!   referencing a UDT name, `Renamed`, for which no `UdtStructV0` entry
+//!   actually exists. This is a real defect: anything that regenerates a
+//!   client from the spec (e.g. `contractimport!` in another crate) has no
+//!   way to know `Renamed` and `Inner` are the same type, and so cannot
+//!   correctly generate a type for that field.
 
 use crate::{self as soroban_sdk};
 use soroban_sdk::{contract, contractimpl, contracttype, Env};
