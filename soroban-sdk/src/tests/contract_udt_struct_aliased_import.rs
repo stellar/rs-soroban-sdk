@@ -1,3 +1,20 @@
+//! Tests that `#[contracttype]` works on a struct with a field whose type
+//! is a struct imported into scope under an alias, i.e. `use path::Type as
+//! Renamed;`.
+//!
+//! - `test_functional` and `test_functional_with_original_type` confirm the
+//!   generated type round-trips through a contract call correctly, whether
+//!   values are constructed using the aliased name (`Renamed`) or the
+//!   type's original name (`inner::Inner`) — they are the same type.
+//! - `test_spec` documents a limitation of the macros: the spec generated
+//!   for a field names its UDT after whatever identifier is written at the
+//!   field-declaration site (`Renamed`), while the referenced type's own
+//!   spec entry is generated under its original definition name (`Inner`).
+//!   The macros have no way to resolve an aliased import back to the UDT
+//!   entry of the type it refers to, so the spec for `Outer` ends up
+//!   referencing a UDT name, `Renamed`, that no `UdtStructV0` entry actually
+//!   defines.
+
 use crate::{self as soroban_sdk};
 use soroban_sdk::{contract, contractimpl, contracttype, Env};
 use stellar_xdr::{
@@ -87,9 +104,8 @@ fn test_spec() {
                 doc: "".try_into().unwrap(),
                 name: "inner".try_into().unwrap(),
                 type_: ScSpecTypeDef::Udt(ScSpecTypeUdt {
-                    // The field is declared using the aliased import name,
-                    // so that is the name recorded in the spec, not the
-                    // name of the type at its original definition site.
+                    // See module doc comment: named after the aliased
+                    // import, not the type's own spec'd name (below).
                     name: "Renamed".try_into().unwrap(),
                 }),
             },
@@ -99,9 +115,8 @@ fn test_spec() {
     });
     assert_eq!(entries, expect);
 
-    // The aliased import, Renamed, is the same type as inner::Inner, so its
-    // spec is registered under the type's original name, Inner, not the
-    // aliased name used at the field-declaration site above.
+    // Renamed's own spec entry is generated under its original definition
+    // name, "Inner" — confirming no "Renamed" UdtStructV0 entry exists.
     let entries = ScSpecEntry::from_xdr(Renamed::spec_xdr(), Limits::none()).unwrap();
     let expect = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
         doc: "".try_into().unwrap(),
