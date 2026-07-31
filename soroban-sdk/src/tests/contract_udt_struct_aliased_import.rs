@@ -1,5 +1,9 @@
 use crate::{self as soroban_sdk};
 use soroban_sdk::{contract, contractimpl, contracttype, Env};
+use stellar_xdr::{
+    Limits, ReadXdr, ScSpecEntry, ScSpecTypeDef, ScSpecTypeUdt, ScSpecUdtStructFieldV0,
+    ScSpecUdtStructV0,
+};
 
 mod inner {
     use crate::{self as soroban_sdk};
@@ -47,4 +51,51 @@ fn test_functional() {
     };
     let c = ContractClient::new(&env, &contract_id).add(&a, &b);
     assert_eq!(c, (a, b));
+}
+
+#[test]
+fn test_functional_with_original_type() {
+    let env = Env::default();
+    let contract_id = env.register(Contract, ());
+
+    let a = Outer {
+        inner: inner::Inner { a: 5, b: 7 },
+        c: 1,
+    };
+    let b = Outer {
+        inner: inner::Inner { a: 10, b: 14 },
+        c: 2,
+    };
+    let c = ContractClient::new(&env, &contract_id).add(&a, &b);
+    assert_eq!(c, (a, b));
+}
+
+#[test]
+fn test_spec() {
+    let entries = ScSpecEntry::from_xdr(Outer::spec_xdr(), Limits::none()).unwrap();
+    let expect = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
+        doc: "".try_into().unwrap(),
+        lib: "".try_into().unwrap(),
+        name: "Outer".try_into().unwrap(),
+        fields: vec![
+            ScSpecUdtStructFieldV0 {
+                doc: "".try_into().unwrap(),
+                name: "c".try_into().unwrap(),
+                type_: ScSpecTypeDef::I32,
+            },
+            ScSpecUdtStructFieldV0 {
+                doc: "".try_into().unwrap(),
+                name: "inner".try_into().unwrap(),
+                type_: ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                    // The field is declared using the aliased import name,
+                    // so that is the name recorded in the spec, not the
+                    // name of the type at its original definition site.
+                    name: "Renamed".try_into().unwrap(),
+                }),
+            },
+        ]
+        .try_into()
+        .unwrap(),
+    });
+    assert_eq!(entries, expect);
 }
