@@ -29,6 +29,7 @@ mod contract_udt_enum_option;
 mod contract_udt_option;
 mod contract_udt_raw_identifier;
 mod contract_udt_struct;
+mod contract_udt_struct_aliased_import;
 mod contract_udt_struct_tuple;
 mod contractimpl_trait_call_resolution;
 mod contractimport;
