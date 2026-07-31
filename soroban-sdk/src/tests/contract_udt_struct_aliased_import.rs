@@ -98,4 +98,29 @@ fn test_spec() {
         .unwrap(),
     });
     assert_eq!(entries, expect);
+
+    // The aliased import, Renamed, is the same type as inner::Inner, so its
+    // spec is registered under the type's original name, Inner, not the
+    // aliased name used at the field-declaration site above.
+    let entries = ScSpecEntry::from_xdr(Renamed::spec_xdr(), Limits::none()).unwrap();
+    let expect = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
+        doc: "".try_into().unwrap(),
+        lib: "".try_into().unwrap(),
+        name: "Inner".try_into().unwrap(),
+        fields: vec![
+            ScSpecUdtStructFieldV0 {
+                doc: "".try_into().unwrap(),
+                name: "a".try_into().unwrap(),
+                type_: ScSpecTypeDef::I32,
+            },
+            ScSpecUdtStructFieldV0 {
+                doc: "".try_into().unwrap(),
+                name: "b".try_into().unwrap(),
+                type_: ScSpecTypeDef::I32,
+            },
+        ]
+        .try_into()
+        .unwrap(),
+    });
+    assert_eq!(entries, expect);
 }
