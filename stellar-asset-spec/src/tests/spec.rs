@@ -58,26 +58,31 @@ fn test_stellar_asset_spec_includes_token_spec() -> Result<(), Error> {
     // Read token spec entries, strip docs, and add sep0011_asset to event topics.
     let token_xdr = soroban_token_spec::xdr();
     let token_cursor = std::io::Cursor::new(token_xdr);
-    let mut token_entries: HashSet<ScSpecEntry> = HashSet::new();
-    for entry in ScSpecEntry::read_xdr_iter(&mut Limited::new(token_cursor, Limits::none())) {
-        let mut e = entry?;
-        strip_doc(&mut e);
-        if matches!(e, ScSpecEntry::EventV0(_)) {
-            add_sep0011_asset_topic(&mut e);
-        }
-        token_entries.insert(e);
-    }
+    let token_entries: HashSet<ScSpecEntry> =
+        ScSpecEntry::read_xdr_iter(&mut Limited::new(token_cursor, Limits::none()))
+            .map(|e| {
+                e.map(|mut e| {
+                    strip_doc(&mut e);
+                    if matches!(e, ScSpecEntry::EventV0(_)) {
+                        add_sep0011_asset_topic(&mut e);
+                    }
+                    e
+                })
+            })
+            .collect::<Result<HashSet<_>, _>>()?;
 
     // Read stellar asset spec entries and strip docs.
     let stellar_asset_xdr = crate::xdr();
     let stellar_asset_cursor = std::io::Cursor::new(stellar_asset_xdr);
-    let mut stellar_asset_entries: HashSet<ScSpecEntry> = HashSet::new();
-    for entry in ScSpecEntry::read_xdr_iter(&mut Limited::new(stellar_asset_cursor, Limits::none()))
-    {
-        let mut e = entry?;
-        strip_doc(&mut e);
-        stellar_asset_entries.insert(e);
-    }
+    let stellar_asset_entries: HashSet<ScSpecEntry> =
+        ScSpecEntry::read_xdr_iter(&mut Limited::new(stellar_asset_cursor, Limits::none()))
+            .map(|e| {
+                e.map(|mut e| {
+                    strip_doc(&mut e);
+                    e
+                })
+            })
+            .collect::<Result<HashSet<_>, _>>()?;
 
     // Check that all token entries (with sep0011_asset added to events) are
     // present in the stellar asset spec (which uses SAC-specific event types
