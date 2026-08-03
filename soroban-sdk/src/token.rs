@@ -146,7 +146,7 @@ pub trait TokenInterface {
     ///
     /// Emits an event with:
     /// * topics `["transfer", from: Address, to: Address]`
-    /// * data `{ amount: i128, to_muxed_id: u64 }: Map`
+    /// * data `{ amount: i128, to_muxed_id: Option<u64> }: Map`
     ///
     /// Legacy implementations may emit an event with:
     /// * topics `["transfer", from: Address, to: Address]`
@@ -309,7 +309,7 @@ pub trait StellarAssetInterface {
     ///
     /// When `to` is a muxed address, emits an event with:
     /// * topics `["transfer", from: Address, to: Address, sep0011_asset: String]`
-    /// * data `{ amount: i128, to_muxed_id: u64 }: Map`
+    /// * data `{ amount: i128, to_muxed_id: Option<u64> }: Map`
     ///
     /// Otherwise, emits an event with:
     /// * topics `["transfer", from: Address, to: Address, sep0011_asset: String]`
