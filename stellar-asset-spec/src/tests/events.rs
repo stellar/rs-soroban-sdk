@@ -17,13 +17,23 @@ fn test_set_admin() {
     let admin = Address::generate(&env);
     let new_admin = Address::generate(&env);
 
+    // Register the asset to get the SEP-0011 asset string it uses in events.
+    let asset = env.register_stellar_asset_contract_v2(admin.clone());
+    let client = StellarAssetClient::new(&env, &asset.address());
+    let sep0011_asset = client.name();
+
     let event = SetAdmin {
         admin: admin.clone(),
+        sep0011_asset: sep0011_asset.clone(),
         new_admin: new_admin.clone(),
     };
 
     // Verify the event publishes the expected topics and data.
-    let topics = (symbol_short!("set_admin"), admin.clone());
+    let topics = (
+        symbol_short!("set_admin"),
+        admin.clone(),
+        sep0011_asset.clone(),
+    );
     let data = new_admin.clone();
 
     let id = env.register(Contract, ());
@@ -38,19 +48,17 @@ fn test_set_admin() {
     );
 
     // Verify the event published is consistent with the asset contract.
-    let asset = env.register_stellar_asset_contract_v2(admin);
-    let client = StellarAssetClient::new(&env, &asset.address());
-
-    let (t0, t1) = topics;
-    let topics = (t0, t1, client.name());
-
     client.set_admin(&new_admin);
     let asset_events = env.events().all();
     assert_eq!(
         asset_events,
         vec![
             &env,
-            (asset.address(), topics.into_val(&env), data.into_val(&env)),
+            (
+                asset.address(),
+                (symbol_short!("set_admin"), admin, sep0011_asset).into_val(&env),
+                new_admin.into_val(&env),
+            ),
         ]
     );
 }
@@ -60,16 +68,27 @@ fn test_set_authorized() {
     let env = Env::default();
     env.mock_all_auths();
 
+    let admin = Address::generate(&env);
     let authorizee = Address::generate(&env);
     let authorize = true;
 
+    // Register the asset to get the SEP-0011 asset string it uses in events.
+    let asset = env.register_stellar_asset_contract_v2(admin.clone());
+    let client = StellarAssetClient::new(&env, &asset.address());
+    let sep0011_asset = client.name();
+
     let event = SetAuthorized {
         id: authorizee.clone(),
-        authorize: true,
+        sep0011_asset: sep0011_asset.clone(),
+        authorize,
     };
 
     // Verify the event publishes the expected topics and data.
-    let topics = (Symbol::new(&env, "set_authorized"), authorizee.clone());
+    let topics = (
+        Symbol::new(&env, "set_authorized"),
+        authorizee.clone(),
+        sep0011_asset.clone(),
+    );
     let data = authorize;
 
     let id = env.register(Contract, ());
@@ -84,20 +103,22 @@ fn test_set_authorized() {
     );
 
     // Verify the event published is consistent with the asset contract.
-    let admin = Address::generate(&env);
-    let asset = env.register_stellar_asset_contract_v2(admin);
-    let client = StellarAssetClient::new(&env, &asset.address());
-
-    let (t0, t1) = topics;
-    let topics = (t0, t1, client.name());
-
     client.set_authorized(&authorizee, &authorize);
     let asset_events = env.events().all();
     assert_eq!(
         asset_events,
         vec![
             &env,
-            (asset.address(), topics.into_val(&env), data.into_val(&env)),
+            (
+                asset.address(),
+                (
+                    Symbol::new(&env, "set_authorized"),
+                    authorizee,
+                    sep0011_asset
+                )
+                    .into_val(&env),
+                authorize.into_val(&env),
+            ),
         ]
     );
 }
