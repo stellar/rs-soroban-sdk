@@ -1405,9 +1405,9 @@ checksum = "3c5e1a9a646d36c3599cd173a41282daf47c44583ad367b8e6837255952e5c67"
 
 [[package]]
 name = "soroban-builtin-sdk-macros"
-version = "28.0.0"
+version = "28.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8a91a25e84f7d29ca0a896a9decc7ff357b4df0264afd2e989d474150453baa7"
+checksum = "dc470cc875cbdeb5ffb0fcb45017803c94b65075d493f097304b132ab95f353c"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -1417,9 +1417,9 @@ dependencies = [
 
 [[package]]
 name = "soroban-env-common"
-version = "28.0.0"
+version = "28.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7d9abd1016dd4c68eaa5e2f94deffe53c4e4d972933f33067b9820b9d1c56eb9"
+checksum = "74059594274a1b51d0ec410ef1acd9009a888e73c5f8bdd5577d28ea8766e6f2"
 dependencies = [
  "arbitrary",
  "crate-git-revision 0.0.9",
@@ -1436,9 +1436,9 @@ dependencies = [
 
 [[package]]
 name = "soroban-env-guest"
-version = "28.0.0"
+version = "28.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b9166be5e53443abe1c7032fa8ac692c8e49dab53e1936efc804da6bc84e6407"
+checksum = "769c70c3273c4cb741046db161e804b91b8df81f9df2013dfb98d65370a716cc"
 dependencies = [
  "soroban-env-common",
  "static_assertions",
@@ -1446,9 +1446,9 @@ dependencies = [
 
 [[package]]
 name = "soroban-env-host"
-version = "28.0.0"
+version = "28.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9570333a70c01e7f34b16928dca580ad88038c02dc419d16055db637bb2752ce"
+checksum = "7d3d108fff17fd4181343e29fd8d81d5053dfc29b337643e3b6c38e750eeb2f7"
 dependencies = [
  "ark-bls12-381",
  "ark-bn254",
@@ -1483,9 +1483,9 @@ dependencies = [
 
 [[package]]
 name = "soroban-env-macros"
-version = "28.0.0"
+version = "28.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "56c6c86f746d0f969f3e5869af21ee5531aa8cded172d6b77b1260a017858146"
+checksum = "45f63006270b7ddfa604f4a12a43d1f489aa96c280877f24e37a139bb69964af"
 dependencies = [
  "itertools",
  "proc-macro2",
