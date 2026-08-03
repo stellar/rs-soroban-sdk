@@ -315,8 +315,8 @@ pub trait StellarAssetInterface {
     /// * topics `["transfer", from: Address, to: Address, sep0011_asset: String]`
     /// * data `amount: i128`
     ///
-    /// When `from` is the asset issuer, a `mint` event is emitted instead.
-    /// When `to` is the asset issuer, a `burn` event is emitted instead.
+    /// When `from != to` and `from` is the asset issuer, a `mint` event is emitted instead.
+    /// When `from != to` and `to` is the asset issuer, a `burn` event is emitted instead.
     fn transfer(env: Env, from: Address, to: MuxedAddress, amount: i128);
 
     /// Transfer `amount` from `from` to `to`, consuming the allowance that
