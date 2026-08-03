@@ -5,10 +5,10 @@ use crate::{
     TransferWithAmountOnly,
 };
 use soroban_sdk::{
-    contract, symbol_short,
+    contract,
     testutils::{Address as _, Events as _, MuxedAddress as _},
     token::StellarAssetClient,
-    vec, xdr, Address, Env, IntoVal, Map, MuxedAddress, Symbol, Val,
+    xdr, Address, Env, Event, MuxedAddress,
 };
 use std::rc::Rc;
 
@@ -37,39 +37,16 @@ fn test_approve() {
         expiration_ledger: live_until_ledger,
     };
 
-    // Verify the event publishes the expected topics and data.
-    let topics = (
-        symbol_short!("approve"),
-        from.clone(),
-        spender.clone(),
-        sep0011_asset.clone(),
-    );
-    let data = (amount, live_until_ledger);
-
+    // Verify the event struct publishes topics and data matching its XDR form.
     let id = env.register(Contract, ());
     env.as_contract(&id, || event.publish(&env));
-    let token_events = env.events().all();
-    assert_eq!(
-        token_events,
-        vec![
-            &env,
-            (id.clone(), topics.into_val(&env), data.into_val(&env)),
-        ]
-    );
+    assert_eq!(env.events().all(), std::vec![event.to_xdr(&env, &id)]);
 
-    // Verify the event published is consistent with the asset contract.
+    // Verify the SAC client emits an event matching the event struct.
     client.approve(&from, &spender, &amount, &live_until_ledger);
-    let asset_events = env.events().all();
     assert_eq!(
-        asset_events,
-        vec![
-            &env,
-            (
-                asset.address(),
-                (symbol_short!("approve"), from, spender, sep0011_asset,).into_val(&env),
-                data.into_val(&env),
-            ),
-        ]
+        env.events().all(),
+        std::vec![event.to_xdr(&env, &asset.address())]
     );
 }
 
@@ -93,40 +70,17 @@ fn test_transfer() {
         amount,
     };
 
-    // Verify the event publishes the expected topics and data.
-    let topics = (
-        symbol_short!("transfer"),
-        from.clone(),
-        to.clone(),
-        sep0011_asset.clone(),
-    );
-    let data = amount;
-
+    // Verify the event struct publishes topics and data matching its XDR form.
     let id = env.register(Contract, ());
     env.as_contract(&id, || event.publish(&env));
-    let token_events = env.events().all();
-    assert_eq!(
-        token_events,
-        vec![
-            &env,
-            (id.clone(), topics.into_val(&env), data.into_val(&env)),
-        ]
-    );
+    assert_eq!(env.events().all(), std::vec![event.to_xdr(&env, &id)]);
 
-    // Verify the event published is consistent with the asset contract.
+    // Verify the SAC client emits an event matching the event struct.
     client.mint(&from, &amount);
     client.transfer(&from, &to, &amount);
-    let asset_events = env.events().all();
     assert_eq!(
-        asset_events,
-        vec![
-            &env,
-            (
-                asset.address(),
-                (symbol_short!("transfer"), from, to, sep0011_asset).into_val(&env),
-                data.into_val(&env),
-            ),
-        ]
+        env.events().all(),
+        std::vec![event.to_xdr(&env, &asset.address())]
     );
 }
 
@@ -151,33 +105,12 @@ fn test_transfer_with_id() {
         amount,
     };
 
-    // Verify the event publishes the expected topics and data.
-    let topics = (
-        symbol_short!("transfer"),
-        from.clone(),
-        to.address(),
-        sep0011_asset.clone(),
-    );
-    let data = Map::<Symbol, Val>::from_array(
-        &env,
-        [
-            (Symbol::new(&env, "to_muxed_id"), to.id().into_val(&env)),
-            (Symbol::new(&env, "amount"), amount.into_val(&env)),
-        ],
-    );
-
+    // Verify the event struct publishes topics and data matching its XDR form.
     let id = env.register(Contract, ());
     env.as_contract(&id, || event.publish(&env));
-    let token_events = env.events().all();
-    assert_eq!(
-        token_events,
-        vec![
-            &env,
-            (id.clone(), topics.into_val(&env), data.into_val(&env))
-        ]
-    );
+    assert_eq!(env.events().all(), std::vec![event.to_xdr(&env, &id)]);
 
-    // Verify the event published is consistent with the asset contract.
+    // Verify the SAC client emits an event matching the event struct.
     let trust_line_asset = |asset: xdr::Asset| match asset {
         xdr::Asset::Native => xdr::TrustLineAsset::Native,
         xdr::Asset::CreditAlphanum4(a) => xdr::TrustLineAsset::CreditAlphanum4(a),
@@ -208,17 +141,9 @@ fn test_transfer_with_id() {
         .unwrap();
 
     client.transfer(&from, &to, &amount);
-    let asset_events = env.events().all();
     assert_eq!(
-        asset_events,
-        vec![
-            &env,
-            (
-                asset.address(),
-                (symbol_short!("transfer"), from, to.address(), sep0011_asset).into_val(&env),
-                data.into_val(&env),
-            ),
-        ]
+        env.events().all(),
+        std::vec![event.to_xdr(&env, &asset.address())]
     );
 }
 
@@ -236,22 +161,21 @@ fn test_transfer_from() {
     let client = StellarAssetClient::new(&env, &asset.address());
     let sep0011_asset = client.name();
 
-    // Verify the event published is consistent with the asset contract.
     // transfer_from emits a transfer event identical to transfer.
+    let event = TransferWithAmountOnly {
+        from: from.clone(),
+        to: to.clone(),
+        sep0011_asset: sep0011_asset.clone(),
+        amount,
+    };
+
+    // Verify the SAC client emits an event matching the event struct.
     client.mint(&from, &amount);
     client.approve(&from, &spender, &amount, &200);
     client.transfer_from(&spender, &from, &to, &amount);
-    let asset_events = env.events().all();
     assert_eq!(
-        asset_events,
-        vec![
-            &env,
-            (
-                asset.address(),
-                (symbol_short!("transfer"), from, to, sep0011_asset).into_val(&env),
-                amount.into_val(&env),
-            ),
-        ]
+        env.events().all(),
+        std::vec![event.to_xdr(&env, &asset.address())]
     );
 }
 
@@ -273,35 +197,17 @@ fn test_burn() {
         amount,
     };
 
-    // Verify the event publishes the expected topics and data.
-    let topics = (symbol_short!("burn"), from.clone(), sep0011_asset.clone());
-    let data = amount;
-
+    // Verify the event struct publishes topics and data matching its XDR form.
     let id = env.register(Contract, ());
     env.as_contract(&id, || event.publish(&env));
-    let token_events = env.events().all();
-    assert_eq!(
-        token_events,
-        vec![
-            &env,
-            (id.clone(), topics.into_val(&env), data.into_val(&env)),
-        ]
-    );
+    assert_eq!(env.events().all(), std::vec![event.to_xdr(&env, &id)]);
 
-    // Verify the event published is consistent with the asset contract.
+    // Verify the SAC client emits an event matching the event struct.
     client.mint(&from, &amount);
     client.burn(&from, &amount);
-    let asset_events = env.events().all();
     assert_eq!(
-        asset_events,
-        vec![
-            &env,
-            (
-                asset.address(),
-                (symbol_short!("burn"), from, sep0011_asset).into_val(&env),
-                data.into_val(&env),
-            ),
-        ]
+        env.events().all(),
+        std::vec![event.to_xdr(&env, &asset.address())]
     );
 }
 
@@ -318,22 +224,20 @@ fn test_burn_from() {
     let client = StellarAssetClient::new(&env, &asset.address());
     let sep0011_asset = client.name();
 
-    // Verify the event published is consistent with the asset contract.
     // burn_from emits a burn event identical to burn.
+    let event = Burn {
+        from: from.clone(),
+        sep0011_asset: sep0011_asset.clone(),
+        amount,
+    };
+
+    // Verify the SAC client emits an event matching the event struct.
     client.mint(&from, &amount);
     client.approve(&from, &spender, &amount, &200);
     client.burn_from(&spender, &from, &amount);
-    let asset_events = env.events().all();
     assert_eq!(
-        asset_events,
-        vec![
-            &env,
-            (
-                asset.address(),
-                (symbol_short!("burn"), from, sep0011_asset).into_val(&env),
-                amount.into_val(&env),
-            ),
-        ]
+        env.events().all(),
+        std::vec![event.to_xdr(&env, &asset.address())]
     );
 }
 
@@ -355,34 +259,16 @@ fn test_mint() {
         amount,
     };
 
-    // Verify the event publishes the expected topics and data.
-    let topics = (symbol_short!("mint"), to.clone(), sep0011_asset.clone());
-    let data = amount;
-
+    // Verify the event struct publishes topics and data matching its XDR form.
     let id = env.register(Contract, ());
     env.as_contract(&id, || event.publish(&env));
-    let token_events = env.events().all();
-    assert_eq!(
-        token_events,
-        vec![
-            &env,
-            (id.clone(), topics.into_val(&env), data.into_val(&env)),
-        ]
-    );
+    assert_eq!(env.events().all(), std::vec![event.to_xdr(&env, &id)]);
 
-    // Verify the event published is consistent with the asset contract.
+    // Verify the SAC client emits an event matching the event struct.
     client.mint(&to, &amount);
-    let asset_events = env.events().all();
     assert_eq!(
-        asset_events,
-        vec![
-            &env,
-            (
-                asset.address(),
-                (symbol_short!("mint"), to, sep0011_asset).into_val(&env),
-                data.into_val(&env),
-            ),
-        ]
+        env.events().all(),
+        std::vec![event.to_xdr(&env, &asset.address())]
     );
 }
 
@@ -405,26 +291,10 @@ fn test_mint_with_id() {
         amount,
     };
 
-    // Verify the event publishes the expected topics and data.
-    let topics = (symbol_short!("mint"), to.address(), sep0011_asset);
-    let data = Map::<Symbol, Val>::from_array(
-        &env,
-        [
-            (Symbol::new(&env, "to_muxed_id"), to.id().into_val(&env)),
-            (Symbol::new(&env, "amount"), amount.into_val(&env)),
-        ],
-    );
-
+    // Verify the event struct publishes topics and data matching its XDR form.
     let id = env.register(Contract, ());
     env.as_contract(&id, || event.publish(&env));
-    let token_events = env.events().all();
-    assert_eq!(
-        token_events,
-        vec![
-            &env,
-            (id.clone(), topics.into_val(&env), data.into_val(&env))
-        ]
-    );
+    assert_eq!(env.events().all(), std::vec![event.to_xdr(&env, &id)]);
 }
 
 #[test]
@@ -448,39 +318,17 @@ fn test_clawback() {
         amount,
     };
 
-    // Verify the event publishes the expected topics and data.
-    let topics = (
-        symbol_short!("clawback"),
-        from.clone(),
-        sep0011_asset.clone(),
-    );
-    let data = amount;
-
+    // Verify the event struct publishes topics and data matching its XDR form.
     let id = env.register(Contract, ());
     env.as_contract(&id, || event.publish(&env));
-    let token_events = env.events().all();
-    assert_eq!(
-        token_events,
-        vec![
-            &env,
-            (id.clone(), topics.into_val(&env), data.into_val(&env)),
-        ]
-    );
+    assert_eq!(env.events().all(), std::vec![event.to_xdr(&env, &id)]);
 
-    // Verify the event published is consistent with the asset contract.
+    // Verify the SAC client emits an event matching the event struct.
     client.mint(&from, &amount);
     client.clawback(&from, &amount);
-    let asset_events = env.events().all();
     assert_eq!(
-        asset_events,
-        vec![
-            &env,
-            (
-                asset.address(),
-                (symbol_short!("clawback"), from, sep0011_asset).into_val(&env),
-                data.into_val(&env),
-            ),
-        ]
+        env.events().all(),
+        std::vec![event.to_xdr(&env, &asset.address())]
     );
 }
 
@@ -503,38 +351,16 @@ fn test_set_admin() {
         new_admin: new_admin.clone(),
     };
 
-    // Verify the event publishes the expected topics and data.
-    let topics = (
-        symbol_short!("set_admin"),
-        admin.clone(),
-        sep0011_asset.clone(),
-    );
-    let data = new_admin.clone();
-
+    // Verify the event struct publishes topics and data matching its XDR form.
     let id = env.register(Contract, ());
     env.as_contract(&id, || event.publish(&env));
-    let token_events = env.events().all();
-    assert_eq!(
-        token_events,
-        vec![
-            &env,
-            (id.clone(), topics.into_val(&env), data.into_val(&env)),
-        ]
-    );
+    assert_eq!(env.events().all(), std::vec![event.to_xdr(&env, &id)]);
 
-    // Verify the event published is consistent with the asset contract.
+    // Verify the SAC client emits an event matching the event struct.
     client.set_admin(&new_admin);
-    let asset_events = env.events().all();
     assert_eq!(
-        asset_events,
-        vec![
-            &env,
-            (
-                asset.address(),
-                (symbol_short!("set_admin"), admin, sep0011_asset).into_val(&env),
-                new_admin.into_val(&env),
-            ),
-        ]
+        env.events().all(),
+        std::vec![event.to_xdr(&env, &asset.address())]
     );
 }
 
@@ -558,42 +384,15 @@ fn test_set_authorized() {
         authorize,
     };
 
-    // Verify the event publishes the expected topics and data.
-    let topics = (
-        Symbol::new(&env, "set_authorized"),
-        authorizee.clone(),
-        sep0011_asset.clone(),
-    );
-    let data = authorize;
-
+    // Verify the event struct publishes topics and data matching its XDR form.
     let id = env.register(Contract, ());
     env.as_contract(&id, || event.publish(&env));
-    let token_events = env.events().all();
-    assert_eq!(
-        token_events,
-        vec![
-            &env,
-            (id.clone(), topics.into_val(&env), data.into_val(&env)),
-        ]
-    );
+    assert_eq!(env.events().all(), std::vec![event.to_xdr(&env, &id)]);
 
-    // Verify the event published is consistent with the asset contract.
+    // Verify the SAC client emits an event matching the event struct.
     client.set_authorized(&authorizee, &authorize);
-    let asset_events = env.events().all();
     assert_eq!(
-        asset_events,
-        vec![
-            &env,
-            (
-                asset.address(),
-                (
-                    Symbol::new(&env, "set_authorized"),
-                    authorizee,
-                    sep0011_asset
-                )
-                    .into_val(&env),
-                authorize.into_val(&env),
-            ),
-        ]
+        env.events().all(),
+        std::vec![event.to_xdr(&env, &asset.address())]
     );
 }
