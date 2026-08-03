@@ -37,14 +37,11 @@ fn test_set_admin() {
     // Verify the event struct publishes topics and data matching its XDR form.
     let id = env.register(Contract, ());
     env.as_contract(&id, || event.publish(&env));
-    assert_eq!(env.events().all(), std::vec![event.to_xdr(&env, &id)]);
+    assert_eq!(env.events().all(), [event.to_xdr(&env, &id)]);
 
     // Verify the SAC client emits an event matching the event struct.
     client.set_admin(&new_admin);
-    assert_eq!(
-        env.events().all(),
-        std::vec![event.to_xdr(&env, &asset.address())]
-    );
+    assert_eq!(env.events().all(), [event.to_xdr(&env, &asset.address())]);
 }
 
 #[test]
@@ -70,14 +67,11 @@ fn test_set_authorized() {
     // Verify the event struct publishes topics and data matching its XDR form.
     let id = env.register(Contract, ());
     env.as_contract(&id, || event.publish(&env));
-    assert_eq!(env.events().all(), std::vec![event.to_xdr(&env, &id)]);
+    assert_eq!(env.events().all(), [event.to_xdr(&env, &id)]);
 
     // Verify the SAC client emits an event matching the event struct.
     client.set_authorized(&authorizee, &authorize);
-    assert_eq!(
-        env.events().all(),
-        std::vec![event.to_xdr(&env, &asset.address())]
-    );
+    assert_eq!(env.events().all(), [event.to_xdr(&env, &asset.address())]);
 }
 
 #[test]
@@ -105,14 +99,11 @@ fn test_approve() {
     // Verify the event struct publishes topics and data matching its XDR form.
     let id = env.register(Contract, ());
     env.as_contract(&id, || event.publish(&env));
-    assert_eq!(env.events().all(), std::vec![event.to_xdr(&env, &id)]);
+    assert_eq!(env.events().all(), [event.to_xdr(&env, &id)]);
 
     // Verify the SAC client emits an event matching the event struct.
     client.approve(&from, &spender, &amount, &live_until_ledger);
-    assert_eq!(
-        env.events().all(),
-        std::vec![event.to_xdr(&env, &asset.address())]
-    );
+    assert_eq!(env.events().all(), [event.to_xdr(&env, &asset.address())]);
 }
 
 #[test]
@@ -138,15 +129,12 @@ fn test_transfer() {
     // Verify the event struct publishes topics and data matching its XDR form.
     let id = env.register(Contract, ());
     env.as_contract(&id, || event.publish(&env));
-    assert_eq!(env.events().all(), std::vec![event.to_xdr(&env, &id)]);
+    assert_eq!(env.events().all(), [event.to_xdr(&env, &id)]);
 
     // Verify the SAC client emits an event matching the event struct.
     client.mint(&from, &amount);
     client.transfer(&from, &to, &amount);
-    assert_eq!(
-        env.events().all(),
-        std::vec![event.to_xdr(&env, &asset.address())]
-    );
+    assert_eq!(env.events().all(), [event.to_xdr(&env, &asset.address())]);
 }
 
 #[test]
@@ -173,7 +161,7 @@ fn test_transfer_with_id() {
     // Verify the event struct publishes topics and data matching its XDR form.
     let id = env.register(Contract, ());
     env.as_contract(&id, || event.publish(&env));
-    assert_eq!(env.events().all(), std::vec![event.to_xdr(&env, &id)]);
+    assert_eq!(env.events().all(), [event.to_xdr(&env, &id)]);
 
     // Verify the SAC client emits an event matching the event struct.
     let trust_line_asset = |asset: xdr::Asset| match asset {
@@ -206,10 +194,7 @@ fn test_transfer_with_id() {
         .unwrap();
 
     client.transfer(&from, &to, &amount);
-    assert_eq!(
-        env.events().all(),
-        std::vec![event.to_xdr(&env, &asset.address())]
-    );
+    assert_eq!(env.events().all(), [event.to_xdr(&env, &asset.address())]);
 }
 
 #[test]
@@ -238,10 +223,7 @@ fn test_transfer_from() {
     client.mint(&from, &amount);
     client.approve(&from, &spender, &amount, &200);
     client.transfer_from(&spender, &from, &to, &amount);
-    assert_eq!(
-        env.events().all(),
-        std::vec![event.to_xdr(&env, &asset.address())]
-    );
+    assert_eq!(env.events().all(), [event.to_xdr(&env, &asset.address())]);
 }
 
 #[test]
@@ -265,15 +247,12 @@ fn test_burn() {
     // Verify the event struct publishes topics and data matching its XDR form.
     let id = env.register(Contract, ());
     env.as_contract(&id, || event.publish(&env));
-    assert_eq!(env.events().all(), std::vec![event.to_xdr(&env, &id)]);
+    assert_eq!(env.events().all(), [event.to_xdr(&env, &id)]);
 
     // Verify the SAC client emits an event matching the event struct.
     client.mint(&from, &amount);
     client.burn(&from, &amount);
-    assert_eq!(
-        env.events().all(),
-        std::vec![event.to_xdr(&env, &asset.address())]
-    );
+    assert_eq!(env.events().all(), [event.to_xdr(&env, &asset.address())]);
 }
 
 #[test]
@@ -300,10 +279,7 @@ fn test_burn_from() {
     client.mint(&from, &amount);
     client.approve(&from, &spender, &amount, &200);
     client.burn_from(&spender, &from, &amount);
-    assert_eq!(
-        env.events().all(),
-        std::vec![event.to_xdr(&env, &asset.address())]
-    );
+    assert_eq!(env.events().all(), [event.to_xdr(&env, &asset.address())]);
 }
 
 #[test]
@@ -327,14 +303,11 @@ fn test_mint() {
     // Verify the event struct publishes topics and data matching its XDR form.
     let id = env.register(Contract, ());
     env.as_contract(&id, || event.publish(&env));
-    assert_eq!(env.events().all(), std::vec![event.to_xdr(&env, &id)]);
+    assert_eq!(env.events().all(), [event.to_xdr(&env, &id)]);
 
     // Verify the SAC client emits an event matching the event struct.
     client.mint(&to, &amount);
-    assert_eq!(
-        env.events().all(),
-        std::vec![event.to_xdr(&env, &asset.address())]
-    );
+    assert_eq!(env.events().all(), [event.to_xdr(&env, &asset.address())]);
 }
 
 #[test]
@@ -359,7 +332,7 @@ fn test_mint_with_id() {
     // Verify the event struct publishes topics and data matching its XDR form.
     let id = env.register(Contract, ());
     env.as_contract(&id, || event.publish(&env));
-    assert_eq!(env.events().all(), std::vec![event.to_xdr(&env, &id)]);
+    assert_eq!(env.events().all(), [event.to_xdr(&env, &id)]);
 }
 
 #[test]
@@ -386,13 +359,10 @@ fn test_clawback() {
     // Verify the event struct publishes topics and data matching its XDR form.
     let id = env.register(Contract, ());
     env.as_contract(&id, || event.publish(&env));
-    assert_eq!(env.events().all(), std::vec![event.to_xdr(&env, &id)]);
+    assert_eq!(env.events().all(), [event.to_xdr(&env, &id)]);
 
     // Verify the SAC client emits an event matching the event struct.
     client.mint(&from, &amount);
     client.clawback(&from, &amount);
-    assert_eq!(
-        env.events().all(),
-        std::vec![event.to_xdr(&env, &asset.address())]
-    );
+    assert_eq!(env.events().all(), [event.to_xdr(&env, &asset.address())]);
 }
