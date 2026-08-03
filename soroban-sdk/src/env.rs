@@ -123,9 +123,9 @@ use crate::{
     storage::Storage, Address, Vec,
 };
 use internal::{
-    AddressObject, Bool, BytesObject, DurationObject, I128Object, I256Object, I256Val, I64Object,
-    MuxedAddressObject, StorageType, StringObject, Symbol, SymbolObject, TimepointObject,
-    U128Object, U256Object, U256Val, U32Val, U64Object, U64Val, Void,
+    AddressObject, Bool, BytesObject, DurationObject, ExecutableTagObject, I128Object, I256Object,
+    I256Val, I64Object, MuxedAddressObject, StorageType, StringObject, Symbol, SymbolObject,
+    TimepointObject, U128Object, U256Object, U256Val, U32Val, U64Object, U64Val, Void,
 };
 
 #[doc(hidden)]
@@ -2248,6 +2248,29 @@ impl internal::EnvBase for Env {
         Ok(self
             .env_impl
             .map_unpack_to_slice(map, keys, vals)
+            .unwrap_optimized())
+    }
+
+    fn sparse_map_new_from_slices(
+        &self,
+        keys: &[&str],
+        vals: &[Val],
+    ) -> Result<MapObject, Self::Error> {
+        Ok(self
+            .env_impl
+            .sparse_map_new_from_slices(keys, vals)
+            .unwrap_optimized())
+    }
+
+    fn sparse_map_unpack_to_slice(
+        &self,
+        map: MapObject,
+        keys: &[&str],
+        vals: &mut [Val],
+    ) -> Result<Void, Self::Error> {
+        Ok(self
+            .env_impl
+            .sparse_map_unpack_to_slice(map, keys, vals)
             .unwrap_optimized())
     }
 
