@@ -16,6 +16,71 @@ use std::rc::Rc;
 struct Contract;
 
 #[test]
+fn test_set_admin() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let admin = Address::generate(&env);
+    let new_admin = Address::generate(&env);
+
+    // Register the asset to get the SEP-0011 asset string it uses in events.
+    let asset = env.register_stellar_asset_contract_v2(admin.clone());
+    let client = StellarAssetClient::new(&env, &asset.address());
+    let sep0011_asset = client.name();
+
+    let event = SetAdmin {
+        admin: admin.clone(),
+        sep0011_asset: sep0011_asset.clone(),
+        new_admin: new_admin.clone(),
+    };
+
+    // Verify the event struct publishes topics and data matching its XDR form.
+    let id = env.register(Contract, ());
+    env.as_contract(&id, || event.publish(&env));
+    assert_eq!(env.events().all(), std::vec![event.to_xdr(&env, &id)]);
+
+    // Verify the SAC client emits an event matching the event struct.
+    client.set_admin(&new_admin);
+    assert_eq!(
+        env.events().all(),
+        std::vec![event.to_xdr(&env, &asset.address())]
+    );
+}
+
+#[test]
+fn test_set_authorized() {
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let admin = Address::generate(&env);
+    let authorizee = Address::generate(&env);
+    let authorize = true;
+
+    // Register the asset to get the SEP-0011 asset string it uses in events.
+    let asset = env.register_stellar_asset_contract_v2(admin.clone());
+    let client = StellarAssetClient::new(&env, &asset.address());
+    let sep0011_asset = client.name();
+
+    let event = SetAuthorized {
+        id: authorizee.clone(),
+        sep0011_asset: sep0011_asset.clone(),
+        authorize,
+    };
+
+    // Verify the event struct publishes topics and data matching its XDR form.
+    let id = env.register(Contract, ());
+    env.as_contract(&id, || event.publish(&env));
+    assert_eq!(env.events().all(), std::vec![event.to_xdr(&env, &id)]);
+
+    // Verify the SAC client emits an event matching the event struct.
+    client.set_authorized(&authorizee, &authorize);
+    assert_eq!(
+        env.events().all(),
+        std::vec![event.to_xdr(&env, &asset.address())]
+    );
+}
+
+#[test]
 fn test_approve() {
     let env = Env::default();
     env.mock_all_auths();
@@ -326,71 +391,6 @@ fn test_clawback() {
     // Verify the SAC client emits an event matching the event struct.
     client.mint(&from, &amount);
     client.clawback(&from, &amount);
-    assert_eq!(
-        env.events().all(),
-        std::vec![event.to_xdr(&env, &asset.address())]
-    );
-}
-
-#[test]
-fn test_set_admin() {
-    let env = Env::default();
-    env.mock_all_auths();
-
-    let admin = Address::generate(&env);
-    let new_admin = Address::generate(&env);
-
-    // Register the asset to get the SEP-0011 asset string it uses in events.
-    let asset = env.register_stellar_asset_contract_v2(admin.clone());
-    let client = StellarAssetClient::new(&env, &asset.address());
-    let sep0011_asset = client.name();
-
-    let event = SetAdmin {
-        admin: admin.clone(),
-        sep0011_asset: sep0011_asset.clone(),
-        new_admin: new_admin.clone(),
-    };
-
-    // Verify the event struct publishes topics and data matching its XDR form.
-    let id = env.register(Contract, ());
-    env.as_contract(&id, || event.publish(&env));
-    assert_eq!(env.events().all(), std::vec![event.to_xdr(&env, &id)]);
-
-    // Verify the SAC client emits an event matching the event struct.
-    client.set_admin(&new_admin);
-    assert_eq!(
-        env.events().all(),
-        std::vec![event.to_xdr(&env, &asset.address())]
-    );
-}
-
-#[test]
-fn test_set_authorized() {
-    let env = Env::default();
-    env.mock_all_auths();
-
-    let admin = Address::generate(&env);
-    let authorizee = Address::generate(&env);
-    let authorize = true;
-
-    // Register the asset to get the SEP-0011 asset string it uses in events.
-    let asset = env.register_stellar_asset_contract_v2(admin.clone());
-    let client = StellarAssetClient::new(&env, &asset.address());
-    let sep0011_asset = client.name();
-
-    let event = SetAuthorized {
-        id: authorizee.clone(),
-        sep0011_asset: sep0011_asset.clone(),
-        authorize,
-    };
-
-    // Verify the event struct publishes topics and data matching its XDR form.
-    let id = env.register(Contract, ());
-    env.as_contract(&id, || event.publish(&env));
-    assert_eq!(env.events().all(), std::vec![event.to_xdr(&env, &id)]);
-
-    // Verify the SAC client emits an event matching the event struct.
-    client.set_authorized(&authorizee, &authorize);
     assert_eq!(
         env.events().all(),
         std::vec![event.to_xdr(&env, &asset.address())]
