@@ -4,8 +4,8 @@ mod tests;
 
 use soroban_sdk::{contractevent, Address, BytesN, String};
 
-// Events that are unique to the Stellar Asset Contract and not part of SEP-41 are defined here
-// privately only for the purpose of generating the complete contract spec.
+// SAC-specific variants of SEP-41 events and events unique to the Stellar Asset Contract are
+// defined here privately only for generating the complete contract spec.
 // All SAC events include sep0011_asset (the SEP-0011 asset string, e.g. "native" or
 // "USDC:GABC...") as a trailing topic, per the SAC implementation in rs-soroban-env.
 // These structs share the same base names as the token-sdk event structs so the spec
