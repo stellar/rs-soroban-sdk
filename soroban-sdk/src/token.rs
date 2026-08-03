@@ -122,7 +122,7 @@ pub trait TokenInterface {
     /// # Events
     ///
     /// Emits an event with topics `["approve", from: Address,
-    /// spender: Address], data = [amount: i128, expiration_ledger: u32]`
+    /// spender: Address], data = [amount: i128, live_until_ledger: u32]`
     fn approve(env: Env, from: Address, spender: Address, amount: i128, live_until_ledger: u32);
 
     /// Returns the balance of `id`.
@@ -146,7 +146,7 @@ pub trait TokenInterface {
     ///
     /// Emits an event with:
     /// * topics `["transfer", from: Address, to: Address]`
-    /// * data `{ to_muxed_id: Option<u64>, amount: i128 }: Map`
+    /// * data `{ amount: i128, to_muxed_id: Option<u64> }: Map`
     ///
     /// Legacy implementations may emit an event with:
     /// * topics `["transfer", from: Address, to: Address]`
@@ -284,7 +284,8 @@ pub trait StellarAssetInterface {
     /// # Events
     ///
     /// Emits an event with topics `["approve", from: Address,
-    /// spender: Address], data = [amount: i128, expiration_ledger: u32]`
+    /// spender: Address, sep0011_asset: String], data = [amount: i128,
+    /// live_until_ledger: u32]`
     fn approve(env: Env, from: Address, spender: Address, amount: i128, live_until_ledger: u32);
 
     /// Returns the balance of `id`.
@@ -306,13 +307,16 @@ pub trait StellarAssetInterface {
     ///
     /// # Events
     ///
-    /// Emits an event with:
-    /// * topics `["transfer", from: Address, to: Address]`
-    /// * data `{ to_muxed_id: Option<u64>, amount: i128 }: Map`
+    /// When `to` is a muxed address, emits an event with:
+    /// * topics `["transfer", from: Address, to: Address, sep0011_asset: String]`
+    /// * data `{ amount: i128, to_muxed_id: Option<u64> }: Map`
     ///
-    /// Legacy implementations may emit an event with:
-    /// * topics `["transfer", from: Address, to: Address]`
+    /// Otherwise, emits an event with:
+    /// * topics `["transfer", from: Address, to: Address, sep0011_asset: String]`
     /// * data `amount: i128`
+    ///
+    /// When `from != to` and `from` is the asset issuer, a `mint` event is emitted instead.
+    /// When `from != to` and `to` is the asset issuer, a `burn` event is emitted instead.
     fn transfer(env: Env, from: Address, to: MuxedAddress, amount: i128);
 
     /// Transfer `amount` from `from` to `to`, consuming the allowance that
@@ -335,8 +339,8 @@ pub trait StellarAssetInterface {
     ///
     /// # Events
     ///
-    /// Emits an event with topics `["transfer", from: Address, to: Address],
-    /// data = amount: i128`
+    /// Emits an event with topics `["transfer", from: Address, to: Address,
+    /// sep0011_asset: String], data = amount: i128`
     fn transfer_from(env: Env, spender: Address, from: Address, to: Address, amount: i128);
 
     /// Burn `amount` from `from`.
@@ -352,8 +356,8 @@ pub trait StellarAssetInterface {
     ///
     /// # Events
     ///
-    /// Emits an event with topics `["burn", from: Address], data = amount:
-    /// i128`
+    /// Emits an event with topics `["burn", from: Address,
+    /// sep0011_asset: String], data = amount: i128`
     fn burn(env: Env, from: Address, amount: i128);
 
     /// Burn `amount` from `from`, consuming the allowance of `spender`.
@@ -376,8 +380,8 @@ pub trait StellarAssetInterface {
     ///
     /// # Events
     ///
-    /// Emits an event with topics `["burn", from: Address], data = amount:
-    /// i128`
+    /// Emits an event with topics `["burn", from: Address,
+    /// sep0011_asset: String], data = amount: i128`
     fn burn_from(env: Env, spender: Address, from: Address, amount: i128);
 
     /// Returns the number of decimals used to represent amounts of this token.
@@ -410,8 +414,8 @@ pub trait StellarAssetInterface {
     ///
     /// # Events
     ///
-    /// Emits an event with topics `["set_admin", admin: Address], data =
-    /// [new_admin: Address]`
+    /// Emits an event with topics `["set_admin", admin: Address,
+    /// sep0011_asset: String], data = new_admin: Address`
     fn set_admin(env: Env, new_admin: Address);
 
     /// Returns the admin of the contract.
@@ -431,8 +435,8 @@ pub trait StellarAssetInterface {
     ///
     /// # Events
     ///
-    /// Emits an event with topics `["set_authorized", id: Address], data =
-    /// [authorize: bool]`
+    /// Emits an event with topics `["set_authorized", id: Address,
+    /// sep0011_asset: String], data = authorize: bool`
     fn set_authorized(env: Env, id: Address, authorize: bool);
 
     /// Returns true if `id` is authorized to use its balance.
@@ -451,8 +455,8 @@ pub trait StellarAssetInterface {
     ///
     /// # Events
     ///
-    /// Emits an event with topics `["mint", to: Address], data
-    /// = amount: i128`
+    /// Emits an event with topics `["mint", to: Address,
+    /// sep0011_asset: String], data = amount: i128`
     fn mint(env: Env, to: Address, amount: i128);
 
     /// Clawback `amount` from `from` account. `amount` is burned in the
@@ -466,8 +470,8 @@ pub trait StellarAssetInterface {
     ///
     /// # Events
     ///
-    /// Emits an event with topics `["clawback", admin: Address, to: Address],
-    /// data = amount: i128`
+    /// Emits an event with topics `["clawback", from: Address,
+    /// sep0011_asset: String], data = amount: i128`
     fn clawback(env: Env, from: Address, amount: i128);
 
     /// Creates this contract asset's unlimited trustline for the provided

@@ -610,6 +610,42 @@ use std::{path::Path, rc::Rc};
 #[cfg(any(test, feature = "testutils"))]
 use xdr::{LedgerEntry, LedgerKey, LedgerKeyContractData, SorobanAuthorizationEntry};
 
+/// Wraps a [`SnapshotSource`](internal::storage::SnapshotSource) and
+/// short-circuits lookups for the empty WASM hash ContractCode entry used by
+/// native test contracts, returning `Ok(None)` without ever consulting the
+/// inner source. This is an optimization that avoids wasteful (and
+/// always-failing) lookups against remote snapshot sources for an entry that
+/// will never exist on any real network.
+#[cfg(any(test, feature = "testutils"))]
+struct FilteringSnapshotSource {
+    inner: Rc<dyn internal::storage::SnapshotSource>,
+}
+
+#[cfg(any(test, feature = "testutils"))]
+impl internal::storage::SnapshotSource for FilteringSnapshotSource {
+    fn get(
+        &self,
+        key: &Rc<xdr::LedgerKey>,
+    ) -> Result<Option<(Rc<xdr::LedgerEntry>, Option<u32>)>, soroban_env_host::HostError> {
+        // The SHA256 of empty/zero bytes, which the host uses as the synthetic
+        // WASM hash for native (non-WASM) test contracts. ContractCode entries
+        // for this hash never exist on any real network, so lookups for them
+        // are filtered out before reaching a `SnapshotSource`.
+        const EMPTY_WASM_HASH: [u8; 32] = [
+            0xe3, 0xb0, 0xc4, 0x42, 0x98, 0xfc, 0x1c, 0x14, 0x9a, 0xfb, 0xf4, 0xc8, 0x99, 0x6f,
+            0xb9, 0x24, 0x27, 0xae, 0x41, 0xe4, 0x64, 0x9b, 0x93, 0x4c, 0xa4, 0x95, 0x99, 0x1b,
+            0x78, 0x52, 0xb8, 0x55,
+        ];
+        if let xdr::LedgerKey::ContractCode(xdr::LedgerKeyContractCode { hash, .. }) = key.as_ref()
+        {
+            if hash.0 == EMPTY_WASM_HASH {
+                return Ok(None);
+            }
+        }
+        self.inner.get(key)
+    }
+}
+
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
@@ -694,6 +730,14 @@ impl Env {
             1
         };
 
+        // Wrap the incoming snapshot source so that lookups for the empty WASM
+        // hash ContractCode entry (used by native test contracts) are
+        // short-circuited and never reach the underlying source. See issue
+        // #1635 "Empty WASM hash leaks to SnapshotSource".
+        let recording_footprint: Rc<dyn internal::storage::SnapshotSource> =
+            Rc::new(FilteringSnapshotSource {
+                inner: recording_footprint,
+            });
         let storage = internal::storage::Storage::with_recording_footprint(recording_footprint);
         let budget = internal::budget::Budget::default();
         let env_impl = internal::EnvImpl::with_storage_and_budget(storage, budget.clone());
@@ -789,6 +833,22 @@ impl Env {
     /// If you need to specify the address the contract should be registered at,
     /// use [`Env::register_at`].
     ///
+    /// ### Authorization
+    ///
+    /// If the contract has a constructor, it is called during registration
+    /// with authorization mocked: the environment switches to recording auth
+    /// for the constructor call, so any [`Address::require_auth`] calls the
+    /// constructor makes are automatically authorized and succeed regardless
+    /// of the authorization configured on the environment. Because of this,
+    /// `register` cannot be used to test a constructor's authorization.
+    ///
+    /// To test constructor authorization, deploy the contract the way it is
+    /// deployed on-chain using the deployer returned by [`Env::deployer`],
+    /// e.g. [`Deployer::with_address`] followed by
+    /// [`deploy_v2`][crate::deploy::DeployerWithAddress::deploy_v2]. Deploying
+    /// that way runs the constructor subject to the environment's
+    /// authorization, so `require_auth` behaves as it would on-chain.
+    ///
     /// ### Examples
     /// Register a contract defined in the current crate, by specifying the type
     /// name:
@@ -853,6 +913,22 @@ impl Env {
     /// Returns the address of the registered contract that is the same as the
     /// contract id passed in.
     ///
+    /// ### Authorization
+    ///
+    /// If the contract has a constructor, it is called during registration
+    /// with authorization mocked: the environment switches to recording auth
+    /// for the constructor call, so any [`Address::require_auth`] calls the
+    /// constructor makes are automatically authorized and succeed regardless
+    /// of the authorization configured on the environment. Because of this,
+    /// `register_at` cannot be used to test a constructor's authorization.
+    ///
+    /// To test constructor authorization, deploy the contract the way it is
+    /// deployed on-chain using the deployer returned by [`Env::deployer`],
+    /// e.g. [`Deployer::with_address`] followed by
+    /// [`deploy_v2`][crate::deploy::DeployerWithAddress::deploy_v2]. Deploying
+    /// that way runs the constructor subject to the environment's
+    /// authorization, so `require_auth` behaves as it would on-chain.
+    ///
     /// ### Examples
     /// Register a contract defined in the current crate, by specifying the type
     /// name:
@@ -913,6 +989,10 @@ impl Env {
     ///
     /// If a contract has a constructor defined, then it will be called with
     /// no arguments. If a constructor takes arguments, use `register`.
+    ///
+    /// The constructor call has authorization mocked, the same as
+    /// [`register`][Self::register]; see that function for how to test
+    /// constructor authorization.
     ///
     /// Registering a contract that is already registered replaces it.
     /// Use re-registration with caution as it does not exist in the real
@@ -1032,6 +1112,10 @@ impl Env {
     /// Passing a contract ID for the first arguments registers the contract
     /// with that contract ID. Providing `None` causes the Env to generate a new
     /// contract ID that is assigned to the contract.
+    ///
+    /// If the contract has a constructor, it is called during registration
+    /// with authorization mocked, the same as [`register`][Self::register];
+    /// see that function for how to test constructor authorization.
     ///
     /// Registering a contract that is already registered replaces it.
     /// Use re-registration with caution as it does not exist in the real
