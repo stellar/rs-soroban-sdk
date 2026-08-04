@@ -81,6 +81,24 @@ pub(crate) fn export_arg_v2_deprecation(export: &Option<bool>, ident: &syn::Iden
     }
 }
 
+/// Emit a deprecation warning when `lib` is set on a contract type, error, or
+/// event. The argument is a vestige of an earlier design that was never used
+/// and will be removed in a future release.
+pub(crate) fn lib_arg_deprecation(lib: &Option<String>, ident: &syn::Ident) -> TokenStream2 {
+    if lib.is_some() {
+        let marker = format_ident!("__SOROBAN_LIB_ARG_DEPRECATED_FOR_{}", ident);
+        quote! {
+            #[doc(hidden)]
+            #[allow(non_upper_case_globals)]
+            #[deprecated = "`lib` is deprecated and will be removed in a future release"]
+            const #marker: () = ();
+            const _: () = #marker;
+        }
+    } else {
+        TokenStream2::new()
+    }
+}
+
 #[proc_macro]
 pub fn internal_symbol_short(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
@@ -456,6 +474,7 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
         Err(e) => return e.to_compile_error().into(),
     }
     let export_deprecation = export_arg_v2_deprecation(&args.export, ident);
+    let lib_deprecation = lib_arg_deprecation(&args.lib, ident);
     // Under `experimental_spec_shaking_v2` the spec is always emitted and
     // reachability determines what is retained, so the `export` argument is
     // ignored (a deprecation warning is emitted above). Otherwise, honor an
@@ -512,6 +531,7 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
     quote! {
         #input
         #export_deprecation
+        #lib_deprecation
         #derived
     }
     .into()
@@ -533,6 +553,7 @@ pub fn contracterror(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let ident = &input.ident;
     let attrs = &input.attrs;
     let export_deprecation = export_arg_v2_deprecation(&args.export, ident);
+    let lib_deprecation = lib_arg_deprecation(&args.lib, ident);
     // Under `experimental_spec_shaking_v2` the spec is always emitted and
     // reachability determines what is retained, so the `export` argument is
     // ignored (a deprecation warning is emitted above). Otherwise, honor an
@@ -567,6 +588,7 @@ pub fn contracterror(metadata: TokenStream, input: TokenStream) -> TokenStream {
     quote! {
         #input
         #export_deprecation
+        #lib_deprecation
         #derived
     }
     .into()
