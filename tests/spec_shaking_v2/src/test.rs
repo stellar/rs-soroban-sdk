@@ -62,9 +62,6 @@ fn test_spec_shaking_v2() {
         "with_non_pub_error",
         "with_tuple",
         "with_tuple_return",
-        "with_export_false_struct",
-        "with_export_false_error",
-        "publish_export_false_event",
     ] {
         assert!(
             fn_names.contains(&expected_fn.into()),
@@ -132,14 +129,8 @@ fn test_spec_shaking_v2() {
         "UsedRecursiveNode",
         "UsedRecursiveLeaf",
         "UsedLeaf",
-        // Types declared with `export = false` (a no-op under v2 — a
-        // deprecation warning is emitted by the macro). They participate in
-        // normal v2 shaking when reachable, just like any other type.
-        "UsedExportFalseStruct",
-        "UsedExportFalseError",
-        "UsedExportFalseEvent",
-        // SDK internal types that use export=false without the feature, but
-        // participate in normal v2 shaking when they are reachable.
+        // SDK internal types, which participate in normal shaking when they
+        // are reachable.
         "Context",
         "ContractContext",
         "CreateContractHostFnContext",
@@ -187,6 +178,7 @@ fn test_spec_shaking_v2() {
         "EventA",
         "EventB",
         "EventC",
+        "EventD",
     ];
     let all_names: HashSet<std::string::String> = entries.iter().filter_map(entry_name).collect();
     for name in unused {

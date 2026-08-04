@@ -24,18 +24,18 @@ fn test_approve() {
     let from = Address::generate(&env);
     let spender = Address::generate(&env);
     let amount = 123;
-    let expiration_ledger = 45;
+    let live_until_ledger = 45;
 
     let event = Approve {
         from: from.clone(),
         spender: spender.clone(),
         amount,
-        expiration_ledger,
+        live_until_ledger,
     };
 
     // Verify the event publishes the expected topics and data.
     let topics = (symbol_short!("approve"), from.clone(), spender.clone());
-    let data = (amount, expiration_ledger);
+    let data = (amount, live_until_ledger);
 
     let id = env.register(Contract, ());
     env.as_contract(&id, || event.publish(&env));
@@ -56,7 +56,7 @@ fn test_approve() {
     let (t0, t1, t2) = topics;
     let topics = (t0, t1, t2, client.name());
 
-    client.approve(&from, &spender, &amount, &expiration_ledger);
+    client.approve(&from, &spender, &amount, &live_until_ledger);
     let asset_events = env.events().all();
     assert_eq!(
         asset_events,

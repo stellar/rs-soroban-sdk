@@ -21,13 +21,35 @@ pub enum GenerateError {
 }
 
 /// Options for controlling code generation behavior.
+///
+/// Construct with [`Default::default`]. The type is `non_exhaustive` so that
+/// options can be added without breaking callers.
+///
+/// ```
+/// use soroban_spec_rust::{types::generate_struct_with_options, GenerateOptions};
+/// use stellar_xdr::ScSpecUdtStructV0;
+///
+/// let spec = ScSpecUdtStructV0 {
+///     doc: "".try_into().unwrap(),
+///     lib: "".try_into().unwrap(),
+///     name: "Point".try_into().unwrap(),
+///     fields: Default::default(),
+/// };
+/// let tokens = generate_struct_with_options(&spec, &GenerateOptions::default()).unwrap();
+/// assert!(tokens.to_string().contains("struct Point"));
+/// ```
+///
+/// Because the type is `non_exhaustive`, callers outside this crate cannot
+/// construct it with a struct expression:
+///
+/// ```compile_fail
+/// use soroban_spec_rust::GenerateOptions;
+///
+/// let options = GenerateOptions {};
+/// ```
 #[derive(Default)]
-pub struct GenerateOptions {
-    /// When true, generated types are annotated so their specs are exported regardless of
-    /// Rust visibility (equivalent to `export = true` in macros).
-    /// When false (default), generated types behave as if `export = false` in macros.
-    pub export: bool,
-}
+#[non_exhaustive]
+pub struct GenerateOptions {}
 
 /// Constructs a token stream containing a single struct that mirrors the struct
 /// spec.
@@ -39,7 +61,7 @@ pub fn generate_struct(spec: &ScSpecUdtStructV0) -> Result<TokenStream, Generate
 /// spec, with configurable options.
 pub fn generate_struct_with_options(
     spec: &ScSpecUdtStructV0,
-    opts: &GenerateOptions,
+    _opts: &GenerateOptions,
 ) -> Result<TokenStream, GenerateError> {
     let ident = str_to_ident(&spec.name)?;
 
@@ -69,9 +91,8 @@ pub fn generate_struct_with_options(
                 Ok(quote! { pub #f_type })
             })
             .collect::<Result<Vec<_>, GenerateError>>()?;
-        let contracttype_attr = contracttype_attr(opts.export);
         Ok(quote! {
-            #contracttype_attr
+            #[soroban_sdk::contracttype]
             #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
             pub struct #ident ( #(#fields),* );
         })
@@ -85,9 +106,8 @@ pub fn generate_struct_with_options(
                 Ok(quote! { pub #f_ident: #f_type })
             })
             .collect::<Result<Vec<_>, GenerateError>>()?;
-        let contracttype_attr = contracttype_attr(opts.export);
         Ok(quote! {
-            #contracttype_attr
+            #[soroban_sdk::contracttype]
             #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
             pub struct #ident { #(#fields,)* }
         })
@@ -104,7 +124,7 @@ pub fn generate_union(spec: &ScSpecUdtUnionV0) -> Result<TokenStream, GenerateEr
 /// spec, with configurable options.
 pub fn generate_union_with_options(
     spec: &ScSpecUdtUnionV0,
-    opts: &GenerateOptions,
+    _opts: &GenerateOptions,
 ) -> Result<TokenStream, GenerateError> {
     let ident = str_to_ident(&spec.name)?;
     if spec.lib.len() > 0 {
@@ -135,9 +155,8 @@ pub fn generate_union_with_options(
                 }
             })
             .collect::<Result<Vec<_>, GenerateError>>()?;
-        let contracttype_attr = contracttype_attr(opts.export);
         Ok(quote! {
-            #contracttype_attr
+            #[soroban_sdk::contracttype]
             #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
             pub enum #ident { #(#variants,)* }
         })
@@ -154,7 +173,7 @@ pub fn generate_enum(spec: &ScSpecUdtEnumV0) -> Result<TokenStream, GenerateErro
 /// spec, with configurable options.
 pub fn generate_enum_with_options(
     spec: &ScSpecUdtEnumV0,
-    opts: &GenerateOptions,
+    _opts: &GenerateOptions,
 ) -> Result<TokenStream, GenerateError> {
     let ident = str_to_ident(&spec.name)?;
     if spec.lib.len() > 0 {
@@ -172,9 +191,8 @@ pub fn generate_enum_with_options(
                 Ok(quote! { #v_ident = #v_value })
             })
             .collect::<Result<Vec<_>, GenerateError>>()?;
-        let contracttype_attr = contracttype_attr(opts.export);
         Ok(quote! {
-            #contracttype_attr
+            #[soroban_sdk::contracttype]
             #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
             pub enum #ident { #(#variants,)* }
         })
@@ -191,7 +209,7 @@ pub fn generate_error_enum(spec: &ScSpecUdtErrorEnumV0) -> Result<TokenStream, G
 /// spec, that is intended for use with errors, with configurable options.
 pub fn generate_error_enum_with_options(
     spec: &ScSpecUdtErrorEnumV0,
-    opts: &GenerateOptions,
+    _opts: &GenerateOptions,
 ) -> Result<TokenStream, GenerateError> {
     let ident = str_to_ident(&spec.name)?;
     if spec.lib.len() > 0 {
@@ -209,13 +227,8 @@ pub fn generate_error_enum_with_options(
                 Ok(quote! { #v_ident = #v_value })
             })
             .collect::<Result<Vec<_>, GenerateError>>()?;
-        let contracterror_attr = if opts.export {
-            quote! { #[soroban_sdk::contracterror] }
-        } else {
-            quote! { #[soroban_sdk::contracterror(export = false)] }
-        };
         Ok(quote! {
-            #contracterror_attr
+            #[soroban_sdk::contracterror]
             #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
             pub enum #ident { #(#variants,)* }
         })
@@ -232,7 +245,7 @@ pub fn generate_event(spec: &ScSpecEventV0) -> Result<TokenStream, GenerateError
 /// spec, with configurable options.
 pub fn generate_event_with_options(
     spec: &ScSpecEventV0,
-    opts: &GenerateOptions,
+    _opts: &GenerateOptions,
 ) -> Result<TokenStream, GenerateError> {
     let ident = str_to_ident(&spec.name)?;
 
@@ -260,26 +273,11 @@ pub fn generate_event_with_options(
                 })
             })
             .collect::<Result<Vec<_>, GenerateError>>()?;
-        let export_attr = if opts.export {
-            quote! {}
-        } else {
-            quote! { export = false, }
-        };
         Ok(quote! {
-            #[soroban_sdk::contractevent(#export_attr topics = [#(#topics,)*])]
+            #[soroban_sdk::contractevent(topics = [#(#topics,)*])]
             #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
             pub struct #ident { #(#fields,)* }
         })
-    }
-}
-
-/// Returns the `#[soroban_sdk::contracttype]` attribute, optionally with
-/// `export = false` when the generated type should not export its spec.
-fn contracttype_attr(export: bool) -> TokenStream {
-    if export {
-        quote! { #[soroban_sdk::contracttype] }
-    } else {
-        quote! { #[soroban_sdk::contracttype(export = false)] }
     }
 }
 
@@ -364,7 +362,7 @@ mod test {
         })
         .unwrap();
         let expect = quote! {
-            #[soroban_sdk::contractevent(export = false, topics = [])]
+            #[soroban_sdk::contractevent(topics = [])]
             #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
             pub struct MyEvent {}
         };
@@ -403,7 +401,7 @@ mod test {
         })
         .unwrap();
         let expect = quote! {
-            #[soroban_sdk::contractevent(export = false, topics = ["my_event"])]
+            #[soroban_sdk::contractevent(topics = ["my_event"])]
             #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
             pub struct MyEvent {
                 pub from: u32,

@@ -6,6 +6,8 @@ use sha2::{Digest, Sha256};
 use soroban_sdk::xdr::{BucketEntry, LedgerEntry, LedgerKey, Limited, Limits, WriteXdr};
 use std::io::Cursor;
 use std::path::{Path, PathBuf};
+use std::sync::Mutex;
+use std::thread::JoinHandle;
 
 mod iter;
 pub use iter::LedgerEntryChangesIterator;
@@ -145,6 +147,7 @@ pub struct LedgerEntryFetcher {
     ledger: u32,
     tx_hash: Option<[u8; 32]>,
     cache_path: PathBuf,
+    prefetch_handle: Mutex<Option<JoinHandle<()>>>,
 }
 
 impl LedgerEntryFetcher {
@@ -166,6 +169,7 @@ impl LedgerEntryFetcher {
             ledger,
             tx_hash,
             cache_path,
+            prefetch_handle: Mutex::new(None),
         }
     }
 
@@ -210,9 +214,6 @@ impl LedgerEntryFetcher {
                 .unwrap_or_else(|| format!("{}-after", self.ledger)),
         );
 
-        // Ensure cache directory exists
-        std::fs::create_dir_all(&ledger_cache_dir)?;
-
         // Use cache function to handle reading/writing cache file
         let fetch_read = cache(
             ledger_cache_dir.join(format!("{:x}.json", key_hash)),
@@ -236,8 +237,6 @@ impl LedgerEntryFetcher {
         key: &LedgerKey,
         cache_path: &Path,
     ) -> Result<Option<LedgerEntry>, Error> {
-        std::fs::create_dir_all(cache_path)?;
-
         // Optimization: Try RPC for contract code entries only (before prefetch)
         if matches!(key, LedgerKey::ContractCode(_)) {
             if let Some(result) = self.fetch_from_rpc(cache_path, self.ledger, key)? {
@@ -255,9 +254,7 @@ impl LedgerEntryFetcher {
         let (prev_checkpoint, ledgers_to_checkpoint) =
             checkpoint_search_bounds(self.ledger, checkpoint_count);
 
-        // Prefetch all meta for ledgers from starting ledger down to the checkpoint (in background)
-        let prefetch_meta_url = self.network.meta_url.clone();
-        let prefetch_cache_path = cache_path.to_path_buf();
+        // Prefetch all meta for ledgers from starting ledger down to the checkpoint.
         let prefetch_ledgers: Vec<u32> = (0..ledgers_to_checkpoint)
             .filter_map(|i| self.ledger.checked_sub(i))
             .collect();
@@ -267,24 +264,12 @@ impl LedgerEntryFetcher {
             last = prefetch_ledgers.last(),
             "fetch from meta range"
         );
-        // Named so any panic inside the detached prefetch is attributable in the
-        // default panic output. The handle is intentionally dropped: prefetching
-        // is a best-effort warm-up of the meta cache, and the main thread's
-        // fetch_from_meta calls are correct (and file-locked) on their own.
-        if let Err(e) = std::thread::Builder::new()
-            .name("snapshot-source-prefetch-meta".to_string())
-            .spawn(move || {
-                Self::prefetch_meta(
-                    &prefetch_meta_url,
-                    &prefetch_cache_path,
-                    &prefetch_ledgers,
-                    ledgers_per_batch,
-                    batches_per_partition,
-                );
-            })
-        {
-            tracing::warn!(error = %e, "failed to spawn meta prefetch thread");
-        }
+        self.start_meta_prefetch(
+            cache_path,
+            prefetch_ledgers,
+            ledgers_per_batch,
+            batches_per_partition,
+        );
 
         // Phase 1: Check the starting ledger
         if let Some(result) = self.fetch_from_meta(
@@ -317,6 +302,42 @@ impl LedgerEntryFetcher {
 
         // Phase 3: Fetch from history archive at the previous checkpoint
         self.fetch_from_archive(&cache_path, prev_checkpoint, key)
+    }
+
+    fn start_meta_prefetch(
+        &self,
+        cache_path: &Path,
+        ledgers: Vec<u32>,
+        ledgers_per_batch: u32,
+        batches_per_partition: u32,
+    ) {
+        let mut prefetch_handle = match self.prefetch_handle.lock() {
+            Ok(handle) => handle,
+            Err(poisoned) => {
+                tracing::warn!("meta prefetch handle mutex was poisoned; recovering");
+                poisoned.into_inner()
+            }
+        };
+        if prefetch_handle.is_some() {
+            return;
+        }
+
+        let meta_url = self.network.meta_url.clone();
+        let cache_path = cache_path.to_path_buf();
+        match std::thread::Builder::new()
+            .name("snapshot-source-prefetch-meta".to_string())
+            .spawn(move || {
+                Self::prefetch_meta(
+                    &meta_url,
+                    &cache_path,
+                    &ledgers,
+                    ledgers_per_batch,
+                    batches_per_partition,
+                );
+            }) {
+            Ok(handle) => *prefetch_handle = Some(handle),
+            Err(e) => tracing::warn!(error = %e, "failed to spawn meta prefetch thread"),
+        }
     }
 
     /// Fetch (and cache) the SEP-54 storage configuration, returning the
@@ -537,6 +558,21 @@ impl LedgerEntryFetcher {
         // over time.
 
         Ok(None)
+    }
+}
+
+impl Drop for LedgerEntryFetcher {
+    fn drop(&mut self) {
+        let handle = match self.prefetch_handle.get_mut() {
+            Ok(handle) => handle.take(),
+            Err(poisoned) => {
+                tracing::warn!("meta prefetch handle mutex was poisoned during drop; recovering");
+                poisoned.into_inner().take()
+            }
+        };
+        if handle.is_some_and(|handle| handle.join().is_err()) {
+            tracing::warn!("meta prefetch thread panicked");
+        }
     }
 }
 

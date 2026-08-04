@@ -1,8 +1,9 @@
 use crate::{
     attribute::remove_attributes_from_item, default_crate_path, doc::docs_from_attrs,
-    export_arg_v2_deprecation, map_type::map_type, shaking, symbol, DEFAULT_XDR_RW_LIMITS,
+    export_arg_error, lib_arg_deprecation, map_type::map_type, shaking, symbol,
+    DEFAULT_XDR_RW_LIMITS,
 };
-use darling::{ast::NestedMeta, Error, FromMeta};
+use darling::{ast::NestedMeta, util::SpannedValue, Error, FromMeta};
 use heck::ToSnakeCase;
 use proc_macro2::Span;
 use proc_macro2::TokenStream as TokenStream2;
@@ -18,7 +19,7 @@ struct ContractEventArgs {
     #[darling(default = "default_crate_path")]
     crate_path: Path,
     lib: Option<String>,
-    export: Option<bool>,
+    export: Option<SpannedValue<bool>>,
     #[darling(default)]
     topics: Option<Vec<LitStr>>,
     #[darling(default)]
@@ -67,13 +68,15 @@ fn derive_event_or_err(metadata: TokenStream2, input: TokenStream2) -> Result<To
     let args = NestedMeta::parse_meta_list(metadata.into())?;
     let args = ContractEventArgs::from_list(&args)?;
     let input = parse2::<DeriveInput>(input)?;
-    let export_deprecation = export_arg_v2_deprecation(&args.export, &input.ident);
+    let export_error = export_arg_error(&args.export);
+    let lib_deprecation = lib_arg_deprecation(&args.lib, &input.ident);
     let derived = derive_impls(&args, &input)?;
     let mut input = input;
     remove_attributes_from_item(&mut input.data, &["topic", "data"]);
     Ok(quote! {
         #input
-        #export_deprecation
+        #export_error
+        #lib_deprecation
         #derived
     }
     .into())
@@ -114,10 +117,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
                     "structs with unnamed fields are not supported as contract events",
                 )
                 .with_span(&struct_.fields.span()))?,
-                Fields::Unit => Err(Error::custom(
-                    "structs with no fields are not supported as contract events",
-                )
-                .with_span(&struct_.fields.span()))?,
+                Fields::Unit => Vec::new(),
             },
             Data::Enum(_) => Err(Error::custom("enums are not supported as contract events")
                 .with_span(&input.span()))?,
@@ -172,16 +172,10 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     // If errors have occurred, return them.
     let mut errors = errors.checkpoint()?;
 
-    // Generated code spec. Under `experimental_spec_shaking_v2` the spec is
-    // always emitted and reachability determines what is retained, so an
-    // explicit `export = false` is ignored (a deprecation warning is emitted
-    // separately).
-    let export = cfg!(feature = "experimental_spec_shaking_v2") || args.export.unwrap_or(true);
-    let export_gen = if export {
-        Some(quote! { #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")] })
-    } else {
-        None
-    };
+    // Generated code spec. The spec is always emitted and reachability determines
+    // what is retained.
+    let export_gen =
+        quote! { #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")] };
     let spec_entry = ScSpecEntry::EventV0(ScSpecEventV0 {
         data_format: args.data_format.into(),
         doc: docs_from_attrs(&input.attrs),
@@ -207,11 +201,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         "__SPEC_XDR_EVENT_{}",
         input.ident.unraw().to_string().to_uppercase()
     );
-    let spec_shaking_call = if export && cfg!(feature = "experimental_spec_shaking_v2") {
-        Some(quote! { <Self as #path::SpecShakingMarker>::spec_shaking_marker(); })
-    } else {
-        None
-    };
+    let spec_shaking_call = quote! { <Self as #path::SpecShakingMarker>::spec_shaking_marker(); };
 
     // Generated code spec.
     let spec_gen = quote! {
@@ -225,21 +215,16 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         }
     };
 
-    // SpecShakingMarker impl - only generated when export is true and the
-    // experimental_spec_shaking_v2 feature is enabled.
-    let spec_shaking_impl = if export && cfg!(feature = "experimental_spec_shaking_v2") {
-        Some(shaking::generate_marker_impl(
-            path,
-            quote!(#ident),
-            &spec_xdr,
-            field_types.iter().cloned(),
-            Some(quote!(#gen_impl)),
-            Some(quote!(#gen_types)),
-            Some(quote!(#gen_where)),
-        ))
-    } else {
-        None
-    };
+    // SpecShakingMarker impl.
+    let spec_shaking_impl = shaking::generate_marker_impl(
+        path,
+        quote!(#ident),
+        &spec_xdr,
+        field_types.iter().cloned(),
+        Some(quote!(#gen_impl)),
+        Some(quote!(#gen_types)),
+        Some(quote!(#gen_where)),
+    );
 
     // Prepare Topics Conversion to Vec<Val>.
     let prefix_topics_symbols = prefix_topics.iter().map(|t| {

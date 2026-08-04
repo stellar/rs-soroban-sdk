@@ -9,6 +9,9 @@ where
     C: FnOnce(&mut dyn Write) -> Result<(), CE>,
 {
     let path = path.as_ref();
+    if let Some(parent) = path.parent().filter(|p| !p.as_os_str().is_empty()) {
+        fs::create_dir_all(parent).map_err(CacheError::Io)?;
+    }
 
     // Fast path: if file already exists, just read it (no lock needed).
     // Slow path: acquire lock, check again, collect and write if needed.
@@ -123,5 +126,17 @@ mod test {
         assert!(!path.exists());
         // The partial temp file must be cleaned up rather than left behind.
         assert!(!path.with_extension("dl").exists());
+    }
+
+    #[test]
+    fn miss_creates_parent_directories() {
+        let path = unique_path("parent").join("nested").join("entry.json");
+        let reader = cache(&path, |w| {
+            w.write_all(b"created")?;
+            Ok::<(), std::io::Error>(())
+        })
+        .unwrap();
+        assert_eq!(read_all(reader), b"created");
+        assert!(path.exists());
     }
 }

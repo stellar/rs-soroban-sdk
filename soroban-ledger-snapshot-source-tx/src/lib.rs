@@ -111,9 +111,6 @@ impl TxSnapshotSource {
                 .unwrap_or_else(|| format!("{}-after", self.fetcher.ledger())),
         );
 
-        // Ensure cache directory exists
-        std::fs::create_dir_all(&ledger_cache_dir).expect("failed to create cache directory");
-
         // Use cache function to handle reading/writing cache file
         let fetch_read = cache(
             ledger_cache_dir.join(format!("{:x}.json", key_hash)),
