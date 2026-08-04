@@ -7,7 +7,7 @@ pub struct Approve {
     #[topic]
     pub spender: Address,
     pub amount: i128,
-    pub expiration_ledger: u32,
+    pub live_until_ledger: u32,
 }
 
 #[contractevent(topics = ["transfer"], data_format = "single-value")]

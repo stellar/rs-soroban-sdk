@@ -75,7 +75,7 @@ fn test_approve() {
         spender: spender.clone(),
         sep0011_asset: sep0011_asset.clone(),
         amount,
-        expiration_ledger: live_until_ledger,
+        live_until_ledger,
     };
 
     client.approve(&from, &spender, &amount, &live_until_ledger);
