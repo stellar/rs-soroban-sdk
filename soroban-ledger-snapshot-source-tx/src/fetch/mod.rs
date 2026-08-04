@@ -578,7 +578,41 @@ impl Drop for LedgerEntryFetcher {
 
 #[cfg(test)]
 mod test_network {
-    use super::{checkpoint_search_bounds, Network};
+    use super::{checkpoint_search_bounds, LedgerEntryFetcher, Network};
+    use soroban_sdk::xdr::{
+        Hash, LedgerEntryData, LedgerKey, LedgerKeyTtl, Limits, TtlEntry, WriteXdr,
+    };
+    use std::io::{Read, Write};
+    use std::net::TcpListener;
+    use std::sync::atomic::{AtomicU32, Ordering};
+    use std::thread;
+
+    fn serve_rpc_response(body: String) -> (String, thread::JoinHandle<()>) {
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let addr = listener.local_addr().unwrap();
+        let handle = thread::spawn(move || {
+            let (mut stream, _) = listener.accept().unwrap();
+            let mut request = [0; 4096];
+            assert!(stream.read(&mut request).unwrap() > 0);
+            let response = format!(
+                "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}",
+                body.len()
+            );
+            stream.write_all(response.as_bytes()).unwrap();
+        });
+        (format!("http://{addr}"), handle)
+    }
+
+    fn unique_cache_dir(name: &str) -> std::path::PathBuf {
+        static COUNTER: AtomicU32 = AtomicU32::new(0);
+        let n = COUNTER.fetch_add(1, Ordering::Relaxed);
+        let dir = std::env::temp_dir().join(format!(
+            "soroban-fetch-test-{}-{name}-{n}",
+            std::process::id()
+        ));
+        std::fs::create_dir_all(&dir).unwrap();
+        dir
+    }
 
     #[test]
     fn checkpoint_bounds_typical() {
@@ -675,5 +709,46 @@ mod test_network {
         assert_eq!(n.meta_url, "http://localhost:8000/meta-archive");
         assert_eq!(n.archive_url, "http://localhost:8000/archive");
         assert_eq!(n.archive_checkpoint_ledger_count, 8);
+    }
+
+    #[test]
+    fn lagging_rpc_response_is_not_cached() {
+        let key_hash = Hash([7u8; 32]);
+        let key = LedgerKey::Ttl(LedgerKeyTtl {
+            key_hash: key_hash.clone(),
+        });
+        let xdr = LedgerEntryData::Ttl(TtlEntry {
+            key_hash,
+            live_until_ledger_seq: 123,
+        })
+        .to_xdr_base64(Limits::none())
+        .unwrap();
+        let body = format!(
+            r#"{{"result":{{"latestLedger":99,"entries":[{{"xdr":"{xdr}","lastModifiedLedgerSeq":42}}]}}}}"#
+        );
+        let (rpc_url, server) = serve_rpc_response(body);
+        let cache_dir = unique_cache_dir("lagging-rpc");
+        let fetcher = LedgerEntryFetcher::new(
+            Network::mainnet(Some(rpc_url)),
+            100,
+            None,
+            cache_dir.clone(),
+        );
+
+        assert!(fetcher
+            .fetch_from_rpc(&cache_dir, 100, &key)
+            .unwrap()
+            .is_none());
+        server.join().unwrap();
+
+        let cached_responses = std::fs::read_dir(cache_dir)
+            .unwrap()
+            .map(|entry| entry.unwrap().path())
+            .filter(|path| path.extension().is_some_and(|ext| ext == "json"))
+            .collect::<Vec<_>>();
+        assert!(
+            cached_responses.is_empty(),
+            "lagging RPC response was cached at {cached_responses:?}"
+        );
     }
 }
