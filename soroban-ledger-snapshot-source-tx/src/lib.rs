@@ -58,21 +58,14 @@ fn cache_paths(
     system_cache_root: &Path,
     network: &Network,
 ) -> (PathBuf, PathBuf) {
-    assert!(
-        !network.name.is_empty()
-            && network
-                .name
-                .bytes()
-                .all(|b| b.is_ascii_alphanumeric() || matches!(b, b'-' | b'_')),
-        "network name must contain only ASCII letters, digits, '-' or '_'"
-    );
+    let network_name = network.name();
     (
         workspace_root
             .join("tests-snapshot-source")
-            .join(&network.name),
+            .join(&network_name),
         system_cache_root
             .join("snapshot-source-tx")
-            .join(&network.name),
+            .join(network_name),
     )
 }
 
@@ -268,14 +261,21 @@ mod test_ttl {
     }
 
     #[test]
-    #[should_panic(expected = "network name must contain only")]
-    fn cache_paths_reject_unsafe_network_name() {
+    fn cache_paths_use_safe_network_name() {
         let mut network = Network::mainnet(None);
-        network.name = "../mainnet".to_string();
-        cache_paths(
+        network.name = "../my mainnet!".to_string();
+        let paths = cache_paths(
             std::path::Path::new("/workspace"),
             std::path::Path::new("/cache"),
             &network,
+        );
+        assert_eq!(
+            paths.0,
+            std::path::Path::new("/workspace/tests-snapshot-source/mymainnet")
+        );
+        assert_eq!(
+            paths.1,
+            std::path::Path::new("/cache/snapshot-source-tx/mymainnet")
         );
     }
 }

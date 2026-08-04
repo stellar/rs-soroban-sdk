@@ -43,8 +43,8 @@ pub enum Error {
 pub struct Network {
     /// Human-readable name used to namespace caches.
     ///
-    /// Must uniquely identify the network epoch and contain only ASCII letters,
-    /// digits, `-`, or `_`.
+    /// Should uniquely identify the network epoch. See [`Network::name`] for
+    /// how this value is made filesystem-safe.
     pub name: String,
     /// Network passphrase (e.g., "Public Global Stellar Network ; September 2015")
     pub passphrase: String,
@@ -118,6 +118,23 @@ impl Network {
             rpc_url: Some("http://localhost:8000/rpc".to_string()),
             archive_url: "http://localhost:8000/archive".to_string(),
             archive_checkpoint_ledger_count: 8,
+        }
+    }
+
+    /// Returns a filesystem-safe network name for cache paths.
+    ///
+    /// Characters other than ASCII letters, digits, `-`, and `_` are removed.
+    /// If no characters remain, the network ID is returned instead.
+    pub fn name(&self) -> String {
+        let name: String = self
+            .name
+            .chars()
+            .filter(|c| c.is_ascii_alphanumeric() || matches!(*c, '-' | '_'))
+            .collect();
+        if name.is_empty() {
+            self.network_id_hex()
+        } else {
+            name
         }
     }
 
@@ -661,6 +678,16 @@ mod test_network {
     fn mainnet_rpc_url_is_passed_through() {
         let n = Network::mainnet(Some("https://example.com/rpc".to_string()));
         assert_eq!(n.rpc_url.as_deref(), Some("https://example.com/rpc"));
+    }
+
+    #[test]
+    fn name_is_filesystem_safe() {
+        let mut n = Network::mainnet(None);
+        n.name = "../my testnet: 2025/12/17".to_string();
+        assert_eq!(n.name(), "mytestnet20251217");
+
+        n.name = "../".to_string();
+        assert_eq!(n.name(), n.network_id_hex());
     }
 
     #[test]
