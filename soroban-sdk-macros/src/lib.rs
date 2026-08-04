@@ -76,6 +76,24 @@ pub(crate) fn export_arg_error(export: &Option<SpannedValue<bool>>) -> TokenStre
     }
 }
 
+/// Emit a deprecation warning when `lib` is set on a contract type, error, or
+/// event. The argument is a vestige of an earlier design that was never used
+/// and will be removed in a future release.
+pub(crate) fn lib_arg_deprecation(lib: &Option<String>, ident: &syn::Ident) -> TokenStream2 {
+    if lib.is_some() {
+        let marker = format_ident!("__SOROBAN_LIB_ARG_DEPRECATED_FOR_{}", ident);
+        quote! {
+            #[doc(hidden)]
+            #[allow(non_upper_case_globals)]
+            #[deprecated = "`lib` is deprecated and will be removed in a future release"]
+            const #marker: () = ();
+            const _: () = #marker;
+        }
+    } else {
+        TokenStream2::new()
+    }
+}
+
 #[proc_macro]
 pub fn internal_symbol_short(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
@@ -453,6 +471,7 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
     // The spec is always emitted and reachability determines what is retained,
     // so the `export` argument is no longer accepted.
     let export_error = export_arg_error(&args.export);
+    let lib_deprecation = lib_arg_deprecation(&args.lib, ident);
     let derived = match &input.data {
         Data::Struct(s) => match s.fields {
             Fields::Named(_) => {
@@ -492,6 +511,7 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
     quote! {
         #input
         #export_error
+        #lib_deprecation
         #derived
     }
     .into()
@@ -515,6 +535,7 @@ pub fn contracterror(metadata: TokenStream, input: TokenStream) -> TokenStream {
     // The spec is always emitted and reachability determines what is retained,
     // so the `export` argument is no longer accepted.
     let export_error = export_arg_error(&args.export);
+    let lib_deprecation = lib_arg_deprecation(&args.lib, ident);
     let derived = match &input.data {
         Data::Enum(e) => {
             if e.variants.iter().all(|v| v.discriminant.is_some()) {
@@ -538,6 +559,7 @@ pub fn contracterror(metadata: TokenStream, input: TokenStream) -> TokenStream {
     quote! {
         #input
         #export_error
+        #lib_deprecation
         #derived
     }
     .into()

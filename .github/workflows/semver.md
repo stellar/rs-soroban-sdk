@@ -3,7 +3,12 @@ description: Classify the semver impact of a pull request as patch, minor, or ma
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, ready_for_review]
+
+# Draft pull requests are skipped, so that the workflow doesn't rerun on every
+# push while a pull request is a work in progress. The ready_for_review event
+# above runs it when the pull request leaves draft.
+if: github.event.pull_request.draft == false
 
 permissions:
   contents: read

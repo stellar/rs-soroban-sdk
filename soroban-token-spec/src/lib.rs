@@ -76,7 +76,16 @@ pub(crate) const XDR_INPUT: &[&[u8]] = &[
     &soroban_token_sdk::events::Clawback::spec_xdr(),
 ];
 
-pub(crate) const XDR_LEN: usize = 6620;
+pub(crate) const XDR_LEN: usize = {
+    let input = XDR_INPUT;
+    let mut len = 0usize;
+    let mut i = 0;
+    while i < input.len() {
+        len += input[i].len();
+        i += 1;
+    }
+    len
+};
 
 /// Returns the contract spec for a SEP-41 Token contract.
 pub const fn xdr() -> &'static [u8] {
