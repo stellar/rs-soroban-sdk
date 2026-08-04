@@ -30,4 +30,3 @@ heck = "0.5.0"
 
 [features]
 testutils = []
-experimental_spec_shaking_v2 = []

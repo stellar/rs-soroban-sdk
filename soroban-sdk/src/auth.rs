@@ -11,14 +11,7 @@ use crate::{
 /// receive a list of `Context` values corresponding to all the calls that
 /// need to be authorized.
 #[derive(Clone, Debug)]
-#[cfg_attr(
-    feature = "experimental_spec_shaking_v2",
-    contracttype(crate_path = "crate")
-)]
-#[cfg_attr(
-    not(feature = "experimental_spec_shaking_v2"),
-    contracttype(crate_path = "crate", export = false)
-)]
+#[contracttype(crate_path = "crate")]
 pub enum Context {
     /// Contract invocation.
     Contract(ContractContext),
@@ -33,14 +26,7 @@ pub enum Context {
 /// This struct corresponds to a `require_auth_for_args` call for an address
 /// from `contract` function with `fn_name` name and `args` arguments.
 #[derive(Clone, Debug)]
-#[cfg_attr(
-    feature = "experimental_spec_shaking_v2",
-    contracttype(crate_path = "crate")
-)]
-#[cfg_attr(
-    not(feature = "experimental_spec_shaking_v2"),
-    contracttype(crate_path = "crate", export = false)
-)]
+#[contracttype(crate_path = "crate")]
 pub struct ContractContext {
     pub contract: Address,
     pub fn_name: Symbol,
@@ -50,14 +36,7 @@ pub struct ContractContext {
 /// Authorization context for `create_contract` host function that creates a
 /// new contract on behalf of authorizer address.
 #[derive(Clone, Debug)]
-#[cfg_attr(
-    feature = "experimental_spec_shaking_v2",
-    contracttype(crate_path = "crate")
-)]
-#[cfg_attr(
-    not(feature = "experimental_spec_shaking_v2"),
-    contracttype(crate_path = "crate", export = false)
-)]
+#[contracttype(crate_path = "crate")]
 pub struct CreateContractHostFnContext {
     pub executable: ContractExecutable,
     pub salt: BytesN<32>,
@@ -68,14 +47,7 @@ pub struct CreateContractHostFnContext {
 /// This is the same as `CreateContractHostFnContext`, but also has
 /// contract constructor arguments.
 #[derive(Clone, Debug)]
-#[cfg_attr(
-    feature = "experimental_spec_shaking_v2",
-    contracttype(crate_path = "crate")
-)]
-#[cfg_attr(
-    not(feature = "experimental_spec_shaking_v2"),
-    contracttype(crate_path = "crate", export = false)
-)]
+#[contracttype(crate_path = "crate")]
 pub struct CreateContractWithConstructorHostFnContext {
     pub executable: ContractExecutable,
     pub salt: BytesN<32>,
@@ -85,14 +57,7 @@ pub struct CreateContractWithConstructorHostFnContext {
 /// Contract executable used for creating a new contract and used in
 /// `CreateContractHostFnContext`.
 #[derive(Clone, Debug)]
-#[cfg_attr(
-    feature = "experimental_spec_shaking_v2",
-    contracttype(crate_path = "crate")
-)]
-#[cfg_attr(
-    not(feature = "experimental_spec_shaking_v2"),
-    contracttype(crate_path = "crate", export = false)
-)]
+#[contracttype(crate_path = "crate")]
 pub enum ContractExecutable {
     Wasm(BytesN<32>),
 }
@@ -105,14 +70,7 @@ pub enum ContractExecutable {
 /// This tree corresponds `require_auth[_for_args]` calls on behalf of the
 /// current contract.
 #[derive(Clone)]
-#[cfg_attr(
-    feature = "experimental_spec_shaking_v2",
-    contracttype(crate_path = "crate")
-)]
-#[cfg_attr(
-    not(feature = "experimental_spec_shaking_v2"),
-    contracttype(crate_path = "crate", export = false)
-)]
+#[contracttype(crate_path = "crate")]
 pub enum InvokerContractAuthEntry {
     /// Invoke a contract.
     Contract(SubContractInvocation),
@@ -124,14 +82,7 @@ pub enum InvokerContractAuthEntry {
 
 /// Value of contract node in InvokerContractAuthEntry tree.
 #[derive(Clone)]
-#[cfg_attr(
-    feature = "experimental_spec_shaking_v2",
-    contracttype(crate_path = "crate")
-)]
-#[cfg_attr(
-    not(feature = "experimental_spec_shaking_v2"),
-    contracttype(crate_path = "crate", export = false)
-)]
+#[contracttype(crate_path = "crate")]
 pub struct SubContractInvocation {
     pub context: ContractContext,
     pub sub_invocations: Vec<InvokerContractAuthEntry>,
