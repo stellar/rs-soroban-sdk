@@ -40,60 +40,11 @@ safe-outputs:
     max: 2
   add-comment:
     max: 1
-
-jobs:
-  # The workflow reruns on every push, and most pushes do not change the
-  # classification, so the comment it posts is usually the same answer again.
-  # The comment is still posted, so that every run leaves a record of what it
-  # decided, and is then collapsed as a duplicate when the assessment before it
-  # said the same thing. The newest visible comment is therefore always the one
-  # that first reached the current classification.
-  hide_duplicate_comment:
-    # safe_outputs is the job that posts the comment. agent is listed too, and
-    # is already implied by safe_outputs, because a job that does not name it
-    # is compiled as a job the agent waits on rather than one that follows it.
-    needs: [agent, safe_outputs]
-    if: needs.safe_outputs.outputs.comment_id != ''
-    runs-on: ubuntu-slim
-    permissions:
-      contents: read
-      issues: write
-      pull-requests: write
-    steps:
-      - name: Hide the comment if the assessment before it said the same thing
-        uses: actions/github-script@v9
-        env:
-          GH_AW_SEMVER_COMMENT_ID: ${{ needs.safe_outputs.outputs.comment_id }}
-        with:
-          script: |
-            const { owner, repo } = context.repo;
-            const classificationOf = comment =>
-              (/^\*\*Classification: (major|minor|patch)\*\*/m.exec(comment.body || "") || [])[1];
-
-            const comments = await github.paginate(github.rest.issues.listComments, {
-              owner,
-              repo,
-              issue_number: context.payload.pull_request.number,
-              per_page: 100,
-            });
-            const posted = comments.find(c => c.id === Number(process.env.GH_AW_SEMVER_COMMENT_ID));
-            if (!posted) return;
-
-            // An earlier comment by the same author that opens with a classification
-            // is an earlier run of this workflow. Nothing else on a pull request
-            // looks like that, and a human quoting one is not its author.
-            const previous = comments
-              .filter(c => c.id < posted.id && c.user.id === posted.user.id && classificationOf(c))
-              .pop();
-            if (!previous || classificationOf(previous) !== classificationOf(posted)) return;
-
-            await github.graphql(
-              `mutation ($id: ID!) {
-                 minimizeComment(input: { subjectId: $id, classifier: DUPLICATE }) { clientMutationId }
-               }`,
-              { id: posted.node_id }
-            );
-            core.info(`Hid comment ${posted.id} as a duplicate of comment ${previous.id}.`);
+    # The workflow reruns on every push, and most pushes do not change the
+    # classification, so the comment it posts is usually the same answer again.
+    # Every run still leaves its own comment, and the ones before it collapse as
+    # outdated, so the pull request carries one visible assessment at a time.
+    hide-older-comments: true
 
 pre-agent-steps:
   - uses: stellar/binaries@v55
@@ -196,11 +147,7 @@ the pull request already carries a different `semver:` label, remove it.
 
 Add one comment, no more than about 15 lines:
 
-- A first line beginning with exactly `**Classification: major**`,
-  `**Classification: minor**`, or `**Classification: patch**`, followed by the
-  one change that drove it in a single sentence. Write that prefix character
-  for character: the workflow reads it to tell whether this assessment repeats
-  the one before it, and collapses the comment as a duplicate when it does.
+- The classification, and the one change that drove it, in a single sentence.
 - Up to three bullets of evidence, each naming a specific item, file, or lint,
   and the rule it falls under. Cite the `cargo semver-checks` lint names when
   the tool found something.
