@@ -67,24 +67,8 @@ jobs:
         with:
           script: |
             const { owner, repo } = context.repo;
-            const classificationOf = body =>
-              (/^\*\*Classification: (major|minor|patch)\*\*/m.exec(body || "") || [])[1];
-            // gh-aw appends this marker to every comment this workflow posts,
-            // which is what distinguishes them from anyone else's comments.
-            const markerOf = body =>
-              (/<!-- gh-aw-workflow-call-id: [^>]*-->/.exec(body || "") || [])[0];
-
-            const { data: posted } = await github.rest.issues.getComment({
-              owner,
-              repo,
-              comment_id: Number(process.env.GH_AW_SEMVER_COMMENT_ID),
-            });
-            const classification = classificationOf(posted.body);
-            const marker = markerOf(posted.body);
-            if (!classification || !marker) {
-              core.info("The comment has nothing to compare an earlier one against, so leaving it visible.");
-              return;
-            }
+            const classificationOf = comment =>
+              (/^\*\*Classification: (major|minor|patch)\*\*/m.exec(comment.body || "") || [])[1];
 
             const comments = await github.paginate(github.rest.issues.listComments, {
               owner,
@@ -92,31 +76,20 @@ jobs:
               issue_number: context.payload.pull_request.number,
               per_page: 100,
             });
-            const assessments = comments.filter(
-              c =>
-                c.id < posted.id &&
-                c.user.id === posted.user.id &&
-                c.body.includes(marker) &&
-                classificationOf(c.body)
-            );
-            const previous = assessments[assessments.length - 1];
-            if (!previous) {
-              core.info("No earlier assessment to duplicate, so leaving the comment visible.");
-              return;
-            }
-            const previousClassification = classificationOf(previous.body);
-            if (previousClassification !== classification) {
-              core.info(
-                `The assessment before this one said ${previousClassification}, not ${classification}, so leaving the comment visible.`
-              );
-              return;
-            }
+            const posted = comments.find(c => c.id === Number(process.env.GH_AW_SEMVER_COMMENT_ID));
+            if (!posted) return;
+
+            // An earlier comment by the same author that opens with a classification
+            // is an earlier run of this workflow. Nothing else on a pull request
+            // looks like that, and a human quoting one is not its author.
+            const previous = comments
+              .filter(c => c.id < posted.id && c.user.id === posted.user.id && classificationOf(c))
+              .pop();
+            if (!previous || classificationOf(previous) !== classificationOf(posted)) return;
 
             await github.graphql(
               `mutation ($id: ID!) {
-                 minimizeComment(input: { subjectId: $id, classifier: DUPLICATE }) {
-                   minimizedComment { isMinimized }
-                 }
+                 minimizeComment(input: { subjectId: $id, classifier: DUPLICATE }) { clientMutationId }
                }`,
               { id: posted.node_id }
             );
