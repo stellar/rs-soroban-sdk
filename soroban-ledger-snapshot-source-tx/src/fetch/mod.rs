@@ -141,6 +141,24 @@ fn checkpoint_search_bounds(ledger: u32, count: u32) -> (u32, u32) {
     (prev_checkpoint, ledgers_to_checkpoint)
 }
 
+fn write_usable_rpc_response<W: std::io::Write + ?Sized>(
+    response: &[u8],
+    ledger: u32,
+    write: &mut W,
+) -> Result<(), Box<dyn std::error::Error>> {
+    let usable = match parse_ledger_entry(Cursor::new(response))? {
+        Some((entry, _ttl, latest_ledger)) => {
+            entry.last_modified_ledger_seq < ledger && latest_ledger >= ledger
+        }
+        None => false,
+    };
+    if !usable {
+        return Err("rpc response not usable for this ledger".into());
+    }
+    write.write_all(response)?;
+    Ok(())
+}
+
 /// Fetcher for ledger entries that downloads ledger meta and searches for entries
 pub struct LedgerEntryFetcher {
     network: Network,
@@ -459,21 +477,7 @@ impl LedgerEntryFetcher {
             // than persisting a potentially-wrong answer that would be replayed
             // on every later run (permanently disabling the RPC fast path for
             // this (ledger, key) even after the node catches up).
-            let usable = match parse_ledger_entry(Cursor::new(&buf))
-                .map_err(|e| Box::new(e) as Box<dyn std::error::Error>)?
-            {
-                Some((entry, _ttl, latest_ledger)) => {
-                    entry.last_modified_ledger_seq < ledger && latest_ledger >= ledger
-                }
-                None => false,
-            };
-            if !usable {
-                return Err(Box::<dyn std::error::Error>::from(
-                    "rpc response not usable for this ledger",
-                ));
-            }
-            write.write_all(&buf)?;
-            Ok(())
+            write_usable_rpc_response(&buf, ledger, write)
         }) {
             Ok(rpc_read) => rpc_read,
             // Not usable, not found, or a transient RPC error: fall back to the
@@ -578,41 +582,8 @@ impl Drop for LedgerEntryFetcher {
 
 #[cfg(test)]
 mod test_network {
-    use super::{checkpoint_search_bounds, LedgerEntryFetcher, Network};
-    use soroban_sdk::xdr::{
-        Hash, LedgerEntryData, LedgerKey, LedgerKeyTtl, Limits, TtlEntry, WriteXdr,
-    };
-    use std::io::{Read, Write};
-    use std::net::TcpListener;
-    use std::sync::atomic::{AtomicU32, Ordering};
-    use std::thread;
-
-    fn serve_rpc_response(body: String) -> (String, thread::JoinHandle<()>) {
-        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
-        let addr = listener.local_addr().unwrap();
-        let handle = thread::spawn(move || {
-            let (mut stream, _) = listener.accept().unwrap();
-            let mut request = [0; 4096];
-            assert!(stream.read(&mut request).unwrap() > 0);
-            let response = format!(
-                "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n{body}",
-                body.len()
-            );
-            stream.write_all(response.as_bytes()).unwrap();
-        });
-        (format!("http://{addr}"), handle)
-    }
-
-    fn unique_cache_dir(name: &str) -> std::path::PathBuf {
-        static COUNTER: AtomicU32 = AtomicU32::new(0);
-        let n = COUNTER.fetch_add(1, Ordering::Relaxed);
-        let dir = std::env::temp_dir().join(format!(
-            "soroban-fetch-test-{}-{name}-{n}",
-            std::process::id()
-        ));
-        std::fs::create_dir_all(&dir).unwrap();
-        dir
-    }
+    use super::{checkpoint_search_bounds, write_usable_rpc_response, Network};
+    use soroban_sdk::xdr::{Hash, LedgerEntryData, Limits, TtlEntry, WriteXdr};
 
     #[test]
     fn checkpoint_bounds_typical() {
@@ -712,43 +683,28 @@ mod test_network {
     }
 
     #[test]
-    fn lagging_rpc_response_is_not_cached() {
-        let key_hash = Hash([7u8; 32]);
-        let key = LedgerKey::Ttl(LedgerKeyTtl {
-            key_hash: key_hash.clone(),
-        });
+    fn lagging_rpc_response_is_rejected_before_write() {
         let xdr = LedgerEntryData::Ttl(TtlEntry {
-            key_hash,
+            key_hash: Hash([7u8; 32]),
             live_until_ledger_seq: 123,
         })
         .to_xdr_base64(Limits::none())
         .unwrap();
-        let body = format!(
+        let lagging = format!(
             r#"{{"result":{{"latestLedger":99,"entries":[{{"xdr":"{xdr}","lastModifiedLedgerSeq":42}}]}}}}"#
         );
-        let (rpc_url, server) = serve_rpc_response(body);
-        let cache_dir = unique_cache_dir("lagging-rpc");
-        let fetcher = LedgerEntryFetcher::new(
-            Network::mainnet(Some(rpc_url)),
-            100,
-            None,
-            cache_dir.clone(),
-        );
-
-        assert!(fetcher
-            .fetch_from_rpc(&cache_dir, 100, &key)
-            .unwrap()
-            .is_none());
-        server.join().unwrap();
-
-        let cached_responses = std::fs::read_dir(cache_dir)
-            .unwrap()
-            .map(|entry| entry.unwrap().path())
-            .filter(|path| path.extension().is_some_and(|ext| ext == "json"))
-            .collect::<Vec<_>>();
+        let mut written = Vec::new();
         assert!(
-            cached_responses.is_empty(),
-            "lagging RPC response was cached at {cached_responses:?}"
+            write_usable_rpc_response(lagging.as_bytes(), 100, &mut written).is_err(),
+            "lagging RPC response must be rejected"
         );
+        assert!(
+            written.is_empty(),
+            "lagging RPC response must be rejected before any cache bytes are written"
+        );
+
+        let usable = lagging.replace(r#""latestLedger":99"#, r#""latestLedger":100"#);
+        write_usable_rpc_response(usable.as_bytes(), 100, &mut written).unwrap();
+        assert_eq!(written, usable.as_bytes());
     }
 }
