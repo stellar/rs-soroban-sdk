@@ -10,7 +10,7 @@ use sha2::{Digest, Sha256};
 use soroban_sdk::testutils::SnapshotSourceInput;
 use soroban_sdk::testutils::{HostError, SnapshotSource};
 use soroban_sdk::xdr::{LedgerEntry, LedgerKey, Limits, WriteXdr};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::rc::Rc;
 use std::sync::{Once, OnceLock};
 
@@ -53,6 +53,22 @@ struct CachedEntry {
     entry: Option<LedgerEntry>,
 }
 
+fn cache_paths(
+    workspace_root: &Path,
+    system_cache_root: &Path,
+    network: &Network,
+) -> (PathBuf, PathBuf) {
+    let network_id = network.network_id_hex();
+    (
+        workspace_root
+            .join("tests-snapshot-source")
+            .join(&network_id),
+        system_cache_root
+            .join("snapshot-source-tx")
+            .join(network_id),
+    )
+}
+
 /// Snapshot source that downloads ledger meta and searches for ledger entries
 /// based on a specific transaction context.
 pub struct TxSnapshotSource {
@@ -83,13 +99,11 @@ impl TxSnapshotSource {
                 .workspace_root
                 .into()
         });
-        let cache_path = workspace_root
-            .join("tests-snapshot-source")
-            .join(network.network_id_hex());
-        let fetcher_cache_path = ProjectDirs::from("org", "stellar", "soroban-sdk")
+        let project_dirs = ProjectDirs::from("org", "stellar", "soroban-sdk")
             .expect("failed to get project directories")
             .cache_dir()
-            .join("snapshot-source-tx");
+            .to_path_buf();
+        let (cache_path, fetcher_cache_path) = cache_paths(workspace_root, &project_dirs, &network);
         Self {
             fetcher: LedgerEntryFetcher::new(network, ledger, tx_hash, fetcher_cache_path),
             tx_hash,
@@ -181,7 +195,7 @@ fn ttl_for_key(key: &LedgerKey) -> Option<u32> {
 
 #[cfg(test)]
 mod test_ttl {
-    use super::ttl_for_key;
+    use super::{cache_paths, ttl_for_key, Network};
     use soroban_sdk::xdr::{
         AccountId, ContractDataDurability, ContractId, Hash, LedgerKey, LedgerKeyAccount,
         LedgerKeyContractCode, LedgerKeyContractData, LedgerKeyTtl, PublicKey, ScAddress, ScVal,
@@ -214,5 +228,22 @@ mod test_ttl {
             key_hash: Hash([0u8; 32]),
         });
         assert_eq!(ttl_for_key(&ttl), None);
+    }
+
+    #[test]
+    fn cache_paths_are_namespaced_by_network() {
+        let workspace = std::path::Path::new("/workspace");
+        let system_cache = std::path::Path::new("/cache");
+        let mainnet = Network::mainnet(None);
+        let testnet = Network::testnet("2025-12-17".to_string());
+
+        let mainnet_paths = cache_paths(workspace, system_cache, &mainnet);
+        let testnet_paths = cache_paths(workspace, system_cache, &testnet);
+
+        assert_ne!(mainnet_paths, testnet_paths);
+        assert!(mainnet_paths.0.ends_with(mainnet.network_id_hex()));
+        assert!(mainnet_paths.1.ends_with(mainnet.network_id_hex()));
+        assert!(testnet_paths.0.ends_with(testnet.network_id_hex()));
+        assert!(testnet_paths.1.ends_with(testnet.network_id_hex()));
     }
 }
