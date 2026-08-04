@@ -41,6 +41,87 @@ safe-outputs:
   add-comment:
     max: 1
 
+jobs:
+  # The workflow reruns on every push, and most pushes do not change the
+  # classification, so the comment it posts is usually the same answer again.
+  # The comment is still posted, so that every run leaves a record of what it
+  # decided, and is then collapsed as a duplicate when the assessment before it
+  # said the same thing. The newest visible comment is therefore always the one
+  # that first reached the current classification.
+  hide_duplicate_comment:
+    # safe_outputs is the job that posts the comment. agent is listed too, and
+    # is already implied by safe_outputs, because a job that does not name it
+    # is compiled as a job the agent waits on rather than one that follows it.
+    needs: [agent, safe_outputs]
+    if: needs.safe_outputs.outputs.comment_id != ''
+    runs-on: ubuntu-slim
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
+    steps:
+      - name: Hide the comment if the assessment before it said the same thing
+        uses: actions/github-script@v9
+        env:
+          GH_AW_SEMVER_COMMENT_ID: ${{ needs.safe_outputs.outputs.comment_id }}
+        with:
+          script: |
+            const { owner, repo } = context.repo;
+            const classificationOf = body =>
+              (/^\*\*Classification: (major|minor|patch)\*\*/m.exec(body || "") || [])[1];
+            // gh-aw appends this marker to every comment this workflow posts,
+            // which is what distinguishes them from anyone else's comments.
+            const markerOf = body =>
+              (/<!-- gh-aw-workflow-call-id: [^>]*-->/.exec(body || "") || [])[0];
+
+            const { data: posted } = await github.rest.issues.getComment({
+              owner,
+              repo,
+              comment_id: Number(process.env.GH_AW_SEMVER_COMMENT_ID),
+            });
+            const classification = classificationOf(posted.body);
+            const marker = markerOf(posted.body);
+            if (!classification || !marker) {
+              core.info("The comment has nothing to compare an earlier one against, so leaving it visible.");
+              return;
+            }
+
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner,
+              repo,
+              issue_number: context.payload.pull_request.number,
+              per_page: 100,
+            });
+            const assessments = comments.filter(
+              c =>
+                c.id < posted.id &&
+                c.user.id === posted.user.id &&
+                c.body.includes(marker) &&
+                classificationOf(c.body)
+            );
+            const previous = assessments[assessments.length - 1];
+            if (!previous) {
+              core.info("No earlier assessment to duplicate, so leaving the comment visible.");
+              return;
+            }
+            const previousClassification = classificationOf(previous.body);
+            if (previousClassification !== classification) {
+              core.info(
+                `The assessment before this one said ${previousClassification}, not ${classification}, so leaving the comment visible.`
+              );
+              return;
+            }
+
+            await github.graphql(
+              `mutation ($id: ID!) {
+                 minimizeComment(input: { subjectId: $id, classifier: DUPLICATE }) {
+                   minimizedComment { isMinimized }
+                 }
+               }`,
+              { id: posted.node_id }
+            );
+            core.info(`Hid comment ${posted.id} as a duplicate of comment ${previous.id}.`);
+
 pre-agent-steps:
   - uses: stellar/binaries@v55
     with:
@@ -142,7 +223,11 @@ the pull request already carries a different `semver:` label, remove it.
 
 Add one comment, no more than about 15 lines:
 
-- The classification, and the one change that drove it, in a single sentence.
+- A first line beginning with exactly `**Classification: major**`,
+  `**Classification: minor**`, or `**Classification: patch**`, followed by the
+  one change that drove it in a single sentence. Write that prefix character
+  for character: the workflow reads it to tell whether this assessment repeats
+  the one before it, and collapses the comment as a duplicate when it does.
 - Up to three bullets of evidence, each naming a specific item, file, or lint,
   and the rule it falls under. Cite the `cargo semver-checks` lint names when
   the tool found something.
