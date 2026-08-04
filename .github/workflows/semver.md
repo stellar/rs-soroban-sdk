@@ -40,6 +40,11 @@ safe-outputs:
     max: 2
   add-comment:
     max: 1
+    # The workflow reruns on every push, and most pushes do not change the
+    # classification, so the comment it posts is usually the same answer again.
+    # Every run still leaves its own comment, and the ones before it collapse as
+    # outdated, so the pull request carries one visible assessment at a time.
+    hide-older-comments: true
 
 pre-agent-steps:
   - uses: stellar/binaries@v55
