@@ -39,7 +39,7 @@ use derive_struct::derive_type_struct;
 use derive_struct_tuple::derive_type_struct_tuple;
 use derive_trait::derive_trait;
 
-use darling::{ast::NestedMeta, FromMeta};
+use darling::{ast::NestedMeta, util::SpannedValue, FromMeta};
 use macro_string::MacroString;
 use map_type::is_mapped_type_udt;
 use proc_macro::TokenStream;
@@ -49,7 +49,7 @@ use sha2::{Digest, Sha256};
 use std::{fmt::Write, fs};
 use syn::{
     ext::IdentExt as _, parse_macro_input, parse_str, spanned::Spanned, Data, DeriveInput, Error,
-    Expr, Fields, ItemImpl, ItemStruct, LitStr, Path, Type, Visibility,
+    Expr, Fields, ItemImpl, ItemStruct, LitStr, Path, Type,
 };
 use syn_ext::HasFnsItem;
 
@@ -62,22 +62,17 @@ pub(crate) const DEFAULT_XDR_RW_LIMITS: Limits = Limits {
     len: 0x1000000,
 };
 
-/// Emit a deprecation warning when `export` is set with the
-/// `experimental_spec_shaking_v2` feature enabled. Under v2 the spec is
-/// determined by reachability, so the argument has no effect and will be
-/// removed in a future release.
-pub(crate) fn export_arg_v2_deprecation(export: &Option<bool>, ident: &syn::Ident) -> TokenStream2 {
-    if cfg!(feature = "experimental_spec_shaking_v2") && export.is_some() {
-        let marker = format_ident!("__SOROBAN_EXPORT_ARG_DEPRECATED_FOR_{}", ident);
-        quote! {
-            #[doc(hidden)]
-            #[allow(non_upper_case_globals)]
-            #[deprecated = "`export` is a no-op under `experimental_spec_shaking_v2` (specs are determined by reachability) and will be removed in a future release"]
-            const #marker: () = ();
-            const _: () = #marker;
-        }
-    } else {
-        TokenStream2::new()
+/// Emit a compile error when `export` is set. The spec is determined by
+/// reachability, so the argument has no meaning and is no longer accepted.
+pub(crate) fn export_arg_error(export: &Option<SpannedValue<bool>>) -> TokenStream2 {
+    match export {
+        Some(export) => Error::new(
+            export.span(),
+            "`export` is no longer supported, and contract spec export is now determined by \
+             reachability from the contract boundary (functions, events, errors)",
+        )
+        .to_compile_error(),
+        None => TokenStream2::new(),
     }
 }
 
@@ -450,7 +445,7 @@ struct ContractTypeArgs {
     #[darling(default = "default_crate_path")]
     crate_path: Path,
     lib: Option<String>,
-    export: Option<bool>,
+    export: Option<SpannedValue<bool>>,
 }
 
 #[proc_macro_attribute]
@@ -473,33 +468,18 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
         Ok(()) => {}
         Err(e) => return e.to_compile_error().into(),
     }
-    let export_deprecation = export_arg_v2_deprecation(&args.export, ident);
+    // The spec is always emitted and reachability determines what is retained,
+    // so the `export` argument is no longer accepted.
+    let export_error = export_arg_error(&args.export);
     let lib_deprecation = lib_arg_deprecation(&args.lib, ident);
-    // Under `experimental_spec_shaking_v2` the spec is always emitted and
-    // reachability determines what is retained, so the `export` argument is
-    // ignored (a deprecation warning is emitted above). Otherwise, honor an
-    // explicit `export` value, falling back to exporting only `pub` types.
-    let gen_spec = if cfg!(feature = "experimental_spec_shaking_v2") {
-        true
-    } else if let Some(export) = args.export {
-        export
-    } else {
-        matches!(input.vis, Visibility::Public(_))
-    };
     let derived = match &input.data {
         Data::Struct(s) => match s.fields {
             Fields::Named(_) => {
-                derive_type_struct(&args.crate_path, vis, ident, attrs, s, gen_spec, &args.lib)
+                derive_type_struct(&args.crate_path, vis, ident, attrs, s, &args.lib)
             }
-            Fields::Unnamed(_) => derive_type_struct_tuple(
-                &args.crate_path,
-                vis,
-                ident,
-                attrs,
-                s,
-                gen_spec,
-                &args.lib,
-            ),
+            Fields::Unnamed(_) => {
+                derive_type_struct_tuple(&args.crate_path, vis, ident, attrs, s, &args.lib)
+            }
             Fields::Unit => Error::new(
                 s.fields.span(),
                 "unit structs are not supported as contract types",
@@ -514,9 +494,9 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 .filter(|v| v.discriminant.is_some())
                 .count();
             if count_of_int_variants == 0 {
-                derive_type_enum(&args.crate_path, vis, ident, attrs, e, gen_spec, &args.lib)
+                derive_type_enum(&args.crate_path, vis, ident, attrs, e, &args.lib)
             } else if count_of_int_variants == count_of_variants {
-                derive_type_enum_int(&args.crate_path, vis, ident, attrs, e, gen_spec, &args.lib)
+                derive_type_enum_int(&args.crate_path, vis, ident, attrs, e, &args.lib)
             } else {
                 Error::new(input.span(), "enums are supported as contract types only when all variants have an explicit integer literal, or when all variants are unit or single field")
                     .to_compile_error()
@@ -530,7 +510,7 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
     };
     quote! {
         #input
-        #export_deprecation
+        #export_error
         #lib_deprecation
         #derived
     }
@@ -552,23 +532,14 @@ pub fn contracterror(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
     let ident = &input.ident;
     let attrs = &input.attrs;
-    let export_deprecation = export_arg_v2_deprecation(&args.export, ident);
+    // The spec is always emitted and reachability determines what is retained,
+    // so the `export` argument is no longer accepted.
+    let export_error = export_arg_error(&args.export);
     let lib_deprecation = lib_arg_deprecation(&args.lib, ident);
-    // Under `experimental_spec_shaking_v2` the spec is always emitted and
-    // reachability determines what is retained, so the `export` argument is
-    // ignored (a deprecation warning is emitted above). Otherwise, honor an
-    // explicit `export` value, falling back to exporting only `pub` types.
-    let gen_spec = if cfg!(feature = "experimental_spec_shaking_v2") {
-        true
-    } else if let Some(export) = args.export {
-        export
-    } else {
-        matches!(input.vis, Visibility::Public(_))
-    };
     let derived = match &input.data {
         Data::Enum(e) => {
             if e.variants.iter().all(|v| v.discriminant.is_some()) {
-                derive_type_error_enum_int(&args.crate_path, ident, attrs, e, gen_spec, &args.lib)
+                derive_type_error_enum_int(&args.crate_path, ident, attrs, e, &args.lib)
             } else {
                 Error::new(input.span(), "enums are supported as contract errors only when all variants have an explicit integer literal")
                     .to_compile_error()
@@ -587,7 +558,7 @@ pub fn contracterror(metadata: TokenStream, input: TokenStream) -> TokenStream {
     };
     quote! {
         #input
-        #export_deprecation
+        #export_error
         #lib_deprecation
         #derived
     }
@@ -748,11 +719,10 @@ pub fn contractimport(metadata: TokenStream) -> TokenStream {
         }
     };
 
-    // Generate with options based on whether the experimental_spec_shaking_v2
-    // feature is enabled.
-    let opts = GenerateOptions {
-        export: cfg!(feature = "experimental_spec_shaking_v2"),
-    };
+    // Imported types produce spec entries and markers in the importing
+    // contract, and spec shaking strips the entries for imported types that are
+    // not used at the importing contract's boundary.
+    let opts = GenerateOptions::default();
     match generate_from_wasm_with_options(&wasm, &args.file, args.sha256.as_deref(), &opts) {
         Ok(code) => quote! { #code },
         Err(e @ GenerateFromFileError::VerifySha256 { .. }) => {

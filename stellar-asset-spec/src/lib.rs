@@ -11,7 +11,7 @@ use soroban_sdk::{contractevent, Address, BytesN, String};
 // These structs share the same base names as the token-sdk event structs so the spec
 // `name` field matches and the subset invariant test can verify them.
 
-#[contractevent(topics = ["approve"], data_format = "vec", export = false)]
+#[contractevent(topics = ["approve"], data_format = "vec")]
 pub(crate) struct Approve {
     #[topic]
     pub from: Address,
@@ -23,7 +23,7 @@ pub(crate) struct Approve {
     pub live_until_ledger: u32,
 }
 
-#[contractevent(topics = ["transfer"], data_format = "single-value", export = false)]
+#[contractevent(topics = ["transfer"], data_format = "single-value")]
 pub(crate) struct TransferWithAmountOnly {
     #[topic]
     pub from: Address,
@@ -34,7 +34,7 @@ pub(crate) struct TransferWithAmountOnly {
     pub amount: i128,
 }
 
-#[contractevent(topics = ["transfer"], data_format = "map", export = false)]
+#[contractevent(topics = ["transfer"], data_format = "map")]
 pub(crate) struct Transfer {
     #[topic]
     pub from: Address,
@@ -46,7 +46,7 @@ pub(crate) struct Transfer {
     pub amount: i128,
 }
 
-#[contractevent(topics = ["transfer"], data_format = "map", export = false)]
+#[contractevent(topics = ["transfer"], data_format = "map")]
 pub(crate) struct TransferWithMuxedString {
     #[topic]
     pub from: Address,
@@ -58,7 +58,7 @@ pub(crate) struct TransferWithMuxedString {
     pub amount: i128,
 }
 
-#[contractevent(topics = ["transfer"], data_format = "map", export = false)]
+#[contractevent(topics = ["transfer"], data_format = "map")]
 pub(crate) struct TransferWithMuxedBytes {
     #[topic]
     pub from: Address,
@@ -70,7 +70,7 @@ pub(crate) struct TransferWithMuxedBytes {
     pub amount: i128,
 }
 
-#[contractevent(topics = ["burn"], data_format = "single-value", export = false)]
+#[contractevent(topics = ["burn"], data_format = "single-value")]
 pub(crate) struct Burn {
     #[topic]
     pub from: Address,
@@ -79,7 +79,7 @@ pub(crate) struct Burn {
     pub amount: i128,
 }
 
-#[contractevent(topics = ["mint"], data_format = "single-value", export = false)]
+#[contractevent(topics = ["mint"], data_format = "single-value")]
 pub(crate) struct MintWithAmountOnly {
     #[topic]
     pub to: Address,
@@ -88,7 +88,7 @@ pub(crate) struct MintWithAmountOnly {
     pub amount: i128,
 }
 
-#[contractevent(topics = ["mint"], data_format = "map", export = false)]
+#[contractevent(topics = ["mint"], data_format = "map")]
 pub(crate) struct Mint {
     #[topic]
     pub to: Address,
@@ -98,7 +98,7 @@ pub(crate) struct Mint {
     pub amount: i128,
 }
 
-#[contractevent(topics = ["mint"], data_format = "map", export = false)]
+#[contractevent(topics = ["mint"], data_format = "map")]
 pub(crate) struct MintWithMuxedString {
     #[topic]
     pub to: Address,
@@ -108,7 +108,7 @@ pub(crate) struct MintWithMuxedString {
     pub amount: i128,
 }
 
-#[contractevent(topics = ["mint"], data_format = "map", export = false)]
+#[contractevent(topics = ["mint"], data_format = "map")]
 pub(crate) struct MintWithMuxedBytes {
     #[topic]
     pub to: Address,
@@ -118,7 +118,7 @@ pub(crate) struct MintWithMuxedBytes {
     pub amount: i128,
 }
 
-#[contractevent(topics = ["clawback"], data_format = "single-value", export = false)]
+#[contractevent(topics = ["clawback"], data_format = "single-value")]
 pub(crate) struct Clawback {
     #[topic]
     pub from: Address,
@@ -127,7 +127,7 @@ pub(crate) struct Clawback {
     pub amount: i128,
 }
 
-#[contractevent(topics = ["set_admin"], data_format = "single-value", export = false)]
+#[contractevent(topics = ["set_admin"], data_format = "single-value")]
 pub(crate) struct SetAdmin {
     #[topic]
     pub admin: Address,
@@ -136,7 +136,7 @@ pub(crate) struct SetAdmin {
     pub new_admin: Address,
 }
 
-#[contractevent(topics = ["set_authorized"], data_format = "single-value", export = false)]
+#[contractevent(topics = ["set_authorized"], data_format = "single-value")]
 pub(crate) struct SetAuthorized {
     #[topic]
     pub id: Address,

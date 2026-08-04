@@ -1,4 +1,4 @@
-//! The `export` argument is deprecated under the [`experimental_spec_shaking_v2`] feature.
+//! The `export` argument is deprecated under the `experimental_spec_shaking_v2` feature.
 //!
 //! The `export` argument on [`contracttype`], [`contracterror`], and [`contractevent`] controls
 //! whether a type contributes a contract spec entry. Under spec shaking v1 (the default), it is a
@@ -26,7 +26,7 @@
 //! For example, a type used only inside a contract — never at a function boundary — was previously
 //! hidden from the spec with `export = false`:
 //!
-//! ```
+//! ```compile_fail
 //! use soroban_sdk::contracttype;
 //!
 //! #[contracttype(export = false)] // 👈 👀 hint to hide the unused type from the spec
@@ -49,7 +49,9 @@
 //! # fn main() {}
 //! ```
 //!
+//! As of v28 the feature is gone, spec shaking is always on, and `export` is rejected outright. See
+//! [`v28_spec_shaking`][crate::_migrating::v28_spec_shaking].
+//!
 //! [`contracttype`]: crate::contracttype
 //! [`contracterror`]: crate::contracterror
 //! [`contractevent`]: crate::contractevent
-//! [`experimental_spec_shaking_v2`]: crate::_features#experimental_spec_shaking_v2

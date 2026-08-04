@@ -4,6 +4,17 @@
 // every small change is captured here. This is the document a developer should
 // read to understand what they need to change when upgrading.
 
+//! # Migrating from v27 to v28
+//!
+//! 1. [Spec shaking is always on, and the `export` argument has been removed][v28_spec_shaking].
+//!    The `experimental_spec_shaking_v2` feature is gone and the behaviour it enabled is now the
+//!    only behaviour: the SDK emits a spec entry and a marker for every type and event, and the
+//!    build system in the stellar-cli strips the entries that are not reachable from the contract
+//!    boundary. Remove the `experimental_spec_shaking_v2` feature from the `soroban-sdk` dependency
+//!    in `Cargo.toml` if it is enabled, remove any `export = ...` argument from [`contracttype`],
+//!    [`contracterror`], and [`contractevent`] (it is now a compile error), and build contracts
+//!    with `stellar contract build` from `stellar-cli` v25.2.0 or newer, which is now required.
+//!
 //! # Migrating from v26 to v27
 //!
 //! 1. [`bytes!` and `bytesn!` no longer accept base10 (decimal) integer literals][v27_bytes_literals].
@@ -350,3 +361,4 @@ pub mod v25_poseidon;
 pub mod v25_resource_limits;
 pub mod v27_bytes_literals;
 pub mod v27_export;
+pub mod v28_spec_shaking;
