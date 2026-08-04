@@ -40,6 +40,7 @@ use soroban_sdk::Env;
 let tx_hash = bytes!(0x6fc2e483896276816b6d3b8d1df778bc978521f51561faa407ab8bb1949e6a1b);
 
 let network = Network {
+    name: "mainnet".to_string(),
     passphrase: "Public Global Stellar Network ; September 2015".to_string(),
     meta_url: "https://aws-public-blockchain.s3.us-east-2.amazonaws.com/v1.1/stellar/ledgers/pubnet".to_string(),
     rpc_url: Some("https://mainnet.sorobanrpc.com".to_string()),

@@ -58,14 +58,21 @@ fn cache_paths(
     system_cache_root: &Path,
     network: &Network,
 ) -> (PathBuf, PathBuf) {
-    let network_id = network.network_id_hex();
+    assert!(
+        !network.name.is_empty()
+            && network
+                .name
+                .bytes()
+                .all(|b| b.is_ascii_alphanumeric() || matches!(b, b'-' | b'_')),
+        "network name must contain only ASCII letters, digits, '-' or '_'"
+    );
     (
         workspace_root
             .join("tests-snapshot-source")
-            .join(&network_id),
+            .join(&network.name),
         system_cache_root
             .join("snapshot-source-tx")
-            .join(network_id),
+            .join(&network.name),
     )
 }
 
@@ -80,7 +87,8 @@ pub struct TxSnapshotSource {
 impl TxSnapshotSource {
     /// Create a new TxSnapshotSource
     ///
-    /// The cache path is automatically computed as `<workspace_root>/tests-snapshot-source/<network_id_hex>`
+    /// The cache path is automatically computed as
+    /// `<workspace_root>/tests-snapshot-source/<network_name>`
     /// using cargo metadata to find the workspace root.
     ///
     /// # Arguments
@@ -231,7 +239,7 @@ mod test_ttl {
     }
 
     #[test]
-    fn cache_paths_are_namespaced_by_network() {
+    fn cache_paths_are_namespaced_by_network_name() {
         let workspace = std::path::Path::new("/workspace");
         let system_cache = std::path::Path::new("/cache");
         let mainnet = Network::mainnet(None);
@@ -241,9 +249,33 @@ mod test_ttl {
         let testnet_paths = cache_paths(workspace, system_cache, &testnet);
 
         assert_ne!(mainnet_paths, testnet_paths);
-        assert!(mainnet_paths.0.ends_with(mainnet.network_id_hex()));
-        assert!(mainnet_paths.1.ends_with(mainnet.network_id_hex()));
-        assert!(testnet_paths.0.ends_with(testnet.network_id_hex()));
-        assert!(testnet_paths.1.ends_with(testnet.network_id_hex()));
+        assert_eq!(
+            mainnet_paths.0,
+            workspace.join("tests-snapshot-source/mainnet")
+        );
+        assert_eq!(
+            mainnet_paths.1,
+            system_cache.join("snapshot-source-tx/mainnet")
+        );
+        assert_eq!(
+            testnet_paths.0,
+            workspace.join("tests-snapshot-source/testnet-2025-12-17")
+        );
+        assert_eq!(
+            testnet_paths.1,
+            system_cache.join("snapshot-source-tx/testnet-2025-12-17")
+        );
+    }
+
+    #[test]
+    #[should_panic(expected = "network name must contain only")]
+    fn cache_paths_reject_unsafe_network_name() {
+        let mut network = Network::mainnet(None);
+        network.name = "../mainnet".to_string();
+        cache_paths(
+            std::path::Path::new("/workspace"),
+            std::path::Path::new("/cache"),
+            &network,
+        );
     }
 }

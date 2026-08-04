@@ -41,6 +41,11 @@ pub enum Error {
 /// as well as the checkpoint frequency for the network.
 #[derive(Debug, Clone)]
 pub struct Network {
+    /// Human-readable name used to namespace caches.
+    ///
+    /// Must uniquely identify the network epoch and contain only ASCII letters,
+    /// digits, `-`, or `_`.
+    pub name: String,
     /// Network passphrase (e.g., "Public Global Stellar Network ; September 2015")
     pub passphrase: String,
     /// URL to the SEP-54 ledger meta storage
@@ -64,6 +69,7 @@ impl Network {
     /// * `rpc_url` - Optional RPC URL, used as an optimization to skip searching meta/archive
     pub fn mainnet(rpc_url: Option<String>) -> Self {
         Self {
+            name: "mainnet".to_string(),
             passphrase: "Public Global Stellar Network ; September 2015".to_string(),
             meta_url: "https://aws-public-blockchain.s3.us-east-2.amazonaws.com/v1.1/stellar/ledgers/pubnet".to_string(),
             rpc_url,
@@ -86,6 +92,7 @@ impl Network {
     ///   supply the start date for the epoch containing the ledgers under test.
     pub fn testnet(testnet_start_date: String) -> Self {
         Self {
+            name: format!("testnet-{testnet_start_date}"),
             passphrase: "Test SDF Network ; September 2015".to_string(),
             meta_url: format!(
                 "https://aws-public-blockchain.s3.us-east-2.amazonaws.com/v1.1/stellar/ledgers/testnet/{testnet_start_date}"
@@ -105,6 +112,7 @@ impl Network {
     /// - History archive: localhost:8000/archive
     pub fn local() -> Self {
         Self {
+            name: "local".to_string(),
             passphrase: "Standalone Network ; February 2017".to_string(),
             meta_url: "http://localhost:8000/meta-archive".to_string(),
             rpc_url: Some("http://localhost:8000/rpc".to_string()),
@@ -607,11 +615,9 @@ mod test_network {
         assert_eq!(checkpoint_search_bounds(7, 8), (0, 7));
     }
 
-    // The network id is the SHA-256 of the network passphrase and is used to
-    // derive the on-disk cache directory. These values are pinned because a
-    // change would silently move (and effectively invalidate) every cache, and
-    // they must match the committed fixture directories under
-    // `tests-snapshot-source/`.
+    // The network id is the SHA-256 of the network passphrase. These values are
+    // pinned because the IDs are part of Stellar's protocol-level network
+    // identity.
     #[test]
     fn network_id_hex_is_stable() {
         assert_eq!(
@@ -640,6 +646,7 @@ mod test_network {
     #[test]
     fn mainnet_defaults() {
         let n = Network::mainnet(None);
+        assert_eq!(n.name, "mainnet");
         assert_eq!(
             n.passphrase,
             "Public Global Stellar Network ; September 2015"
@@ -659,6 +666,7 @@ mod test_network {
     #[test]
     fn testnet_defaults() {
         let n = Network::testnet("2025-12-17".to_string());
+        assert_eq!(n.name, "testnet-2025-12-17");
         assert_eq!(n.passphrase, "Test SDF Network ; September 2015");
         // The start date is appended to the AWS testnet meta partition path.
         assert_eq!(
@@ -675,6 +683,7 @@ mod test_network {
     #[test]
     fn local_defaults() {
         let n = Network::local();
+        assert_eq!(n.name, "local");
         assert_eq!(n.passphrase, "Standalone Network ; February 2017");
         assert_eq!(n.rpc_url.as_deref(), Some("http://localhost:8000/rpc"));
         assert_eq!(n.meta_url, "http://localhost:8000/meta-archive");
