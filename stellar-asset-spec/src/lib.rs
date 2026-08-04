@@ -20,7 +20,7 @@ pub(crate) struct Approve {
     #[topic]
     pub sep0011_asset: String,
     pub amount: i128,
-    pub expiration_ledger: u32,
+    pub live_until_ledger: u32,
 }
 
 #[contractevent(topics = ["transfer"], data_format = "single-value", export = false)]
