@@ -738,7 +738,7 @@ ul.clean li .lead { color: #fff; font-weight: 600; }
         <ul class="clean reveal" style="max-width:66ch;">
             <li>The optimization is <strong>split across two tools</strong>: the SDK plants markers, the CLI harvests them.</li>
             <li>Markers without a harvester = everything exported, nothing stripped — a strict regression.</li>
-            <li>A compile-time feature can't detect what build tool is driving it… <em>unless we make it.</em></li>
+            <li>At compile time the SDK can't see what build tool is driving it… <em>unless we make it.</em></li>
         </ul>
     </div>
     <div class="slide-footer"><span class="t">The catch</span><span>17</span></div>
@@ -752,15 +752,15 @@ ul.clean li .lead { color: #fff; font-weight: 600; }
         <div class="grid g2-3">
             <div class="code reveal">
                 <div class="bar"><i></i><i></i><i></i><span class="fname">soroban-sdk/build.rs</span></div>
-<pre><span class="tok-cm">// feature on + wasm target…</span>
-<span class="tok-kw">if</span> feature_enabled &amp;&amp; target_is_wasm {
-  <span class="tok-kw">if</span> env::<span class="tok-fn">var</span>(
+<pre><span class="tok-cm">// every wasm contract build…</span>
+<span class="tok-kw">if</span> target_is_wasm
+  &amp;&amp; env::<span class="tok-fn">var</span>(
     <span class="tok-str">"…SUPPORTS_SPEC_SHAKING_V2"</span>
-  ).<span class="tok-fn">is_err</span>() {
-    <span class="tok-fn">eprintln!</span>(<span class="tok-str">"error: requires \
-       stellar-cli v25.2.0+"</span>);
-    process::<span class="tok-fn">exit</span>(1);
-  }
+  ).<span class="tok-fn">is_err</span>()
+{
+  <span class="tok-fn">eprintln!</span>(<span class="tok-str">"error: soroban-sdk requires \
+     stellar-cli v25.2.0+ to build a contract"</span>);
+  process::<span class="tok-fn">exit</span>(1);
 }</pre>
                 <div class="bar" style="margin-top:0.8em;"><i></i><i></i><i></i><span class="fname">stellar-cli sets it</span></div>
 <pre>cmd.<span class="tok-fn">env</span>(<span class="tok-str">"…SUPPORTS_SPEC_SHAKING_V2"</span>, <span class="tok-str">"1"</span>);</pre>
@@ -781,12 +781,12 @@ ul.clean li .lead { color: #fff; font-weight: 600; }
 <section class="slide">
     <div class="slide-content">
         <div class="kicker reveal">Shipping it</div>
-        <h2 class="reveal">Opt-in today → <span class="gradient-text">always-on</span> in protocol 28</h2>
+        <h2 class="reveal">Shipped opt-in → now <span class="gradient-text">always-on</span></h2>
         <div class="timeline reveal" style="grid-template-columns:repeat(2,1fr);">
-            <div class="stage now"><span class="p">protocol 26 · shipped</span><h3>Opt-in</h3><p class="d">Behind <span class="mono">experimental_spec_shaking_v2</span>. Requires <span class="mono">stellar contract build</span> — plain wasm builds error.</p></div>
-            <div class="stage"><span class="p">protocol 28 · planned</span><h3>Always-on</h3><p class="d">Flag removed. v2 is simply how the SDK builds — every contract ships a shaken spec.</p></div>
+            <div class="stage"><span class="p">protocol 26 · shipped</span><h3>Opt-in</h3><p class="d">Behind <span class="mono">experimental_spec_shaking_v2</span>. Requires <span class="mono">stellar contract build</span> — plain wasm builds error.</p></div>
+            <div class="stage now"><span class="p">protocol 28 · shipped</span><h3>Always-on</h3><p class="d">Flag removed (<span class="mono">#1968</span>). v2 is simply how the SDK builds — every contract ships a shaken spec.</p></div>
         </div>
-        <p class="reveal subtle" style="max-width:68ch;">The flag is the off-ramp while the two-tool pipeline beds in; once the CLI requirement is universal, the flag disappears.</p>
+        <p class="reveal subtle" style="max-width:68ch;">The flag was the off-ramp while the two-tool pipeline bedded in. Adoption proved out in the wild — OpenZeppelin's stellar-contracts shipped with it on from April 2026 — and the flag is now gone.</p>
     </div>
     <div class="slide-footer"><span class="t">Shipping it</span><span>19</span></div>
 </section>
@@ -799,7 +799,7 @@ ul.clean li .lead { color: #fff; font-weight: 600; }
         <div class="grid g3 reveal">
             <div class="card"><span class="num accent-rust">#1852</span><h3 style="font-size:var(--body-size);">Panic-only errors</h3><p>An error thrown via <span class="mono">panic_with_error!</span> never appears in a <span class="mono">Result</span> return — so it needs its own boundary marker, or it'd be shaken out.</p></div>
             <div class="card"><span class="num accent-rust">#1835</span><h3 style="font-size:var(--body-size);">Recursive types</h3><p>A type reachable through <span class="mono">Vec&lt;Self&gt;</span> would recurse forever on a direct call → the <span class="mono">keep_reachable</span> fn-pointer trick.</p></div>
-            <div class="card"><span class="num accent-rust">#1876</span><h3 style="font-size:var(--body-size);">Deprecating <span class="mono">export</span></h3><p>Under v2, <span class="mono">export</span> is a no-op — worse, it can drop a marker for a reachable type. Now it warns and will be removed.</p></div>
+            <div class="card"><span class="num accent-rust">#1876</span><h3 style="font-size:var(--body-size);">Removing <span class="mono">export</span></h3><p>Under v2, <span class="mono">export = false</span> can drop a marker for a reachable type. Deprecated in v27; a compile error since <span class="mono">#1968</span>.</p></div>
         </div>
         <p class="reveal subtle" style="max-width:68ch;">Each is a small hole in the "reachability = used" model. The pattern held; the edges just needed their own roots.</p>
     </div>
@@ -905,7 +905,7 @@ Why each hurts (these are the real complaints from users):
 - All-or-nothing imports. This is the big one. Re-export one imported type and you'd re-export the entire imported interface, so the SDK chose to export nothing from imports — which meant self-contained specs were impossible.
 - Manual export flags rot. They drift out of sync with what's actually used.
 
-This 'before' isn't a memory — it's pinned by tests/spec_shaking_v1, whose test asserts markers.is_empty() and that non-pub and export=false types (UsedNonPubStruct, UsedNonPubError, UsedExportFalseStruct/Error/Event) produce no spec entry at all under v1. The v2 test takes the identical menagerie of types and asserts the opposite: they now DO get entries, and are kept only if reachable. Two contracts, same types, opposite guarantees — that pair is the regression fence for the whole rollout.
+This 'before' was pinned by tests/spec_shaking_v1 (retired along with v1 itself when #1968 made shaking always-on), whose test asserted markers.is_empty() and that non-pub and export=false types (UsedNonPubStruct, UsedNonPubError, UsedExportFalseStruct/Error/Event) produce no spec entry at all under v1. The v2 test takes the identical menagerie of types and asserts the opposite: they DO get entries, and are kept only if reachable. Two contracts, same types, opposite guarantees — that pair was the regression fence while both paths shipped.
 
 Transition: all of these are humans guessing at one question the compiler could answer precisely — is this type reachable from the boundary? Hold that question up; the rest of the talk answers it.`,
 
@@ -979,20 +979,20 @@ Craft detail and the double game, if asked: we volatile-read just one byte (the 
 
 The emitter is generate_marker_impl(path, ident, spec_xdr, field_types, ...) in soroban-sdk-macros/src/shaking.rs. It takes an iterator of the type's field Types and expands one inner marker call per field. The load-bearing subtlety on the slide: those field-marker calls are emitted OUTSIDE the #[cfg(target_family = 'wasm')] block, so the recursive reachability-threading exists on every target — only the 14-byte leaf anchor (the static plus read_volatile) is wasm-gated. That is exactly why native builds pay nothing: off-wasm the inner calls chain to no-op defaults and the anchor compiles away entirely.
 
-If someone doubts the macro really emits this, the expansion is a checked-in golden. tests-expanded/test_spec_shaking_v2_wasm32v1-none.rs has 68 of these SpecShakingMarker impls, one per contract type, each with its own SpEcV1 byte literal — the UsedParamStruct one on the slide shows the real nested u32 / UsedNestedInStruct marker calls before the static, verbatim. Any change to the emitted code diffs the golden in CI, and the v1 golden has exactly zero SpecShakingMarker impls and zero SpEcV1 literals, so the feature's on/off footprint is diffable line-for-line.`,
+If someone doubts the macro really emits this, the expansion is a checked-in golden. tests-expanded/test_spec_shaking_v2_wasm32v1-none.rs has 68 of these SpecShakingMarker impls, one per contract type, each with its own SpEcV1 byte literal — the UsedParamStruct one on the slide shows the real nested u32 / UsedNestedInStruct marker calls before the static, verbatim. Any change to the emitted code diffs the golden in CI. While both paths shipped, the v1 golden had exactly zero SpecShakingMarker impls and zero SpEcV1 literals, so the on/off footprint was diffable line-for-line (the v1 crate and its goldens retired with #1968).`,
 
 /* 10 — Boundaries */
 `Reachability of the marker function is only meaningful if we call it from exactly the right places — the true contract boundary, and nowhere else.
 
-The four call sites, all feature-gated on experimental_spec_shaking_v2, all the same shape (marker call, then the real conversion):
+The four call sites — unconditional since #1968 made shaking always-on (during the opt-in phase they were gated on the experimental_spec_shaking_v2 feature) — all the same shape (marker call, then the real conversion):
 1. Function parameters (input path, mirror of the return shown) — try_from_val_for_contract_fn.rs: impl<E,T,U> TryFromValForContractFn<E,T> for U where U: TryFromVal<E,T> + SpecShakingMarker { ... U::spec_shaking_marker(); U::try_from_val(e, v) }. The marker fires BEFORE try_from_val — so an argument type is marked on the way IN, even if the deserialize later fails.
 2. Function return values (return path, shown on the slide) — into_val_for_contract_fn.rs: T::spec_shaking_marker() then self.into_val(e).
-3. Events — env.rs / derive_event.rs emit a generated method: pub fn publish(&self, env) { <Self as SpecShakingMarker>::spec_shaking_marker(); <_ as Event>::publish(self, env); }. The marker is the first statement of publish(), and only emitted when export && the feature is on.
+3. Events — env.rs / derive_event.rs emit a generated method: pub fn publish(&self, env) { <Self as SpecShakingMarker>::spec_shaking_marker(); <_ as Event>::publish(self, env); }. The marker is the first statement of publish().
 4. Errors — Env::panic_with_error<I>(&self, error: I) -> ! where I: Into<Error> + SpecShakingMarker { I::spec_shaking_marker(); ... }. Both panic_with_error! and assert_with_error! route through it — assert_with_error! literally expands to panic_with_error! — which is why an assert-only error still gets a root (the #1852 edge case later).
 
 Emphasize the deliberate *exclusions*: general TryFromVal conversions do NOT call the marker. So a type used only in storage, or only passed in a cross-contract call, does not get marked and gets shaken out. "Used at the boundary" is a precise, intentional definition, not "used anywhere."
 
-Read the code: it's a blanket impl gated on T: IntoVal + SpecShakingMarker. Under the feature flag, every contract return flows through this and drops the breadcrumb; without the flag, the same trait exists but skips the marker call.
+Read the code: it's a blanket impl gated on T: IntoVal + SpecShakingMarker. Every contract return flows through this and drops the breadcrumb — unconditionally, since #1968.
 
 Deprecation precision (in case someone reads the source): SpecShakingMarker itself is #[doc(hidden)] but NOT deprecated — it's live internal plumbing. The two boundary traits shown here, IntoValForContractFn and TryFromValForContractFn, are BOTH #[doc(hidden)] AND #[deprecated] with the note '...is an internal trait and is not safe to use or implement' — the deprecation is how the SDK tells users never to implement these directly. (The separately-deprecated export attribute is a different thing, covered later.)
 
@@ -1074,30 +1074,30 @@ For the audience: this is the generic hazard of any optimization that spans a pr
 /* 17 — The build guard */
 `The fix is a deliberately blunt instrument: make the wrong build fail loudly instead of silently pessimizing.
 
-In soroban-sdk/build.rs: if the experimental_spec_shaking_v2 feature is enabled AND we're building for a wasm target, check for the env var SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2. If it's absent, print an actionable error ("requires stellar-cli v25.2.0+, or remove the feature") and exit(1) — the build stops before producing a bloated artifact.
+In soroban-sdk/build.rs: on ANY wasm-target build — unconditional since #1968; during the opt-in phase this was additionally gated on the experimental feature — check for the env var SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2. If it's absent, print 'error: soroban-sdk requires stellar-cli v25.2.0+ to build a contract' and exit(1) — the build stops (exit code 101 from cargo's perspective) before producing an unshaken artifact.
 
-The other half, in stellar-cli's build command: it sets that env var to "1" before invoking cargo. So the env var is effectively a capability handshake: "the harvester will run after me." Only a build driven by 'stellar contract build' (new enough) sets it.
+The other half, in stellar-cli's build command: it sets that env var to "1" before invoking cargo. So the env var is effectively a capability handshake: "the harvester will run after me." Only a build driven by 'stellar contract build' (new enough) sets it — or another build system that does its own shaking and sets the var to say so.
 
-The handshake is asymmetric, worth spelling out. The CLI sets the env var on EVERY cargo rustc it spawns, unconditionally — it can't know whether this particular crate turned the feature on, so it always advertises 'a harvester will run.' The SDK build.rs only checks for it when its own CARGO_FEATURE_EXPERIMENTAL_SPEC_SHAKING_V2 is set AND CARGO_CFG_TARGET_FAMILY is wasm; it also emits cargo::rerun-if-env-changed for the var so toggling the toolchain re-triggers the check. And the failure is not a warning — it's std::process::exit(1) with a multi-line message naming stellar-cli v25.2.0+ and two fixes (build with stellar contract build v25.2.0+, or drop the feature from Cargo.toml).
+Details worth spelling out: the CLI sets the env var on EVERY cargo rustc it spawns, unconditionally advertising 'a harvester will run.' The SDK build.rs checks for it whenever CARGO_CFG_TARGET_FAMILY is wasm, and emits cargo::rerun-if-env-changed for the var so toggling the toolchain re-triggers the check. And the failure is not a warning — it's std::process::exit(1) with a message naming the fix: build with stellar contract build using stellar-cli v25.2.0+. (Since #1968 there is no feature to drop; the CLI-or-equivalent is simply required for wasm contract builds.)
 
 Two guardrails to highlight:
 - Fail early with a fix, not late with a silent regression — the error text tells you exactly how to proceed.
-- The check is scoped to wasm targets, so native unit tests are never blocked (the feature is a no-op off-wasm anyway).
+- The check is scoped to wasm targets, so native unit tests are never blocked (the marker anchors are wasm-gated and compile away off-wasm anyway).
 
 If asked why an env var and not something cleaner: there is no supported way for a proc-macro or build script to introspect the parent build tool; an env var injected by the CLI is the pragmatic, robust seam.`,
 
 /* 18 — Shipping it */
-`Two stages, deliberately no middle. Spec shaking v2 SHIPPED as opt-in in protocol 26: you enable the experimental_spec_shaking_v2 cargo feature, and the build.rs guard from the previous slide enforces that a capable stellar-cli is driving the build. That is where things sit today — as of soroban-sdk 27.0.0 the feature is still opt-in, and no default feature set turns it on.
+`Two stages, deliberately no middle — and both have now shipped. Spec shaking v2 first SHIPPED as opt-in in protocol 26: you enabled the experimental_spec_shaking_v2 cargo feature, and the build.rs guard from the previous slide enforced that a capable stellar-cli was driving the build. Adoption happened on that flag: OpenZeppelin's stellar-contracts enabled it for every consumer from v0.7.0 (April 2026) — mainnet analysis found roughly 349 wasms depending on the OZ libs, 49 provably built on 0.7.0+ — with no reported breakage.
 
-The end state is protocol 28: the flag is removed and v2 becomes simply how the SDK builds — every Rust contract ships a shaken spec, no opt-in, no configuration. There is no intermediate default-on stage in between: adoption happens on the opt-in flag, then the flag disappears.
+The end state landed with #1968, "Always enable spec shaking," targeting protocol 28: the cargo feature is deleted and v2 is simply how the SDK builds — every Rust contract emits markers and ships a shaken spec, no opt-in, no configuration. There was no intermediate default-on stage: adoption happened on the opt-in flag, then the flag disappeared. Alongside it, the export argument went from deprecated (v27) to a compile error, and the migration notes live in the _migrating::v28_spec_shaking rustdoc page.
 
-Why a flag at all: the optimization spans two independently-released tools, so the flag is the off-ramp — anyone can step back to v1 behavior by dropping the feature while the ecosystem catches up. Once the CLI requirement is universal, the escape hatch has no reason to exist, so it's removed rather than kept as permanent configuration surface.`,
+Why a flag at all: the optimization spans two independently-released tools, so the flag was the off-ramp — anyone could step back to v1 behavior by dropping the feature while the ecosystem caught up. Once real-world adoption proved the pipeline (that OZ cohort ran it in production for months), the escape hatch had no reason to exist, so it was removed rather than kept as permanent configuration surface.`,
 
 /* 19 — Edge cases */
 `The long tail — proof the model met reality. Three representative holes and how each was patched by adding a proper "root," not by abandoning the approach:
 - #1852 panic-only errors: an error surfaced only through panic_with_error!/assert_with_error! never appears in a Result<_, E> return, so nothing at the "normal" boundary would mark it. Fix: treat the panic/assert macros as boundary call sites too, so the error type is a root in its own right.
 - #1835 recursive types: a type reachable through Vec<Self> (or Map, or &Self) would infinitely recurse if the marker impl called straight through the container. Fix: the keep_reachable fn-pointer trick from slide 11 — reference the marker without calling it.
-- #1876 deprecating export: under v2, export=true/false is not just redundant, it's actively harmful — export=false can suppress a marker for a type that's still reachable, causing the CLI to drop a needed entry (missing coverage). So export now emits a deprecation warning and will be removed; reachability is the single source of truth.
+- #1876 removing export: under v2, export=true/false is not just redundant, it's actively harmful — export=false can suppress a marker for a type that's still reachable, causing the CLI to drop a needed entry (missing coverage). So export was deprecated in v27 and, with #1968, became a compile error pointing at the argument itself; reachability is the single source of truth.
 
 Meta-point: each fix is "add a missing root" or "fix a traversal edge," never "the whole idea doesn't work." The model was sound; the boundary just had more doors than the first draft enumerated.
 
@@ -1128,7 +1128,7 @@ Pointers: the SDK is stellar/rs-soroban-sdk (soroban-spec/src/shaking.rs, soroba
 
 Anticipated Q&A:
 - "Could other languages use this?" Any WASM toolchain with reliable DCE and a way to anchor bytes could, but it's not part of SEP-48 — it's a Rust-SDK + CLI mechanism, not a chain-level standard.
-- "What if I don't use the CLI?" With the feature on, a wasm build errors by design; with it off you get v1 behavior.
+- "What if I don't use the CLI?" A wasm contract build errors by design ('soroban-sdk requires stellar-cli v25.2.0+ to build a contract'). Since #1968 there is no flag to turn shaking off — a build system that shakes the spec is required, though any build system that does its own shaking can set the env var to declare that. Native builds and unit tests are unaffected.
 - "Collision risk on 64-bit hashes?" Negligible at spec-entry counts, and a collision could only keep an unused entry, never drop a used one.
 - "Runtime cost on-chain?" The markers are data-section bytes and #[cfg(wasm)]-only; the volatile reads are in boundary conversion code and measured negligible on large contracts.
 - "Do the markers ship on-chain?" Yes — the anchored 14-byte markers stay in the WASM data section, a few bytes per reachable type. That is the cost of the signal, and it is tiny next to the spec bytes removed.`
