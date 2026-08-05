@@ -166,6 +166,25 @@ fn checkpoint_search_bounds(ledger: u32, count: u32) -> (u32, u32) {
     (prev_checkpoint, ledgers_to_checkpoint)
 }
 
+/// Compute the machine-local cache path for a resolved history-archive
+/// result, keyed by the history checkpoint sequence and the ledger-key hash.
+///
+/// Deliberately excludes the target ledger and tx hash from the key: two
+/// fetches whose search bottoms out at the same checkpoint (see
+/// [`checkpoint_search_bounds`]) always resolve to the same archive result for
+/// a given key, regardless of which target ledger or transaction triggered
+/// the search, so keying on the checkpoint lets them share one cached result
+/// instead of each re-decoding the checkpoint's buckets from scratch.
+fn history_result_cache_path(
+    cache_path: &Path,
+    checkpoint: u32,
+    key: &LedgerKey,
+) -> Result<PathBuf, Error> {
+    let key_xdr = key.to_xdr(Limits::none())?;
+    let key_hash = Sha256::digest(&key_xdr);
+    Ok(cache_path.join(format!("history-result-{checkpoint}-{key_hash:x}.json")))
+}
+
 fn write_usable_rpc_response<W: std::io::Write + ?Sized>(
     response: &[u8],
     ledger: u32,
@@ -522,7 +541,40 @@ impl LedgerEntryFetcher {
         Ok(None)
     }
 
+    /// Fetch (and cache) the history-archive result for `key` at the
+    /// checkpoint `ledger`.
+    ///
+    /// This is the entry point called after phases 1 and 2 (per-ledger meta
+    /// search) have exhausted the range down to the previous checkpoint, so
+    /// `ledger` here is always a checkpoint sequence, not an arbitrary target
+    /// ledger. The result is cached keyed by `(checkpoint, key_hash)` rather
+    /// than by the target ledger: fetch logic always first replays ledger-close
+    /// meta from the target ledger back to immediately after the previous
+    /// checkpoint (phases 1-2), then falls back to the immutable state
+    /// represented by that checkpoint (this phase). That means the resolved
+    /// archive result for a given key is identical for every target ledger
+    /// (and every transaction within it) that shares the same checkpoint.
+    /// Keying by the target ledger instead would prevent that reuse without
+    /// improving correctness, forcing every fork snapshot in a checkpoint
+    /// interval to re-decode the full (potentially many-GB) bucket set from
+    /// scratch. Both `Some(LedgerEntry)` and `None` are cached, since a miss
+    /// is just as expensive to determine as a hit.
     fn fetch_from_archive(
+        &self,
+        cache_path: &Path,
+        checkpoint: u32,
+        key: &LedgerKey,
+    ) -> Result<Option<LedgerEntry>, Error> {
+        let result_path = history_result_cache_path(cache_path, checkpoint, key)?;
+        let result_read = cache(result_path, |write| {
+            let result = self.fetch_from_archive_uncached(cache_path, checkpoint, key)?;
+            serde_json::to_writer_pretty(write, &result)?;
+            Ok(())
+        })?;
+        Ok(serde_json::from_reader(result_read)?)
+    }
+
+    fn fetch_from_archive_uncached(
         &self,
         cache_path: &Path,
         ledger: u32,
@@ -742,5 +794,89 @@ mod test_network {
         let usable = lagging.replace(r#""latestLedger":99"#, r#""latestLedger":100"#);
         write_usable_rpc_response(usable.as_bytes(), 100, &mut written).unwrap();
         assert_eq!(written, usable.as_bytes());
+    }
+}
+
+#[cfg(test)]
+mod test_history_result_cache {
+    use super::{checkpoint_search_bounds, history_result_cache_path};
+    use soroban_sdk::xdr::{
+        AccountId, Hash, LedgerKey, LedgerKeyAccount, LedgerKeyContractCode, PublicKey, Uint256,
+    };
+    use std::path::Path;
+
+    fn account_key(byte: u8) -> LedgerKey {
+        LedgerKey::Account(LedgerKeyAccount {
+            account_id: AccountId(PublicKey::PublicKeyTypeEd25519(Uint256([byte; 32]))),
+        })
+    }
+
+    #[test]
+    fn distinct_target_ledgers_in_same_checkpoint_interval_reuse_the_same_key() {
+        // Mainnet checkpoint frequency is 64; ledgers 61292100 and 61292152
+        // both fall within the checkpoint interval enclosed by checkpoint
+        // 61292095 (see checkpoint_bounds_typical in test_network above).
+        let (checkpoint_a, _) = checkpoint_search_bounds(61292100, 64);
+        let (checkpoint_b, _) = checkpoint_search_bounds(61292152, 64);
+        assert_eq!(
+            checkpoint_a, checkpoint_b,
+            "both target ledgers should resolve to the same checkpoint"
+        );
+
+        let key = account_key(1);
+        let cache_path = Path::new("/cache/mainnet");
+        let path_a = history_result_cache_path(cache_path, checkpoint_a, &key).unwrap();
+        let path_b = history_result_cache_path(cache_path, checkpoint_b, &key).unwrap();
+        assert_eq!(
+            path_a, path_b,
+            "distinct target ledgers sharing a checkpoint must reuse the same history-result cache key"
+        );
+    }
+
+    #[test]
+    fn distinct_checkpoints_do_not_collide() {
+        let key = account_key(1);
+        let cache_path = Path::new("/cache/mainnet");
+        let path_a = history_result_cache_path(cache_path, 127, &key).unwrap();
+        let path_b = history_result_cache_path(cache_path, 191, &key).unwrap();
+        assert_ne!(
+            path_a, path_b,
+            "different checkpoints must not collide on the same cache key"
+        );
+    }
+
+    #[test]
+    fn distinct_keys_do_not_collide() {
+        let cache_path = Path::new("/cache/mainnet");
+        let path_a = history_result_cache_path(cache_path, 127, &account_key(1)).unwrap();
+        let path_b = history_result_cache_path(cache_path, 127, &account_key(2)).unwrap();
+        assert_ne!(
+            path_a, path_b,
+            "different ledger keys must not collide on the same cache key"
+        );
+
+        let contract_code_key = LedgerKey::ContractCode(LedgerKeyContractCode {
+            hash: Hash([1u8; 32]),
+        });
+        let path_c = history_result_cache_path(cache_path, 127, &contract_code_key).unwrap();
+        assert_ne!(
+            path_a, path_c,
+            "different ledger key variants must not collide on the same cache key"
+        );
+    }
+
+    #[test]
+    fn cache_path_is_namespaced_under_the_provided_cache_dir() {
+        let key = account_key(1);
+        let mainnet_path =
+            history_result_cache_path(Path::new("/cache/mainnet"), 127, &key).unwrap();
+        let testnet_path =
+            history_result_cache_path(Path::new("/cache/testnet"), 127, &key).unwrap();
+        assert!(mainnet_path.starts_with("/cache/mainnet"));
+        assert!(testnet_path.starts_with("/cache/testnet"));
+        assert_ne!(
+            mainnet_path, testnet_path,
+            "cache paths under different network directories must not collide"
+        );
     }
 }
