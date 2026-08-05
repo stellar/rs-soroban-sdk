@@ -2058,6 +2058,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_val"
+version = "27.0.5"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
 name = "test_workspace_contract"
 version = "27.0.5"
 dependencies = [
