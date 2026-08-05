@@ -39,7 +39,10 @@ fn init_tracing() {
 /// would silently deserialize into wrong data — or panic — with no indication
 /// of why. Embedding this fingerprint and rejecting mismatches turns that into
 /// a clear, actionable failure instead.
-fn xdr_schema_version() -> &'static str {
+///
+/// Also reused by the machine-local history-result cache in the `fetch`
+/// module, so both caches invalidate together on an XDR schema change.
+pub(crate) fn xdr_schema_version() -> &'static str {
     stellar_xdr::VERSION.xdr
 }
 

@@ -1,4 +1,5 @@
 use crate::cache::{cache, CacheError};
+use crate::xdr_schema_version;
 use from_history_archive::{get_bucket, get_history, parse_bucket, parse_history};
 use from_meta_storage::{get_config, get_ledger, parse_config, parse_ledger};
 use from_rpc::{get_ledger_entry, parse_ledger_entry};
@@ -166,6 +167,22 @@ fn checkpoint_search_bounds(ledger: u32, count: u32) -> (u32, u32) {
     (prev_checkpoint, ledgers_to_checkpoint)
 }
 
+/// Version of the on-disk history-result cache's format/semantics.
+///
+/// This is independent of [`xdr_schema_version`]: it exists to invalidate
+/// cached results when what gets *computed and stored* under a given
+/// `(checkpoint, key)` changes, even though the XDR encoding of a
+/// `LedgerEntry` did not. For example, adding the planned hot-archive
+/// fallback (see the TODO in `fetch_from_archive_uncached`) would change the
+/// meaning of a cached `None`: today it means "not found in the live
+/// history-archive buckets", but once evicted entries are also consulted, a
+/// stale `None` from before that change would be silently wrong. Bump this
+/// constant whenever such a semantic change is made; because it is part of
+/// the cache path (see [`history_result_cache_path`]), older cache entries
+/// are simply orphaned under their old path rather than misread as if they
+/// were produced by the new logic.
+const HISTORY_RESULT_CACHE_VERSION: u32 = 1;
+
 /// Compute the machine-local cache path for a resolved history-archive
 /// result, keyed by the history checkpoint sequence and the ledger-key hash.
 ///
@@ -175,6 +192,12 @@ fn checkpoint_search_bounds(ledger: u32, count: u32) -> (u32, u32) {
 /// a given key, regardless of which target ledger or transaction triggered
 /// the search, so keying on the checkpoint lets them share one cached result
 /// instead of each re-decoding the checkpoint's buckets from scratch.
+///
+/// The path is additionally namespaced by [`HISTORY_RESULT_CACHE_VERSION`]
+/// and [`xdr_schema_version`], so a bump to either one changes the path
+/// itself rather than requiring an in-payload version check: old cache files
+/// are simply missed (and left behind, harmlessly orphaned) instead of being
+/// read and silently misinterpreted.
 fn history_result_cache_path(
     cache_path: &Path,
     checkpoint: u32,
@@ -182,7 +205,35 @@ fn history_result_cache_path(
 ) -> Result<PathBuf, Error> {
     let key_xdr = key.to_xdr(Limits::none())?;
     let key_hash = Sha256::digest(&key_xdr);
-    Ok(cache_path.join(format!("history-result-{checkpoint}-{key_hash:x}.json")))
+    Ok(cache_path
+        .join(format!(
+            "history-result-v{HISTORY_RESULT_CACHE_VERSION}-xdr-{}",
+            xdr_schema_version(),
+        ))
+        .join(format!("{checkpoint}-{key_hash:x}.json")))
+}
+
+/// Cache wrapper around a history-archive lookup for `key` at `checkpoint`,
+/// invoking `uncached` only on a cache miss.
+///
+/// Factored out of [`LedgerEntryFetcher::fetch_from_archive`] (which supplies
+/// `uncached` as a closure over `self.fetch_from_archive_uncached(..)`) so the
+/// caching behavior — hit/miss, `Some`/`None` round-tripping, and how a
+/// failed collection is handled — can be exercised directly in tests without
+/// a real `LedgerEntryFetcher` or any network access.
+fn fetch_from_archive_cached(
+    cache_path: &Path,
+    checkpoint: u32,
+    key: &LedgerKey,
+    uncached: impl FnOnce() -> Result<Option<LedgerEntry>, Error>,
+) -> Result<Option<LedgerEntry>, Error> {
+    let result_path = history_result_cache_path(cache_path, checkpoint, key)?;
+    let result_read = cache(result_path, |write| {
+        let result = uncached()?;
+        serde_json::to_writer_pretty(write, &result)?;
+        Ok(())
+    })?;
+    Ok(serde_json::from_reader(result_read)?)
 }
 
 fn write_usable_rpc_response<W: std::io::Write + ?Sized>(
@@ -565,13 +616,9 @@ impl LedgerEntryFetcher {
         checkpoint: u32,
         key: &LedgerKey,
     ) -> Result<Option<LedgerEntry>, Error> {
-        let result_path = history_result_cache_path(cache_path, checkpoint, key)?;
-        let result_read = cache(result_path, |write| {
-            let result = self.fetch_from_archive_uncached(cache_path, checkpoint, key)?;
-            serde_json::to_writer_pretty(write, &result)?;
-            Ok(())
-        })?;
-        Ok(serde_json::from_reader(result_read)?)
+        fetch_from_archive_cached(cache_path, checkpoint, key, || {
+            self.fetch_from_archive_uncached(cache_path, checkpoint, key)
+        })
     }
 
     fn fetch_from_archive_uncached(
@@ -877,6 +924,207 @@ mod test_history_result_cache {
         assert_ne!(
             mainnet_path, testnet_path,
             "cache paths under different network directories must not collide"
+        );
+    }
+}
+
+#[cfg(test)]
+mod test_fetch_from_archive_cached {
+    use super::{fetch_from_archive_cached, Error};
+    use soroban_sdk::xdr::{
+        AccountId, Hash, LedgerEntry, LedgerEntryData, LedgerEntryExt, LedgerKey, LedgerKeyAccount,
+        PublicKey, TtlEntry, Uint256,
+    };
+    use std::cell::Cell;
+    use std::path::{Path, PathBuf};
+    use std::sync::atomic::{AtomicU32, Ordering};
+
+    /// A unique, self-cleaning scratch directory for a single test, so tests
+    /// exercising the real on-disk cache don't interfere with each other or
+    /// leave files behind.
+    struct TempDir(PathBuf);
+
+    impl TempDir {
+        fn new(name: &str) -> Self {
+            static COUNTER: AtomicU32 = AtomicU32::new(0);
+            let n = COUNTER.fetch_add(1, Ordering::Relaxed);
+            let dir = std::env::temp_dir().join(format!(
+                "soroban-fetch-from-archive-cached-test-{}-{name}-{n}",
+                std::process::id(),
+            ));
+            std::fs::create_dir_all(&dir).unwrap();
+            Self(dir)
+        }
+
+        fn path(&self) -> &Path {
+            &self.0
+        }
+    }
+
+    impl Drop for TempDir {
+        fn drop(&mut self) {
+            let _ = std::fs::remove_dir_all(&self.0);
+        }
+    }
+
+    fn account_key(byte: u8) -> LedgerKey {
+        LedgerKey::Account(LedgerKeyAccount {
+            account_id: AccountId(PublicKey::PublicKeyTypeEd25519(Uint256([byte; 32]))),
+        })
+    }
+
+    /// A minimal, cheap-to-construct `LedgerEntry` for round-trip assertions.
+    fn entry(byte: u8) -> LedgerEntry {
+        LedgerEntry {
+            last_modified_ledger_seq: 0,
+            data: LedgerEntryData::Ttl(TtlEntry {
+                key_hash: Hash([byte; 32]),
+                live_until_ledger_seq: 100,
+            }),
+            ext: LedgerEntryExt::V0,
+        }
+    }
+
+    #[test]
+    fn cached_some_round_trips_and_bypasses_collector_on_second_lookup() {
+        let dir = TempDir::new("some");
+        let key = account_key(1);
+        let calls = Cell::new(0u32);
+        let want = entry(9);
+
+        let first = fetch_from_archive_cached(dir.path(), 127, &key, || {
+            calls.set(calls.get() + 1);
+            Ok(Some(want.clone()))
+        })
+        .unwrap();
+        assert_eq!(first, Some(want.clone()));
+        assert_eq!(calls.get(), 1);
+
+        let second = fetch_from_archive_cached(dir.path(), 127, &key, || {
+            calls.set(calls.get() + 1);
+            panic!("collector must not be called on a cache hit");
+        })
+        .unwrap();
+        assert_eq!(second, Some(want));
+        assert_eq!(
+            calls.get(),
+            1,
+            "collector must not be invoked again once a Some(..) result is cached"
+        );
+    }
+
+    #[test]
+    fn cached_none_reuses_result_and_bypasses_collector() {
+        let dir = TempDir::new("none");
+        let key = account_key(2);
+        let calls = Cell::new(0u32);
+
+        let first = fetch_from_archive_cached(dir.path(), 127, &key, || {
+            calls.set(calls.get() + 1);
+            Ok(None)
+        })
+        .unwrap();
+        assert_eq!(first, None);
+        assert_eq!(calls.get(), 1);
+
+        let second = fetch_from_archive_cached(dir.path(), 127, &key, || {
+            calls.set(calls.get() + 1);
+            panic!("collector must not be called on a cache hit for a cached None");
+        })
+        .unwrap();
+        assert_eq!(second, None);
+        assert_eq!(
+            calls.get(),
+            1,
+            "a cached None must be reused without recomputation, just like a cached Some"
+        );
+    }
+
+    #[test]
+    fn collector_error_does_not_poison_cache_and_a_later_retry_can_succeed() {
+        let dir = TempDir::new("err");
+        let key = account_key(3);
+        let want = entry(4);
+
+        let failed = fetch_from_archive_cached(dir.path(), 127, &key, || {
+            Err(Error::Io(std::io::Error::other("boom")))
+        });
+        assert!(failed.is_err(), "a collector error must propagate");
+
+        // The failed attempt above must not have left behind a partial or
+        // poisoned cache entry: a later, successful collection for the same
+        // (checkpoint, key) must be free to run and its result must be
+        // returned (and itself cached) normally.
+        let retried =
+            fetch_from_archive_cached(dir.path(), 127, &key, || Ok(Some(want.clone()))).unwrap();
+        assert_eq!(retried, Some(want.clone()));
+
+        // And that successful result is now the one that's cached.
+        let cached = fetch_from_archive_cached(dir.path(), 127, &key, || {
+            panic!("collector must not be called once a successful result is cached");
+        })
+        .unwrap();
+        assert_eq!(cached, Some(want));
+    }
+
+    #[test]
+    fn same_checkpoint_and_key_share_one_cache_entry() {
+        let dir = TempDir::new("share");
+        let key = account_key(5);
+        let calls = Cell::new(0u32);
+        let want = entry(6);
+
+        // Simulates two different target ledgers whose search both bottom
+        // out at checkpoint 200 for the same key: the second call must reuse
+        // the first call's cached result rather than recomputing it.
+        let a = fetch_from_archive_cached(dir.path(), 200, &key, || {
+            calls.set(calls.get() + 1);
+            Ok(Some(want.clone()))
+        })
+        .unwrap();
+        let b = fetch_from_archive_cached(dir.path(), 200, &key, || {
+            calls.set(calls.get() + 1);
+            panic!("second lookup for the same checkpoint/key must hit the cache");
+        })
+        .unwrap();
+
+        assert_eq!(a, Some(want.clone()));
+        assert_eq!(b, Some(want));
+        assert_eq!(calls.get(), 1);
+    }
+
+    #[test]
+    fn different_checkpoints_or_keys_do_not_share_cache_entries() {
+        let dir = TempDir::new("no-collide");
+        let calls = Cell::new(0u32);
+        let entry_a = entry(7);
+        let entry_b = entry(8);
+        let entry_c = entry(9);
+        let key = account_key(6);
+
+        let by_checkpoint_a = fetch_from_archive_cached(dir.path(), 300, &key, || {
+            calls.set(calls.get() + 1);
+            Ok(Some(entry_a.clone()))
+        })
+        .unwrap();
+        let by_checkpoint_b = fetch_from_archive_cached(dir.path(), 301, &key, || {
+            calls.set(calls.get() + 1);
+            Ok(Some(entry_b.clone()))
+        })
+        .unwrap();
+        let by_key = fetch_from_archive_cached(dir.path(), 300, &account_key(7), || {
+            calls.set(calls.get() + 1);
+            Ok(Some(entry_c.clone()))
+        })
+        .unwrap();
+
+        assert_eq!(by_checkpoint_a, Some(entry_a));
+        assert_eq!(by_checkpoint_b, Some(entry_b));
+        assert_eq!(by_key, Some(entry_c));
+        assert_eq!(
+            calls.get(),
+            3,
+            "different checkpoints and different keys must each get their own cache entry"
         );
     }
 }
