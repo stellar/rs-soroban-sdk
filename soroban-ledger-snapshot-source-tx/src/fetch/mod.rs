@@ -1,10 +1,10 @@
 use crate::cache::{cache, CacheError};
 use crate::xdr_schema_version;
-use from_history_archive::{get_bucket, get_history, parse_history};
+use from_history_archive::{get_bucket, get_history, parse_bucket, parse_history};
 use from_meta_storage::{get_config, get_ledger, parse_config, parse_ledger};
 use from_rpc::{get_ledger_entry, parse_ledger_entry};
 use sha2::{Digest, Sha256};
-use soroban_sdk::xdr::{LedgerEntry, LedgerKey, Limits, WriteXdr};
+use soroban_sdk::xdr::{BucketEntry, LedgerEntry, LedgerKey, Limited, Limits, WriteXdr};
 use std::io::Cursor;
 use std::path::{Path, PathBuf};
 use std::sync::Mutex;
@@ -13,7 +13,6 @@ use std::thread::JoinHandle;
 mod iter;
 pub use iter::LedgerEntryChangesIterator;
 
-pub(crate) mod bucket_index;
 pub(crate) mod from_history_archive;
 pub(crate) mod from_meta_storage;
 pub(crate) mod from_rpc;
@@ -35,8 +34,6 @@ pub enum Error {
     Rpc(#[from] from_rpc::Error),
     #[error("history archive error: {0}")]
     HistoryArchive(#[from] from_history_archive::Error),
-    #[error("bucket index error: {0}")]
-    BucketIndex(#[from] bucket_index::Error),
 }
 
 /// Network configuration for fetching ledger data
@@ -657,22 +654,27 @@ impl LedgerEntryFetcher {
                 }
                 Ok(())
             })?;
-            // The bucket is read back through a seekable handle by the index,
-            // so the sequential reader `cache` returns is only used to confirm
-            // the download completed.
-            drop(bucket_read);
             let size = std::fs::metadata(&bucket_path)
                 .map(|m| m.len())
                 .unwrap_or(0);
             tracing::debug!(bucket, size, "fetch bucket (decompressed)");
-            // Bucket ordering is unchanged: buckets are visited newest level
-            // first, so the first bucket that mentions the key decides the
-            // answer. Only the inner linear scan of each bucket is replaced by
-            // a binary search over that bucket's persistent offset index.
-            match bucket_index::lookup(cache_path, bucket, &bucket_path, key)? {
-                bucket_index::Lookup::Present(ledger_entry) => return Ok(Some(ledger_entry)),
-                bucket_index::Lookup::Deleted => return Ok(None),
-                bucket_index::Lookup::Absent => {}
+            let mut limited_reader = Limited::new(bucket_read, Limits::none());
+            let bucket_entries_iter = parse_bucket(&mut limited_reader);
+            for entry_result in bucket_entries_iter {
+                let entry = entry_result?.0;
+                match entry {
+                    BucketEntry::Liveentry(ledger_entry) | BucketEntry::Initentry(ledger_entry) => {
+                        if ledger_entry.to_key() == *key {
+                            return Ok(Some(ledger_entry));
+                        }
+                    }
+                    BucketEntry::Deadentry(dead_entry) => {
+                        if dead_entry == *key {
+                            return Ok(None);
+                        }
+                    }
+                    BucketEntry::Metaentry(_) => {}
+                }
             }
         }
 
