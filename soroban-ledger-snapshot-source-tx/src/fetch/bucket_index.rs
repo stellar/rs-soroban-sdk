@@ -20,7 +20,7 @@ use sha2::{Digest, Sha256};
 use soroban_sdk::xdr::{
     BucketEntry, Frame, LedgerEntry, LedgerKey, Limited, Limits, ReadXdr, WriteXdr,
 };
-use std::fs::{self, File};
+use std::fs::{self, File, TryLockError};
 use std::io::{self, BufRead, BufReader, BufWriter, Read, Seek, SeekFrom, Write};
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicU64, Ordering};
@@ -32,17 +32,26 @@ use std::sync::atomic::{AtomicU64, Ordering};
 /// orphaned under their old directory rather than misread by newer code, and
 /// it is also stored in the header so a file that somehow ends up at a v1 path
 /// with v2 content is rejected instead of misparsed.
-const INDEX_FORMAT_VERSION: u32 = 1;
+const INDEX_FORMAT_VERSION: u32 = 2;
 
 /// Fixed 8-byte file magic, checked before anything else is trusted.
 const MAGIC: [u8; 8] = *b"SBKTIDX\0";
 
-/// Fixed-width record: 32-byte key hash, 8-byte big-endian frame offset,
-/// 1-byte entry kind.
-const RECORD_LEN: usize = 41;
+/// The sortable part of a record: 32-byte key hash, 8-byte big-endian frame
+/// offset, 1-byte entry kind. This is the only form the external sort ever
+/// handles, so scratch shards stay compact and byte-comparable.
+const SORT_RECORD_LEN: usize = 41;
 const RECORD_HASH: std::ops::Range<usize> = 0..32;
 const RECORD_OFFSET: std::ops::Range<usize> = 32..40;
 const RECORD_KIND: usize = 40;
+
+/// Truncated SHA-256 over the sortable fields plus the record's final index,
+/// appended when a record is written to the index.
+const CHECKSUM_LEN: usize = 4;
+const RECORD_CHECKSUM: std::ops::Range<usize> = SORT_RECORD_LEN..SORT_RECORD_LEN + CHECKSUM_LEN;
+
+/// Fixed width of a persisted record: sortable fields plus checksum.
+const RECORD_LEN: usize = SORT_RECORD_LEN + CHECKSUM_LEN;
 
 /// Header: magic(8) + format version(4) + record width(4) + record count(8) +
 /// bucket hash(32).
@@ -69,6 +78,15 @@ const DEFAULT_SORT_MEMORY_BUDGET: usize = 64 * 1024 * 1024;
 /// Read buffer used when streaming a bucket end to end.
 const BUCKET_READ_BUF: usize = 1024 * 1024;
 
+/// Marker in the name of a visible external-sort scratch directory. Stale ones
+/// are reclaimed by [`ScratchDir::sweep`], so it must never match the name a
+/// scratch directory is built under before it holds its lock.
+const SCRATCH_MARKER: &str = ".sort-";
+/// Marker used while a scratch directory is being created and locked.
+const SCRATCH_PENDING_MARKER: &str = ".sorttmp-";
+/// Advisory lock file held for the whole lifetime of a scratch directory.
+const SCRATCH_LOCK: &str = "lock";
+
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
     #[error("io error: {0}")]
@@ -79,11 +97,12 @@ pub enum Error {
     Cache(#[from] CacheError<Box<dyn std::error::Error>>),
     #[error("invalid bucket hash {0:?}: expected 64 hex characters")]
     InvalidBucketHash(String),
-    /// The index file is structurally invalid: its header or overall size do
-    /// not describe a well-formed index. Detected before any record is
-    /// trusted, so the index can safely be discarded and rebuilt from the
-    /// bucket (which is authoritative and content addressed). Escapes to the
-    /// caller only when a rebuild has already been attempted.
+    /// The index file is structurally invalid: its header, overall size, or a
+    /// record's integrity checksum do not describe a well-formed index.
+    /// Detected before the offending record is trusted to answer anything, so
+    /// discarding the file and rebuilding it from the bucket (which is
+    /// authoritative and content addressed) cannot produce a wrong result.
+    /// Escapes to the caller only when a rebuild has already been attempted.
     #[error("bucket index {path} is structurally invalid ({detail}) and a rebuild did not fix it")]
     IndexStructure { path: PathBuf, detail: String },
     /// The index and the bucket disagree about what lives at a recorded
@@ -96,8 +115,25 @@ pub enum Error {
         bucket: PathBuf,
         detail: String,
     },
+    /// The bucket's own bytes do not hash to the hash it is addressed by, so
+    /// nothing derived from it may be trusted or cached.
+    #[error("bucket {path} content hash {actual} does not match its claimed hash {expected}")]
+    BucketHashMismatch {
+        path: PathBuf,
+        expected: String,
+        actual: String,
+    },
     #[error("bucket index shard {0} has a size that is not a multiple of the record width")]
     MalformedShard(PathBuf),
+    /// A shard that the partitioning pass created is gone by the time it is
+    /// sorted. Emitting the remaining shards would silently drop records, so
+    /// the build fails instead.
+    #[error("bucket index shard {0} is missing")]
+    MissingShard(PathBuf),
+    /// The number of records emitted does not match the number counted while
+    /// streaming the bucket, i.e. the sort lost or duplicated records.
+    #[error("bucket index emitted {written} records but the bucket scan counted {expected}")]
+    RecordCountMismatch { expected: u64, written: u64 },
 }
 
 /// Result of looking a key up in a single bucket.
@@ -164,13 +200,13 @@ fn lookup_with_budget(
     ensure_index(&index_path, bucket_path, bucket_hash, budget)?;
     match lookup_in_index(&index_path, bucket_path, &hash, key) {
         Err(Error::IndexStructure { detail, .. }) => {
-            // Structural damage is detected purely from the header and file
-            // length, before any record has been used to answer anything, so
-            // discarding the file and rebuilding it from the (authoritative,
-            // content-addressed) bucket cannot produce a wrong result. Exactly
-            // one attempt: if the freshly built index is structurally invalid
-            // too, the problem is not a stale/torn file and retrying forever
-            // would only hide it.
+            // Structural damage is detected from the header, the file length,
+            // or a record's integrity checksum, always before that record has
+            // been used to answer anything, so discarding the file and
+            // rebuilding it from the (authoritative, content-addressed) bucket
+            // cannot produce a wrong result. Exactly one attempt: if the
+            // freshly built index is structurally invalid too, the problem is
+            // not a stale/torn file and retrying forever would only hide it.
             tracing::warn!(
                 index = %index_path.display(),
                 detail,
@@ -229,6 +265,9 @@ fn ensure_index(
 /// into a single list. Instead they are streamed straight into 16 on-disk
 /// shards keyed by the first hash nibble, and each shard is then sorted
 /// recursively (see [`sort_shard`]).
+///
+/// The single streaming pass also hashes the bucket, so an index is only ever
+/// written for a bucket whose bytes match the hash it is addressed by.
 fn build_index(
     bucket_path: &Path,
     bucket_hash: &[u8; 32],
@@ -236,20 +275,28 @@ fn build_index(
     out: &mut dyn Write,
     budget: usize,
 ) -> Result<(), Error> {
-    let budget = budget.max(RECORD_LEN);
+    let budget = budget.max(SORT_RECORD_LEN);
     let scratch = ScratchDir::new(index_path)?;
 
-    let count = shard_bucket(bucket_path, scratch.path(), budget)?;
+    let count = shard_bucket(bucket_path, bucket_hash, scratch.path(), budget)?;
 
     let mut out = BufWriter::with_capacity(BUCKET_READ_BUF, out);
     write_header(&mut out, count, bucket_hash)?;
     // Emitting shards in nibble order concatenates into globally sorted
     // output, because a shard's nibble is the most significant part of every
     // hash it holds.
+    let mut out = RecordWriter::new(&mut out);
     for nibble in 0..NIBBLES {
         sort_shard(scratch.path(), &nibble_hex(nibble), 1, budget, &mut out)?;
     }
-    out.flush()?;
+    let written = out.written();
+    if written != count {
+        return Err(Error::RecordCountMismatch {
+            expected: count,
+            written,
+        });
+    }
+    out.into_inner().flush()?;
     Ok(())
 }
 
@@ -262,23 +309,82 @@ fn write_header(out: &mut dyn Write, count: u64, bucket_hash: &[u8; 32]) -> Resu
     Ok(())
 }
 
+/// Integrity checksum of one record at its final position in the index.
+///
+/// Binding the record's own bytes to the index it is stored at means a bit
+/// flip inside a record and a whole record landing at the wrong position are
+/// both detectable from that record alone, without reading the (potentially
+/// multi-gigabyte) rest of the index.
+fn record_checksum(record: &[u8; SORT_RECORD_LEN], i: u64) -> [u8; CHECKSUM_LEN] {
+    let mut hasher = Sha256::new();
+    hasher.update(record);
+    hasher.update(i.to_be_bytes());
+    hasher.finalize()[..CHECKSUM_LEN]
+        .try_into()
+        .expect("checksum length")
+}
+
+/// Appends final sorted records to the index, tracking each record's index so
+/// it can be bound into that record's checksum.
+struct RecordWriter<W: Write> {
+    inner: W,
+    written: u64,
+}
+
+impl<W: Write> RecordWriter<W> {
+    fn new(inner: W) -> Self {
+        Self { inner, written: 0 }
+    }
+
+    fn write(&mut self, record: &[u8; SORT_RECORD_LEN]) -> Result<(), Error> {
+        self.inner.write_all(record)?;
+        self.inner
+            .write_all(&record_checksum(record, self.written))?;
+        self.written += 1;
+        Ok(())
+    }
+
+    fn written(&self) -> u64 {
+        self.written
+    }
+
+    fn into_inner(self) -> W {
+        self.inner
+    }
+}
+
 /// Decode every frame in the bucket, emitting one record per indexable entry
 /// into the depth-0 shards. Returns the number of records emitted.
-fn shard_bucket(bucket_path: &Path, dir: &Path, budget: usize) -> Result<u64, Error> {
+///
+/// The bucket's bytes are hashed as they are read and checked against
+/// `bucket_hash` before returning, so a bucket whose content does not match
+/// the hash it is addressed by never yields an index.
+fn shard_bucket(
+    bucket_path: &Path,
+    bucket_hash: &[u8; 32],
+    dir: &Path,
+    budget: usize,
+) -> Result<u64, Error> {
     let file = File::open(bucket_path)?;
+    // Hashing sits beneath the buffering so it sees every byte of the file
+    // exactly once, while the frame offsets stay consumption-based above it.
     let mut reader = Limited::new(
-        CountingReader::new(BufReader::with_capacity(BUCKET_READ_BUF, file)),
+        CountingReader::new(BufReader::with_capacity(
+            BUCKET_READ_BUF,
+            HashingReader::new(file),
+        )),
         Limits::none(),
     );
     let mut writers = ShardWriters::new(dir, "", budget)?;
     let mut count: u64 = 0;
-    let mut record = [0u8; RECORD_LEN];
+    let mut record = [0u8; SORT_RECORD_LEN];
 
     loop {
         // Peek before decoding: the XDR readers use `read_exact`, which cannot
         // distinguish a clean end of stream from a truncated entry, so a
         // successful zero-byte fill is the only reliable "no more frames"
-        // signal.
+        // signal. It is also what guarantees the hash covers the whole file:
+        // the loop only ends once the underlying reader has reported EOF.
         if reader.fill_buf()?.is_empty() {
             break;
         }
@@ -302,6 +408,15 @@ fn shard_bucket(bucket_path: &Path, dir: &Path, budget: usize) -> Result<u64, Er
         count += 1;
     }
 
+    let content_hash = reader.inner.inner.get_mut().finish();
+    if content_hash != *bucket_hash {
+        return Err(Error::BucketHashMismatch {
+            path: bucket_path.to_path_buf(),
+            expected: hex::encode(bucket_hash),
+            actual: hex::encode(content_hash),
+        });
+    }
+
     writers.finish()?;
     Ok(count)
 }
@@ -311,20 +426,23 @@ fn shard_bucket(bucket_path: &Path, dir: &Path, budget: usize) -> Result<u64, Er
 /// The shard holds exactly those records whose hash starts with the nibbles in
 /// `prefix`, in ascending source-offset order (the streaming pass appends in
 /// bucket order, and every partitioning pass preserves relative order).
-fn sort_shard(
+fn sort_shard<W: Write>(
     dir: &Path,
     prefix: &str,
     depth: usize,
     budget: usize,
-    out: &mut dyn Write,
+    out: &mut RecordWriter<W>,
 ) -> Result<(), Error> {
     let path = shard_path(dir, prefix);
     let len = match fs::metadata(&path) {
         Ok(m) => m.len(),
-        Err(e) if e.kind() == io::ErrorKind::NotFound => return Ok(()),
+        // Every shard sorted here was created by the pass that partitioned
+        // into it, so a missing file means records were lost rather than that
+        // there were none.
+        Err(e) if e.kind() == io::ErrorKind::NotFound => return Err(Error::MissingShard(path)),
         Err(e) => return Err(e.into()),
     };
-    if len % RECORD_LEN as u64 != 0 {
+    if len % SORT_RECORD_LEN as u64 != 0 {
         return Err(Error::MalformedShard(path));
     }
     if len == 0 {
@@ -334,9 +452,9 @@ fn sort_shard(
 
     if len <= budget as u64 {
         let mut reader = BufReader::with_capacity(BUCKET_READ_BUF, File::open(&path)?);
-        let mut records = Vec::with_capacity((len / RECORD_LEN as u64) as usize);
-        let mut record = [0u8; RECORD_LEN];
-        for _ in 0..len / RECORD_LEN as u64 {
+        let mut records = Vec::with_capacity((len / SORT_RECORD_LEN as u64) as usize);
+        let mut record = [0u8; SORT_RECORD_LEN];
+        for _ in 0..len / SORT_RECORD_LEN as u64 {
             reader.read_exact(&mut record)?;
             records.push(record);
         }
@@ -350,7 +468,7 @@ fn sort_shard(
                 .then_with(|| a[RECORD_OFFSET].cmp(&b[RECORD_OFFSET]))
         });
         for record in &records {
-            out.write_all(record)?;
+            out.write(record)?;
         }
         return Ok(());
     }
@@ -358,10 +476,14 @@ fn sort_shard(
     if depth >= HASH_NIBBLES {
         // Every nibble of the hash has been consumed, so every record here has
         // the identical hash and there is nothing left to order by except the
-        // source offset — which is already ascending. Copy straight through
+        // source offset — which is already ascending. Stream straight through
         // rather than recursing forever or buying an unbounded in-memory sort.
         let mut reader = BufReader::with_capacity(BUCKET_READ_BUF, File::open(&path)?);
-        io::copy(&mut reader, out)?;
+        let mut record = [0u8; SORT_RECORD_LEN];
+        for _ in 0..len / SORT_RECORD_LEN as u64 {
+            reader.read_exact(&mut record)?;
+            out.write(&record)?;
+        }
         drop(reader);
         fs::remove_file(&path)?;
         return Ok(());
@@ -372,8 +494,8 @@ fn sort_shard(
         // any recursive call is made.
         let mut writers = ShardWriters::new(dir, prefix, budget)?;
         let mut reader = BufReader::with_capacity(BUCKET_READ_BUF, File::open(&path)?);
-        let mut record = [0u8; RECORD_LEN];
-        for _ in 0..len / RECORD_LEN as u64 {
+        let mut record = [0u8; SORT_RECORD_LEN];
+        for _ in 0..len / SORT_RECORD_LEN as u64 {
             reader.read_exact(&mut record)?;
             writers.write(nibble_at(&record[RECORD_HASH], depth), &record)?;
         }
@@ -443,7 +565,19 @@ fn key_hash(key: &LedgerKey) -> Result<[u8; 32], Error> {
 
 /// A scratch directory for the external sort, created next to the index being
 /// built and removed on both success and failure.
-struct ScratchDir(PathBuf);
+///
+/// A build that is hard-killed (SIGKILL, power loss) never runs `Drop`, so a
+/// scratch directory can outlive its build and hold multiple gigabytes
+/// indefinitely. Each one therefore holds an advisory lock for its entire
+/// lifetime, which lets a later build tell a stale directory (lock free) from
+/// one another process is still filling (lock held) and reclaim only the
+/// former.
+struct ScratchDir {
+    path: PathBuf,
+    // Held, not used: dropping it releases the advisory lock that marks this
+    // directory as belonging to a live build.
+    _lock: File,
+}
 
 impl ScratchDir {
     fn new(index_path: &Path) -> Result<Self, Error> {
@@ -454,23 +588,157 @@ impl ScratchDir {
             .file_name()
             .map(|n| n.to_string_lossy().into_owned())
             .unwrap_or_else(|| "bucket".to_string());
-        let dir = parent.join(format!("{name}.sort-{}-{n}", std::process::id()));
-        fs::create_dir_all(&dir)?;
-        Ok(Self(dir))
+
+        Self::sweep(parent);
+
+        // Build under a name the sweeper does not match, so a concurrent
+        // sweep cannot see this directory in the window between creating it
+        // and holding its lock, then publish it with an atomic rename.
+        let pid = std::process::id();
+        let pending = parent.join(format!("{name}{SCRATCH_PENDING_MARKER}{pid}-{n}"));
+        let dir = parent.join(format!("{name}{SCRATCH_MARKER}{pid}-{n}"));
+        fs::create_dir_all(&pending)?;
+        let lock = match Self::lock_exclusively(&pending) {
+            Ok(lock) => lock,
+            Err(e) => {
+                let _ = fs::remove_dir_all(&pending);
+                return Err(e);
+            }
+        };
+        if let Err(e) = fs::rename(&pending, &dir) {
+            let _ = fs::remove_dir_all(&pending);
+            return Err(e.into());
+        }
+        Ok(Self {
+            path: dir,
+            _lock: lock,
+        })
+    }
+
+    fn lock_exclusively(dir: &Path) -> Result<File, Error> {
+        let lock = File::create(dir.join(SCRATCH_LOCK))?;
+        // The name is unique to this process and counter, so nothing else can
+        // hold this lock and blocking here cannot deadlock.
+        File::lock(&lock)?;
+        Ok(lock)
+    }
+
+    /// Remove scratch directories in `parent` left behind by builds that died
+    /// without unwinding.
+    ///
+    /// Reclamation is best effort: a directory is only removed once its lock
+    /// has been acquired, which proves no live build owns it, and anything
+    /// that cannot be inspected or removed is left alone rather than failing
+    /// the build that is about to start.
+    fn sweep(parent: &Path) {
+        let entries = match fs::read_dir(parent) {
+            Ok(entries) => entries,
+            // The cache directory is created by `cache` just before the
+            // collector runs, so a missing parent is not reachable here, but
+            // a sweep is never worth failing a build over.
+            Err(e) => {
+                if e.kind() != io::ErrorKind::NotFound {
+                    tracing::warn!(dir = %parent.display(), error = %e, "failed to scan for stale bucket index scratch dirs");
+                }
+                return;
+            }
+        };
+        for entry in entries.flatten() {
+            // Only directories carrying the scratch marker are considered, so
+            // the cache's own `.lock`/`.dl` files are never touched.
+            let name = entry.file_name().to_string_lossy().into_owned();
+            if !name.contains(SCRATCH_MARKER) || !entry.file_type().is_ok_and(|t| t.is_dir()) {
+                continue;
+            }
+            let dir = entry.path();
+            match Self::claim_stale(&dir) {
+                Ok(true) => {}
+                Ok(false) => continue,
+                Err(e) => {
+                    tracing::warn!(dir = %dir.display(), error = %e, "failed to inspect stale bucket index scratch dir");
+                    continue;
+                }
+            }
+            match fs::remove_dir_all(&dir) {
+                Ok(()) => {
+                    tracing::debug!(dir = %dir.display(), "removed stale bucket index scratch dir");
+                }
+                // Another sweeper got there first.
+                Err(e) if e.kind() == io::ErrorKind::NotFound => {}
+                Err(e) => {
+                    tracing::warn!(dir = %dir.display(), error = %e, "failed to remove stale bucket index scratch dir");
+                }
+            }
+        }
+    }
+
+    /// Whether `dir` is provably not in use by a live build.
+    ///
+    /// The lock is released before returning: no live build can adopt an
+    /// existing scratch directory (every build creates its own uniquely named
+    /// one), so once the lock has been acquired the directory stays stale.
+    fn claim_stale(dir: &Path) -> Result<bool, io::Error> {
+        let lock = match File::open(dir.join(SCRATCH_LOCK)) {
+            Ok(lock) => lock,
+            // A directory from a build that predates scratch locking, or one
+            // whose lock file never made it to disk.
+            Err(e) if e.kind() == io::ErrorKind::NotFound => return Ok(true),
+            Err(e) => return Err(e),
+        };
+        match File::try_lock(&lock) {
+            Ok(()) => {
+                let _ = File::unlock(&lock);
+                Ok(true)
+            }
+            Err(TryLockError::WouldBlock) => Ok(false),
+            Err(TryLockError::Error(e)) => Err(e),
+        }
     }
 
     fn path(&self) -> &Path {
-        &self.0
+        &self.path
     }
 }
 
 impl Drop for ScratchDir {
     fn drop(&mut self) {
-        if let Err(e) = fs::remove_dir_all(&self.0) {
+        if let Err(e) = fs::remove_dir_all(&self.path) {
             if e.kind() != io::ErrorKind::NotFound {
-                tracing::warn!(dir = %self.0.display(), error = %e, "failed to remove bucket index scratch dir");
+                tracing::warn!(dir = %self.path.display(), error = %e, "failed to remove bucket index scratch dir");
             }
         }
+    }
+}
+
+/// Wraps a reader and hashes every byte read through it.
+///
+/// Sits directly on top of the file, beneath any buffering, so the digest
+/// covers the file's exact bytes — including frame markers and anything a
+/// consumer above never asks for — rather than only what was decoded.
+struct HashingReader<R> {
+    inner: R,
+    hasher: Sha256,
+}
+
+impl<R> HashingReader<R> {
+    fn new(inner: R) -> Self {
+        Self {
+            inner,
+            hasher: Sha256::new(),
+        }
+    }
+
+    /// The digest of everything read so far.
+    fn finish(&mut self) -> [u8; 32] {
+        std::mem::take(&mut self.hasher).finalize().into()
+    }
+}
+
+impl<R: Read> Read for HashingReader<R> {
+    fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
+        let n = self.inner.read(buf)?;
+        self.hasher.update(&buf[..n]);
+        Ok(n)
     }
 }
 
@@ -519,6 +787,7 @@ impl<R: BufRead> BufRead for CountingReader<R> {
 
 struct IndexFile {
     file: File,
+    path: PathBuf,
     count: u64,
 }
 
@@ -565,15 +834,35 @@ fn open_index(path: &Path, bucket_hash: &[u8; 32]) -> Result<IndexFile, Error> {
         )));
     }
 
-    Ok(IndexFile { file, count })
+    Ok(IndexFile {
+        file,
+        path: path.to_path_buf(),
+        count,
+    })
 }
 
 impl IndexFile {
+    /// Read record `i`, rejecting it unless its integrity checksum still binds
+    /// its bytes to position `i`.
+    ///
+    /// Every read goes through here, including the ones binary search makes,
+    /// so neither a bit flip inside a record nor a record that has moved (or
+    /// been overwritten by another record) can silently steer a search away
+    /// from a key that is present.
     fn record(&mut self, i: u64) -> Result<[u8; RECORD_LEN], Error> {
         self.file
             .seek(SeekFrom::Start(HEADER_LEN as u64 + i * RECORD_LEN as u64))?;
         let mut record = [0u8; RECORD_LEN];
         self.file.read_exact(&mut record)?;
+        let sortable: &[u8; SORT_RECORD_LEN] = record[..SORT_RECORD_LEN]
+            .try_into()
+            .expect("sortable record length");
+        if record[RECORD_CHECKSUM] != record_checksum(sortable, i)[..] {
+            return Err(Error::IndexStructure {
+                path: self.path.clone(),
+                detail: format!("record {i} failed its integrity checksum"),
+            });
+        }
         Ok(record)
     }
 
@@ -683,9 +972,11 @@ fn decode_entry_at(bucket: &File, offset: u64) -> Result<BucketEntry, Error> {
 #[cfg(test)]
 mod test {
     use super::{
-        index_path, lookup_with_budget, sort_shard, CountingReader, Error, Lookup, HEADER_LEN,
-        KIND_DELETED, KIND_PRESENT, MAGIC, RECORD_HASH, RECORD_KIND, RECORD_LEN, RECORD_OFFSET,
+        index_path, lookup_with_budget, record_checksum, CountingReader, Error, Lookup,
+        RecordWriter, ScratchDir, CHECKSUM_LEN, HEADER_LEN, KIND_DELETED, KIND_PRESENT, MAGIC,
+        RECORD_CHECKSUM, RECORD_HASH, RECORD_KIND, RECORD_LEN, RECORD_OFFSET, SORT_RECORD_LEN,
     };
+    use crate::cache::CacheError;
     use sha2::{Digest, Sha256};
     use soroban_sdk::xdr::{
         AccountEntry, AccountEntryExt, AccountId, BucketEntry, BucketMetadata, BucketMetadataExt,
@@ -697,6 +988,12 @@ mod test {
     use std::io::{BufReader, Read, Seek, SeekFrom, Write};
     use std::path::{Path, PathBuf};
     use std::sync::atomic::{AtomicU32, Ordering};
+
+    fn sort_shard(dir: &Path, prefix: &str, depth: usize, budget: usize) -> Result<Vec<u8>, Error> {
+        let mut out = RecordWriter::new(Vec::new());
+        super::sort_shard(dir, prefix, depth, budget, &mut out)?;
+        Ok(out.into_inner())
+    }
 
     /// Scratch directory for a test, kept inside the build output tree (never
     /// the system temp dir) and removed when the test finishes.
@@ -802,7 +1099,57 @@ mod test {
         index[HEADER_LEN..].chunks_exact(RECORD_LEN).collect()
     }
 
-    const TINY_BUDGET: usize = RECORD_LEN * 2;
+    /// Byte offset of record `i` in a persisted index.
+    fn record_start(index: &[u8], i: usize) -> usize {
+        assert!(i < records(index).len(), "record {i} is out of range");
+        HEADER_LEN + i * RECORD_LEN
+    }
+
+    /// Position of the record for `key`, which is ordered by hash rather than
+    /// by position in the bucket.
+    fn record_of(index: &[u8], key: &LedgerKey) -> usize {
+        let hash = Sha256::digest(key.to_xdr(Limits::none()).unwrap());
+        records(index)
+            .iter()
+            .position(|r| r[RECORD_HASH] == hash[..])
+            .expect("key must be indexed")
+    }
+
+    /// Recompute record `i`'s integrity checksum after deliberately editing
+    /// its contents, so the edit exercises the code past the integrity check
+    /// rather than the rebuild path.
+    fn reseal(index: &mut [u8], i: usize) {
+        let start = record_start(index, i);
+        let sortable: [u8; SORT_RECORD_LEN] =
+            index[start..start + SORT_RECORD_LEN].try_into().unwrap();
+        index[start + RECORD_CHECKSUM.start..start + RECORD_CHECKSUM.end]
+            .copy_from_slice(&record_checksum(&sortable, i as u64));
+    }
+
+    /// Names of any external-sort scratch directories left next to `index`,
+    /// under either the visible or the pre-lock name.
+    fn scratch_dirs(index: &Path) -> Vec<String> {
+        fs::read_dir(index.parent().unwrap())
+            .unwrap()
+            .map(|e| e.unwrap().file_name().to_string_lossy().into_owned())
+            .filter(|n| n.contains(".sort"))
+            .collect()
+    }
+
+    /// Every record in a freshly built index must carry a checksum that binds
+    /// it to its own position.
+    fn assert_checksums(index: &[u8]) {
+        for (i, record) in records(index).iter().enumerate() {
+            let sortable: [u8; SORT_RECORD_LEN] = record[..SORT_RECORD_LEN].try_into().unwrap();
+            assert_eq!(
+                &record[RECORD_CHECKSUM],
+                &record_checksum(&sortable, i as u64)[..],
+                "record {i} must be sealed against its index",
+            );
+        }
+    }
+
+    const TINY_BUDGET: usize = SORT_RECORD_LEN * 2;
 
     #[test]
     fn live_init_dead_meta_and_absent_keys() {
@@ -961,7 +1308,8 @@ mod test {
         // One record per shard file forces the sort to recurse well past the
         // first nibble for any hashes sharing a prefix.
         assert_eq!(
-            lookup_with_budget(dir.path(), &hash, &bucket, &account_key(5), RECORD_LEN).unwrap(),
+            lookup_with_budget(dir.path(), &hash, &bucket, &account_key(5), SORT_RECORD_LEN)
+                .unwrap(),
             Lookup::Present(account_entry(5, 5)),
         );
 
@@ -974,11 +1322,7 @@ mod test {
         }
 
         // The scratch directory used by the external sort must be gone.
-        let leftovers: Vec<_> = fs::read_dir(index_path.parent().unwrap())
-            .unwrap()
-            .map(|e| e.unwrap().file_name().to_string_lossy().into_owned())
-            .filter(|n| n.contains(".sort-"))
-            .collect();
+        let leftovers = scratch_dirs(&index_path);
         assert!(
             leftovers.is_empty(),
             "scratch dirs left behind: {leftovers:?}"
@@ -996,7 +1340,8 @@ mod test {
         let (bucket, offsets, hash) = write_bucket(dir.path(), &entries);
 
         assert_eq!(
-            lookup_with_budget(dir.path(), &hash, &bucket, &account_key(1), RECORD_LEN).unwrap(),
+            lookup_with_budget(dir.path(), &hash, &bucket, &account_key(1), SORT_RECORD_LEN)
+                .unwrap(),
             Lookup::Present(account_entry(1, 0)),
         );
         let index = read_index(&index_path(dir.path(), &hash));
@@ -1005,6 +1350,9 @@ mod test {
             .map(|r| u64::from_be_bytes(r[RECORD_OFFSET].try_into().unwrap()))
             .collect();
         assert_eq!(stored, offsets, "identical hashes stay in source order");
+        // Records emitted by the depth-64 path must be checksummed like any
+        // other, or the very next lookup would reject them.
+        assert_checksums(&index);
     }
 
     #[test]
@@ -1087,20 +1435,17 @@ mod test {
 
         let index_path = index_path(dir.path(), &hash);
         let pristine = read_index(&index_path);
-        // Locate the record for key 1 by its hash; index order is by hash, not
-        // by bucket order.
-        let key_hash = Sha256::digest(account_key(1).to_xdr(Limits::none()).unwrap());
-        let record_start = HEADER_LEN
-            + RECORD_LEN
-                * records(&pristine)
-                    .iter()
-                    .position(|r| r[RECORD_HASH] == key_hash[..])
-                    .expect("key 1 must be indexed");
+        // Index order is by hash, not by bucket order. The edits below reseal
+        // the record so it is the index/bucket disagreement being tested, not
+        // the record integrity check.
+        let i = record_of(&pristine, &account_key(1));
+        let start = record_start(&pristine, i);
 
         // Case 1: the offset points at a different, perfectly valid frame.
         let mut index = pristine.clone();
-        index[record_start + RECORD_OFFSET.start..record_start + RECORD_OFFSET.end]
+        index[start + RECORD_OFFSET.start..start + RECORD_OFFSET.end]
             .copy_from_slice(&offsets[1].to_be_bytes());
+        reseal(&mut index, i);
         fs::write(&index_path, &index).unwrap();
         let err = lookup_with_budget(dir.path(), &hash, &bucket, &account_key(1), TINY_BUDGET)
             .expect_err("corruption must not be reported as an absent key");
@@ -1114,8 +1459,9 @@ mod test {
         // Case 2: the offset points into the middle of a frame, so the decode
         // itself fails. That is still corruption, not an absent key.
         let mut index = pristine;
-        index[record_start + RECORD_OFFSET.start..record_start + RECORD_OFFSET.end]
+        index[start + RECORD_OFFSET.start..start + RECORD_OFFSET.end]
             .copy_from_slice(&3u64.to_be_bytes());
+        reseal(&mut index, i);
         fs::write(&index_path, &index).unwrap();
         let err = lookup_with_budget(dir.path(), &hash, &bucket, &account_key(1), TINY_BUDGET)
             .expect_err("an undecodable offset must not be reported as an absent key");
@@ -1136,6 +1482,7 @@ mod test {
         let mut index = read_index(&index_path);
         assert_eq!(index[HEADER_LEN + RECORD_KIND], KIND_PRESENT);
         index[HEADER_LEN + RECORD_KIND] = KIND_DELETED;
+        reseal(&mut index, 0);
         fs::write(&index_path, &index).unwrap();
 
         let err = lookup_with_budget(dir.path(), &hash, &bucket, &account_key(1), TINY_BUDGET)
@@ -1177,11 +1524,48 @@ mod test {
             !index_path.with_extension("dl").exists(),
             "no partial download file may be left behind",
         );
-        let leftovers: Vec<_> = fs::read_dir(index_path.parent().unwrap())
-            .unwrap()
-            .map(|e| e.unwrap().file_name().to_string_lossy().into_owned())
-            .filter(|n| n.contains(".sort-"))
-            .collect();
+        let leftovers = scratch_dirs(&index_path);
+        assert!(
+            leftovers.is_empty(),
+            "scratch dirs left behind: {leftovers:?}"
+        );
+    }
+
+    #[test]
+    fn wrong_claimed_bucket_hash_fails_the_build_and_leaves_nothing_behind() {
+        let dir = TempDir::new("wrong-content-hash");
+        // Perfectly valid XDR, addressed by a hash it does not hash to: the
+        // bucket is not the bucket it claims to be, so no index derived from
+        // it may be trusted or kept.
+        let (bucket, _, _) = write_bucket(
+            dir.path(),
+            &[
+                BucketEntry::Liveentry(account_entry(1, 1)),
+                BucketEntry::Deadentry(account_key(2)),
+            ],
+        );
+        let claimed = "a".repeat(64);
+
+        let err = lookup_with_budget(dir.path(), &claimed, &bucket, &account_key(1), TINY_BUDGET)
+            .expect_err("a bucket that does not match its hash must fail the build");
+        let Error::Cache(CacheError::Collector(source)) = &err else {
+            panic!("expected the build failure to surface through the cache, got {err:?}");
+        };
+        assert!(
+            matches!(
+                source.downcast_ref::<Error>(),
+                Some(Error::BucketHashMismatch { .. }),
+            ),
+            "expected a typed content hash mismatch, got {source}",
+        );
+
+        let index_path = index_path(dir.path(), &claimed);
+        assert!(!index_path.exists(), "no index file may be left behind");
+        assert!(
+            !index_path.with_extension("dl").exists(),
+            "no partial index file may be left behind",
+        );
+        let leftovers = scratch_dirs(&index_path);
         assert!(
             leftovers.is_empty(),
             "scratch dirs left behind: {leftovers:?}"
@@ -1249,11 +1633,47 @@ mod test {
     #[test]
     fn malformed_shard_size_is_rejected() {
         let dir = TempDir::new("malformed-shard");
-        fs::write(dir.path().join("s0.shard"), [0u8; RECORD_LEN + 1]).unwrap();
-        let mut out = Vec::new();
-        let err = sort_shard(dir.path(), "0", 1, RECORD_LEN * 8, &mut out)
+        fs::write(dir.path().join("s0.shard"), [0u8; SORT_RECORD_LEN + 1]).unwrap();
+        let err = sort_shard(dir.path(), "0", 1, SORT_RECORD_LEN * 8)
             .expect_err("a shard that is not a whole number of records must be rejected");
         assert!(matches!(err, Error::MalformedShard(_)), "got {err:?}");
+    }
+
+    #[test]
+    fn missing_shard_is_rejected() {
+        // Every shard a pass sorts was created by the pass that partitioned
+        // into it, so a shard that is gone means records were lost and the
+        // index would be short without being detectably malformed.
+        let dir = TempDir::new("missing-shard");
+        let err = sort_shard(dir.path(), "0", 1, SORT_RECORD_LEN * 8)
+            .expect_err("a missing shard must fail the build rather than emit nothing");
+        assert!(matches!(err, Error::MissingShard(_)), "got {err:?}");
+    }
+
+    #[test]
+    fn sorted_shard_records_are_sealed_against_their_index() {
+        let dir = TempDir::new("shard-records");
+        let mut shard = Vec::new();
+        for i in [3u8, 1, 2] {
+            let mut record = [0u8; SORT_RECORD_LEN];
+            record[RECORD_HASH].copy_from_slice(&[i; 32]);
+            record[RECORD_OFFSET].copy_from_slice(&(i as u64).to_be_bytes());
+            record[RECORD_KIND] = KIND_PRESENT;
+            shard.extend_from_slice(&record);
+        }
+        fs::write(dir.path().join("s0.shard"), &shard).unwrap();
+
+        let out = sort_shard(dir.path(), "0", 1, SORT_RECORD_LEN * 8).unwrap();
+        assert_eq!(out.len(), 3 * RECORD_LEN);
+        for (i, record) in out.chunks_exact(RECORD_LEN).enumerate() {
+            assert_eq!(record[RECORD_HASH], [i as u8 + 1; 32], "sorted by hash");
+            let sortable: [u8; SORT_RECORD_LEN] = record[..SORT_RECORD_LEN].try_into().unwrap();
+            assert_eq!(
+                &record[RECORD_CHECKSUM],
+                &record_checksum(&sortable, i as u64)[..],
+            );
+        }
+        assert_eq!(CHECKSUM_LEN, RECORD_LEN - SORT_RECORD_LEN);
     }
 
     #[test]
@@ -1298,5 +1718,142 @@ mod test {
         );
         assert_eq!(u64::from_be_bytes(header[16..24].try_into().unwrap()), 5);
         assert_eq!(&header[24..56], &hex::decode(&hash).unwrap()[..]);
+
+        let index = read_index(&index_path(dir.path(), &hash));
+        assert_checksums(&index);
+    }
+
+    #[test]
+    fn bit_flip_in_a_record_is_rebuilt_and_never_reported_absent() {
+        // A single-record index guarantees the damaged record is the one the
+        // binary search reads, so the flip cannot be missed by chance.
+        for (entry, want) in [
+            (
+                BucketEntry::Liveentry(account_entry(1, 1)),
+                Lookup::Present(account_entry(1, 1)),
+            ),
+            (BucketEntry::Deadentry(account_key(1)), Lookup::Deleted),
+        ] {
+            let dir = TempDir::new("bit-flip");
+            let (bucket, _, hash) = write_bucket(dir.path(), &[entry]);
+            lookup_with_budget(dir.path(), &hash, &bucket, &account_key(1), TINY_BUDGET).unwrap();
+
+            let index_path = index_path(dir.path(), &hash);
+            let pristine = read_index(&index_path);
+            let mut damaged = pristine.clone();
+            // Flipping a bit of the stored key hash is exactly the corruption
+            // that would otherwise steer the search past a key that is
+            // present and answer `Absent`.
+            damaged[HEADER_LEN + RECORD_HASH.start] ^= 0x01;
+            fs::write(&index_path, &damaged).unwrap();
+
+            let got = lookup_with_budget(dir.path(), &hash, &bucket, &account_key(1), TINY_BUDGET)
+                .unwrap();
+            assert_eq!(got, want, "a corrupt record must never answer Absent");
+            assert_eq!(
+                read_index(&index_path),
+                pristine,
+                "the damaged index must have been rebuilt",
+            );
+        }
+    }
+
+    #[test]
+    fn a_record_moved_to_another_position_is_rebuilt_not_missed() {
+        let dir = TempDir::new("record-binding");
+        let entries: Vec<BucketEntry> = (1u8..4)
+            .map(|i| BucketEntry::Liveentry(account_entry(i, i as i64)))
+            .collect();
+        let (bucket, _, hash) = write_bucket(dir.path(), &entries);
+        lookup_with_budget(dir.path(), &hash, &bucket, &account_key(1), TINY_BUDGET).unwrap();
+
+        let index_path = index_path(dir.path(), &hash);
+        let pristine = read_index(&index_path);
+        // Swap two whole, individually intact records. Only the binding of a
+        // record's checksum to its position detects this; the bytes of each
+        // record are untouched, and the resulting order breaks binary search.
+        let mut damaged = pristine.clone();
+        let (a, b) = (record_start(&pristine, 0), record_start(&pristine, 1));
+        damaged[a..a + RECORD_LEN].copy_from_slice(&pristine[b..b + RECORD_LEN]);
+        damaged[b..b + RECORD_LEN].copy_from_slice(&pristine[a..a + RECORD_LEN]);
+        fs::write(&index_path, &damaged).unwrap();
+
+        for i in 1u8..4 {
+            assert_eq!(
+                lookup_with_budget(dir.path(), &hash, &bucket, &account_key(i), TINY_BUDGET)
+                    .unwrap(),
+                Lookup::Present(account_entry(i, i as i64)),
+            );
+        }
+        assert_eq!(
+            read_index(&index_path),
+            pristine,
+            "the shifted records must have been rebuilt",
+        );
+    }
+
+    #[test]
+    fn stale_scratch_dirs_are_reclaimed_and_active_ones_are_left_alone() {
+        let dir = TempDir::new("scratch-sweep");
+        let (bucket, _, hash) =
+            write_bucket(dir.path(), &[BucketEntry::Liveentry(account_entry(1, 1))]);
+        let index_path = index_path(dir.path(), &hash);
+        let scratch_parent = index_path.parent().unwrap().to_path_buf();
+        fs::create_dir_all(&scratch_parent).unwrap();
+
+        // Two leaks a hard kill can leave: one with an unheld lock, and one
+        // from a build that predates scratch locking.
+        let killed = scratch_parent.join("bucket-killed.idx.sort-1-0");
+        fs::create_dir_all(&killed).unwrap();
+        File::create(killed.join("lock")).unwrap();
+        fs::write(killed.join("s0.shard"), [0u8; SORT_RECORD_LEN]).unwrap();
+        let legacy = scratch_parent.join("bucket-legacy.idx.sort-2-0");
+        fs::create_dir_all(&legacy).unwrap();
+
+        // A directory another live build is still filling, i.e. one whose
+        // lock is held.
+        let active = scratch_parent.join("bucket-active.idx.sort-3-0");
+        fs::create_dir_all(&active).unwrap();
+        let active_lock = File::create(active.join("lock")).unwrap();
+        File::lock(&active_lock).unwrap();
+
+        // Files the cache owns must be off limits to the sweeper.
+        let cache_lock = index_path.with_extension("lock");
+        fs::write(&cache_lock, b"").unwrap();
+
+        lookup_with_budget(dir.path(), &hash, &bucket, &account_key(1), TINY_BUDGET).unwrap();
+
+        assert!(!killed.exists(), "a stale scratch dir must be reclaimed");
+        assert!(
+            !legacy.exists(),
+            "an unlocked scratch dir must be reclaimed"
+        );
+        assert!(active.exists(), "a locked scratch dir must be left alone");
+        assert!(cache_lock.exists(), "cache files must not be swept");
+        File::unlock(&active_lock).unwrap();
+    }
+
+    #[test]
+    fn a_scratch_dir_holds_its_lock_for_its_whole_lifetime() {
+        let dir = TempDir::new("scratch-lock");
+        let index_path = dir.path().join("bucket-lock.idx");
+        let scratch = ScratchDir::new(&index_path).unwrap();
+        let path = scratch.path().to_path_buf();
+
+        assert!(
+            path.file_name()
+                .unwrap()
+                .to_string_lossy()
+                .contains(".sort-"),
+            "a live scratch dir must be visible to the sweeper: {}",
+            path.display(),
+        );
+        assert!(
+            !ScratchDir::claim_stale(&path).unwrap(),
+            "a live scratch dir must not look reclaimable",
+        );
+
+        drop(scratch);
+        assert!(!path.exists(), "the scratch dir must be removed on drop");
     }
 }
