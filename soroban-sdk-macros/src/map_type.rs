@@ -109,10 +109,12 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
                     "Timepoint" => Ok(ScSpecTypeDef::Timepoint),
                     "Duration" => Ok(ScSpecTypeDef::Duration),
                     // Check if types that require generics are being used without any path arguments
-                    "Result" | "Option" | "Vec" | "Map" | "BytesN" | "Hash" => Err(Error::new(
-                        ident.span(),
-                        format!("type {} requires generic arguments", ident),
-                    )),
+                    "Result" | "Option" | "Vec" | "Map" | "BytesN" | "Hash" | "Comparable" => {
+                        Err(Error::new(
+                            ident.span(),
+                            format!("type {} requires generic arguments", ident),
+                        ))
+                    }
                     // The BLS and BN types defined below are represented in the contract's
                     // interface by their underlying data types, i.e.
                     // Bls12381Fp/Bls12381Fp2/Bls12381G1Affine/Bls12381G2Affine => BytesN<N>,
@@ -253,6 +255,19 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
                             };
                             Ok(ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n }))
                         }
+                        // Comparable<T> is a wrapper that only changes how the
+                        // value is compared, and so it is represented in the
+                        // spec by the type it wraps.
+                        "Comparable" => {
+                            let t = match args.as_slice() {
+                                [GenericArgument::Type(t)] => t,
+                                [..] => Err(Error::new(
+                                    t.span(),
+                                    "incorrect number of generic arguments, expect one for Comparable<T>",
+                                ))?,
+                            };
+                            map_type(t, allow_ref, allow_hash)
+                        }
                         "Hash" => {
                             if allow_hash {
                                 let n = match args.as_slice() {
@@ -386,6 +401,13 @@ mod test {
                 error_type: Box::new(ScSpecTypeDef::I64),
             }))
         );
+    }
+
+    #[test]
+    fn test_comparable_type() {
+        let ty: Type = parse_quote!(Comparable<Val>);
+        let res = map_type(&ty, false, false);
+        assert_eq!(res.unwrap(), ScSpecTypeDef::Val);
     }
 
     #[test]

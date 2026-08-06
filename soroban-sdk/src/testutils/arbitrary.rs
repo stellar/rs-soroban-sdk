@@ -328,8 +328,8 @@ mod objects {
             Bls12381Fp, Bls12381Fp2, Bls12381Fr, Bls12381G1Affine, Bls12381G2Affine,
             FP2_SERIALIZED_SIZE, FP_SERIALIZED_SIZE, G1_SERIALIZED_SIZE, G2_SERIALIZED_SIZE,
         },
-        Address, Bytes, BytesN, Duration, Map, MuxedAddress, String, Symbol, Timepoint, Val, Vec,
-        I256, U256,
+        Address, Bytes, BytesN, Comparable, Duration, Map, MuxedAddress, String, Symbol, Timepoint,
+        Val, Vec, I256, U256,
     };
 
     use std::string::String as RustString;
@@ -358,6 +358,31 @@ mod objects {
                 Some(ref t) => Ok(Some(t.into_val(env))),
                 None => Ok(None),
             }
+        }
+    }
+
+    //////////////////////////////////
+
+    #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+    pub struct ArbitraryComparable<T>(T);
+
+    impl<T> SorobanArbitrary for Comparable<T>
+    where
+        T: SorobanArbitrary,
+    {
+        type Prototype = ArbitraryComparable<T::Prototype>;
+    }
+
+    impl<T> TryFromVal<Env, ArbitraryComparable<T::Prototype>> for Comparable<T>
+    where
+        T: SorobanArbitrary,
+    {
+        type Error = ConversionError;
+        fn try_from_val(
+            env: &Env,
+            v: &ArbitraryComparable<T::Prototype>,
+        ) -> Result<Self, Self::Error> {
+            Ok(Comparable::new(env, v.0.into_val(env)))
         }
     }
 

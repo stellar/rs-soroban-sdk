@@ -620,6 +620,9 @@ pub use soroban_sdk_macros::contractmeta;
 /// convertible to and from `Val`.
 /// - All variant names, field names, and type names must be 10-characters or
 /// less in length.
+/// - Fields and variant fields of types that are not comparable, such as
+/// [`Val`], can be wrapped in [`Comparable`] so that the type containing them
+/// can still derive [`PartialEq`], [`Eq`], [`PartialOrd`], and [`Ord`].
 ///
 /// Includes the type in the contract spec so that clients can generate bindings
 /// for the type.
@@ -1203,6 +1206,7 @@ pub mod data {
 pub mod auth;
 #[macro_use]
 mod bytes;
+mod comparable;
 pub mod crypto;
 pub mod custom_account;
 pub mod deploy;
@@ -1220,6 +1224,7 @@ pub mod token;
 mod vec;
 pub use address::{Address, Executable};
 pub use bytes::{Bytes, BytesN};
+pub use comparable::Comparable;
 pub use map::Map;
 pub use muxed_address::MuxedAddress;
 pub use symbol::Symbol;

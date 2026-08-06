@@ -392,6 +392,15 @@ impl SpecShakingMarker for crate::Duration {}
 impl SpecShakingMarker for crate::Val {}
 impl SpecShakingMarker for crate::Error {}
 
+// Comparable implementation - includes inner type's spec, because a
+// Comparable<T> is represented in the spec by T.
+impl<T: SpecShakingMarker> SpecShakingMarker for crate::Comparable<T> {
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        T::spec_shaking_marker();
+    }
+}
+
 // SDK Container types - Vec and Map use `keep_reachable` to allow for recursive definitions.
 impl<T: SpecShakingMarker> SpecShakingMarker for crate::Vec<T> {
     #[inline(always)]
