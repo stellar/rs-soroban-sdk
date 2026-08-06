@@ -24,6 +24,11 @@ jobs:
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      TEST_FORK_QUICKSTART_FIXTURE: ${{ runner.temp }}/quickstart-fixture.json
+      # Where the snapshot source writes its machine-local cache of downloaded
+      # files and found entries, set so that the runs below can clear it.
+      XDG_CACHE_HOME: ${{ runner.temp }}/cache
     steps:
     - uses: actions/checkout@v5
 
@@ -43,11 +48,23 @@ jobs:
           --limits unlimited
 
     - name: Submit transactions to fork from
-      run: tests/fork/quickstart-setup.sh "$RUNNER_TEMP/quickstart-fixture.json"
+      run: tests/fork/quickstart-setup.sh "$TEST_FORK_QUICKSTART_FIXTURE"
 
-    - name: Fork the transactions
-      env:
-        TEST_FORK_QUICKSTART_FIXTURE: ${{ runner.temp }}/quickstart-fixture.json
+    # Fork three times, once per layer of caching, so that a cache that stores
+    # or replays entries wrongly fails as loudly as collecting them wrongly
+    # does. Every run asserts the same balances.
+
+    - name: Fork the transactions, with no cache
+      run: |
+        rm -rf tests-snapshot-source/local "$XDG_CACHE_HOME/soroban-sdk"
+        cargo test -p test_fork --lib -- --ignored --nocapture quickstart
+
+    - name: Fork the transactions, with only the system cache
+      run: |
+        rm -rf tests-snapshot-source/local
+        cargo test -p test_fork --lib -- --ignored --nocapture quickstart
+
+    - name: Fork the transactions, with the system and workspace caches
       run: cargo test -p test_fork --lib -- --ignored --nocapture quickstart
 
     - name: Quickstart logs
