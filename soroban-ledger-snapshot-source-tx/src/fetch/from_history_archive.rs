@@ -123,6 +123,13 @@ pub fn get_bucket<W: Write + ?Sized>(
     Ok(content_length)
 }
 
+/// Iterate the framed `BucketEntry` stream of a decompressed bucket.
+///
+/// Superseded for lookups by the persistent per-bucket offset index (see
+/// `fetch::bucket_index`), which needs each frame's offset and therefore
+/// decodes frames itself, but retained as the straightforward way to read a
+/// bucket end to end.
+#[allow(dead_code)]
 pub fn parse_bucket<'a, R: std::io::Read + 'a>(
     reader: &'a mut Limited<R>,
 ) -> impl Iterator<Item = Result<Frame<xdr::BucketEntry>, xdr::Error>> + 'a {
