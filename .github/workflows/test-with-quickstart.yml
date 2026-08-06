@@ -1,0 +1,55 @@
+name: Test with quickstart
+
+on:
+  push:
+    branches: [main, release/**]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref_protected == 'true' && github.sha || github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+# No permissions. This workflow runs a network from an image built outside this
+# repository. No permissions ensures that any exploit in that image does not
+# gain access to anything in this repo.
+permissions: {}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  # Fork a local network, reading the ledger meta store and history archive
+  # that quickstart runs alongside its core and rpc.
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+    - uses: actions/checkout@v5
+
+    - name: Install Rust
+      run: rustup update
+
+    - uses: stellar/actions/rust-cache@main
+
+    - uses: stellar/stellar-cli@v27.1.0
+
+    - name: Start quickstart
+      run: |
+        docker run --detach --name quickstart --publish 8000:8000 \
+          stellar/quickstart:testing \
+          --local \
+          --enable rpc,galexie \
+          --limits unlimited
+
+    - name: Submit transactions to fork from
+      run: tests/fork/quickstart-setup.sh "$RUNNER_TEMP/quickstart-fixture.json"
+
+    - name: Fork the transactions
+      env:
+        TEST_FORK_QUICKSTART_FIXTURE: ${{ runner.temp }}/quickstart-fixture.json
+      run: cargo test -p test_fork --lib -- --ignored --nocapture quickstart
+
+    - name: Quickstart logs
+      if: always()
+      run: docker logs quickstart

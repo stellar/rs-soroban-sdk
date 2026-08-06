@@ -108,14 +108,14 @@ impl Network {
     /// Create a Network configuration for local Stellar Quickstart
     ///
     /// Uses default quickstart URLs:
-    /// - SEP-54 meta storage: localhost:8000/meta-archive
+    /// - SEP-54 meta storage: localhost:8000/ledger-meta
     /// - RPC: localhost:8000/rpc
     /// - History archive: localhost:8000/archive
     pub fn local() -> Self {
         Self {
             name: "local".to_string(),
             passphrase: "Standalone Network ; February 2017".to_string(),
-            meta_url: "http://localhost:8000/meta-archive".to_string(),
+            meta_url: "http://localhost:8000/ledger-meta".to_string(),
             rpc_url: Some("http://localhost:8000/rpc".to_string()),
             archive_url: "http://localhost:8000/archive".to_string(),
             archive_checkpoint_ledger_count: 8,
@@ -812,7 +812,7 @@ mod test_network {
         assert_eq!(n.name, "local");
         assert_eq!(n.passphrase, "Standalone Network ; February 2017");
         assert_eq!(n.rpc_url.as_deref(), Some("http://localhost:8000/rpc"));
-        assert_eq!(n.meta_url, "http://localhost:8000/meta-archive");
+        assert_eq!(n.meta_url, "http://localhost:8000/ledger-meta");
         assert_eq!(n.archive_url, "http://localhost:8000/archive");
         assert_eq!(n.archive_checkpoint_ledger_count, 8);
     }
