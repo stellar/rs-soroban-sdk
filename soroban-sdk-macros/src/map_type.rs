@@ -1,7 +1,8 @@
-use quote::ToTokens;
+use proc_macro2::{Literal, TokenStream as TokenStream2};
+use quote::{format_ident, quote, ToTokens};
 use stellar_xdr::{
     ScSpecTypeBytesN, ScSpecTypeDef, ScSpecTypeMap, ScSpecTypeOption, ScSpecTypeResult,
-    ScSpecTypeTuple, ScSpecTypeUdt, ScSpecTypeVec,
+    ScSpecTypeTuple, ScSpecTypeUdt, ScSpecTypeVec, ScSymbol, StringM,
 };
 use syn::{
     ext::IdentExt as _, spanned::Spanned, Error, Expr, ExprLit, GenericArgument, Ident, Lit, Path,
@@ -302,6 +303,73 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
         }
         _ => Err(Error::new(t.span(), "unsupported type"))?,
     }
+}
+
+/// Renders a [ScSpecTypeDef] as a const expression of type
+/// `#path::xdr::ScSpecTypeDefView`, so the containing spec entry can be encoded
+/// to XDR at compile time by the contract crate.
+pub fn const_view_type_def(path: &Path, t: &ScSpecTypeDef) -> TokenStream2 {
+    let xdr = quote!(#path::xdr);
+    let variant = format_ident!("{}", t.name());
+    // Variants that hold a value. The recursive ones sit behind a reference in
+    // the View type, matching the Box in the owned type.
+    let value = match t {
+        ScSpecTypeDef::Option(o) => {
+            let value_type = const_view_type_def(path, &o.value_type);
+            Some(quote!((&#xdr::ScSpecTypeOptionView { value_type: &#value_type })))
+        }
+        ScSpecTypeDef::Result(r) => {
+            let ok_type = const_view_type_def(path, &r.ok_type);
+            let error_type = const_view_type_def(path, &r.error_type);
+            Some(
+                quote!((&#xdr::ScSpecTypeResultView { ok_type: &#ok_type, error_type: &#error_type })),
+            )
+        }
+        ScSpecTypeDef::Vec(v) => {
+            let element_type = const_view_type_def(path, &v.element_type);
+            Some(quote!((&#xdr::ScSpecTypeVecView { element_type: &#element_type })))
+        }
+        ScSpecTypeDef::Map(m) => {
+            let key_type = const_view_type_def(path, &m.key_type);
+            let value_type = const_view_type_def(path, &m.value_type);
+            Some(
+                quote!((&#xdr::ScSpecTypeMapView { key_type: &#key_type, value_type: &#value_type })),
+            )
+        }
+        ScSpecTypeDef::Tuple(t) => {
+            let value_types = t.value_types.iter().map(|t| const_view_type_def(path, t));
+            Some(
+                quote!((&#xdr::ScSpecTypeTupleView { value_types: #xdr::VecMView::try_from_slice_or_panic(&[#(#value_types),*]) })),
+            )
+        }
+        ScSpecTypeDef::BytesN(b) => {
+            let n = b.n;
+            Some(quote!((#xdr::ScSpecTypeBytesN { n: #n })))
+        }
+        ScSpecTypeDef::Udt(u) => {
+            let name = const_view_string(path, &u.name);
+            Some(quote!((#xdr::ScSpecTypeUdtView { name: #name })))
+        }
+        // All remaining variants are void.
+        _ => None,
+    };
+    quote!(#xdr::ScSpecTypeDefView::#variant #value)
+}
+
+/// Renders a [StringM] as a const expression of type `#path::xdr::StringMView`.
+/// The `MAX` of the `StringMView` is inferred from the field it is assigned to.
+pub fn const_view_string<const MAX: u32>(path: &Path, s: &StringM<MAX>) -> TokenStream2 {
+    let xdr = quote!(#path::xdr);
+    let lit = Literal::byte_string(s.as_vec());
+    quote!(#xdr::StringMView::try_from_slice_or_panic(#lit))
+}
+
+/// Renders a [ScSymbol] as a const expression of type
+/// `#path::xdr::ScSymbolView`.
+pub fn const_view_symbol(path: &Path, s: &ScSymbol) -> TokenStream2 {
+    let xdr = quote!(#path::xdr);
+    let s = const_view_string(path, &s.0);
+    quote!(#xdr::ScSymbolView(#s))
 }
 
 #[cfg(test)]

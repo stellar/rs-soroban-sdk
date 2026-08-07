@@ -36,7 +36,7 @@ use syn::{Path, Type};
 pub fn generate_marker_impl<'a, I>(
     path: &Path,
     ident: TokenStream2,
-    spec_xdr: &[u8],
+    spec_xdr: TokenStream2,
     field_types: I,
     gen_impl: Option<TokenStream2>,
     gen_types: Option<TokenStream2>,
@@ -45,10 +45,6 @@ pub fn generate_marker_impl<'a, I>(
 where
     I: Iterator<Item = &'a Type>,
 {
-    let marker = soroban_spec::shaking::generate_marker_for_xdr(spec_xdr);
-    let marker_lit = proc_macro2::Literal::byte_string(&marker);
-    let marker_len = marker.len();
-
     let field_type_markers: Vec<_> = field_types.collect();
     let gen_impl = gen_impl.unwrap_or_default();
     let gen_types = gen_types.unwrap_or_default();
@@ -63,13 +59,16 @@ where
                 #[cfg(target_family = "wasm")]
                 {
                     // Marker in data section. Post-build tools can scan for "SpEcV1"
-                    // patterns and match against specs in contractspecv0.
-                    static MARKER: [u8; #marker_len] = *#marker_lit;
+                    // patterns and match against specs in contractspecv0. Built from
+                    // the same const-encoded XDR that is embedded in that section, so
+                    // the two cannot drift apart.
+                    static MARKER: [u8; 14] =
+                        #path::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(&#spec_xdr);
                     // Volatile read prevents DCE of this function and keeps MARKER
                     // in the data section. We only read a single `u8` from the start
                     // of the array because merely taking a volatile reference to the
                     // symbol is sufficient; reading all bytes via
-                    // `read_volatile::<[u8; #marker_len]>()` would be redundant and
+                    // `read_volatile::<[u8; 14]>()` would be redundant and
                     // could increase code size without any functional benefit.
                     let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
                 }

@@ -1655,7 +1655,9 @@ dependencies = [
  "soroban-env-host",
  "soroban-ledger-snapshot",
  "soroban-sdk-macros",
+ "soroban-spec",
  "stellar-strkey 0.0.16",
+ "stellar-xdr",
  "visibility",
 ]
 
@@ -1671,7 +1673,6 @@ dependencies = [
  "quote",
  "sha2",
  "soroban-env-common",
- "soroban-spec",
  "soroban-spec-rust",
  "stellar-xdr",
  "syn 2.0.119",
@@ -1682,7 +1683,6 @@ name = "soroban-spec"
 version = "28.0.0-rc.1"
 dependencies = [
  "base64",
- "sha2",
  "stellar-xdr",
  "thiserror 1.0.69",
  "wasmparser",
@@ -1767,8 +1767,7 @@ dependencies = [
 [[package]]
 name = "stellar-xdr"
 version = "28.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f93d09ff8b9f919b084f664003c4c546ac66a76affd5429460dbe29f4b326f8e"
+source = "git+https://github.com/stellar/rs-stellar-xdr?rev=e73df1f6793fe5916dce7a833e14c0718786ab04#e73df1f6793fe5916dce7a833e14c0718786ab04"
 dependencies = [
  "arbitrary",
  "base64",
