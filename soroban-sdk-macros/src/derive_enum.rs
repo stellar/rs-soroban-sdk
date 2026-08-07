@@ -7,11 +7,15 @@ use syn::{
 };
 
 use stellar_xdr::{
-    Error as XdrError, ScSpecEntry, ScSpecTypeDef, ScSpecUdtUnionCaseTupleV0, ScSpecUdtUnionCaseV0,
-    ScSpecUdtUnionCaseVoidV0, ScSpecUdtUnionV0, StringM, VecM, WriteXdr, SCSYMBOL_LIMIT,
+    Error as XdrError, ScSpecTypeDef, ScSpecUdtUnionCaseTupleV0, ScSpecUdtUnionCaseV0,
+    ScSpecUdtUnionCaseVoidV0, ScSpecUdtUnionV0, StringM, VecM, SCSYMBOL_LIMIT,
 };
 
-use crate::{doc::docs_from_attrs, map_type::map_type, shaking, DEFAULT_XDR_RW_LIMITS};
+use crate::{
+    doc::docs_from_attrs,
+    map_type::{const_view_string, const_view_type_def, map_type},
+    shaking,
+};
 
 pub fn derive_type_enum(
     path: &Path,
@@ -144,30 +148,62 @@ pub fn derive_type_enum(
         return quote! { #(#compile_errors)* };
     }
 
-    // Compute spec XDR once.
-    let spec_entry = ScSpecEntry::UdtUnionV0(ScSpecUdtUnionV0 {
+    // Build the spec entry once.
+    let spec = ScSpecUdtUnionV0 {
         doc: docs_from_attrs(attrs),
         lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
         name: enum_ident.unraw().to_string().try_into().unwrap(),
         cases: spec_cases.try_into().unwrap(),
-    });
-    let spec_xdr = spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap();
+    };
 
-    // Generated code spec.
+    // Generated code spec. The spec entry is rendered as the equivalent const
+    // ScSpecEntryView, which the contract crate encodes to XDR at compile time.
     let spec_gen = {
-        let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
-        let spec_xdr_len = spec_xdr.len();
+        let doc = const_view_string(path, &spec.doc);
+        let lib = const_view_string(path, &spec.lib);
+        let name = const_view_string(path, &spec.name);
+        let cases = spec.cases.iter().map(|c| match c {
+            ScSpecUdtUnionCaseV0::VoidV0(c) => {
+                let doc = const_view_string(path, &c.doc);
+                let name = const_view_string(path, &c.name);
+                quote!(#path::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
+                    #path::xdr::ScSpecUdtUnionCaseVoidV0View { doc: #doc, name: #name }
+                ))
+            }
+            ScSpecUdtUnionCaseV0::TupleV0(c) => {
+                let doc = const_view_string(path, &c.doc);
+                let name = const_view_string(path, &c.name);
+                let type_ = c.type_.iter().map(|t| const_view_type_def(path, t));
+                quote!(#path::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
+                    #path::xdr::ScSpecUdtUnionCaseTupleV0View {
+                        doc: #doc,
+                        name: #name,
+                        type_: #path::xdr::VecMView::new(&[#(#type_),*]),
+                    }
+                ))
+            }
+        });
+        let spec_view = quote! {
+            #path::xdr::ScSpecEntryView::UdtUnionV0(#path::xdr::ScSpecUdtUnionV0View {
+                doc: #doc,
+                lib: #lib,
+                name: #name,
+                cases: #path::xdr::VecMView::new(&[#(#cases),*]),
+            })
+        };
         let spec_ident = format_ident!(
             "__SPEC_XDR_TYPE_{}",
             enum_ident.unraw().to_string().to_uppercase()
         );
         quote! {
             #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
-            pub static #spec_ident: [u8; #spec_xdr_len] = #enum_ident::spec_xdr();
+            pub static #spec_ident: [u8; #enum_ident::__SPEC_XDR_VIEW.const_xdr_len()] = #enum_ident::spec_xdr();
 
             impl #enum_ident {
-                pub const fn spec_xdr() -> [u8; #spec_xdr_len] {
-                    *#spec_xdr_lit
+                const __SPEC_XDR_VIEW: #path::xdr::ScSpecEntryView<'static> = #spec_view;
+
+                pub const fn spec_xdr() -> [u8; #enum_ident::__SPEC_XDR_VIEW.const_xdr_len()] {
+                    #enum_ident::__SPEC_XDR_VIEW.const_to_xdr()
                 }
             }
         }
@@ -184,7 +220,7 @@ pub fn derive_type_enum(
         shaking::generate_marker_impl(
             path,
             quote!(#enum_ident),
-            &spec_xdr,
+            quote!(#enum_ident::spec_xdr()),
             all_field_types.cloned(),
             None,
             None,

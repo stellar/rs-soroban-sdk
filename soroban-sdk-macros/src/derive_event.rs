@@ -1,7 +1,10 @@
 use crate::{
-    attribute::remove_attributes_from_item, default_crate_path, doc::docs_from_attrs,
-    export_arg_error, lib_arg_deprecation, map_type::map_type, shaking, symbol,
-    DEFAULT_XDR_RW_LIMITS,
+    attribute::remove_attributes_from_item,
+    default_crate_path,
+    doc::docs_from_attrs,
+    export_arg_error, lib_arg_deprecation,
+    map_type::{const_view_string, const_view_symbol, const_view_type_def, map_type},
+    shaking, symbol,
 };
 use darling::{ast::NestedMeta, util::SpannedValue, Error, FromMeta};
 use heck::ToSnakeCase;
@@ -9,8 +12,8 @@ use proc_macro2::Span;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use stellar_xdr::{
-    ScSpecEntry, ScSpecEventDataFormat, ScSpecEventParamLocationV0, ScSpecEventParamV0,
-    ScSpecEventV0, ScSymbol, StringM, WriteXdr,
+    ScSpecEventDataFormat, ScSpecEventParamLocationV0, ScSpecEventParamV0, ScSpecEventV0, ScSymbol,
+    StringM,
 };
 use syn::{ext::IdentExt as _, parse2, spanned::Spanned, Data, DeriveInput, Fields, LitStr, Path};
 
@@ -176,7 +179,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     // what is retained.
     let export_gen =
         quote! { #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")] };
-    let spec_entry = ScSpecEntry::EventV0(ScSpecEventV0 {
+    let spec = ScSpecEventV0 {
         data_format: args.data_format.into(),
         doc: docs_from_attrs(&input.attrs),
         lib: args.lib.as_deref().unwrap_or_default().try_into().unwrap(),
@@ -193,24 +196,58 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
             .collect::<Vec<_>>()
             .try_into()
             .unwrap(),
-    });
-    let spec_xdr = spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap();
-    let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
-    let spec_xdr_len = spec_xdr.len();
+    };
     let spec_ident = format_ident!(
         "__SPEC_XDR_EVENT_{}",
         input.ident.unraw().to_string().to_uppercase()
     );
     let spec_shaking_call = quote! { <Self as #path::SpecShakingMarker>::spec_shaking_marker(); };
 
+    // The spec entry rendered as the equivalent const ScSpecEntryView, which the
+    // contract crate encodes to XDR at compile time.
+    let spec_view = {
+        let doc = const_view_string(path, &spec.doc);
+        let lib = const_view_string(path, &spec.lib);
+        let name = const_view_symbol(path, &spec.name);
+        let prefix_topics = spec
+            .prefix_topics
+            .iter()
+            .map(|t| const_view_symbol(path, t));
+        let params = spec.params.iter().map(|p| {
+            let doc = const_view_string(path, &p.doc);
+            let name = const_view_string(path, &p.name);
+            let type_ = const_view_type_def(path, &p.type_);
+            let location = format_ident!("{}", p.location.name());
+            quote!(#path::xdr::ScSpecEventParamV0View {
+                doc: #doc,
+                name: #name,
+                type_: #type_,
+                location: #path::xdr::ScSpecEventParamLocationV0::#location,
+            })
+        });
+        let data_format = format_ident!("{}", spec.data_format.name());
+        quote! {
+            #path::xdr::ScSpecEntryView::EventV0(#path::xdr::ScSpecEventV0View {
+                doc: #doc,
+                lib: #lib,
+                name: #name,
+                prefix_topics: #path::xdr::VecMView::new(&[#(#prefix_topics),*]),
+                params: #path::xdr::VecMView::new(&[#(#params),*]),
+                data_format: #path::xdr::ScSpecEventDataFormat::#data_format,
+            })
+        }
+    };
+
     // Generated code spec.
     let spec_gen = quote! {
         #export_gen
-        pub static #spec_ident: [u8; #spec_xdr_len] = #ident::spec_xdr();
+        pub static #spec_ident: [u8; #ident::__SPEC_XDR_VIEW.const_xdr_len()] = #ident::spec_xdr();
 
         impl #gen_impl #ident #gen_types #gen_where {
-            pub const fn spec_xdr() -> [u8; #spec_xdr_len] {
-                *#spec_xdr_lit
+            const __SPEC_XDR_VIEW: #path::xdr::ScSpecEntryView<'static> = #spec_view;
+
+            pub const fn spec_xdr() -> [u8; #ident::__SPEC_XDR_VIEW.const_xdr_len()] {
+                #ident::__SPEC_XDR_VIEW.const_to_xdr()
             }
         }
     };
@@ -219,7 +256,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     let spec_shaking_impl = shaking::generate_marker_impl(
         path,
         quote!(#ident),
-        &spec_xdr,
+        quote!(#ident::spec_xdr()),
         field_types.iter().cloned(),
         Some(quote!(#gen_impl)),
         Some(quote!(#gen_types)),

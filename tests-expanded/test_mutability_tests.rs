@@ -148,12 +148,32 @@ pub mod __Contract__calc__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_CALC: [u8; 60usize] = super::Contract::spec_xdr_calc();
+    pub static __SPEC_XDR_FN_CALC: [u8; super::Contract::__SPEC_XDR_VIEW_calc.const_xdr_len()] =
+        super::Contract::spec_xdr_calc();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_calc: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"calc")),
+            inputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"a"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                },
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"b"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_calc() -> [u8; 60usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x04calc\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x04\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x04\0\0\0\x01\0\0\0\x04"
+    pub const fn spec_xdr_calc() -> [u8; Contract::__SPEC_XDR_VIEW_calc.const_xdr_len()] {
+        Contract::__SPEC_XDR_VIEW_calc.const_to_xdr()
     }
 }
 impl<'a> ContractClient<'a> {

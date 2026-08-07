@@ -155,10 +155,25 @@ impl ::core::cmp::PartialEq for Error {
         true
     }
 }
-pub static __SPEC_XDR_TYPE_ERROR: [u8; 48usize] = Error::spec_xdr();
+pub static __SPEC_XDR_TYPE_ERROR: [u8; Error::__SPEC_XDR_VIEW.const_xdr_len()] = Error::spec_xdr();
 impl Error {
-    pub const fn spec_xdr() -> [u8; 48usize] {
-        *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x05Error\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x08Overflow\0\0\0\x01"
+    const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::UdtErrorEnumV0(
+            soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
+                doc: soroban_sdk::xdr::StringMView::new(b""),
+                lib: soroban_sdk::xdr::StringMView::new(b""),
+                name: soroban_sdk::xdr::StringMView::new(b"Error"),
+                cases: soroban_sdk::xdr::VecMView::new(&[
+                    soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"Overflow"),
+                        value: 1u32,
+                    },
+                ]),
+            },
+        );
+    pub const fn spec_xdr() -> [u8; Error::__SPEC_XDR_VIEW.const_xdr_len()] {
+        Error::__SPEC_XDR_VIEW.const_to_xdr()
     }
 }
 impl soroban_sdk::SpecShakingMarker for Error {
@@ -288,10 +303,26 @@ impl ::core::cmp::PartialEq for MyError {
         true
     }
 }
-pub static __SPEC_XDR_TYPE_MYERROR: [u8; 48usize] = MyError::spec_xdr();
+pub static __SPEC_XDR_TYPE_MYERROR: [u8; MyError::__SPEC_XDR_VIEW.const_xdr_len()] =
+    MyError::spec_xdr();
 impl MyError {
-    pub const fn spec_xdr() -> [u8; 48usize] {
-        *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x07MyError\0\0\0\0\x01\0\0\0\0\0\0\0\x08Overflow\0\0\0\x01"
+    const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::UdtErrorEnumV0(
+            soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
+                doc: soroban_sdk::xdr::StringMView::new(b""),
+                lib: soroban_sdk::xdr::StringMView::new(b""),
+                name: soroban_sdk::xdr::StringMView::new(b"MyError"),
+                cases: soroban_sdk::xdr::VecMView::new(&[
+                    soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"Overflow"),
+                        value: 1u32,
+                    },
+                ]),
+            },
+        );
+    pub const fn spec_xdr() -> [u8; MyError::__SPEC_XDR_VIEW.const_xdr_len()] {
+        MyError::__SPEC_XDR_VIEW.const_to_xdr()
     }
 }
 impl soroban_sdk::SpecShakingMarker for MyError {
@@ -419,12 +450,32 @@ pub mod __Contract__add__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_ADD: [u8; 60usize] = super::Contract::spec_xdr_add();
+    pub static __SPEC_XDR_FN_ADD: [u8; super::Contract::__SPEC_XDR_VIEW_add.const_xdr_len()] =
+        super::Contract::spec_xdr_add();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_add: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"add")),
+            inputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"a"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U64,
+                },
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"b"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U64,
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U64]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_add() -> [u8; 60usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x03add\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x06\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x06\0\0\0\x01\0\0\0\x06"
+    pub const fn spec_xdr_add() -> [u8; Contract::__SPEC_XDR_VIEW_add.const_xdr_len()] {
+        Contract::__SPEC_XDR_VIEW_add.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -433,12 +484,39 @@ pub mod __Contract__safe_add__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_SAFE_ADD: [u8; 72usize] = super::Contract::spec_xdr_safe_add();
+    pub static __SPEC_XDR_FN_SAFE_ADD: [u8; super::Contract::__SPEC_XDR_VIEW_safe_add
+        .const_xdr_len()] = super::Contract::spec_xdr_safe_add();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_safe_add: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"safe_add")),
+            inputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"a"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U64,
+                },
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"b"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U64,
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecTypeDefView::Result(
+                    &soroban_sdk::xdr::ScSpecTypeResultView {
+                        ok_type: &soroban_sdk::xdr::ScSpecTypeDefView::U64,
+                        error_type: &soroban_sdk::xdr::ScSpecTypeDefView::Error,
+                    },
+                ),
+            ]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_safe_add() -> [u8; 72usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x08safe_add\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x06\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x06\0\0\0\x01\0\0\x03\xe9\0\0\0\x06\0\0\0\x03"
+    pub const fn spec_xdr_safe_add() -> [u8; Contract::__SPEC_XDR_VIEW_safe_add.const_xdr_len()] {
+        Contract::__SPEC_XDR_VIEW_safe_add.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -447,12 +525,46 @@ pub mod __Contract__safe_add_two__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_SAFE_ADD_TWO: [u8; 88usize] = super::Contract::spec_xdr_safe_add_two();
+    pub static __SPEC_XDR_FN_SAFE_ADD_TWO: [u8; super::Contract::__SPEC_XDR_VIEW_safe_add_two
+        .const_xdr_len()] = super::Contract::spec_xdr_safe_add_two();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_safe_add_two: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                b"safe_add_two",
+            )),
+            inputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"a"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U64,
+                },
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"b"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U64,
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecTypeDefView::Result(
+                    &soroban_sdk::xdr::ScSpecTypeResultView {
+                        ok_type: &soroban_sdk::xdr::ScSpecTypeDefView::U64,
+                        error_type: &soroban_sdk::xdr::ScSpecTypeDefView::Udt(
+                            soroban_sdk::xdr::ScSpecTypeUdtView {
+                                name: soroban_sdk::xdr::StringMView::new(b"MyError"),
+                            },
+                        ),
+                    },
+                ),
+            ]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_safe_add_two() -> [u8; 88usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0csafe_add_two\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x06\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x06\0\0\0\x01\0\0\x03\xe9\0\0\0\x06\0\0\x07\xd0\0\0\0\x07MyError\0"
+    pub const fn spec_xdr_safe_add_two(
+    ) -> [u8; Contract::__SPEC_XDR_VIEW_safe_add_two.const_xdr_len()] {
+        Contract::__SPEC_XDR_VIEW_safe_add_two.const_to_xdr()
     }
 }
 impl<'a> ContractClient<'a> {

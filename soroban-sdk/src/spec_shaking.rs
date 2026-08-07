@@ -23,6 +23,159 @@
 //! inner type's marker without calling it. Recursive definitions are
 //! possible through these types, so a direct call would risk a runtime cycle.
 
+/// The magic prefix identifying a marker in the data section. Must match
+/// `MAGIC` in `soroban_spec::shaking`.
+const MARKER_MAGIC: [u8; 6] = *b"SpEcV1";
+
+/// Builds the marker for a spec entry's XDR bytes: the magic prefix followed by
+/// the first 8 bytes of the SHA-256 of the XDR.
+///
+/// This is a `const fn` so that macro-generated code derives the marker from the
+/// same const-encoded bytes it embeds in the `contractspecv0` section. Hashing a
+/// separately encoded copy of the spec would leave two encoders that must agree
+/// forever, and a divergence would silently strip a spec entry that is in use.
+#[doc(hidden)]
+#[must_use]
+pub const fn spec_marker(spec_entry_xdr: &[u8]) -> [u8; 14] {
+    let h = sha256(spec_entry_xdr);
+    [
+        MARKER_MAGIC[0],
+        MARKER_MAGIC[1],
+        MARKER_MAGIC[2],
+        MARKER_MAGIC[3],
+        MARKER_MAGIC[4],
+        MARKER_MAGIC[5],
+        h[0],
+        h[1],
+        h[2],
+        h[3],
+        h[4],
+        h[5],
+        h[6],
+        h[7],
+    ]
+}
+
+/// SHA-256 round constants.
+#[rustfmt::skip]
+const SHA256_K: [u32; 64] = [
+    0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+    0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
+    0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+    0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
+    0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+    0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+    0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+    0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2,
+];
+
+/// SHA-256 of `input`, evaluatable at compile time.
+///
+/// A const implementation is needed because the marker is built while the
+/// generated code compiles; `sha2` is not usable in a const context.
+const fn sha256(input: &[u8]) -> [u8; 32] {
+    let len = input.len();
+    // Message is padded with a 0x80 byte, then zeroes, then the length in bits
+    // as a big-endian u64, out to a multiple of the 64-byte block size.
+    let padded = (len + 9).div_ceil(64) * 64;
+    let bit_len = (len as u64) * 8;
+
+    let mut h: [u32; 8] = [
+        0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab,
+        0x5be0cd19,
+    ];
+
+    let mut base = 0;
+    while base < padded {
+        let mut w = [0u32; 64];
+
+        // Load the block, reading padding bytes rather than materialising a
+        // padded copy of the message.
+        let mut t = 0;
+        while t < 16 {
+            let mut word = 0u32;
+            let mut b = 0;
+            while b < 4 {
+                let p = base + t * 4 + b;
+                let byte = if p < len {
+                    input[p]
+                } else if p == len {
+                    0x80
+                } else if p >= padded - 8 {
+                    (bit_len >> (8 * (padded - 1 - p))) as u8
+                } else {
+                    0
+                };
+                word = (word << 8) | (byte as u32);
+                b += 1;
+            }
+            w[t] = word;
+            t += 1;
+        }
+
+        let mut t = 16;
+        while t < 64 {
+            let s0 = w[t - 15].rotate_right(7) ^ w[t - 15].rotate_right(18) ^ (w[t - 15] >> 3);
+            let s1 = w[t - 2].rotate_right(17) ^ w[t - 2].rotate_right(19) ^ (w[t - 2] >> 10);
+            w[t] = w[t - 16]
+                .wrapping_add(s0)
+                .wrapping_add(w[t - 7])
+                .wrapping_add(s1);
+            t += 1;
+        }
+
+        let (mut a, mut b, mut c, mut d) = (h[0], h[1], h[2], h[3]);
+        let (mut e, mut f, mut g, mut hh) = (h[4], h[5], h[6], h[7]);
+
+        let mut t = 0;
+        while t < 64 {
+            let s1 = e.rotate_right(6) ^ e.rotate_right(11) ^ e.rotate_right(25);
+            let ch = (e & f) ^ ((!e) & g);
+            let temp1 = hh
+                .wrapping_add(s1)
+                .wrapping_add(ch)
+                .wrapping_add(SHA256_K[t])
+                .wrapping_add(w[t]);
+            let s0 = a.rotate_right(2) ^ a.rotate_right(13) ^ a.rotate_right(22);
+            let maj = (a & b) ^ (a & c) ^ (b & c);
+            let temp2 = s0.wrapping_add(maj);
+
+            hh = g;
+            g = f;
+            f = e;
+            e = d.wrapping_add(temp1);
+            d = c;
+            c = b;
+            b = a;
+            a = temp1.wrapping_add(temp2);
+            t += 1;
+        }
+
+        h[0] = h[0].wrapping_add(a);
+        h[1] = h[1].wrapping_add(b);
+        h[2] = h[2].wrapping_add(c);
+        h[3] = h[3].wrapping_add(d);
+        h[4] = h[4].wrapping_add(e);
+        h[5] = h[5].wrapping_add(f);
+        h[6] = h[6].wrapping_add(g);
+        h[7] = h[7].wrapping_add(hh);
+
+        base += 64;
+    }
+
+    let mut out = [0u8; 32];
+    let mut i = 0;
+    while i < 8 {
+        let be = h[i].to_be_bytes();
+        out[i * 4] = be[0];
+        out[i * 4 + 1] = be[1];
+        out[i * 4 + 2] = be[2];
+        out[i * 4 + 3] = be[3];
+        i += 1;
+    }
+    out
+}
+
 /// Trait for types that may include their spec in the WASM binary.
 ///
 /// This trait is used internally by the SDK to ensure contract type specs
@@ -420,3 +573,47 @@ impl SpecShakingMarker for crate::crypto::bn254::Bn254G1Affine {}
 impl SpecShakingMarker for crate::crypto::bn254::Bn254G2Affine {}
 impl SpecShakingMarker for crate::crypto::bn254::Bn254Fp {}
 impl SpecShakingMarker for crate::crypto::bn254::Bn254Fr {}
+
+#[cfg(test)]
+mod test {
+    use super::{sha256, spec_marker};
+
+    /// The const SHA-256 must agree with `sha2` exactly, including across block
+    /// boundaries where the padding lands in a different block to the message.
+    #[test]
+    fn sha256_matches_sha2() {
+        use sha2::{Digest, Sha256};
+        // Lengths either side of the 64-byte block size and the 55/56-byte
+        // boundary where the length field no longer fits in the final block.
+        for len in [
+            0usize, 1, 54, 55, 56, 57, 63, 64, 65, 119, 120, 127, 128, 129, 1000,
+        ] {
+            let input: std::vec::Vec<u8> = (0..len).map(|i| (i % 251) as u8).collect();
+            let expected: [u8; 32] = Sha256::digest(&input).into();
+            assert_eq!(sha256(&input), expected, "mismatch at len {len}");
+        }
+    }
+
+    /// The marker built in const context must equal the one the tooling
+    /// computes host-side, otherwise shaking would strip specs that are in use.
+    #[test]
+    fn spec_marker_matches_soroban_spec() {
+        for len in [0usize, 1, 55, 56, 64, 200] {
+            let input: std::vec::Vec<u8> = (0..len).map(|i| (i % 251) as u8).collect();
+            assert_eq!(
+                spec_marker(&input),
+                soroban_spec::shaking::generate_marker_for_xdr(&input),
+                "mismatch at len {len}"
+            );
+        }
+    }
+
+    /// Evaluatable at compile time, which is the whole point.
+    #[test]
+    fn spec_marker_is_const() {
+        const M: [u8; 14] = spec_marker(b"abc");
+        assert_eq!(&M[..6], b"SpEcV1");
+        // SHA-256("abc") = ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad
+        assert_eq!(&M[6..], &[0xba, 0x78, 0x16, 0xbf, 0x8f, 0x01, 0xcf, 0xea]);
+    }
+}

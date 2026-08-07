@@ -1564,7 +1564,6 @@ dependencies = [
  "quote",
  "sha2",
  "soroban-env-common",
- "soroban-spec",
  "soroban-spec-rust",
  "stellar-xdr",
  "syn",
@@ -1686,8 +1685,7 @@ dependencies = [
 [[package]]
 name = "stellar-xdr"
 version = "28.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f93d09ff8b9f919b084f664003c4c546ac66a76affd5429460dbe29f4b326f8e"
+source = "git+https://github.com/stellar/rs-stellar-xdr?rev=595950c5dfd2dab0333922ebb26fab27dac3188a#595950c5dfd2dab0333922ebb26fab27dac3188a"
 dependencies = [
  "arbitrary",
  "base64",

@@ -47,10 +47,24 @@ impl ::core::cmp::PartialEq for AttributeType {
         self.value == other.value
     }
 }
-pub static __SPEC_XDR_TYPE_ATTRIBUTETYPE: [u8; 56usize] = AttributeType::spec_xdr();
+pub static __SPEC_XDR_TYPE_ATTRIBUTETYPE: [u8; AttributeType::__SPEC_XDR_VIEW.const_xdr_len()] =
+    AttributeType::spec_xdr();
 impl AttributeType {
-    pub const fn spec_xdr() -> [u8; 56usize] {
-        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\rAttributeType\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05value\0\0\0\0\0\0\x04"
+    const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            lib: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::StringMView::new(b"AttributeType"),
+            fields: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"value"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                },
+            ]),
+        });
+    pub const fn spec_xdr() -> [u8; AttributeType::__SPEC_XDR_VIEW.const_xdr_len()] {
+        AttributeType::__SPEC_XDR_VIEW.const_to_xdr()
     }
 }
 impl soroban_sdk::SpecShakingMarker for AttributeType {
@@ -378,10 +392,37 @@ pub struct AttributeEvent {
     topic: u32,
     value: u32,
 }
-pub static __SPEC_XDR_EVENT_ATTRIBUTEEVENT: [u8; 112usize] = AttributeEvent::spec_xdr();
+pub static __SPEC_XDR_EVENT_ATTRIBUTEEVENT: [u8; AttributeEvent::__SPEC_XDR_VIEW.const_xdr_len()] =
+    AttributeEvent::spec_xdr();
 impl AttributeEvent {
-    pub const fn spec_xdr() -> [u8; 112usize] {
-        *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x0eAttributeEvent\0\0\0\0\0\x01\0\0\0\x0fattribute_event\0\0\0\0\x02\0\0\0\0\0\0\0\x05topic\0\0\0\0\0\0\x04\0\0\0\x01\0\0\0\0\0\0\0\x05value\0\0\0\0\0\0\x04\0\0\0\0\0\0\0\x02"
+    const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::EventV0(soroban_sdk::xdr::ScSpecEventV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            lib: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                b"AttributeEvent",
+            )),
+            prefix_topics: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSymbolView(
+                soroban_sdk::xdr::StringMView::new(b"attribute_event"),
+            )]),
+            params: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecEventParamV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"topic"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
+                },
+                soroban_sdk::xdr::ScSpecEventParamV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"value"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                },
+            ]),
+            data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
+        });
+    pub const fn spec_xdr() -> [u8; AttributeEvent::__SPEC_XDR_VIEW.const_xdr_len()] {
+        AttributeEvent::__SPEC_XDR_VIEW.const_to_xdr()
     }
 }
 impl soroban_sdk::SpecShakingMarker for AttributeEvent {
@@ -1205,45 +1246,122 @@ impl AttributeTraitArgs {
     }
 }
 impl AttributeTraitSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_trait_override: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                b"trait_override",
+            )),
+            inputs: soroban_sdk::xdr::VecMView::new(&[]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_trait_override() -> [u8; 40usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0etrait_override\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
+    pub const fn spec_xdr_trait_override(
+    ) -> [u8; AttributeTraitSpec::__SPEC_XDR_VIEW_trait_override.const_xdr_len()] {
+        AttributeTraitSpec::__SPEC_XDR_VIEW_trait_override.const_to_xdr()
     }
 }
 impl AttributeTraitSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_trait_default: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                b"trait_default",
+            )),
+            inputs: soroban_sdk::xdr::VecMView::new(&[]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_trait_default() -> [u8; 40usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\rtrait_default\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
+    pub const fn spec_xdr_trait_default(
+    ) -> [u8; AttributeTraitSpec::__SPEC_XDR_VIEW_trait_default.const_xdr_len()] {
+        AttributeTraitSpec::__SPEC_XDR_VIEW_trait_default.const_to_xdr()
     }
 }
 impl AttributeTraitSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_trait_default_stacked_cfg: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                b"trait_default_stacked_cfg",
+            )),
+            inputs: soroban_sdk::xdr::VecMView::new(&[]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_trait_default_stacked_cfg() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x19trait_default_stacked_cfg\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
+    pub const fn spec_xdr_trait_default_stacked_cfg(
+    ) -> [u8; AttributeTraitSpec::__SPEC_XDR_VIEW_trait_default_stacked_cfg.const_xdr_len()] {
+        AttributeTraitSpec::__SPEC_XDR_VIEW_trait_default_stacked_cfg.const_to_xdr()
     }
 }
 impl AttributeTraitSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_trait_override_stacked_cfg: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                b"trait_override_stacked_cfg",
+            )),
+            inputs: soroban_sdk::xdr::VecMView::new(&[]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_trait_override_stacked_cfg() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x1atrait_override_stacked_cfg\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
+    pub const fn spec_xdr_trait_override_stacked_cfg(
+    ) -> [u8; AttributeTraitSpec::__SPEC_XDR_VIEW_trait_override_stacked_cfg.const_xdr_len()] {
+        AttributeTraitSpec::__SPEC_XDR_VIEW_trait_override_stacked_cfg.const_to_xdr()
     }
 }
 impl AttributeTraitSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_trait_override_negated_cfg: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                b"trait_override_negated_cfg",
+            )),
+            inputs: soroban_sdk::xdr::VecMView::new(&[]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_trait_override_negated_cfg() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x1atrait_override_negated_cfg\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
+    pub const fn spec_xdr_trait_override_negated_cfg(
+    ) -> [u8; AttributeTraitSpec::__SPEC_XDR_VIEW_trait_override_negated_cfg.const_xdr_len()] {
+        AttributeTraitSpec::__SPEC_XDR_VIEW_trait_override_negated_cfg.const_to_xdr()
     }
 }
 impl AttributeTraitSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_trait_override_dual_cfg: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                b"trait_override_dual_cfg",
+            )),
+            inputs: soroban_sdk::xdr::VecMView::new(&[]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_trait_override_dual_cfg() -> [u8; 48usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x17trait_override_dual_cfg\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
+    pub const fn spec_xdr_trait_override_dual_cfg(
+    ) -> [u8; AttributeTraitSpec::__SPEC_XDR_VIEW_trait_override_dual_cfg.const_xdr_len()] {
+        AttributeTraitSpec::__SPEC_XDR_VIEW_trait_override_dual_cfg.const_to_xdr()
     }
 }
 impl AttributeTraitSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_trait_default_dual_cfg: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                b"trait_default_dual_cfg",
+            )),
+            inputs: soroban_sdk::xdr::VecMView::new(&[]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_trait_default_dual_cfg() -> [u8; 48usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x16trait_default_dual_cfg\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
+    pub const fn spec_xdr_trait_default_dual_cfg(
+    ) -> [u8; AttributeTraitSpec::__SPEC_XDR_VIEW_trait_default_dual_cfg.const_xdr_len()] {
+        AttributeTraitSpec::__SPEC_XDR_VIEW_trait_default_dual_cfg.const_to_xdr()
     }
 }
 impl Contract {
@@ -1263,12 +1381,31 @@ pub mod __Contract__always__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_ALWAYS: [u8; 72usize] = super::Contract::spec_xdr_always();
+    pub static __SPEC_XDR_FN_ALWAYS: [u8; super::Contract::__SPEC_XDR_VIEW_always.const_xdr_len()] =
+        super::Contract::spec_xdr_always();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_always: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"always")),
+            inputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"value"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
+                        soroban_sdk::xdr::ScSpecTypeUdtView {
+                            name: soroban_sdk::xdr::StringMView::new(b"AttributeType"),
+                        },
+                    ),
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_always() -> [u8; 72usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x06always\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05value\0\0\0\0\0\x07\xd0\0\0\0\rAttributeType\0\0\0\0\0\0\x01\0\0\0\x04"
+    pub const fn spec_xdr_always() -> [u8; Contract::__SPEC_XDR_VIEW_always.const_xdr_len()] {
+        Contract::__SPEC_XDR_VIEW_always.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -1277,12 +1414,30 @@ pub mod __Contract__cfg_included__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_CFG_INCLUDED: [u8; 56usize] = super::Contract::spec_xdr_cfg_included();
+    pub static __SPEC_XDR_FN_CFG_INCLUDED: [u8; super::Contract::__SPEC_XDR_VIEW_cfg_included
+        .const_xdr_len()] = super::Contract::spec_xdr_cfg_included();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_cfg_included: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                b"cfg_included",
+            )),
+            inputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"value"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_cfg_included() -> [u8; 56usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0ccfg_included\0\0\0\x01\0\0\0\0\0\0\0\x05value\0\0\0\0\0\0\x04\0\0\0\x01\0\0\0\x04"
+    pub const fn spec_xdr_cfg_included(
+    ) -> [u8; Contract::__SPEC_XDR_VIEW_cfg_included.const_xdr_len()] {
+        Contract::__SPEC_XDR_VIEW_cfg_included.const_to_xdr()
     }
 }
 impl Contract {}
@@ -1292,12 +1447,32 @@ pub mod __Contract__publish__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_PUBLISH: [u8; 68usize] = super::Contract::spec_xdr_publish();
+    pub static __SPEC_XDR_FN_PUBLISH: [u8; super::Contract::__SPEC_XDR_VIEW_publish
+        .const_xdr_len()] = super::Contract::spec_xdr_publish();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_publish: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"publish")),
+            inputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"topic"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                },
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"value"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_publish() -> [u8; 68usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x07publish\0\0\0\0\x02\0\0\0\0\0\0\0\x05topic\0\0\0\0\0\0\x04\0\0\0\0\0\0\0\x05value\0\0\0\0\0\0\x04\0\0\0\0"
+    pub const fn spec_xdr_publish() -> [u8; Contract::__SPEC_XDR_VIEW_publish.const_xdr_len()] {
+        Contract::__SPEC_XDR_VIEW_publish.const_to_xdr()
     }
 }
 impl<'a> ContractClient<'a> {
@@ -1771,13 +1946,24 @@ pub mod __Contract__trait_override__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TRAIT_OVERRIDE: [u8; 40usize] =
-        super::Contract::spec_xdr_trait_override();
+    pub static __SPEC_XDR_FN_TRAIT_OVERRIDE: [u8; super::Contract::__SPEC_XDR_VIEW_trait_override
+        .const_xdr_len()] = super::Contract::spec_xdr_trait_override();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_trait_override: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                b"trait_override",
+            )),
+            inputs: soroban_sdk::xdr::VecMView::new(&[]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_trait_override() -> [u8; 40usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0etrait_override\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
+    pub const fn spec_xdr_trait_override(
+    ) -> [u8; Contract::__SPEC_XDR_VIEW_trait_override.const_xdr_len()] {
+        Contract::__SPEC_XDR_VIEW_trait_override.const_to_xdr()
     }
 }
 impl Contract {}
@@ -1788,13 +1974,25 @@ pub mod __Contract__trait_override_stacked_cfg__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TRAIT_OVERRIDE_STACKED_CFG: [u8; 52usize] =
+    pub static __SPEC_XDR_FN_TRAIT_OVERRIDE_STACKED_CFG: [u8;
+        super::Contract::__SPEC_XDR_VIEW_trait_override_stacked_cfg.const_xdr_len()] =
         super::Contract::spec_xdr_trait_override_stacked_cfg();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_trait_override_stacked_cfg: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                b"trait_override_stacked_cfg",
+            )),
+            inputs: soroban_sdk::xdr::VecMView::new(&[]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_trait_override_stacked_cfg() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x1atrait_override_stacked_cfg\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
+    pub const fn spec_xdr_trait_override_stacked_cfg(
+    ) -> [u8; Contract::__SPEC_XDR_VIEW_trait_override_stacked_cfg.const_xdr_len()] {
+        Contract::__SPEC_XDR_VIEW_trait_override_stacked_cfg.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -1803,13 +2001,25 @@ pub mod __Contract__trait_override_negated_cfg__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TRAIT_OVERRIDE_NEGATED_CFG: [u8; 52usize] =
+    pub static __SPEC_XDR_FN_TRAIT_OVERRIDE_NEGATED_CFG: [u8;
+        super::Contract::__SPEC_XDR_VIEW_trait_override_negated_cfg.const_xdr_len()] =
         super::Contract::spec_xdr_trait_override_negated_cfg();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_trait_override_negated_cfg: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                b"trait_override_negated_cfg",
+            )),
+            inputs: soroban_sdk::xdr::VecMView::new(&[]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_trait_override_negated_cfg() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x1atrait_override_negated_cfg\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
+    pub const fn spec_xdr_trait_override_negated_cfg(
+    ) -> [u8; Contract::__SPEC_XDR_VIEW_trait_override_negated_cfg.const_xdr_len()] {
+        Contract::__SPEC_XDR_VIEW_trait_override_negated_cfg.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -1818,13 +2028,25 @@ pub mod __Contract__trait_override_dual_cfg__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TRAIT_OVERRIDE_DUAL_CFG: [u8; 48usize] =
+    pub static __SPEC_XDR_FN_TRAIT_OVERRIDE_DUAL_CFG: [u8;
+        super::Contract::__SPEC_XDR_VIEW_trait_override_dual_cfg.const_xdr_len()] =
         super::Contract::spec_xdr_trait_override_dual_cfg();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_trait_override_dual_cfg: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                b"trait_override_dual_cfg",
+            )),
+            inputs: soroban_sdk::xdr::VecMView::new(&[]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_trait_override_dual_cfg() -> [u8; 48usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x17trait_override_dual_cfg\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
+    pub const fn spec_xdr_trait_override_dual_cfg(
+    ) -> [u8; Contract::__SPEC_XDR_VIEW_trait_override_dual_cfg.const_xdr_len()] {
+        Contract::__SPEC_XDR_VIEW_trait_override_dual_cfg.const_to_xdr()
     }
 }
 impl Contract {}
@@ -2427,13 +2649,24 @@ pub mod __Contract__trait_default__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TRAIT_DEFAULT: [u8; 40usize] =
-        super::Contract::spec_xdr_trait_default();
+    pub static __SPEC_XDR_FN_TRAIT_DEFAULT: [u8; super::Contract::__SPEC_XDR_VIEW_trait_default
+        .const_xdr_len()] = super::Contract::spec_xdr_trait_default();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_trait_default: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                b"trait_default",
+            )),
+            inputs: soroban_sdk::xdr::VecMView::new(&[]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_trait_default() -> [u8; 40usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\rtrait_default\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
+    pub const fn spec_xdr_trait_default(
+    ) -> [u8; Contract::__SPEC_XDR_VIEW_trait_default.const_xdr_len()] {
+        Contract::__SPEC_XDR_VIEW_trait_default.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -2442,13 +2675,25 @@ pub mod __Contract__trait_default_stacked_cfg__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TRAIT_DEFAULT_STACKED_CFG: [u8; 52usize] =
+    pub static __SPEC_XDR_FN_TRAIT_DEFAULT_STACKED_CFG: [u8;
+        super::Contract::__SPEC_XDR_VIEW_trait_default_stacked_cfg.const_xdr_len()] =
         super::Contract::spec_xdr_trait_default_stacked_cfg();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_trait_default_stacked_cfg: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                b"trait_default_stacked_cfg",
+            )),
+            inputs: soroban_sdk::xdr::VecMView::new(&[]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_trait_default_stacked_cfg() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x19trait_default_stacked_cfg\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
+    pub const fn spec_xdr_trait_default_stacked_cfg(
+    ) -> [u8; Contract::__SPEC_XDR_VIEW_trait_default_stacked_cfg.const_xdr_len()] {
+        Contract::__SPEC_XDR_VIEW_trait_default_stacked_cfg.const_to_xdr()
     }
 }
 impl Contract {}
@@ -2460,13 +2705,25 @@ pub mod __Contract__trait_default_dual_cfg__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TRAIT_DEFAULT_DUAL_CFG: [u8; 48usize] =
+    pub static __SPEC_XDR_FN_TRAIT_DEFAULT_DUAL_CFG: [u8;
+        super::Contract::__SPEC_XDR_VIEW_trait_default_dual_cfg.const_xdr_len()] =
         super::Contract::spec_xdr_trait_default_dual_cfg();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_trait_default_dual_cfg: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                b"trait_default_dual_cfg",
+            )),
+            inputs: soroban_sdk::xdr::VecMView::new(&[]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_trait_default_dual_cfg() -> [u8; 48usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x16trait_default_dual_cfg\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
+    pub const fn spec_xdr_trait_default_dual_cfg(
+    ) -> [u8; Contract::__SPEC_XDR_VIEW_trait_default_dual_cfg.const_xdr_len()] {
+        Contract::__SPEC_XDR_VIEW_trait_default_dual_cfg.const_to_xdr()
     }
 }
 impl<'a> ContractClient<'a> {

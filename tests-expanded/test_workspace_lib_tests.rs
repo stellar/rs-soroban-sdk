@@ -33,10 +33,23 @@ impl ::core::cmp::PartialEq for Value {
         self.value == other.value
     }
 }
-pub static __SPEC_XDR_TYPE_VALUE: [u8; 48usize] = Value::spec_xdr();
+pub static __SPEC_XDR_TYPE_VALUE: [u8; Value::__SPEC_XDR_VIEW.const_xdr_len()] = Value::spec_xdr();
 impl Value {
-    pub const fn spec_xdr() -> [u8; 48usize] {
-        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x05Value\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05value\0\0\0\0\0\0\x05"
+    const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            lib: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::StringMView::new(b"Value"),
+            fields: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"value"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::I32,
+                },
+            ]),
+        });
+    pub const fn spec_xdr() -> [u8; Value::__SPEC_XDR_VIEW.const_xdr_len()] {
+        Value::__SPEC_XDR_VIEW.const_to_xdr()
     }
 }
 impl soroban_sdk::SpecShakingMarker for Value {
