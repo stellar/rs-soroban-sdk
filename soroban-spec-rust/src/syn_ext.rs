@@ -55,7 +55,7 @@ fn last_segment(name: &str) -> &str {
 ///
 /// A module of the crate the type came from can be named for a Rust keyword, so
 /// a segment that is not an identifier on its own is emitted raw.
-fn segment_ident(s: &str) -> Result<Ident, GenerateError> {
+pub fn segment_ident(s: &str) -> Result<Ident, GenerateError> {
     str_to_ident(s).or_else(|_| str_to_ident(format!("r#{s}").as_str()))
 }
 

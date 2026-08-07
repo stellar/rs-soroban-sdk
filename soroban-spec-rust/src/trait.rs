@@ -16,11 +16,12 @@ pub fn generate_trait(
     name: &str,
     specs: &[&ScSpecFunctionV0],
     names: &TypeNames,
+    depth: usize,
 ) -> Result<TokenStream, GenerateError> {
     let trait_ident = str_to_ident(name)?;
     let fns = specs
         .iter()
-        .map(|s| generate_function(s, names))
+        .map(|s| generate_function(s, names, depth))
         .collect::<Result<Vec<_>, _>>()?;
     Ok(quote! {
         pub trait #trait_ident { #(#fns;)* }
@@ -38,6 +39,7 @@ pub fn generate_trait(
 pub fn generate_function(
     s: &ScSpecFunctionV0,
     names: &TypeNames,
+    depth: usize,
 ) -> Result<TokenStream, GenerateError> {
     let fn_ident = str_to_ident(&s.name)?;
     let fn_inputs = s
@@ -45,14 +47,14 @@ pub fn generate_function(
         .iter()
         .map(|input| {
             let name = str_to_ident(&input.name)?;
-            let type_ident = generate_type_ident(&input.type_, names)?;
+            let type_ident = generate_type_ident(&input.type_, names, depth)?;
             Ok(quote! { #name: #type_ident })
         })
         .collect::<Result<Vec<_>, GenerateError>>()?;
     let fn_output = s
         .outputs
         .to_option()
-        .map(|t| generate_type_ident(&t, names))
+        .map(|t| generate_type_ident(&t, names, depth))
         .transpose()?
         .map(|t| quote! { -> #t });
     Ok(quote! {

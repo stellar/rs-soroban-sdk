@@ -1,6 +1,8 @@
 mod syn_ext;
 
 pub use syn_ext::TypeNames;
+use syn_ext::segment_ident;
+use std::collections::BTreeMap;
 pub mod r#trait;
 pub mod types;
 
@@ -147,38 +149,57 @@ pub fn generate_without_file_with_options(
 
     let trait_name = "Contract";
 
-    let trait_ = r#trait::generate_trait(trait_name, &spec_fns, &names)?;
-    let structs = spec_structs
-        .iter()
-        .map(|s| generate_struct_with_options(s, opts, &names))
-        .collect::<Result<Vec<_>, _>>()?;
-    let unions = spec_unions
-        .iter()
-        .map(|s| generate_union_with_options(s, opts, &names))
-        .collect::<Result<Vec<_>, _>>()?;
-    let enums = spec_enums
-        .iter()
-        .map(|s| generate_enum_with_options(s, opts, &names))
-        .collect::<Result<Vec<_>, _>>()?;
-    let error_enums = spec_error_enums
-        .iter()
-        .map(|s| generate_error_enum_with_options(s, opts, &names))
-        .collect::<Result<Vec<_>, _>>()?;
-    let events = spec_events
-        .iter()
-        .map(|s| generate_event_with_options(s, opts, &names))
-        .collect::<Result<Vec<_>, _>>()?;
+    let trait_ = r#trait::generate_trait(trait_name, &spec_fns, &names, 0)?;
+
+    // Each user-defined type is emitted inside modules mirroring its fully
+    // qualified name, so a type is reachable at the path it reports for itself
+    // and two types sharing a last segment stay distinct. The depth a type is
+    // emitted at is how far a reference written inside it has to step back up.
+    let mut by_module: BTreeMap<Vec<String>, Vec<TokenStream>> = BTreeMap::new();
+    macro_rules! emit {
+        ($specs:expr, $gen:ident) => {
+            for spec in $specs.iter() {
+                let name = spec.name.to_utf8_string_lossy();
+                let module: Vec<String> = TypeNames::module_of(&name)
+                    .into_iter()
+                    .map(str::to_string)
+                    .collect();
+                let tokens = $gen(spec, opts, &names, module.len())?;
+                by_module.entry(module).or_default().push(tokens);
+            }
+        };
+    }
+    emit!(spec_structs, generate_struct_with_options);
+    emit!(spec_unions, generate_union_with_options);
+    emit!(spec_enums, generate_enum_with_options);
+    emit!(spec_error_enums, generate_error_enum_with_options);
+
+    // An event is named by a symbol rather than a qualified name, so it has no
+    // path to mirror and stays at the root.
+    for spec in spec_events.iter() {
+        let tokens = generate_event_with_options(spec, opts, &names, 0)?;
+        by_module.entry(Vec::new()).or_default().push(tokens);
+    }
+    let types = nest_modules(&by_module, &[])?;
+
+    // The types are named at the root too, so bindings stay usable by bare name.
+    // Only one type can claim a last segment there; the rest keep their path.
+    let aliases = names
+        .defined()
+        .filter(|n| names.is_aliased(n) && !TypeNames::module_of(n).is_empty())
+        .map(|n| {
+            let path = names.path(n, 0)?;
+            Ok(quote! { pub use self::#path; })
+        })
+        .collect::<Result<Vec<_>, GenerateError>>()?;
 
     Ok(quote! {
         #[soroban_sdk::contractargs(name = "Args")]
         #[soroban_sdk::contractclient(name = "Client")]
         #trait_
 
-        #(#structs)*
-        #(#unions)*
-        #(#enums)*
-        #(#error_enums)*
-        #(#events)*
+        #types
+        #(#aliases)*
     })
 }
 
@@ -197,6 +218,36 @@ pub fn generate_without_file_with_options(
 ///
 /// Returns a borrowed slice when no rewrite is needed, otherwise a
 /// freshly-owned `Vec` with the rewrite applied.
+/// Nests generated items into the modules their types are defined in.
+///
+/// Walks the module tree from `prefix` down, emitting the items defined at each
+/// module alongside a `pub mod` for every distinct segment below it.
+fn nest_modules(
+    by_module: &BTreeMap<Vec<String>, Vec<TokenStream>>,
+    prefix: &[String],
+) -> Result<TokenStream, GenerateError> {
+    let here = by_module.get(prefix).map(Vec::as_slice).unwrap_or(&[]);
+    // The distinct next segments below this module. Keys are sorted, so equal
+    // segments are adjacent and dedup collapses them.
+    let mut children: Vec<&String> = by_module
+        .keys()
+        .filter(|m| m.len() > prefix.len() && m.starts_with(prefix))
+        .map(|m| &m[prefix.len()])
+        .collect();
+    children.dedup();
+    let mods = children
+        .into_iter()
+        .map(|segment| {
+            let ident = segment_ident(segment)?;
+            let mut next = prefix.to_vec();
+            next.push(segment.clone());
+            let inner = nest_modules(by_module, &next)?;
+            Ok(quote! { pub mod #ident { #inner } })
+        })
+        .collect::<Result<Vec<_>, GenerateError>>()?;
+    Ok(quote! { #(#here)* #(#mods)* })
+}
+
 fn apply_error_udt_override(specs: &[ScSpecEntry]) -> Cow<'_, [ScSpecEntry]> {
     // A user-defined type is named by its fully qualified name, so the enum is
     // recognized by the last segment of its name, and references are rewritten
