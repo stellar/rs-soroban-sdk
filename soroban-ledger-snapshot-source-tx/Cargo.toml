@@ -25,3 +25,12 @@ tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 reqwest = { version = "0.12", default-features = false, features = ["json", "blocking", "rustls-tls"] }
 flate2 = { version = "1.0", features = ["rust_backend"] }
 zstd = "0.13"
+
+[features]
+default = []
+# Resolve checkpoint state from the Stellar Hubble BigQuery dataset instead of
+# downloading history-archive buckets. Off by default: it requires the caller
+# to have a Google Cloud project that query compute is billed to. Adds no
+# dependencies, since the BigQuery REST API is called over the `reqwest` client
+# this crate already uses.
+hubble = []
