@@ -37,12 +37,40 @@ pub mod __Contract__calc__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_CALC: [u8; 60usize] = super::Contract::spec_xdr_calc();
+    pub static __SPEC_XDR_FN_CALC: [u8; super::Contract::spec_xdr_len_calc()] =
+        super::Contract::spec_xdr_calc();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_calc: soroban_sdk::xdr::ScSpecEntryConst =
+        soroban_sdk::xdr::ScSpecEntryConst::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Const {
+            doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::ScSymbolConst(
+                soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"calc"),
+            ),
+            inputs: soroban_sdk::xdr::VecMConst::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0Const {
+                    doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"a"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefConst::U32,
+                },
+                soroban_sdk::xdr::ScSpecFunctionInputV0Const {
+                    doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"b"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefConst::U32,
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMConst::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::ScSpecTypeDefConst::U32,
+            ]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_calc() -> [u8; 60usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x04calc\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x04\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x04\0\0\0\x01\0\0\0\x04"
+    pub const fn spec_xdr_len_calc() -> usize {
+        const { Contract::__SPEC_XDR_ENTRY_calc.const_xdr_len() }
+    }
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_calc() -> [u8; Contract::spec_xdr_len_calc()] {
+        const { Contract::__SPEC_XDR_ENTRY_calc.const_to_xdr() }
     }
 }
 impl<'a> ContractClient<'a> {
