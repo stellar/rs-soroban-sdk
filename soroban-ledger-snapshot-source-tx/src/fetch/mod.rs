@@ -19,7 +19,7 @@ pub(crate) mod from_hubble;
 pub(crate) mod from_meta_storage;
 pub(crate) mod from_rpc;
 #[cfg(feature = "hubble")]
-use from_hubble::HubbleClient;
+use from_hubble::{ContractDataLookup, HubbleClient, HubbleNetwork};
 
 /// Error type for LedgerEntryFetcher operations
 #[derive(Debug, thiserror::Error)]
@@ -67,6 +67,11 @@ pub struct Network {
 }
 
 impl Network {
+    #[cfg(feature = "hubble")]
+    fn is_mainnet(&self) -> bool {
+        self.passphrase == "Public Global Stellar Network ; September 2015"
+    }
+
     /// Create a Network configuration for Stellar mainnet with default URLs
     ///
     /// Uses default mainnet URLs:
@@ -301,7 +306,13 @@ impl LedgerEntryFetcher {
     /// Opt into the Hubble prototype. It is only consulted when no transaction
     /// hash is supplied; all misses and unsupported keys retain archive fallback.
     pub fn with_hubble(mut self, hubble: HubbleClient) -> Self {
-        self.hubble = Some(hubble);
+        if self.network.is_mainnet() && matches!(hubble.network(), HubbleNetwork::Mainnet) {
+            self.hubble = Some(hubble);
+        } else {
+            tracing::warn!(
+                "ignoring Hubble client because its network does not match the snapshot network"
+            );
+        }
         self
     }
 
@@ -437,9 +448,19 @@ impl LedgerEntryFetcher {
         if self.tx_hash.is_none() {
             if let Some(hubble) = &self.hubble {
                 if let LedgerKey::ContractData(_) = key {
-                    if let Some(entry) = hubble.contract_data(key, self.ledger)? {
-                        tracing::debug!("found from hubble");
-                        return Ok(Some(entry));
+                    match hubble.contract_data(key, self.ledger) {
+                        Ok(ContractDataLookup::Live(entry)) => {
+                            tracing::debug!("found from hubble");
+                            return Ok(Some(entry));
+                        }
+                        Ok(ContractDataLookup::Deleted) => {
+                            tracing::debug!("found deletion from hubble");
+                            return Ok(None);
+                        }
+                        Ok(ContractDataLookup::Missing) => {}
+                        Err(error) => {
+                            tracing::warn!(%error, "Hubble lookup failed; using history archive");
+                        }
                     }
                 }
             }

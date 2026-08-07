@@ -40,19 +40,26 @@ Enable the native client with `features = ["hubble"]`. Hubble's documented publi
 transformed/current tables are in the sibling
 `crypto-stellar.crypto_stellar_dbt` dataset. Access requires a Google Cloud
 project with billing, the BigQuery API enabled, and an OAuth access token.
-The client uses parameterized SQL and bounds each lookup to one row:
+The client uses parameterized SQL and bounds each lookup to two rows so it can
+detect same-ledger ambiguity:
 
 ```rust
 use soroban_ledger_snapshot_source_tx::{
     HubbleClient, HubbleConfig, Network, TxSnapshotSource,
 };
 
-let hubble = HubbleClient::new(HubbleConfig::mainnet(access_token));
+let hubble = HubbleClient::new(
+    HubbleConfig::mainnet("my-gcp-project", access_token)
+        .with_state_watermark(59_914_751),
+);
 let source = TxSnapshotSource::new_with_hubble(Network::mainnet(None), 59_914_751, None, hubble);
 ```
 
 The query is limited to Hubble's `contract_data` state table, using its
 `ledger_key_hash`, `ledger_sequence`, `deleted`, and `contract_data_xdr` fields.
+Because Hubble is batch-updated and publishes no completeness watermark for a
+caller, the client requires an application-supplied verified state watermark;
+without one, it falls back to the history archive.
 This prototype does not query Hubble's separate `history_transactions.tx_meta`
 XDR, so it does not claim to reconstruct the exact state immediately before a
 transaction when several transactions touch the same key in one ledger.

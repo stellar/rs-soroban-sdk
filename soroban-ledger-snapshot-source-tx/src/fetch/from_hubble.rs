@@ -9,7 +9,8 @@
 use serde_json::{json, Value};
 use sha2::{Digest, Sha256};
 use soroban_sdk::xdr::{
-    LedgerEntry, LedgerEntryData, LedgerEntryExt, LedgerKey, Limits, ReadXdr, WriteXdr,
+    ContractDataEntry, LedgerEntry, LedgerEntryData, LedgerEntryExt, LedgerKey, Limits, ReadXdr,
+    WriteXdr,
 };
 use std::io::Read;
 
@@ -28,14 +29,32 @@ pub enum HubbleNetwork {
     Testnet { reset_ledger: u32 },
 }
 
+/// Result of a historical contract-data lookup.
+#[derive(Debug, PartialEq, Eq)]
+pub enum ContractDataLookup {
+    /// The target ledger is not present in Hubble, so the caller should use
+    /// its authoritative fallback.
+    Missing,
+    /// The key's latest change at or before the target ledger was a deletion.
+    Deleted,
+    /// The key's latest change at or before the target ledger is live.
+    Live(LedgerEntry),
+}
+
 /// Configuration for querying Hubble through the BigQuery REST API.
 #[derive(Clone)]
 pub struct HubbleConfig {
+    /// GCP project billed for the BigQuery query job.
     pub project_id: String,
+    /// GCP project that owns the public Hubble dataset.
+    pub dataset_project_id: String,
     pub dataset_id: String,
     pub access_token: String,
     pub network: HubbleNetwork,
     pub endpoint: String,
+    /// Highest ledger for which the caller has verified Hubble state-table
+    /// completeness. Without this, lookups safely fall back to the archive.
+    pub state_watermark: Option<u32>,
 }
 
 impl std::fmt::Debug for HubbleConfig {
@@ -43,33 +62,40 @@ impl std::fmt::Debug for HubbleConfig {
         formatter
             .debug_struct("HubbleConfig")
             .field("project_id", &self.project_id)
+            .field("dataset_project_id", &self.dataset_project_id)
             .field("dataset_id", &self.dataset_id)
             .field("access_token", &"<redacted>")
             .field("network", &self.network)
             .field("endpoint", &self.endpoint)
+            .field("state_watermark", &self.state_watermark)
             .finish()
     }
 }
 
 impl HubbleConfig {
     /// Configure the documented public mainnet dataset.
-    pub fn mainnet(access_token: impl Into<String>) -> Self {
+    ///
+    /// `project_id` is the caller's billed/query project, not the public
+    /// dataset owner (`crypto-stellar`).
+    pub fn mainnet(project_id: impl Into<String>, access_token: impl Into<String>) -> Self {
         Self {
-            project_id: DEFAULT_PROJECT_ID.to_string(),
+            project_id: project_id.into(),
+            dataset_project_id: DEFAULT_PROJECT_ID.to_string(),
             dataset_id: DEFAULT_DATASET_ID.to_string(),
             access_token: access_token.into(),
             network: HubbleNetwork::Mainnet,
             endpoint: format!("{BIGQUERY_API_ROOT}/{DEFAULT_PROJECT_ID}/queries"),
+            state_watermark: None,
         }
     }
 
     /// Return a copy using a different BigQuery dataset.
     pub fn with_dataset(
         mut self,
-        project_id: impl Into<String>,
+        dataset_project_id: impl Into<String>,
         dataset_id: impl Into<String>,
     ) -> Self {
-        self.project_id = project_id.into();
+        self.dataset_project_id = dataset_project_id.into();
         self.dataset_id = dataset_id.into();
         self.endpoint = format!("{BIGQUERY_API_ROOT}/{}/queries", self.project_id);
         self
@@ -84,6 +110,13 @@ impl HubbleConfig {
     /// Return a copy using a mock or proxy BigQuery endpoint.
     pub fn with_endpoint(mut self, endpoint: impl Into<String>) -> Self {
         self.endpoint = endpoint.into();
+        self
+    }
+
+    /// Return a copy enabled through the caller's verified state-table
+    /// completeness watermark.
+    pub fn with_state_watermark(mut self, ledger: u32) -> Self {
+        self.state_watermark = Some(ledger);
         self
     }
 }
@@ -124,6 +157,14 @@ pub enum Error {
     BigQuery(String),
     #[error("BigQuery response row is malformed: {0}")]
     Row(String),
+    #[error("Hubble state-table completeness watermark is required")]
+    MissingStateWatermark,
+    #[error("Hubble state-table watermark {watermark} is before ledger {ledger}")]
+    StaleState { ledger: u32, watermark: u32 },
+    #[error(
+        "Hubble returned more than one change for ledger {0}; transaction order is unavailable"
+    )]
+    AmbiguousLedger(u32),
     #[error("contract data XDR failed: {0}")]
     Xdr(#[from] soroban_sdk::xdr::Error),
 }
@@ -146,16 +187,39 @@ pub fn contract_data_query(
         return Err(Error::UnsupportedLedgerKey(key.clone()));
     }
 
-    let table = qualified_table(&config.project_id, &config.dataset_id, "contract_data")?;
+    match config.state_watermark {
+        Some(watermark) if ledger <= watermark => {}
+        Some(watermark) => return Err(Error::StaleState { ledger, watermark }),
+        None => return Err(Error::MissingStateWatermark),
+    }
+
+    let dataset = qualified_table(
+        &config.dataset_project_id,
+        &config.dataset_id,
+        "contract_data",
+    )?;
+    let ledgers = qualified_table(
+        &config.dataset_project_id,
+        &config.dataset_id,
+        "history_ledgers",
+    )?;
     let key_hash = ledger_key_hash(key)?;
     Ok(QueryRequest {
         query: format!(
-            "SELECT ledger_sequence, last_modified_ledger, deleted, contract_data_xdr \
-             FROM `{table}` \
-             WHERE ledger_key_hash = @ledger_key_hash \
-               AND ledger_sequence <= @ledger_sequence \
-             ORDER BY ledger_sequence DESC, deleted DESC \
-             LIMIT 1"
+            "WITH target_ledger AS ( \
+                 SELECT closed_at \
+                 FROM `{ledgers}` \
+                 WHERE sequence = @ledger_sequence \
+                 LIMIT 1 \
+             ) \
+             SELECT c.ledger_sequence, c.last_modified_ledger, c.deleted, c.contract_data_xdr \
+             FROM `{dataset}` AS c \
+             JOIN target_ledger AS t ON c.closed_at <= t.closed_at \
+             WHERE c.ledger_key_hash = @ledger_key_hash \
+               AND c.ledger_sequence <= @ledger_sequence \
+               AND c.last_modified_ledger <= @ledger_sequence \
+             ORDER BY c.ledger_sequence DESC \
+             LIMIT 2"
         ),
         parameters: vec![
             QueryParameter {
@@ -205,23 +269,23 @@ impl HubbleClient {
         }
     }
 
+    pub fn network(&self) -> &HubbleNetwork {
+        &self.config.network
+    }
+
     /// Query the latest known contract-data row at or before `ledger`.
     ///
-    /// `None` means no usable row was returned. The caller should retain its
-    /// history-archive fallback because Hubble is batch-updated and does not
-    /// provide a completeness watermark in this query.
-    pub fn contract_data(
-        &self,
-        key: &LedgerKey,
-        ledger: u32,
-    ) -> Result<Option<LedgerEntry>, Error> {
+    /// The caller should retain its history-archive fallback because Hubble is
+    /// batch-updated and does not provide a completeness watermark beyond the
+    /// target-ledger existence check.
+    pub fn contract_data(&self, key: &LedgerKey, ledger: u32) -> Result<ContractDataLookup, Error> {
         let request = contract_data_query(&self.config, key, ledger)?;
         let body = json!({
             "query": request.query,
             "useLegacySql": false,
             "parameterMode": "NAMED",
             "timeoutMs": 10_000,
-            "maxResults": 1,
+            "maxResults": 2,
             "queryParameters": request.parameters.iter().map(|parameter| json!({
                 "name": parameter.name,
                 "parameterType": { "type": parameter.type_name },
@@ -238,19 +302,44 @@ impl HubbleClient {
         if !response.status().is_success() {
             return Err(Error::HttpStatus(response.status()));
         }
-        parse_response(response)
+        parse_lookup_response(response)
     }
 }
 
 /// Parse a BigQuery response without making a network request.
 pub fn parse_response<R: Read>(reader: R) -> Result<Option<LedgerEntry>, Error> {
+    Ok(match parse_lookup_response(reader)? {
+        ContractDataLookup::Live(entry) => Some(entry),
+        ContractDataLookup::Missing | ContractDataLookup::Deleted => None,
+    })
+}
+
+/// Parse a BigQuery response while preserving a deletion tombstone.
+pub fn parse_lookup_response<R: Read>(reader: R) -> Result<ContractDataLookup, Error> {
     let response: BigQueryResponse = serde_json::from_reader(reader)?;
     if let Some(error) = response.error {
         return Err(Error::BigQuery(error.message));
     }
+    if let Some(errors) = response.errors {
+        if !errors.is_empty() {
+            return Err(Error::BigQuery(
+                errors
+                    .into_iter()
+                    .map(|error| error.message)
+                    .collect::<Vec<_>>()
+                    .join("; "),
+            ));
+        }
+    }
+    if response.job_complete == Some(false) {
+        return Err(Error::BigQuery(
+            "BigQuery query did not complete".to_string(),
+        ));
+    }
 
-    let Some(row) = response.rows.and_then(|mut rows| rows.pop()) else {
-        return Ok(None);
+    let rows = response.rows.unwrap_or_default();
+    let Some(row) = rows.first() else {
+        return Ok(ContractDataLookup::Missing);
     };
     if row.f.len() != 4 {
         return Err(Error::Row(format!(
@@ -259,7 +348,7 @@ pub fn parse_response<R: Read>(reader: R) -> Result<Option<LedgerEntry>, Error> 
         )));
     }
 
-    let _ledger_sequence = value_string(&row.f[0], "ledger_sequence")?
+    let ledger_sequence = value_string(&row.f[0], "ledger_sequence")?
         .parse::<u32>()
         .map_err(|error| Error::Row(format!("invalid ledger_sequence: {error}")))?;
     let last_modified_ledger_seq = value_string(&row.f[1], "last_modified_ledger")?
@@ -268,13 +357,27 @@ pub fn parse_response<R: Read>(reader: R) -> Result<Option<LedgerEntry>, Error> 
     let deleted = value_string(&row.f[2], "deleted")?
         .parse::<bool>()
         .map_err(|error| Error::Row(format!("invalid deleted flag: {error}")))?;
+    if let Some(next_row) = rows.get(1) {
+        if next_row.f.len() != 4 {
+            return Err(Error::Row(format!(
+                "expected four selected fields, got {}",
+                next_row.f.len()
+            )));
+        }
+        let next_ledger_sequence = value_string(&next_row.f[0], "ledger_sequence")?
+            .parse::<u32>()
+            .map_err(|error| Error::Row(format!("invalid ledger_sequence: {error}")))?;
+        if next_ledger_sequence == ledger_sequence {
+            return Err(Error::AmbiguousLedger(ledger_sequence));
+        }
+    }
     if deleted {
-        return Ok(None);
+        return Ok(ContractDataLookup::Deleted);
     }
     let xdr = value_string(&row.f[3], "contract_data_xdr")?;
-    let data = LedgerEntryData::from_xdr_base64(xdr, Limits::none())?;
-    Ok(Some(LedgerEntry {
-        data,
+    let contract_data = ContractDataEntry::from_xdr_base64(xdr, Limits::none())?;
+    Ok(ContractDataLookup::Live(LedgerEntry {
+        data: LedgerEntryData::ContractData(contract_data),
         last_modified_ledger_seq,
         ext: LedgerEntryExt::V0,
     }))
@@ -292,6 +395,9 @@ fn value_string<'a>(field: &'a BigQueryField, name: &str) -> Result<&'a str, Err
 struct BigQueryResponse {
     rows: Option<Vec<BigQueryRow>>,
     error: Option<BigQueryError>,
+    errors: Option<Vec<BigQueryError>>,
+    #[serde(rename = "jobComplete")]
+    job_complete: Option<bool>,
 }
 
 #[derive(serde::Deserialize)]
@@ -311,7 +417,10 @@ struct BigQueryField {
 
 #[cfg(test)]
 mod test {
-    use super::{contract_data_query, parse_response, Error, HubbleConfig, HubbleNetwork};
+    use super::{
+        contract_data_query, parse_lookup_response, parse_response, ContractDataLookup, Error,
+        HubbleConfig, HubbleNetwork,
+    };
     use serde_json::json;
     use soroban_sdk::xdr::{
         ContractDataDurability, ContractDataEntry, ContractId, ExtensionPoint, Hash, LedgerKey,
@@ -331,7 +440,7 @@ mod test {
 
     #[test]
     fn query_is_parameterized_and_bounded() {
-        let config = HubbleConfig::mainnet("token");
+        let config = HubbleConfig::mainnet("billing-project", "token").with_state_watermark(123);
         let request = contract_data_query(&config, &key(), 123).unwrap();
         assert!(request
             .query
@@ -341,15 +450,36 @@ mod test {
             .contains("ledger_sequence <= @ledger_sequence"));
         assert!(request
             .query
-            .contains("ORDER BY ledger_sequence DESC, deleted DESC"));
-        assert!(request.query.contains("LIMIT 1"));
+            .contains("FROM `crypto-stellar.crypto_stellar.history_ledgers`"));
+        assert!(request.query.contains("ORDER BY c.ledger_sequence DESC"));
+        assert!(request.query.contains("LIMIT 2"));
         assert_eq!(request.parameters[1].value, "123");
         assert!(!request.query.contains("token"));
+        assert_eq!(config.project_id, "billing-project");
+    }
+
+    #[test]
+    fn query_requires_a_verified_state_watermark() {
+        let config = HubbleConfig::mainnet("billing-project", "token");
+        assert!(matches!(
+            contract_data_query(&config, &key(), 123),
+            Err(Error::MissingStateWatermark)
+        ));
+
+        let config = config.with_state_watermark(122);
+        assert!(matches!(
+            contract_data_query(&config, &key(), 123),
+            Err(Error::StaleState {
+                ledger: 123,
+                watermark: 122
+            })
+        ));
     }
 
     #[test]
     fn testnet_reset_is_rejected_without_a_dataset_partition() {
-        let config = HubbleConfig::mainnet("token")
+        let config = HubbleConfig::mainnet("billing-project", "token")
+            .with_state_watermark(100)
             .with_network(HubbleNetwork::Testnet { reset_ledger: 42 });
         let error = contract_data_query(&config, &key(), 100).unwrap_err();
         assert!(matches!(
@@ -363,7 +493,7 @@ mod test {
 
     #[test]
     fn unsupported_key_is_not_silently_mapped_to_contract_data() {
-        let config = HubbleConfig::mainnet("token");
+        let config = HubbleConfig::mainnet("billing-project", "token").with_state_watermark(100);
         let error = contract_data_query(
             &config,
             &LedgerKey::ContractCode(soroban_sdk::xdr::LedgerKeyContractCode {
@@ -387,20 +517,35 @@ mod test {
                 ]
             }]
         });
-        assert!(parse_response(Cursor::new(response.to_string()))
-            .unwrap()
-            .is_none());
+        assert_eq!(
+            parse_lookup_response(Cursor::new(response.to_string())).unwrap(),
+            ContractDataLookup::Deleted
+        );
+    }
+
+    #[test]
+    fn same_ledger_rows_are_rejected_as_ambiguous() {
+        let response = json!({
+            "rows": [
+                {"f": [{"v": "20"}, {"v": "20"}, {"v": "false"}, {"v": "ignored"}]},
+                {"f": [{"v": "20"}, {"v": "19"}, {"v": "true"}, {"v": null}]}
+            ]
+        });
+        assert!(matches!(
+            parse_lookup_response(Cursor::new(response.to_string())),
+            Err(Error::AmbiguousLedger(20))
+        ));
     }
 
     #[test]
     fn live_row_decodes_contract_data_xdr() {
-        let data = soroban_sdk::xdr::LedgerEntryData::ContractData(ContractDataEntry {
+        let data = ContractDataEntry {
             ext: ExtensionPoint::V0,
             contract: ScAddress::Contract(ContractId(Hash([7; 32]))),
             key: ScVal::U32(1),
             durability: ContractDataDurability::Persistent,
             val: ScVal::U32(2),
-        });
+        };
         let response = json!({
             "rows": [{
                 "f": [
@@ -427,6 +572,21 @@ mod test {
         assert!(matches!(
             parse_response(Cursor::new(response)),
             Err(Error::BigQuery(message)) if message == "access denied"
+        ));
+    }
+
+    #[test]
+    fn query_job_errors_and_incomplete_jobs_are_returned() {
+        let response = r#"{"errors":[{"message":"invalid query"}]}"#;
+        assert!(matches!(
+            parse_response(Cursor::new(response)),
+            Err(Error::BigQuery(message)) if message == "invalid query"
+        ));
+
+        let response = r#"{"jobComplete":false}"#;
+        assert!(matches!(
+            parse_response(Cursor::new(response)),
+            Err(Error::BigQuery(message)) if message == "BigQuery query did not complete"
         ));
     }
 }

@@ -6,8 +6,8 @@ use cargo_metadata::MetadataCommand;
 use directories::ProjectDirs;
 #[cfg(feature = "hubble")]
 pub use fetch::from_hubble::{
-    contract_data_query, parse_response, HubbleClient, HubbleConfig, HubbleNetwork, QueryParameter,
-    QueryRequest,
+    contract_data_query, parse_lookup_response, parse_response, ContractDataLookup, HubbleClient,
+    HubbleConfig, HubbleNetwork, QueryParameter, QueryRequest,
 };
 use fetch::LedgerEntryFetcher;
 pub use fetch::Network;
