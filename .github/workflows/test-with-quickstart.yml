@@ -24,13 +24,18 @@ jobs:
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    env:
-      TEST_FORK_QUICKSTART_FIXTURE: ${{ runner.temp }}/quickstart-fixture.json
-      # Where the snapshot source writes its machine-local cache of downloaded
-      # files and found entries, set so that the runs below can clear it.
-      XDG_CACHE_HOME: ${{ runner.temp }}/cache
     steps:
     - uses: actions/checkout@v5
+
+    # Set in an env file rather than in the job's env, because the runner
+    # context those paths come from is not available there.
+    - name: Set the fixture and cache paths
+      run: |
+        echo "TEST_FORK_QUICKSTART_FIXTURE=$RUNNER_TEMP/quickstart-fixture.json" >> "$GITHUB_ENV"
+        # Where the snapshot source writes its machine-local cache of
+        # downloaded files and found entries, set so the runs below can clear
+        # it.
+        echo "XDG_CACHE_HOME=$RUNNER_TEMP/cache" >> "$GITHUB_ENV"
 
     - name: Install Rust
       run: rustup update
