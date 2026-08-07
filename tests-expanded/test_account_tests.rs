@@ -51,10 +51,28 @@ impl ::core::cmp::Ord for Error {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_XDR_TYPE_ERROR: [u8; 44usize] = Error::spec_xdr();
+pub static __SPEC_XDR_TYPE_ERROR: [u8; Error::spec_xdr_len()] = Error::spec_xdr();
 impl Error {
-    pub const fn spec_xdr() -> [u8; 44usize] {
-        *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x05Error\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04Fail\0\0\0\x01"
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::UdtErrorEnumV0(
+            soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
+                doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"Error"),
+                cases: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
+                        doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"Fail"),
+                        value: 1u32,
+                    },
+                ]),
+            },
+        );
+    pub const fn spec_xdr_len() -> usize {
+        const { Error::__SPEC_XDR_ENTRY.const_xdr_len() }
+    }
+    pub const fn spec_xdr() -> [u8; Error::spec_xdr_len()] {
+        const { Error::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
 impl soroban_sdk::SpecShakingMarker for Error {
@@ -317,14 +335,67 @@ pub mod __Contract____check_auth__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(non_snake_case)]
-    pub static __SPEC_XDR_FN___CHECK_AUTH: [u8; 148usize] =
+    pub static __SPEC_XDR_FN___CHECK_AUTH: [u8; super::Contract::spec_xdr_len___check_auth()] =
         super::Contract::spec_xdr___check_auth();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    #[allow(non_snake_case)]
+    const __SPEC_XDR_ENTRY___check_auth: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::ScSymbolView(
+                soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"__check_auth"),
+            ),
+            inputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(
+                        b"signature_payload",
+                    ),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::BytesN(
+                        soroban_sdk::xdr::ScSpecTypeBytesN { n: 32u32 },
+                    ),
+                },
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"signatures"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Void,
+                },
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"auth_contexts"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
+                        &soroban_sdk::xdr::ScSpecTypeVecView {
+                            element_type: &soroban_sdk::xdr::ScSpecTypeDefView::Udt(
+                                soroban_sdk::xdr::ScSpecTypeUdtView {
+                                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(
+                                        b"Context",
+                                    ),
+                                },
+                            ),
+                        },
+                    ),
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::ScSpecTypeDefView::Result(
+                    &soroban_sdk::xdr::ScSpecTypeResultView {
+                        ok_type: &soroban_sdk::xdr::ScSpecTypeDefView::Void,
+                        error_type: &soroban_sdk::xdr::ScSpecTypeDefView::Error,
+                    },
+                ),
+            ]),
+        });
     #[allow(non_snake_case)]
     #[allow(non_snake_case)]
-    pub const fn spec_xdr___check_auth() -> [u8; 148usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0c__check_auth\0\0\0\x03\0\0\0\0\0\0\0\x11signature_payload\0\0\0\0\0\x03\xee\0\0\0 \0\0\0\0\0\0\0\nsignatures\0\0\0\0\0\x02\0\0\0\0\0\0\0\rauth_contexts\0\0\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x07Context\0\0\0\0\x01\0\0\x03\xe9\0\0\0\x02\0\0\0\x03"
+    pub const fn spec_xdr_len___check_auth() -> usize {
+        const { Contract::__SPEC_XDR_ENTRY___check_auth.const_xdr_len() }
+    }
+    #[allow(non_snake_case)]
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr___check_auth() -> [u8; Contract::spec_xdr_len___check_auth()] {
+        const { Contract::__SPEC_XDR_ENTRY___check_auth.const_to_xdr() }
     }
 }
 impl<'a> ContractClient<'a> {}

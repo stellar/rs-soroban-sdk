@@ -34,12 +34,27 @@ pub mod __Contract__empty__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_EMPTY: [u8; 28usize] = super::Contract::spec_xdr_empty();
+    pub static __SPEC_XDR_FN_EMPTY: [u8; super::Contract::spec_xdr_len_empty()] =
+        super::Contract::spec_xdr_empty();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_empty: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::ScSymbolView(
+                soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"empty"),
+            ),
+            inputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[]),
+            outputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_empty() -> [u8; 28usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x05empty\0\0\0\0\0\0\0\0\0\0\0"
+    pub const fn spec_xdr_len_empty() -> usize {
+        const { Contract::__SPEC_XDR_ENTRY_empty.const_xdr_len() }
+    }
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_empty() -> [u8; Contract::spec_xdr_len_empty()] {
+        const { Contract::__SPEC_XDR_ENTRY_empty.const_to_xdr() }
     }
 }
 impl<'a> ContractClient<'a> {
@@ -108,12 +123,27 @@ pub mod __Contract__empty2__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_EMPTY2: [u8; 28usize] = super::Contract::spec_xdr_empty2();
+    pub static __SPEC_XDR_FN_EMPTY2: [u8; super::Contract::spec_xdr_len_empty2()] =
+        super::Contract::spec_xdr_empty2();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_empty2: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::ScSymbolView(
+                soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"empty2"),
+            ),
+            inputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[]),
+            outputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_empty2() -> [u8; 28usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x06empty2\0\0\0\0\0\0\0\0\0\0"
+    pub const fn spec_xdr_len_empty2() -> usize {
+        const { Contract::__SPEC_XDR_ENTRY_empty2.const_xdr_len() }
+    }
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_empty2() -> [u8; Contract::spec_xdr_len_empty2()] {
+        const { Contract::__SPEC_XDR_ENTRY_empty2.const_to_xdr() }
     }
 }
 impl<'a> ContractClient<'a> {
@@ -185,12 +215,27 @@ pub mod __Contract__empty3__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_EMPTY3: [u8; 28usize] = super::Contract::spec_xdr_empty3();
+    pub static __SPEC_XDR_FN_EMPTY3: [u8; super::Contract::spec_xdr_len_empty3()] =
+        super::Contract::spec_xdr_empty3();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_empty3: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::ScSymbolView(
+                soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"empty3"),
+            ),
+            inputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[]),
+            outputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_empty3() -> [u8; 28usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x06empty3\0\0\0\0\0\0\0\0\0\0"
+    pub const fn spec_xdr_len_empty3() -> usize {
+        const { Contract::__SPEC_XDR_ENTRY_empty3.const_xdr_len() }
+    }
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_empty3() -> [u8; Contract::spec_xdr_len_empty3()] {
+        const { Contract::__SPEC_XDR_ENTRY_empty3.const_to_xdr() }
     }
 }
 impl<'a> ContractClient<'a> {

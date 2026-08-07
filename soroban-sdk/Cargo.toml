@@ -20,7 +20,12 @@ rustc_version = "0.4.1"
 crate-git-revision = "0.0.9"
 
 [dependencies]
+soroban-spec = { workspace = true, default-features = false }
 soroban-sdk-macros = { workspace = true }
+# Not used directly. Enables the const XDR serializers on the `*View` types that
+# macro-generated contract specs use, on the stellar-xdr re-exported by
+# soroban-env-common as soroban_sdk::xdr.
+stellar-xdr = { workspace = true, features = ["const"] }
 stellar-strkey = { workspace = true }
 bytes-lit = "0.0.6"
 visibility = "0.1.1"
@@ -47,7 +52,7 @@ soroban-sdk-macros = { workspace = true, features = ["testutils"] }
 soroban-env-host = { workspace = true, features = ["testutils"] }
 soroban-ledger-snapshot = { workspace = true, features = ["testutils"] }
 stellar-xdr = { workspace = true, features = ["std"] }
-soroban-spec = { workspace = true }
+soroban-spec = { workspace = true, features = ["std"] }
 ed25519-dalek = "2.0.0"
 rand = "0.8.5"
 ctor = "0.5.0"

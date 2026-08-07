@@ -7,9 +7,9 @@ use syn::{
     Visibility,
 };
 
-use stellar_xdr::{ScSpecEntry, ScSpecUdtEnumCaseV0, WriteXdr};
+use stellar_xdr::ScSpecUdtEnumCaseV0;
 
-use crate::{doc::docs_from_attrs, shaking, DEFAULT_XDR_RW_LIMITS};
+use crate::{doc::docs_from_attrs, map_type::const_view_string, shaking};
 
 // TODO: Add conversions to/from ScVal types.
 
@@ -65,20 +65,35 @@ pub fn derive_type_enum_int(
         return quote! { #(#compile_errors)* };
     }
 
-    // Compute spec XDR once.
-    let spec_entry = ScSpecEntry::UdtEnumV0(ScSpecUdtEnumV0 {
+    // Build the spec entry once.
+    let spec = ScSpecUdtEnumV0 {
         doc: docs_from_attrs(attrs),
         // set to empty string always because the field is no longer used
         lib: StringM::default(),
         name: enum_ident.unraw().to_string().try_into().unwrap(),
         cases: spec_cases.try_into().unwrap(),
-    });
-    let spec_xdr = spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap();
+    };
 
-    // Generated code spec.
+    // Generated code spec. The spec entry is rendered as the equivalent const
+    // ScSpecEntryView, which the contract crate encodes to XDR at compile time.
     let spec_gen = {
-        let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
-        let spec_xdr_len = spec_xdr.len();
+        let doc = const_view_string(path, &spec.doc);
+        let lib = const_view_string(path, &spec.lib);
+        let name = const_view_string(path, &spec.name);
+        let cases = spec.cases.iter().map(|c| {
+            let doc = const_view_string(path, &c.doc);
+            let name = const_view_string(path, &c.name);
+            let value = c.value;
+            quote!(#path::xdr::ScSpecUdtEnumCaseV0View { doc: #doc, name: #name, value: #value })
+        });
+        let spec_view = quote! {
+            #path::xdr::ScSpecEntryView::UdtEnumV0(#path::xdr::ScSpecUdtEnumV0View {
+                doc: #doc,
+                lib: #lib,
+                name: #name,
+                cases: #path::xdr::VecMView::try_from_slice_or_panic(&[#(#cases),*]),
+            })
+        };
         let spec_ident = format_ident!(
             "__SPEC_XDR_TYPE_{}",
             enum_ident.unraw().to_string().to_uppercase()
@@ -86,11 +101,17 @@ pub fn derive_type_enum_int(
         quote! {
             #[doc(hidden)]
             #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
-            pub static #spec_ident: [u8; #spec_xdr_len] = #enum_ident::spec_xdr();
+            pub static #spec_ident: [u8; #enum_ident::spec_xdr_len()] = #enum_ident::spec_xdr();
 
             impl #enum_ident {
-                pub const fn spec_xdr() -> [u8; #spec_xdr_len] {
-                    *#spec_xdr_lit
+                const __SPEC_XDR_ENTRY: #path::xdr::ScSpecEntryView<'static> = #spec_view;
+
+                pub const fn spec_xdr_len() -> usize {
+                    const { #enum_ident::__SPEC_XDR_ENTRY.const_xdr_len() }
+                }
+
+                pub const fn spec_xdr() -> [u8; #enum_ident::spec_xdr_len()] {
+                    const { #enum_ident::__SPEC_XDR_ENTRY.const_to_xdr() }
                 }
             }
         }
@@ -100,7 +121,7 @@ pub fn derive_type_enum_int(
     let spec_shaking_impl = shaking::generate_marker_impl(
         path,
         quote!(#enum_ident),
-        &spec_xdr,
+        quote!(#enum_ident::spec_xdr()),
         std::iter::empty(),
         None,
         None,

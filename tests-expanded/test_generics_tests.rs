@@ -150,12 +150,45 @@ pub mod __Contract__exec__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_EXEC: [u8; 76usize] = super::Contract::spec_xdr_exec();
+    pub static __SPEC_XDR_FN_EXEC: [u8; super::Contract::spec_xdr_len_exec()] =
+        super::Contract::spec_xdr_exec();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_exec: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::ScSymbolView(
+                soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"exec"),
+            ),
+            inputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"i1"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                },
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"i2"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                },
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"i3"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::ScSpecTypeDefView::U32,
+            ]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_exec() -> [u8; 76usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x04exec\0\0\0\x03\0\0\0\0\0\0\0\x02i1\0\0\0\0\0\x04\0\0\0\0\0\0\0\x02i2\0\0\0\0\0\x04\0\0\0\0\0\0\0\x02i3\0\0\0\0\0\x04\0\0\0\x01\0\0\0\x04"
+    pub const fn spec_xdr_len_exec() -> usize {
+        const { Contract::__SPEC_XDR_ENTRY_exec.const_xdr_len() }
+    }
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_exec() -> [u8; Contract::spec_xdr_len_exec()] {
+        const { Contract::__SPEC_XDR_ENTRY_exec.const_to_xdr() }
     }
 }
 impl<'a> ContractClient<'a> {

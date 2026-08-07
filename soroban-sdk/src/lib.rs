@@ -187,6 +187,7 @@ pub mod reexports_for_macros {
     pub use bytes_lit;
     #[cfg(any(test, feature = "testutils"))]
     pub use ctor;
+    pub use soroban_spec;
 }
 
 /// `debug_assert_in_contract!` asserts that the contract is currently executing within a
