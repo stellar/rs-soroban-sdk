@@ -144,6 +144,23 @@ pub fn derive_fn_spec(
         ReturnType::Default => vec![],
     };
 
+    // The Rust types the argument and return spec types were mapped from, so a
+    // reference to a user-defined type resolves to the name that type reports
+    // for itself. Kept element-for-element with `spec_args` above, including the
+    // unsupported receiver, so the two line up.
+    let arg_types: Vec<Option<&Type>> = inputs
+        .iter()
+        .skip(if env_input.is_some() { 1 } else { 0 })
+        .map(|a| match a {
+            FnArg::Typed(pat_type) => Some(&*pat_type.ty),
+            FnArg::Receiver(_) => None,
+        })
+        .collect();
+    let output_type: Option<&Type> = match output {
+        ReturnType::Type(_, ty) => Some(ty),
+        ReturnType::Default => None,
+    };
+
     // Generated code spec.
     let name = &ident.unraw().to_string();
     let spec_entry = ScSpecFunctionV0 {
@@ -168,16 +185,20 @@ pub fn derive_fn_spec(
     let spec_view = {
         let doc = const_view_string(path, &spec_entry.doc);
         let name = const_view_symbol(path, &spec_entry.name);
-        let inputs = spec_entry.inputs.iter().map(|i| {
-            let doc = const_view_string(path, &i.doc);
-            let name = const_view_string(path, &i.name);
-            let type_ = const_view_type_def(path, &i.type_);
-            quote!(#path::xdr::ScSpecFunctionInputV0View { doc: #doc, name: #name, type_: #type_ })
-        });
+        let inputs = spec_entry
+            .inputs
+            .iter()
+            .zip(arg_types.iter().copied())
+            .map(|(i, rust)| {
+                let doc = const_view_string(path, &i.doc);
+                let name = const_view_string(path, &i.name);
+                let type_ = const_view_type_def(path, &i.type_, rust);
+                quote!(#path::xdr::ScSpecFunctionInputV0View { doc: #doc, name: #name, type_: #type_ })
+            });
         let outputs = spec_entry
             .outputs
             .iter()
-            .map(|o| const_view_type_def(path, o));
+            .map(|o| const_view_type_def(path, o, output_type));
         quote! {
             #path::xdr::ScSpecEntryView::FunctionV0(#path::xdr::ScSpecFunctionV0View {
                 doc: #doc,

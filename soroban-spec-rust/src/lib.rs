@@ -1,4 +1,6 @@
 mod syn_ext;
+
+use syn_ext::TypeNames;
 pub mod r#trait;
 pub mod types;
 
@@ -127,28 +129,44 @@ pub fn generate_without_file_with_options(
         }
     }
 
+    // The identifiers naming the user-defined types this spec defines, resolved
+    // together so that two types whose fully qualified names share a last
+    // segment do not both claim it.
+    let defined: Vec<String> = spec_structs
+        .iter()
+        .map(|s| s.name.to_utf8_string_lossy())
+        .chain(spec_unions.iter().map(|s| s.name.to_utf8_string_lossy()))
+        .chain(spec_enums.iter().map(|s| s.name.to_utf8_string_lossy()))
+        .chain(
+            spec_error_enums
+                .iter()
+                .map(|s| s.name.to_utf8_string_lossy()),
+        )
+        .collect();
+    let names = TypeNames::new(defined.iter().map(String::as_str));
+
     let trait_name = "Contract";
 
-    let trait_ = r#trait::generate_trait(trait_name, &spec_fns)?;
+    let trait_ = r#trait::generate_trait(trait_name, &spec_fns, &names)?;
     let structs = spec_structs
         .iter()
-        .map(|s| generate_struct_with_options(s, opts))
+        .map(|s| generate_struct_with_options(s, opts, &names))
         .collect::<Result<Vec<_>, _>>()?;
     let unions = spec_unions
         .iter()
-        .map(|s| generate_union_with_options(s, opts))
+        .map(|s| generate_union_with_options(s, opts, &names))
         .collect::<Result<Vec<_>, _>>()?;
     let enums = spec_enums
         .iter()
-        .map(|s| generate_enum_with_options(s, opts))
+        .map(|s| generate_enum_with_options(s, opts, &names))
         .collect::<Result<Vec<_>, _>>()?;
     let error_enums = spec_error_enums
         .iter()
-        .map(|s| generate_error_enum_with_options(s, opts))
+        .map(|s| generate_error_enum_with_options(s, opts, &names))
         .collect::<Result<Vec<_>, _>>()?;
     let events = spec_events
         .iter()
-        .map(|s| generate_event_with_options(s, opts))
+        .map(|s| generate_event_with_options(s, opts, &names))
         .collect::<Result<Vec<_>, _>>()?;
 
     Ok(quote! {
@@ -180,15 +198,23 @@ pub fn generate_without_file_with_options(
 /// Returns a borrowed slice when no rewrite is needed, otherwise a
 /// freshly-owned `Vec` with the rewrite applied.
 fn apply_error_udt_override(specs: &[ScSpecEntry]) -> Cow<'_, [ScSpecEntry]> {
-    let has_error_udt = specs.iter().any(|e| {
-        matches!(
-            e,
-            ScSpecEntry::UdtErrorEnumV0(err) if err.name.to_utf8_string_lossy() == "Error"
-        )
+    // A user-defined type is named by its fully qualified name, so the enum is
+    // recognized by the last segment of its name, and references are rewritten
+    // to the whole of it so they resolve back to the entry defining it.
+    let error_udt_name = specs.iter().find_map(|e| match e {
+        ScSpecEntry::UdtErrorEnumV0(err) => {
+            let name = err.name.to_utf8_string_lossy();
+            if name.rsplit("::").next().unwrap_or(&name) == "Error" {
+                Some(name)
+            } else {
+                None
+            }
+        }
+        _ => None,
     });
-    if has_error_udt {
+    if let Some(name) = error_udt_name {
         let mut v = specs.to_vec();
-        rewrite_error_to_udt(&mut v);
+        rewrite_error_to_udt(&mut v, &name);
         Cow::Owned(v)
     } else {
         Cow::Borrowed(specs)
@@ -199,27 +225,27 @@ fn apply_error_udt_override(specs: &[ScSpecEntry]) -> Cow<'_, [ScSpecEntry]> {
 /// `ScSpecTypeDef::Udt { name: "Error" }`. Called only when the spec contains
 /// a user-defined error enum named `Error`, so the UDT reference resolves to
 /// that enum during code generation.
-fn rewrite_error_to_udt(entries: &mut [ScSpecEntry]) {
-    fn rewrite_ty(t: &mut ScSpecTypeDef) {
+fn rewrite_error_to_udt(entries: &mut [ScSpecEntry], name: &str) {
+    fn rewrite_ty(t: &mut ScSpecTypeDef, name: &str) {
         match t {
             ScSpecTypeDef::Error => {
                 *t = ScSpecTypeDef::Udt(ScSpecTypeUdt {
-                    name: "Error".try_into().unwrap(),
+                    name: name.try_into().unwrap(),
                 });
             }
-            ScSpecTypeDef::Option(o) => rewrite_ty(&mut o.value_type),
+            ScSpecTypeDef::Option(o) => rewrite_ty(&mut o.value_type, name),
             ScSpecTypeDef::Result(r) => {
-                rewrite_ty(&mut r.ok_type);
-                rewrite_ty(&mut r.error_type);
+                rewrite_ty(&mut r.ok_type, name);
+                rewrite_ty(&mut r.error_type, name);
             }
-            ScSpecTypeDef::Vec(v) => rewrite_ty(&mut v.element_type),
+            ScSpecTypeDef::Vec(v) => rewrite_ty(&mut v.element_type, name),
             ScSpecTypeDef::Map(m) => {
-                rewrite_ty(&mut m.key_type);
-                rewrite_ty(&mut m.value_type);
+                rewrite_ty(&mut m.key_type, name);
+                rewrite_ty(&mut m.value_type, name);
             }
             ScSpecTypeDef::Tuple(tu) => {
                 for vt in tu.value_types.iter_mut() {
-                    rewrite_ty(vt);
+                    rewrite_ty(vt, name);
                 }
             }
             _ => {}
@@ -229,22 +255,22 @@ fn rewrite_error_to_udt(entries: &mut [ScSpecEntry]) {
         match entry {
             ScSpecEntry::FunctionV0(f) => {
                 for input in f.inputs.iter_mut() {
-                    rewrite_ty(&mut input.type_);
+                    rewrite_ty(&mut input.type_, name);
                 }
                 for output in f.outputs.iter_mut() {
-                    rewrite_ty(output);
+                    rewrite_ty(output, name);
                 }
             }
             ScSpecEntry::UdtStructV0(s) => {
                 for field in s.fields.iter_mut() {
-                    rewrite_ty(&mut field.type_);
+                    rewrite_ty(&mut field.type_, name);
                 }
             }
             ScSpecEntry::UdtUnionV0(u) => {
                 for case in u.cases.iter_mut() {
                     if let ScSpecUdtUnionCaseV0::TupleV0(t) = case {
                         for ty in t.type_.iter_mut() {
-                            rewrite_ty(ty);
+                            rewrite_ty(ty, name);
                         }
                     }
                 }
@@ -252,7 +278,7 @@ fn rewrite_error_to_udt(entries: &mut [ScSpecEntry]) {
             ScSpecEntry::UdtEnumV0(_) | ScSpecEntry::UdtErrorEnumV0(_) => {}
             ScSpecEntry::EventV0(e) => {
                 for p in e.params.iter_mut() {
-                    rewrite_ty(&mut p.type_);
+                    rewrite_ty(&mut p.type_, name);
                 }
             }
         }

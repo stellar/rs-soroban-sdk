@@ -49,6 +49,12 @@ impl ::core::cmp::PartialEq for MyStruct {
         self.a == other.a && self.b == other.b
     }
 }
+impl MyStruct {
+    #[doc(hidden)]
+    pub const fn spec_type_name() -> &'static str {
+        "test_contracttrait_trait::MyStruct"
+    }
+}
 pub static __SPEC_XDR_TYPE_MYSTRUCT: [u8; MyStruct::__SPEC_XDR_VIEW.const_xdr_len()] =
     MyStruct::spec_xdr();
 impl MyStruct {
@@ -56,7 +62,7 @@ impl MyStruct {
         soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"MyStruct"),
+            name: soroban_sdk::xdr::StringMView::new_str(MyStruct::spec_type_name()),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -486,6 +492,12 @@ impl ::core::cmp::PartialEq for MyEnumUnit {
         __self_discr == __arg1_discr
     }
 }
+impl MyEnumUnit {
+    #[doc(hidden)]
+    pub const fn spec_type_name() -> &'static str {
+        "test_contracttrait_trait::MyEnumUnit"
+    }
+}
 pub static __SPEC_XDR_TYPE_MYENUMUNIT: [u8; MyEnumUnit::__SPEC_XDR_VIEW.const_xdr_len()] =
     MyEnumUnit::spec_xdr();
 impl MyEnumUnit {
@@ -493,7 +505,7 @@ impl MyEnumUnit {
         soroban_sdk::xdr::ScSpecEntryView::UdtEnumV0(soroban_sdk::xdr::ScSpecUdtEnumV0View {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"MyEnumUnit"),
+            name: soroban_sdk::xdr::StringMView::new_str(MyEnumUnit::spec_type_name()),
             cases: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -855,6 +867,12 @@ impl ::core::cmp::PartialEq for MyEnumVariants {
             }
     }
 }
+impl MyEnumVariants {
+    #[doc(hidden)]
+    pub const fn spec_type_name() -> &'static str {
+        "test_contracttrait_trait::MyEnumVariants"
+    }
+}
 pub static __SPEC_XDR_TYPE_MYENUMVARIANTS: [u8; MyEnumVariants::__SPEC_XDR_VIEW.const_xdr_len()] =
     MyEnumVariants::spec_xdr();
 impl MyEnumVariants {
@@ -862,7 +880,7 @@ impl MyEnumVariants {
         soroban_sdk::xdr::ScSpecEntryView::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0View {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"MyEnumVariants"),
+            name: soroban_sdk::xdr::StringMView::new_str(MyEnumVariants::spec_type_name()),
             cases: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
                     soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
@@ -877,7 +895,9 @@ impl MyEnumVariants {
                         type_: soroban_sdk::xdr::VecMView::new(&[
                             soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                                 soroban_sdk::xdr::ScSpecTypeUdtView {
-                                    name: soroban_sdk::xdr::StringMView::new(b"MyStruct"),
+                                    name: soroban_sdk::xdr::StringMView::new_str(
+                                        <MyStruct>::spec_type_name(),
+                                    ),
                                 },
                             ),
                         ]),
@@ -890,7 +910,9 @@ impl MyEnumVariants {
                         type_: soroban_sdk::xdr::VecMView::new(&[
                             soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                                 soroban_sdk::xdr::ScSpecTypeUdtView {
-                                    name: soroban_sdk::xdr::StringMView::new(b"MyEnumUnit"),
+                                    name: soroban_sdk::xdr::StringMView::new_str(
+                                        <MyEnumUnit>::spec_type_name(),
+                                    ),
                                 },
                             ),
                         ]),
@@ -3874,14 +3896,16 @@ impl AllTypesSpec {
                     name: soroban_sdk::xdr::StringMView::new(b"v"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                         soroban_sdk::xdr::ScSpecTypeUdtView {
-                            name: soroban_sdk::xdr::StringMView::new(b"MyStruct"),
+                            name: soroban_sdk::xdr::StringMView::new_str(
+                                <MyStruct>::spec_type_name(),
+                            ),
                         },
                     ),
                 },
             ]),
             outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                 soroban_sdk::xdr::ScSpecTypeUdtView {
-                    name: soroban_sdk::xdr::StringMView::new(b"MyStruct"),
+                    name: soroban_sdk::xdr::StringMView::new_str(<MyStruct>::spec_type_name()),
                 },
             )]),
         });
@@ -3905,14 +3929,16 @@ impl AllTypesSpec {
                     name: soroban_sdk::xdr::StringMView::new(b"v"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                         soroban_sdk::xdr::ScSpecTypeUdtView {
-                            name: soroban_sdk::xdr::StringMView::new(b"MyEnumUnit"),
+                            name: soroban_sdk::xdr::StringMView::new_str(
+                                <MyEnumUnit>::spec_type_name(),
+                            ),
                         },
                     ),
                 },
             ]),
             outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                 soroban_sdk::xdr::ScSpecTypeUdtView {
-                    name: soroban_sdk::xdr::StringMView::new(b"MyEnumUnit"),
+                    name: soroban_sdk::xdr::StringMView::new_str(<MyEnumUnit>::spec_type_name()),
                 },
             )]),
         });
@@ -3936,14 +3962,16 @@ impl AllTypesSpec {
                     name: soroban_sdk::xdr::StringMView::new(b"v"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                         soroban_sdk::xdr::ScSpecTypeUdtView {
-                            name: soroban_sdk::xdr::StringMView::new(b"MyEnumVariants"),
+                            name: soroban_sdk::xdr::StringMView::new_str(
+                                <MyEnumVariants>::spec_type_name(),
+                            ),
                         },
                     ),
                 },
             ]),
             outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                 soroban_sdk::xdr::ScSpecTypeUdtView {
-                    name: soroban_sdk::xdr::StringMView::new(b"MyEnumVariants"),
+                    name: soroban_sdk::xdr::StringMView::new_str(<MyEnumVariants>::spec_type_name()),
                 },
             )]),
         });
@@ -5847,14 +5875,16 @@ mod test {
                         name: soroban_sdk::xdr::StringMView::new(b"v"),
                         type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                             soroban_sdk::xdr::ScSpecTypeUdtView {
-                                name: soroban_sdk::xdr::StringMView::new(b"MyStruct"),
+                                name: soroban_sdk::xdr::StringMView::new_str(
+                                    <MyStruct>::spec_type_name(),
+                                ),
                             },
                         ),
                     },
                 ]),
                 outputs: soroban_sdk::xdr::VecMView::new(&[
                     soroban_sdk::xdr::ScSpecTypeDefView::Udt(soroban_sdk::xdr::ScSpecTypeUdtView {
-                        name: soroban_sdk::xdr::StringMView::new(b"MyStruct"),
+                        name: soroban_sdk::xdr::StringMView::new_str(<MyStruct>::spec_type_name()),
                     }),
                 ]),
             });
@@ -5888,14 +5918,16 @@ mod test {
                         name: soroban_sdk::xdr::StringMView::new(b"v"),
                         type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                             soroban_sdk::xdr::ScSpecTypeUdtView {
-                                name: soroban_sdk::xdr::StringMView::new(b"MyEnumUnit"),
+                                name: soroban_sdk::xdr::StringMView::new_str(
+                                    <MyEnumUnit>::spec_type_name(),
+                                ),
                             },
                         ),
                     },
                 ]),
                 outputs: soroban_sdk::xdr::VecMView::new(&[
                     soroban_sdk::xdr::ScSpecTypeDefView::Udt(soroban_sdk::xdr::ScSpecTypeUdtView {
-                        name: soroban_sdk::xdr::StringMView::new(b"MyEnumUnit"),
+                        name: soroban_sdk::xdr::StringMView::new_str(<MyEnumUnit>::spec_type_name()),
                     }),
                 ]),
             });
@@ -5929,14 +5961,18 @@ mod test {
                         name: soroban_sdk::xdr::StringMView::new(b"v"),
                         type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                             soroban_sdk::xdr::ScSpecTypeUdtView {
-                                name: soroban_sdk::xdr::StringMView::new(b"MyEnumVariants"),
+                                name: soroban_sdk::xdr::StringMView::new_str(
+                                    <MyEnumVariants>::spec_type_name(),
+                                ),
                             },
                         ),
                     },
                 ]),
                 outputs: soroban_sdk::xdr::VecMView::new(&[
                     soroban_sdk::xdr::ScSpecTypeDefView::Udt(soroban_sdk::xdr::ScSpecTypeUdtView {
-                        name: soroban_sdk::xdr::StringMView::new(b"MyEnumVariants"),
+                        name: soroban_sdk::xdr::StringMView::new_str(
+                            <MyEnumVariants>::spec_type_name(),
+                        ),
                     }),
                 ]),
             });

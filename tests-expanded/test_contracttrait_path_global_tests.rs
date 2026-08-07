@@ -1884,14 +1884,16 @@ impl ContractGlobalPath {
                     name: soroban_sdk::xdr::StringMView::new(b"v"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                         soroban_sdk::xdr::ScSpecTypeUdtView {
-                            name: soroban_sdk::xdr::StringMView::new(b"MyStruct"),
+                            name: soroban_sdk::xdr::StringMView::new_str(
+                                <MyStruct>::spec_type_name(),
+                            ),
                         },
                     ),
                 },
             ]),
             outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                 soroban_sdk::xdr::ScSpecTypeUdtView {
-                    name: soroban_sdk::xdr::StringMView::new(b"MyStruct"),
+                    name: soroban_sdk::xdr::StringMView::new_str(<MyStruct>::spec_type_name()),
                 },
             )]),
         });
@@ -1925,14 +1927,16 @@ impl ContractGlobalPath {
                     name: soroban_sdk::xdr::StringMView::new(b"v"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                         soroban_sdk::xdr::ScSpecTypeUdtView {
-                            name: soroban_sdk::xdr::StringMView::new(b"MyEnumUnit"),
+                            name: soroban_sdk::xdr::StringMView::new_str(
+                                <MyEnumUnit>::spec_type_name(),
+                            ),
                         },
                     ),
                 },
             ]),
             outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                 soroban_sdk::xdr::ScSpecTypeUdtView {
-                    name: soroban_sdk::xdr::StringMView::new(b"MyEnumUnit"),
+                    name: soroban_sdk::xdr::StringMView::new_str(<MyEnumUnit>::spec_type_name()),
                 },
             )]),
         });
@@ -1966,14 +1970,16 @@ impl ContractGlobalPath {
                     name: soroban_sdk::xdr::StringMView::new(b"v"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                         soroban_sdk::xdr::ScSpecTypeUdtView {
-                            name: soroban_sdk::xdr::StringMView::new(b"MyEnumVariants"),
+                            name: soroban_sdk::xdr::StringMView::new_str(
+                                <MyEnumVariants>::spec_type_name(),
+                            ),
                         },
                     ),
                 },
             ]),
             outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                 soroban_sdk::xdr::ScSpecTypeUdtView {
-                    name: soroban_sdk::xdr::StringMView::new(b"MyEnumVariants"),
+                    name: soroban_sdk::xdr::StringMView::new_str(<MyEnumVariants>::spec_type_name()),
                 },
             )]),
         });
