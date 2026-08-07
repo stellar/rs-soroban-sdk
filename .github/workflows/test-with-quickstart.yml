@@ -1,0 +1,88 @@
+name: Test with quickstart
+
+on:
+  push:
+    branches: [main, release/**]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref_protected == 'true' && github.sha || github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+# No permissions. This workflow runs a network from an image built outside this
+# repository. No permissions ensures that any exploit in that image does not
+# gain access to anything in this repo.
+permissions: {}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  # Fork a local network, reading the ledger meta store and history archive
+  # that quickstart runs alongside its core and rpc.
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      # Log which of the data sources every ledger entry is found in, so a run
+      # shows what was read from the ledger meta store and what from the
+      # history archive, rather than only that the balances came out right.
+      RUST_LOG: soroban_ledger_snapshot_source_tx=debug
+    steps:
+    - uses: actions/checkout@v5
+
+    # Set in an env file rather than in the job's env, because the runner
+    # context those paths come from is not available there.
+    - name: Set the fixture and cache paths
+      run: |
+        echo "TEST_FORK_QUICKSTART_FIXTURE=$RUNNER_TEMP/quickstart-fixture.json" >> "$GITHUB_ENV"
+        # Where the snapshot source writes its machine-local cache of
+        # downloaded files and found entries, set so the runs below can clear
+        # it.
+        echo "XDG_CACHE_HOME=$RUNNER_TEMP/cache" >> "$GITHUB_ENV"
+
+    - name: Install Rust
+      run: rustup update
+
+    - uses: stellar/actions/rust-cache@main
+
+    - uses: stellar/stellar-cli@v27.1.0
+
+    - name: Start quickstart
+      run: |
+        docker run --detach --name quickstart --publish 8000:8000 \
+          stellar/quickstart:testing \
+          --local \
+          --enable rpc,galexie \
+          --limits unlimited
+
+    # Build ahead of the runs below, both so that they compile nothing and
+    # their durations are the time spent forking alone, and so that the
+    # compile happens while quickstart is still starting up.
+    - name: Build the test
+      run: cargo test -p test_fork --lib --no-run
+
+    - name: Submit transactions to fork from
+      run: tests/fork/quickstart-setup.sh "$TEST_FORK_QUICKSTART_FIXTURE"
+
+    # Fork three times, once per layer of caching, so that a cache that stores
+    # or replays entries wrongly fails as loudly as collecting them wrongly
+    # does. Every run asserts the same balances.
+
+    - name: Fork the transactions, with no cache
+      run: |
+        rm -rf tests-snapshot-source/local "$XDG_CACHE_HOME/soroban-sdk"
+        cargo test -p test_fork --lib -- --ignored --nocapture quickstart
+
+    - name: Fork the transactions, with only the system cache
+      run: |
+        rm -rf tests-snapshot-source/local
+        cargo test -p test_fork --lib -- --ignored --nocapture quickstart
+
+    - name: Fork the transactions, with the system and workspace caches
+      run: cargo test -p test_fork --lib -- --ignored --nocapture quickstart
+
+    - name: Quickstart logs
+      if: always()
+      run: docker logs quickstart

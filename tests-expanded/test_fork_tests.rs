@@ -1526,10 +1526,144 @@ mod mainnet {
         }
     }
 }
+/// Forks a local stellar/quickstart network, reading state from the ledger
+/// meta store and the history archive it runs.
+///
+/// The transactions forked from are submitted by `quickstart-setup.sh`, which
+/// writes a fixture describing them that this test reads the path of from
+/// `TEST_FORK_QUICKSTART_FIXTURE`. See that script for how to run the test.
+mod quickstart {
+    extern crate std;
+    use soroban_ledger_snapshot_source_tx::{Network, TxSnapshotSource};
+    use soroban_sdk::{testutils::EnvTestConfig, token::TokenClient, Address, Env};
+    use std::{env, fs};
+    /// The quickstart network, with the RPC disabled so that entries are only
+    /// ever found in the ledger meta store or the history archive. A working
+    /// RPC would otherwise be able to answer lookups that a broken meta store
+    /// or history archive should fail.
+    fn network() -> Network {
+        Network {
+            rpc_url: None,
+            ..Network::local()
+        }
+    }
+    /// The balance of the fixture's target address, as of `ledger`, and just
+    /// before `tx` if given.
+    fn balance_at(sac: &str, target: &str, ledger: u32, tx: Option<[u8; 32]>) -> i128 {
+        let source = TxSnapshotSource::new(network(), ledger, tx);
+        let mut env = Env::from_ledger_snapshot(source);
+        env.set_config(EnvTestConfig {
+            capture_snapshot_at_drop: false,
+        });
+        let client = TokenClient::new(&env, &Address::from_str(&env, sac));
+        client.balance(&Address::from_str(&env, target))
+    }
+    fn tx_hash(s: &str) -> [u8; 32] {
+        hex::decode(s).unwrap().try_into().unwrap()
+    }
+    extern crate test;
+    #[rustc_test_marker = "quickstart::test"]
+    #[doc(hidden)]
+    pub const test: test::TestDescAndFn = test::TestDescAndFn {
+        desc: test::TestDesc {
+            name: test::StaticTestName("quickstart::test"),
+            ignore: true,
+            ignore_message: ::core::option::Option::Some(
+                "requires a local stellar/quickstart network, see quickstart-setup.sh",
+            ),
+            source_file: "tests/fork/src/lib.rs",
+            start_line: 190usize,
+            start_col: 8usize,
+            end_line: 190usize,
+            end_col: 12usize,
+            compile_fail: false,
+            no_run: false,
+            should_panic: test::ShouldPanic::No,
+            test_type: test::TestType::UnitTest,
+        },
+        testfn: test::StaticTestFn(
+            #[coverage(off)]
+            || test::assert_test_result(test()),
+        ),
+    };
+    #[ignore = "requires a local stellar/quickstart network, see quickstart-setup.sh"]
+    fn test() {
+        let path = env::var("TEST_FORK_QUICKSTART_FIXTURE")
+            .expect(
+                "TEST_FORK_QUICKSTART_FIXTURE must be set to the path of a fixture written by quickstart-setup.sh",
+            );
+        let fixture: serde_json::Value =
+            serde_json::from_str(&fs::read_to_string(&path).unwrap()).unwrap();
+        let sac = fixture["sac"].as_str().unwrap();
+        let target = fixture["target"].as_str().unwrap();
+        let transfers = fixture["transfers"].as_array().unwrap();
+        let mut expected: i128 = 0;
+        for transfer in transfers {
+            let ledger = transfer["ledger"].as_u64().unwrap() as u32;
+            let tx = tx_hash(transfer["tx"].as_str().unwrap());
+            {
+                ::std::io::_print(format_args!(
+                    "balance before tx {0} in ledger {1}\n",
+                    transfer["tx"], ledger,
+                ));
+            };
+            match (&balance_at(sac, target, ledger, Some(tx)), &expected) {
+                (left_val, right_val) => {
+                    if !(*left_val == *right_val) {
+                        let kind = ::core::panicking::AssertKind::Eq;
+                        ::core::panicking::assert_failed(
+                            kind,
+                            &*left_val,
+                            &*right_val,
+                            ::core::option::Option::None,
+                        );
+                    }
+                }
+            };
+            expected += transfer["amount"].as_i64().unwrap() as i128;
+            {
+                ::std::io::_print(format_args!("balance at end of ledger {0}\n", ledger));
+            };
+            match (&balance_at(sac, target, ledger, None), &expected) {
+                (left_val, right_val) => {
+                    if !(*left_val == *right_val) {
+                        let kind = ::core::panicking::AssertKind::Eq;
+                        ::core::panicking::assert_failed(
+                            kind,
+                            &*left_val,
+                            &*right_val,
+                            ::core::option::Option::None,
+                        );
+                    }
+                }
+            };
+            let archive_ledger = transfer["archive_ledger"].as_u64().unwrap() as u32;
+            {
+                ::std::io::_print(format_args!(
+                    "balance at ledger {0}, from the history archive\n",
+                    archive_ledger,
+                ));
+            };
+            match (&balance_at(sac, target, archive_ledger, None), &expected) {
+                (left_val, right_val) => {
+                    if !(*left_val == *right_val) {
+                        let kind = ::core::panicking::AssertKind::Eq;
+                        ::core::panicking::assert_failed(
+                            kind,
+                            &*left_val,
+                            &*right_val,
+                            ::core::option::Option::None,
+                        );
+                    }
+                }
+            };
+        }
+    }
+}
 #[rustc_main]
 #[coverage(off)]
 #[doc(hidden)]
 pub fn main() -> () {
     extern crate test;
-    test::test_main_static(&[&test, &test_1])
+    test::test_main_static(&[&test, &test_1, &test])
 }

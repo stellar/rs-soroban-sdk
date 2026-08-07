@@ -142,3 +142,87 @@ mod mainnet {
         #[test] fn test_1() { test() }
     }
 }
+
+/// Forks a local stellar/quickstart network, reading state from the ledger
+/// meta store and the history archive it runs.
+///
+/// The transactions forked from are submitted by `quickstart-setup.sh`, which
+/// writes a fixture describing them that this test reads the path of from
+/// `TEST_FORK_QUICKSTART_FIXTURE`. See that script for how to run the test.
+#[cfg(test)]
+mod quickstart {
+    extern crate std;
+    use soroban_ledger_snapshot_source_tx::{Network, TxSnapshotSource};
+    use soroban_sdk::{testutils::EnvTestConfig, token::TokenClient, Address, Env};
+    use std::{env, fs};
+
+    /// The quickstart network, with the RPC disabled so that entries are only
+    /// ever found in the ledger meta store or the history archive. A working
+    /// RPC would otherwise be able to answer lookups that a broken meta store
+    /// or history archive should fail.
+    fn network() -> Network {
+        Network {
+            rpc_url: None,
+            ..Network::local()
+        }
+    }
+
+    /// The balance of the fixture's target address, as of `ledger`, and just
+    /// before `tx` if given.
+    fn balance_at(sac: &str, target: &str, ledger: u32, tx: Option<[u8; 32]>) -> i128 {
+        let source = TxSnapshotSource::new(network(), ledger, tx);
+        let mut env = Env::from_ledger_snapshot(source);
+        // The snapshot is of a network that only exists while the test runs,
+        // so there's nothing to be gained by writing it out at drop.
+        env.set_config(EnvTestConfig {
+            capture_snapshot_at_drop: false,
+        });
+        let client = TokenClient::new(&env, &Address::from_str(&env, sac));
+        client.balance(&Address::from_str(&env, target))
+    }
+
+    fn tx_hash(s: &str) -> [u8; 32] {
+        hex::decode(s).unwrap().try_into().unwrap()
+    }
+
+    #[test]
+    #[ignore = "requires a local stellar/quickstart network, see quickstart-setup.sh"]
+    fn test() {
+        let path = env::var("TEST_FORK_QUICKSTART_FIXTURE")
+            .expect("TEST_FORK_QUICKSTART_FIXTURE must be set to the path of a fixture written by quickstart-setup.sh");
+        let fixture: serde_json::Value =
+            serde_json::from_str(&fs::read_to_string(&path).unwrap()).unwrap();
+        let sac = fixture["sac"].as_str().unwrap();
+        let target = fixture["target"].as_str().unwrap();
+        let transfers = fixture["transfers"].as_array().unwrap();
+
+        // Each transfer added its amount to the target's balance, so the
+        // balance just before each transfer is the sum of the amounts of the
+        // transfers before it, and the balance after it also includes its own.
+        let mut expected: i128 = 0;
+        for transfer in transfers {
+            let ledger = transfer["ledger"].as_u64().unwrap() as u32;
+            let tx = tx_hash(transfer["tx"].as_str().unwrap());
+
+            // Just before the transfer. Only the ledger meta store has the
+            // granularity to see state part way through a ledger, so this is
+            // always read from there.
+            std::println!("balance before tx {} in ledger {ledger}", transfer["tx"]);
+            assert_eq!(balance_at(sac, target, ledger, Some(tx)), expected);
+
+            // At the end of the ledger the transfer was in.
+            expected += transfer["amount"].as_i64().unwrap() as i128;
+            std::println!("balance at end of ledger {ledger}");
+            assert_eq!(balance_at(sac, target, ledger, None), expected);
+
+            // Far enough past the transfer that the balance is no longer in
+            // the ledgers of meta searched, and is instead read out of the
+            // buckets of a history archive checkpoint. The transfers are far
+            // enough apart that each of these is a different checkpoint, so
+            // only the last is the archive's most recent.
+            let archive_ledger = transfer["archive_ledger"].as_u64().unwrap() as u32;
+            std::println!("balance at ledger {archive_ledger}, from the history archive");
+            assert_eq!(balance_at(sac, target, archive_ledger, None), expected);
+        }
+    }
+}
