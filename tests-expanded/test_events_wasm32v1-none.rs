@@ -31,10 +31,51 @@ pub struct Transfer {
     to_muxed_id: Option<u64>,
 }
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_EVENT_TRANSFER: [u8; 144usize] = Transfer::spec_xdr();
+pub static __SPEC_XDR_EVENT_TRANSFER: [u8; Transfer::__SPEC_XDR_VIEW.const_xdr_len()] =
+    Transfer::spec_xdr();
 impl Transfer {
-    pub const fn spec_xdr() -> [u8; 144usize] {
-        *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x08Transfer\0\0\0\x01\0\0\0\x08transfer\0\0\0\x04\0\0\0\0\0\0\0\x04from\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02to\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x06amount\0\0\0\0\0\x0b\0\0\0\0\0\0\0\0\0\0\0\x0bto_muxed_id\0\0\0\x03\xe8\0\0\0\x06\0\0\0\0\0\0\0\x02"
+    const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::EventV0(soroban_sdk::xdr::ScSpecEventV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            lib: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"Transfer")),
+            prefix_topics: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSymbolView(
+                soroban_sdk::xdr::StringMView::new(b"transfer"),
+            )]),
+            params: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecEventParamV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"from"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
+                },
+                soroban_sdk::xdr::ScSpecEventParamV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"to"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
+                },
+                soroban_sdk::xdr::ScSpecEventParamV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"amount"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::I128,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                },
+                soroban_sdk::xdr::ScSpecEventParamV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"to_muxed_id"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Option(
+                        &soroban_sdk::xdr::ScSpecTypeOptionView {
+                            value_type: &soroban_sdk::xdr::ScSpecTypeDefView::U64,
+                        },
+                    ),
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                },
+            ]),
+            data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
+        });
+    pub const fn spec_xdr() -> [u8; Transfer::__SPEC_XDR_VIEW.const_xdr_len()] {
+        Transfer::__SPEC_XDR_VIEW.const_to_xdr()
     }
 }
 impl soroban_sdk::SpecShakingMarker for Transfer {
@@ -46,7 +87,7 @@ impl soroban_sdk::SpecShakingMarker for Transfer {
         <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <Option<u64> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1;\xc1i\xa0H>\x8d\xf1";
+            static MARKER: [u8; 14] = soroban_sdk::spec_marker(&Transfer::spec_xdr());
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -117,12 +158,37 @@ pub mod __Contract__transfer__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_TRANSFER: [u8; 80usize] = super::Contract::spec_xdr_transfer();
+    pub static __SPEC_XDR_FN_TRANSFER: [u8; super::Contract::__SPEC_XDR_VIEW_transfer
+        .const_xdr_len()] = super::Contract::spec_xdr_transfer();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_transfer: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"transfer")),
+            inputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"from"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
+                },
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"to"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::MuxedAddress,
+                },
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"amount"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::I128,
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_transfer() -> [u8; 80usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x08transfer\0\0\0\x03\0\0\0\0\0\0\0\x04from\0\0\0\x13\0\0\0\0\0\0\0\x02to\0\0\0\0\0\x14\0\0\0\0\0\0\0\x06amount\0\0\0\0\0\x0b\0\0\0\0"
+    pub const fn spec_xdr_transfer() -> [u8; Contract::__SPEC_XDR_VIEW_transfer.const_xdr_len()] {
+        Contract::__SPEC_XDR_VIEW_transfer.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -132,13 +198,41 @@ pub mod __Contract__failed_transfer__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_FAILED_TRANSFER: [u8; 88usize] =
+    pub static __SPEC_XDR_FN_FAILED_TRANSFER: [u8;
+        super::Contract::__SPEC_XDR_VIEW_failed_transfer.const_xdr_len()] =
         super::Contract::spec_xdr_failed_transfer();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_failed_transfer: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                b"failed_transfer",
+            )),
+            inputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"from"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
+                },
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"to"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
+                },
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"amount"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::I128,
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_failed_transfer() -> [u8; 88usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0ffailed_transfer\0\0\0\0\x03\0\0\0\0\0\0\0\x04from\0\0\0\x13\0\0\0\0\0\0\0\x02to\0\0\0\0\0\x13\0\0\0\0\0\0\0\x06amount\0\0\0\0\0\x0b\0\0\0\0"
+    pub const fn spec_xdr_failed_transfer(
+    ) -> [u8; Contract::__SPEC_XDR_VIEW_failed_transfer.const_xdr_len()] {
+        Contract::__SPEC_XDR_VIEW_failed_transfer.const_to_xdr()
     }
 }
 impl<'a> ContractClient<'a> {

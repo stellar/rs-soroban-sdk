@@ -71,9 +71,23 @@ pub mod traits {
         }
     }
     impl RelativePathTraitSpec {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_VIEW_relative_path_method: soroban_sdk::xdr::ScSpecEntryView<'static> =
+            soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+                doc: soroban_sdk::xdr::StringMView::new(b""),
+                name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                    b"relative_path_method",
+                )),
+                inputs: soroban_sdk::xdr::VecMView::new(&[]),
+                outputs: soroban_sdk::xdr::VecMView::new(&[
+                    soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                ]),
+            });
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_relative_path_method() -> [u8; 44usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\x14relative_path_method\0\0\0\0\0\0\0\x01\0\0\0\x04"
+        pub const fn spec_xdr_relative_path_method(
+        ) -> [u8; RelativePathTraitSpec::__SPEC_XDR_VIEW_relative_path_method.const_xdr_len()]
+        {
+            RelativePathTraitSpec::__SPEC_XDR_VIEW_relative_path_method.const_to_xdr()
         }
     }
 }
@@ -131,13 +145,25 @@ pub mod __ContractRelativePath__relative_path_method__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_RELATIVE_PATH_METHOD: [u8; 44usize] =
+    pub static __SPEC_XDR_FN_RELATIVE_PATH_METHOD: [u8;
+        super::ContractRelativePath::__SPEC_XDR_VIEW_relative_path_method.const_xdr_len()] =
         super::ContractRelativePath::spec_xdr_relative_path_method();
 }
 impl ContractRelativePath {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_relative_path_method: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                b"relative_path_method",
+            )),
+            inputs: soroban_sdk::xdr::VecMView::new(&[]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_relative_path_method() -> [u8; 44usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x14relative_path_method\0\0\0\0\0\0\0\x01\0\0\0\x04"
+    pub const fn spec_xdr_relative_path_method(
+    ) -> [u8; ContractRelativePath::__SPEC_XDR_VIEW_relative_path_method.const_xdr_len()] {
+        ContractRelativePath::__SPEC_XDR_VIEW_relative_path_method.const_to_xdr()
     }
 }
 impl<'a> ContractRelativePathClient<'a> {
