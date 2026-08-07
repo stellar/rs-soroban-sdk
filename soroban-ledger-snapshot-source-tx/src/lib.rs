@@ -4,6 +4,11 @@ mod fetch;
 use cache::cache;
 use cargo_metadata::MetadataCommand;
 use directories::ProjectDirs;
+#[cfg(feature = "hubble")]
+pub use fetch::from_hubble::{
+    contract_data_query, parse_response, HubbleClient, HubbleConfig, HubbleNetwork, QueryParameter,
+    QueryRequest,
+};
 use fetch::LedgerEntryFetcher;
 pub use fetch::Network;
 use sha2::{Digest, Sha256};
@@ -113,6 +118,22 @@ impl TxSnapshotSource {
             tx_hash,
             cache_path,
         }
+    }
+
+    #[cfg(feature = "hubble")]
+    /// Create a source with the opt-in Hubble lookup before archive fallback.
+    ///
+    /// Hubble is used only when `tx_hash` is `None`; transaction-before
+    /// snapshots continue through the authoritative meta/archive path.
+    pub fn new_with_hubble(
+        network: Network,
+        ledger: u32,
+        tx_hash: Option<[u8; 32]>,
+        hubble: crate::HubbleClient,
+    ) -> Self {
+        let mut source = Self::new(network, ledger, tx_hash);
+        source.fetcher = source.fetcher.with_hubble(hubble);
+        source
     }
 
     /// Fetch a ledger entry, using workspace-level caching

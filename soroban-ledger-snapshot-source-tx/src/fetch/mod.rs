@@ -14,8 +14,12 @@ mod iter;
 pub use iter::LedgerEntryChangesIterator;
 
 pub(crate) mod from_history_archive;
+#[cfg(feature = "hubble")]
+pub(crate) mod from_hubble;
 pub(crate) mod from_meta_storage;
 pub(crate) mod from_rpc;
+#[cfg(feature = "hubble")]
+use from_hubble::HubbleClient;
 
 /// Error type for LedgerEntryFetcher operations
 #[derive(Debug, thiserror::Error)]
@@ -34,6 +38,9 @@ pub enum Error {
     Rpc(#[from] from_rpc::Error),
     #[error("history archive error: {0}")]
     HistoryArchive(#[from] from_history_archive::Error),
+    #[cfg(feature = "hubble")]
+    #[error("Hubble error: {0}")]
+    Hubble(#[from] from_hubble::Error),
 }
 
 /// Network configuration for fetching ledger data
@@ -261,6 +268,8 @@ pub struct LedgerEntryFetcher {
     tx_hash: Option<[u8; 32]>,
     cache_path: PathBuf,
     prefetch_handle: Mutex<Option<JoinHandle<()>>>,
+    #[cfg(feature = "hubble")]
+    hubble: Option<HubbleClient>,
 }
 
 impl LedgerEntryFetcher {
@@ -283,7 +292,17 @@ impl LedgerEntryFetcher {
             tx_hash,
             cache_path,
             prefetch_handle: Mutex::new(None),
+            #[cfg(feature = "hubble")]
+            hubble: None,
         }
+    }
+
+    #[cfg(feature = "hubble")]
+    /// Opt into the Hubble prototype. It is only consulted when no transaction
+    /// hash is supplied; all misses and unsupported keys retain archive fallback.
+    pub fn with_hubble(mut self, hubble: HubbleClient) -> Self {
+        self.hubble = Some(hubble);
+        self
     }
 
     /// Returns the ledger sequence number this fetcher is configured for.
@@ -414,6 +433,17 @@ impl LedgerEntryFetcher {
         }
 
         // Phase 3: Fetch from history archive at the previous checkpoint
+        #[cfg(feature = "hubble")]
+        if self.tx_hash.is_none() {
+            if let Some(hubble) = &self.hubble {
+                if let LedgerKey::ContractData(_) = key {
+                    if let Some(entry) = hubble.contract_data(key, self.ledger)? {
+                        tracing::debug!("found from hubble");
+                        return Ok(Some(entry));
+                    }
+                }
+            }
+        }
         self.fetch_from_archive(&cache_path, prev_checkpoint, key)
     }
 

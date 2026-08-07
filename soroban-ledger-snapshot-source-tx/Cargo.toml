@@ -10,6 +10,12 @@ version.workspace = true
 edition = "2021"
 rust-version.workspace = true
 
+[features]
+default = []
+# Enables the native BigQuery/Hubble prototype. The entire crate is already a
+# native test utility; this feature keeps the cloud client opt-in.
+hubble = []
+
 [dependencies]
 soroban-sdk = { workspace = true, features = ["testutils"] }
 stellar-xdr = { workspace = true, features = ["std", "base64", "serde"] }

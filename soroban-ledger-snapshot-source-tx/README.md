@@ -2,6 +2,10 @@
 
 A `SnapshotSource` implementation for the Soroban SDK that fetches ledger entries by downloading and searching ledger meta from multiple sources: SEP-54 meta storage, RPC, and history archives.
 
+The optional `hubble` feature contains a small BigQuery REST prototype for
+contract-data lookups. It is not enabled by default, so the existing
+history-archive path remains the fallback.
+
 ## Usage
 
 Add the dependency:
@@ -29,6 +33,48 @@ let source = TxSnapshotSource::new(
 
 let env = Env::from_ledger_snapshot(source);
 ```
+
+## Hubble prototype
+
+Enable the native client with `features = ["hubble"]`. Hubble's documented public bronze dataset is `crypto-stellar.crypto_stellar`;
+transformed/current tables are in the sibling
+`crypto-stellar.crypto_stellar_dbt` dataset. Access requires a Google Cloud
+project with billing, the BigQuery API enabled, and an OAuth access token.
+The client uses parameterized SQL and bounds each lookup to one row:
+
+```rust
+use soroban_ledger_snapshot_source_tx::{
+    HubbleClient, HubbleConfig, Network, TxSnapshotSource,
+};
+
+let hubble = HubbleClient::new(HubbleConfig::mainnet(access_token));
+let source = TxSnapshotSource::new_with_hubble(Network::mainnet(None), 59_914_751, None, hubble);
+```
+
+The query is limited to Hubble's `contract_data` state table, using its
+`ledger_key_hash`, `ledger_sequence`, `deleted`, and `contract_data_xdr` fields.
+This prototype does not query Hubble's separate `history_transactions.tx_meta`
+XDR, so it does not claim to reconstruct the exact state immediately before a
+transaction when several transactions touch the same key in one ledger.
+Therefore the Hubble path is never used when a transaction hash is supplied.
+Hubble misses, unsupported key types, and transaction-before requests continue
+to the history-archive fallback. Hubble's transaction metadata may support a
+future exact implementation, but it must decode and apply the XDR changes
+without guessing transaction ordering.
+
+Hubble is documented as a public mainnet dataset with no network discriminator.
+Testnet reset epochs are therefore rejected by the prototype rather than
+querying a potentially unrelated epoch. Hubble is batch-updated and has no
+completeness watermark in this lookup, so a miss also falls back to the
+history archive.
+
+Research references:
+
+* [Hubble overview](https://developers.stellar.org/docs/data/analytics/hubble)
+* [Connecting to Hubble](https://developers.stellar.org/docs/data/analytics/hubble/analyst-guide/connecting)
+* [Viewing metadata](https://developers.stellar.org/docs/data/analytics/hubble/analyst-guide/viewing-metadata)
+* [History vs state tables](https://developers.stellar.org/docs/data/analytics/hubble/analyst-guide/history-vs-state-tables)
+* [Contract data schema](https://developers.stellar.org/docs/data/analytics/hubble/data-catalog/data-dictionary/bronze/contract-data)
 
 Or with custom network configuration:
 
