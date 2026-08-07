@@ -16,6 +16,21 @@ test_fuzz = { path = ".." }
 [workspace]
 members = ["."]
 
+# This is its own workspace root, so it does not inherit the repo root's patch
+# and needs its own copy. Remove both together.
+[patch.crates-io]
+# Pending https://github.com/stellar/rs-stellar-xdr/pull/580, which adds the
+# const-only `*Const` types and their const XDR serializers that the contract
+# spec generation in soroban-sdk-macros builds on.
+stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "3b92d6dc0d07a69369bf99d755a08d2843654c1c" }
+# Pending https://github.com/stellar/rs-soroban-env/pull/1733, which adapts the
+# host to the XDR constants that rs-stellar-xdr#562 changes from u64 to u32.
+# Only the 29.x line carries that adaptation, so the test ledger's default
+# protocol is 29 until it is released.
+soroban-env-common = { git = "https://github.com/stellar/rs-soroban-env", rev = "de68ee914401e70d3d8350a4d004c0442943324e" }
+soroban-env-guest = { git = "https://github.com/stellar/rs-soroban-env", rev = "de68ee914401e70d3d8350a4d004c0442943324e" }
+soroban-env-host = { git = "https://github.com/stellar/rs-soroban-env", rev = "de68ee914401e70d3d8350a4d004c0442943324e" }
+
 [profile.release]
 debug = 1
 
