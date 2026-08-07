@@ -33,6 +33,13 @@ CHECKPOINT_FREQUENCY=8
 # before transfer N is the sum of the amounts before it.
 AMOUNTS=(10 20 30)
 
+# Ledgers to wait between transfers. Spreads the transfers over more than 64
+# ledgers and several checkpoints, so that the transfers are not all reachable
+# from the same place: the most recent is still in the ledger meta store, while
+# the earlier ones have to be read out of the history archive, and out of
+# different checkpoints of it rather than only the most recent one.
+LEDGERS_BETWEEN_TRANSFERS=40
+
 rpc() {
   curl -sf "$STELLAR_RPC_URL" -H 'Content-Type: application/json' \
     -d "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"$1\",\"params\":${2:-null}}"
@@ -69,6 +76,12 @@ transfers=()
 for i in "${!AMOUNTS[@]}"; do
   amount="${AMOUNTS[$i]}"
 
+  if [ "$i" -gt 0 ]; then
+    next=$(( $(jq -r '.ledger' <<<"${transfers[-1]}") + LEDGERS_BETWEEN_TRANSFERS ))
+    echo "Waiting for ledger $next to close before the next transfer ..."
+    until [ "$(rpc getLatestLedger | jq -r '.result.sequence')" -ge "$next" ]; do sleep 1; done
+  fi
+
   # A separate source account per transfer, so the transactions do not depend
   # on each other's sequence numbers and can land in the same ledger.
   account "sender$i"
@@ -93,15 +106,22 @@ for i in "${!AMOUNTS[@]}"; do
   [ "$status" = "SUCCESS" ] || { echo "transaction $hash failed: $status"; exit 1; }
 
   ledger=$(jq -r '.result.ledger' <<<"$result")
+
+  # A ledger far enough past this transfer that a search for the balance entry
+  # falls out of the ledger meta store, back past a checkpoint, and into the
+  # history archive. One per transfer, so that each lands in a different
+  # checkpoint: the test reads the earlier ones out of checkpoints that are no
+  # longer the archive's most recent.
+  archive_ledger=$(( (ledger / CHECKPOINT_FREQUENCY + 2) * CHECKPOINT_FREQUENCY ))
+
   echo "Transferred $amount in ledger $ledger, transaction $hash"
-  transfers+=("{\"ledger\":$ledger,\"tx\":\"$hash\",\"amount\":$amount}")
+  transfers+=(
+    "{\"ledger\":$ledger,\"tx\":\"$hash\",\"amount\":$amount,\"archive_ledger\":$archive_ledger}"
+  )
 done
 
-# A ledger far enough past the last transfer that the search for the balance
-# entry falls out of the ledger meta store, back past a checkpoint, and into
-# the history archive.
-last_ledger=$(jq -r '.ledger' <<<"${transfers[-1]}")
-archive_ledger=$(( (last_ledger / CHECKPOINT_FREQUENCY + 2) * CHECKPOINT_FREQUENCY ))
+# The last transfer's archive ledger is the furthest ahead, so waiting for it
+# waits for everything the test reads.
 archive_checkpoint=$(( archive_ledger - 1 ))
 
 echo "Waiting for ledger $archive_ledger to close ..."
@@ -121,8 +141,7 @@ jq -n \
   --arg sac "$SAC" \
   --arg target "$TARGET" \
   --argjson transfers "$(printf '%s\n' "${transfers[@]}" | jq -s .)" \
-  --argjson archive_ledger "$archive_ledger" \
-  '{sac: $sac, target: $target, transfers: $transfers, archive_ledger: $archive_ledger}' \
+  '{sac: $sac, target: $target, transfers: $transfers}' \
   > "$FIXTURE_PATH"
 
 echo "Wrote $FIXTURE_PATH:"

@@ -1621,44 +1621,43 @@ mod quickstart {
                 }
             };
             expected += transfer["amount"].as_i64().unwrap() as i128;
+            {
+                ::std::io::_print(format_args!("balance at end of ledger {0}\n", ledger));
+            };
+            match (&balance_at(sac, target, ledger, None), &expected) {
+                (left_val, right_val) => {
+                    if !(*left_val == *right_val) {
+                        let kind = ::core::panicking::AssertKind::Eq;
+                        ::core::panicking::assert_failed(
+                            kind,
+                            &*left_val,
+                            &*right_val,
+                            ::core::option::Option::None,
+                        );
+                    }
+                }
+            };
+            let archive_ledger = transfer["archive_ledger"].as_u64().unwrap() as u32;
+            {
+                ::std::io::_print(format_args!(
+                    "balance at ledger {0}, from the history archive\n",
+                    archive_ledger,
+                ));
+            };
+            match (&balance_at(sac, target, archive_ledger, None), &expected) {
+                (left_val, right_val) => {
+                    if !(*left_val == *right_val) {
+                        let kind = ::core::panicking::AssertKind::Eq;
+                        ::core::panicking::assert_failed(
+                            kind,
+                            &*left_val,
+                            &*right_val,
+                            ::core::option::Option::None,
+                        );
+                    }
+                }
+            };
         }
-        let last_ledger = transfers.last().unwrap()["ledger"].as_u64().unwrap() as u32;
-        {
-            ::std::io::_print(format_args!("balance at end of ledger {0}\n", last_ledger));
-        };
-        match (&balance_at(sac, target, last_ledger, None), &expected) {
-            (left_val, right_val) => {
-                if !(*left_val == *right_val) {
-                    let kind = ::core::panicking::AssertKind::Eq;
-                    ::core::panicking::assert_failed(
-                        kind,
-                        &*left_val,
-                        &*right_val,
-                        ::core::option::Option::None,
-                    );
-                }
-            }
-        };
-        let archive_ledger = fixture["archive_ledger"].as_u64().unwrap() as u32;
-        {
-            ::std::io::_print(format_args!(
-                "balance at ledger {0}, from the history archive\n",
-                archive_ledger,
-            ));
-        };
-        match (&balance_at(sac, target, archive_ledger, None), &expected) {
-            (left_val, right_val) => {
-                if !(*left_val == *right_val) {
-                    let kind = ::core::panicking::AssertKind::Eq;
-                    ::core::panicking::assert_failed(
-                        kind,
-                        &*left_val,
-                        &*right_val,
-                        ::core::option::Option::None,
-                    );
-                }
-            }
-        };
     }
 }
 #[rustc_main]
