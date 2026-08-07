@@ -240,6 +240,19 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
 
     let imp = parse_macro_input!(input as ItemImpl);
     let trait_ident = imp.trait_.as_ref().map(|x| &x.1);
+
+    // The `contracttrait` argument only has meaning on a trait impl, where it
+    // hands off to the trait's generated macro. Emitting the impl alongside the
+    // error keeps downstream diagnostics quiet.
+    if args.contracttrait && trait_ident.is_none() {
+        let e = Error::new(
+            Span::call_site(),
+            "`contracttrait` is only supported on an impl block implementing a trait annotated with `#[contracttrait]`",
+        )
+        .into_compile_error();
+        return quote! { #imp #e }.into();
+    }
+
     let ty = &imp.self_ty;
     let ty_str = quote!(#ty).to_string();
 
