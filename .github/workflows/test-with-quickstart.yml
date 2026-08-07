@@ -57,6 +57,12 @@ jobs:
           --enable rpc,galexie \
           --limits unlimited
 
+    # Build ahead of the runs below, both so that they compile nothing and
+    # their durations are the time spent forking alone, and so that the
+    # compile happens while quickstart is still starting up.
+    - name: Build the test
+      run: cargo test -p test_fork --lib --no-run
+
     - name: Submit transactions to fork from
       run: tests/fork/quickstart-setup.sh "$TEST_FORK_QUICKSTART_FIXTURE"
 
