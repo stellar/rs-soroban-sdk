@@ -1,6 +1,7 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::HashSet;
 
-use proc_macro2::Ident;
+use proc_macro2::{Ident, TokenStream};
+use quote::quote;
 use stellar_xdr::{ScSymbol, StringM};
 
 use crate::types::GenerateError;
@@ -40,62 +41,95 @@ pub fn str_to_ident(s: &(impl IntoIdent + ?Sized)) -> Result<Ident, GenerateErro
     s.into_ident()
 }
 
+/// The `::`-separated segments of a fully qualified spec type name.
+fn segments(name: &str) -> Vec<&str> {
+    name.split("::").collect()
+}
+
 /// The last `::`-separated segment of a fully qualified spec type name.
 fn last_segment(name: &str) -> &str {
     name.rsplit("::").next().unwrap_or(name)
 }
 
+/// A Rust identifier for one segment of a qualified name.
+///
+/// A module of the crate the type came from can be named for a Rust keyword, so
+/// a segment that is not an identifier on its own is emitted raw.
+fn segment_ident(s: &str) -> Result<Ident, GenerateError> {
+    str_to_ident(s).or_else(|_| str_to_ident(format!("r#{s}").as_str()))
+}
+
 /// The Rust identifiers that name the user-defined types of a spec.
 ///
 /// A spec names a user-defined type by its fully qualified name
-/// (`crate::module::Type`), which is not a Rust identifier, so generated
-/// bindings name it by its last segment. Two types defined in different modules
-/// can share a last segment, so a segment already claimed is numbered.
+/// (`crate::module::Type`). Generated bindings mirror that name as a module
+/// path, so every type is reachable at the path it reports for itself and two
+/// types that share a last segment stay distinct.
+///
+/// For the bindings to stay usable by name, the types are also named at the root
+/// of the generated module. Only one type can claim a given last segment there,
+/// so the first to claim it is named at the root and the rest are reached only
+/// by their full path.
 #[derive(Debug, Default)]
 pub struct TypeNames {
-    renamed: HashMap<String, String>,
+    defined: Vec<String>,
+    aliased: HashSet<String>,
 }
 
 impl TypeNames {
-    /// Resolves the identifiers for the fully qualified names of every
-    /// user-defined type a spec defines.
+    /// Resolves the names of every user-defined type a spec defines.
     pub fn new<'a>(defined: impl IntoIterator<Item = &'a str>) -> Self {
-        // The first type to claim a last segment keeps it, so a type only ever
-        // loses its own name to one that came before it, never to a number
-        // handed to a type that collided with something else.
+        let defined: Vec<String> = defined.into_iter().map(str::to_string).collect();
         let mut taken = HashSet::new();
-        let colliding: Vec<&str> = defined
-            .into_iter()
-            .filter(|name| !taken.insert(last_segment(name).to_string()))
+        let aliased = defined
+            .iter()
+            .filter(|name| taken.insert(last_segment(name).to_string()))
+            .cloned()
             .collect();
-
-        let mut renamed = HashMap::new();
-        for name in colliding {
-            let base = last_segment(name);
-            let mut n = 1u32;
-            let ident = loop {
-                n += 1;
-                let ident = format!("{base}{n}");
-                if taken.insert(ident.clone()) {
-                    break ident;
-                }
-            };
-            renamed.insert(name.to_string(), ident);
-        }
-        Self { renamed }
+        Self { defined, aliased }
     }
 
-    /// The Rust identifier naming the user-defined type the given fully
-    /// qualified spec name refers to.
-    ///
-    /// A name this was not built from resolves to its own last segment, which is
-    /// what a spec containing only that one type would produce.
+    /// The identifier declaring the type, which is the last segment of its name.
     pub fn ident(&self, name: &(impl IntoIdent + ?Sized)) -> Result<Ident, GenerateError> {
+        segment_ident(last_segment(&name.to_name()?))
+    }
+
+    /// The path referring to the type from `depth` modules below the root of the
+    /// generated module.
+    ///
+    /// Every reference is written from the root down, reaching it by stepping up
+    /// out of the module the reference is written in, so that a reference means
+    /// the same thing wherever it appears.
+    pub fn path(
+        &self,
+        name: &(impl IntoIdent + ?Sized),
+        depth: usize,
+    ) -> Result<TokenStream, GenerateError> {
         let name = name.to_name()?;
-        match self.renamed.get(&name) {
-            Some(ident) => str_to_ident(ident.as_str()),
-            None => str_to_ident(last_segment(&name)),
-        }
+        let segments = segments(&name)
+            .into_iter()
+            .map(segment_ident)
+            .collect::<Result<Vec<_>, _>>()?;
+        let up = std::iter::repeat_n(quote!(super::), depth);
+        Ok(quote! { #(#up)* #(#segments)::* })
+    }
+
+    /// The module path a type is defined in, which is its name without its last
+    /// segment.
+    pub fn module_of(name: &str) -> Vec<&str> {
+        let mut s = segments(name);
+        s.pop();
+        s
+    }
+
+    /// The types this defines, in the order they were given.
+    pub fn defined(&self) -> impl Iterator<Item = &str> {
+        self.defined.iter().map(String::as_str)
+    }
+
+    /// Whether the type is the one named at the root for its last segment.
+    pub fn is_aliased(&self, name: &str) -> bool {
+        self.aliased.contains(name)
     }
 }
 
@@ -104,35 +138,50 @@ mod test {
     use super::TypeNames;
 
     #[test]
-    fn names_by_last_segment() {
-        let names = TypeNames::new(["a::b::Thing", "a::c::Other"]);
+    fn declares_a_type_by_its_last_segment() {
+        let names = TypeNames::new(["a::b::Thing"]);
         assert_eq!(names.ident("a::b::Thing").unwrap(), "Thing");
-        assert_eq!(names.ident("a::c::Other").unwrap(), "Other");
     }
 
     #[test]
-    fn numbers_a_last_segment_already_claimed() {
-        // The first to claim `Thing` keeps it; the rest are numbered in order.
-        let names = TypeNames::new(["a::b::Thing", "a::c::Thing", "a::d::Thing"]);
-        assert_eq!(names.ident("a::b::Thing").unwrap(), "Thing");
-        assert_eq!(names.ident("a::c::Thing").unwrap(), "Thing2");
-        assert_eq!(names.ident("a::d::Thing").unwrap(), "Thing3");
+    fn refers_to_a_type_by_its_whole_path() {
+        let names = TypeNames::new(["a::b::Thing"]);
+        assert_eq!(
+            names.path("a::b::Thing", 0).unwrap().to_string(),
+            "a :: b :: Thing"
+        );
     }
 
     #[test]
-    fn skips_a_number_taken_by_a_type_of_that_name() {
-        // `Thing2` is a type in its own right, so the collision numbering steps
-        // over it rather than colliding with it in turn.
-        let names = TypeNames::new(["a::b::Thing", "a::c::Thing2", "a::d::Thing"]);
-        assert_eq!(names.ident("a::b::Thing").unwrap(), "Thing");
-        assert_eq!(names.ident("a::c::Thing2").unwrap(), "Thing2");
-        assert_eq!(names.ident("a::d::Thing").unwrap(), "Thing3");
+    fn steps_up_out_of_the_module_a_reference_is_written_in() {
+        let names = TypeNames::new(["a::b::Thing"]);
+        assert_eq!(
+            names.path("a::b::Thing", 2).unwrap().to_string(),
+            "super :: super :: a :: b :: Thing"
+        );
     }
 
     #[test]
-    fn unknown_name_falls_back_to_its_last_segment() {
-        let names = TypeNames::default();
-        assert_eq!(names.ident("a::b::Thing").unwrap(), "Thing");
-        assert_eq!(names.ident("Thing").unwrap(), "Thing");
+    fn names_a_keyword_segment_raw() {
+        let names = TypeNames::new(["a::type::Thing"]);
+        assert_eq!(
+            names.path("a::type::Thing", 0).unwrap().to_string(),
+            "a :: r#type :: Thing"
+        );
+    }
+
+    #[test]
+    fn names_only_the_first_claim_on_a_last_segment_at_the_root() {
+        // The rest stay reachable, but only by their whole path.
+        let names = TypeNames::new(["a::b::Thing", "a::c::Thing", "a::d::Other"]);
+        assert!(names.is_aliased("a::b::Thing"));
+        assert!(!names.is_aliased("a::c::Thing"));
+        assert!(names.is_aliased("a::d::Other"));
+    }
+
+    #[test]
+    fn a_module_is_a_name_without_its_last_segment() {
+        assert_eq!(TypeNames::module_of("a::b::Thing"), vec!["a", "b"]);
+        assert_eq!(TypeNames::module_of("Thing"), Vec::<&str>::new());
     }
 }
