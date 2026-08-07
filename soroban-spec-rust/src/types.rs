@@ -26,7 +26,7 @@ pub enum GenerateError {
 /// options can be added without breaking callers.
 ///
 /// ```
-/// use soroban_spec_rust::{types::generate_struct_with_options, GenerateOptions};
+/// use soroban_spec_rust::{types::generate_struct_with_options, GenerateOptions, TypeNames};
 /// use stellar_xdr::ScSpecUdtStructV0;
 ///
 /// let spec = ScSpecUdtStructV0 {

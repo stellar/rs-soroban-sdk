@@ -1,6 +1,6 @@
 mod syn_ext;
 
-use syn_ext::TypeNames;
+pub use syn_ext::TypeNames;
 pub mod r#trait;
 pub mod types;
 
