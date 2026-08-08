@@ -213,18 +213,24 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
             .prefix_topics
             .iter()
             .map(|t| const_view_symbol(path, t));
-        let params = spec.params.iter().map(|p| {
-            let doc = const_view_string(path, &p.doc);
-            let name = const_view_string(path, &p.name);
-            let type_ = const_view_type_def(path, &p.type_);
-            let location = format_ident!("{}", p.location.name());
-            quote!(#path::xdr::ScSpecEventParamV0View {
-                doc: #doc,
-                name: #name,
-                type_: #type_,
-                location: #path::xdr::ScSpecEventParamLocationV0::#location,
-            })
-        });
+        // Each param's Rust type, so a reference to a user-defined type in a
+        // param resolves to the name that type reports for itself.
+        let params = spec
+            .params
+            .iter()
+            .zip(field_types.iter().copied())
+            .map(|(p, rust)| {
+                let doc = const_view_string(path, &p.doc);
+                let name = const_view_string(path, &p.name);
+                let type_ = const_view_type_def(path, &p.type_, Some(rust));
+                let location = format_ident!("{}", p.location.name());
+                quote!(#path::xdr::ScSpecEventParamV0View {
+                    doc: #doc,
+                    name: #name,
+                    type_: #type_,
+                    location: #path::xdr::ScSpecEventParamLocationV0::#location,
+                })
+            });
         let data_format = format_ident!("{}", spec.data_format.name());
         quote! {
             #path::xdr::ScSpecEntryView::EventV0(#path::xdr::ScSpecEventV0View {

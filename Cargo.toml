@@ -54,10 +54,12 @@ version = "=28.0.0"
 default-features = false
 
 [patch.crates-io]
-# Pending https://github.com/stellar/rs-stellar-xdr/pull/562, which adds the
-# borrowing `*View` types and their const XDR serializers that the contract spec
+# Pending https://github.com/stellar/rs-stellar-xdr/pull/566, which widens the
+# user-defined type name limit so a fully qualified name fits, and which carries
+# https://github.com/stellar/rs-stellar-xdr/pull/562 adding the borrowing
+# `*View` types and their const XDR serializers that the contract spec
 # generation in soroban-sdk-macros builds on.
-stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "595950c5dfd2dab0333922ebb26fab27dac3188a" }
+stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "99a031a6f6a0935f68c073705651bd1addca1fd4" }
 #soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }
 #soroban-env-guest = { path = "../rs-soroban-env/soroban-env-guest" }
 #soroban-env-host = { path = "../rs-soroban-env/soroban-env-host" }

@@ -13,7 +13,7 @@ use stellar_xdr::{
 
 use crate::{
     doc::docs_from_attrs,
-    map_type::{const_view_string, const_view_type_def, map_type},
+    map_type::{const_view_string, const_view_type_def, map_type, spec_type_name_gen},
     shaking,
 };
 
@@ -156,33 +156,47 @@ pub fn derive_type_enum(
         cases: spec_cases.try_into().unwrap(),
     };
 
+    // The fully qualified name the spec knows this type by, emitted for every
+    // type so that a reference to it from anywhere can reach it.
+    let spec_type_name = spec_type_name_gen(enum_ident);
+
     // Generated code spec. The spec entry is rendered as the equivalent const
     // ScSpecEntryView, which the contract crate encodes to XDR at compile time.
     let spec_gen = {
         let doc = const_view_string(path, &spec.doc);
         let lib = const_view_string(path, &spec.lib);
-        let name = const_view_string(path, &spec.name);
-        let cases = spec.cases.iter().map(|c| match c {
-            ScSpecUdtUnionCaseV0::VoidV0(c) => {
-                let doc = const_view_string(path, &c.doc);
-                let name = const_view_string(path, &c.name);
-                quote!(#path::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
-                    #path::xdr::ScSpecUdtUnionCaseVoidV0View { doc: #doc, name: #name }
-                ))
-            }
-            ScSpecUdtUnionCaseV0::TupleV0(c) => {
-                let doc = const_view_string(path, &c.doc);
-                let name = const_view_string(path, &c.name);
-                let type_ = c.type_.iter().map(|t| const_view_type_def(path, t));
-                quote!(#path::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
-                    #path::xdr::ScSpecUdtUnionCaseTupleV0View {
-                        doc: #doc,
-                        name: #name,
-                        type_: #path::xdr::VecMView::new(&[#(#type_),*]),
-                    }
-                ))
-            }
-        });
+        let name = quote!(#path::xdr::StringMView::new_str(#enum_ident::spec_type_name()));
+        // Each case's Rust field types, so a reference to a user-defined type in
+        // a case resolves to the name that type reports for itself.
+        let cases = spec
+            .cases
+            .iter()
+            .zip(&variant_field_types)
+            .map(|(c, field_types)| match c {
+                ScSpecUdtUnionCaseV0::VoidV0(c) => {
+                    let doc = const_view_string(path, &c.doc);
+                    let name = const_view_string(path, &c.name);
+                    quote!(#path::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
+                        #path::xdr::ScSpecUdtUnionCaseVoidV0View { doc: #doc, name: #name }
+                    ))
+                }
+                ScSpecUdtUnionCaseV0::TupleV0(c) => {
+                    let doc = const_view_string(path, &c.doc);
+                    let name = const_view_string(path, &c.name);
+                    let type_ = c
+                        .type_
+                        .iter()
+                        .zip(field_types.iter().copied())
+                        .map(|(t, rust)| const_view_type_def(path, t, Some(rust)));
+                    quote!(#path::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
+                        #path::xdr::ScSpecUdtUnionCaseTupleV0View {
+                            doc: #doc,
+                            name: #name,
+                            type_: #path::xdr::VecMView::new(&[#(#type_),*]),
+                        }
+                    ))
+                }
+            });
         let spec_view = quote! {
             #path::xdr::ScSpecEntryView::UdtUnionV0(#path::xdr::ScSpecUdtUnionV0View {
                 doc: #doc,
@@ -230,6 +244,8 @@ pub fn derive_type_enum(
 
     // Output.
     let mut output = quote! {
+        #spec_type_name
+
         #spec_gen
 
         #spec_shaking_impl
