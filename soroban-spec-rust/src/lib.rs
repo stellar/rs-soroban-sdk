@@ -1,8 +1,8 @@
 mod syn_ext;
 
-pub use syn_ext::TypeNames;
-use syn_ext::segment_ident;
 use std::collections::BTreeMap;
+use syn_ext::segment_ident;
+pub use syn_ext::TypeNames;
 pub mod r#trait;
 pub mod types;
 
