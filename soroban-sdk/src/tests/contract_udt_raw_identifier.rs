@@ -183,7 +183,6 @@ fn test_spec_struct() {
             doc: "".try_into().unwrap(),
             lib: "".try_into().unwrap(),
             name: "TestType".try_into().unwrap(),
-            id: TestType::spec_type_id(),
             fields: [
                 ScSpecUdtStructFieldV0 {
                     doc: "".try_into().unwrap(),
@@ -213,7 +212,6 @@ fn test_spec_struct() {
             doc: "".try_into().unwrap(),
             lib: "".try_into().unwrap(),
             name: "type".try_into().unwrap(),
-            id: r#type::spec_type_id(),
             fields: [ScSpecUdtStructFieldV0 {
                 doc: "".try_into().unwrap(),
                 name: "value".try_into().unwrap(),
@@ -232,7 +230,6 @@ fn test_spec_struct() {
             doc: "".try_into().unwrap(),
             lib: "".try_into().unwrap(),
             name: "TupleStruct".try_into().unwrap(),
-            id: TupleStruct::spec_type_id(),
             fields: [
                 ScSpecUdtStructFieldV0 {
                     doc: "".try_into().unwrap(),
@@ -260,7 +257,6 @@ fn test_spec_enum() {
             doc: "".try_into().unwrap(),
             lib: "".try_into().unwrap(),
             name: "TestEnum".try_into().unwrap(),
-            id: TestEnum::spec_type_id(),
             cases: [
                 ScSpecUdtEnumCaseV0 {
                     doc: "".try_into().unwrap(),
@@ -285,7 +281,6 @@ fn test_spec_enum() {
             doc: "".try_into().unwrap(),
             lib: "".try_into().unwrap(),
             name: "TestError".try_into().unwrap(),
-            id: TestError::spec_type_id(),
             cases: [ScSpecUdtErrorEnumCaseV0 {
                 doc: "".try_into().unwrap(),
                 name: "Error".try_into().unwrap(),
@@ -304,7 +299,6 @@ fn test_spec_enum() {
             doc: "".try_into().unwrap(),
             lib: "".try_into().unwrap(),
             name: "TestTupleEnum".try_into().unwrap(),
-            id: TestTupleEnum::spec_type_id(),
             cases: [
                 ScSpecUdtUnionCaseV0::TupleV0(ScSpecUdtUnionCaseTupleV0 {
                     doc: "".try_into().unwrap(),

@@ -70,14 +70,11 @@ pub fn derive_type_enum_int(
         return quote! { #(#compile_errors)* };
     }
 
-    // Build the spec entry once. The id is a placeholder: the real id hashes
-    // the fully qualified name only the compiler knows, so it is emitted into
-    // the rendered view below rather than resolved here.
+    // Build the spec entry once.
     let spec = ScSpecUdtEnumV0 {
         doc: docs_from_attrs(attrs),
         lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
         name: enum_ident.unraw().to_string().try_into().unwrap(),
-        id: [0; 8],
         cases: spec_cases.try_into().unwrap(),
     };
 
@@ -98,7 +95,6 @@ pub fn derive_type_enum_int(
                 doc: #doc,
                 lib: #lib,
                 name: #name,
-                id: #enum_ident::spec_type_id(),
                 cases: #path::xdr::VecMView::new(&[#(#cases),*]),
             })
         };

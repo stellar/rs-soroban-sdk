@@ -1,8 +1,8 @@
 //! The id a user-defined type is known by in the contract spec.
 //!
-//! A type's definition entry carries the id, and every reference to the type
-//! carries the same id, so a reference can be matched to its definition
-//! exactly even when two types share a name.
+//! Every `ScSpecTypeUdtv2` reference to a type carries the type's id, so two
+//! references are known to refer to the same type, or to different types,
+//! even when the types share a name.
 
 use crate::spec_shaking::sha256;
 

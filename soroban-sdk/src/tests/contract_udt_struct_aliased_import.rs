@@ -13,9 +13,9 @@
 //!   field-declaration site (`Renamed`), while the referenced type's own spec
 //!   entry is generated under its original definition name (`Inner`). The
 //!   reference's id, however, is resolved through the Rust type, so it is the
-//!   id of `Inner`'s own entry: anything that regenerates a client from the
-//!   spec (e.g. `contractimport!` in another crate) can marry the reference up
-//!   with the entry by id, even though the names do not match.
+//!   id of `Inner` — the hash of `Inner`'s fully qualified name — and any two
+//!   references carrying that id are known to refer to the same type, however
+//!   they are spelled.
 
 use crate::{self as soroban_sdk};
 use soroban_sdk::{contract, contractimpl, contracttype, Env};
@@ -96,7 +96,6 @@ fn test_spec() {
         doc: "".try_into().unwrap(),
         lib: "".try_into().unwrap(),
         name: "Outer".try_into().unwrap(),
-        id: Outer::spec_type_id(),
         fields: vec![
             ScSpecUdtStructFieldV0 {
                 doc: "".try_into().unwrap(),
@@ -127,7 +126,6 @@ fn test_spec() {
         doc: "".try_into().unwrap(),
         lib: "".try_into().unwrap(),
         name: "Inner".try_into().unwrap(),
-        id: inner::Inner::spec_type_id(),
         fields: vec![
             ScSpecUdtStructFieldV0 {
                 doc: "".try_into().unwrap(),

@@ -154,7 +154,6 @@ impl DataKey {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"DataKey"),
-            id: DataKey::spec_type_id(),
             cases: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
                     soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
