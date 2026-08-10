@@ -1,5 +1,6 @@
 #![feature(prelude_import)]
 #![no_std]
+#[macro_use]
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
@@ -342,7 +343,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_fields_are_eq(&self) {}
+        fn assert_receiver_is_total_eq(&self) -> () {}
     }
     #[automatically_derived]
     impl ::core::marker::StructuralPartialEq for ArbitraryFlag {}
@@ -380,33 +381,29 @@ const _: () = {
         #[allow(non_upper_case_globals)]
         const RECURSIVE_COUNT_ArbitraryFlag: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
             #[inline]
-            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
+            fn __init() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    (),
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         } else {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    !,
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         }
                     },
@@ -535,7 +532,7 @@ impl ::core::cmp::Eq for Error {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {}
+    fn assert_receiver_is_total_eq(&self) -> () {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for Error {}

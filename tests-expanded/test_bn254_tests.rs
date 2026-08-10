@@ -1,5 +1,6 @@
 #![feature(prelude_import)]
 #![no_std]
+#[macro_use]
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
@@ -181,33 +182,28 @@ impl TryFrom<&MockProof> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &MockProof) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
-            ::alloc::intrinsics::write_box_via_move(
-                ::alloc::boxed::Box::new_uninit(),
-                [
-                    soroban_sdk::xdr::ScMapEntry {
-                        key: soroban_sdk::xdr::ScSymbol(
-                            "g1".try_into()
-                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                        )
-                        .into(),
-                        val: (&val.g1)
-                            .try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    },
-                    soroban_sdk::xdr::ScMapEntry {
-                        key: soroban_sdk::xdr::ScSymbol(
-                            "g2".try_into()
-                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                        )
-                        .into(),
-                        val: (&val.g2)
-                            .try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    },
-                ],
-            ),
-        ))
+        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
+            soroban_sdk::xdr::ScMapEntry {
+                key: soroban_sdk::xdr::ScSymbol(
+                    "g1".try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                )
+                .into(),
+                val: (&val.g1)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            },
+            soroban_sdk::xdr::ScMapEntry {
+                key: soroban_sdk::xdr::ScSymbol(
+                    "g2".try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                )
+                .into(),
+                val: (&val.g2)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            },
+        ])))
     }
 }
 impl TryFrom<MockProof> for soroban_sdk::xdr::ScMap {
@@ -267,7 +263,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_fields_are_eq(&self) {
+        fn assert_receiver_is_total_eq(&self) -> () {
             let _: ::core::cmp::AssertParamIsEq<
                 <Vec<
                     Bn254G1Affine,
@@ -318,33 +314,29 @@ const _: () = {
         #[allow(non_upper_case_globals)]
         const RECURSIVE_COUNT_ArbitraryMockProof: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
             #[inline]
-            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
+            fn __init() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    (),
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         } else {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    !,
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         }
                     },

@@ -1,5 +1,6 @@
 #![feature(prelude_import)]
 #![no_std]
+#[macro_use]
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
@@ -826,7 +827,7 @@ mod test {
 mod test_with_wasm {
     use soroban_sdk::{Env, String};
     mod contract {
-        pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01\x11\x03`\x02~~\x01~`\x00\x01~`\x02\x7f\x7f\x01~\x02\x07\x01\x01b\x01i\x00\x00\x03\x04\x03\x01\x02\x01\x05\x03\x01\x00\x11\x06\x11\x02\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x8f\x80\xc0\x00\x0b\x07\x1d\x04\x06memory\x02\x00\x04exec\x00\x01\x05exec2\x00\x03\x01_\x03\x01\n>\x03\x10\x00A\x80\x80\xc0\x80\x00A\x07\x10\x82\x80\x80\x80\x00\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x80\x80\x80\x80\x00\x0b\x10\x00A\x87\x80\xc0\x80\x00A\x08\x10\x82\x80\x80\x80\x00\x0b\x0b\x18\x01\x00A\x80\x80\xc0\x00\x0b\x0fdefaultdefault2\x00\xaf\x16\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04exec\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05exec2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x10\x00\x00\x00\x02\x00\x00\x00\xe3Context of a single authorized call performed by an address.\n\nCustom account contracts that implement `__check_auth` special function\nreceive a list of `Context` values corresponding to all the calls that\nneed to be authorized.\x00\x00\x00\x00\x00\x00\x00\x00\x07Context\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x14Contract invocation.\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x0fContractContext\x00Zc\xa9U\xe4\xf7\xa8\x8b\x00\x00\x00\x01\x00\x00\x00=Contract that has a constructor with no arguments is created.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x1bCreateContractHostFnContext\x00\xf4\xb8\xe9\xd5\xb0\x84\xaa\xce\x00\x00\x00\x01\x00\x00\x00DContract that has a constructor with 1 or more arguments is created.\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\xc6\xd7\xe5J\x9d\x8f\x11s\x00\x00\x00\x01\x00\x00\x00\xbdAuthorization context of a single contract call.\n\nThis struct corresponds to a `require_auth_for_args` call for an address\nfrom `contract` function with `fn_name` name and `args` arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08contract\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x07fn_name\x00\x00\x00\x00\x11\x00\x00\x00\x02\x00\x00\x00_Contract executable used for creating a new contract and used in\n`CreateContractHostFnContext`.\x00\x00\x00\x00\x00\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x008Value of contract node in InvokerContractAuthEntry tree.\x00\x00\x00\x00\x00\x00\x00\x15SubContractInvocation\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x07\xd1\x00\x00\x00\x0fContractContext\x00Zc\xa9U\xe4\xf7\xa8\x8b\x00\x00\x00\x00\x00\x00\x00\x0fsub_invocations\x00\x00\x00\x03\xea\x00\x00\x07\xd1\x00\x00\x00\x18InvokerContractAuthEntry`\xc1\x90\xeb\xac\xf1AN\x00\x00\x00\x02\x00\x00\x01/A node in the tree of authorizations performed on behalf of the current\ncontract as invoker of the contracts deeper in the call stack.\n\nThis is used as an argument of `authorize_as_current_contract` host function.\n\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\ncurrent contract.\x00\x00\x00\x00\x00\x00\x00\x00\x18InvokerContractAuthEntry\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x12Invoke a contract.\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x15SubContractInvocation\x00\x00\x00`\x85\xe2\x08OZQ\x10\x00\x00\x00\x01\x00\x00\x005Create a contract passing 0 arguments to constructor.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x1bCreateContractHostFnContext\x00\xf4\xb8\xe9\xd5\xb0\x84\xaa\xce\x00\x00\x00\x01\x00\x00\x00=Create a contract passing 0 or more arguments to constructor.\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\xc6\xd7\xe5J\x9d\x8f\x11s\x00\x00\x00\x01\x00\x00\x00vAuthorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd1\x00\x00\x00\x12ContractExecutable\x00\x00\xb1\x0etP\xeaT\x89\xb2\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\xd6Authorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\nThis is the same as `CreateContractHostFnContext`, but also has\ncontract constructor arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x10constructor_args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd1\x00\x00\x00\x12ContractExecutable\x00\x00\xb1\x0etP\xeaT\x89\xb2\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nExecutable\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStellarAsset\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Account\x00\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1c\x00\x00\x00\x00\x00O\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.97.1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12rssdk_spec_shaking\x00\x00\x00\x00\x00\x012\x00\x00\x00";
+        pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01\x11\x03`\x02~~\x01~`\x00\x01~`\x02\x7f\x7f\x01~\x02\x07\x01\x01b\x01i\x00\x00\x03\x04\x03\x01\x02\x01\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x8f\x80\xc0\x00\x0b\x7f\x00A\x8f\x80\xc0\x00\x0b\x7f\x00A\x90\x80\xc0\x00\x0b\x078\x06\x06memory\x02\x00\x04exec\x00\x01\x05exec2\x00\x03\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n>\x03\x10\x00A\x80\x80\xc0\x80\x00A\x07\x10\x82\x80\x80\x80\x00\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x80\x80\x80\x80\x00\x0b\x10\x00A\x87\x80\xc0\x80\x00A\x08\x10\x82\x80\x80\x80\x00\x0b\x0b\x18\x01\x00A\x80\x80\xc0\x00\x0b\x0fdefaultdefault2\x00\xaf\x16\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04exec\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05exec2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x10\x00\x00\x00\x02\x00\x00\x00\xe3Context of a single authorized call performed by an address.\n\nCustom account contracts that implement `__check_auth` special function\nreceive a list of `Context` values corresponding to all the calls that\nneed to be authorized.\x00\x00\x00\x00\x00\x00\x00\x00\x07Context\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x14Contract invocation.\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x0fContractContext\x00Zc\xa9U\xe4\xf7\xa8\x8b\x00\x00\x00\x01\x00\x00\x00=Contract that has a constructor with no arguments is created.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x1bCreateContractHostFnContext\x00\xf4\xb8\xe9\xd5\xb0\x84\xaa\xce\x00\x00\x00\x01\x00\x00\x00DContract that has a constructor with 1 or more arguments is created.\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\xc6\xd7\xe5J\x9d\x8f\x11s\x00\x00\x00\x01\x00\x00\x00\xbdAuthorization context of a single contract call.\n\nThis struct corresponds to a `require_auth_for_args` call for an address\nfrom `contract` function with `fn_name` name and `args` arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08contract\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x07fn_name\x00\x00\x00\x00\x11\x00\x00\x00\x02\x00\x00\x00_Contract executable used for creating a new contract and used in\n`CreateContractHostFnContext`.\x00\x00\x00\x00\x00\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x008Value of contract node in InvokerContractAuthEntry tree.\x00\x00\x00\x00\x00\x00\x00\x15SubContractInvocation\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x07\xd1\x00\x00\x00\x0fContractContext\x00Zc\xa9U\xe4\xf7\xa8\x8b\x00\x00\x00\x00\x00\x00\x00\x0fsub_invocations\x00\x00\x00\x03\xea\x00\x00\x07\xd1\x00\x00\x00\x18InvokerContractAuthEntry`\xc1\x90\xeb\xac\xf1AN\x00\x00\x00\x02\x00\x00\x01/A node in the tree of authorizations performed on behalf of the current\ncontract as invoker of the contracts deeper in the call stack.\n\nThis is used as an argument of `authorize_as_current_contract` host function.\n\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\ncurrent contract.\x00\x00\x00\x00\x00\x00\x00\x00\x18InvokerContractAuthEntry\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x12Invoke a contract.\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x15SubContractInvocation\x00\x00\x00`\x85\xe2\x08OZQ\x10\x00\x00\x00\x01\x00\x00\x005Create a contract passing 0 arguments to constructor.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x1bCreateContractHostFnContext\x00\xf4\xb8\xe9\xd5\xb0\x84\xaa\xce\x00\x00\x00\x01\x00\x00\x00=Create a contract passing 0 or more arguments to constructor.\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\xc6\xd7\xe5J\x9d\x8f\x11s\x00\x00\x00\x01\x00\x00\x00vAuthorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd1\x00\x00\x00\x12ContractExecutable\x00\x00\xb1\x0etP\xeaT\x89\xb2\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\xd6Authorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\nThis is the same as `CreateContractHostFnContext`, but also has\ncontract constructor arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x10constructor_args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd1\x00\x00\x00\x12ContractExecutable\x00\x00\xb1\x0etP\xeaT\x89\xb2\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nExecutable\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStellarAsset\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Account\x00\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1c\x00\x00\x00\x00\x00O\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12rssdk_spec_shaking\x00\x00\x00\x00\x00\x012\x00\x00\x00";
         pub trait Contract {
             fn exec(env: soroban_sdk::Env) -> soroban_sdk::String;
             fn exec2(env: soroban_sdk::Env) -> soroban_sdk::String;
@@ -1153,7 +1154,7 @@ mod test_with_wasm {
             #[inline]
             #[doc(hidden)]
             #[coverage(off)]
-            fn assert_fields_are_eq(&self) {
+            fn assert_receiver_is_total_eq(&self) -> () {
                 let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Vec<soroban_sdk::Val>>;
                 let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Address>;
                 let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Symbol>;
@@ -1409,48 +1410,41 @@ mod test_with_wasm {
             fn try_from(val: &ContractContext) -> Result<Self, soroban_sdk::xdr::Error> {
                 extern crate alloc;
                 use soroban_sdk::TryFromVal;
-                soroban_sdk::xdr::ScMap::sorted_from(
-                    ::alloc::boxed::box_assume_init_into_vec_unsafe(
-                        ::alloc::intrinsics::write_box_via_move(
-                            ::alloc::boxed::Box::new_uninit(),
-                            [
-                                soroban_sdk::xdr::ScMapEntry {
-                                    key: soroban_sdk::xdr::ScSymbol(
-                                        "args"
-                                            .try_into()
-                                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                                    )
-                                    .into(),
-                                    val: (&val.args)
-                                        .try_into()
-                                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                                },
-                                soroban_sdk::xdr::ScMapEntry {
-                                    key: soroban_sdk::xdr::ScSymbol(
-                                        "contract"
-                                            .try_into()
-                                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                                    )
-                                    .into(),
-                                    val: (&val.contract)
-                                        .try_into()
-                                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                                },
-                                soroban_sdk::xdr::ScMapEntry {
-                                    key: soroban_sdk::xdr::ScSymbol(
-                                        "fn_name"
-                                            .try_into()
-                                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                                    )
-                                    .into(),
-                                    val: (&val.fn_name)
-                                        .try_into()
-                                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                                },
-                            ],
-                        ),
-                    ),
-                )
+                soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
+                    soroban_sdk::xdr::ScMapEntry {
+                        key: soroban_sdk::xdr::ScSymbol(
+                            "args"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into(),
+                        val: (&val.args)
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    },
+                    soroban_sdk::xdr::ScMapEntry {
+                        key: soroban_sdk::xdr::ScSymbol(
+                            "contract"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into(),
+                        val: (&val.contract)
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    },
+                    soroban_sdk::xdr::ScMapEntry {
+                        key: soroban_sdk::xdr::ScSymbol(
+                            "fn_name"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into(),
+                        val: (&val.fn_name)
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    },
+                ])))
             }
         }
         impl TryFrom<ContractContext> for soroban_sdk::xdr::ScMap {
@@ -1516,7 +1510,7 @@ mod test_with_wasm {
                 #[inline]
                 #[doc(hidden)]
                 #[coverage(off)]
-                fn assert_fields_are_eq(&self) {
+                fn assert_receiver_is_total_eq(&self) -> () {
                     let _: ::core::cmp::AssertParamIsEq<
                         <soroban_sdk::Vec<
                             soroban_sdk::Val,
@@ -1590,37 +1584,29 @@ mod test_with_wasm {
                     std::cell::Cell<u32>,
                 > = {
                     #[inline]
-                    fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
+                    fn __init() -> std::cell::Cell<u32> {
                         std::cell::Cell::new(0)
                     }
                     unsafe {
                         ::std::thread::LocalKey::new(
                             const {
                                 if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                                    |__rust_std_internal_init| {
+                                    |init| {
                                         #[thread_local]
-                                        static __RUST_STD_INTERNAL_VAL:
-                                            ::std::thread::local_impl::LazyStorage<
-                                                std::cell::Cell<u32>,
-                                                (),
-                                            > = ::std::thread::local_impl::LazyStorage::new();
-                                        __RUST_STD_INTERNAL_VAL.get_or_init(
-                                            __rust_std_internal_init,
-                                            __rust_std_internal_init_fn,
-                                        )
+                                        static VAL: ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            (),
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                        VAL.get_or_init(init, __init)
                                     }
                                 } else {
-                                    |__rust_std_internal_init| {
+                                    |init| {
                                         #[thread_local]
-                                        static __RUST_STD_INTERNAL_VAL:
-                                            ::std::thread::local_impl::LazyStorage<
-                                                std::cell::Cell<u32>,
-                                                !,
-                                            > = ::std::thread::local_impl::LazyStorage::new();
-                                        __RUST_STD_INTERNAL_VAL.get_or_init(
-                                            __rust_std_internal_init,
-                                            __rust_std_internal_init_fn,
-                                        )
+                                        static VAL: ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            !,
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                        VAL.get_or_init(init, __init)
                                     }
                                 }
                             },
@@ -1755,7 +1741,7 @@ mod test_with_wasm {
             #[inline]
             #[doc(hidden)]
             #[coverage(off)]
-            fn assert_fields_are_eq(&self) {
+            fn assert_receiver_is_total_eq(&self) -> () {
                 let _: ::core::cmp::AssertParamIsEq<ContractContext>;
                 let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Vec<InvokerContractAuthEntry>>;
             }
@@ -1991,37 +1977,30 @@ mod test_with_wasm {
             fn try_from(val: &SubContractInvocation) -> Result<Self, soroban_sdk::xdr::Error> {
                 extern crate alloc;
                 use soroban_sdk::TryFromVal;
-                soroban_sdk::xdr::ScMap::sorted_from(
-                    ::alloc::boxed::box_assume_init_into_vec_unsafe(
-                        ::alloc::intrinsics::write_box_via_move(
-                            ::alloc::boxed::Box::new_uninit(),
-                            [
-                                soroban_sdk::xdr::ScMapEntry {
-                                    key: soroban_sdk::xdr::ScSymbol(
-                                        "context"
-                                            .try_into()
-                                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                                    )
-                                    .into(),
-                                    val: (&val.context)
-                                        .try_into()
-                                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                                },
-                                soroban_sdk::xdr::ScMapEntry {
-                                    key: soroban_sdk::xdr::ScSymbol(
-                                        "sub_invocations"
-                                            .try_into()
-                                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                                    )
-                                    .into(),
-                                    val: (&val.sub_invocations)
-                                        .try_into()
-                                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                                },
-                            ],
-                        ),
-                    ),
-                )
+                soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
+                    soroban_sdk::xdr::ScMapEntry {
+                        key: soroban_sdk::xdr::ScSymbol(
+                            "context"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into(),
+                        val: (&val.context)
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    },
+                    soroban_sdk::xdr::ScMapEntry {
+                        key: soroban_sdk::xdr::ScSymbol(
+                            "sub_invocations"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into(),
+                        val: (&val.sub_invocations)
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    },
+                ])))
             }
         }
         impl TryFrom<SubContractInvocation> for soroban_sdk::xdr::ScMap {
@@ -2083,7 +2062,7 @@ mod test_with_wasm {
                 #[inline]
                 #[doc(hidden)]
                 #[coverage(off)]
-                fn assert_fields_are_eq(&self) {
+                fn assert_receiver_is_total_eq(&self) -> () {
                     let _: ::core::cmp::AssertParamIsEq<
                         <ContractContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
                     >;
@@ -2139,37 +2118,29 @@ mod test_with_wasm {
                     std::cell::Cell<u32>,
                 > = {
                     #[inline]
-                    fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
+                    fn __init() -> std::cell::Cell<u32> {
                         std::cell::Cell::new(0)
                     }
                     unsafe {
                         ::std::thread::LocalKey::new(
                             const {
                                 if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                                    |__rust_std_internal_init| {
+                                    |init| {
                                         #[thread_local]
-                                        static __RUST_STD_INTERNAL_VAL:
-                                            ::std::thread::local_impl::LazyStorage<
-                                                std::cell::Cell<u32>,
-                                                (),
-                                            > = ::std::thread::local_impl::LazyStorage::new();
-                                        __RUST_STD_INTERNAL_VAL.get_or_init(
-                                            __rust_std_internal_init,
-                                            __rust_std_internal_init_fn,
-                                        )
+                                        static VAL: ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            (),
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                        VAL.get_or_init(init, __init)
                                     }
                                 } else {
-                                    |__rust_std_internal_init| {
+                                    |init| {
                                         #[thread_local]
-                                        static __RUST_STD_INTERNAL_VAL:
-                                            ::std::thread::local_impl::LazyStorage<
-                                                std::cell::Cell<u32>,
-                                                !,
-                                            > = ::std::thread::local_impl::LazyStorage::new();
-                                        __RUST_STD_INTERNAL_VAL.get_or_init(
-                                            __rust_std_internal_init,
-                                            __rust_std_internal_init_fn,
-                                        )
+                                        static VAL: ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            !,
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                        VAL.get_or_init(init, __init)
                                     }
                                 }
                             },
@@ -2300,7 +2271,7 @@ mod test_with_wasm {
             #[inline]
             #[doc(hidden)]
             #[coverage(off)]
-            fn assert_fields_are_eq(&self) {
+            fn assert_receiver_is_total_eq(&self) -> () {
                 let _: ::core::cmp::AssertParamIsEq<ContractExecutable>;
                 let _: ::core::cmp::AssertParamIsEq<soroban_sdk::BytesN<32>>;
             }
@@ -2524,37 +2495,30 @@ mod test_with_wasm {
             ) -> Result<Self, soroban_sdk::xdr::Error> {
                 extern crate alloc;
                 use soroban_sdk::TryFromVal;
-                soroban_sdk::xdr::ScMap::sorted_from(
-                    ::alloc::boxed::box_assume_init_into_vec_unsafe(
-                        ::alloc::intrinsics::write_box_via_move(
-                            ::alloc::boxed::Box::new_uninit(),
-                            [
-                                soroban_sdk::xdr::ScMapEntry {
-                                    key: soroban_sdk::xdr::ScSymbol(
-                                        "executable"
-                                            .try_into()
-                                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                                    )
-                                    .into(),
-                                    val: (&val.executable)
-                                        .try_into()
-                                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                                },
-                                soroban_sdk::xdr::ScMapEntry {
-                                    key: soroban_sdk::xdr::ScSymbol(
-                                        "salt"
-                                            .try_into()
-                                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                                    )
-                                    .into(),
-                                    val: (&val.salt)
-                                        .try_into()
-                                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                                },
-                            ],
-                        ),
-                    ),
-                )
+                soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
+                    soroban_sdk::xdr::ScMapEntry {
+                        key: soroban_sdk::xdr::ScSymbol(
+                            "executable"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into(),
+                        val: (&val.executable)
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    },
+                    soroban_sdk::xdr::ScMapEntry {
+                        key: soroban_sdk::xdr::ScSymbol(
+                            "salt"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into(),
+                        val: (&val.salt)
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    },
+                ])))
             }
         }
         impl TryFrom<CreateContractHostFnContext> for soroban_sdk::xdr::ScMap {
@@ -2618,7 +2582,7 @@ mod test_with_wasm {
                 #[inline]
                 #[doc(hidden)]
                 #[coverage(off)]
-                fn assert_fields_are_eq(&self) {
+                fn assert_receiver_is_total_eq(&self) -> () {
                     let _: ::core::cmp::AssertParamIsEq<
                         <ContractExecutable as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
                     >;
@@ -2674,37 +2638,29 @@ mod test_with_wasm {
                 const RECURSIVE_COUNT_ArbitraryCreateContractHostFnContext:
                     ::std::thread::LocalKey<std::cell::Cell<u32>> = {
                     #[inline]
-                    fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
+                    fn __init() -> std::cell::Cell<u32> {
                         std::cell::Cell::new(0)
                     }
                     unsafe {
                         ::std::thread::LocalKey::new(
                             const {
                                 if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                                    |__rust_std_internal_init| {
+                                    |init| {
                                         #[thread_local]
-                                        static __RUST_STD_INTERNAL_VAL:
-                                            ::std::thread::local_impl::LazyStorage<
-                                                std::cell::Cell<u32>,
-                                                (),
-                                            > = ::std::thread::local_impl::LazyStorage::new();
-                                        __RUST_STD_INTERNAL_VAL.get_or_init(
-                                            __rust_std_internal_init,
-                                            __rust_std_internal_init_fn,
-                                        )
+                                        static VAL: ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            (),
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                        VAL.get_or_init(init, __init)
                                     }
                                 } else {
-                                    |__rust_std_internal_init| {
+                                    |init| {
                                         #[thread_local]
-                                        static __RUST_STD_INTERNAL_VAL:
-                                            ::std::thread::local_impl::LazyStorage<
-                                                std::cell::Cell<u32>,
-                                                !,
-                                            > = ::std::thread::local_impl::LazyStorage::new();
-                                        __RUST_STD_INTERNAL_VAL.get_or_init(
-                                            __rust_std_internal_init,
-                                            __rust_std_internal_init_fn,
-                                        )
+                                        static VAL: ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            !,
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                        VAL.get_or_init(init, __init)
                                     }
                                 }
                             },
@@ -2839,7 +2795,7 @@ mod test_with_wasm {
             #[inline]
             #[doc(hidden)]
             #[coverage(off)]
-            fn assert_fields_are_eq(&self) {
+            fn assert_receiver_is_total_eq(&self) -> () {
                 let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Vec<soroban_sdk::Val>>;
                 let _: ::core::cmp::AssertParamIsEq<ContractExecutable>;
                 let _: ::core::cmp::AssertParamIsEq<soroban_sdk::BytesN<32>>;
@@ -3130,48 +3086,41 @@ mod test_with_wasm {
             ) -> Result<Self, soroban_sdk::xdr::Error> {
                 extern crate alloc;
                 use soroban_sdk::TryFromVal;
-                soroban_sdk::xdr::ScMap::sorted_from(
-                    ::alloc::boxed::box_assume_init_into_vec_unsafe(
-                        ::alloc::intrinsics::write_box_via_move(
-                            ::alloc::boxed::Box::new_uninit(),
-                            [
-                                soroban_sdk::xdr::ScMapEntry {
-                                    key: soroban_sdk::xdr::ScSymbol(
-                                        "constructor_args"
-                                            .try_into()
-                                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                                    )
-                                    .into(),
-                                    val: (&val.constructor_args)
-                                        .try_into()
-                                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                                },
-                                soroban_sdk::xdr::ScMapEntry {
-                                    key: soroban_sdk::xdr::ScSymbol(
-                                        "executable"
-                                            .try_into()
-                                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                                    )
-                                    .into(),
-                                    val: (&val.executable)
-                                        .try_into()
-                                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                                },
-                                soroban_sdk::xdr::ScMapEntry {
-                                    key: soroban_sdk::xdr::ScSymbol(
-                                        "salt"
-                                            .try_into()
-                                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                                    )
-                                    .into(),
-                                    val: (&val.salt)
-                                        .try_into()
-                                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                                },
-                            ],
-                        ),
-                    ),
-                )
+                soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
+                    soroban_sdk::xdr::ScMapEntry {
+                        key: soroban_sdk::xdr::ScSymbol(
+                            "constructor_args"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into(),
+                        val: (&val.constructor_args)
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    },
+                    soroban_sdk::xdr::ScMapEntry {
+                        key: soroban_sdk::xdr::ScSymbol(
+                            "executable"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into(),
+                        val: (&val.executable)
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    },
+                    soroban_sdk::xdr::ScMapEntry {
+                        key: soroban_sdk::xdr::ScSymbol(
+                            "salt"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into(),
+                        val: (&val.salt)
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    },
+                ])))
             }
         }
         impl TryFrom<CreateContractWithConstructorHostFnContext> for soroban_sdk::xdr::ScMap {
@@ -3245,7 +3194,7 @@ mod test_with_wasm {
                 #[inline]
                 #[doc(hidden)]
                 #[coverage(off)]
-                fn assert_fields_are_eq(&self) {
+                fn assert_receiver_is_total_eq(&self) -> () {
                     let _: ::core::cmp::AssertParamIsEq<
                         <soroban_sdk::Vec<
                             soroban_sdk::Val,
@@ -3323,37 +3272,29 @@ mod test_with_wasm {
                 const RECURSIVE_COUNT_ArbitraryCreateContractWithConstructorHostFnContext:
                     ::std::thread::LocalKey<std::cell::Cell<u32>> = {
                     #[inline]
-                    fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
+                    fn __init() -> std::cell::Cell<u32> {
                         std::cell::Cell::new(0)
                     }
                     unsafe {
                         ::std::thread::LocalKey::new(
                             const {
                                 if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                                    |__rust_std_internal_init| {
+                                    |init| {
                                         #[thread_local]
-                                        static __RUST_STD_INTERNAL_VAL:
-                                            ::std::thread::local_impl::LazyStorage<
-                                                std::cell::Cell<u32>,
-                                                (),
-                                            > = ::std::thread::local_impl::LazyStorage::new();
-                                        __RUST_STD_INTERNAL_VAL.get_or_init(
-                                            __rust_std_internal_init,
-                                            __rust_std_internal_init_fn,
-                                        )
+                                        static VAL: ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            (),
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                        VAL.get_or_init(init, __init)
                                     }
                                 } else {
-                                    |__rust_std_internal_init| {
+                                    |init| {
                                         #[thread_local]
-                                        static __RUST_STD_INTERNAL_VAL:
-                                            ::std::thread::local_impl::LazyStorage<
-                                                std::cell::Cell<u32>,
-                                                !,
-                                            > = ::std::thread::local_impl::LazyStorage::new();
-                                        __RUST_STD_INTERNAL_VAL.get_or_init(
-                                            __rust_std_internal_init,
-                                            __rust_std_internal_init_fn,
-                                        )
+                                        static VAL: ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            !,
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                        VAL.get_or_init(init, __init)
                                     }
                                 }
                             },
@@ -3522,7 +3463,7 @@ mod test_with_wasm {
             #[inline]
             #[doc(hidden)]
             #[coverage(off)]
-            fn assert_fields_are_eq(&self) {
+            fn assert_receiver_is_total_eq(&self) -> () {
                 let _: ::core::cmp::AssertParamIsEq<ContractContext>;
                 let _: ::core::cmp::AssertParamIsEq<CreateContractHostFnContext>;
                 let _: ::core::cmp::AssertParamIsEq<CreateContractWithConstructorHostFnContext>;
@@ -3995,7 +3936,7 @@ mod test_with_wasm {
                 #[inline]
                 #[doc(hidden)]
                 #[coverage(off)]
-                fn assert_fields_are_eq(&self) {
+                fn assert_receiver_is_total_eq(&self) -> () {
                     let _: ::core::cmp::AssertParamIsEq<
                         <ContractContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
                     >;
@@ -4091,37 +4032,29 @@ mod test_with_wasm {
                     std::cell::Cell<u32>,
                 > = {
                     #[inline]
-                    fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
+                    fn __init() -> std::cell::Cell<u32> {
                         std::cell::Cell::new(0)
                     }
                     unsafe {
                         ::std::thread::LocalKey::new(
                             const {
                                 if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                                    |__rust_std_internal_init| {
+                                    |init| {
                                         #[thread_local]
-                                        static __RUST_STD_INTERNAL_VAL:
-                                            ::std::thread::local_impl::LazyStorage<
-                                                std::cell::Cell<u32>,
-                                                (),
-                                            > = ::std::thread::local_impl::LazyStorage::new();
-                                        __RUST_STD_INTERNAL_VAL.get_or_init(
-                                            __rust_std_internal_init,
-                                            __rust_std_internal_init_fn,
-                                        )
+                                        static VAL: ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            (),
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                        VAL.get_or_init(init, __init)
                                     }
                                 } else {
-                                    |__rust_std_internal_init| {
+                                    |init| {
                                         #[thread_local]
-                                        static __RUST_STD_INTERNAL_VAL:
-                                            ::std::thread::local_impl::LazyStorage<
-                                                std::cell::Cell<u32>,
-                                                !,
-                                            > = ::std::thread::local_impl::LazyStorage::new();
-                                        __RUST_STD_INTERNAL_VAL.get_or_init(
-                                            __rust_std_internal_init,
-                                            __rust_std_internal_init_fn,
-                                        )
+                                        static VAL: ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            !,
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                        VAL.get_or_init(init, __init)
                                     }
                                 }
                             },
@@ -4304,7 +4237,7 @@ mod test_with_wasm {
             #[inline]
             #[doc(hidden)]
             #[coverage(off)]
-            fn assert_fields_are_eq(&self) {
+            fn assert_receiver_is_total_eq(&self) -> () {
                 let _: ::core::cmp::AssertParamIsEq<soroban_sdk::BytesN<32>>;
             }
         }
@@ -4583,7 +4516,7 @@ mod test_with_wasm {
                 #[inline]
                 #[doc(hidden)]
                 #[coverage(off)]
-                fn assert_fields_are_eq(&self) {
+                fn assert_receiver_is_total_eq(&self) -> () {
                     let _: ::core::cmp::AssertParamIsEq<
                         <soroban_sdk::BytesN<
                             32,
@@ -4638,37 +4571,29 @@ mod test_with_wasm {
                     std::cell::Cell<u32>,
                 > = {
                     #[inline]
-                    fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
+                    fn __init() -> std::cell::Cell<u32> {
                         std::cell::Cell::new(0)
                     }
                     unsafe {
                         ::std::thread::LocalKey::new(
                             const {
                                 if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                                    |__rust_std_internal_init| {
+                                    |init| {
                                         #[thread_local]
-                                        static __RUST_STD_INTERNAL_VAL:
-                                            ::std::thread::local_impl::LazyStorage<
-                                                std::cell::Cell<u32>,
-                                                (),
-                                            > = ::std::thread::local_impl::LazyStorage::new();
-                                        __RUST_STD_INTERNAL_VAL.get_or_init(
-                                            __rust_std_internal_init,
-                                            __rust_std_internal_init_fn,
-                                        )
+                                        static VAL: ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            (),
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                        VAL.get_or_init(init, __init)
                                     }
                                 } else {
-                                    |__rust_std_internal_init| {
+                                    |init| {
                                         #[thread_local]
-                                        static __RUST_STD_INTERNAL_VAL:
-                                            ::std::thread::local_impl::LazyStorage<
-                                                std::cell::Cell<u32>,
-                                                !,
-                                            > = ::std::thread::local_impl::LazyStorage::new();
-                                        __RUST_STD_INTERNAL_VAL.get_or_init(
-                                            __rust_std_internal_init,
-                                            __rust_std_internal_init_fn,
-                                        )
+                                        static VAL: ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            !,
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                        VAL.get_or_init(init, __init)
                                     }
                                 }
                             },
@@ -4843,7 +4768,7 @@ mod test_with_wasm {
             #[inline]
             #[doc(hidden)]
             #[coverage(off)]
-            fn assert_fields_are_eq(&self) {
+            fn assert_receiver_is_total_eq(&self) -> () {
                 let _: ::core::cmp::AssertParamIsEq<SubContractInvocation>;
                 let _: ::core::cmp::AssertParamIsEq<CreateContractHostFnContext>;
                 let _: ::core::cmp::AssertParamIsEq<CreateContractWithConstructorHostFnContext>;
@@ -5330,7 +5255,7 @@ mod test_with_wasm {
                 #[inline]
                 #[doc(hidden)]
                 #[coverage(off)]
-                fn assert_fields_are_eq(&self) {
+                fn assert_receiver_is_total_eq(&self) -> () {
                     let _: ::core::cmp::AssertParamIsEq<
                         <SubContractInvocation as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
                     >;
@@ -5438,37 +5363,29 @@ mod test_with_wasm {
                     std::cell::Cell<u32>,
                 > = {
                     #[inline]
-                    fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
+                    fn __init() -> std::cell::Cell<u32> {
                         std::cell::Cell::new(0)
                     }
                     unsafe {
                         ::std::thread::LocalKey::new(
                             const {
                                 if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                                    |__rust_std_internal_init| {
+                                    |init| {
                                         #[thread_local]
-                                        static __RUST_STD_INTERNAL_VAL:
-                                            ::std::thread::local_impl::LazyStorage<
-                                                std::cell::Cell<u32>,
-                                                (),
-                                            > = ::std::thread::local_impl::LazyStorage::new();
-                                        __RUST_STD_INTERNAL_VAL.get_or_init(
-                                            __rust_std_internal_init,
-                                            __rust_std_internal_init_fn,
-                                        )
+                                        static VAL: ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            (),
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                        VAL.get_or_init(init, __init)
                                     }
                                 } else {
-                                    |__rust_std_internal_init| {
+                                    |init| {
                                         #[thread_local]
-                                        static __RUST_STD_INTERNAL_VAL:
-                                            ::std::thread::local_impl::LazyStorage<
-                                                std::cell::Cell<u32>,
-                                                !,
-                                            > = ::std::thread::local_impl::LazyStorage::new();
-                                        __RUST_STD_INTERNAL_VAL.get_or_init(
-                                            __rust_std_internal_init,
-                                            __rust_std_internal_init_fn,
-                                        )
+                                        static VAL: ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            !,
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                        VAL.get_or_init(init, __init)
                                     }
                                 }
                             },
@@ -5679,7 +5596,7 @@ mod test_with_wasm {
             #[inline]
             #[doc(hidden)]
             #[coverage(off)]
-            fn assert_fields_are_eq(&self) {
+            fn assert_receiver_is_total_eq(&self) -> () {
                 let _: ::core::cmp::AssertParamIsEq<soroban_sdk::BytesN<32>>;
             }
         }
@@ -6049,7 +5966,7 @@ mod test_with_wasm {
                 #[inline]
                 #[doc(hidden)]
                 #[coverage(off)]
-                fn assert_fields_are_eq(&self) {
+                fn assert_receiver_is_total_eq(&self) -> () {
                     let _: ::core::cmp::AssertParamIsEq<
                         <soroban_sdk::BytesN<
                             32,
@@ -6117,37 +6034,29 @@ mod test_with_wasm {
                     std::cell::Cell<u32>,
                 > = {
                     #[inline]
-                    fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
+                    fn __init() -> std::cell::Cell<u32> {
                         std::cell::Cell::new(0)
                     }
                     unsafe {
                         ::std::thread::LocalKey::new(
                             const {
                                 if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                                    |__rust_std_internal_init| {
+                                    |init| {
                                         #[thread_local]
-                                        static __RUST_STD_INTERNAL_VAL:
-                                            ::std::thread::local_impl::LazyStorage<
-                                                std::cell::Cell<u32>,
-                                                (),
-                                            > = ::std::thread::local_impl::LazyStorage::new();
-                                        __RUST_STD_INTERNAL_VAL.get_or_init(
-                                            __rust_std_internal_init,
-                                            __rust_std_internal_init_fn,
-                                        )
+                                        static VAL: ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            (),
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                        VAL.get_or_init(init, __init)
                                     }
                                 } else {
-                                    |__rust_std_internal_init| {
+                                    |init| {
                                         #[thread_local]
-                                        static __RUST_STD_INTERNAL_VAL:
-                                            ::std::thread::local_impl::LazyStorage<
-                                                std::cell::Cell<u32>,
-                                                !,
-                                            > = ::std::thread::local_impl::LazyStorage::new();
-                                        __RUST_STD_INTERNAL_VAL.get_or_init(
-                                            __rust_std_internal_init,
-                                            __rust_std_internal_init_fn,
-                                        )
+                                        static VAL: ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            !,
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                        VAL.get_or_init(init, __init)
                                     }
                                 }
                             },

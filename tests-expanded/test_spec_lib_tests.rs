@@ -1,5 +1,6 @@
 #![feature(prelude_import)]
 #![no_std]
+#[macro_use]
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
@@ -32,7 +33,7 @@ impl ::core::cmp::Eq for StructA {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {
+    fn assert_receiver_is_total_eq(&self) -> () {
         let _: ::core::cmp::AssertParamIsEq<u32>;
         let _: ::core::cmp::AssertParamIsEq<bool>;
     }
@@ -203,33 +204,28 @@ impl TryFrom<&StructA> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &StructA) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
-            ::alloc::intrinsics::write_box_via_move(
-                ::alloc::boxed::Box::new_uninit(),
-                [
-                    soroban_sdk::xdr::ScMapEntry {
-                        key: soroban_sdk::xdr::ScSymbol(
-                            "f1".try_into()
-                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                        )
-                        .into(),
-                        val: (&val.f1)
-                            .try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    },
-                    soroban_sdk::xdr::ScMapEntry {
-                        key: soroban_sdk::xdr::ScSymbol(
-                            "f2".try_into()
-                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                        )
-                        .into(),
-                        val: (&val.f2)
-                            .try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    },
-                ],
-            ),
-        ))
+        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
+            soroban_sdk::xdr::ScMapEntry {
+                key: soroban_sdk::xdr::ScSymbol(
+                    "f1".try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                )
+                .into(),
+                val: (&val.f1)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            },
+            soroban_sdk::xdr::ScMapEntry {
+                key: soroban_sdk::xdr::ScSymbol(
+                    "f2".try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                )
+                .into(),
+                val: (&val.f2)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            },
+        ])))
     }
 }
 impl TryFrom<StructA> for soroban_sdk::xdr::ScMap {
@@ -289,7 +285,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_fields_are_eq(&self) {
+        fn assert_receiver_is_total_eq(&self) -> () {
             let _: ::core::cmp::AssertParamIsEq<
                 <u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -336,33 +332,29 @@ const _: () = {
         #[allow(non_upper_case_globals)]
         const RECURSIVE_COUNT_ArbitraryStructA: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
             #[inline]
-            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
+            fn __init() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    (),
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         } else {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    !,
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         }
                     },
@@ -482,7 +474,7 @@ impl ::core::cmp::Eq for StructB {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {
+    fn assert_receiver_is_total_eq(&self) -> () {
         let _: ::core::cmp::AssertParamIsEq<i64>;
         let _: ::core::cmp::AssertParamIsEq<soroban_sdk::String>;
     }
@@ -653,33 +645,28 @@ impl TryFrom<&StructB> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &StructB) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
-            ::alloc::intrinsics::write_box_via_move(
-                ::alloc::boxed::Box::new_uninit(),
-                [
-                    soroban_sdk::xdr::ScMapEntry {
-                        key: soroban_sdk::xdr::ScSymbol(
-                            "f1".try_into()
-                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                        )
-                        .into(),
-                        val: (&val.f1)
-                            .try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    },
-                    soroban_sdk::xdr::ScMapEntry {
-                        key: soroban_sdk::xdr::ScSymbol(
-                            "f2".try_into()
-                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                        )
-                        .into(),
-                        val: (&val.f2)
-                            .try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    },
-                ],
-            ),
-        ))
+        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
+            soroban_sdk::xdr::ScMapEntry {
+                key: soroban_sdk::xdr::ScSymbol(
+                    "f1".try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                )
+                .into(),
+                val: (&val.f1)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            },
+            soroban_sdk::xdr::ScMapEntry {
+                key: soroban_sdk::xdr::ScSymbol(
+                    "f2".try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                )
+                .into(),
+                val: (&val.f2)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            },
+        ])))
     }
 }
 impl TryFrom<StructB> for soroban_sdk::xdr::ScMap {
@@ -739,7 +726,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_fields_are_eq(&self) {
+        fn assert_receiver_is_total_eq(&self) -> () {
             let _: ::core::cmp::AssertParamIsEq<
                 <i64 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -786,33 +773,29 @@ const _: () = {
         #[allow(non_upper_case_globals)]
         const RECURSIVE_COUNT_ArbitraryStructB: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
             #[inline]
-            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
+            fn __init() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    (),
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         } else {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    !,
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         }
                     },
@@ -932,7 +915,7 @@ impl ::core::cmp::Eq for StructC {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {
+    fn assert_receiver_is_total_eq(&self) -> () {
         let _: ::core::cmp::AssertParamIsEq<Vec<u32>>;
         let _: ::core::cmp::AssertParamIsEq<Address>;
     }
@@ -1107,33 +1090,28 @@ impl TryFrom<&StructC> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &StructC) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
-            ::alloc::intrinsics::write_box_via_move(
-                ::alloc::boxed::Box::new_uninit(),
-                [
-                    soroban_sdk::xdr::ScMapEntry {
-                        key: soroban_sdk::xdr::ScSymbol(
-                            "f1".try_into()
-                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                        )
-                        .into(),
-                        val: (&val.f1)
-                            .try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    },
-                    soroban_sdk::xdr::ScMapEntry {
-                        key: soroban_sdk::xdr::ScSymbol(
-                            "f2".try_into()
-                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                        )
-                        .into(),
-                        val: (&val.f2)
-                            .try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    },
-                ],
-            ),
-        ))
+        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
+            soroban_sdk::xdr::ScMapEntry {
+                key: soroban_sdk::xdr::ScSymbol(
+                    "f1".try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                )
+                .into(),
+                val: (&val.f1)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            },
+            soroban_sdk::xdr::ScMapEntry {
+                key: soroban_sdk::xdr::ScSymbol(
+                    "f2".try_into()
+                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                )
+                .into(),
+                val: (&val.f2)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            },
+        ])))
     }
 }
 impl TryFrom<StructC> for soroban_sdk::xdr::ScMap {
@@ -1193,7 +1171,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_fields_are_eq(&self) {
+        fn assert_receiver_is_total_eq(&self) -> () {
             let _: ::core::cmp::AssertParamIsEq<
                 <Vec<u32> as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -1240,33 +1218,29 @@ const _: () = {
         #[allow(non_upper_case_globals)]
         const RECURSIVE_COUNT_ArbitraryStructC: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
             #[inline]
-            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
+            fn __init() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    (),
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         } else {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    !,
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         }
                     },
@@ -1383,7 +1357,7 @@ impl ::core::cmp::Eq for StructTupleA {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {
+    fn assert_receiver_is_total_eq(&self) -> () {
         let _: ::core::cmp::AssertParamIsEq<i64>;
     }
 }
@@ -1533,19 +1507,14 @@ impl TryFrom<&StructTupleA> for soroban_sdk::xdr::ScVec {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
         Ok(soroban_sdk::xdr::ScVec(
-            ::alloc::boxed::box_assume_init_into_vec_unsafe(
-                ::alloc::intrinsics::write_box_via_move(
-                    ::alloc::boxed::Box::new_uninit(),
-                    [
-                        (&val.0)
-                            .try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                        (&val.1)
-                            .try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    ],
-                ),
-            )
+            <[_]>::into_vec(::alloc::boxed::box_new([
+                (&val.0)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                (&val.1)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            ]))
             .try_into()?,
         ))
     }
@@ -1605,7 +1574,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_fields_are_eq(&self) {
+        fn assert_receiver_is_total_eq(&self) -> () {
             let _: ::core::cmp::AssertParamIsEq<
                 <i64 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -1652,33 +1621,29 @@ const _: () = {
         #[allow(non_upper_case_globals)]
         const RECURSIVE_COUNT_ArbitraryStructTupleA: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
             #[inline]
-            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
+            fn __init() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    (),
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         } else {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    !,
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         }
                     },
@@ -1793,7 +1758,7 @@ impl ::core::cmp::Eq for StructTupleB {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {
+    fn assert_receiver_is_total_eq(&self) -> () {
         let _: ::core::cmp::AssertParamIsEq<u128>;
     }
 }
@@ -1943,19 +1908,14 @@ impl TryFrom<&StructTupleB> for soroban_sdk::xdr::ScVec {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
         Ok(soroban_sdk::xdr::ScVec(
-            ::alloc::boxed::box_assume_init_into_vec_unsafe(
-                ::alloc::intrinsics::write_box_via_move(
-                    ::alloc::boxed::Box::new_uninit(),
-                    [
-                        (&val.0)
-                            .try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                        (&val.1)
-                            .try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    ],
-                ),
-            )
+            <[_]>::into_vec(::alloc::boxed::box_new([
+                (&val.0)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                (&val.1)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            ]))
             .try_into()?,
         ))
     }
@@ -2015,7 +1975,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_fields_are_eq(&self) {
+        fn assert_receiver_is_total_eq(&self) -> () {
             let _: ::core::cmp::AssertParamIsEq<
                 <u128 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -2062,33 +2022,29 @@ const _: () = {
         #[allow(non_upper_case_globals)]
         const RECURSIVE_COUNT_ArbitraryStructTupleB: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
             #[inline]
-            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
+            fn __init() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    (),
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         } else {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    !,
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         }
                     },
@@ -2203,7 +2159,7 @@ impl ::core::cmp::Eq for StructTupleC {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {
+    fn assert_receiver_is_total_eq(&self) -> () {
         let _: ::core::cmp::AssertParamIsEq<Address>;
         let _: ::core::cmp::AssertParamIsEq<i128>;
     }
@@ -2354,19 +2310,14 @@ impl TryFrom<&StructTupleC> for soroban_sdk::xdr::ScVec {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
         Ok(soroban_sdk::xdr::ScVec(
-            ::alloc::boxed::box_assume_init_into_vec_unsafe(
-                ::alloc::intrinsics::write_box_via_move(
-                    ::alloc::boxed::Box::new_uninit(),
-                    [
-                        (&val.0)
-                            .try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                        (&val.1)
-                            .try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    ],
-                ),
-            )
+            <[_]>::into_vec(::alloc::boxed::box_new([
+                (&val.0)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                (&val.1)
+                    .try_into()
+                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+            ]))
             .try_into()?,
         ))
     }
@@ -2426,7 +2377,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_fields_are_eq(&self) {
+        fn assert_receiver_is_total_eq(&self) -> () {
             let _: ::core::cmp::AssertParamIsEq<
                 <Address as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -2473,33 +2424,29 @@ const _: () = {
         #[allow(non_upper_case_globals)]
         const RECURSIVE_COUNT_ArbitraryStructTupleC: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
             #[inline]
-            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
+            fn __init() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    (),
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         } else {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    !,
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         }
                     },
@@ -2626,7 +2573,7 @@ impl ::core::cmp::Eq for EnumA {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {}
+    fn assert_receiver_is_total_eq(&self) -> () {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for EnumA {}
@@ -2914,7 +2861,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_fields_are_eq(&self) {}
+        fn assert_receiver_is_total_eq(&self) -> () {}
     }
     #[automatically_derived]
     impl ::core::marker::StructuralPartialEq for ArbitraryEnumA {}
@@ -2952,33 +2899,29 @@ const _: () = {
         #[allow(non_upper_case_globals)]
         const RECURSIVE_COUNT_ArbitraryEnumA: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
             #[inline]
-            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
+            fn __init() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    (),
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         } else {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    !,
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         }
                     },
@@ -3123,7 +3066,7 @@ impl ::core::cmp::Eq for EnumB {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {
+    fn assert_receiver_is_total_eq(&self) -> () {
         let _: ::core::cmp::AssertParamIsEq<i64>;
     }
 }
@@ -3476,7 +3419,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_fields_are_eq(&self) {
+        fn assert_receiver_is_total_eq(&self) -> () {
             let _: ::core::cmp::AssertParamIsEq<
                 <i64 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -3563,33 +3506,29 @@ const _: () = {
         #[allow(non_upper_case_globals)]
         const RECURSIVE_COUNT_ArbitraryEnumB: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
             #[inline]
-            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
+            fn __init() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    (),
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         } else {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    !,
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         }
                     },
@@ -3761,7 +3700,7 @@ impl ::core::cmp::Eq for EnumC {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {
+    fn assert_receiver_is_total_eq(&self) -> () {
         let _: ::core::cmp::AssertParamIsEq<StructA>;
         let _: ::core::cmp::AssertParamIsEq<StructTupleA>;
     }
@@ -4107,7 +4046,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_fields_are_eq(&self) {
+        fn assert_receiver_is_total_eq(&self) -> () {
             let _: ::core::cmp::AssertParamIsEq<
                 <StructA as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -4180,33 +4119,29 @@ const _: () = {
         #[allow(non_upper_case_globals)]
         const RECURSIVE_COUNT_ArbitraryEnumC: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
             #[inline]
-            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
+            fn __init() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    (),
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         } else {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    !,
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         }
                     },
@@ -4342,9 +4277,6 @@ pub enum EnumIntA {
 #[automatically_derived]
 impl ::core::marker::Copy for EnumIntA {}
 #[automatically_derived]
-#[doc(hidden)]
-unsafe impl ::core::clone::TrivialClone for EnumIntA {}
-#[automatically_derived]
 impl ::core::clone::Clone for EnumIntA {
     #[inline]
     fn clone(&self) -> EnumIntA {
@@ -4370,7 +4302,7 @@ impl ::core::cmp::Eq for EnumIntA {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {}
+    fn assert_receiver_is_total_eq(&self) -> () {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for EnumIntA {}
@@ -4544,7 +4476,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_fields_are_eq(&self) {}
+        fn assert_receiver_is_total_eq(&self) -> () {}
     }
     #[automatically_derived]
     impl ::core::marker::StructuralPartialEq for ArbitraryEnumIntA {}
@@ -4582,33 +4514,29 @@ const _: () = {
         #[allow(non_upper_case_globals)]
         const RECURSIVE_COUNT_ArbitraryEnumIntA: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
             #[inline]
-            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
+            fn __init() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    (),
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         } else {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    !,
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         }
                     },
@@ -4722,9 +4650,6 @@ pub enum EnumIntB {
 #[automatically_derived]
 impl ::core::marker::Copy for EnumIntB {}
 #[automatically_derived]
-#[doc(hidden)]
-unsafe impl ::core::clone::TrivialClone for EnumIntB {}
-#[automatically_derived]
 impl ::core::clone::Clone for EnumIntB {
     #[inline]
     fn clone(&self) -> EnumIntB {
@@ -4750,7 +4675,7 @@ impl ::core::cmp::Eq for EnumIntB {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {}
+    fn assert_receiver_is_total_eq(&self) -> () {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for EnumIntB {}
@@ -4924,7 +4849,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_fields_are_eq(&self) {}
+        fn assert_receiver_is_total_eq(&self) -> () {}
     }
     #[automatically_derived]
     impl ::core::marker::StructuralPartialEq for ArbitraryEnumIntB {}
@@ -4962,33 +4887,29 @@ const _: () = {
         #[allow(non_upper_case_globals)]
         const RECURSIVE_COUNT_ArbitraryEnumIntB: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
             #[inline]
-            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
+            fn __init() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    (),
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         } else {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    !,
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         }
                     },
@@ -5102,9 +5023,6 @@ pub enum EnumIntC {
 #[automatically_derived]
 impl ::core::marker::Copy for EnumIntC {}
 #[automatically_derived]
-#[doc(hidden)]
-unsafe impl ::core::clone::TrivialClone for EnumIntC {}
-#[automatically_derived]
 impl ::core::clone::Clone for EnumIntC {
     #[inline]
     fn clone(&self) -> EnumIntC {
@@ -5130,7 +5048,7 @@ impl ::core::cmp::Eq for EnumIntC {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {}
+    fn assert_receiver_is_total_eq(&self) -> () {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for EnumIntC {}
@@ -5304,7 +5222,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_fields_are_eq(&self) {}
+        fn assert_receiver_is_total_eq(&self) -> () {}
     }
     #[automatically_derived]
     impl ::core::marker::StructuralPartialEq for ArbitraryEnumIntC {}
@@ -5342,33 +5260,29 @@ const _: () = {
         #[allow(non_upper_case_globals)]
         const RECURSIVE_COUNT_ArbitraryEnumIntC: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
             #[inline]
-            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
+            fn __init() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    (),
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         } else {
-                            |__rust_std_internal_init| {
+                            |init| {
                                 #[thread_local]
-                                static __RUST_STD_INTERNAL_VAL:
-                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
-                                    ::std::thread::local_impl::LazyStorage::new();
-                                __RUST_STD_INTERNAL_VAL.get_or_init(
-                                    __rust_std_internal_init,
-                                    __rust_std_internal_init_fn,
-                                )
+                                static VAL: ::std::thread::local_impl::LazyStorage<
+                                    std::cell::Cell<u32>,
+                                    !,
+                                > = ::std::thread::local_impl::LazyStorage::new();
+                                VAL.get_or_init(init, __init)
                             }
                         }
                     },
@@ -5482,9 +5396,6 @@ pub enum ErrorA {
 #[automatically_derived]
 impl ::core::marker::Copy for ErrorA {}
 #[automatically_derived]
-#[doc(hidden)]
-unsafe impl ::core::clone::TrivialClone for ErrorA {}
-#[automatically_derived]
 impl ::core::clone::Clone for ErrorA {
     #[inline]
     fn clone(&self) -> ErrorA {
@@ -5510,7 +5421,7 @@ impl ::core::cmp::Eq for ErrorA {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {}
+    fn assert_receiver_is_total_eq(&self) -> () {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for ErrorA {}
@@ -5685,9 +5596,6 @@ pub enum ErrorB {
 #[automatically_derived]
 impl ::core::marker::Copy for ErrorB {}
 #[automatically_derived]
-#[doc(hidden)]
-unsafe impl ::core::clone::TrivialClone for ErrorB {}
-#[automatically_derived]
 impl ::core::clone::Clone for ErrorB {
     #[inline]
     fn clone(&self) -> ErrorB {
@@ -5713,7 +5621,7 @@ impl ::core::cmp::Eq for ErrorB {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {}
+    fn assert_receiver_is_total_eq(&self) -> () {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for ErrorB {}
@@ -5888,9 +5796,6 @@ pub enum ErrorC {
 #[automatically_derived]
 impl ::core::marker::Copy for ErrorC {}
 #[automatically_derived]
-#[doc(hidden)]
-unsafe impl ::core::clone::TrivialClone for ErrorC {}
-#[automatically_derived]
 impl ::core::clone::Clone for ErrorC {
     #[inline]
     fn clone(&self) -> ErrorC {
@@ -5916,7 +5821,7 @@ impl ::core::cmp::Eq for ErrorC {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {}
+    fn assert_receiver_is_total_eq(&self) -> () {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for ErrorC {}
@@ -6111,7 +6016,7 @@ impl ::core::cmp::Eq for EventA {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {
+    fn assert_receiver_is_total_eq(&self) -> () {
         let _: ::core::cmp::AssertParamIsEq<Address>;
         let _: ::core::cmp::AssertParamIsEq<soroban_sdk::String>;
     }
@@ -6225,7 +6130,7 @@ impl ::core::cmp::Eq for EventB {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {
+    fn assert_receiver_is_total_eq(&self) -> () {
         let _: ::core::cmp::AssertParamIsEq<Address>;
         let _: ::core::cmp::AssertParamIsEq<i128>;
     }
@@ -6350,7 +6255,7 @@ impl ::core::cmp::Eq for EventC {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {
+    fn assert_receiver_is_total_eq(&self) -> () {
         let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Symbol>;
         let _: ::core::cmp::AssertParamIsEq<i64>;
     }
@@ -6461,7 +6366,7 @@ impl ::core::cmp::Eq for EventD {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {}
+    fn assert_receiver_is_total_eq(&self) -> () {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for EventD {}

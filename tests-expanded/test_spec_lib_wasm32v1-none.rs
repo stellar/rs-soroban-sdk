@@ -1,5 +1,6 @@
 #![feature(prelude_import)]
 #![no_std]
+#[macro_use]
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
@@ -32,7 +33,7 @@ impl ::core::cmp::Eq for StructA {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {
+    fn assert_receiver_is_total_eq(&self) -> () {
         let _: ::core::cmp::AssertParamIsEq<u32>;
         let _: ::core::cmp::AssertParamIsEq<bool>;
     }
@@ -168,7 +169,7 @@ impl ::core::cmp::Eq for StructB {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {
+    fn assert_receiver_is_total_eq(&self) -> () {
         let _: ::core::cmp::AssertParamIsEq<i64>;
         let _: ::core::cmp::AssertParamIsEq<soroban_sdk::String>;
     }
@@ -304,7 +305,7 @@ impl ::core::cmp::Eq for StructC {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {
+    fn assert_receiver_is_total_eq(&self) -> () {
         let _: ::core::cmp::AssertParamIsEq<Vec<u32>>;
         let _: ::core::cmp::AssertParamIsEq<Address>;
     }
@@ -439,7 +440,7 @@ impl ::core::cmp::Eq for StructTupleA {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {
+    fn assert_receiver_is_total_eq(&self) -> () {
         let _: ::core::cmp::AssertParamIsEq<i64>;
     }
 }
@@ -565,7 +566,7 @@ impl ::core::cmp::Eq for StructTupleB {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {
+    fn assert_receiver_is_total_eq(&self) -> () {
         let _: ::core::cmp::AssertParamIsEq<u128>;
     }
 }
@@ -691,7 +692,7 @@ impl ::core::cmp::Eq for StructTupleC {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {
+    fn assert_receiver_is_total_eq(&self) -> () {
         let _: ::core::cmp::AssertParamIsEq<Address>;
         let _: ::core::cmp::AssertParamIsEq<i128>;
     }
@@ -830,7 +831,7 @@ impl ::core::cmp::Eq for EnumA {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {}
+    fn assert_receiver_is_total_eq(&self) -> () {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for EnumA {}
@@ -1010,7 +1011,7 @@ impl ::core::cmp::Eq for EnumB {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {
+    fn assert_receiver_is_total_eq(&self) -> () {
         let _: ::core::cmp::AssertParamIsEq<i64>;
     }
 }
@@ -1220,7 +1221,7 @@ impl ::core::cmp::Eq for EnumC {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {
+    fn assert_receiver_is_total_eq(&self) -> () {
         let _: ::core::cmp::AssertParamIsEq<StructA>;
         let _: ::core::cmp::AssertParamIsEq<StructTupleA>;
     }
@@ -1407,9 +1408,6 @@ pub enum EnumIntA {
 #[automatically_derived]
 impl ::core::marker::Copy for EnumIntA {}
 #[automatically_derived]
-#[doc(hidden)]
-unsafe impl ::core::clone::TrivialClone for EnumIntA {}
-#[automatically_derived]
 impl ::core::clone::Clone for EnumIntA {
     #[inline]
     fn clone(&self) -> EnumIntA {
@@ -1435,7 +1433,7 @@ impl ::core::cmp::Eq for EnumIntA {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {}
+    fn assert_receiver_is_total_eq(&self) -> () {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for EnumIntA {}
@@ -1544,9 +1542,6 @@ pub enum EnumIntB {
 #[automatically_derived]
 impl ::core::marker::Copy for EnumIntB {}
 #[automatically_derived]
-#[doc(hidden)]
-unsafe impl ::core::clone::TrivialClone for EnumIntB {}
-#[automatically_derived]
 impl ::core::clone::Clone for EnumIntB {
     #[inline]
     fn clone(&self) -> EnumIntB {
@@ -1572,7 +1567,7 @@ impl ::core::cmp::Eq for EnumIntB {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {}
+    fn assert_receiver_is_total_eq(&self) -> () {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for EnumIntB {}
@@ -1681,9 +1676,6 @@ pub enum EnumIntC {
 #[automatically_derived]
 impl ::core::marker::Copy for EnumIntC {}
 #[automatically_derived]
-#[doc(hidden)]
-unsafe impl ::core::clone::TrivialClone for EnumIntC {}
-#[automatically_derived]
 impl ::core::clone::Clone for EnumIntC {
     #[inline]
     fn clone(&self) -> EnumIntC {
@@ -1709,7 +1701,7 @@ impl ::core::cmp::Eq for EnumIntC {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {}
+    fn assert_receiver_is_total_eq(&self) -> () {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for EnumIntC {}
@@ -1818,9 +1810,6 @@ pub enum ErrorA {
 #[automatically_derived]
 impl ::core::marker::Copy for ErrorA {}
 #[automatically_derived]
-#[doc(hidden)]
-unsafe impl ::core::clone::TrivialClone for ErrorA {}
-#[automatically_derived]
 impl ::core::clone::Clone for ErrorA {
     #[inline]
     fn clone(&self) -> ErrorA {
@@ -1846,7 +1835,7 @@ impl ::core::cmp::Eq for ErrorA {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {}
+    fn assert_receiver_is_total_eq(&self) -> () {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for ErrorA {}
@@ -2027,9 +2016,6 @@ pub enum ErrorB {
 #[automatically_derived]
 impl ::core::marker::Copy for ErrorB {}
 #[automatically_derived]
-#[doc(hidden)]
-unsafe impl ::core::clone::TrivialClone for ErrorB {}
-#[automatically_derived]
 impl ::core::clone::Clone for ErrorB {
     #[inline]
     fn clone(&self) -> ErrorB {
@@ -2055,7 +2041,7 @@ impl ::core::cmp::Eq for ErrorB {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {}
+    fn assert_receiver_is_total_eq(&self) -> () {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for ErrorB {}
@@ -2236,9 +2222,6 @@ pub enum ErrorC {
 #[automatically_derived]
 impl ::core::marker::Copy for ErrorC {}
 #[automatically_derived]
-#[doc(hidden)]
-unsafe impl ::core::clone::TrivialClone for ErrorC {}
-#[automatically_derived]
 impl ::core::clone::Clone for ErrorC {
     #[inline]
     fn clone(&self) -> ErrorC {
@@ -2264,7 +2247,7 @@ impl ::core::cmp::Eq for ErrorC {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {}
+    fn assert_receiver_is_total_eq(&self) -> () {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for ErrorC {}
@@ -2465,7 +2448,7 @@ impl ::core::cmp::Eq for EventA {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {
+    fn assert_receiver_is_total_eq(&self) -> () {
         let _: ::core::cmp::AssertParamIsEq<Address>;
         let _: ::core::cmp::AssertParamIsEq<soroban_sdk::String>;
     }
@@ -2584,7 +2567,7 @@ impl ::core::cmp::Eq for EventB {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {
+    fn assert_receiver_is_total_eq(&self) -> () {
         let _: ::core::cmp::AssertParamIsEq<Address>;
         let _: ::core::cmp::AssertParamIsEq<i128>;
     }
@@ -2714,7 +2697,7 @@ impl ::core::cmp::Eq for EventC {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {
+    fn assert_receiver_is_total_eq(&self) -> () {
         let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Symbol>;
         let _: ::core::cmp::AssertParamIsEq<i64>;
     }
@@ -2830,7 +2813,7 @@ impl ::core::cmp::Eq for EventD {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {}
+    fn assert_receiver_is_total_eq(&self) -> () {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for EventD {}

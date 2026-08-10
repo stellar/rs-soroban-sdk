@@ -1,5 +1,6 @@
 #![feature(prelude_import)]
 #![no_std]
+#[macro_use]
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
@@ -752,18 +753,13 @@ mod test {
         client.transfer(&from, &to, &amount);
         match (
             &env.events().all(),
-            &::alloc::boxed::box_assume_init_into_vec_unsafe(
-                ::alloc::intrinsics::write_box_via_move(
-                    ::alloc::boxed::Box::new_uninit(),
-                    [Transfer {
-                        from: from.clone(),
-                        to: to.address(),
-                        amount,
-                        to_muxed_id: to.id(),
-                    }
-                    .to_xdr(&env, &contract_id)],
-                ),
-            ),
+            &<[_]>::into_vec(::alloc::boxed::box_new([Transfer {
+                from: from.clone(),
+                to: to.address(),
+                amount,
+                to_muxed_id: to.id(),
+            }
+            .to_xdr(&env, &contract_id)])),
         ) {
             (left_val, right_val) => {
                 if !(*left_val == *right_val) {
@@ -852,18 +848,13 @@ mod test {
         client.transfer(&from, &to, &amount);
         match (
             &env.events().all(),
-            &::alloc::boxed::box_assume_init_into_vec_unsafe(
-                ::alloc::intrinsics::write_box_via_move(
-                    ::alloc::boxed::Box::new_uninit(),
-                    [Transfer {
-                        from: from.clone(),
-                        to: to.clone(),
-                        amount,
-                        to_muxed_id: None,
-                    }
-                    .to_xdr(&env, &contract_id)],
-                ),
-            ),
+            &<[_]>::into_vec(::alloc::boxed::box_new([Transfer {
+                from: from.clone(),
+                to: to.clone(),
+                amount,
+                to_muxed_id: None,
+            }
+            .to_xdr(&env, &contract_id)])),
         ) {
             (left_val, right_val) => {
                 if !(*left_val == *right_val) {

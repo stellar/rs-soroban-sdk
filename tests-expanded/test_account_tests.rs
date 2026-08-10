@@ -1,5 +1,6 @@
 #![feature(prelude_import)]
 #![no_std]
+#[macro_use]
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
@@ -12,9 +13,6 @@ pub enum Error {
 }
 #[automatically_derived]
 impl ::core::marker::Copy for Error {}
-#[automatically_derived]
-#[doc(hidden)]
-unsafe impl ::core::clone::TrivialClone for Error {}
 #[automatically_derived]
 impl ::core::clone::Clone for Error {
     #[inline]
@@ -36,7 +34,7 @@ impl ::core::cmp::Eq for Error {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {}
+    fn assert_receiver_is_total_eq(&self) -> () {}
 }
 #[automatically_derived]
 impl ::core::cmp::PartialOrd for Error {

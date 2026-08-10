@@ -1,5 +1,6 @@
 #![feature(prelude_import)]
 #![no_std]
+#[macro_use]
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
@@ -35,7 +36,7 @@ impl ::core::cmp::Eq for MyStruct {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {
+    fn assert_receiver_is_total_eq(&self) -> () {
         let _: ::core::cmp::AssertParamIsEq<i64>;
     }
 }
@@ -149,9 +150,6 @@ pub enum MyEnumUnit {
 #[automatically_derived]
 impl ::core::marker::Copy for MyEnumUnit {}
 #[automatically_derived]
-#[doc(hidden)]
-unsafe impl ::core::clone::TrivialClone for MyEnumUnit {}
-#[automatically_derived]
 impl ::core::clone::Clone for MyEnumUnit {
     #[inline]
     fn clone(&self) -> MyEnumUnit {
@@ -176,7 +174,7 @@ impl ::core::cmp::Eq for MyEnumUnit {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {}
+    fn assert_receiver_is_total_eq(&self) -> () {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for MyEnumUnit {}
@@ -310,7 +308,7 @@ impl ::core::cmp::Eq for MyEnumVariants {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {
+    fn assert_receiver_is_total_eq(&self) -> () {
         let _: ::core::cmp::AssertParamIsEq<MyStruct>;
         let _: ::core::cmp::AssertParamIsEq<MyEnumUnit>;
     }

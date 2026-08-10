@@ -1,5 +1,6 @@
 #![feature(prelude_import)]
 #![no_std]
+#[macro_use]
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
@@ -10,9 +11,6 @@ pub enum UdtEnum2 {
 }
 #[automatically_derived]
 impl ::core::marker::Copy for UdtEnum2 {}
-#[automatically_derived]
-#[doc(hidden)]
-unsafe impl ::core::clone::TrivialClone for UdtEnum2 {}
 #[automatically_derived]
 impl ::core::clone::Clone for UdtEnum2 {
     #[inline]
@@ -38,7 +36,7 @@ impl ::core::cmp::Eq for UdtEnum2 {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {}
+    fn assert_receiver_is_total_eq(&self) -> () {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for UdtEnum2 {}
@@ -173,7 +171,7 @@ impl ::core::cmp::Eq for UdtEnum {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {
+    fn assert_receiver_is_total_eq(&self) -> () {
         let _: ::core::cmp::AssertParamIsEq<UdtStruct>;
         let _: ::core::cmp::AssertParamIsEq<UdtEnum2>;
         let _: ::core::cmp::AssertParamIsEq<UdtTuple>;
@@ -410,7 +408,7 @@ impl ::core::cmp::Eq for UdtTuple {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {
+    fn assert_receiver_is_total_eq(&self) -> () {
         let _: ::core::cmp::AssertParamIsEq<i64>;
         let _: ::core::cmp::AssertParamIsEq<Vec<i64>>;
     }
@@ -555,7 +553,7 @@ impl ::core::cmp::Eq for UdtStruct {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {
+    fn assert_receiver_is_total_eq(&self) -> () {
         let _: ::core::cmp::AssertParamIsEq<i64>;
         let _: ::core::cmp::AssertParamIsEq<Vec<i64>>;
     }
@@ -710,7 +708,7 @@ impl ::core::cmp::Eq for UdtRecursive {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {
+    fn assert_receiver_is_total_eq(&self) -> () {
         let _: ::core::cmp::AssertParamIsEq<Symbol>;
         let _: ::core::cmp::AssertParamIsEq<Vec<UdtRecursive>>;
     }
@@ -860,7 +858,7 @@ impl ::core::cmp::Eq for RecursiveToEnum {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {
+    fn assert_receiver_is_total_eq(&self) -> () {
         let _: ::core::cmp::AssertParamIsEq<Symbol>;
         let _: ::core::cmp::AssertParamIsEq<Map<u32, RecursiveEnum>>;
     }
@@ -1011,7 +1009,7 @@ impl ::core::cmp::Eq for RecursiveEnum {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_fields_are_eq(&self) {
+    fn assert_receiver_is_total_eq(&self) -> () {
         let _: ::core::cmp::AssertParamIsEq<RecursiveToEnum>;
     }
 }
