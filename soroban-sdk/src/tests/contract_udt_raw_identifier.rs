@@ -6,7 +6,7 @@ use soroban_sdk::{
 use stellar_xdr::{
     Limits, ReadXdr, ScSpecEntry, ScSpecEventDataFormat, ScSpecEventParamLocationV0,
     ScSpecEventParamV0, ScSpecEventV0, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef,
-    ScSpecTypeResult, ScSpecTypeUdt, ScSpecUdtEnumCaseV0, ScSpecUdtEnumV0,
+    ScSpecTypeResult, ScSpecTypeUdtv2, ScSpecUdtEnumCaseV0, ScSpecUdtEnumV0,
     ScSpecUdtErrorEnumCaseV0, ScSpecUdtErrorEnumV0, ScSpecUdtStructFieldV0, ScSpecUdtStructV0,
     ScSpecUdtUnionCaseTupleV0, ScSpecUdtUnionCaseV0, ScSpecUdtUnionV0, ScSymbol,
 };
@@ -125,18 +125,21 @@ fn test_spec_contract() {
             inputs: [ScSpecFunctionInputV0 {
                 doc: "".try_into().unwrap(),
                 name: "fn".try_into().unwrap(),
-                type_: ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                type_: ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
                     name: "TestEnum".try_into().unwrap(),
+                    id: TestEnum::spec_type_id(),
                 }),
             }]
             .try_into()
             .unwrap(),
             outputs: [ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
-                ok_type: Box::new(ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                ok_type: Box::new(ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
                     name: "TestType".try_into().unwrap(),
+                    id: TestType::spec_type_id(),
                 })),
-                error_type: Box::new(ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                error_type: Box::new(ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
                     name: "TestError".try_into().unwrap(),
+                    id: TestError::spec_type_id(),
                 })),
             }))]
             .try_into()
@@ -180,6 +183,7 @@ fn test_spec_struct() {
             doc: "".try_into().unwrap(),
             lib: "".try_into().unwrap(),
             name: "TestType".try_into().unwrap(),
+            id: TestType::spec_type_id(),
             fields: [
                 ScSpecUdtStructFieldV0 {
                     doc: "".try_into().unwrap(),
@@ -209,6 +213,7 @@ fn test_spec_struct() {
             doc: "".try_into().unwrap(),
             lib: "".try_into().unwrap(),
             name: "type".try_into().unwrap(),
+            id: r#type::spec_type_id(),
             fields: [ScSpecUdtStructFieldV0 {
                 doc: "".try_into().unwrap(),
                 name: "value".try_into().unwrap(),
@@ -227,6 +232,7 @@ fn test_spec_struct() {
             doc: "".try_into().unwrap(),
             lib: "".try_into().unwrap(),
             name: "TupleStruct".try_into().unwrap(),
+            id: TupleStruct::spec_type_id(),
             fields: [
                 ScSpecUdtStructFieldV0 {
                     doc: "".try_into().unwrap(),
@@ -254,6 +260,7 @@ fn test_spec_enum() {
             doc: "".try_into().unwrap(),
             lib: "".try_into().unwrap(),
             name: "TestEnum".try_into().unwrap(),
+            id: TestEnum::spec_type_id(),
             cases: [
                 ScSpecUdtEnumCaseV0 {
                     doc: "".try_into().unwrap(),
@@ -278,6 +285,7 @@ fn test_spec_enum() {
             doc: "".try_into().unwrap(),
             lib: "".try_into().unwrap(),
             name: "TestError".try_into().unwrap(),
+            id: TestError::spec_type_id(),
             cases: [ScSpecUdtErrorEnumCaseV0 {
                 doc: "".try_into().unwrap(),
                 name: "Error".try_into().unwrap(),
@@ -296,6 +304,7 @@ fn test_spec_enum() {
             doc: "".try_into().unwrap(),
             lib: "".try_into().unwrap(),
             name: "TestTupleEnum".try_into().unwrap(),
+            id: TestTupleEnum::spec_type_id(),
             cases: [
                 ScSpecUdtUnionCaseV0::TupleV0(ScSpecUdtUnionCaseTupleV0 {
                     doc: "".try_into().unwrap(),

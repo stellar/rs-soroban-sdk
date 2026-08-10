@@ -222,6 +222,7 @@ mod tests {
             doc: StringM::default(),
             lib: StringM::default(),
             name: name.try_into().unwrap(),
+            id: [0; 8],
             fields,
         })
     }
@@ -231,6 +232,7 @@ mod tests {
             doc: StringM::default(),
             lib: StringM::default(),
             name: name.try_into().unwrap(),
+            id: [0; 8],
             cases: vec![ScSpecUdtEnumCaseV0 {
                 doc: StringM::default(),
                 name: "Variant".try_into().unwrap(),

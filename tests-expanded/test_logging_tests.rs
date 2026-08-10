@@ -1,6 +1,5 @@
 #![feature(prelude_import)]
 #![no_std]
-#[macro_use]
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
@@ -433,14 +432,19 @@ mod test {
         client.hello();
         env.logs().print();
         if true {
-            let pats = <[_]>::into_vec(::alloc::boxed::box_new([
-                "\"none\"",
-                "\"none\"",
-                "[\"one:\", one]",
-                "[\"one:\", one]",
-                "[\"one and two:\", one, two]",
-                "[\"one and two:\", one, two]",
-            ]));
+            let pats = ::alloc::boxed::box_assume_init_into_vec_unsafe(
+                ::alloc::intrinsics::write_box_via_move(
+                    ::alloc::boxed::Box::new_uninit(),
+                    [
+                        "\"none\"",
+                        "\"none\"",
+                        "[\"one:\", one]",
+                        "[\"one:\", one]",
+                        "[\"one and two:\", one, two]",
+                        "[\"one and two:\", one, two]",
+                    ],
+                ),
+            );
             for (msg, pat) in env.logs().all().iter().zip(pats.iter()) {
                 if !msg.contains(pat) {
                     ::core::panicking::panic("assertion failed: msg.contains(pat)")

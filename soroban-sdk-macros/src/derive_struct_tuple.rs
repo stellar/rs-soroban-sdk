@@ -7,7 +7,7 @@ use stellar_xdr::{ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, Stri
 
 use crate::{
     doc::docs_from_attrs,
-    map_type::{const_view_string, const_view_type_def, map_type},
+    map_type::{const_view_string, const_view_type_def, map_type, spec_type_id_gen},
     shaking,
 };
 
@@ -64,11 +64,14 @@ pub fn derive_type_struct_tuple(
         return quote! { #(#compile_errors)* };
     }
 
-    // Build the spec entry once.
+    // Build the spec entry once. The id is a placeholder: the real id hashes
+    // the fully qualified name only the compiler knows, so it is emitted into
+    // the rendered view below rather than resolved here.
     let spec = ScSpecUdtStructV0 {
         doc: docs_from_attrs(attrs),
         lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
         name: ident.unraw().to_string().try_into().unwrap(),
+        id: [0; 8],
         fields: field_specs.try_into().unwrap(),
     };
 
@@ -78,17 +81,24 @@ pub fn derive_type_struct_tuple(
         let doc = const_view_string(path, &spec.doc);
         let lib = const_view_string(path, &spec.lib);
         let name = const_view_string(path, &spec.name);
-        let fields = spec.fields.iter().map(|f| {
-            let doc = const_view_string(path, &f.doc);
-            let name = const_view_string(path, &f.name);
-            let type_ = const_view_type_def(path, &f.type_);
-            quote!(#path::xdr::ScSpecUdtStructFieldV0View { doc: #doc, name: #name, type_: #type_ })
-        });
+        // Each field's Rust type, so a reference to a user-defined type in a
+        // field carries the id that type hashes for itself.
+        let fields = spec
+            .fields
+            .iter()
+            .zip(field_types.iter().copied())
+            .map(|(f, rust)| {
+                let doc = const_view_string(path, &f.doc);
+                let name = const_view_string(path, &f.name);
+                let type_ = const_view_type_def(path, &f.type_, Some(rust));
+                quote!(#path::xdr::ScSpecUdtStructFieldV0View { doc: #doc, name: #name, type_: #type_ })
+            });
         let spec_view = quote! {
             #path::xdr::ScSpecEntryView::UdtStructV0(#path::xdr::ScSpecUdtStructV0View {
                 doc: #doc,
                 lib: #lib,
                 name: #name,
+                id: #ident::spec_type_id(),
                 fields: #path::xdr::VecMView::new(&[#(#fields),*]),
             })
         };
@@ -121,8 +131,14 @@ pub fn derive_type_struct_tuple(
         None,
     );
 
+    // The id the spec knows this type by, emitted for every type so that a
+    // reference to it from anywhere can reach it.
+    let spec_type_id_impl = spec_type_id_gen(path, ident);
+
     // Output.
     let mut output = quote! {
+        #spec_type_id_impl
+
         #spec_gen
 
         #spec_shaking_impl

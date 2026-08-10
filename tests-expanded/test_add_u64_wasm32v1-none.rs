@@ -1,6 +1,5 @@
 #![feature(prelude_import)]
 #![no_std]
-#[macro_use]
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
@@ -43,6 +42,12 @@ impl ::core::cmp::PartialEq for Error {
         true
     }
 }
+impl Error {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_add_u64::Error")
+    }
+}
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ERROR: [u8; Error::__SPEC_XDR_VIEW.const_xdr_len()] = Error::spec_xdr();
 impl Error {
@@ -52,6 +57,7 @@ impl Error {
                 doc: soroban_sdk::xdr::StringMView::new(b""),
                 lib: soroban_sdk::xdr::StringMView::new(b""),
                 name: soroban_sdk::xdr::StringMView::new(b"Error"),
+                id: Error::spec_type_id(),
                 cases: soroban_sdk::xdr::VecMView::new(&[
                     soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -197,6 +203,12 @@ impl ::core::cmp::PartialEq for MyError {
         true
     }
 }
+impl MyError {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_add_u64::MyError")
+    }
+}
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_MYERROR: [u8; MyError::__SPEC_XDR_VIEW.const_xdr_len()] =
     MyError::spec_xdr();
@@ -207,6 +219,7 @@ impl MyError {
                 doc: soroban_sdk::xdr::StringMView::new(b""),
                 lib: soroban_sdk::xdr::StringMView::new(b""),
                 name: soroban_sdk::xdr::StringMView::new(b"MyError"),
+                id: MyError::spec_type_id(),
                 cases: soroban_sdk::xdr::VecMView::new(&[
                     soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -455,9 +468,10 @@ impl Contract {
                 soroban_sdk::xdr::ScSpecTypeDefView::Result(
                     &soroban_sdk::xdr::ScSpecTypeResultView {
                         ok_type: &soroban_sdk::xdr::ScSpecTypeDefView::U64,
-                        error_type: &soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                            soroban_sdk::xdr::ScSpecTypeUdtView {
+                        error_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                            soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                 name: soroban_sdk::xdr::StringMView::new(b"MyError"),
+                                id: <MyError>::spec_type_id(),
                             },
                         ),
                     },

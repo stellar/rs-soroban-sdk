@@ -1,6 +1,5 @@
 #![feature(prelude_import)]
 #![no_std]
-#[macro_use]
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
@@ -157,6 +156,12 @@ impl ::core::cmp::PartialEq for Flag {
         __self_discr == __arg1_discr
     }
 }
+impl Flag {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_errors::Flag")
+    }
+}
 pub static __SPEC_XDR_TYPE_FLAG: [u8; Flag::__SPEC_XDR_VIEW.const_xdr_len()] = Flag::spec_xdr();
 impl Flag {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
@@ -164,6 +169,7 @@ impl Flag {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"Flag"),
+            id: Flag::spec_type_id(),
             cases: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -337,7 +343,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {}
+        fn assert_fields_are_eq(&self) {}
     }
     #[automatically_derived]
     impl ::core::marker::StructuralPartialEq for ArbitraryFlag {}
@@ -375,29 +381,33 @@ const _: () = {
         #[allow(non_upper_case_globals)]
         const RECURSIVE_COUNT_ArbitraryFlag: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -526,7 +536,7 @@ impl ::core::cmp::Eq for Error {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {}
+    fn assert_fields_are_eq(&self) {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for Error {}
@@ -537,6 +547,12 @@ impl ::core::cmp::PartialEq for Error {
         true
     }
 }
+impl Error {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_errors::Error")
+    }
+}
 pub static __SPEC_XDR_TYPE_ERROR: [u8; Error::__SPEC_XDR_VIEW.const_xdr_len()] = Error::spec_xdr();
 impl Error {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
@@ -545,6 +561,7 @@ impl Error {
                 doc: soroban_sdk::xdr::StringMView::new(b""),
                 lib: soroban_sdk::xdr::StringMView::new(b""),
                 name: soroban_sdk::xdr::StringMView::new(b"Error"),
+                id: Error::spec_type_id(),
                 cases: soroban_sdk::xdr::VecMView::new(&[
                     soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -730,9 +747,10 @@ impl Contract {
                 soroban_sdk::xdr::ScSpecFunctionInputV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"flag"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                        soroban_sdk::xdr::ScSpecTypeUdtView {
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
                             name: soroban_sdk::xdr::StringMView::new(b"Flag"),
+                            id: <Flag>::spec_type_id(),
                         },
                     ),
                 },

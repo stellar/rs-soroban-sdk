@@ -1,6 +1,5 @@
 #![feature(prelude_import)]
 #![no_std]
-#[macro_use]
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
@@ -34,7 +33,7 @@ impl ::core::cmp::Eq for AttributeType {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<u32>;
     }
 }
@@ -47,6 +46,12 @@ impl ::core::cmp::PartialEq for AttributeType {
         self.value == other.value
     }
 }
+impl AttributeType {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_attributes::AttributeType")
+    }
+}
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ATTRIBUTETYPE: [u8; AttributeType::__SPEC_XDR_VIEW.const_xdr_len()] =
     AttributeType::spec_xdr();
@@ -56,6 +61,7 @@ impl AttributeType {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"AttributeType"),
+            id: AttributeType::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -619,9 +625,10 @@ impl Contract {
                 soroban_sdk::xdr::ScSpecFunctionInputV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"value"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                        soroban_sdk::xdr::ScSpecTypeUdtView {
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
                             name: soroban_sdk::xdr::StringMView::new(b"AttributeType"),
+                            id: <AttributeType>::spec_type_id(),
                         },
                     ),
                 },

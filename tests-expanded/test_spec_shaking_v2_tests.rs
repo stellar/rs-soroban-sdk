@@ -1,6 +1,5 @@
 #![feature(prelude_import)]
 #![no_std]
-#[macro_use]
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
@@ -172,7 +171,7 @@ impl ::core::cmp::Eq for UsedParamStruct {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<u32>;
         let _: ::core::cmp::AssertParamIsEq<UsedNestedInStruct>;
     }
@@ -186,6 +185,12 @@ impl ::core::cmp::PartialEq for UsedParamStruct {
         self.a == other.a && self.nested == other.nested
     }
 }
+impl UsedParamStruct {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedParamStruct")
+    }
+}
 pub static __SPEC_XDR_TYPE_USEDPARAMSTRUCT: [u8; UsedParamStruct::__SPEC_XDR_VIEW.const_xdr_len()] =
     UsedParamStruct::spec_xdr();
 impl UsedParamStruct {
@@ -194,6 +199,7 @@ impl UsedParamStruct {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UsedParamStruct"),
+            id: UsedParamStruct::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -203,9 +209,10 @@ impl UsedParamStruct {
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"nested"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                        soroban_sdk::xdr::ScSpecTypeUdtView {
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
                             name: soroban_sdk::xdr::StringMView::new(b"UsedNestedInStruct"),
+                            id: <UsedNestedInStruct>::spec_type_id(),
                         },
                     ),
                 },
@@ -344,29 +351,34 @@ impl TryFrom<&UsedParamStruct> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &UsedParamStruct) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
-            soroban_sdk::xdr::ScMapEntry {
-                key: soroban_sdk::xdr::ScSymbol(
-                    "a".try_into()
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                )
-                .into(),
-                val: (&val.a)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-            soroban_sdk::xdr::ScMapEntry {
-                key: soroban_sdk::xdr::ScSymbol(
-                    "nested"
-                        .try_into()
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                )
-                .into(),
-                val: (&val.nested)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-        ])))
+        soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
+            ::alloc::intrinsics::write_box_via_move(
+                ::alloc::boxed::Box::new_uninit(),
+                [
+                    soroban_sdk::xdr::ScMapEntry {
+                        key: soroban_sdk::xdr::ScSymbol(
+                            "a".try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into(),
+                        val: (&val.a)
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    },
+                    soroban_sdk::xdr::ScMapEntry {
+                        key: soroban_sdk::xdr::ScSymbol(
+                            "nested"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into(),
+                        val: (&val.nested)
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    },
+                ],
+            ),
+        ))
     }
 }
 impl TryFrom<UsedParamStruct> for soroban_sdk::xdr::ScMap {
@@ -427,7 +439,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<
                 <u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -476,29 +488,33 @@ const _: () = {
             std::cell::Cell<u32>,
         > = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -623,7 +639,7 @@ impl ::core::cmp::Eq for UsedReturnEnum {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<u32>;
         let _: ::core::cmp::AssertParamIsEq<i64>;
     }
@@ -644,6 +660,12 @@ impl ::core::cmp::PartialEq for UsedReturnEnum {
             }
     }
 }
+impl UsedReturnEnum {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedReturnEnum")
+    }
+}
 pub static __SPEC_XDR_TYPE_USEDRETURNENUM: [u8; UsedReturnEnum::__SPEC_XDR_VIEW.const_xdr_len()] =
     UsedReturnEnum::spec_xdr();
 impl UsedReturnEnum {
@@ -652,6 +674,7 @@ impl UsedReturnEnum {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UsedReturnEnum"),
+            id: UsedReturnEnum::spec_type_id(),
             cases: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
                     soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
@@ -918,7 +941,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<
                 <u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -997,29 +1020,33 @@ const _: () = {
             std::cell::Cell<u32>,
         > = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -1150,6 +1177,9 @@ pub enum UsedParamIntEnum {
 #[automatically_derived]
 impl ::core::marker::Copy for UsedParamIntEnum {}
 #[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for UsedParamIntEnum {}
+#[automatically_derived]
 impl ::core::clone::Clone for UsedParamIntEnum {
     #[inline]
     fn clone(&self) -> UsedParamIntEnum {
@@ -1174,7 +1204,7 @@ impl ::core::cmp::Eq for UsedParamIntEnum {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {}
+    fn assert_fields_are_eq(&self) {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for UsedParamIntEnum {}
@@ -1187,6 +1217,12 @@ impl ::core::cmp::PartialEq for UsedParamIntEnum {
         __self_discr == __arg1_discr
     }
 }
+impl UsedParamIntEnum {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedParamIntEnum")
+    }
+}
 pub static __SPEC_XDR_TYPE_USEDPARAMINTENUM: [u8; UsedParamIntEnum::__SPEC_XDR_VIEW
     .const_xdr_len()] = UsedParamIntEnum::spec_xdr();
 impl UsedParamIntEnum {
@@ -1195,6 +1231,7 @@ impl UsedParamIntEnum {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UsedParamIntEnum"),
+            id: UsedParamIntEnum::spec_type_id(),
             cases: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -1329,7 +1366,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {}
+        fn assert_fields_are_eq(&self) {}
     }
     #[automatically_derived]
     impl ::core::marker::StructuralPartialEq for ArbitraryUsedParamIntEnum {}
@@ -1369,29 +1406,33 @@ const _: () = {
             std::cell::Cell<u32>,
         > = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -1500,6 +1541,9 @@ pub enum UsedErrorEnum {
 #[automatically_derived]
 impl ::core::marker::Copy for UsedErrorEnum {}
 #[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for UsedErrorEnum {}
+#[automatically_derived]
 impl ::core::clone::Clone for UsedErrorEnum {
     #[inline]
     fn clone(&self) -> UsedErrorEnum {
@@ -1524,7 +1568,7 @@ impl ::core::cmp::Eq for UsedErrorEnum {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {}
+    fn assert_fields_are_eq(&self) {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for UsedErrorEnum {}
@@ -1537,6 +1581,12 @@ impl ::core::cmp::PartialEq for UsedErrorEnum {
         __self_discr == __arg1_discr
     }
 }
+impl UsedErrorEnum {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedErrorEnum")
+    }
+}
 pub static __SPEC_XDR_TYPE_USEDERRORENUM: [u8; UsedErrorEnum::__SPEC_XDR_VIEW.const_xdr_len()] =
     UsedErrorEnum::spec_xdr();
 impl UsedErrorEnum {
@@ -1546,6 +1596,7 @@ impl UsedErrorEnum {
                 doc: soroban_sdk::xdr::StringMView::new(b""),
                 lib: soroban_sdk::xdr::StringMView::new(b""),
                 name: soroban_sdk::xdr::StringMView::new(b"UsedErrorEnum"),
+                id: UsedErrorEnum::spec_type_id(),
                 cases: soroban_sdk::xdr::VecMView::new(&[
                     soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -1682,6 +1733,9 @@ pub enum UsedPanicErrorEnum {
 #[automatically_derived]
 impl ::core::marker::Copy for UsedPanicErrorEnum {}
 #[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for UsedPanicErrorEnum {}
+#[automatically_derived]
 impl ::core::clone::Clone for UsedPanicErrorEnum {
     #[inline]
     fn clone(&self) -> UsedPanicErrorEnum {
@@ -1700,7 +1754,7 @@ impl ::core::cmp::Eq for UsedPanicErrorEnum {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {}
+    fn assert_fields_are_eq(&self) {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for UsedPanicErrorEnum {}
@@ -1709,6 +1763,12 @@ impl ::core::cmp::PartialEq for UsedPanicErrorEnum {
     #[inline]
     fn eq(&self, other: &UsedPanicErrorEnum) -> bool {
         true
+    }
+}
+impl UsedPanicErrorEnum {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedPanicErrorEnum")
     }
 }
 pub static __SPEC_XDR_TYPE_USEDPANICERRORENUM: [u8; UsedPanicErrorEnum::__SPEC_XDR_VIEW
@@ -1720,6 +1780,7 @@ impl UsedPanicErrorEnum {
                 doc: soroban_sdk::xdr::StringMView::new(b""),
                 lib: soroban_sdk::xdr::StringMView::new(b""),
                 name: soroban_sdk::xdr::StringMView::new(b"UsedPanicErrorEnum"),
+                id: UsedPanicErrorEnum::spec_type_id(),
                 cases: soroban_sdk::xdr::VecMView::new(&[
                     soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -1849,6 +1910,9 @@ pub enum UsedAssertErrorEnum {
 #[automatically_derived]
 impl ::core::marker::Copy for UsedAssertErrorEnum {}
 #[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for UsedAssertErrorEnum {}
+#[automatically_derived]
 impl ::core::clone::Clone for UsedAssertErrorEnum {
     #[inline]
     fn clone(&self) -> UsedAssertErrorEnum {
@@ -1867,7 +1931,7 @@ impl ::core::cmp::Eq for UsedAssertErrorEnum {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {}
+    fn assert_fields_are_eq(&self) {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for UsedAssertErrorEnum {}
@@ -1876,6 +1940,12 @@ impl ::core::cmp::PartialEq for UsedAssertErrorEnum {
     #[inline]
     fn eq(&self, other: &UsedAssertErrorEnum) -> bool {
         true
+    }
+}
+impl UsedAssertErrorEnum {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedAssertErrorEnum")
     }
 }
 pub static __SPEC_XDR_TYPE_USEDASSERTERRORENUM: [u8; UsedAssertErrorEnum::__SPEC_XDR_VIEW
@@ -1887,6 +1957,7 @@ impl UsedAssertErrorEnum {
                 doc: soroban_sdk::xdr::StringMView::new(b""),
                 lib: soroban_sdk::xdr::StringMView::new(b""),
                 name: soroban_sdk::xdr::StringMView::new(b"UsedAssertErrorEnum"),
+                id: UsedAssertErrorEnum::spec_type_id(),
                 cases: soroban_sdk::xdr::VecMView::new(&[
                     soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -2039,7 +2110,7 @@ impl ::core::cmp::Eq for UsedNestedInStruct {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<i64>;
     }
 }
@@ -2052,6 +2123,12 @@ impl ::core::cmp::PartialEq for UsedNestedInStruct {
         self.val == other.val
     }
 }
+impl UsedNestedInStruct {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedNestedInStruct")
+    }
+}
 pub static __SPEC_XDR_TYPE_USEDNESTEDINSTRUCT: [u8; UsedNestedInStruct::__SPEC_XDR_VIEW
     .const_xdr_len()] = UsedNestedInStruct::spec_xdr();
 impl UsedNestedInStruct {
@@ -2060,6 +2137,7 @@ impl UsedNestedInStruct {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UsedNestedInStruct"),
+            id: UsedNestedInStruct::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -2179,19 +2257,22 @@ impl TryFrom<&UsedNestedInStruct> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &UsedNestedInStruct) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
-            soroban_sdk::xdr::ScMapEntry {
-                key: soroban_sdk::xdr::ScSymbol(
-                    "val"
+        soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
+            ::alloc::intrinsics::write_box_via_move(
+                ::alloc::boxed::Box::new_uninit(),
+                [soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "val"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.val)
                         .try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                )
-                .into(),
-                val: (&val.val)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-        ])))
+                }],
+            ),
+        ))
     }
 }
 impl TryFrom<UsedNestedInStruct> for soroban_sdk::xdr::ScMap {
@@ -2247,7 +2328,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<
                 <i64 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -2285,29 +2366,33 @@ const _: () = {
             std::cell::Cell<u32>,
         > = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -2417,7 +2502,7 @@ impl ::core::cmp::Eq for UsedVecElement {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<u32>;
     }
 }
@@ -2430,6 +2515,12 @@ impl ::core::cmp::PartialEq for UsedVecElement {
         self.data == other.data
     }
 }
+impl UsedVecElement {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedVecElement")
+    }
+}
 pub static __SPEC_XDR_TYPE_USEDVECELEMENT: [u8; UsedVecElement::__SPEC_XDR_VIEW.const_xdr_len()] =
     UsedVecElement::spec_xdr();
 impl UsedVecElement {
@@ -2438,6 +2529,7 @@ impl UsedVecElement {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UsedVecElement"),
+            id: UsedVecElement::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -2555,19 +2647,22 @@ impl TryFrom<&UsedVecElement> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &UsedVecElement) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
-            soroban_sdk::xdr::ScMapEntry {
-                key: soroban_sdk::xdr::ScSymbol(
-                    "data"
+        soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
+            ::alloc::intrinsics::write_box_via_move(
+                ::alloc::boxed::Box::new_uninit(),
+                [soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "data"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.data)
                         .try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                )
-                .into(),
-                val: (&val.data)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-        ])))
+                }],
+            ),
+        ))
     }
 }
 impl TryFrom<UsedVecElement> for soroban_sdk::xdr::ScMap {
@@ -2623,7 +2718,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<
                 <u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -2661,29 +2756,33 @@ const _: () = {
             std::cell::Cell<u32>,
         > = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -2776,6 +2875,9 @@ pub enum UsedMapKey {
 #[automatically_derived]
 impl ::core::marker::Copy for UsedMapKey {}
 #[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for UsedMapKey {}
+#[automatically_derived]
 impl ::core::clone::Clone for UsedMapKey {
     #[inline]
     fn clone(&self) -> UsedMapKey {
@@ -2800,7 +2902,7 @@ impl ::core::cmp::Eq for UsedMapKey {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {}
+    fn assert_fields_are_eq(&self) {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for UsedMapKey {}
@@ -2813,6 +2915,12 @@ impl ::core::cmp::PartialEq for UsedMapKey {
         __self_discr == __arg1_discr
     }
 }
+impl UsedMapKey {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedMapKey")
+    }
+}
 pub static __SPEC_XDR_TYPE_USEDMAPKEY: [u8; UsedMapKey::__SPEC_XDR_VIEW.const_xdr_len()] =
     UsedMapKey::spec_xdr();
 impl UsedMapKey {
@@ -2821,6 +2929,7 @@ impl UsedMapKey {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UsedMapKey"),
+            id: UsedMapKey::spec_type_id(),
             cases: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -2955,7 +3064,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {}
+        fn assert_fields_are_eq(&self) {}
     }
     #[automatically_derived]
     impl ::core::marker::StructuralPartialEq for ArbitraryUsedMapKey {}
@@ -2993,29 +3102,33 @@ const _: () = {
         #[allow(non_upper_case_globals)]
         const RECURSIVE_COUNT_ArbitraryUsedMapKey: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -3141,7 +3254,7 @@ impl ::core::cmp::Eq for UsedMapVal {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<u32>;
     }
 }
@@ -3154,6 +3267,12 @@ impl ::core::cmp::PartialEq for UsedMapVal {
         self.v == other.v
     }
 }
+impl UsedMapVal {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedMapVal")
+    }
+}
 pub static __SPEC_XDR_TYPE_USEDMAPVAL: [u8; UsedMapVal::__SPEC_XDR_VIEW.const_xdr_len()] =
     UsedMapVal::spec_xdr();
 impl UsedMapVal {
@@ -3162,6 +3281,7 @@ impl UsedMapVal {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UsedMapVal"),
+            id: UsedMapVal::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -3278,18 +3398,21 @@ impl TryFrom<&UsedMapVal> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &UsedMapVal) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
-            soroban_sdk::xdr::ScMapEntry {
-                key: soroban_sdk::xdr::ScSymbol(
-                    "v".try_into()
+        soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
+            ::alloc::intrinsics::write_box_via_move(
+                ::alloc::boxed::Box::new_uninit(),
+                [soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "v".try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.v)
+                        .try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                )
-                .into(),
-                val: (&val.v)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-        ])))
+                }],
+            ),
+        ))
     }
 }
 impl TryFrom<UsedMapVal> for soroban_sdk::xdr::ScMap {
@@ -3345,7 +3468,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<
                 <u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -3381,29 +3504,33 @@ const _: () = {
         #[allow(non_upper_case_globals)]
         const RECURSIVE_COUNT_ArbitraryUsedMapVal: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -3518,7 +3645,7 @@ impl ::core::cmp::Eq for UsedOptionElement {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<u32>;
     }
 }
@@ -3531,6 +3658,12 @@ impl ::core::cmp::PartialEq for UsedOptionElement {
         self.data == other.data
     }
 }
+impl UsedOptionElement {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedOptionElement")
+    }
+}
 pub static __SPEC_XDR_TYPE_USEDOPTIONELEMENT: [u8; UsedOptionElement::__SPEC_XDR_VIEW
     .const_xdr_len()] = UsedOptionElement::spec_xdr();
 impl UsedOptionElement {
@@ -3539,6 +3672,7 @@ impl UsedOptionElement {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UsedOptionElement"),
+            id: UsedOptionElement::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -3656,19 +3790,22 @@ impl TryFrom<&UsedOptionElement> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &UsedOptionElement) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
-            soroban_sdk::xdr::ScMapEntry {
-                key: soroban_sdk::xdr::ScSymbol(
-                    "data"
+        soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
+            ::alloc::intrinsics::write_box_via_move(
+                ::alloc::boxed::Box::new_uninit(),
+                [soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "data"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.data)
                         .try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                )
-                .into(),
-                val: (&val.data)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-        ])))
+                }],
+            ),
+        ))
     }
 }
 impl TryFrom<UsedOptionElement> for soroban_sdk::xdr::ScMap {
@@ -3724,7 +3861,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<
                 <u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -3762,29 +3899,33 @@ const _: () = {
             std::cell::Cell<u32>,
         > = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -3894,7 +4035,7 @@ impl ::core::cmp::Eq for UsedResultOk {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<u32>;
     }
 }
@@ -3907,6 +4048,12 @@ impl ::core::cmp::PartialEq for UsedResultOk {
         self.data == other.data
     }
 }
+impl UsedResultOk {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedResultOk")
+    }
+}
 pub static __SPEC_XDR_TYPE_USEDRESULTOK: [u8; UsedResultOk::__SPEC_XDR_VIEW.const_xdr_len()] =
     UsedResultOk::spec_xdr();
 impl UsedResultOk {
@@ -3915,6 +4062,7 @@ impl UsedResultOk {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UsedResultOk"),
+            id: UsedResultOk::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -4032,19 +4180,22 @@ impl TryFrom<&UsedResultOk> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &UsedResultOk) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
-            soroban_sdk::xdr::ScMapEntry {
-                key: soroban_sdk::xdr::ScSymbol(
-                    "data"
+        soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
+            ::alloc::intrinsics::write_box_via_move(
+                ::alloc::boxed::Box::new_uninit(),
+                [soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "data"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.data)
                         .try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                )
-                .into(),
-                val: (&val.data)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-        ])))
+                }],
+            ),
+        ))
     }
 }
 impl TryFrom<UsedResultOk> for soroban_sdk::xdr::ScMap {
@@ -4100,7 +4251,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<
                 <u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -4136,29 +4287,33 @@ const _: () = {
         #[allow(non_upper_case_globals)]
         const RECURSIVE_COUNT_ArbitraryUsedResultOk: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -4277,7 +4432,7 @@ impl ::core::cmp::Eq for UsedEventSimple {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<Symbol>;
         let _: ::core::cmp::AssertParamIsEq<i128>;
     }
@@ -4363,6 +4518,9 @@ pub enum UsedEventTopicType {
 #[automatically_derived]
 impl ::core::marker::Copy for UsedEventTopicType {}
 #[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for UsedEventTopicType {}
+#[automatically_derived]
 impl ::core::clone::Clone for UsedEventTopicType {
     #[inline]
     fn clone(&self) -> UsedEventTopicType {
@@ -4387,7 +4545,7 @@ impl ::core::cmp::Eq for UsedEventTopicType {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {}
+    fn assert_fields_are_eq(&self) {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for UsedEventTopicType {}
@@ -4400,6 +4558,12 @@ impl ::core::cmp::PartialEq for UsedEventTopicType {
         __self_discr == __arg1_discr
     }
 }
+impl UsedEventTopicType {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedEventTopicType")
+    }
+}
 pub static __SPEC_XDR_TYPE_USEDEVENTTOPICTYPE: [u8; UsedEventTopicType::__SPEC_XDR_VIEW
     .const_xdr_len()] = UsedEventTopicType::spec_xdr();
 impl UsedEventTopicType {
@@ -4408,6 +4572,7 @@ impl UsedEventTopicType {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UsedEventTopicType"),
+            id: UsedEventTopicType::spec_type_id(),
             cases: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -4544,7 +4709,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {}
+        fn assert_fields_are_eq(&self) {}
     }
     #[automatically_derived]
     impl ::core::marker::StructuralPartialEq for ArbitraryUsedEventTopicType {}
@@ -4584,29 +4749,33 @@ const _: () = {
             std::cell::Cell<u32>,
         > = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -4741,7 +4910,7 @@ impl ::core::cmp::Eq for UsedEventWithTopicType {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<UsedEventTopicType>;
         let _: ::core::cmp::AssertParamIsEq<i128>;
     }
@@ -4772,9 +4941,10 @@ impl UsedEventWithTopicType {
                 soroban_sdk::xdr::ScSpecEventParamV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"kind"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                        soroban_sdk::xdr::ScSpecTypeUdtView {
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
                             name: soroban_sdk::xdr::StringMView::new(b"UsedEventTopicType"),
+                            id: <UsedEventTopicType>::spec_type_id(),
                         },
                     ),
                     location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
@@ -4860,7 +5030,7 @@ impl ::core::cmp::Eq for UsedEventDataType {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<u32>;
     }
 }
@@ -4873,6 +5043,12 @@ impl ::core::cmp::PartialEq for UsedEventDataType {
         self.x == other.x && self.y == other.y
     }
 }
+impl UsedEventDataType {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedEventDataType")
+    }
+}
 pub static __SPEC_XDR_TYPE_USEDEVENTDATATYPE: [u8; UsedEventDataType::__SPEC_XDR_VIEW
     .const_xdr_len()] = UsedEventDataType::spec_xdr();
 impl UsedEventDataType {
@@ -4881,6 +5057,7 @@ impl UsedEventDataType {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UsedEventDataType"),
+            id: UsedEventDataType::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -5024,28 +5201,33 @@ impl TryFrom<&UsedEventDataType> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &UsedEventDataType) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
-            soroban_sdk::xdr::ScMapEntry {
-                key: soroban_sdk::xdr::ScSymbol(
-                    "x".try_into()
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                )
-                .into(),
-                val: (&val.x)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-            soroban_sdk::xdr::ScMapEntry {
-                key: soroban_sdk::xdr::ScSymbol(
-                    "y".try_into()
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                )
-                .into(),
-                val: (&val.y)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-        ])))
+        soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
+            ::alloc::intrinsics::write_box_via_move(
+                ::alloc::boxed::Box::new_uninit(),
+                [
+                    soroban_sdk::xdr::ScMapEntry {
+                        key: soroban_sdk::xdr::ScSymbol(
+                            "x".try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into(),
+                        val: (&val.x)
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    },
+                    soroban_sdk::xdr::ScMapEntry {
+                        key: soroban_sdk::xdr::ScSymbol(
+                            "y".try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into(),
+                        val: (&val.y)
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    },
+                ],
+            ),
+        ))
     }
 }
 impl TryFrom<UsedEventDataType> for soroban_sdk::xdr::ScMap {
@@ -5105,7 +5287,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<
                 <u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -5154,29 +5336,33 @@ const _: () = {
             std::cell::Cell<u32>,
         > = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -5301,7 +5487,7 @@ impl ::core::cmp::Eq for UsedEventWithDataType {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<Symbol>;
         let _: ::core::cmp::AssertParamIsEq<UsedEventDataType>;
     }
@@ -5338,9 +5524,10 @@ impl UsedEventWithDataType {
                 soroban_sdk::xdr::ScSpecEventParamV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"payload"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                        soroban_sdk::xdr::ScSpecTypeUdtView {
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
                             name: soroban_sdk::xdr::StringMView::new(b"UsedEventDataType"),
+                            id: <UsedEventDataType>::spec_type_id(),
                         },
                     ),
                     location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
@@ -5416,7 +5603,7 @@ impl ::core::cmp::Eq for UsedEventTopicOuter {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<UsedEventTopicInner>;
     }
 }
@@ -5429,6 +5616,12 @@ impl ::core::cmp::PartialEq for UsedEventTopicOuter {
         self.inner == other.inner
     }
 }
+impl UsedEventTopicOuter {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedEventTopicOuter")
+    }
+}
 pub static __SPEC_XDR_TYPE_USEDEVENTTOPICOUTER: [u8; UsedEventTopicOuter::__SPEC_XDR_VIEW
     .const_xdr_len()] = UsedEventTopicOuter::spec_xdr();
 impl UsedEventTopicOuter {
@@ -5437,13 +5630,15 @@ impl UsedEventTopicOuter {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UsedEventTopicOuter"),
+            id: UsedEventTopicOuter::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"inner"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                        soroban_sdk::xdr::ScSpecTypeUdtView {
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
                             name: soroban_sdk::xdr::StringMView::new(b"UsedEventTopicInner"),
+                            id: <UsedEventTopicInner>::spec_type_id(),
                         },
                     ),
                 },
@@ -5562,19 +5757,22 @@ impl TryFrom<&UsedEventTopicOuter> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &UsedEventTopicOuter) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
-            soroban_sdk::xdr::ScMapEntry {
-                key: soroban_sdk::xdr::ScSymbol(
-                    "inner"
+        soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
+            ::alloc::intrinsics::write_box_via_move(
+                ::alloc::boxed::Box::new_uninit(),
+                [soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "inner"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.inner)
                         .try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                )
-                .into(),
-                val: (&val.inner)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-        ])))
+                }],
+            ),
+        ))
     }
 }
 impl TryFrom<UsedEventTopicOuter> for soroban_sdk::xdr::ScMap {
@@ -5631,7 +5829,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<
                 <UsedEventTopicInner as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -5669,29 +5867,33 @@ const _: () = {
             std::cell::Cell<u32>,
         > = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -5808,7 +6010,7 @@ impl ::core::cmp::Eq for UsedEventTopicInner {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<u32>;
     }
 }
@@ -5821,6 +6023,12 @@ impl ::core::cmp::PartialEq for UsedEventTopicInner {
         self.val == other.val
     }
 }
+impl UsedEventTopicInner {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedEventTopicInner")
+    }
+}
 pub static __SPEC_XDR_TYPE_USEDEVENTTOPICINNER: [u8; UsedEventTopicInner::__SPEC_XDR_VIEW
     .const_xdr_len()] = UsedEventTopicInner::spec_xdr();
 impl UsedEventTopicInner {
@@ -5829,6 +6037,7 @@ impl UsedEventTopicInner {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UsedEventTopicInner"),
+            id: UsedEventTopicInner::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -5948,19 +6157,22 @@ impl TryFrom<&UsedEventTopicInner> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &UsedEventTopicInner) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
-            soroban_sdk::xdr::ScMapEntry {
-                key: soroban_sdk::xdr::ScSymbol(
-                    "val"
+        soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
+            ::alloc::intrinsics::write_box_via_move(
+                ::alloc::boxed::Box::new_uninit(),
+                [soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "val"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.val)
                         .try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                )
-                .into(),
-                val: (&val.val)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-        ])))
+                }],
+            ),
+        ))
     }
 }
 impl TryFrom<UsedEventTopicInner> for soroban_sdk::xdr::ScMap {
@@ -6016,7 +6228,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<
                 <u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -6054,29 +6266,33 @@ const _: () = {
             std::cell::Cell<u32>,
         > = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -6197,7 +6413,7 @@ impl ::core::cmp::Eq for UsedEventWithNestedTopic {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<UsedEventTopicOuter>;
         let _: ::core::cmp::AssertParamIsEq<i128>;
     }
@@ -6229,9 +6445,10 @@ impl UsedEventWithNestedTopic {
                 soroban_sdk::xdr::ScSpecEventParamV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"info"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                        soroban_sdk::xdr::ScSpecTypeUdtView {
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
                             name: soroban_sdk::xdr::StringMView::new(b"UsedEventTopicOuter"),
+                            id: <UsedEventTopicOuter>::spec_type_id(),
                         },
                     ),
                     location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
@@ -6313,7 +6530,7 @@ impl ::core::cmp::Eq for UsedEventDataOuter {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<UsedEventDataInner>;
     }
 }
@@ -6326,6 +6543,12 @@ impl ::core::cmp::PartialEq for UsedEventDataOuter {
         self.inner == other.inner
     }
 }
+impl UsedEventDataOuter {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedEventDataOuter")
+    }
+}
 pub static __SPEC_XDR_TYPE_USEDEVENTDATAOUTER: [u8; UsedEventDataOuter::__SPEC_XDR_VIEW
     .const_xdr_len()] = UsedEventDataOuter::spec_xdr();
 impl UsedEventDataOuter {
@@ -6334,13 +6557,15 @@ impl UsedEventDataOuter {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UsedEventDataOuter"),
+            id: UsedEventDataOuter::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"inner"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                        soroban_sdk::xdr::ScSpecTypeUdtView {
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
                             name: soroban_sdk::xdr::StringMView::new(b"UsedEventDataInner"),
+                            id: <UsedEventDataInner>::spec_type_id(),
                         },
                     ),
                 },
@@ -6459,19 +6684,22 @@ impl TryFrom<&UsedEventDataOuter> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &UsedEventDataOuter) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
-            soroban_sdk::xdr::ScMapEntry {
-                key: soroban_sdk::xdr::ScSymbol(
-                    "inner"
+        soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
+            ::alloc::intrinsics::write_box_via_move(
+                ::alloc::boxed::Box::new_uninit(),
+                [soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "inner"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.inner)
                         .try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                )
-                .into(),
-                val: (&val.inner)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-        ])))
+                }],
+            ),
+        ))
     }
 }
 impl TryFrom<UsedEventDataOuter> for soroban_sdk::xdr::ScMap {
@@ -6528,7 +6756,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<
                 <UsedEventDataInner as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -6566,29 +6794,33 @@ const _: () = {
             std::cell::Cell<u32>,
         > = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -6703,7 +6935,7 @@ impl ::core::cmp::Eq for UsedEventDataInner {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<u32>;
     }
 }
@@ -6716,6 +6948,12 @@ impl ::core::cmp::PartialEq for UsedEventDataInner {
         self.val == other.val
     }
 }
+impl UsedEventDataInner {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedEventDataInner")
+    }
+}
 pub static __SPEC_XDR_TYPE_USEDEVENTDATAINNER: [u8; UsedEventDataInner::__SPEC_XDR_VIEW
     .const_xdr_len()] = UsedEventDataInner::spec_xdr();
 impl UsedEventDataInner {
@@ -6724,6 +6962,7 @@ impl UsedEventDataInner {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UsedEventDataInner"),
+            id: UsedEventDataInner::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -6843,19 +7082,22 @@ impl TryFrom<&UsedEventDataInner> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &UsedEventDataInner) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
-            soroban_sdk::xdr::ScMapEntry {
-                key: soroban_sdk::xdr::ScSymbol(
-                    "val"
+        soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
+            ::alloc::intrinsics::write_box_via_move(
+                ::alloc::boxed::Box::new_uninit(),
+                [soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "val"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.val)
                         .try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                )
-                .into(),
-                val: (&val.val)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-        ])))
+                }],
+            ),
+        ))
     }
 }
 impl TryFrom<UsedEventDataInner> for soroban_sdk::xdr::ScMap {
@@ -6911,7 +7153,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<
                 <u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -6949,29 +7191,33 @@ const _: () = {
             std::cell::Cell<u32>,
         > = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -7090,7 +7336,7 @@ impl ::core::cmp::Eq for UsedEventWithNestedData {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<Symbol>;
         let _: ::core::cmp::AssertParamIsEq<UsedEventDataOuter>;
     }
@@ -7127,9 +7373,10 @@ impl UsedEventWithNestedData {
                 soroban_sdk::xdr::ScSpecEventParamV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"payload"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                        soroban_sdk::xdr::ScSpecTypeUdtView {
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
                             name: soroban_sdk::xdr::StringMView::new(b"UsedEventDataOuter"),
+                            id: <UsedEventDataOuter>::spec_type_id(),
                         },
                     ),
                     location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
@@ -7183,6 +7430,9 @@ pub enum UsedRefTopicType {
 #[automatically_derived]
 impl ::core::marker::Copy for UsedRefTopicType {}
 #[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for UsedRefTopicType {}
+#[automatically_derived]
 impl ::core::clone::Clone for UsedRefTopicType {
     #[inline]
     fn clone(&self) -> UsedRefTopicType {
@@ -7207,7 +7457,7 @@ impl ::core::cmp::Eq for UsedRefTopicType {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {}
+    fn assert_fields_are_eq(&self) {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for UsedRefTopicType {}
@@ -7220,6 +7470,12 @@ impl ::core::cmp::PartialEq for UsedRefTopicType {
         __self_discr == __arg1_discr
     }
 }
+impl UsedRefTopicType {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedRefTopicType")
+    }
+}
 pub static __SPEC_XDR_TYPE_USEDREFTOPICTYPE: [u8; UsedRefTopicType::__SPEC_XDR_VIEW
     .const_xdr_len()] = UsedRefTopicType::spec_xdr();
 impl UsedRefTopicType {
@@ -7228,6 +7484,7 @@ impl UsedRefTopicType {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UsedRefTopicType"),
+            id: UsedRefTopicType::spec_type_id(),
             cases: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -7362,7 +7619,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {}
+        fn assert_fields_are_eq(&self) {}
     }
     #[automatically_derived]
     impl ::core::marker::StructuralPartialEq for ArbitraryUsedRefTopicType {}
@@ -7402,29 +7659,33 @@ const _: () = {
             std::cell::Cell<u32>,
         > = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -7555,7 +7816,7 @@ impl ::core::cmp::Eq for UsedRefDataType {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<UsedRefDataInner>;
     }
 }
@@ -7568,6 +7829,12 @@ impl ::core::cmp::PartialEq for UsedRefDataType {
         self.nested == other.nested
     }
 }
+impl UsedRefDataType {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedRefDataType")
+    }
+}
 pub static __SPEC_XDR_TYPE_USEDREFDATATYPE: [u8; UsedRefDataType::__SPEC_XDR_VIEW.const_xdr_len()] =
     UsedRefDataType::spec_xdr();
 impl UsedRefDataType {
@@ -7576,13 +7843,15 @@ impl UsedRefDataType {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UsedRefDataType"),
+            id: UsedRefDataType::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"nested"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                        soroban_sdk::xdr::ScSpecTypeUdtView {
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
                             name: soroban_sdk::xdr::StringMView::new(b"UsedRefDataInner"),
+                            id: <UsedRefDataInner>::spec_type_id(),
                         },
                     ),
                 },
@@ -7699,19 +7968,22 @@ impl TryFrom<&UsedRefDataType> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &UsedRefDataType) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
-            soroban_sdk::xdr::ScMapEntry {
-                key: soroban_sdk::xdr::ScSymbol(
-                    "nested"
+        soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
+            ::alloc::intrinsics::write_box_via_move(
+                ::alloc::boxed::Box::new_uninit(),
+                [soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "nested"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.nested)
                         .try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                )
-                .into(),
-                val: (&val.nested)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-        ])))
+                }],
+            ),
+        ))
     }
 }
 impl TryFrom<UsedRefDataType> for soroban_sdk::xdr::ScMap {
@@ -7768,7 +8040,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<
                 <UsedRefDataInner as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -7806,29 +8078,33 @@ const _: () = {
             std::cell::Cell<u32>,
         > = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -7938,7 +8214,7 @@ impl ::core::cmp::Eq for UsedRefDataInner {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<u32>;
     }
 }
@@ -7951,6 +8227,12 @@ impl ::core::cmp::PartialEq for UsedRefDataInner {
         self.val == other.val
     }
 }
+impl UsedRefDataInner {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedRefDataInner")
+    }
+}
 pub static __SPEC_XDR_TYPE_USEDREFDATAINNER: [u8; UsedRefDataInner::__SPEC_XDR_VIEW
     .const_xdr_len()] = UsedRefDataInner::spec_xdr();
 impl UsedRefDataInner {
@@ -7959,6 +8241,7 @@ impl UsedRefDataInner {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UsedRefDataInner"),
+            id: UsedRefDataInner::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -8076,19 +8359,22 @@ impl TryFrom<&UsedRefDataInner> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &UsedRefDataInner) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
-            soroban_sdk::xdr::ScMapEntry {
-                key: soroban_sdk::xdr::ScSymbol(
-                    "val"
+        soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
+            ::alloc::intrinsics::write_box_via_move(
+                ::alloc::boxed::Box::new_uninit(),
+                [soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "val"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.val)
                         .try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                )
-                .into(),
-                val: (&val.val)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-        ])))
+                }],
+            ),
+        ))
     }
 }
 impl TryFrom<UsedRefDataInner> for soroban_sdk::xdr::ScMap {
@@ -8144,7 +8430,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<
                 <u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -8182,29 +8468,33 @@ const _: () = {
             std::cell::Cell<u32>,
         > = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -8323,7 +8613,7 @@ impl<'a> ::core::cmp::Eq for UsedEventWithRefs<'a> {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<&'a UsedRefTopicType>;
         let _: ::core::cmp::AssertParamIsEq<&'a UsedRefDataType>;
     }
@@ -8354,9 +8644,10 @@ impl<'a> UsedEventWithRefs<'a> {
                 soroban_sdk::xdr::ScSpecEventParamV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"kind"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                        soroban_sdk::xdr::ScSpecTypeUdtView {
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
                             name: soroban_sdk::xdr::StringMView::new(b"UsedRefTopicType"),
+                            id: <UsedRefTopicType>::spec_type_id(),
                         },
                     ),
                     location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
@@ -8364,9 +8655,10 @@ impl<'a> UsedEventWithRefs<'a> {
                 soroban_sdk::xdr::ScSpecEventParamV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"payload"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                        soroban_sdk::xdr::ScSpecTypeUdtView {
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
                             name: soroban_sdk::xdr::StringMView::new(b"UsedRefDataType"),
+                            id: <UsedRefDataType>::spec_type_id(),
                         },
                     ),
                     location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
@@ -8437,7 +8729,7 @@ impl ::core::cmp::Eq for UsedTupleElement {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<u32>;
     }
 }
@@ -8450,6 +8742,12 @@ impl ::core::cmp::PartialEq for UsedTupleElement {
         self.val == other.val
     }
 }
+impl UsedTupleElement {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedTupleElement")
+    }
+}
 pub static __SPEC_XDR_TYPE_USEDTUPLEELEMENT: [u8; UsedTupleElement::__SPEC_XDR_VIEW
     .const_xdr_len()] = UsedTupleElement::spec_xdr();
 impl UsedTupleElement {
@@ -8458,6 +8756,7 @@ impl UsedTupleElement {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UsedTupleElement"),
+            id: UsedTupleElement::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -8575,19 +8874,22 @@ impl TryFrom<&UsedTupleElement> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &UsedTupleElement) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
-            soroban_sdk::xdr::ScMapEntry {
-                key: soroban_sdk::xdr::ScSymbol(
-                    "val"
+        soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
+            ::alloc::intrinsics::write_box_via_move(
+                ::alloc::boxed::Box::new_uninit(),
+                [soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "val"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.val)
                         .try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                )
-                .into(),
-                val: (&val.val)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-        ])))
+                }],
+            ),
+        ))
     }
 }
 impl TryFrom<UsedTupleElement> for soroban_sdk::xdr::ScMap {
@@ -8643,7 +8945,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<
                 <u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -8681,29 +8983,33 @@ const _: () = {
             std::cell::Cell<u32>,
         > = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -8818,7 +9124,7 @@ impl ::core::cmp::Eq for UsedTupleReturnElement {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<u32>;
     }
 }
@@ -8831,6 +9137,12 @@ impl ::core::cmp::PartialEq for UsedTupleReturnElement {
         self.val == other.val
     }
 }
+impl UsedTupleReturnElement {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedTupleReturnElement")
+    }
+}
 pub static __SPEC_XDR_TYPE_USEDTUPLERETURNELEMENT: [u8; UsedTupleReturnElement::__SPEC_XDR_VIEW
     .const_xdr_len()] = UsedTupleReturnElement::spec_xdr();
 impl UsedTupleReturnElement {
@@ -8839,6 +9151,7 @@ impl UsedTupleReturnElement {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UsedTupleReturnElement"),
+            id: UsedTupleReturnElement::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -8958,19 +9271,22 @@ impl TryFrom<&UsedTupleReturnElement> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &UsedTupleReturnElement) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
-            soroban_sdk::xdr::ScMapEntry {
-                key: soroban_sdk::xdr::ScSymbol(
-                    "val"
+        soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
+            ::alloc::intrinsics::write_box_via_move(
+                ::alloc::boxed::Box::new_uninit(),
+                [soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "val"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.val)
                         .try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                )
-                .into(),
-                val: (&val.val)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-        ])))
+                }],
+            ),
+        ))
     }
 }
 impl TryFrom<UsedTupleReturnElement> for soroban_sdk::xdr::ScMap {
@@ -9026,7 +9342,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<
                 <u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -9064,29 +9380,33 @@ const _: () = {
             std::cell::Cell<u32>,
         > = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -9203,7 +9523,7 @@ impl ::core::cmp::Eq for UsedVecInnerVecElement {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<u32>;
     }
 }
@@ -9216,6 +9536,12 @@ impl ::core::cmp::PartialEq for UsedVecInnerVecElement {
         self.val == other.val
     }
 }
+impl UsedVecInnerVecElement {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedVecInnerVecElement")
+    }
+}
 pub static __SPEC_XDR_TYPE_USEDVECINNERVECELEMENT: [u8; UsedVecInnerVecElement::__SPEC_XDR_VIEW
     .const_xdr_len()] = UsedVecInnerVecElement::spec_xdr();
 impl UsedVecInnerVecElement {
@@ -9224,6 +9550,7 @@ impl UsedVecInnerVecElement {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UsedVecInnerVecElement"),
+            id: UsedVecInnerVecElement::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -9343,19 +9670,22 @@ impl TryFrom<&UsedVecInnerVecElement> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &UsedVecInnerVecElement) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
-            soroban_sdk::xdr::ScMapEntry {
-                key: soroban_sdk::xdr::ScSymbol(
-                    "val"
+        soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
+            ::alloc::intrinsics::write_box_via_move(
+                ::alloc::boxed::Box::new_uninit(),
+                [soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "val"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.val)
                         .try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                )
-                .into(),
-                val: (&val.val)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-        ])))
+                }],
+            ),
+        ))
     }
 }
 impl TryFrom<UsedVecInnerVecElement> for soroban_sdk::xdr::ScMap {
@@ -9411,7 +9741,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<
                 <u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -9449,29 +9779,33 @@ const _: () = {
             std::cell::Cell<u32>,
         > = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -9588,7 +9922,7 @@ impl ::core::cmp::Eq for UsedVecInnerElement {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<u32>;
     }
 }
@@ -9601,6 +9935,12 @@ impl ::core::cmp::PartialEq for UsedVecInnerElement {
         self.val == other.val
     }
 }
+impl UsedVecInnerElement {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedVecInnerElement")
+    }
+}
 pub static __SPEC_XDR_TYPE_USEDVECINNERELEMENT: [u8; UsedVecInnerElement::__SPEC_XDR_VIEW
     .const_xdr_len()] = UsedVecInnerElement::spec_xdr();
 impl UsedVecInnerElement {
@@ -9609,6 +9949,7 @@ impl UsedVecInnerElement {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UsedVecInnerElement"),
+            id: UsedVecInnerElement::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -9728,19 +10069,22 @@ impl TryFrom<&UsedVecInnerElement> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &UsedVecInnerElement) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
-            soroban_sdk::xdr::ScMapEntry {
-                key: soroban_sdk::xdr::ScSymbol(
-                    "val"
+        soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
+            ::alloc::intrinsics::write_box_via_move(
+                ::alloc::boxed::Box::new_uninit(),
+                [soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "val"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.val)
                         .try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                )
-                .into(),
-                val: (&val.val)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-        ])))
+                }],
+            ),
+        ))
     }
 }
 impl TryFrom<UsedVecInnerElement> for soroban_sdk::xdr::ScMap {
@@ -9796,7 +10140,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<
                 <u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -9834,29 +10178,33 @@ const _: () = {
             std::cell::Cell<u32>,
         > = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -9981,7 +10329,7 @@ impl ::core::cmp::Eq for UsedVecElementNested {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<u32>;
         let _: ::core::cmp::AssertParamIsEq<UsedVecInnerElement>;
         let _: ::core::cmp::AssertParamIsEq<Vec<UsedVecInnerVecElement>>;
@@ -9996,6 +10344,12 @@ impl ::core::cmp::PartialEq for UsedVecElementNested {
         self.val == other.val && self.inner == other.inner && self.vec_inner == other.vec_inner
     }
 }
+impl UsedVecElementNested {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedVecElementNested")
+    }
+}
 pub static __SPEC_XDR_TYPE_USEDVECELEMENTNESTED: [u8; UsedVecElementNested::__SPEC_XDR_VIEW
     .const_xdr_len()] = UsedVecElementNested::spec_xdr();
 impl UsedVecElementNested {
@@ -10004,13 +10358,15 @@ impl UsedVecElementNested {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UsedVecElementNested"),
+            id: UsedVecElementNested::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"inner"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                        soroban_sdk::xdr::ScSpecTypeUdtView {
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
                             name: soroban_sdk::xdr::StringMView::new(b"UsedVecInnerElement"),
+                            id: <UsedVecInnerElement>::spec_type_id(),
                         },
                     ),
                 },
@@ -10024,11 +10380,12 @@ impl UsedVecElementNested {
                     name: soroban_sdk::xdr::StringMView::new(b"vec_inner"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
                         &soroban_sdk::xdr::ScSpecTypeVecView {
-                            element_type: &soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                soroban_sdk::xdr::ScSpecTypeUdtView {
+                            element_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                     name: soroban_sdk::xdr::StringMView::new(
                                         b"UsedVecInnerVecElement",
                                     ),
+                                    id: <UsedVecInnerVecElement>::spec_type_id(),
                                 },
                             ),
                         },
@@ -10195,41 +10552,46 @@ impl TryFrom<&UsedVecElementNested> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &UsedVecElementNested) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
-            soroban_sdk::xdr::ScMapEntry {
-                key: soroban_sdk::xdr::ScSymbol(
-                    "inner"
-                        .try_into()
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                )
-                .into(),
-                val: (&val.inner)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-            soroban_sdk::xdr::ScMapEntry {
-                key: soroban_sdk::xdr::ScSymbol(
-                    "val"
-                        .try_into()
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                )
-                .into(),
-                val: (&val.val)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-            soroban_sdk::xdr::ScMapEntry {
-                key: soroban_sdk::xdr::ScSymbol(
-                    "vec_inner"
-                        .try_into()
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                )
-                .into(),
-                val: (&val.vec_inner)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-        ])))
+        soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
+            ::alloc::intrinsics::write_box_via_move(
+                ::alloc::boxed::Box::new_uninit(),
+                [
+                    soroban_sdk::xdr::ScMapEntry {
+                        key: soroban_sdk::xdr::ScSymbol(
+                            "inner"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into(),
+                        val: (&val.inner)
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    },
+                    soroban_sdk::xdr::ScMapEntry {
+                        key: soroban_sdk::xdr::ScSymbol(
+                            "val"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into(),
+                        val: (&val.val)
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    },
+                    soroban_sdk::xdr::ScMapEntry {
+                        key: soroban_sdk::xdr::ScSymbol(
+                            "vec_inner"
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into(),
+                        val: (&val.vec_inner)
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    },
+                ],
+            ),
+        ))
     }
 }
 impl TryFrom<UsedVecElementNested> for soroban_sdk::xdr::ScMap {
@@ -10295,7 +10657,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<
                 <u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -10361,29 +10723,33 @@ const _: () = {
             std::cell::Cell<u32>,
         > = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -10509,7 +10875,7 @@ impl ::core::cmp::Eq for UsedNonPubStruct {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<u32>;
     }
 }
@@ -10522,6 +10888,12 @@ impl ::core::cmp::PartialEq for UsedNonPubStruct {
         self.val == other.val
     }
 }
+impl UsedNonPubStruct {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedNonPubStruct")
+    }
+}
 pub static __SPEC_XDR_TYPE_USEDNONPUBSTRUCT: [u8; UsedNonPubStruct::__SPEC_XDR_VIEW
     .const_xdr_len()] = UsedNonPubStruct::spec_xdr();
 impl UsedNonPubStruct {
@@ -10530,6 +10902,7 @@ impl UsedNonPubStruct {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UsedNonPubStruct"),
+            id: UsedNonPubStruct::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -10647,19 +11020,22 @@ impl TryFrom<&UsedNonPubStruct> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &UsedNonPubStruct) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
-            soroban_sdk::xdr::ScMapEntry {
-                key: soroban_sdk::xdr::ScSymbol(
-                    "val"
+        soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
+            ::alloc::intrinsics::write_box_via_move(
+                ::alloc::boxed::Box::new_uninit(),
+                [soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "val"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.val)
                         .try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                )
-                .into(),
-                val: (&val.val)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-        ])))
+                }],
+            ),
+        ))
     }
 }
 impl TryFrom<UsedNonPubStruct> for soroban_sdk::xdr::ScMap {
@@ -10715,7 +11091,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<
                 <u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -10753,29 +11129,33 @@ const _: () = {
             std::cell::Cell<u32>,
         > = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -10867,6 +11247,9 @@ enum UsedNonPubError {
 #[automatically_derived]
 impl ::core::marker::Copy for UsedNonPubError {}
 #[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for UsedNonPubError {}
+#[automatically_derived]
 impl ::core::clone::Clone for UsedNonPubError {
     #[inline]
     fn clone(&self) -> UsedNonPubError {
@@ -10885,7 +11268,7 @@ impl ::core::cmp::Eq for UsedNonPubError {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {}
+    fn assert_fields_are_eq(&self) {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for UsedNonPubError {}
@@ -10894,6 +11277,12 @@ impl ::core::cmp::PartialEq for UsedNonPubError {
     #[inline]
     fn eq(&self, other: &UsedNonPubError) -> bool {
         true
+    }
+}
+impl UsedNonPubError {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedNonPubError")
     }
 }
 pub static __SPEC_XDR_TYPE_USEDNONPUBERROR: [u8; UsedNonPubError::__SPEC_XDR_VIEW.const_xdr_len()] =
@@ -10905,6 +11294,7 @@ impl UsedNonPubError {
                 doc: soroban_sdk::xdr::StringMView::new(b""),
                 lib: soroban_sdk::xdr::StringMView::new(b""),
                 name: soroban_sdk::xdr::StringMView::new(b"UsedNonPubError"),
+                id: UsedNonPubError::spec_type_id(),
                 cases: soroban_sdk::xdr::VecMView::new(&[
                     soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -11055,7 +11445,7 @@ impl ::core::cmp::Eq for UsedRecursiveRoot {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<UsedRecursiveNode>;
     }
 }
@@ -11068,6 +11458,12 @@ impl ::core::cmp::PartialEq for UsedRecursiveRoot {
         self.val == other.val
     }
 }
+impl UsedRecursiveRoot {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedRecursiveRoot")
+    }
+}
 pub static __SPEC_XDR_TYPE_USEDRECURSIVEROOT: [u8; UsedRecursiveRoot::__SPEC_XDR_VIEW
     .const_xdr_len()] = UsedRecursiveRoot::spec_xdr();
 impl UsedRecursiveRoot {
@@ -11076,13 +11472,15 @@ impl UsedRecursiveRoot {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UsedRecursiveRoot"),
+            id: UsedRecursiveRoot::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"val"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                        soroban_sdk::xdr::ScSpecTypeUdtView {
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
                             name: soroban_sdk::xdr::StringMView::new(b"UsedRecursiveNode"),
+                            id: <UsedRecursiveNode>::spec_type_id(),
                         },
                     ),
                 },
@@ -11197,19 +11595,22 @@ impl TryFrom<&UsedRecursiveRoot> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &UsedRecursiveRoot) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
-            soroban_sdk::xdr::ScMapEntry {
-                key: soroban_sdk::xdr::ScSymbol(
-                    "val"
+        soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
+            ::alloc::intrinsics::write_box_via_move(
+                ::alloc::boxed::Box::new_uninit(),
+                [soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "val"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.val)
                         .try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                )
-                .into(),
-                val: (&val.val)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-        ])))
+                }],
+            ),
+        ))
     }
 }
 impl TryFrom<UsedRecursiveRoot> for soroban_sdk::xdr::ScMap {
@@ -11265,7 +11666,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<
                 <UsedRecursiveNode as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -11303,29 +11704,33 @@ const _: () = {
             std::cell::Cell<u32>,
         > = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -11448,7 +11853,7 @@ impl ::core::cmp::Eq for UsedRecursiveNode {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<UsedLeaf>;
         let _: ::core::cmp::AssertParamIsEq<UsedRecursiveLeaf>;
     }
@@ -11475,6 +11880,12 @@ impl ::core::cmp::PartialEq for UsedRecursiveNode {
             }
     }
 }
+impl UsedRecursiveNode {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedRecursiveNode")
+    }
+}
 pub static __SPEC_XDR_TYPE_USEDRECURSIVENODE: [u8; UsedRecursiveNode::__SPEC_XDR_VIEW
     .const_xdr_len()] = UsedRecursiveNode::spec_xdr();
 impl UsedRecursiveNode {
@@ -11483,15 +11894,17 @@ impl UsedRecursiveNode {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UsedRecursiveNode"),
+            id: UsedRecursiveNode::spec_type_id(),
             cases: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
                     soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
                         name: soroban_sdk::xdr::StringMView::new(b"NotRecursive"),
                         type_: soroban_sdk::xdr::VecMView::new(&[
-                            soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                soroban_sdk::xdr::ScSpecTypeUdtView {
+                            soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                     name: soroban_sdk::xdr::StringMView::new(b"UsedLeaf"),
+                                    id: <UsedLeaf>::spec_type_id(),
                                 },
                             ),
                         ]),
@@ -11502,9 +11915,10 @@ impl UsedRecursiveNode {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
                         name: soroban_sdk::xdr::StringMView::new(b"Recursive"),
                         type_: soroban_sdk::xdr::VecMView::new(&[
-                            soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                soroban_sdk::xdr::ScSpecTypeUdtView {
+                            soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                     name: soroban_sdk::xdr::StringMView::new(b"UsedRecursiveLeaf"),
+                                    id: <UsedRecursiveLeaf>::spec_type_id(),
                                 },
                             ),
                         ]),
@@ -11761,7 +12175,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<
                 <UsedLeaf as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -11842,29 +12256,33 @@ const _: () = {
             std::cell::Cell<u32>,
         > = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -12021,7 +12439,7 @@ impl ::core::cmp::Eq for UsedRecursiveLeaf {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<Vec<UsedRecursiveRoot>>;
     }
 }
@@ -12034,6 +12452,12 @@ impl ::core::cmp::PartialEq for UsedRecursiveLeaf {
         self.val == other.val
     }
 }
+impl UsedRecursiveLeaf {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedRecursiveLeaf")
+    }
+}
 pub static __SPEC_XDR_TYPE_USEDRECURSIVELEAF: [u8; UsedRecursiveLeaf::__SPEC_XDR_VIEW
     .const_xdr_len()] = UsedRecursiveLeaf::spec_xdr();
 impl UsedRecursiveLeaf {
@@ -12042,15 +12466,17 @@ impl UsedRecursiveLeaf {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UsedRecursiveLeaf"),
+            id: UsedRecursiveLeaf::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"val"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
                         &soroban_sdk::xdr::ScSpecTypeVecView {
-                            element_type: &soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                soroban_sdk::xdr::ScSpecTypeUdtView {
+                            element_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                     name: soroban_sdk::xdr::StringMView::new(b"UsedRecursiveRoot"),
+                                    id: <UsedRecursiveRoot>::spec_type_id(),
                                 },
                             ),
                         },
@@ -12167,19 +12593,22 @@ impl TryFrom<&UsedRecursiveLeaf> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &UsedRecursiveLeaf) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
-            soroban_sdk::xdr::ScMapEntry {
-                key: soroban_sdk::xdr::ScSymbol(
-                    "val"
+        soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
+            ::alloc::intrinsics::write_box_via_move(
+                ::alloc::boxed::Box::new_uninit(),
+                [soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "val"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.val)
                         .try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                )
-                .into(),
-                val: (&val.val)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-        ])))
+                }],
+            ),
+        ))
     }
 }
 impl TryFrom<UsedRecursiveLeaf> for soroban_sdk::xdr::ScMap {
@@ -12237,7 +12666,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<
                 <Vec<
                     UsedRecursiveRoot,
@@ -12277,29 +12706,33 @@ const _: () = {
             std::cell::Cell<u32>,
         > = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -12411,7 +12844,7 @@ impl ::core::cmp::Eq for UsedLeaf {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<u32>;
     }
 }
@@ -12424,6 +12857,12 @@ impl ::core::cmp::PartialEq for UsedLeaf {
         self.val == other.val
     }
 }
+impl UsedLeaf {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedLeaf")
+    }
+}
 pub static __SPEC_XDR_TYPE_USEDLEAF: [u8; UsedLeaf::__SPEC_XDR_VIEW.const_xdr_len()] =
     UsedLeaf::spec_xdr();
 impl UsedLeaf {
@@ -12432,6 +12871,7 @@ impl UsedLeaf {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UsedLeaf"),
+            id: UsedLeaf::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -12549,19 +12989,22 @@ impl TryFrom<&UsedLeaf> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &UsedLeaf) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
-            soroban_sdk::xdr::ScMapEntry {
-                key: soroban_sdk::xdr::ScSymbol(
-                    "val"
+        soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
+            ::alloc::intrinsics::write_box_via_move(
+                ::alloc::boxed::Box::new_uninit(),
+                [soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "val"
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.val)
                         .try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                )
-                .into(),
-                val: (&val.val)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-        ])))
+                }],
+            ),
+        ))
     }
 }
 impl TryFrom<UsedLeaf> for soroban_sdk::xdr::ScMap {
@@ -12617,7 +13060,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<
                 <u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -12653,29 +13096,33 @@ const _: () = {
         #[allow(non_upper_case_globals)]
         const RECURSIVE_COUNT_ArbitraryUsedLeaf: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -12762,7 +13209,7 @@ const _: () = {
     }
 };
 mod wasm_imported {
-    pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01*\x07`\x02~~\x01~`\x03~~~\x01~`\x01~\x01~`\x00\x01~`\x02\x7f\x7f\x01~`\x04\x7f\x7f\x7f\x7f\x01~`\x02\x7f~\x00\x02%\x06\x01b\x01j\x00\x00\x01x\x011\x00\x00\x01v\x01g\x00\x00\x01m\x019\x00\x01\x01i\x012\x00\x02\x01i\x011\x00\x02\x03\x0c\x0b\x03\x04\x03\x02\x00\x05\x03\x00\x00\x06\x06\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x82\x80\xc0\x00\x0b\x7f\x00A\x80\x81\xc0\x00\x0b\x7f\x00A\x80\x81\xc0\x00\x0b\x07\x8e\x01\x0b\x06memory\x02\x00\tfn_enum_a\x00\x06\rfn_enum_int_a\x00\x08\nfn_error_a\x00\t\nfn_event_a\x00\n\nfn_event_d\x00\x0c\x0bfn_struct_a\x00\r\x11fn_struct_tuple_a\x00\x0e\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\x8d\n\x0b\x95\x02\x03\x01\x7f\x01~\x03\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\x00-\x00\x82\x80\xc0\x80\x00\x1aB\x00!\x01A~!\x02\x03~\x02@\x02@\x02@\x02@\x02@ \x02E\r\x00A\x01!\x03 \x02A\x82\x80\xc0\x80\x00j-\x00\x00\"\x04A\xdf\x00F\r\x04 \x04APjA\xff\x01qA\nI\r\x02 \x04A\xbf\x7fjA\xff\x01qA\x1aI\r\x03\x02@ \x04A\x9f\x7fjA\xff\x01qA\x1aO\r\x00 \x04AEj!\x03\x0c\x05\x0b \x00 \x04\xadB\x08\x86B\x01\x847\x03\x00A\x80\x80\xc0\x80\x00\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x80\x80\x80\x80\x00!\x01\x0c\x01\x0b \x00 \x01B\x08\x86B\x0e\x84\"\x017\x02\x04\x0b \x00 \x017\x03\x00 \x00A\x01\x10\x87\x80\x80\x80\x00!\x01 \x00A\x10j$\x80\x80\x80\x80\x00 \x01\x0f\x0b \x04ARj!\x03\x0c\x01\x0b \x04AKj!\x03\x0b \x01B\x06\x86 \x03\xadB\xff\x01\x83\x84!\x01 \x02A\x01j!\x02\x0c\x00\x0b\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x82\x80\x80\x80\x00\x0b\x12\x00A\x00-\x00\xc8\x80\xc0\x80\x00\x1aB\x84\x80\x80\x800\x0b4\x00\x02@ \x00B\xff\x01\x83B\x04Q\r\x00\x00\x0bA\x00-\x00\x90\x80\xc0\x80\x00\x1aB\x83\x80\x80\x80  \x00B\x84\x80\x80\x80p\x83 \x00B\x80\x80\x80\x80\x10T\x1b\x0b\xe6\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcd\x00R\r\x00 \x01B\xff\x01\x83B\xc9\x00R\r\x00A\x00!\x03A\x00-\x00\x9e\x80\xc0\x80\x00\x1a \x02 \x007\x03\x08 \x02B\x8e\xcc\xc1\xfc\xac\xdd\xab\x017\x03\x00\x03@\x02@ \x03A\x10G\r\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02A\x10j \x03j \x02 \x03j)\x03\x007\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x02A\x10jA\x02\x10\x87\x80\x80\x80\x00!\x00 \x02 \x017\x03\x10 \x00A\xf8\x80\xc0\x80\x00A\x01 \x02A\x10jA\x01\x10\x8b\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x02A j$\x80\x80\x80\x80\x00B\x02\x0f\x0b \x02A\x10j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b\x00\x0b.\x00\x02@ \x01 \x03F\r\x00\x00\x0b \x00\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x83\x80\x80\x80\x00\x0b\x91\x01\x03\x01\x7f\x01~\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\x00-\x00\xac\x80\xc0\x80\x00\x1a \x00B\x8e\xd2\xc1\xfc\xac\xdd\xab\x017\x03\x00B\x02!\x01A\x01!\x02\x02@\x03@ \x02E\r\x01 \x02A\x7fj!\x02B\x8e\xd2\xc1\xfc\xac\xdd\xab\x01!\x01\x0c\x00\x0b\x0b \x00 \x017\x03\x08 \x00A\x08jA\x01\x10\x87\x80\x80\x80\x00A\x04A\x00 \x00A\x08jA\x00\x10\x8b\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\x83\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\x04R\r\x00A\x01A\x02A\x00 \x01\xa7A\xff\x01q\"\x03\x1b \x03A\x01F\x1b\"\x03A\x02F\r\x00A\x00-\x00\xba\x80\xc0\x80\x00\x1a \x02 \x03\xad7\x03\x08 \x02 \x00B\x84\x80\x80\x80p\x837\x03\x00A\xe8\x80\xc0\x80\x00A\x02 \x02A\x02\x10\x8b\x80\x80\x80\x00!\x00 \x02A\x10j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b\xbc\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00 \x02A\x10j \x00\x10\x8f\x80\x80\x80\x00\x02@ \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x8f\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x01A\x00-\x00\xd6\x80\xc0\x80\x00\x1a \x02A\x10j \x00\x10\x90\x80\x80\x80\x00 \x02(\x02\x10\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x90\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02 \x02)\x03\x187\x03\x08 \x02 \x007\x03\x00 \x02A\x02\x10\x87\x80\x80\x80\x00!\x00 \x02A j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b]\x02\x01\x7f\x01~\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc1\x00F\r\x00\x02@ \x02A\x07F\r\x00B\x01!\x03B\x83\x90\x80\x80\x80\x01!\x01\x0c\x02\x0b \x01B\x08\x87!\x01B\x00!\x03\x0c\x01\x0bB\x00!\x03 \x01\x10\x84\x80\x80\x80\x00!\x01\x0b \x00 \x037\x03\x00 \x00 \x017\x03\x08\x0bF\x00\x02@\x02@ \x01B\x80\x80\x80\x80\x80\x80\x80\xc0\x00|B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x01B\x08\x86B\x07\x84!\x01\x0c\x01\x0b \x01\x10\x85\x80\x80\x80\x00!\x01\x0b \x00B\x007\x03\x00 \x00 \x017\x03\x08\x0b\x0b\x8a\x01\x01\x00A\x80\x80\xc0\x00\x0b\x80\x01V2SpEcV1\xa2=N\xc1p\x95\x90\xb2SpEcV1\xe9R\xa7\xe8b\x99\xa2\xc3SpEcV1K\xe6\x8ej\x19\x9en\xbdSpEcV1\x15\xf0Wx\x15\x83\xc0:SpEcV1\xb6\x1c\xfd\xdfhY-dSpEcV1V]\x80\\~\x1a\x08/SpEcV1\xcf)\x97]S\xb2\xfd)f1f2d\x00\x10\x00\x02\x00\x00\x00f\x00\x10\x00\x02\x00\x00\x00f\x00\x10\x00\x02\x00\x00\x00\x00\xa3$\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\tfn_enum_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_error_a\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05input\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd0\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_event_a\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_event_d\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bfn_struct_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rfn_enum_int_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x08EnumIntA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11fn_struct_tuple_a\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\xe3Context of a single authorized call performed by an address.\n\nCustom account contracts that implement `__check_auth` special function\nreceive a list of `Context` values corresponding to all the calls that\nneed to be authorized.\x00\x00\x00\x00\x00\x00\x00\x00\x07Context\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x14Contract invocation.\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x01\x00\x00\x00=Contract that has a constructor with no arguments is created.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00DContract that has a constructor with 1 or more arguments is created.\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x01\x00\x00\x00\xbdAuthorization context of a single contract call.\n\nThis struct corresponds to a `require_auth_for_args` call for an address\nfrom `contract` function with `fn_name` name and `args` arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08contract\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x07fn_name\x00\x00\x00\x00\x11\x00\x00\x00\x02\x00\x00\x00_Contract executable used for creating a new contract and used in\n`CreateContractHostFnContext`.\x00\x00\x00\x00\x00\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x008Value of contract node in InvokerContractAuthEntry tree.\x00\x00\x00\x00\x00\x00\x00\x15SubContractInvocation\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x07\xd0\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x00\x00\x00\x00\x0fsub_invocations\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00\x18InvokerContractAuthEntry\x00\x00\x00\x02\x00\x00\x01/A node in the tree of authorizations performed on behalf of the current\ncontract as invoker of the contracts deeper in the call stack.\n\nThis is used as an argument of `authorize_as_current_contract` host function.\n\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\ncurrent contract.\x00\x00\x00\x00\x00\x00\x00\x00\x18InvokerContractAuthEntry\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x12Invoke a contract.\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x15SubContractInvocation\x00\x00\x00\x00\x00\x00\x01\x00\x00\x005Create a contract passing 0 arguments to constructor.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00=Create a contract passing 0 or more arguments to constructor.\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x01\x00\x00\x00vAuthorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\xd6Authorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\nThis is the same as `CreateContractHostFnContext`, but also has\ncontract constructor arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x10constructor_args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nExecutable\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStellarAsset\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Account\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumB\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x07\x00\x00\x00\x07\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumC\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorB\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x0c\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorC\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00e\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00f\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventA\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventB\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_b\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventC\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_c\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventD\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_d\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructA\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructB\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructC\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x03\xea\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntA\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntB\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntC\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\xc8\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x01,\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleB\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleC\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x0b\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1c\x00\x00\x00\x00\x00O\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12rssdk_spec_shaking\x00\x00\x00\x00\x00\x012\x00\x00\x00";
+    pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01*\x07`\x02~~\x01~`\x03~~~\x01~`\x01~\x01~`\x00\x01~`\x02\x7f\x7f\x01~`\x04\x7f\x7f\x7f\x7f\x01~`\x02\x7f~\x00\x02%\x06\x01b\x01j\x00\x00\x01x\x011\x00\x00\x01v\x01g\x00\x00\x01m\x019\x00\x01\x01i\x012\x00\x02\x01i\x011\x00\x02\x03\x0c\x0b\x03\x04\x03\x02\x00\x05\x03\x00\x00\x06\x06\x05\x03\x01\x00\x11\x06\x11\x02\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x82\x80\xc0\x00\x0b\x07s\t\x06memory\x02\x00\tfn_enum_a\x00\x06\rfn_enum_int_a\x00\x08\nfn_error_a\x00\t\nfn_event_a\x00\n\nfn_event_d\x00\x0c\x0bfn_struct_a\x00\r\x11fn_struct_tuple_a\x00\x0e\x01_\x03\x01\n\x84\n\x0b\x89\x02\x03\x01\x7f\x01~\x03\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\x00-\x00\x90\x80\xc0\x80\x00\x1aB\x00!\x01A~!\x02\x02@\x02@\x03@ \x02E\r\x01\x02@\x02@\x02@ \x02A\x82\x80\xc0\x80\x00j-\x00\x00\"\x03APjA\xff\x01qA\nO\r\x00A\xd2\x01!\x04\x0c\x01\x0b\x02@ \x03A\xbf\x7fjA\xff\x01qA\x1aO\r\x00A\xcb\x01!\x04\x0c\x01\x0b \x03A\x9f\x7fjA\xff\x01qA\x19K\r\x01A\xc5\x01!\x04\x0b \x01B\x06\x86 \x03 \x04j\xadB\xff\x01\x83\x84!\x01 \x02A\x01j!\x02\x0c\x01\x0b\x0b \x00 \x03\xadB\xff\x01\x83B\x08\x86B\x01\x847\x03\x00A\x80\x80\xc0\x80\x00\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x80\x80\x80\x80\x00!\x01\x0c\x01\x0b \x00 \x01B\x08\x86B\x0e\x84\"\x017\x02\x04\x0b \x00 \x017\x03\x00 \x00A\x01\x10\x87\x80\x80\x80\x00!\x01 \x00A\x10j$\x80\x80\x80\x80\x00 \x01\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x82\x80\x80\x80\x00\x0b\x12\x00A\x00-\x00\x9e\x80\xc0\x80\x00\x1aB\x84\x80\x80\x800\x0b4\x00\x02@ \x00B\xff\x01\x83B\x04Q\r\x00\x00\x0bA\x00-\x00\xac\x80\xc0\x80\x00\x1aB\x83\x80\x80\x80  \x00B\x84\x80\x80\x80p\x83 \x00B\x80\x80\x80\x80\x10T\x1b\x0b\xe6\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcd\x00R\r\x00 \x01B\xff\x01\x83B\xc9\x00R\r\x00A\x00!\x03A\x00-\x00\xc8\x80\xc0\x80\x00\x1a \x02 \x007\x03\x08 \x02B\x8e\xcc\xc1\xfc\xac\xdd\xab\x017\x03\x00\x03@\x02@ \x03A\x10G\r\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02A\x10j \x03j \x02 \x03j)\x03\x007\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x02A\x10jA\x02\x10\x87\x80\x80\x80\x00!\x00 \x02 \x017\x03\x10 \x00A\xf8\x80\xc0\x80\x00A\x01 \x02A\x10jA\x01\x10\x8b\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x02A j$\x80\x80\x80\x80\x00B\x02\x0f\x0b \x02A\x10j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b\x00\x0b.\x00\x02@ \x01 \x03F\r\x00\x00\x0b \x00\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x83\x80\x80\x80\x00\x0b\x94\x01\x03\x02\x7f\x02~\x01\x7f#\x80\x80\x80\x80\x00A k\"\x00$\x80\x80\x80\x80\x00A\x00!\x01A\x00-\x00\xba\x80\xc0\x80\x00\x1a \x00B\x8e\xd2\xc1\xfc\xac\xdd\xab\x017\x03\x08B\x02!\x02\x03@ \x02!\x03 \x01A\x01q!\x04B\x8e\xd2\xc1\xfc\xac\xdd\xab\x01!\x02A\x01!\x01 \x04E\r\x00\x0b \x00 \x037\x03\x10 \x00A\x10jA\x01\x10\x87\x80\x80\x80\x00A\x04A\x00 \x00A\x18jA\x00\x10\x8b\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x00A j$\x80\x80\x80\x80\x00B\x02\x0b\x83\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\x04R\r\x00A\x01A\x02A\x00 \x01\xa7A\xff\x01q\"\x03\x1b \x03A\x01F\x1b\"\x03A\x02F\r\x00A\x00-\x00\x82\x80\xc0\x80\x00\x1a \x02 \x03\xad7\x03\x08 \x02 \x00B\x84\x80\x80\x80p\x837\x03\x00A\xe8\x80\xc0\x80\x00A\x02 \x02A\x02\x10\x8b\x80\x80\x80\x00!\x00 \x02A\x10j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b\xbc\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00 \x02A\x10j \x00\x10\x8f\x80\x80\x80\x00\x02@ \x02)\x03\x10B\x01Q\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x8f\x80\x80\x80\x00 \x02)\x03\x10B\x01Q\r\x00 \x02)\x03\x18!\x01A\x00-\x00\xd6\x80\xc0\x80\x00\x1a \x02A\x10j \x00\x10\x90\x80\x80\x80\x00 \x02(\x02\x10\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x90\x80\x80\x80\x00 \x02)\x03\x10B\x01Q\r\x00 \x02 \x02)\x03\x187\x03\x08 \x02 \x007\x03\x00 \x02A\x02\x10\x87\x80\x80\x80\x00!\x00 \x02A j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b]\x02\x01\x7f\x01~\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc1\x00F\r\x00\x02@ \x02A\x07F\r\x00B\x01!\x03B\x83\x90\x80\x80\x80\x01!\x01\x0c\x02\x0b \x01B\x08\x87!\x01B\x00!\x03\x0c\x01\x0bB\x00!\x03 \x01\x10\x84\x80\x80\x80\x00!\x01\x0b \x00 \x037\x03\x00 \x00 \x017\x03\x08\x0bF\x00\x02@\x02@ \x01B\x80\x80\x80\x80\x80\x80\x80\xc0\x00|B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x01B\x08\x86B\x07\x84!\x01\x0c\x01\x0b \x01\x10\x85\x80\x80\x80\x00!\x01\x0b \x00B\x007\x03\x00 \x00 \x017\x03\x08\x0b\x0b\x8a\x01\x01\x00A\x80\x80\xc0\x00\x0b\x80\x01V2SpEcV1\x9e\x8a\x9b6\xban\x8e_SpEcV1\xc4r\x1e\x1a\xa0\x02\xd6\x9dSpEcV1\xd0X\x92\xe7b:\xed\"SpEcV1\xfe\xe9\x8b2\x8d\x11\xd8%SpEcV1\x15\xf0Wx\x15\x83\xc0:SpEcV1K\xe6\x8ej\x19\x9en\xbdSpEcV1\x90N\xe8\xdf9O\xce\xd3f1f2d\x00\x10\x00\x02\x00\x00\x00f\x00\x10\x00\x02\x00\x00\x00f\x00\x10\x00\x02\x00\x00\x00\x00\xe3&\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\tfn_enum_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x05EnumA\x00\x00\x00Q\xd3 \x1a\x06\xca\xb8\xfa\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_error_a\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05input\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd1\x00\x00\x00\x06ErrorA\x00\x00\x97\xeb\x1f\x08\xc2Y(f\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_event_a\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_event_d\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bfn_struct_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x07StructA\x00\xa85\xf3\xb1\x81\xa4;E\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rfn_enum_int_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x08EnumIntA\xcf\xe3\x95\x8f\x12\xe3\xffs\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11fn_struct_tuple_a\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x0cStructTupleA\xf7(\x81\xa1\xd8\xc0\x11\xcd\x00\x00\x00\x02\x00\x00\x00\xe3Context of a single authorized call performed by an address.\n\nCustom account contracts that implement `__check_auth` special function\nreceive a list of `Context` values corresponding to all the calls that\nneed to be authorized.\x00\x00\x00\x00\x00\x00\x00\x00\x07Context\x00%Fl\xc5.\x15\x83G\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x14Contract invocation.\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x0fContractContext\x00Zc\xa9U\xe4\xf7\xa8\x8b\x00\x00\x00\x01\x00\x00\x00=Contract that has a constructor with no arguments is created.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x1bCreateContractHostFnContext\x00\xf4\xb8\xe9\xd5\xb0\x84\xaa\xce\x00\x00\x00\x01\x00\x00\x00DContract that has a constructor with 1 or more arguments is created.\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\xc6\xd7\xe5J\x9d\x8f\x11s\x00\x00\x00\x01\x00\x00\x00\xbdAuthorization context of a single contract call.\n\nThis struct corresponds to a `require_auth_for_args` call for an address\nfrom `contract` function with `fn_name` name and `args` arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fContractContext\x00Zc\xa9U\xe4\xf7\xa8\x8b\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08contract\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x07fn_name\x00\x00\x00\x00\x11\x00\x00\x00\x02\x00\x00\x00_Contract executable used for creating a new contract and used in\n`CreateContractHostFnContext`.\x00\x00\x00\x00\x00\x00\x00\x00\x12ContractExecutable\x00\x00\xb1\x0etP\xeaT\x89\xb2\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x008Value of contract node in InvokerContractAuthEntry tree.\x00\x00\x00\x00\x00\x00\x00\x15SubContractInvocation\x00\x00\x00`\x85\xe2\x08OZQ\x10\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x07\xd1\x00\x00\x00\x0fContractContext\x00Zc\xa9U\xe4\xf7\xa8\x8b\x00\x00\x00\x00\x00\x00\x00\x0fsub_invocations\x00\x00\x00\x03\xea\x00\x00\x07\xd1\x00\x00\x00\x18InvokerContractAuthEntry`\xc1\x90\xeb\xac\xf1AN\x00\x00\x00\x02\x00\x00\x01/A node in the tree of authorizations performed on behalf of the current\ncontract as invoker of the contracts deeper in the call stack.\n\nThis is used as an argument of `authorize_as_current_contract` host function.\n\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\ncurrent contract.\x00\x00\x00\x00\x00\x00\x00\x00\x18InvokerContractAuthEntry`\xc1\x90\xeb\xac\xf1AN\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x12Invoke a contract.\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x15SubContractInvocation\x00\x00\x00`\x85\xe2\x08OZQ\x10\x00\x00\x00\x01\x00\x00\x005Create a contract passing 0 arguments to constructor.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x1bCreateContractHostFnContext\x00\xf4\xb8\xe9\xd5\xb0\x84\xaa\xce\x00\x00\x00\x01\x00\x00\x00=Create a contract passing 0 or more arguments to constructor.\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\xc6\xd7\xe5J\x9d\x8f\x11s\x00\x00\x00\x01\x00\x00\x00vAuthorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1bCreateContractHostFnContext\x00\xf4\xb8\xe9\xd5\xb0\x84\xaa\xce\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd1\x00\x00\x00\x12ContractExecutable\x00\x00\xb1\x0etP\xeaT\x89\xb2\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\xd6Authorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\nThis is the same as `CreateContractHostFnContext`, but also has\ncontract constructor arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\xc6\xd7\xe5J\x9d\x8f\x11s\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x10constructor_args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd1\x00\x00\x00\x12ContractExecutable\x00\x00\xb1\x0etP\xeaT\x89\xb2\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nExecutable\x00\x00n\x11\xfa\xcd\xde\xb1\xed\xb3\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStellarAsset\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Account\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumA\x00\x00\x00Q\xd3 \x1a\x06\xca\xb8\xfa\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumB\x00\x00\x00<\"\x12\x9c\xb0\xce~C\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x07\x00\x00\x00\x07\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumC\x00\x00\x00:D\x8e\x9f[\xbf\x94y\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x07StructA\x00\xa85\xf3\xb1\x81\xa4;E\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x0cStructTupleA\xf7(\x81\xa1\xd8\xc0\x11\xcd\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorA\x00\x00\x97\xeb\x1f\x08\xc2Y(f\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorB\x00\x00\xf6\x9d\x1d\xe3\xebW;|\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x0c\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorC\x00\x00\x0b\xe6{\xf3\xef\xcf\x1e\xc7\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00e\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00f\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventA\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventB\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_b\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventC\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_c\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventD\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_d\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructA\x00\xa85\xf3\xb1\x81\xa4;E\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructB\x00\xe1\x0f\xcb\xef\xf0\xd7\x81p\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructC\x00\xb1vV\x1dVy~\xb7\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x03\xea\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntA\xcf\xe3\x95\x8f\x12\xe3\xffs\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntBoV\xab\xdf\x8dT^L\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntC\xbbe\xd3/S\x05\xfe\xc6\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\xc8\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x01,\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleA\xf7(\x81\xa1\xd8\xc0\x11\xcd\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleB\xf9\x11\xd6#\xff\xc3V\xed\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleC\x8a/H\xcb\x1e \x0eS\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x0b\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1c\x00\x00\x00\x00\x00O\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.97.1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12rssdk_spec_shaking\x00\x00\x00\x00\x00\x012\x00\x00\x00";
     pub trait Contract {
         fn fn_enum_a(env: soroban_sdk::Env) -> EnumA;
         fn fn_error_a(env: soroban_sdk::Env, input: u32) -> Result<u32, ErrorA>;
@@ -13494,7 +13941,7 @@ mod wasm_imported {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Vec<soroban_sdk::Val>>;
             let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Address>;
             let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Symbol>;
@@ -13548,6 +13995,12 @@ mod wasm_imported {
             }
         }
     }
+    impl ContractContext {
+        #[doc(hidden)]
+        pub const fn spec_type_id() -> [u8; 8] {
+            soroban_sdk::spec_type_id("test_spec_shaking_v2::wasm_imported::ContractContext")
+        }
+    }
     pub static __SPEC_XDR_TYPE_CONTRACTCONTEXT: [u8; ContractContext::__SPEC_XDR_VIEW
         .const_xdr_len()] = ContractContext::spec_xdr();
     impl ContractContext {
@@ -13557,6 +14010,7 @@ mod wasm_imported {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     lib: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"ContractContext"),
+                    id: ContractContext::spec_type_id(),
                     fields: soroban_sdk::xdr::VecMView::new(&[
                         soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                             doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -13741,41 +14195,46 @@ mod wasm_imported {
         fn try_from(val: &ContractContext) -> Result<Self, soroban_sdk::xdr::Error> {
             extern crate alloc;
             use soroban_sdk::TryFromVal;
-            soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
-                soroban_sdk::xdr::ScMapEntry {
-                    key: soroban_sdk::xdr::ScSymbol(
-                        "args"
-                            .try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    )
-                    .into(),
-                    val: (&val.args)
-                        .try_into()
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                },
-                soroban_sdk::xdr::ScMapEntry {
-                    key: soroban_sdk::xdr::ScSymbol(
-                        "contract"
-                            .try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    )
-                    .into(),
-                    val: (&val.contract)
-                        .try_into()
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                },
-                soroban_sdk::xdr::ScMapEntry {
-                    key: soroban_sdk::xdr::ScSymbol(
-                        "fn_name"
-                            .try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    )
-                    .into(),
-                    val: (&val.fn_name)
-                        .try_into()
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                },
-            ])))
+            soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
+                ::alloc::intrinsics::write_box_via_move(
+                    ::alloc::boxed::Box::new_uninit(),
+                    [
+                        soroban_sdk::xdr::ScMapEntry {
+                            key: soroban_sdk::xdr::ScSymbol(
+                                "args"
+                                    .try_into()
+                                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                            )
+                            .into(),
+                            val: (&val.args)
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        },
+                        soroban_sdk::xdr::ScMapEntry {
+                            key: soroban_sdk::xdr::ScSymbol(
+                                "contract"
+                                    .try_into()
+                                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                            )
+                            .into(),
+                            val: (&val.contract)
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        },
+                        soroban_sdk::xdr::ScMapEntry {
+                            key: soroban_sdk::xdr::ScSymbol(
+                                "fn_name"
+                                    .try_into()
+                                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                            )
+                            .into(),
+                            val: (&val.fn_name)
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        },
+                    ],
+                ),
+            ))
         }
     }
     impl TryFrom<ContractContext> for soroban_sdk::xdr::ScMap {
@@ -13841,7 +14300,7 @@ mod wasm_imported {
             #[inline]
             #[doc(hidden)]
             #[coverage(off)]
-            fn assert_receiver_is_total_eq(&self) -> () {
+            fn assert_fields_are_eq(&self) {
                 let _: ::core::cmp::AssertParamIsEq<
                     <soroban_sdk::Vec<
                         soroban_sdk::Val,
@@ -13910,29 +14369,37 @@ mod wasm_imported {
                 std::cell::Cell<u32>,
             > = {
                 #[inline]
-                fn __init() -> std::cell::Cell<u32> {
+                fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                     std::cell::Cell::new(0)
                 }
                 unsafe {
                     ::std::thread::LocalKey::new(
                         const {
                             if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        (),
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            (),
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             } else {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        !,
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            !,
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             }
                         },
@@ -14067,7 +14534,7 @@ mod wasm_imported {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<ContractContext>;
             let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Vec<InvokerContractAuthEntry>>;
         }
@@ -14111,6 +14578,12 @@ mod wasm_imported {
             }
         }
     }
+    impl SubContractInvocation {
+        #[doc(hidden)]
+        pub const fn spec_type_id() -> [u8; 8] {
+            soroban_sdk::spec_type_id("test_spec_shaking_v2::wasm_imported::SubContractInvocation")
+        }
+    }
     pub static __SPEC_XDR_TYPE_SUBCONTRACTINVOCATION: [u8; SubContractInvocation::__SPEC_XDR_VIEW
         .const_xdr_len()] = SubContractInvocation::spec_xdr();
     impl SubContractInvocation {
@@ -14120,13 +14593,15 @@ mod wasm_imported {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     lib: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"SubContractInvocation"),
+                    id: SubContractInvocation::spec_type_id(),
                     fields: soroban_sdk::xdr::VecMView::new(&[
                         soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                             doc: soroban_sdk::xdr::StringMView::new(b""),
                             name: soroban_sdk::xdr::StringMView::new(b"context"),
-                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                soroban_sdk::xdr::ScSpecTypeUdtView {
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                     name: soroban_sdk::xdr::StringMView::new(b"ContractContext"),
+                                    id: <ContractContext>::spec_type_id(),
                                 },
                             ),
                         },
@@ -14135,11 +14610,12 @@ mod wasm_imported {
                             name: soroban_sdk::xdr::StringMView::new(b"sub_invocations"),
                             type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
                                 &soroban_sdk::xdr::ScSpecTypeVecView {
-                                    element_type: &soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                        soroban_sdk::xdr::ScSpecTypeUdtView {
+                                    element_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                             name: soroban_sdk::xdr::StringMView::new(
                                                 b"InvokerContractAuthEntry",
                                             ),
+                                            id: <InvokerContractAuthEntry>::spec_type_id(),
                                         },
                                     ),
                                 },
@@ -14288,30 +14764,35 @@ mod wasm_imported {
         fn try_from(val: &SubContractInvocation) -> Result<Self, soroban_sdk::xdr::Error> {
             extern crate alloc;
             use soroban_sdk::TryFromVal;
-            soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
-                soroban_sdk::xdr::ScMapEntry {
-                    key: soroban_sdk::xdr::ScSymbol(
-                        "context"
-                            .try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    )
-                    .into(),
-                    val: (&val.context)
-                        .try_into()
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                },
-                soroban_sdk::xdr::ScMapEntry {
-                    key: soroban_sdk::xdr::ScSymbol(
-                        "sub_invocations"
-                            .try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    )
-                    .into(),
-                    val: (&val.sub_invocations)
-                        .try_into()
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                },
-            ])))
+            soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
+                ::alloc::intrinsics::write_box_via_move(
+                    ::alloc::boxed::Box::new_uninit(),
+                    [
+                        soroban_sdk::xdr::ScMapEntry {
+                            key: soroban_sdk::xdr::ScSymbol(
+                                "context"
+                                    .try_into()
+                                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                            )
+                            .into(),
+                            val: (&val.context)
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        },
+                        soroban_sdk::xdr::ScMapEntry {
+                            key: soroban_sdk::xdr::ScSymbol(
+                                "sub_invocations"
+                                    .try_into()
+                                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                            )
+                            .into(),
+                            val: (&val.sub_invocations)
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        },
+                    ],
+                ),
+            ))
         }
     }
     impl TryFrom<SubContractInvocation> for soroban_sdk::xdr::ScMap {
@@ -14373,7 +14854,7 @@ mod wasm_imported {
             #[inline]
             #[doc(hidden)]
             #[coverage(off)]
-            fn assert_receiver_is_total_eq(&self) -> () {
+            fn assert_fields_are_eq(&self) {
                 let _: ::core::cmp::AssertParamIsEq<
                     <ContractContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
                 >;
@@ -14429,29 +14910,37 @@ mod wasm_imported {
                 std::cell::Cell<u32>,
             > = {
                 #[inline]
-                fn __init() -> std::cell::Cell<u32> {
+                fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                     std::cell::Cell::new(0)
                 }
                 unsafe {
                     ::std::thread::LocalKey::new(
                         const {
                             if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        (),
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            (),
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             } else {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        !,
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            !,
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             }
                         },
@@ -14582,7 +15071,7 @@ mod wasm_imported {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<ContractExecutable>;
             let _: ::core::cmp::AssertParamIsEq<soroban_sdk::BytesN<32>>;
         }
@@ -14621,6 +15110,14 @@ mod wasm_imported {
             }
         }
     }
+    impl CreateContractHostFnContext {
+        #[doc(hidden)]
+        pub const fn spec_type_id() -> [u8; 8] {
+            soroban_sdk::spec_type_id(
+                "test_spec_shaking_v2::wasm_imported::CreateContractHostFnContext",
+            )
+        }
+    }
     pub static __SPEC_XDR_TYPE_CREATECONTRACTHOSTFNCONTEXT: [u8;
         CreateContractHostFnContext::__SPEC_XDR_VIEW.const_xdr_len()] =
         CreateContractHostFnContext::spec_xdr();
@@ -14631,13 +15128,15 @@ mod wasm_imported {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     lib: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"CreateContractHostFnContext"),
+                    id: CreateContractHostFnContext::spec_type_id(),
                     fields: soroban_sdk::xdr::VecMView::new(&[
                         soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                             doc: soroban_sdk::xdr::StringMView::new(b""),
                             name: soroban_sdk::xdr::StringMView::new(b"executable"),
-                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                soroban_sdk::xdr::ScSpecTypeUdtView {
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                     name: soroban_sdk::xdr::StringMView::new(b"ContractExecutable"),
+                                    id: <ContractExecutable>::spec_type_id(),
                                 },
                             ),
                         },
@@ -14793,30 +15292,35 @@ mod wasm_imported {
         fn try_from(val: &CreateContractHostFnContext) -> Result<Self, soroban_sdk::xdr::Error> {
             extern crate alloc;
             use soroban_sdk::TryFromVal;
-            soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
-                soroban_sdk::xdr::ScMapEntry {
-                    key: soroban_sdk::xdr::ScSymbol(
-                        "executable"
-                            .try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    )
-                    .into(),
-                    val: (&val.executable)
-                        .try_into()
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                },
-                soroban_sdk::xdr::ScMapEntry {
-                    key: soroban_sdk::xdr::ScSymbol(
-                        "salt"
-                            .try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    )
-                    .into(),
-                    val: (&val.salt)
-                        .try_into()
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                },
-            ])))
+            soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
+                ::alloc::intrinsics::write_box_via_move(
+                    ::alloc::boxed::Box::new_uninit(),
+                    [
+                        soroban_sdk::xdr::ScMapEntry {
+                            key: soroban_sdk::xdr::ScSymbol(
+                                "executable"
+                                    .try_into()
+                                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                            )
+                            .into(),
+                            val: (&val.executable)
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        },
+                        soroban_sdk::xdr::ScMapEntry {
+                            key: soroban_sdk::xdr::ScSymbol(
+                                "salt"
+                                    .try_into()
+                                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                            )
+                            .into(),
+                            val: (&val.salt)
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        },
+                    ],
+                ),
+            ))
         }
     }
     impl TryFrom<CreateContractHostFnContext> for soroban_sdk::xdr::ScMap {
@@ -14878,7 +15382,7 @@ mod wasm_imported {
             #[inline]
             #[doc(hidden)]
             #[coverage(off)]
-            fn assert_receiver_is_total_eq(&self) -> () {
+            fn assert_fields_are_eq(&self) {
                 let _: ::core::cmp::AssertParamIsEq<
                     <ContractExecutable as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
                 >;
@@ -14929,29 +15433,37 @@ mod wasm_imported {
                 std::cell::Cell<u32>,
             > = {
                 #[inline]
-                fn __init() -> std::cell::Cell<u32> {
+                fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                     std::cell::Cell::new(0)
                 }
                 unsafe {
                     ::std::thread::LocalKey::new(
                         const {
                             if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        (),
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            (),
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             } else {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        !,
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            !,
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             }
                         },
@@ -15086,7 +15598,7 @@ mod wasm_imported {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Vec<soroban_sdk::Val>>;
             let _: ::core::cmp::AssertParamIsEq<ContractExecutable>;
             let _: ::core::cmp::AssertParamIsEq<soroban_sdk::BytesN<32>>;
@@ -15144,6 +15656,14 @@ mod wasm_imported {
             }
         }
     }
+    impl CreateContractWithConstructorHostFnContext {
+        #[doc(hidden)]
+        pub const fn spec_type_id() -> [u8; 8] {
+            soroban_sdk::spec_type_id(
+                "test_spec_shaking_v2::wasm_imported::CreateContractWithConstructorHostFnContext",
+            )
+        }
+    }
     pub static __SPEC_XDR_TYPE_CREATECONTRACTWITHCONSTRUCTORHOSTFNCONTEXT: [u8;
         CreateContractWithConstructorHostFnContext::__SPEC_XDR_VIEW.const_xdr_len()] =
         CreateContractWithConstructorHostFnContext::spec_xdr();
@@ -15156,6 +15676,7 @@ mod wasm_imported {
                     name: soroban_sdk::xdr::StringMView::new(
                         b"CreateContractWithConstructorHostFnContext",
                     ),
+                    id: CreateContractWithConstructorHostFnContext::spec_type_id(),
                     fields: soroban_sdk::xdr::VecMView::new(&[
                         soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                             doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -15169,9 +15690,10 @@ mod wasm_imported {
                         soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                             doc: soroban_sdk::xdr::StringMView::new(b""),
                             name: soroban_sdk::xdr::StringMView::new(b"executable"),
-                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                soroban_sdk::xdr::ScSpecTypeUdtView {
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                     name: soroban_sdk::xdr::StringMView::new(b"ContractExecutable"),
+                                    id: <ContractExecutable>::spec_type_id(),
                                 },
                             ),
                         },
@@ -15361,41 +15883,46 @@ mod wasm_imported {
         ) -> Result<Self, soroban_sdk::xdr::Error> {
             extern crate alloc;
             use soroban_sdk::TryFromVal;
-            soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
-                soroban_sdk::xdr::ScMapEntry {
-                    key: soroban_sdk::xdr::ScSymbol(
-                        "constructor_args"
-                            .try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    )
-                    .into(),
-                    val: (&val.constructor_args)
-                        .try_into()
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                },
-                soroban_sdk::xdr::ScMapEntry {
-                    key: soroban_sdk::xdr::ScSymbol(
-                        "executable"
-                            .try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    )
-                    .into(),
-                    val: (&val.executable)
-                        .try_into()
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                },
-                soroban_sdk::xdr::ScMapEntry {
-                    key: soroban_sdk::xdr::ScSymbol(
-                        "salt"
-                            .try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    )
-                    .into(),
-                    val: (&val.salt)
-                        .try_into()
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                },
-            ])))
+            soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
+                ::alloc::intrinsics::write_box_via_move(
+                    ::alloc::boxed::Box::new_uninit(),
+                    [
+                        soroban_sdk::xdr::ScMapEntry {
+                            key: soroban_sdk::xdr::ScSymbol(
+                                "constructor_args"
+                                    .try_into()
+                                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                            )
+                            .into(),
+                            val: (&val.constructor_args)
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        },
+                        soroban_sdk::xdr::ScMapEntry {
+                            key: soroban_sdk::xdr::ScSymbol(
+                                "executable"
+                                    .try_into()
+                                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                            )
+                            .into(),
+                            val: (&val.executable)
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        },
+                        soroban_sdk::xdr::ScMapEntry {
+                            key: soroban_sdk::xdr::ScSymbol(
+                                "salt"
+                                    .try_into()
+                                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                            )
+                            .into(),
+                            val: (&val.salt)
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        },
+                    ],
+                ),
+            ))
         }
     }
     impl TryFrom<CreateContractWithConstructorHostFnContext> for soroban_sdk::xdr::ScMap {
@@ -15469,7 +15996,7 @@ mod wasm_imported {
             #[inline]
             #[doc(hidden)]
             #[coverage(off)]
-            fn assert_receiver_is_total_eq(&self) -> () {
+            fn assert_fields_are_eq(&self) {
                 let _: ::core::cmp::AssertParamIsEq<
                     <soroban_sdk::Vec<
                         soroban_sdk::Val,
@@ -15547,29 +16074,37 @@ mod wasm_imported {
             const RECURSIVE_COUNT_ArbitraryCreateContractWithConstructorHostFnContext:
                 ::std::thread::LocalKey<std::cell::Cell<u32>> = {
                 #[inline]
-                fn __init() -> std::cell::Cell<u32> {
+                fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                     std::cell::Cell::new(0)
                 }
                 unsafe {
                     ::std::thread::LocalKey::new(
                         const {
                             if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        (),
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            (),
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             } else {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        !,
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            !,
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             }
                         },
@@ -15718,7 +16253,7 @@ mod wasm_imported {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<u32>;
             let _: ::core::cmp::AssertParamIsEq<bool>;
         }
@@ -15754,6 +16289,12 @@ mod wasm_imported {
             }
         }
     }
+    impl StructA {
+        #[doc(hidden)]
+        pub const fn spec_type_id() -> [u8; 8] {
+            soroban_sdk::spec_type_id("test_spec_shaking_v2::wasm_imported::StructA")
+        }
+    }
     pub static __SPEC_XDR_TYPE_STRUCTA: [u8; StructA::__SPEC_XDR_VIEW.const_xdr_len()] =
         StructA::spec_xdr();
     impl StructA {
@@ -15763,6 +16304,7 @@ mod wasm_imported {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     lib: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"StructA"),
+                    id: StructA::spec_type_id(),
                     fields: soroban_sdk::xdr::VecMView::new(&[
                         soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                             doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -15907,28 +16449,33 @@ mod wasm_imported {
         fn try_from(val: &StructA) -> Result<Self, soroban_sdk::xdr::Error> {
             extern crate alloc;
             use soroban_sdk::TryFromVal;
-            soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
-                soroban_sdk::xdr::ScMapEntry {
-                    key: soroban_sdk::xdr::ScSymbol(
-                        "f1".try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    )
-                    .into(),
-                    val: (&val.f1)
-                        .try_into()
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                },
-                soroban_sdk::xdr::ScMapEntry {
-                    key: soroban_sdk::xdr::ScSymbol(
-                        "f2".try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    )
-                    .into(),
-                    val: (&val.f2)
-                        .try_into()
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                },
-            ])))
+            soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
+                ::alloc::intrinsics::write_box_via_move(
+                    ::alloc::boxed::Box::new_uninit(),
+                    [
+                        soroban_sdk::xdr::ScMapEntry {
+                            key: soroban_sdk::xdr::ScSymbol(
+                                "f1".try_into()
+                                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                            )
+                            .into(),
+                            val: (&val.f1)
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        },
+                        soroban_sdk::xdr::ScMapEntry {
+                            key: soroban_sdk::xdr::ScSymbol(
+                                "f2".try_into()
+                                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                            )
+                            .into(),
+                            val: (&val.f2)
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        },
+                    ],
+                ),
+            ))
         }
     }
     impl TryFrom<StructA> for soroban_sdk::xdr::ScMap {
@@ -15988,7 +16535,7 @@ mod wasm_imported {
             #[inline]
             #[doc(hidden)]
             #[coverage(off)]
-            fn assert_receiver_is_total_eq(&self) -> () {
+            fn assert_fields_are_eq(&self) {
                 let _: ::core::cmp::AssertParamIsEq<
                     <u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
                 >;
@@ -16035,29 +16582,37 @@ mod wasm_imported {
             #[allow(non_upper_case_globals)]
             const RECURSIVE_COUNT_ArbitraryStructA: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
                 #[inline]
-                fn __init() -> std::cell::Cell<u32> {
+                fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                     std::cell::Cell::new(0)
                 }
                 unsafe {
                     ::std::thread::LocalKey::new(
                         const {
                             if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        (),
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            (),
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             } else {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        !,
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            !,
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             }
                         },
@@ -16179,7 +16734,7 @@ mod wasm_imported {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<i64>;
             let _: ::core::cmp::AssertParamIsEq<soroban_sdk::String>;
         }
@@ -16215,6 +16770,12 @@ mod wasm_imported {
             }
         }
     }
+    impl StructB {
+        #[doc(hidden)]
+        pub const fn spec_type_id() -> [u8; 8] {
+            soroban_sdk::spec_type_id("test_spec_shaking_v2::wasm_imported::StructB")
+        }
+    }
     pub static __SPEC_XDR_TYPE_STRUCTB: [u8; StructB::__SPEC_XDR_VIEW.const_xdr_len()] =
         StructB::spec_xdr();
     impl StructB {
@@ -16224,6 +16785,7 @@ mod wasm_imported {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     lib: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"StructB"),
+                    id: StructB::spec_type_id(),
                     fields: soroban_sdk::xdr::VecMView::new(&[
                         soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                             doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -16368,28 +16930,33 @@ mod wasm_imported {
         fn try_from(val: &StructB) -> Result<Self, soroban_sdk::xdr::Error> {
             extern crate alloc;
             use soroban_sdk::TryFromVal;
-            soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
-                soroban_sdk::xdr::ScMapEntry {
-                    key: soroban_sdk::xdr::ScSymbol(
-                        "f1".try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    )
-                    .into(),
-                    val: (&val.f1)
-                        .try_into()
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                },
-                soroban_sdk::xdr::ScMapEntry {
-                    key: soroban_sdk::xdr::ScSymbol(
-                        "f2".try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    )
-                    .into(),
-                    val: (&val.f2)
-                        .try_into()
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                },
-            ])))
+            soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
+                ::alloc::intrinsics::write_box_via_move(
+                    ::alloc::boxed::Box::new_uninit(),
+                    [
+                        soroban_sdk::xdr::ScMapEntry {
+                            key: soroban_sdk::xdr::ScSymbol(
+                                "f1".try_into()
+                                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                            )
+                            .into(),
+                            val: (&val.f1)
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        },
+                        soroban_sdk::xdr::ScMapEntry {
+                            key: soroban_sdk::xdr::ScSymbol(
+                                "f2".try_into()
+                                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                            )
+                            .into(),
+                            val: (&val.f2)
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        },
+                    ],
+                ),
+            ))
         }
     }
     impl TryFrom<StructB> for soroban_sdk::xdr::ScMap {
@@ -16449,7 +17016,7 @@ mod wasm_imported {
             #[inline]
             #[doc(hidden)]
             #[coverage(off)]
-            fn assert_receiver_is_total_eq(&self) -> () {
+            fn assert_fields_are_eq(&self) {
                 let _: ::core::cmp::AssertParamIsEq<
                     <i64 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
                 >;
@@ -16496,29 +17063,37 @@ mod wasm_imported {
             #[allow(non_upper_case_globals)]
             const RECURSIVE_COUNT_ArbitraryStructB: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
                 #[inline]
-                fn __init() -> std::cell::Cell<u32> {
+                fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                     std::cell::Cell::new(0)
                 }
                 unsafe {
                     ::std::thread::LocalKey::new(
                         const {
                             if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        (),
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            (),
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             } else {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        !,
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            !,
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             }
                         },
@@ -16640,7 +17215,7 @@ mod wasm_imported {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Vec<u32>>;
             let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Address>;
         }
@@ -16676,6 +17251,12 @@ mod wasm_imported {
             }
         }
     }
+    impl StructC {
+        #[doc(hidden)]
+        pub const fn spec_type_id() -> [u8; 8] {
+            soroban_sdk::spec_type_id("test_spec_shaking_v2::wasm_imported::StructC")
+        }
+    }
     pub static __SPEC_XDR_TYPE_STRUCTC: [u8; StructC::__SPEC_XDR_VIEW.const_xdr_len()] =
         StructC::spec_xdr();
     impl StructC {
@@ -16685,6 +17266,7 @@ mod wasm_imported {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     lib: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"StructC"),
+                    id: StructC::spec_type_id(),
                     fields: soroban_sdk::xdr::VecMView::new(&[
                         soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                             doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -16833,28 +17415,33 @@ mod wasm_imported {
         fn try_from(val: &StructC) -> Result<Self, soroban_sdk::xdr::Error> {
             extern crate alloc;
             use soroban_sdk::TryFromVal;
-            soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
-                soroban_sdk::xdr::ScMapEntry {
-                    key: soroban_sdk::xdr::ScSymbol(
-                        "f1".try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    )
-                    .into(),
-                    val: (&val.f1)
-                        .try_into()
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                },
-                soroban_sdk::xdr::ScMapEntry {
-                    key: soroban_sdk::xdr::ScSymbol(
-                        "f2".try_into()
-                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    )
-                    .into(),
-                    val: (&val.f2)
-                        .try_into()
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                },
-            ])))
+            soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
+                ::alloc::intrinsics::write_box_via_move(
+                    ::alloc::boxed::Box::new_uninit(),
+                    [
+                        soroban_sdk::xdr::ScMapEntry {
+                            key: soroban_sdk::xdr::ScSymbol(
+                                "f1".try_into()
+                                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                            )
+                            .into(),
+                            val: (&val.f1)
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        },
+                        soroban_sdk::xdr::ScMapEntry {
+                            key: soroban_sdk::xdr::ScSymbol(
+                                "f2".try_into()
+                                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                            )
+                            .into(),
+                            val: (&val.f2)
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        },
+                    ],
+                ),
+            ))
         }
     }
     impl TryFrom<StructC> for soroban_sdk::xdr::ScMap {
@@ -16916,7 +17503,7 @@ mod wasm_imported {
             #[inline]
             #[doc(hidden)]
             #[coverage(off)]
-            fn assert_receiver_is_total_eq(&self) -> () {
+            fn assert_fields_are_eq(&self) {
                 let _: ::core::cmp::AssertParamIsEq<
                     <soroban_sdk::Vec<
                         u32,
@@ -16965,29 +17552,37 @@ mod wasm_imported {
             #[allow(non_upper_case_globals)]
             const RECURSIVE_COUNT_ArbitraryStructC: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
                 #[inline]
-                fn __init() -> std::cell::Cell<u32> {
+                fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                     std::cell::Cell::new(0)
                 }
                 unsafe {
                     ::std::thread::LocalKey::new(
                         const {
                             if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        (),
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            (),
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             } else {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        !,
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            !,
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             }
                         },
@@ -17106,7 +17701,7 @@ mod wasm_imported {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<i64>;
         }
     }
@@ -17144,6 +17739,12 @@ mod wasm_imported {
             }
         }
     }
+    impl StructTupleA {
+        #[doc(hidden)]
+        pub const fn spec_type_id() -> [u8; 8] {
+            soroban_sdk::spec_type_id("test_spec_shaking_v2::wasm_imported::StructTupleA")
+        }
+    }
     pub static __SPEC_XDR_TYPE_STRUCTTUPLEA: [u8; StructTupleA::__SPEC_XDR_VIEW.const_xdr_len()] =
         StructTupleA::spec_xdr();
     impl StructTupleA {
@@ -17153,6 +17754,7 @@ mod wasm_imported {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     lib: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"StructTupleA"),
+                    id: StructTupleA::spec_type_id(),
                     fields: soroban_sdk::xdr::VecMView::new(&[
                         soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                             doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -17277,14 +17879,19 @@ mod wasm_imported {
             extern crate alloc;
             use soroban_sdk::TryFromVal;
             Ok(soroban_sdk::xdr::ScVec(
-                <[_]>::into_vec(::alloc::boxed::box_new([
-                    (&val.0)
-                        .try_into()
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    (&val.1)
-                        .try_into()
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                ]))
+                ::alloc::boxed::box_assume_init_into_vec_unsafe(
+                    ::alloc::intrinsics::write_box_via_move(
+                        ::alloc::boxed::Box::new_uninit(),
+                        [
+                            (&val.0)
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                            (&val.1)
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        ],
+                    ),
+                )
                 .try_into()?,
             ))
         }
@@ -17344,7 +17951,7 @@ mod wasm_imported {
             #[inline]
             #[doc(hidden)]
             #[coverage(off)]
-            fn assert_receiver_is_total_eq(&self) -> () {
+            fn assert_fields_are_eq(&self) {
                 let _: ::core::cmp::AssertParamIsEq<
                     <i64 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
                 >;
@@ -17393,29 +18000,37 @@ mod wasm_imported {
                 std::cell::Cell<u32>,
             > = {
                 #[inline]
-                fn __init() -> std::cell::Cell<u32> {
+                fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                     std::cell::Cell::new(0)
                 }
                 unsafe {
                     ::std::thread::LocalKey::new(
                         const {
                             if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        (),
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            (),
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             } else {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        !,
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            !,
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             }
                         },
@@ -17532,7 +18147,7 @@ mod wasm_imported {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<u128>;
         }
     }
@@ -17570,6 +18185,12 @@ mod wasm_imported {
             }
         }
     }
+    impl StructTupleB {
+        #[doc(hidden)]
+        pub const fn spec_type_id() -> [u8; 8] {
+            soroban_sdk::spec_type_id("test_spec_shaking_v2::wasm_imported::StructTupleB")
+        }
+    }
     pub static __SPEC_XDR_TYPE_STRUCTTUPLEB: [u8; StructTupleB::__SPEC_XDR_VIEW.const_xdr_len()] =
         StructTupleB::spec_xdr();
     impl StructTupleB {
@@ -17579,6 +18200,7 @@ mod wasm_imported {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     lib: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"StructTupleB"),
+                    id: StructTupleB::spec_type_id(),
                     fields: soroban_sdk::xdr::VecMView::new(&[
                         soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                             doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -17703,14 +18325,19 @@ mod wasm_imported {
             extern crate alloc;
             use soroban_sdk::TryFromVal;
             Ok(soroban_sdk::xdr::ScVec(
-                <[_]>::into_vec(::alloc::boxed::box_new([
-                    (&val.0)
-                        .try_into()
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    (&val.1)
-                        .try_into()
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                ]))
+                ::alloc::boxed::box_assume_init_into_vec_unsafe(
+                    ::alloc::intrinsics::write_box_via_move(
+                        ::alloc::boxed::Box::new_uninit(),
+                        [
+                            (&val.0)
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                            (&val.1)
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        ],
+                    ),
+                )
                 .try_into()?,
             ))
         }
@@ -17770,7 +18397,7 @@ mod wasm_imported {
             #[inline]
             #[doc(hidden)]
             #[coverage(off)]
-            fn assert_receiver_is_total_eq(&self) -> () {
+            fn assert_fields_are_eq(&self) {
                 let _: ::core::cmp::AssertParamIsEq<
                     <u128 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
                 >;
@@ -17819,29 +18446,37 @@ mod wasm_imported {
                 std::cell::Cell<u32>,
             > = {
                 #[inline]
-                fn __init() -> std::cell::Cell<u32> {
+                fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                     std::cell::Cell::new(0)
                 }
                 unsafe {
                     ::std::thread::LocalKey::new(
                         const {
                             if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        (),
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            (),
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             } else {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        !,
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            !,
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             }
                         },
@@ -17958,7 +18593,7 @@ mod wasm_imported {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Address>;
             let _: ::core::cmp::AssertParamIsEq<i128>;
         }
@@ -17997,6 +18632,12 @@ mod wasm_imported {
             }
         }
     }
+    impl StructTupleC {
+        #[doc(hidden)]
+        pub const fn spec_type_id() -> [u8; 8] {
+            soroban_sdk::spec_type_id("test_spec_shaking_v2::wasm_imported::StructTupleC")
+        }
+    }
     pub static __SPEC_XDR_TYPE_STRUCTTUPLEC: [u8; StructTupleC::__SPEC_XDR_VIEW.const_xdr_len()] =
         StructTupleC::spec_xdr();
     impl StructTupleC {
@@ -18006,6 +18647,7 @@ mod wasm_imported {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     lib: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"StructTupleC"),
+                    id: StructTupleC::spec_type_id(),
                     fields: soroban_sdk::xdr::VecMView::new(&[
                         soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                             doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -18130,14 +18772,19 @@ mod wasm_imported {
             extern crate alloc;
             use soroban_sdk::TryFromVal;
             Ok(soroban_sdk::xdr::ScVec(
-                <[_]>::into_vec(::alloc::boxed::box_new([
-                    (&val.0)
-                        .try_into()
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                    (&val.1)
-                        .try_into()
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                ]))
+                ::alloc::boxed::box_assume_init_into_vec_unsafe(
+                    ::alloc::intrinsics::write_box_via_move(
+                        ::alloc::boxed::Box::new_uninit(),
+                        [
+                            (&val.0)
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                            (&val.1)
+                                .try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        ],
+                    ),
+                )
                 .try_into()?,
             ))
         }
@@ -18197,7 +18844,7 @@ mod wasm_imported {
             #[inline]
             #[doc(hidden)]
             #[coverage(off)]
-            fn assert_receiver_is_total_eq(&self) -> () {
+            fn assert_fields_are_eq(&self) {
                 let _: ::core::cmp::AssertParamIsEq<
                     <soroban_sdk::Address as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
                 >;
@@ -18246,29 +18893,37 @@ mod wasm_imported {
                 std::cell::Cell<u32>,
             > = {
                 #[inline]
-                fn __init() -> std::cell::Cell<u32> {
+                fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                     std::cell::Cell::new(0)
                 }
                 unsafe {
                     ::std::thread::LocalKey::new(
                         const {
                             if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        (),
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            (),
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             } else {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        !,
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            !,
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             }
                         },
@@ -18414,7 +19069,7 @@ mod wasm_imported {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<ContractContext>;
             let _: ::core::cmp::AssertParamIsEq<CreateContractHostFnContext>;
             let _: ::core::cmp::AssertParamIsEq<CreateContractWithConstructorHostFnContext>;
@@ -18492,64 +19147,71 @@ mod wasm_imported {
             }
         }
     }
+    impl Context {
+        #[doc(hidden)]
+        pub const fn spec_type_id() -> [u8; 8] {
+            soroban_sdk::spec_type_id("test_spec_shaking_v2::wasm_imported::Context")
+        }
+    }
     pub static __SPEC_XDR_TYPE_CONTEXT: [u8; Context::__SPEC_XDR_VIEW.const_xdr_len()] =
         Context::spec_xdr();
     impl Context {
-        const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-            soroban_sdk::xdr::ScSpecEntryView::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0View {
-                doc: soroban_sdk::xdr::StringMView::new(b""),
-                lib: soroban_sdk::xdr::StringMView::new(b""),
-                name: soroban_sdk::xdr::StringMView::new(b"Context"),
-                cases: soroban_sdk::xdr::VecMView::new(&[
-                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
-                        soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"Contract"),
-                            type_: soroban_sdk::xdr::VecMView::new(&[
-                                soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                    soroban_sdk::xdr::ScSpecTypeUdtView {
-                                        name: soroban_sdk::xdr::StringMView::new(
-                                            b"ContractContext",
-                                        ),
-                                    },
-                                ),
-                            ]),
-                        },
-                    ),
-                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
-                        soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"CreateContractHostFn"),
-                            type_: soroban_sdk::xdr::VecMView::new(&[
-                                soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                    soroban_sdk::xdr::ScSpecTypeUdtView {
-                                        name: soroban_sdk::xdr::StringMView::new(
-                                            b"CreateContractHostFnContext",
-                                        ),
-                                    },
-                                ),
-                            ]),
-                        },
-                    ),
-                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
-                        soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(
-                                b"CreateContractWithCtorHostFn",
-                            ),
-                            type_: soroban_sdk::xdr::VecMView::new(&[
-                                soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                    soroban_sdk::xdr::ScSpecTypeUdtView {
-                                        name: soroban_sdk::xdr::StringMView::new(
-                                            b"CreateContractWithConstructorHostFnContext",
-                                        ),
-                                    },
-                                ),
-                            ]),
-                        },
-                    ),
-                ]),
-            });
+        const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> = soroban_sdk::xdr::ScSpecEntryView::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            lib: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::StringMView::new(b"Context"),
+            id: Context::spec_type_id(),
+            cases: soroban_sdk::xdr::VecMView::new(
+                &[
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"Contract"),
+                        type_: soroban_sdk::xdr::VecMView::new(
+                            &[
+                                soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                    name: soroban_sdk::xdr::StringMView::new(
+                                        b"ContractContext",
+                                    ),
+                                    id: <ContractContext>::spec_type_id(),
+                                }),
+                            ],
+                        ),
+                    }),
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(
+                            b"CreateContractHostFn",
+                        ),
+                        type_: soroban_sdk::xdr::VecMView::new(
+                            &[
+                                soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                    name: soroban_sdk::xdr::StringMView::new(
+                                        b"CreateContractHostFnContext",
+                                    ),
+                                    id: <CreateContractHostFnContext>::spec_type_id(),
+                                }),
+                            ],
+                        ),
+                    }),
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(
+                            b"CreateContractWithCtorHostFn",
+                        ),
+                        type_: soroban_sdk::xdr::VecMView::new(
+                            &[
+                                soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                    name: soroban_sdk::xdr::StringMView::new(
+                                        b"CreateContractWithConstructorHostFnContext",
+                                    ),
+                                    id: <CreateContractWithConstructorHostFnContext>::spec_type_id(),
+                                }),
+                            ],
+                        ),
+                    }),
+                ],
+            ),
+        });
         pub const fn spec_xdr() -> [u8; Context::__SPEC_XDR_VIEW.const_xdr_len()] {
             Context::__SPEC_XDR_VIEW.const_to_xdr()
         }
@@ -18870,7 +19532,7 @@ mod wasm_imported {
             #[inline]
             #[doc(hidden)]
             #[coverage(off)]
-            fn assert_receiver_is_total_eq(&self) -> () {
+            fn assert_fields_are_eq(&self) {
                 let _: ::core::cmp::AssertParamIsEq<
                     <ContractContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
                 >;
@@ -18964,29 +19626,37 @@ mod wasm_imported {
             #[allow(non_upper_case_globals)]
             const RECURSIVE_COUNT_ArbitraryContext: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
                 #[inline]
-                fn __init() -> std::cell::Cell<u32> {
+                fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                     std::cell::Cell::new(0)
                 }
                 unsafe {
                     ::std::thread::LocalKey::new(
                         const {
                             if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        (),
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            (),
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             } else {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        !,
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            !,
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             }
                         },
@@ -19166,7 +19836,7 @@ mod wasm_imported {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<soroban_sdk::BytesN<32>>;
         }
     }
@@ -19208,6 +19878,12 @@ mod wasm_imported {
             }
         }
     }
+    impl ContractExecutable {
+        #[doc(hidden)]
+        pub const fn spec_type_id() -> [u8; 8] {
+            soroban_sdk::spec_type_id("test_spec_shaking_v2::wasm_imported::ContractExecutable")
+        }
+    }
     pub static __SPEC_XDR_TYPE_CONTRACTEXECUTABLE: [u8; ContractExecutable::__SPEC_XDR_VIEW
         .const_xdr_len()] = ContractExecutable::spec_xdr();
     impl ContractExecutable {
@@ -19216,6 +19892,7 @@ mod wasm_imported {
                 doc: soroban_sdk::xdr::StringMView::new(b""),
                 lib: soroban_sdk::xdr::StringMView::new(b""),
                 name: soroban_sdk::xdr::StringMView::new(b"ContractExecutable"),
+                id: ContractExecutable::spec_type_id(),
                 cases: soroban_sdk::xdr::VecMView::new(&[
                     soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
                         soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
@@ -19435,7 +20112,7 @@ mod wasm_imported {
             #[inline]
             #[doc(hidden)]
             #[coverage(off)]
-            fn assert_receiver_is_total_eq(&self) -> () {
+            fn assert_fields_are_eq(&self) {
                 let _: ::core::cmp::AssertParamIsEq<
                     <soroban_sdk::BytesN<
                         32,
@@ -19490,29 +20167,37 @@ mod wasm_imported {
                 std::cell::Cell<u32>,
             > = {
                 #[inline]
-                fn __init() -> std::cell::Cell<u32> {
+                fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                     std::cell::Cell::new(0)
                 }
                 unsafe {
                     ::std::thread::LocalKey::new(
                         const {
                             if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        (),
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            (),
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             } else {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        !,
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            !,
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             }
                         },
@@ -19686,7 +20371,7 @@ mod wasm_imported {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<SubContractInvocation>;
             let _: ::core::cmp::AssertParamIsEq<CreateContractHostFnContext>;
             let _: ::core::cmp::AssertParamIsEq<CreateContractWithConstructorHostFnContext>;
@@ -19770,65 +20455,74 @@ mod wasm_imported {
             }
         }
     }
+    impl InvokerContractAuthEntry {
+        #[doc(hidden)]
+        pub const fn spec_type_id() -> [u8; 8] {
+            soroban_sdk::spec_type_id(
+                "test_spec_shaking_v2::wasm_imported::InvokerContractAuthEntry",
+            )
+        }
+    }
     pub static __SPEC_XDR_TYPE_INVOKERCONTRACTAUTHENTRY: [u8;
         InvokerContractAuthEntry::__SPEC_XDR_VIEW.const_xdr_len()] =
         InvokerContractAuthEntry::spec_xdr();
     impl InvokerContractAuthEntry {
-        const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-            soroban_sdk::xdr::ScSpecEntryView::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0View {
-                doc: soroban_sdk::xdr::StringMView::new(b""),
-                lib: soroban_sdk::xdr::StringMView::new(b""),
-                name: soroban_sdk::xdr::StringMView::new(b"InvokerContractAuthEntry"),
-                cases: soroban_sdk::xdr::VecMView::new(&[
-                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
-                        soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"Contract"),
-                            type_: soroban_sdk::xdr::VecMView::new(&[
-                                soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                    soroban_sdk::xdr::ScSpecTypeUdtView {
-                                        name: soroban_sdk::xdr::StringMView::new(
-                                            b"SubContractInvocation",
-                                        ),
-                                    },
-                                ),
-                            ]),
-                        },
-                    ),
-                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
-                        soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"CreateContractHostFn"),
-                            type_: soroban_sdk::xdr::VecMView::new(&[
-                                soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                    soroban_sdk::xdr::ScSpecTypeUdtView {
-                                        name: soroban_sdk::xdr::StringMView::new(
-                                            b"CreateContractHostFnContext",
-                                        ),
-                                    },
-                                ),
-                            ]),
-                        },
-                    ),
-                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
-                        soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(
-                                b"CreateContractWithCtorHostFn",
-                            ),
-                            type_: soroban_sdk::xdr::VecMView::new(&[
-                                soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                    soroban_sdk::xdr::ScSpecTypeUdtView {
-                                        name: soroban_sdk::xdr::StringMView::new(
-                                            b"CreateContractWithConstructorHostFnContext",
-                                        ),
-                                    },
-                                ),
-                            ]),
-                        },
-                    ),
-                ]),
-            });
+        const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> = soroban_sdk::xdr::ScSpecEntryView::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            lib: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::StringMView::new(b"InvokerContractAuthEntry"),
+            id: InvokerContractAuthEntry::spec_type_id(),
+            cases: soroban_sdk::xdr::VecMView::new(
+                &[
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"Contract"),
+                        type_: soroban_sdk::xdr::VecMView::new(
+                            &[
+                                soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                    name: soroban_sdk::xdr::StringMView::new(
+                                        b"SubContractInvocation",
+                                    ),
+                                    id: <SubContractInvocation>::spec_type_id(),
+                                }),
+                            ],
+                        ),
+                    }),
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(
+                            b"CreateContractHostFn",
+                        ),
+                        type_: soroban_sdk::xdr::VecMView::new(
+                            &[
+                                soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                    name: soroban_sdk::xdr::StringMView::new(
+                                        b"CreateContractHostFnContext",
+                                    ),
+                                    id: <CreateContractHostFnContext>::spec_type_id(),
+                                }),
+                            ],
+                        ),
+                    }),
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(
+                            b"CreateContractWithCtorHostFn",
+                        ),
+                        type_: soroban_sdk::xdr::VecMView::new(
+                            &[
+                                soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                    name: soroban_sdk::xdr::StringMView::new(
+                                        b"CreateContractWithConstructorHostFnContext",
+                                    ),
+                                    id: <CreateContractWithConstructorHostFnContext>::spec_type_id(),
+                                }),
+                            ],
+                        ),
+                    }),
+                ],
+            ),
+        });
         pub const fn spec_xdr() -> [u8; InvokerContractAuthEntry::__SPEC_XDR_VIEW.const_xdr_len()] {
             InvokerContractAuthEntry::__SPEC_XDR_VIEW.const_to_xdr()
         }
@@ -20157,7 +20851,7 @@ mod wasm_imported {
             #[inline]
             #[doc(hidden)]
             #[coverage(off)]
-            fn assert_receiver_is_total_eq(&self) -> () {
+            fn assert_fields_are_eq(&self) {
                 let _: ::core::cmp::AssertParamIsEq<
                     <SubContractInvocation as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
                 >;
@@ -20261,29 +20955,37 @@ mod wasm_imported {
                 std::cell::Cell<u32>,
             > = {
                 #[inline]
-                fn __init() -> std::cell::Cell<u32> {
+                fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                     std::cell::Cell::new(0)
                 }
                 unsafe {
                     ::std::thread::LocalKey::new(
                         const {
                             if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        (),
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            (),
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             } else {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        !,
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            !,
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             }
                         },
@@ -20479,7 +21181,7 @@ mod wasm_imported {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<soroban_sdk::BytesN<32>>;
         }
     }
@@ -20531,6 +21233,12 @@ mod wasm_imported {
             }
         }
     }
+    impl Executable {
+        #[doc(hidden)]
+        pub const fn spec_type_id() -> [u8; 8] {
+            soroban_sdk::spec_type_id("test_spec_shaking_v2::wasm_imported::Executable")
+        }
+    }
     pub static __SPEC_XDR_TYPE_EXECUTABLE: [u8; Executable::__SPEC_XDR_VIEW.const_xdr_len()] =
         Executable::spec_xdr();
     impl Executable {
@@ -20539,6 +21247,7 @@ mod wasm_imported {
                 doc: soroban_sdk::xdr::StringMView::new(b""),
                 lib: soroban_sdk::xdr::StringMView::new(b""),
                 name: soroban_sdk::xdr::StringMView::new(b"Executable"),
+                id: Executable::spec_type_id(),
                 cases: soroban_sdk::xdr::VecMView::new(&[
                     soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
                         soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
@@ -20832,7 +21541,7 @@ mod wasm_imported {
             #[inline]
             #[doc(hidden)]
             #[coverage(off)]
-            fn assert_receiver_is_total_eq(&self) -> () {
+            fn assert_fields_are_eq(&self) {
                 let _: ::core::cmp::AssertParamIsEq<
                     <soroban_sdk::BytesN<
                         32,
@@ -20899,29 +21608,37 @@ mod wasm_imported {
                 std::cell::Cell<u32>,
             > = {
                 #[inline]
-                fn __init() -> std::cell::Cell<u32> {
+                fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                     std::cell::Cell::new(0)
                 }
                 unsafe {
                     ::std::thread::LocalKey::new(
                         const {
                             if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        (),
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            (),
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             } else {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        !,
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            !,
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             }
                         },
@@ -21082,7 +21799,7 @@ mod wasm_imported {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {}
+        fn assert_fields_are_eq(&self) {}
     }
     #[automatically_derived]
     impl ::core::marker::StructuralPartialEq for EnumA {}
@@ -21113,6 +21830,12 @@ mod wasm_imported {
             ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr)
         }
     }
+    impl EnumA {
+        #[doc(hidden)]
+        pub const fn spec_type_id() -> [u8; 8] {
+            soroban_sdk::spec_type_id("test_spec_shaking_v2::wasm_imported::EnumA")
+        }
+    }
     pub static __SPEC_XDR_TYPE_ENUMA: [u8; EnumA::__SPEC_XDR_VIEW.const_xdr_len()] =
         EnumA::spec_xdr();
     impl EnumA {
@@ -21121,6 +21844,7 @@ mod wasm_imported {
                 doc: soroban_sdk::xdr::StringMView::new(b""),
                 lib: soroban_sdk::xdr::StringMView::new(b""),
                 name: soroban_sdk::xdr::StringMView::new(b"EnumA"),
+                id: EnumA::spec_type_id(),
                 cases: soroban_sdk::xdr::VecMView::new(&[
                     soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
                         soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
@@ -21384,7 +22108,7 @@ mod wasm_imported {
             #[inline]
             #[doc(hidden)]
             #[coverage(off)]
-            fn assert_receiver_is_total_eq(&self) -> () {}
+            fn assert_fields_are_eq(&self) {}
         }
         #[automatically_derived]
         impl ::core::marker::StructuralPartialEq for ArbitraryEnumA {}
@@ -21422,29 +22146,37 @@ mod wasm_imported {
             #[allow(non_upper_case_globals)]
             const RECURSIVE_COUNT_ArbitraryEnumA: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
                 #[inline]
-                fn __init() -> std::cell::Cell<u32> {
+                fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                     std::cell::Cell::new(0)
                 }
                 unsafe {
                     ::std::thread::LocalKey::new(
                         const {
                             if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        (),
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            (),
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             } else {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        !,
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            !,
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             }
                         },
@@ -21593,7 +22325,7 @@ mod wasm_imported {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<i64>;
         }
     }
@@ -21662,6 +22394,12 @@ mod wasm_imported {
             }
         }
     }
+    impl EnumB {
+        #[doc(hidden)]
+        pub const fn spec_type_id() -> [u8; 8] {
+            soroban_sdk::spec_type_id("test_spec_shaking_v2::wasm_imported::EnumB")
+        }
+    }
     pub static __SPEC_XDR_TYPE_ENUMB: [u8; EnumB::__SPEC_XDR_VIEW.const_xdr_len()] =
         EnumB::spec_xdr();
     impl EnumB {
@@ -21670,6 +22408,7 @@ mod wasm_imported {
                 doc: soroban_sdk::xdr::StringMView::new(b""),
                 lib: soroban_sdk::xdr::StringMView::new(b""),
                 name: soroban_sdk::xdr::StringMView::new(b"EnumB"),
+                id: EnumB::spec_type_id(),
                 cases: soroban_sdk::xdr::VecMView::new(&[
                     soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
                         soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
@@ -21991,7 +22730,7 @@ mod wasm_imported {
             #[inline]
             #[doc(hidden)]
             #[coverage(off)]
-            fn assert_receiver_is_total_eq(&self) -> () {
+            fn assert_fields_are_eq(&self) {
                 let _: ::core::cmp::AssertParamIsEq<
                     <i64 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
                 >;
@@ -22080,29 +22819,37 @@ mod wasm_imported {
             #[allow(non_upper_case_globals)]
             const RECURSIVE_COUNT_ArbitraryEnumB: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
                 #[inline]
-                fn __init() -> std::cell::Cell<u32> {
+                fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                     std::cell::Cell::new(0)
                 }
                 unsafe {
                     ::std::thread::LocalKey::new(
                         const {
                             if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        (),
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            (),
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             } else {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        !,
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            !,
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             }
                         },
@@ -22278,7 +23025,7 @@ mod wasm_imported {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<StructA>;
             let _: ::core::cmp::AssertParamIsEq<StructTupleA>;
         }
@@ -22336,6 +23083,12 @@ mod wasm_imported {
             }
         }
     }
+    impl EnumC {
+        #[doc(hidden)]
+        pub const fn spec_type_id() -> [u8; 8] {
+            soroban_sdk::spec_type_id("test_spec_shaking_v2::wasm_imported::EnumC")
+        }
+    }
     pub static __SPEC_XDR_TYPE_ENUMC: [u8; EnumC::__SPEC_XDR_VIEW.const_xdr_len()] =
         EnumC::spec_xdr();
     impl EnumC {
@@ -22344,6 +23097,7 @@ mod wasm_imported {
                 doc: soroban_sdk::xdr::StringMView::new(b""),
                 lib: soroban_sdk::xdr::StringMView::new(b""),
                 name: soroban_sdk::xdr::StringMView::new(b"EnumC"),
+                id: EnumC::spec_type_id(),
                 cases: soroban_sdk::xdr::VecMView::new(&[
                     soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
                         soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
@@ -22356,9 +23110,10 @@ mod wasm_imported {
                             doc: soroban_sdk::xdr::StringMView::new(b""),
                             name: soroban_sdk::xdr::StringMView::new(b"V2"),
                             type_: soroban_sdk::xdr::VecMView::new(&[
-                                soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                    soroban_sdk::xdr::ScSpecTypeUdtView {
+                                soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                    soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                         name: soroban_sdk::xdr::StringMView::new(b"StructA"),
+                                        id: <StructA>::spec_type_id(),
                                     },
                                 ),
                             ]),
@@ -22369,9 +23124,10 @@ mod wasm_imported {
                             doc: soroban_sdk::xdr::StringMView::new(b""),
                             name: soroban_sdk::xdr::StringMView::new(b"V3"),
                             type_: soroban_sdk::xdr::VecMView::new(&[
-                                soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                    soroban_sdk::xdr::ScSpecTypeUdtView {
+                                soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                    soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                         name: soroban_sdk::xdr::StringMView::new(b"StructTupleA"),
+                                        id: <StructTupleA>::spec_type_id(),
                                     },
                                 ),
                             ]),
@@ -22655,7 +23411,7 @@ mod wasm_imported {
             #[inline]
             #[doc(hidden)]
             #[coverage(off)]
-            fn assert_receiver_is_total_eq(&self) -> () {
+            fn assert_fields_are_eq(&self) {
                 let _: ::core::cmp::AssertParamIsEq<
                     <StructA as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
                 >;
@@ -22728,29 +23484,37 @@ mod wasm_imported {
             #[allow(non_upper_case_globals)]
             const RECURSIVE_COUNT_ArbitraryEnumC: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
                 #[inline]
-                fn __init() -> std::cell::Cell<u32> {
+                fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                     std::cell::Cell::new(0)
                 }
                 unsafe {
                     ::std::thread::LocalKey::new(
                         const {
                             if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        (),
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            (),
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             } else {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        !,
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            !,
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             }
                         },
@@ -22904,6 +23668,9 @@ mod wasm_imported {
     #[automatically_derived]
     impl ::core::marker::Copy for EnumIntA {}
     #[automatically_derived]
+    #[doc(hidden)]
+    unsafe impl ::core::clone::TrivialClone for EnumIntA {}
+    #[automatically_derived]
     impl ::core::clone::Clone for EnumIntA {
         #[inline]
         fn clone(&self) -> EnumIntA {
@@ -22915,7 +23682,7 @@ mod wasm_imported {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {}
+        fn assert_fields_are_eq(&self) {}
     }
     #[automatically_derived]
     impl ::core::marker::StructuralPartialEq for EnumIntA {}
@@ -22946,6 +23713,12 @@ mod wasm_imported {
             ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr)
         }
     }
+    impl EnumIntA {
+        #[doc(hidden)]
+        pub const fn spec_type_id() -> [u8; 8] {
+            soroban_sdk::spec_type_id("test_spec_shaking_v2::wasm_imported::EnumIntA")
+        }
+    }
     pub static __SPEC_XDR_TYPE_ENUMINTA: [u8; EnumIntA::__SPEC_XDR_VIEW.const_xdr_len()] =
         EnumIntA::spec_xdr();
     impl EnumIntA {
@@ -22954,6 +23727,7 @@ mod wasm_imported {
                 doc: soroban_sdk::xdr::StringMView::new(b""),
                 lib: soroban_sdk::xdr::StringMView::new(b""),
                 name: soroban_sdk::xdr::StringMView::new(b"EnumIntA"),
+                id: EnumIntA::spec_type_id(),
                 cases: soroban_sdk::xdr::VecMView::new(&[
                     soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -23101,7 +23875,7 @@ mod wasm_imported {
             #[inline]
             #[doc(hidden)]
             #[coverage(off)]
-            fn assert_receiver_is_total_eq(&self) -> () {}
+            fn assert_fields_are_eq(&self) {}
         }
         #[automatically_derived]
         impl ::core::marker::StructuralPartialEq for ArbitraryEnumIntA {}
@@ -23139,29 +23913,37 @@ mod wasm_imported {
             #[allow(non_upper_case_globals)]
             const RECURSIVE_COUNT_ArbitraryEnumIntA: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
                 #[inline]
-                fn __init() -> std::cell::Cell<u32> {
+                fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                     std::cell::Cell::new(0)
                 }
                 unsafe {
                     ::std::thread::LocalKey::new(
                         const {
                             if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        (),
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            (),
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             } else {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        !,
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            !,
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             }
                         },
@@ -23293,6 +24075,9 @@ mod wasm_imported {
     #[automatically_derived]
     impl ::core::marker::Copy for EnumIntB {}
     #[automatically_derived]
+    #[doc(hidden)]
+    unsafe impl ::core::clone::TrivialClone for EnumIntB {}
+    #[automatically_derived]
     impl ::core::clone::Clone for EnumIntB {
         #[inline]
         fn clone(&self) -> EnumIntB {
@@ -23304,7 +24089,7 @@ mod wasm_imported {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {}
+        fn assert_fields_are_eq(&self) {}
     }
     #[automatically_derived]
     impl ::core::marker::StructuralPartialEq for EnumIntB {}
@@ -23335,6 +24120,12 @@ mod wasm_imported {
             ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr)
         }
     }
+    impl EnumIntB {
+        #[doc(hidden)]
+        pub const fn spec_type_id() -> [u8; 8] {
+            soroban_sdk::spec_type_id("test_spec_shaking_v2::wasm_imported::EnumIntB")
+        }
+    }
     pub static __SPEC_XDR_TYPE_ENUMINTB: [u8; EnumIntB::__SPEC_XDR_VIEW.const_xdr_len()] =
         EnumIntB::spec_xdr();
     impl EnumIntB {
@@ -23343,6 +24134,7 @@ mod wasm_imported {
                 doc: soroban_sdk::xdr::StringMView::new(b""),
                 lib: soroban_sdk::xdr::StringMView::new(b""),
                 name: soroban_sdk::xdr::StringMView::new(b"EnumIntB"),
+                id: EnumIntB::spec_type_id(),
                 cases: soroban_sdk::xdr::VecMView::new(&[
                     soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -23490,7 +24282,7 @@ mod wasm_imported {
             #[inline]
             #[doc(hidden)]
             #[coverage(off)]
-            fn assert_receiver_is_total_eq(&self) -> () {}
+            fn assert_fields_are_eq(&self) {}
         }
         #[automatically_derived]
         impl ::core::marker::StructuralPartialEq for ArbitraryEnumIntB {}
@@ -23528,29 +24320,37 @@ mod wasm_imported {
             #[allow(non_upper_case_globals)]
             const RECURSIVE_COUNT_ArbitraryEnumIntB: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
                 #[inline]
-                fn __init() -> std::cell::Cell<u32> {
+                fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                     std::cell::Cell::new(0)
                 }
                 unsafe {
                     ::std::thread::LocalKey::new(
                         const {
                             if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        (),
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            (),
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             } else {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        !,
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            !,
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             }
                         },
@@ -23682,6 +24482,9 @@ mod wasm_imported {
     #[automatically_derived]
     impl ::core::marker::Copy for EnumIntC {}
     #[automatically_derived]
+    #[doc(hidden)]
+    unsafe impl ::core::clone::TrivialClone for EnumIntC {}
+    #[automatically_derived]
     impl ::core::clone::Clone for EnumIntC {
         #[inline]
         fn clone(&self) -> EnumIntC {
@@ -23693,7 +24496,7 @@ mod wasm_imported {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {}
+        fn assert_fields_are_eq(&self) {}
     }
     #[automatically_derived]
     impl ::core::marker::StructuralPartialEq for EnumIntC {}
@@ -23724,6 +24527,12 @@ mod wasm_imported {
             ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr)
         }
     }
+    impl EnumIntC {
+        #[doc(hidden)]
+        pub const fn spec_type_id() -> [u8; 8] {
+            soroban_sdk::spec_type_id("test_spec_shaking_v2::wasm_imported::EnumIntC")
+        }
+    }
     pub static __SPEC_XDR_TYPE_ENUMINTC: [u8; EnumIntC::__SPEC_XDR_VIEW.const_xdr_len()] =
         EnumIntC::spec_xdr();
     impl EnumIntC {
@@ -23732,6 +24541,7 @@ mod wasm_imported {
                 doc: soroban_sdk::xdr::StringMView::new(b""),
                 lib: soroban_sdk::xdr::StringMView::new(b""),
                 name: soroban_sdk::xdr::StringMView::new(b"EnumIntC"),
+                id: EnumIntC::spec_type_id(),
                 cases: soroban_sdk::xdr::VecMView::new(&[
                     soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -23879,7 +24689,7 @@ mod wasm_imported {
             #[inline]
             #[doc(hidden)]
             #[coverage(off)]
-            fn assert_receiver_is_total_eq(&self) -> () {}
+            fn assert_fields_are_eq(&self) {}
         }
         #[automatically_derived]
         impl ::core::marker::StructuralPartialEq for ArbitraryEnumIntC {}
@@ -23917,29 +24727,37 @@ mod wasm_imported {
             #[allow(non_upper_case_globals)]
             const RECURSIVE_COUNT_ArbitraryEnumIntC: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
                 #[inline]
-                fn __init() -> std::cell::Cell<u32> {
+                fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                     std::cell::Cell::new(0)
                 }
                 unsafe {
                     ::std::thread::LocalKey::new(
                         const {
                             if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        (),
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            (),
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             } else {
-                                |init| {
+                                |__rust_std_internal_init| {
                                     #[thread_local]
-                                    static VAL: ::std::thread::local_impl::LazyStorage<
-                                        std::cell::Cell<u32>,
-                                        !,
-                                    > = ::std::thread::local_impl::LazyStorage::new();
-                                    VAL.get_or_init(init, __init)
+                                    static __RUST_STD_INTERNAL_VAL:
+                                        ::std::thread::local_impl::LazyStorage<
+                                            std::cell::Cell<u32>,
+                                            !,
+                                        > = ::std::thread::local_impl::LazyStorage::new();
+                                    __RUST_STD_INTERNAL_VAL.get_or_init(
+                                        __rust_std_internal_init,
+                                        __rust_std_internal_init_fn,
+                                    )
                                 }
                             }
                         },
@@ -24071,6 +24889,9 @@ mod wasm_imported {
     #[automatically_derived]
     impl ::core::marker::Copy for ErrorA {}
     #[automatically_derived]
+    #[doc(hidden)]
+    unsafe impl ::core::clone::TrivialClone for ErrorA {}
+    #[automatically_derived]
     impl ::core::clone::Clone for ErrorA {
         #[inline]
         fn clone(&self) -> ErrorA {
@@ -24082,7 +24903,7 @@ mod wasm_imported {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {}
+        fn assert_fields_are_eq(&self) {}
     }
     #[automatically_derived]
     impl ::core::marker::StructuralPartialEq for ErrorA {}
@@ -24113,6 +24934,12 @@ mod wasm_imported {
             ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr)
         }
     }
+    impl ErrorA {
+        #[doc(hidden)]
+        pub const fn spec_type_id() -> [u8; 8] {
+            soroban_sdk::spec_type_id("test_spec_shaking_v2::wasm_imported::ErrorA")
+        }
+    }
     pub static __SPEC_XDR_TYPE_ERRORA: [u8; ErrorA::__SPEC_XDR_VIEW.const_xdr_len()] =
         ErrorA::spec_xdr();
     impl ErrorA {
@@ -24122,6 +24949,7 @@ mod wasm_imported {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     lib: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"ErrorA"),
+                    id: ErrorA::spec_type_id(),
                     cases: soroban_sdk::xdr::VecMView::new(&[
                         soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
                             doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -24283,6 +25111,9 @@ mod wasm_imported {
     #[automatically_derived]
     impl ::core::marker::Copy for ErrorB {}
     #[automatically_derived]
+    #[doc(hidden)]
+    unsafe impl ::core::clone::TrivialClone for ErrorB {}
+    #[automatically_derived]
     impl ::core::clone::Clone for ErrorB {
         #[inline]
         fn clone(&self) -> ErrorB {
@@ -24294,7 +25125,7 @@ mod wasm_imported {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {}
+        fn assert_fields_are_eq(&self) {}
     }
     #[automatically_derived]
     impl ::core::marker::StructuralPartialEq for ErrorB {}
@@ -24325,6 +25156,12 @@ mod wasm_imported {
             ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr)
         }
     }
+    impl ErrorB {
+        #[doc(hidden)]
+        pub const fn spec_type_id() -> [u8; 8] {
+            soroban_sdk::spec_type_id("test_spec_shaking_v2::wasm_imported::ErrorB")
+        }
+    }
     pub static __SPEC_XDR_TYPE_ERRORB: [u8; ErrorB::__SPEC_XDR_VIEW.const_xdr_len()] =
         ErrorB::spec_xdr();
     impl ErrorB {
@@ -24334,6 +25171,7 @@ mod wasm_imported {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     lib: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"ErrorB"),
+                    id: ErrorB::spec_type_id(),
                     cases: soroban_sdk::xdr::VecMView::new(&[
                         soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
                             doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -24495,6 +25333,9 @@ mod wasm_imported {
     #[automatically_derived]
     impl ::core::marker::Copy for ErrorC {}
     #[automatically_derived]
+    #[doc(hidden)]
+    unsafe impl ::core::clone::TrivialClone for ErrorC {}
+    #[automatically_derived]
     impl ::core::clone::Clone for ErrorC {
         #[inline]
         fn clone(&self) -> ErrorC {
@@ -24506,7 +25347,7 @@ mod wasm_imported {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {}
+        fn assert_fields_are_eq(&self) {}
     }
     #[automatically_derived]
     impl ::core::marker::StructuralPartialEq for ErrorC {}
@@ -24537,6 +25378,12 @@ mod wasm_imported {
             ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr)
         }
     }
+    impl ErrorC {
+        #[doc(hidden)]
+        pub const fn spec_type_id() -> [u8; 8] {
+            soroban_sdk::spec_type_id("test_spec_shaking_v2::wasm_imported::ErrorC")
+        }
+    }
     pub static __SPEC_XDR_TYPE_ERRORC: [u8; ErrorC::__SPEC_XDR_VIEW.const_xdr_len()] =
         ErrorC::spec_xdr();
     impl ErrorC {
@@ -24546,6 +25393,7 @@ mod wasm_imported {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     lib: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"ErrorC"),
+                    id: ErrorC::spec_type_id(),
                     cases: soroban_sdk::xdr::VecMView::new(&[
                         soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
                             doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -24713,7 +25561,7 @@ mod wasm_imported {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Address>;
             let _: ::core::cmp::AssertParamIsEq<soroban_sdk::String>;
         }
@@ -24849,7 +25697,7 @@ mod wasm_imported {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Address>;
             let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Address>;
             let _: ::core::cmp::AssertParamIsEq<i128>;
@@ -25005,7 +25853,7 @@ mod wasm_imported {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Symbol>;
             let _: ::core::cmp::AssertParamIsEq<i64>;
         }
@@ -25146,7 +25994,7 @@ mod wasm_imported {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {}
+        fn assert_fields_are_eq(&self) {}
     }
     #[automatically_derived]
     impl ::core::marker::StructuralPartialEq for EventD {}
@@ -25244,7 +26092,7 @@ impl ::core::cmp::Eq for UnusedStruct {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<u32>;
     }
 }
@@ -25257,6 +26105,12 @@ impl ::core::cmp::PartialEq for UnusedStruct {
         self.x == other.x
     }
 }
+impl UnusedStruct {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UnusedStruct")
+    }
+}
 pub static __SPEC_XDR_TYPE_UNUSEDSTRUCT: [u8; UnusedStruct::__SPEC_XDR_VIEW.const_xdr_len()] =
     UnusedStruct::spec_xdr();
 impl UnusedStruct {
@@ -25265,6 +26119,7 @@ impl UnusedStruct {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UnusedStruct"),
+            id: UnusedStruct::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -25381,18 +26236,21 @@ impl TryFrom<&UnusedStruct> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &UnusedStruct) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
-            soroban_sdk::xdr::ScMapEntry {
-                key: soroban_sdk::xdr::ScSymbol(
-                    "x".try_into()
+        soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
+            ::alloc::intrinsics::write_box_via_move(
+                ::alloc::boxed::Box::new_uninit(),
+                [soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "x".try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.x)
+                        .try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                )
-                .into(),
-                val: (&val.x)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-        ])))
+                }],
+            ),
+        ))
     }
 }
 impl TryFrom<UnusedStruct> for soroban_sdk::xdr::ScMap {
@@ -25448,7 +26306,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<
                 <u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -25484,29 +26342,33 @@ const _: () = {
         #[allow(non_upper_case_globals)]
         const RECURSIVE_COUNT_ArbitraryUnusedStruct: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -25623,7 +26485,7 @@ impl ::core::cmp::Eq for UnusedEnum {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<i64>;
     }
 }
@@ -25642,6 +26504,12 @@ impl ::core::cmp::PartialEq for UnusedEnum {
             }
     }
 }
+impl UnusedEnum {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UnusedEnum")
+    }
+}
 pub static __SPEC_XDR_TYPE_UNUSEDENUM: [u8; UnusedEnum::__SPEC_XDR_VIEW.const_xdr_len()] =
     UnusedEnum::spec_xdr();
 impl UnusedEnum {
@@ -25650,6 +26518,7 @@ impl UnusedEnum {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UnusedEnum"),
+            id: UnusedEnum::spec_type_id(),
             cases: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
                     soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
@@ -25895,7 +26764,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<
                 <i64 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -25956,29 +26825,33 @@ const _: () = {
         #[allow(non_upper_case_globals)]
         const RECURSIVE_COUNT_ArbitraryUnusedEnum: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -26099,6 +26972,9 @@ pub enum UnusedIntEnum {
 #[automatically_derived]
 impl ::core::marker::Copy for UnusedIntEnum {}
 #[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for UnusedIntEnum {}
+#[automatically_derived]
 impl ::core::clone::Clone for UnusedIntEnum {
     #[inline]
     fn clone(&self) -> UnusedIntEnum {
@@ -26123,7 +26999,7 @@ impl ::core::cmp::Eq for UnusedIntEnum {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {}
+    fn assert_fields_are_eq(&self) {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for UnusedIntEnum {}
@@ -26136,6 +27012,12 @@ impl ::core::cmp::PartialEq for UnusedIntEnum {
         __self_discr == __arg1_discr
     }
 }
+impl UnusedIntEnum {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UnusedIntEnum")
+    }
+}
 pub static __SPEC_XDR_TYPE_UNUSEDINTENUM: [u8; UnusedIntEnum::__SPEC_XDR_VIEW.const_xdr_len()] =
     UnusedIntEnum::spec_xdr();
 impl UnusedIntEnum {
@@ -26144,6 +27026,7 @@ impl UnusedIntEnum {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UnusedIntEnum"),
+            id: UnusedIntEnum::spec_type_id(),
             cases: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -26278,7 +27161,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {}
+        fn assert_fields_are_eq(&self) {}
     }
     #[automatically_derived]
     impl ::core::marker::StructuralPartialEq for ArbitraryUnusedIntEnum {}
@@ -26318,29 +27201,33 @@ const _: () = {
             std::cell::Cell<u32>,
         > = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -26475,7 +27362,7 @@ impl ::core::cmp::Eq for UnusedEvent {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<Symbol>;
         let _: ::core::cmp::AssertParamIsEq<u32>;
     }
@@ -26560,6 +27447,9 @@ pub enum UnusedPubError {
 #[automatically_derived]
 impl ::core::marker::Copy for UnusedPubError {}
 #[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for UnusedPubError {}
+#[automatically_derived]
 impl ::core::clone::Clone for UnusedPubError {
     #[inline]
     fn clone(&self) -> UnusedPubError {
@@ -26578,7 +27468,7 @@ impl ::core::cmp::Eq for UnusedPubError {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {}
+    fn assert_fields_are_eq(&self) {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for UnusedPubError {}
@@ -26587,6 +27477,12 @@ impl ::core::cmp::PartialEq for UnusedPubError {
     #[inline]
     fn eq(&self, other: &UnusedPubError) -> bool {
         true
+    }
+}
+impl UnusedPubError {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UnusedPubError")
     }
 }
 pub static __SPEC_XDR_TYPE_UNUSEDPUBERROR: [u8; UnusedPubError::__SPEC_XDR_VIEW.const_xdr_len()] =
@@ -26598,6 +27494,7 @@ impl UnusedPubError {
                 doc: soroban_sdk::xdr::StringMView::new(b""),
                 lib: soroban_sdk::xdr::StringMView::new(b""),
                 name: soroban_sdk::xdr::StringMView::new(b"UnusedPubError"),
+                id: UnusedPubError::spec_type_id(),
                 cases: soroban_sdk::xdr::VecMView::new(&[
                     soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -26748,7 +27645,7 @@ impl ::core::cmp::Eq for UnusedNonContractFnParam {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<u32>;
     }
 }
@@ -26761,6 +27658,12 @@ impl ::core::cmp::PartialEq for UnusedNonContractFnParam {
         self.x == other.x
     }
 }
+impl UnusedNonContractFnParam {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UnusedNonContractFnParam")
+    }
+}
 pub static __SPEC_XDR_TYPE_UNUSEDNONCONTRACTFNPARAM: [u8;
     UnusedNonContractFnParam::__SPEC_XDR_VIEW.const_xdr_len()] =
     UnusedNonContractFnParam::spec_xdr();
@@ -26770,6 +27673,7 @@ impl UnusedNonContractFnParam {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UnusedNonContractFnParam"),
+            id: UnusedNonContractFnParam::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -26892,18 +27796,21 @@ impl TryFrom<&UnusedNonContractFnParam> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &UnusedNonContractFnParam) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
-            soroban_sdk::xdr::ScMapEntry {
-                key: soroban_sdk::xdr::ScSymbol(
-                    "x".try_into()
+        soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
+            ::alloc::intrinsics::write_box_via_move(
+                ::alloc::boxed::Box::new_uninit(),
+                [soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "x".try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.x)
+                        .try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                )
-                .into(),
-                val: (&val.x)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-        ])))
+                }],
+            ),
+        ))
     }
 }
 impl TryFrom<UnusedNonContractFnParam> for soroban_sdk::xdr::ScMap {
@@ -26959,7 +27866,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<
                 <u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -26997,29 +27904,33 @@ const _: () = {
             std::cell::Cell<u32>,
         > = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -27136,7 +28047,7 @@ impl ::core::cmp::Eq for UnusedNonContractFnReturn {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<u32>;
     }
 }
@@ -27149,6 +28060,12 @@ impl ::core::cmp::PartialEq for UnusedNonContractFnReturn {
         self.x == other.x
     }
 }
+impl UnusedNonContractFnReturn {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UnusedNonContractFnReturn")
+    }
+}
 pub static __SPEC_XDR_TYPE_UNUSEDNONCONTRACTFNRETURN: [u8;
     UnusedNonContractFnReturn::__SPEC_XDR_VIEW.const_xdr_len()] =
     UnusedNonContractFnReturn::spec_xdr();
@@ -27158,6 +28075,7 @@ impl UnusedNonContractFnReturn {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UnusedNonContractFnReturn"),
+            id: UnusedNonContractFnReturn::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -27280,18 +28198,21 @@ impl TryFrom<&UnusedNonContractFnReturn> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &UnusedNonContractFnReturn) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
-            soroban_sdk::xdr::ScMapEntry {
-                key: soroban_sdk::xdr::ScSymbol(
-                    "x".try_into()
+        soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
+            ::alloc::intrinsics::write_box_via_move(
+                ::alloc::boxed::Box::new_uninit(),
+                [soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "x".try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.x)
+                        .try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                )
-                .into(),
-                val: (&val.x)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-        ])))
+                }],
+            ),
+        ))
     }
 }
 impl TryFrom<UnusedNonContractFnReturn> for soroban_sdk::xdr::ScMap {
@@ -27347,7 +28268,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<
                 <u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -27385,29 +28306,33 @@ const _: () = {
             std::cell::Cell<u32>,
         > = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -27519,7 +28444,7 @@ impl ::core::cmp::Eq for UnusedNonPubStruct {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<u32>;
     }
 }
@@ -27532,6 +28457,12 @@ impl ::core::cmp::PartialEq for UnusedNonPubStruct {
         self.x == other.x
     }
 }
+impl UnusedNonPubStruct {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UnusedNonPubStruct")
+    }
+}
 pub static __SPEC_XDR_TYPE_UNUSEDNONPUBSTRUCT: [u8; UnusedNonPubStruct::__SPEC_XDR_VIEW
     .const_xdr_len()] = UnusedNonPubStruct::spec_xdr();
 impl UnusedNonPubStruct {
@@ -27540,6 +28471,7 @@ impl UnusedNonPubStruct {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UnusedNonPubStruct"),
+            id: UnusedNonPubStruct::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -27658,18 +28590,21 @@ impl TryFrom<&UnusedNonPubStruct> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &UnusedNonPubStruct) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
-            soroban_sdk::xdr::ScMapEntry {
-                key: soroban_sdk::xdr::ScSymbol(
-                    "x".try_into()
+        soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
+            ::alloc::intrinsics::write_box_via_move(
+                ::alloc::boxed::Box::new_uninit(),
+                [soroban_sdk::xdr::ScMapEntry {
+                    key: soroban_sdk::xdr::ScSymbol(
+                        "x".try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    )
+                    .into(),
+                    val: (&val.x)
+                        .try_into()
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                )
-                .into(),
-                val: (&val.x)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-        ])))
+                }],
+            ),
+        ))
     }
 }
 impl TryFrom<UnusedNonPubStruct> for soroban_sdk::xdr::ScMap {
@@ -27725,7 +28660,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<
                 <u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -27763,29 +28698,33 @@ const _: () = {
             std::cell::Cell<u32>,
         > = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -27877,6 +28816,9 @@ enum UnusedNonPubError {
 #[automatically_derived]
 impl ::core::marker::Copy for UnusedNonPubError {}
 #[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for UnusedNonPubError {}
+#[automatically_derived]
 impl ::core::clone::Clone for UnusedNonPubError {
     #[inline]
     fn clone(&self) -> UnusedNonPubError {
@@ -27895,7 +28837,7 @@ impl ::core::cmp::Eq for UnusedNonPubError {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {}
+    fn assert_fields_are_eq(&self) {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for UnusedNonPubError {}
@@ -27904,6 +28846,12 @@ impl ::core::cmp::PartialEq for UnusedNonPubError {
     #[inline]
     fn eq(&self, other: &UnusedNonPubError) -> bool {
         true
+    }
+}
+impl UnusedNonPubError {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_shaking_v2::UnusedNonPubError")
     }
 }
 pub static __SPEC_XDR_TYPE_UNUSEDNONPUBERROR: [u8; UnusedNonPubError::__SPEC_XDR_VIEW
@@ -27915,6 +28863,7 @@ impl UnusedNonPubError {
                 doc: soroban_sdk::xdr::StringMView::new(b""),
                 lib: soroban_sdk::xdr::StringMView::new(b""),
                 name: soroban_sdk::xdr::StringMView::new(b"UnusedNonPubError"),
+                id: UnusedNonPubError::spec_type_id(),
                 cases: soroban_sdk::xdr::VecMView::new(&[
                     soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -28159,18 +29108,20 @@ impl Contract {
                 soroban_sdk::xdr::ScSpecFunctionInputV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"s"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                        soroban_sdk::xdr::ScSpecTypeUdtView {
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
                             name: soroban_sdk::xdr::StringMView::new(b"UsedParamStruct"),
+                            id: <UsedParamStruct>::spec_type_id(),
                         },
                     ),
                 },
                 soroban_sdk::xdr::ScSpecFunctionInputV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"ie"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                        soroban_sdk::xdr::ScSpecTypeUdtView {
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
                             name: soroban_sdk::xdr::StringMView::new(b"UsedParamIntEnum"),
+                            id: <UsedParamIntEnum>::spec_type_id(),
                         },
                     ),
                 },
@@ -28201,11 +29152,12 @@ impl Contract {
                 b"with_return",
             )),
             inputs: soroban_sdk::xdr::VecMView::new(&[]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                soroban_sdk::xdr::ScSpecTypeUdtView {
+            outputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2View {
                     name: soroban_sdk::xdr::StringMView::new(b"UsedReturnEnum"),
-                },
-            )]),
+                    id: <UsedReturnEnum>::spec_type_id(),
+                }),
+            ]),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_return(
@@ -28233,9 +29185,10 @@ impl Contract {
                 soroban_sdk::xdr::ScSpecTypeDefView::Result(
                     &soroban_sdk::xdr::ScSpecTypeResultView {
                         ok_type: &soroban_sdk::xdr::ScSpecTypeDefView::U32,
-                        error_type: &soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                            soroban_sdk::xdr::ScSpecTypeUdtView {
+                        error_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                            soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                 name: soroban_sdk::xdr::StringMView::new(b"UsedErrorEnum"),
+                                id: <UsedErrorEnum>::spec_type_id(),
                             },
                         ),
                     },
@@ -28368,9 +29321,10 @@ impl Contract {
                     name: soroban_sdk::xdr::StringMView::new(b"v"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
                         &soroban_sdk::xdr::ScSpecTypeVecView {
-                            element_type: &soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                soroban_sdk::xdr::ScSpecTypeUdtView {
+                            element_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                     name: soroban_sdk::xdr::StringMView::new(b"UsedVecElement"),
+                                    id: <UsedVecElement>::spec_type_id(),
                                 },
                             ),
                         },
@@ -28408,11 +29362,12 @@ impl Contract {
                     name: soroban_sdk::xdr::StringMView::new(b"v"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
                         &soroban_sdk::xdr::ScSpecTypeVecView {
-                            element_type: &soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                soroban_sdk::xdr::ScSpecTypeUdtView {
+                            element_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                     name: soroban_sdk::xdr::StringMView::new(
                                         b"UsedVecElementNested",
                                     ),
+                                    id: <UsedVecElementNested>::spec_type_id(),
                                 },
                             ),
                         },
@@ -28448,14 +29403,16 @@ impl Contract {
                     name: soroban_sdk::xdr::StringMView::new(b"m"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefView::Map(
                         &soroban_sdk::xdr::ScSpecTypeMapView {
-                            key_type: &soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                soroban_sdk::xdr::ScSpecTypeUdtView {
+                            key_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                     name: soroban_sdk::xdr::StringMView::new(b"UsedMapKey"),
+                                    id: <UsedMapKey>::spec_type_id(),
                                 },
                             ),
-                            value_type: &soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                soroban_sdk::xdr::ScSpecTypeUdtView {
+                            value_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                     name: soroban_sdk::xdr::StringMView::new(b"UsedMapVal"),
+                                    id: <UsedMapVal>::spec_type_id(),
                                 },
                             ),
                         },
@@ -28492,9 +29449,10 @@ impl Contract {
                     name: soroban_sdk::xdr::StringMView::new(b"o"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefView::Option(
                         &soroban_sdk::xdr::ScSpecTypeOptionView {
-                            value_type: &soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                soroban_sdk::xdr::ScSpecTypeUdtView {
+                            value_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                     name: soroban_sdk::xdr::StringMView::new(b"UsedOptionElement"),
+                                    id: <UsedOptionElement>::spec_type_id(),
                                 },
                             ),
                         },
@@ -28530,14 +29488,16 @@ impl Contract {
             outputs: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecTypeDefView::Result(
                     &soroban_sdk::xdr::ScSpecTypeResultView {
-                        ok_type: &soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                            soroban_sdk::xdr::ScSpecTypeUdtView {
+                        ok_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                            soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                 name: soroban_sdk::xdr::StringMView::new(b"UsedResultOk"),
+                                id: <UsedResultOk>::spec_type_id(),
                             },
                         ),
-                        error_type: &soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                            soroban_sdk::xdr::ScSpecTypeUdtView {
+                        error_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                            soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                 name: soroban_sdk::xdr::StringMView::new(b"UsedErrorEnum"),
+                                id: <UsedErrorEnum>::spec_type_id(),
                             },
                         ),
                     },
@@ -28571,9 +29531,10 @@ impl Contract {
                 soroban_sdk::xdr::ScSpecFunctionInputV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"r"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                        soroban_sdk::xdr::ScSpecTypeUdtView {
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
                             name: soroban_sdk::xdr::StringMView::new(b"UsedRecursiveRoot"),
+                            id: <UsedRecursiveRoot>::spec_type_id(),
                         },
                     ),
                 },
@@ -28610,9 +29571,10 @@ impl Contract {
                     name: soroban_sdk::xdr::StringMView::new(b"c"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
                         &soroban_sdk::xdr::ScSpecTypeVecView {
-                            element_type: &soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                soroban_sdk::xdr::ScSpecTypeUdtView {
+                            element_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                     name: soroban_sdk::xdr::StringMView::new(b"Context"),
+                                    id: <soroban_sdk::auth::Context>::spec_type_id(),
                                 },
                             ),
                         },
@@ -28649,9 +29611,10 @@ impl Contract {
                 soroban_sdk::xdr::ScSpecFunctionInputV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"i"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                        soroban_sdk::xdr::ScSpecTypeUdtView {
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
                             name: soroban_sdk::xdr::StringMView::new(b"InvokerContractAuthEntry"),
+                            id: <soroban_sdk::auth::InvokerContractAuthEntry>::spec_type_id(),
                         },
                     ),
                 },
@@ -28686,9 +29649,10 @@ impl Contract {
                 soroban_sdk::xdr::ScSpecFunctionInputV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"e"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                        soroban_sdk::xdr::ScSpecTypeUdtView {
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
                             name: soroban_sdk::xdr::StringMView::new(b"Executable"),
+                            id: <soroban_sdk::Executable>::spec_type_id(),
                         },
                     ),
                 },
@@ -28857,9 +29821,10 @@ impl Contract {
                 soroban_sdk::xdr::ScSpecFunctionInputV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"s"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                        soroban_sdk::xdr::ScSpecTypeUdtView {
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
                             name: soroban_sdk::xdr::StringMView::new(b"StructC"),
+                            id: <test_spec_lib::StructC>::spec_type_id(),
                         },
                     ),
                 },
@@ -28894,9 +29859,10 @@ impl Contract {
                 soroban_sdk::xdr::ScSpecFunctionInputV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"s"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                        soroban_sdk::xdr::ScSpecTypeUdtView {
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
                             name: soroban_sdk::xdr::StringMView::new(b"StructA"),
+                            id: <wasm_imported::StructA>::spec_type_id(),
                         },
                     ),
                 },
@@ -28930,9 +29896,10 @@ impl Contract {
                 soroban_sdk::xdr::ScSpecFunctionInputV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"s"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                        soroban_sdk::xdr::ScSpecTypeUdtView {
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
                             name: soroban_sdk::xdr::StringMView::new(b"UsedNonPubStruct"),
+                            id: <UsedNonPubStruct>::spec_type_id(),
                         },
                     ),
                 },
@@ -28968,9 +29935,10 @@ impl Contract {
                 soroban_sdk::xdr::ScSpecTypeDefView::Result(
                     &soroban_sdk::xdr::ScSpecTypeResultView {
                         ok_type: &soroban_sdk::xdr::ScSpecTypeDefView::U32,
-                        error_type: &soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                            soroban_sdk::xdr::ScSpecTypeUdtView {
+                        error_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                            soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                 name: soroban_sdk::xdr::StringMView::new(b"UsedNonPubError"),
+                                id: <UsedNonPubError>::spec_type_id(),
                             },
                         ),
                     },
@@ -29005,11 +29973,12 @@ impl Contract {
                     type_: soroban_sdk::xdr::ScSpecTypeDefView::Tuple(
                         &soroban_sdk::xdr::ScSpecTypeTupleView {
                             value_types: soroban_sdk::xdr::VecMView::new(&[
-                                soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                    soroban_sdk::xdr::ScSpecTypeUdtView {
+                                soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                    soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                         name: soroban_sdk::xdr::StringMView::new(
                                             b"UsedTupleElement",
                                         ),
+                                        id: <UsedTupleElement>::spec_type_id(),
                                     },
                                 ),
                                 soroban_sdk::xdr::ScSpecTypeDefView::U32,
@@ -29049,11 +30018,12 @@ impl Contract {
                 soroban_sdk::xdr::ScSpecTypeDefView::Tuple(
                     &soroban_sdk::xdr::ScSpecTypeTupleView {
                         value_types: soroban_sdk::xdr::VecMView::new(&[
-                            soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                soroban_sdk::xdr::ScSpecTypeUdtView {
+                            soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                     name: soroban_sdk::xdr::StringMView::new(
                                         b"UsedTupleReturnElement",
                                     ),
+                                    id: <UsedTupleReturnElement>::spec_type_id(),
                                 },
                             ),
                             soroban_sdk::xdr::ScSpecTypeDefView::U32,
@@ -32568,7 +33538,7 @@ mod test {
     use soroban_sdk::xdr::ScSpecEntry;
     use std::collections::HashSet;
     use std::vec::Vec;
-    const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01^\x10`\x02~~\x01~`\x01~\x01~`\x03~~~\x01~`\x04~~~~\x01~`\x00\x00`\x00\x01~`\x02\x7f\x7f\x01~`\x04\x7f\x7f\x7f\x7f\x01~`\x01~\x00`\x02\x7f\x7f\x00`\x03~\x7f\x7f\x01~`\x02\x7f\x7f\x01\x7f`\x02\x7f~\x00`\x05~\x7f\x7f\x7f\x7f\x00`\x03\x7f\x7f\x7f\x00`\x01\x7f\x01~\x02I\x0c\x01x\x011\x00\x00\x01v\x013\x00\x01\x01i\x012\x00\x01\x01v\x01h\x00\x02\x01v\x01g\x00\x00\x01m\x01a\x00\x03\x01b\x01m\x00\x02\x01b\x01j\x00\x00\x01v\x011\x00\x00\x01b\x018\x00\x01\x01x\x015\x00\x01\x01m\x019\x00\x02\x0365\x04\x04\x04\x04\x04\x04\x04\x04\x04\x04\x04\x05\x06\x00\x07\x05\x05\x05\x05\x05\x05\x01\x08\x01\x05\x01\t\n\x0b\x0c\x01\r\x0c\x01\x01\x01\x05\x01\x01\x01\x00\x01\x05\x05\x0e\x0f\x01\x05\x01\x01\x01\x04\x04\x04\x05\x01p\x01\x0c\x0c\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\xd2\x88\xc0\x00\x0b\x7f\x00A\xa0\x8a\xc0\x00\x0b\x7f\x00A\xa0\x8a\xc0\x00\x0b\x07\x86\x04\x1f\x06memory\x02\x00\x11publish_data_type\x00\x17\x13publish_nested_data\x00\x1b\x14publish_nested_topic\x00\x1c\x11publish_ref_event\x00\x1e\x0epublish_simple\x00\x1f\x12publish_topic_type\x00 \x11with_assert_error\x00!\x12with_auth_contexts\x00#\nwith_error\x00$\x0fwith_executable\x00%\x11with_invoker_auth\x00*\x0fwith_lib_struct\x00-\x08with_map\x00.\x0cwith_non_pub\x00/\x12with_non_pub_error\x000\x0bwith_option\x001\x10with_panic_error\x002\x14with_panic_raw_error\x003\nwith_param\x004\x0ewith_recursion\x005\x0bwith_result\x006\x0bwith_return\x007\nwith_tuple\x00:\x11with_tuple_return\x00;\x08with_vec\x00<\x0fwith_vec_nested\x00=\x12with_wasm_imported\x00>\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\t\x11\x01\x00A\x01\x0b\x0b\x0f\x11\x13\x12\x0e\r\x14\x15\x16\x0c\x10\n\xac05\x0c\x00A\x00-\x00\x9c\x80\xc0\x80\x00\x1a\x0b\x16\x00A\x00-\x00\xfe\x80\xc0\x80\x00\x1aA\x00-\x00\xd4\x80\xc0\x80\x00\x1a\x0b\x0c\x00A\x00-\x00\x8c\x81\xc0\x80\x00\x1a\x0bJ\x01\x01\x7f#\x80\x80\x80\x80\x00!\x00A\x00-\x00\xea\x83\xc0\x80\x00\x1a \x00A\x10k\"\x00A\x81\x80\x80\x80\x006\x02\x0c \x00(\x02\x0c\x1aA\x00-\x00\xd2\x81\xc0\x80\x00\x1aA\x00-\x00\xe0\x81\xc0\x80\x00\x1aA\x00-\x00\xee\x81\xc0\x80\x00\x1a\x0b6\x01\x01\x7f#\x80\x80\x80\x80\x00!\x00A\x00-\x00\xec\x82\xc0\x80\x00\x1a \x00A\x10k\"\x00A\x82\x80\x80\x80\x006\x02\x0c \x00(\x02\x0c\x1aA\x00-\x00\xfa\x82\xc0\x80\x00\x1a\x0b\x0c\x00A\x00-\x00\xb2\x83\xc0\x80\x00\x1a\x0b\x86\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00A\x83\x80\x80\x80\x006\x02\x0c \x00(\x02\x0c\x1aA\x00-\x00\xc4\x88\xc0\x80\x00\x1a \x00A\x84\x80\x80\x80\x006\x02\x04 \x00(\x02\x04\x1aA\x00-\x00\xf0\x87\xc0\x80\x00\x1aA\x00-\x00\xe2\x87\xc0\x80\x00\x1aA\x00-\x00\x8c\x88\xc0\x80\x00\x1a \x00A\x83\x80\x80\x80\x006\x02\x08 \x00(\x02\x08\x1aA\x00-\x00\xe2\x87\xc0\x80\x00\x1aA\x00-\x00\x9a\x88\xc0\x80\x00\x1aA\x00-\x00\xfe\x87\xc0\x80\x00\x1a\x0b\x02\x00\x0bk\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00A\x83\x80\x80\x80\x006\x02\x0c \x00(\x02\x0c\x1aA\x00-\x00\xc4\x88\xc0\x80\x00\x1aA\x00-\x00\xe2\x87\xc0\x80\x00\x1aA\x00-\x00\x8c\x88\xc0\x80\x00\x1a \x00A\x83\x80\x80\x80\x006\x02\x08 \x00(\x02\x08\x1aA\x00-\x00\xe2\x87\xc0\x80\x00\x1aA\x00-\x00\x9a\x88\xc0\x80\x00\x1aA\x00-\x00\xa8\x88\xc0\x80\x00\x1a\x0b\x0c\x00A\x00-\x00\xf8\x83\xc0\x80\x00\x1a\x0b\x0c\x00A\x00-\x00\x86\x84\xc0\x80\x00\x1a\x0b\xae\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A k\"\x00$\x80\x80\x80\x80\x00A\xb0\x86\xc0\x80\x00A\x06\x10\x98\x80\x80\x80\x00!\x01A\x00-\x00\xa8\x81\xc0\x80\x00\x1aA\x00-\x00\x88\x83\xc0\x80\x00\x1aA\xf8\x86\xc0\x80\x00A\x19\x10\x98\x80\x80\x80\x00 \x01\x10\x99\x80\x80\x80\x00!\x01 \x00B\x84\x80\x80\x80 7\x03\x18 \x00B\x84\x80\x80\x80\x107\x03\x10 \x00A\x88\x86\xc0\x80\x00A\x02 \x00A\x10jA\x02\x10\x9a\x80\x80\x80\x007\x03\x08 \x01A\xdc\x86\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9a\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A j$\x80\x80\x80\x80\x00B\x02\x0bE\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00 \x02 \x00 \x01\x10\xb8\x80\x80\x80\x00\x02@ \x02(\x02\x00A\x01G\r\x00\x00\x0b \x02)\x03\x08!\x03 \x02A\x10j$\x80\x80\x80\x80\x00 \x03\x0b\x92\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00 \x02 \x017\x03\x08 \x02 \x007\x03\x00A\x00!\x03\x03~\x02@ \x03A\x10G\r\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02A\x10j \x03j \x02 \x03j)\x03\x007\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x02A\x10j\x10\xb9\x80\x80\x80\x00!\x01 \x02A j$\x80\x80\x80\x80\x00 \x01\x0f\x0b \x02A\x10j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b.\x00\x02@ \x01 \x03F\r\x00\x00\x0b \x00\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x8b\x80\x80\x80\x00\x0b\xc5\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\xdd\x84\xc0\x80\x00A\x06\x10\x98\x80\x80\x80\x00!\x01A\x00-\x00\xfc\x81\xc0\x80\x00\x1aA\x00-\x00\x8a\x82\xc0\x80\x00\x1aA\x00-\x00\xce\x83\xc0\x80\x00\x1aA\xab\x87\xc0\x80\x00A\x1b\x10\x98\x80\x80\x80\x00 \x01\x10\x99\x80\x80\x80\x00!\x01 \x00B\x84\x80\x80\x80\xa0\x057\x03\x08 \x00A\xa8\x84\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9a\x80\x80\x80\x007\x03\x00 \x00A\xa0\x86\xc0\x80\x00A\x01 \x00A\x01\x10\x9a\x80\x80\x80\x007\x03\x08 \x01A\xdc\x86\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9a\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\xbd\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\x00-\x00\xd0\x82\xc0\x80\x00\x1aA\x00-\x00\xde\x82\xc0\x80\x00\x1aA\x00-\x00\xdc\x83\xc0\x80\x00\x1aA\xc6\x87\xc0\x80\x00A\x1c\x10\x98\x80\x80\x80\x00!\x01 \x00B\x84\x80\x80\x80\xa0\x057\x03\x08 \x00A\xa8\x84\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9a\x80\x80\x80\x007\x03\x00 \x01A\xa0\x86\xc0\x80\x00A\x01 \x00A\x01\x10\x9a\x80\x80\x80\x00\x10\x99\x80\x80\x80\x00!\x01 \x00\x10\x9d\x80\x80\x80\x007\x03\x08 \x01A\xbc\x86\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9a\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\x06\x00B\x8b\xc8\x01\x0b\xc7\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00 \x00A\x85\x80\x80\x80\x006\x02\x08 \x00(\x02\x08\x1a \x00A\x86\x80\x80\x80\x006\x02\x08 \x00(\x02\x08\x1aA\x00-\x00\xb6\x81\xc0\x80\x00\x1aA\xe4\x86\xc0\x80\x00A\x14\x10\x98\x80\x80\x80\x00B\x84\x80\x80\x80\x10\x10\x99\x80\x80\x80\x00!\x01 \x00B\x84\x80\x80\x80\xb0\x0c7\x03\x08 \x00A\xa8\x84\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9a\x80\x80\x80\x007\x03\x00 \x00A\xfc\x85\xc0\x80\x00A\x01 \x00A\x01\x10\x9a\x80\x80\x80\x007\x03\x08 \x01A\xdc\x86\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9a\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\x7f\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\xa8\x86\xc0\x80\x00A\x08\x10\x98\x80\x80\x80\x00!\x01A\x00-\x00\xaa\x80\xc0\x80\x00\x1aA\xc4\x86\xc0\x80\x00A\x11\x10\x98\x80\x80\x80\x00 \x01\x10\x99\x80\x80\x80\x00!\x01 \x00\x10\x9d\x80\x80\x80\x007\x03\x08 \x01A\xbc\x86\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9a\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0b}\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\x00-\x00\x98\x82\xc0\x80\x00\x1aA\x00-\x00\x96\x83\xc0\x80\x00\x1aA\x91\x87\xc0\x80\x00A\x1a\x10\x98\x80\x80\x80\x00B\x84\x80\x80\x80\x10\x10\x99\x80\x80\x80\x00!\x01 \x00\x10\x9d\x80\x80\x80\x007\x03\x08 \x01A\xbc\x86\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9a\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0bJ\x01\x01\x7f\x02@\x02@A\x01A\x02A\x00 \x00\xa7A\xff\x01q\"\x01\x1b \x01A\x01F\x1b\"\x01A\x02F\r\x00 \x01A\x01qE\r\x01B\x02\x0f\x0b\x00\x0bA\x00-\x00\xc2\x82\xc0\x80\x00\x1aB\x83\x80\x80\x80\x10\x10\xa2\x80\x80\x80\x00\x00\x0b\x0b\x00 \x00\x10\x8a\x80\x80\x80\x00\x1a\x0b0\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01A\x87\x80\x80\x80\x006\x02\x0c \x01(\x02\x0c\x1a\x02@ \x00B\xff\x01\x83B\xcb\x00Q\r\x00\x00\x0bB\x02\x0b\x13\x00A\x00-\x00\x80\x80\xc0\x80\x00\x1aB\x84\x80\x80\x80\xa0\x05\x0b\xc0\x02\x03\x01\x7f\x01~\x01\x7f#\x80\x80\x80\x80\x00A k\"\x01$\x80\x80\x80\x80\x00A\x00-\x00\xb6\x88\xc0\x80\x00\x1a\x02@ \x00B\xff\x01\x83B\xcb\x00R\r\x00 \x00\x10\x81\x80\x80\x80\x00!\x02 \x01A\x006\x02\x08 \x01 \x007\x03\x00 \x01 \x02B \x88>\x02\x0c \x01A\x10j \x01\x10\xa6\x80\x80\x80\x00 \x01)\x03\x10\"\x00B\x02Q\r\x00 \x00\xa7A\x01q\r\x00\x02@ \x01)\x03\x18\"\x00\xa7A\xff\x01q\"\x03A\xca\x00F\r\x00 \x03A\x0eG\r\x01\x0b\x02@\x02@\x02@\x02@ \x00A\xc4\x84\xc0\x80\x00A\x03\x10\xa7\x80\x80\x80\x00B \x88\xa7\x0e\x03\x01\x02\x00\x04\x0b \x01(\x02\x08 \x01(\x02\x0c\x10\xa8\x80\x80\x80\x00\r\x03\x0c\x02\x0b \x01(\x02\x08 \x01(\x02\x0c\x10\xa8\x80\x80\x80\x00A\x01K\r\x02 \x01A\x10j \x01\x10\xa6\x80\x80\x80\x00 \x01)\x03\x10\"\x00B\x02Q\r\x02 \x00\xa7A\x01q\r\x02 \x01A\x10j \x01)\x03\x18\x10\xa9\x80\x80\x80\x00 \x01(\x02\x10A\x01G\r\x01\x0c\x02\x0b \x01(\x02\x08 \x01(\x02\x0c\x10\xa8\x80\x80\x80\x00\r\x01\x0b \x01A j$\x80\x80\x80\x80\x00B\x02\x0f\x0b\x00\x0bJ\x02\x01~\x01\x7fB\x02!\x02\x02@ \x01(\x02\x08\"\x03 \x01(\x02\x0cO\r\x00 \x00 \x01)\x03\x00 \x03\xadB \x86B\x04\x84\x10\x88\x80\x80\x80\x007\x03\x08 \x01 \x03A\x01j6\x02\x08B\x00!\x02\x0b \x00 \x027\x03\x00\x0b\x1c\x00 \x00 \x01\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x86\x80\x80\x80\x00\x0b\x19\x00\x02@ \x01 \x00I\r\x00 \x01 \x00k\x0f\x0b\x10\xc0\x80\x80\x80\x00\x00\x0bB\x01\x01~B\x01!\x02\x02@ \x01B\xff\x01\x83B\xc8\x00R\r\x00 \x01\x10\x89\x80\x80\x80\x00B\x80\x80\x80\x80p\x83B\x80\x80\x80\x80\x80\x04R\r\x00 \x00 \x017\x03\x08B\x00!\x02\x0b \x00 \x027\x03\x00\x0b\xd3\x07\x03\x01\x7f\x01~\x01\x7f#\x80\x80\x80\x80\x00A\xc0\x00k\"\x01$\x80\x80\x80\x80\x00 \x01A\x83\x80\x80\x80\x006\x02\x18 \x01(\x02\x18\x1aA\x00-\x00\xc4\x88\xc0\x80\x00\x1a \x01A\x84\x80\x80\x80\x006\x02\x18 \x01(\x02\x18\x1aA\x00-\x00\xf0\x87\xc0\x80\x00\x1aA\x00-\x00\xe2\x87\xc0\x80\x00\x1aA\x00-\x00\x8c\x88\xc0\x80\x00\x1a \x01A\x83\x80\x80\x80\x006\x02\x18 \x01(\x02\x18\x1aA\x00-\x00\xe2\x87\xc0\x80\x00\x1aA\x00-\x00\x9a\x88\xc0\x80\x00\x1aA\x00-\x00\xfe\x87\xc0\x80\x00\x1a\x02@\x02@ \x00B\xff\x01\x83B\xcb\x00R\r\x00 \x00\x10\x81\x80\x80\x80\x00!\x02 \x01A\x006\x02\x10 \x01 \x007\x03\x08 \x01 \x02B \x88>\x02\x14 \x01A\x18j \x01A\x08j\x10\xa6\x80\x80\x80\x00 \x01)\x03\x18\"\x00B\x02Q\r\x00 \x00\xa7A\x01q\r\x00\x02@ \x01)\x03 \"\x00\xa7A\xff\x01q\"\x03A\xca\x00F\r\x00 \x03A\x0eG\r\x01\x0b\x02@\x02@\x02@ \x00A\xe0\x85\xc0\x80\x00A\x03\x10\xa7\x80\x80\x80\x00B \x88\xa7\x0e\x03\x00\x01\x02\x03\x0b \x01(\x02\x10 \x01(\x02\x14\x10\xa8\x80\x80\x80\x00A\x01K\r\x02 \x01A\x18j \x01A\x08j\x10\xa6\x80\x80\x80\x00 \x01)\x03\x18\"\x00B\x02Q\r\x02 \x00\xa7A\x01q\r\x02 \x01)\x03 !\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x01A0j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x00B\xff\x01\x83B\xcc\x00R\r\x02 \x00A\xa4\x89\xc0\x80\x00A\x02 \x01A0jA\x02\x10\xab\x80\x80\x80\x00 \x01)\x030!\x00A\x00!\x03\x02@\x03@ \x03A\x18F\r\x01 \x01A\x18j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x00B\xff\x01\x83B\xcc\x00R\r\x02 \x00A\xe8\x88\xc0\x80\x00A\x03 \x01A\x18jA\x03\x10\xab\x80\x80\x80\x00 \x011\x00\x18B\xcb\x00R\r\x02 \x011\x00 B\xcd\x00R\r\x02\x02@ \x01-\x00(\"\x03A\x0eF\r\x00 \x03A\xca\x00G\r\x03\x0b \x011\x008B\xcb\x00R\r\x02\x0c\x03\x0b \x01(\x02\x10 \x01(\x02\x14\x10\xa8\x80\x80\x80\x00A\x01K\r\x01 \x01A\x18j \x01A\x08j\x10\xa6\x80\x80\x80\x00 \x01)\x03\x18\"\x00B\x02Q\r\x01 \x00\xa7A\x01q\r\x01 \x01)\x03 !\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x01A0j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x00B\xff\x01\x83B\xcc\x00R\r\x01 \x00A\xc4\x89\xc0\x80\x00A\x02 \x01A0jA\x02\x10\xab\x80\x80\x80\x00 \x01A\x18j \x01)\x030\x10\xac\x80\x80\x80\x00 \x01(\x02\x18\r\x01 \x01A\x18j \x01)\x038\x10\xa9\x80\x80\x80\x00 \x01(\x02\x18A\x01G\r\x02\x0c\x01\x0b \x01(\x02\x10 \x01(\x02\x14\x10\xa8\x80\x80\x80\x00A\x01K\r\x00 \x01A\x18j \x01A\x08j\x10\xa6\x80\x80\x80\x00 \x01)\x03\x18\"\x00B\x02Q\r\x00 \x00\xa7A\x01q\r\x00 \x01)\x03 !\x00A\x00!\x03\x02@\x03@ \x03A\x18F\r\x01 \x01A\x18j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xe4\x89\xc0\x80\x00A\x03 \x01A\x18jA\x03\x10\xab\x80\x80\x80\x00 \x011\x00\x18B\xcb\x00R\r\x00 \x01A0j \x01)\x03 \x10\xac\x80\x80\x80\x00 \x01(\x020\r\x00 \x01A0j \x01)\x03(\x10\xa9\x80\x80\x80\x00 \x01(\x020A\x01G\r\x01\x0b\x00\x0b \x01A\xc0\x00j$\x80\x80\x80\x80\x00B\x02\x0b1\x00\x02@ \x02 \x04F\r\x00\x00\x0b \x00 \x01\xadB \x86B\x04\x84 \x03\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x85\x80\x80\x80\x00\x1a\x0b\xb3\x02\x03\x01\x7f\x01~\x01\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00\x02@\x02@ \x01B\xff\x01\x83B\xcb\x00Q\r\x00 \x00B\x017\x03\x00\x0c\x01\x0b \x01\x10\x81\x80\x80\x80\x00!\x03 \x02A\x006\x02\x08 \x02 \x017\x03\x00 \x02 \x03B \x88>\x02\x0c \x02A\x10j \x02\x10\xa6\x80\x80\x80\x00\x02@ \x02)\x03\x10\"\x01B\x02Q\r\x00 \x01\xa7A\x01q\r\x00\x02@ \x02)\x03\x18\"\x01\xa7A\xff\x01q\"\x04A\xca\x00F\r\x00 \x04A\x0eG\r\x01\x0b\x02@ \x01A\x84\x89\xc0\x80\x00A\x01\x10\xa7\x80\x80\x80\x00B\xff\xff\xff\xff\x0fV\r\x00 \x02(\x02\x08 \x02(\x02\x0c\x10\xa8\x80\x80\x80\x00A\x01K\r\x00 \x02A\x10j \x02\x10\xa6\x80\x80\x80\x00 \x02)\x03\x10\"\x01B\x02Q\r\x00 \x01\xa7A\x01q\r\x00 \x02A\x10j \x02)\x03\x18\x10\xa9\x80\x80\x80\x00 \x02(\x02\x10\r\x00 \x02)\x03\x18!\x01 \x00B\x007\x03\x00 \x00 \x017\x03\x08\x0c\x02\x0b \x00B\x017\x03\x00\x0c\x01\x0b \x00B\x017\x03\x00\x0b \x02A j$\x80\x80\x80\x80\x00\x0b\x9e\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00 \x01A\x83\x80\x80\x80\x006\x02\x00 \x01(\x02\x00\x1aA\x00!\x02A\x00-\x00\xfc\x89\xc0\x80\x00\x1a\x02@\x03@ \x02A\x10F\r\x01 \x01 \x02jB\x027\x03\x00 \x02A\x08j!\x02\x0c\x00\x0b\x0b\x02@\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\x90\x8a\xc0\x80\x00A\x02 \x01A\x02\x10\xab\x80\x80\x80\x00 \x011\x00\x00B\xcb\x00R\r\x00 \x011\x00\x08B\xcd\x00Q\r\x01\x0b\x00\x0b \x01A\x10j$\x80\x80\x80\x80\x00B\x02\x0bA\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01A\x88\x80\x80\x80\x006\x02\x0c \x01(\x02\x0c\x1a \x01A\x89\x80\x80\x80\x006\x02\x08 \x01(\x02\x08\x1a\x02@ \x00B\xff\x01\x83B\xcc\x00Q\r\x00\x00\x0bB\x02\x0bg\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00A\x00-\x00\xe2\x80\xc0\x80\x00\x1a \x01B\x027\x03\x08\x02@\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xa8\x84\xc0\x80\x00A\x01 \x01A\x08jA\x01\x10\xab\x80\x80\x80\x00 \x011\x00\x08B\x04Q\r\x01\x0b\x00\x0b \x01A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\x12\x00A\x00-\x00\xb8\x80\xc0\x80\x00\x1aB\x84\x80\x80\x80\x10\x0br\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00A\x00-\x00\xc4\x81\xc0\x80\x00\x1a\x02@ \x00B\x02Q\r\x00 \x01B\x027\x03\x08\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xf8\x84\xc0\x80\x00A\x01 \x01A\x08jA\x01\x10\xab\x80\x80\x80\x00 \x01)\x03\x08B\xff\x01\x83B\x04Q\r\x01\x0b\x00\x0b \x01A\x10j$\x80\x80\x80\x80\x00B\x02\x0bI\x01\x01\x7f\x02@\x02@A\x01A\x02A\x00 \x00\xa7A\xff\x01q\"\x01\x1b \x01A\x01F\x1b\"\x01A\x02F\r\x00 \x01A\x01q\r\x01B\x02\x0f\x0b\x00\x0bA\x00-\x00\xb4\x82\xc0\x80\x00\x1aB\x83\x80\x80\x80\x10\x10\xa2\x80\x80\x80\x00\x00\x0b@\x01\x01\x7f\x02@\x02@A\x01A\x02A\x00 \x00\xa7A\xff\x01q\"\x01\x1b \x01A\x01F\x1b\"\x01A\x02F\r\x00 \x01A\x01q\r\x01B\x02\x0f\x0b\x00\x0bB\x83\x80\x80\x80\xf0\x00\x10\xa2\x80\x80\x80\x00\x00\x0b\x8a\x02\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00A\x00!\x03A\x00-\x00\xa6\x82\xc0\x80\x00\x1aA\x00-\x00\xc6\x80\xc0\x80\x00\x1a\x02@\x03@ \x03A\x10F\r\x01 \x02A\x08j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b\x02@\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xe4\x84\xc0\x80\x00A\x02 \x02A\x08jA\x02\x10\xab\x80\x80\x80\x00 \x021\x00\x08B\x04R\r\x00 \x02B\x027\x03\x18 \x02)\x03\x10\"\x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xa8\x84\xc0\x80\x00A\x01 \x02A\x18jA\x01\x10\xab\x80\x80\x80\x00\x02@ \x02)\x03\x18\"\x00\xa7A\xff\x01q\"\x03A\x07F\r\x00 \x03A\xc1\x00G\r\x01 \x00\x10\x82\x80\x80\x80\x00\x1a\x0bA\x00-\x00\xf0\x80\xc0\x80\x00\x1a \x01B\xff\x01\x83B\x04R\r\x00 \x01B \x88\xa7A}jA}K\r\x01\x0b\x00\x0b \x02A j$\x80\x80\x80\x80\x00B\x02\x0b\x90\x04\x03\x01\x7f\x01~\x01\x7f#\x80\x80\x80\x80\x00A0k\"\x01$\x80\x80\x80\x80\x00A\x00-\x00\xea\x83\xc0\x80\x00\x1a \x01A\x81\x80\x80\x80\x006\x02  \x01(\x02 \x1aA\x00-\x00\xd2\x81\xc0\x80\x00\x1aA\x00-\x00\xe0\x81\xc0\x80\x00\x1aA\x00-\x00\xee\x81\xc0\x80\x00\x1a \x01B\x027\x03\x08\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xa8\x84\xc0\x80\x00A\x01 \x01A\x08jA\x01\x10\xab\x80\x80\x80\x00 \x01)\x03\x08\"\x00B\xff\x01\x83B\xcb\x00R\r\x00 \x00\x10\x81\x80\x80\x80\x00!\x02 \x01A\x006\x02\x18 \x01 \x007\x03\x10 \x01 \x02B \x88>\x02\x1c \x01A j \x01A\x10j\x10\xa6\x80\x80\x80\x00 \x01)\x03 \"\x00B\x02Q\r\x00 \x00\xa7A\x01q\r\x00\x02@ \x01)\x03(\"\x00\xa7A\xff\x01q\"\x03A\xca\x00F\r\x00 \x03A\x0eG\r\x01\x0b\x02@\x02@\x02@ \x00A\x98\x85\xc0\x80\x00A\x02\x10\xa7\x80\x80\x80\x00B \x88\xa7\x0e\x02\x01\x00\x03\x0b \x01(\x02\x18 \x01(\x02\x1c\x10\xa8\x80\x80\x80\x00A\x01K\r\x02 \x01A j \x01A\x10j\x10\xa6\x80\x80\x80\x00 \x01)\x03 \"\x00B\x02Q\r\x02 \x00\xa7A\x01q\r\x02 \x01)\x03(!\x00 \x01B\x027\x03  \x00B\xff\x01\x83B\xcc\x00R\r\x02 \x00A\xa8\x84\xc0\x80\x00A\x01 \x01A jA\x01\x10\xab\x80\x80\x80\x00 \x011\x00 B\xcb\x00Q\r\x01\x0c\x02\x0b \x01(\x02\x18 \x01(\x02\x1c\x10\xa8\x80\x80\x80\x00A\x01K\r\x01 \x01A j \x01A\x10j\x10\xa6\x80\x80\x80\x00 \x01)\x03 \"\x00B\x02Q\r\x01 \x00\xa7A\x01q\r\x01 \x01)\x03(!\x00 \x01B\x027\x03  \x00B\xff\x01\x83B\xcc\x00R\r\x01 \x00A\xa8\x84\xc0\x80\x00A\x01 \x01A jA\x01\x10\xab\x80\x80\x80\x00 \x011\x00 B\x04R\r\x01\x0b \x01A0j$\x80\x80\x80\x80\x00B\x02\x0f\x0b\x00\x0bZ\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\x00-\x00\x94\x84\xc0\x80\x00\x1aA\x00-\x00\x80\x80\xc0\x80\x00\x1a \x00B\x84\x80\x80\x80\x107\x03\x08A\xf8\x84\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9a\x80\x80\x80\x00!\x01 \x00A\x10j$\x80\x80\x80\x80\x00 \x01\x0bo\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\x00-\x00\x8e\x80\xc0\x80\x00\x1a \x00A\xf8\x85\xc0\x80\x00A\x01\x10\xb8\x80\x80\x80\x00\x02@ \x00(\x02\x00A\x01G\r\x00\x00\x0b \x00)\x03\x08!\x01 \x00B\x84\x80\x80\x80\x107\x03\x08 \x00 \x017\x03\x00 \x00\x10\xb9\x80\x80\x80\x00!\x01 \x00A\x10j$\x80\x80\x80\x80\x00 \x01\x0b\xdb\x01\x02\x01~\x04\x7f\x02@\x02@ \x02A\tK\r\x00B\x00!\x03 \x02!\x04 \x01!\x05\x03@\x02@ \x04\r\x00 \x03B\x08\x86B\x0e\x84!\x03\x0c\x03\x0bA\x01!\x06\x02@ \x05-\x00\x00\"\x07A\xdf\x00F\r\x00\x02@\x02@ \x07APjA\xff\x01qA\nI\r\x00 \x07A\xbf\x7fjA\xff\x01qA\x1aI\r\x01 \x07A\x9f\x7fjA\xff\x01qA\x1aO\r\x04 \x07AEj!\x06\x0c\x02\x0b \x07ARj!\x06\x0c\x01\x0b \x07AKj!\x06\x0b \x03B\x06\x86 \x06\xadB\xff\x01\x83\x84!\x03 \x04A\x7fj!\x04 \x05A\x01j!\x05\x0c\x00\x0b\x0b \x01\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x87\x80\x80\x80\x00!\x03\x0b \x00B\x007\x03\x00 \x00 \x037\x03\x08\x0b\x17\x00 \x00\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x84\x80\x80\x80\x00\x0b\xc4\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x01$\x80\x80\x80\x80\x00A\x00!\x02A\x00-\x00\x9a\x81\xc0\x80\x00\x1a\x02@\x02@ \x00B\xff\x01\x83B\xcb\x00R\r\x00\x02@\x03@ \x02A\x10F\r\x01 \x01A\x08j \x02jB\x027\x03\x00 \x02A\x08j!\x02\x0c\x00\x0b\x0b \x00 \x01A\x08j\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x83\x80\x80\x80\x00\x1a \x01B\x027\x03\x18 \x01)\x03\x08\"\x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xa8\x84\xc0\x80\x00A\x01 \x01A\x18jA\x01\x10\xab\x80\x80\x80\x00 \x011\x00\x18B\x04R\r\x00 \x011\x00\x10B\x04Q\r\x01\x0b\x00\x0b \x01A j$\x80\x80\x80\x80\x00B\x02\x0bo\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A k\"\x00$\x80\x80\x80\x80\x00A\x00-\x00\xa4\x83\xc0\x80\x00\x1a \x00B\x84\x80\x80\x80\x107\x03\x18A\xa8\x84\xc0\x80\x00A\x01 \x00A\x18jA\x01\x10\x9a\x80\x80\x80\x00!\x01 \x00B\x84\x80\x80\x80 7\x03\x10 \x00 \x017\x03\x08 \x00A\x08j\x10\xb9\x80\x80\x80\x00!\x01 \x00A j$\x80\x80\x80\x80\x00 \x01\x0b0\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01A\x8a\x80\x80\x80\x006\x02\x0c \x01(\x02\x0c\x1a\x02@ \x00B\xff\x01\x83B\xcb\x00Q\r\x00\x00\x0bB\x02\x0b0\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01A\x8b\x80\x80\x80\x006\x02\x0c \x01(\x02\x0c\x1a\x02@ \x00B\xff\x01\x83B\xcb\x00Q\r\x00\x00\x0bB\x02\x0b\x8d\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00A\x00!\x02A\x00-\x00\xc0\x83\xc0\x80\x00\x1a\x02@\x03@ \x02A\x10F\r\x01 \x01 \x02jB\x027\x03\x00 \x02A\x08j!\x02\x0c\x00\x0b\x0b\x02@\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\x90\x8a\xc0\x80\x00A\x02 \x01A\x02\x10\xab\x80\x80\x80\x00 \x011\x00\x00B\x04R\r\x00 \x01)\x03\x08B\xfe\x01\x83P\r\x01\x0b\x00\x0b \x01A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\x03\x00\x00\x0b\t\x00\x10\xbf\x80\x80\x80\x00\x00\x0b\x0b\xaa\n\x01\x00A\x80\x80\xc0\x00\x0b\xa0\nSpEcV1Hh\xdc\xaaa\x8d\xf7\rSpEcV1\xe7\xcf\x9b1n\x15\x13\xfeSpEcV1\xe2\x01y\xc9\x9a\xf8\xedtSpEcV1v1\x0eP\xa9C\xc7*SpEcV1\xa9<\xd8+\xb7\xa7\r\x17SpEcV1X\x03\xf6t\xc7\xd0\x01\"SpEcV1\'\xbd_A\r\x9a\x89\x02SpEcV1p\x8c\x0fN!\x082\xd8SpEcV1\xc2\xf4N\xbf\xebqvpSpEcV1K\xdf\'8m/\xe8\x1dSpEcV1@\xb9LO\xf9\xd1\xe8\xe2SpEcV1\xde\x1dMa\x01\xec\xb0ASpEcV1\xc2 \x1b\xdc\xc8gxZSpEcV1[Q+\xe9\xde\xd5\xf2>SpEcV1\xb3/\x97\xd5\x06\xbd3BSpEcV1?\xd9\xb3q\xdep>\xf3SpEcV1*\\\x9c\xf4e\xaa\x1e]SpEcV1u2\x0b\x97\xae\xcd\x86\xbfSpEcV1\x0c\xf0\xf6w\xfd\x1a\x1b\x94SpEcV1\'\xf2\xa2\xb9\xd0)\xc0uSpEcV1\xf5\xd4\x9b\xa3\xccI\x13\xf7SpEcV1\x84\x08Y\xae\xa0\xf128SpEcV1\r\xb76\xae\x93D\xef\x1aSpEcV1\x8b\x89\x1f#\xbd\x157\xf4SpEcV16\x83?\xf0\xcdW\xb1/SpEcV1\x94\xc7w/_\xebXcSpEcV1\xb4\xabN]\xe3\xeaA\xd6SpEcV1\x13?J\x12d\xden|SpEcV1q\xa3z;6\xa6R\x01SpEcV1q^\xe2&\x9di\x9d\x0eSpEcV1Y\xa66\xb3\xecxE\x13SpEcV1\xcf@%X\xde+J@SpEcV1\xb6\x1c\xfd\xdfhY-dSpEcV1 \xfbl\x04B\x82\xc0\xb4SpEcV1\xe3\xf2\x9b5%a\xfb\xd6SpEcV1\xe6Q\xd5T\x13\x8a\xb7lSpEcV1[\xf4R\xdf\xdd\xb4\xb0\xbcSpEcV1\xaaX8\xde\xef\xbb6%SpEcV1k\xe4zxB\xd1+\x02val\x00\x00\x00\"\x02\x10\x00\x03\x00\x00\x00StellarAssetAccount\x00\x80\x04\x10\x00\x04\x00\x00\x000\x02\x10\x00\x0c\x00\x00\x00<\x02\x10\x00\x07\x00\x00\x00anested\x00\\\x02\x10\x00\x01\x00\x00\x00]\x02\x10\x00\x06\x00\x00\x00datat\x02\x10\x00\x04\x00\x00\x00NotRecursiveRecursive\x00\x00\x00\x80\x02\x10\x00\x0c\x00\x00\x00\x8c\x02\x10\x00\t\x00\x00\x00ContractCreateContractHostFnCreateContractWithCtorHostFn\xa8\x02\x10\x00\x08\x00\x00\x00\xb0\x02\x10\x00\x14\x00\x00\x00\xc4\x02\x10\x00\x1c\x00\x00\x00A\x00\x00\x00]\x02\x10\x00\x06\x00\x00\x00xy\x00\x00\x04\x03\x10\x00\x01\x00\x00\x00\x05\x03\x10\x00\x01\x00\x00\x00inner\x00\x00\x00\x18\x03\x10\x00\x05\x00\x00\x00transfercoordsamount6\x03\x10\x00\x06\x00\x00\x00used_event_simplepayloadU\x03\x10\x00\x07\x00\x00\x00used_event_with_refsused_event_with_data_typeused_event_with_topic_typeused_event_with_nested_dataused_event_with_nested_topicSpEcV1\xb6\xb1Hy\xda\xca\xaf\xccSpEcV1\x9e)H\x8e\xf0\x01{{SpEcV1ULqD\xd3\xfa:\x1fSpEcV1\x15\xe5\x1a,\xc0\xc7\xef\xd4SpEcV1s\x94\x0c\x1926\x1d\x90SpEcV1\xa3J\xcf\xf7D\x93\x0bBSpEcV1L|{\r\xf4\xf2\x1a\xa8SpEcV1\xf1\xf9\x90\x07E*e\xfdargscontractfn_name\x00\x00\x00R\x04\x10\x00\x04\x00\x00\x00V\x04\x10\x00\x08\x00\x00\x00^\x04\x10\x00\x07\x00\x00\x00Wasm\x80\x04\x10\x00\x04\x00\x00\x00contextsub_invocations\x00\x00\x8c\x04\x10\x00\x07\x00\x00\x00\x93\x04\x10\x00\x0f\x00\x00\x00executablesalt\x00\x00\xb4\x04\x10\x00\n\x00\x00\x00\xbe\x04\x10\x00\x04\x00\x00\x00constructor_args\xd4\x04\x10\x00\x10\x00\x00\x00\xb4\x04\x10\x00\n\x00\x00\x00\xbe\x04\x10\x00\x04\x00\x00\x00SpEcV1\xa3\x16\n\x8f\xc9\x92\xd2\x11f1f2\x00\x00\n\x05\x10\x00\x02\x00\x00\x00\x0c\x05\x10\x00\x02\x00\x00\x00\x00\x87`\x0econtractspecv0\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumB\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x07\x00\x00\x00\x07\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumC\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorB\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x0c\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorC\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00e\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00f\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventA\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventB\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_b\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventC\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_c\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventD\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_d\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Context\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructA\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructB\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructC\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x03\xea\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntA\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntB\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntC\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\xc8\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x01,\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nExecutable\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStellarAsset\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Account\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleB\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleC\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08contract\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x07fn_name\x00\x00\x00\x00\x11\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x15SubContractInvocation\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x07\xd0\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x00\x00\x00\x00\x0fsub_invocations\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00\x18InvokerContractAuthEntry\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x18InvokerContractAuthEntry\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x15SubContractInvocation\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x10constructor_args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08UsedLeaf\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08with_map\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01m\x00\x00\x00\x00\x00\x03\xec\x00\x00\x07\xd0\x00\x00\x00\nUsedMapKey\x00\x00\x00\x00\x07\xd0\x00\x00\x00\nUsedMapVal\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08with_vec\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01v\x00\x00\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00\x0eUsedVecElement\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nUnusedEnum\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01A\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01B\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nUsedMapKey\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02K1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02K2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nUsedMapVal\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01v\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nwith_error\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd0\x00\x00\x00\rUsedErrorEnum\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nwith_param\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01s\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x0fUsedParamStruct\x00\x00\x00\x00\x00\x00\x00\x00\x02ie\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x10UsedParamIntEnum\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nwith_tuple\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01t\x00\x00\x00\x00\x00\x03\xed\x00\x00\x00\x02\x00\x00\x07\xd0\x00\x00\x00\x10UsedTupleElement\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bUnusedEvent\x00\x00\x00\x00\x01\x00\x00\x00\x0cunused_event\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04data\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cUnusedStruct\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01x\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cUsedResultOk\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04data\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bwith_option\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01o\x00\x00\x00\x00\x00\x03\xe8\x00\x00\x07\xd0\x00\x00\x00\x11UsedOptionElement\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bwith_result\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x07\xd0\x00\x00\x00\x0cUsedResultOk\x00\x00\x07\xd0\x00\x00\x00\rUsedErrorEnum\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bwith_return\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0eUsedReturnEnum\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rUnusedIntEnum\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02U1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02U2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rUsedErrorEnum\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x08NotFound\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x07Invalid\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cwith_non_pub\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01s\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x10UsedNonPubStruct\x00\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0eUnusedPubError\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Nope\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0eUsedReturnEnum\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01A\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01B\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0eUsedVecElement\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04data\x00\x00\x00\x04\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fUsedNonPubError\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Fail\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fUsedParamStruct\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x06nested\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x12UsedNestedInStruct\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fUsedRefDataType\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x06nested\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x10UsedRefDataInner\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0epublish_simple\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0ewith_recursion\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01r\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x11UsedRecursiveRoot\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fUsedEventSimple\x00\x00\x00\x00\x01\x00\x00\x00\x11used_event_simple\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x06amount\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10UsedNonPubStruct\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10UsedParamIntEnum\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01X\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01Y\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10UsedRefDataInner\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10UsedRefTopicType\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04Send\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Recv\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10UsedTupleElement\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fwith_executable\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01e\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\nExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fwith_lib_struct\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01s\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x07StructC\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fwith_vec_nested\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01v\x00\x00\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00\x14UsedVecElementNested\x00\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11UnusedNonPubError\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03Bad\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11UsedEventDataType\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01x\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x01y\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11UsedOptionElement\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04data\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11UsedRecursiveLeaf\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00\x11UsedRecursiveRoot\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11UsedRecursiveNode\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x0cNotRecursive\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x08UsedLeaf\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\tRecursive\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x11UsedRecursiveLeaf\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11UsedRecursiveRoot\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x07\xd0\x00\x00\x00\x11UsedRecursiveNode\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10with_panic_error\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04fail\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11UsedEventWithRefs\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x14used_event_with_refs\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x07\xd0\x00\x00\x00\x10UsedRefTopicType\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x07payload\x00\x00\x00\x07\xd0\x00\x00\x00\x0fUsedRefDataType\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12UnusedNonPubStruct\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01x\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12UsedEventDataInner\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12UsedEventDataOuter\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05inner\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x12UsedEventDataInner\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12UsedEventTopicType\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x08Transfer\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Mint\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12UsedNestedInStruct\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x07\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12UsedPanicErrorEnum\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Boom\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11publish_data_type\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11publish_ref_event\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11with_assert_error\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02ok\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11with_invoker_auth\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01i\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x18InvokerContractAuthEntry\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11with_tuple_return\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x03\xed\x00\x00\x00\x02\x00\x00\x07\xd0\x00\x00\x00\x16UsedTupleReturnElement\x00\x00\x00\x00\x00\x04\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13UsedAssertErrorEnum\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03Bad\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13UsedEventTopicInner\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13UsedEventTopicOuter\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05inner\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x13UsedEventTopicInner\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13UsedVecInnerElement\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12publish_topic_type\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12with_auth_contexts\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01c\x00\x00\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00\x07Context\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12with_non_pub_error\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd0\x00\x00\x00\x0fUsedNonPubError\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12with_wasm_imported\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01s\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14UsedVecElementNested\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x05inner\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x13UsedVecInnerElement\x00\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\tvec_inner\x00\x00\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00\x16UsedVecInnerVecElement\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13publish_nested_data\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14publish_nested_topic\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14with_panic_raw_error\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04fail\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x15UsedEventWithDataType\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x19used_event_with_data_type\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x07payload\x00\x00\x00\x07\xd0\x00\x00\x00\x11UsedEventDataType\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x16UsedTupleReturnElement\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x16UsedVecInnerVecElement\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x16UsedEventWithTopicType\x00\x00\x00\x00\x00\x01\x00\x00\x00\x1aused_event_with_topic_type\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x07\xd0\x00\x00\x00\x12UsedEventTopicType\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x06amount\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x17UsedEventWithNestedData\x00\x00\x00\x00\x01\x00\x00\x00\x1bused_event_with_nested_data\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x07payload\x00\x00\x00\x07\xd0\x00\x00\x00\x12UsedEventDataOuter\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x18UnusedNonContractFnParam\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01x\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x18UsedEventWithNestedTopic\x00\x00\x00\x01\x00\x00\x00\x1cused_event_with_nested_topic\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04info\x00\x00\x07\xd0\x00\x00\x00\x13UsedEventTopicOuter\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x06amount\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x19UnusedNonContractFnReturn\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01x\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x02\x00\x00\x00\xe3Context of a single authorized call performed by an address.\n\nCustom account contracts that implement `__check_auth` special function\nreceive a list of `Context` values corresponding to all the calls that\nneed to be authorized.\x00\x00\x00\x00\x00\x00\x00\x00\x07Context\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x14Contract invocation.\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x01\x00\x00\x00=Contract that has a constructor with no arguments is created.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00DContract that has a constructor with 1 or more arguments is created.\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x01\x00\x00\x00\xbdAuthorization context of a single contract call.\n\nThis struct corresponds to a `require_auth_for_args` call for an address\nfrom `contract` function with `fn_name` name and `args` arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08contract\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x07fn_name\x00\x00\x00\x00\x11\x00\x00\x00\x02\x00\x00\x00_Contract executable used for creating a new contract and used in\n`CreateContractHostFnContext`.\x00\x00\x00\x00\x00\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x008Value of contract node in InvokerContractAuthEntry tree.\x00\x00\x00\x00\x00\x00\x00\x15SubContractInvocation\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x07\xd0\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x00\x00\x00\x00\x0fsub_invocations\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00\x18InvokerContractAuthEntry\x00\x00\x00\x02\x00\x00\x01/A node in the tree of authorizations performed on behalf of the current\ncontract as invoker of the contracts deeper in the call stack.\n\nThis is used as an argument of `authorize_as_current_contract` host function.\n\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\ncurrent contract.\x00\x00\x00\x00\x00\x00\x00\x00\x18InvokerContractAuthEntry\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x12Invoke a contract.\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x15SubContractInvocation\x00\x00\x00\x00\x00\x00\x01\x00\x00\x005Create a contract passing 0 arguments to constructor.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00=Create a contract passing 0 or more arguments to constructor.\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x01\x00\x00\x00vAuthorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\xd6Authorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\nThis is the same as `CreateContractHostFnContext`, but also has\ncontract constructor arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x10constructor_args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nExecutable\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStellarAsset\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Account\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumB\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x07\x00\x00\x00\x07\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumC\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorB\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x0c\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorC\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00e\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00f\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventA\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventB\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_b\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventC\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_c\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventD\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_d\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructA\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructB\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructC\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x03\xea\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntA\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntB\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntC\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\xc8\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x01,\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleB\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleC\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x0b\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1c\x00\x00\x00\x00\x00O\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12rssdk_spec_shaking\x00\x00\x00\x00\x00\x012\x00\x00\x00";
+    const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01^\x10`\x02~~\x01~`\x01~\x01~`\x03~~~\x01~`\x04~~~~\x01~`\x00\x00`\x02\x7f\x7f\x01\x7f`\x00\x01~`\x02\x7f\x7f\x01~`\x04\x7f\x7f\x7f\x7f\x01~`\x01~\x00`\x02\x7f\x7f\x00`\x03~\x7f\x7f\x01~`\x02\x7f~\x00`\x05~\x7f\x7f\x7f\x7f\x00`\x03\x7f\x7f\x7f\x00`\x01\x7f\x01~\x02I\x0c\x01x\x011\x00\x00\x01v\x013\x00\x01\x01i\x012\x00\x01\x01v\x01h\x00\x02\x01v\x01g\x00\x00\x01m\x01a\x00\x03\x01b\x01m\x00\x02\x01v\x011\x00\x00\x01b\x018\x00\x01\x01b\x01j\x00\x00\x01m\x019\x00\x02\x01x\x015\x00\x01\x0365\x04\x04\x04\x04\x04\x04\x04\x04\x04\x04\x04\x05\x04\x06\x07\x00\x08\x06\x06\x06\x06\x06\x06\x01\t\x01\x06\x01\n\x0b\x0c\x01\r\x0c\x01\x01\x01\x06\x01\x01\x01\x00\x01\x06\x06\x0e\x0f\x01\x06\x01\x01\x01\x04\x04\x05\x01p\x01\x0c\x0c\x05\x03\x01\x00\x11\x06\x11\x02\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\xcd\x88\xc0\x00\x0b\x07\xeb\x03\x1d\x06memory\x02\x00\x11publish_data_type\x00\x19\x13publish_nested_data\x00\x1d\x14publish_nested_topic\x00\x1e\x11publish_ref_event\x00 \x0epublish_simple\x00!\x12publish_topic_type\x00\"\x11with_assert_error\x00#\x12with_auth_contexts\x00%\nwith_error\x00&\x0fwith_executable\x00\'\x11with_invoker_auth\x00+\x0fwith_lib_struct\x00.\x08with_map\x00/\x0cwith_non_pub\x000\x12with_non_pub_error\x001\x0bwith_option\x002\x10with_panic_error\x003\x14with_panic_raw_error\x004\nwith_param\x005\x0ewith_recursion\x006\x0bwith_result\x007\x0bwith_return\x008\nwith_tuple\x00;\x11with_tuple_return\x00<\x08with_vec\x00=\x0fwith_vec_nested\x00>\x12with_wasm_imported\x00?\x01_\x03\x01\t\x11\x01\x00A\x01\x0b\x0b\x0f\x13\x15\x16\x12\x11\x0e\r\x10\x0c\x14\n\xd8/5\x0c\x00A\x00-\x00\x8e\x80\xc0\x80\x00\x1a\x0b\x0c\x00A\x00-\x00\x9c\x80\xc0\x80\x00\x1a\x0bk\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00A\x81\x80\x80\x80\x006\x02\x0c \x00(\x02\x0c\x1aA\x00-\x00\x87\x88\xc0\x80\x00\x1aA\x00-\x00\xbf\x88\xc0\x80\x00\x1aA\x00-\x00\xa3\x88\xc0\x80\x00\x1a \x00A\x81\x80\x80\x80\x006\x02\x08 \x00(\x02\x08\x1aA\x00-\x00\xbf\x88\xc0\x80\x00\x1aA\x00-\x00\xb1\x88\xc0\x80\x00\x1aA\x00-\x00\xdd\x87\xc0\x80\x00\x1a\x0b\x02\x00\x0b\x0c\x00A\x00-\x00\xe2\x80\xc0\x80\x00\x1a\x0b\x16\x00A\x00-\x00\xfc\x81\xc0\x80\x00\x1aA\x00-\x00\xee\x81\xc0\x80\x00\x1a\x0b\x0c\x00A\x00-\x00\xa6\x82\xc0\x80\x00\x1a\x0b\x0c\x00A\x00-\x00\xc2\x82\xc0\x80\x00\x1a\x0b6\x01\x01\x7f#\x80\x80\x80\x80\x00!\x00A\x00-\x00\xd0\x82\xc0\x80\x00\x1a \x00A\x10k\"\x00A\x82\x80\x80\x80\x006\x02\x0c \x00(\x02\x0c\x1aA\x00-\x00\xde\x82\xc0\x80\x00\x1a\x0bJ\x01\x01\x7f#\x80\x80\x80\x80\x00!\x00A\x00-\x00\xce\x83\xc0\x80\x00\x1a \x00A\x10k\"\x00A\x83\x80\x80\x80\x006\x02\x0c \x00(\x02\x0c\x1aA\x00-\x00\xb2\x83\xc0\x80\x00\x1aA\x00-\x00\xa4\x83\xc0\x80\x00\x1aA\x00-\x00\x96\x83\xc0\x80\x00\x1a\x0b\x86\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00A\x81\x80\x80\x80\x006\x02\x0c \x00(\x02\x0c\x1aA\x00-\x00\x87\x88\xc0\x80\x00\x1a \x00A\x84\x80\x80\x80\x006\x02\x04 \x00(\x02\x04\x1aA\x00-\x00\xf9\x87\xc0\x80\x00\x1aA\x00-\x00\xbf\x88\xc0\x80\x00\x1aA\x00-\x00\xa3\x88\xc0\x80\x00\x1a \x00A\x81\x80\x80\x80\x006\x02\x08 \x00(\x02\x08\x1aA\x00-\x00\xbf\x88\xc0\x80\x00\x1aA\x00-\x00\xb1\x88\xc0\x80\x00\x1aA\x00-\x00\xeb\x87\xc0\x80\x00\x1a\x0b\x19\x00\x02@ \x01 \x00I\r\x00 \x01 \x00k\x0f\x0b\x10\x98\x80\x80\x80\x00\x00\x0b\t\x00\x10\xc0\x80\x80\x80\x00\x00\x0b\xae\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A k\"\x00$\x80\x80\x80\x80\x00A\xaa\x84\xc0\x80\x00A\x06\x10\x9a\x80\x80\x80\x00!\x01A\x00-\x00\xb6\x81\xc0\x80\x00\x1aA\x00-\x00\xc4\x81\xc0\x80\x00\x1aA\xdc\x85\xc0\x80\x00A\x19\x10\x9a\x80\x80\x80\x00 \x01\x10\x9b\x80\x80\x80\x00!\x01 \x00B\x84\x80\x80\x80 7\x03\x18 \x00B\x84\x80\x80\x80\x107\x03\x10 \x00A\xbc\x85\xc0\x80\x00A\x02 \x00A\x10jA\x02\x10\x9c\x80\x80\x80\x007\x03\x08 \x01A\xd4\x85\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9c\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A j$\x80\x80\x80\x80\x00B\x02\x0bE\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00 \x02 \x00 \x01\x10\xb9\x80\x80\x80\x00\x02@ \x02)\x03\x00B\x01R\r\x00\x00\x0b \x02)\x03\x08!\x03 \x02A\x10j$\x80\x80\x80\x80\x00 \x03\x0b\x92\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00 \x02 \x017\x03\x08 \x02 \x007\x03\x00A\x00!\x03\x03~\x02@ \x03A\x10G\r\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02A\x10j \x03j \x02 \x03j)\x03\x007\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x02A\x10j\x10\xba\x80\x80\x80\x00!\x01 \x02A j$\x80\x80\x80\x80\x00 \x01\x0f\x0b \x02A\x10j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b.\x00\x02@ \x01 \x03F\r\x00\x00\x0b \x00\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x8a\x80\x80\x80\x00\x0b\xc5\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\xb0\x84\xc0\x80\x00A\x06\x10\x9a\x80\x80\x80\x00!\x01A\x00-\x00\x8a\x82\xc0\x80\x00\x1aA\x00-\x00\xe0\x81\xc0\x80\x00\x1aA\x00-\x00\x98\x82\xc0\x80\x00\x1aA\x8c\x86\xc0\x80\x00A\x1b\x10\x9a\x80\x80\x80\x00 \x01\x10\x9b\x80\x80\x80\x00!\x01 \x00B\x84\x80\x80\x80\xa0\x057\x03\x08 \x00A\xbc\x84\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9c\x80\x80\x80\x007\x03\x00 \x00A\xfc\x85\xc0\x80\x00A\x01 \x00A\x01\x10\x9c\x80\x80\x80\x007\x03\x08 \x01A\xd4\x85\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9c\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\xbd\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\x00-\x00\x9a\x81\xc0\x80\x00\x1aA\x00-\x00\xd2\x81\xc0\x80\x00\x1aA\x00-\x00\xa8\x81\xc0\x80\x00\x1aA\x9e\x85\xc0\x80\x00A\x1c\x10\x9a\x80\x80\x80\x00!\x01 \x00B\x84\x80\x80\x80\xa0\x057\x03\x08 \x00A\xbc\x84\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9c\x80\x80\x80\x007\x03\x00 \x01A\xfc\x85\xc0\x80\x00A\x01 \x00A\x01\x10\x9c\x80\x80\x80\x00\x10\x9b\x80\x80\x80\x00!\x01 \x00\x10\x9f\x80\x80\x80\x007\x03\x08 \x01A\xcc\x84\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9c\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\x06\x00B\x8b\xc8\x01\x0b\xc7\x01\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00 \x00A\x85\x80\x80\x80\x006\x02\x08 \x00(\x02\x08\x1a \x00A\x86\x80\x80\x80\x006\x02\x08 \x00(\x02\x08\x1aA\x00-\x00\xb4\x82\xc0\x80\x00\x1aA\xa7\x86\xc0\x80\x00A\x14\x10\x9a\x80\x80\x80\x00B\x84\x80\x80\x80\x10\x10\x9b\x80\x80\x80\x00!\x01 \x00B\x84\x80\x80\x80\xb0\x0c7\x03\x08 \x00A\xbc\x84\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9c\x80\x80\x80\x007\x03\x00 \x00A\x84\x86\xc0\x80\x00A\x01 \x00A\x01\x10\x9c\x80\x80\x80\x007\x03\x08 \x01A\xd4\x85\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9c\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\x7f\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\xa2\x84\xc0\x80\x00A\x08\x10\x9a\x80\x80\x80\x00!\x01A\x00-\x00\xc6\x80\xc0\x80\x00\x1aA\xd4\x84\xc0\x80\x00A\x11\x10\x9a\x80\x80\x80\x00 \x01\x10\x9b\x80\x80\x80\x00!\x01 \x00\x10\x9f\x80\x80\x80\x007\x03\x08 \x01A\xcc\x84\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9c\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0b}\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\x00-\x00\xd4\x80\xc0\x80\x00\x1aA\x00-\x00\x8c\x81\xc0\x80\x00\x1aA\x84\x85\xc0\x80\x00A\x1a\x10\x9a\x80\x80\x80\x00B\x84\x80\x80\x80\x10\x10\x9b\x80\x80\x80\x00!\x01 \x00\x10\x9f\x80\x80\x80\x007\x03\x08 \x01A\xcc\x84\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9c\x80\x80\x80\x00\x10\x80\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0bC\x01\x01\x7f\x02@\x02@\x02@A\x01A\x02A\x00 \x00\xa7A\xff\x01q\"\x01\x1b \x01A\x01F\x1b\x0e\x03\x01\x02\x00\x02\x0b\x00\x0bA\x00-\x00\xb8\x80\xc0\x80\x00\x1aB\x83\x80\x80\x80\x10\x10\xa4\x80\x80\x80\x00\x00\x0bB\x02\x0b\x0b\x00 \x00\x10\x8b\x80\x80\x80\x00\x1a\x0b0\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01A\x87\x80\x80\x80\x006\x02\x0c \x01(\x02\x0c\x1a\x02@ \x00B\xff\x01\x83B\xcb\x00Q\r\x00\x00\x0bB\x02\x0b\x13\x00A\x00-\x00\xdc\x83\xc0\x80\x00\x1aB\x84\x80\x80\x80\xa0\x05\x0b\xb5\x02\x03\x01\x7f\x01~\x01\x7f#\x80\x80\x80\x80\x00A k\"\x01$\x80\x80\x80\x80\x00A\x00-\x00\x95\x88\xc0\x80\x00\x1a\x02@ \x00B\xff\x01\x83B\xcb\x00R\r\x00 \x00\x10\x81\x80\x80\x80\x00!\x02 \x01A\x006\x02\x08 \x01 \x007\x03\x00 \x01 \x02B \x88>\x02\x0c \x01A\x10j \x01\x10\xa8\x80\x80\x80\x00 \x01)\x03\x10B\x00R\r\x00\x02@ \x01)\x03\x18\"\x00\xa7A\xff\x01q\"\x03A\xca\x00F\r\x00 \x03A\x0eG\r\x01\x0b \x00A\xc4\x87\xc0\x80\x00A\x03\x10\xa9\x80\x80\x80\x00B \x88\"\x00B\x02V\r\x00\x02@\x02@\x02@\x02@ \x00\xa7\x0e\x03\x01\x02\x00\x01\x0b \x01(\x02\x08 \x01(\x02\x0c\x10\x97\x80\x80\x80\x00\r\x03\x0c\x02\x0b \x01(\x02\x08 \x01(\x02\x0c\x10\x97\x80\x80\x80\x00A\x01K\r\x02 \x01A\x10j \x01\x10\xa8\x80\x80\x80\x00 \x01)\x03\x10B\x00R\r\x02 \x01A\x10j \x01)\x03\x18\x10\xaa\x80\x80\x80\x00 \x01)\x03\x10B\x01R\r\x01\x0c\x02\x0b \x01(\x02\x08 \x01(\x02\x0c\x10\x97\x80\x80\x80\x00\r\x01\x0b \x01A j$\x80\x80\x80\x80\x00B\x02\x0f\x0b\x00\x0bJ\x02\x01~\x01\x7fB\x02!\x02\x02@ \x01(\x02\x08\"\x03 \x01(\x02\x0cO\r\x00 \x00 \x01)\x03\x00 \x03\xadB \x86B\x04\x84\x10\x87\x80\x80\x80\x007\x03\x08 \x01 \x03A\x01j6\x02\x08B\x00!\x02\x0b \x00 \x027\x03\x00\x0b\x1c\x00 \x00 \x01\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x86\x80\x80\x80\x00\x0bB\x01\x01~B\x01!\x02\x02@ \x01B\xff\x01\x83B\xc8\x00R\r\x00 \x01\x10\x88\x80\x80\x80\x00B\x80\x80\x80\x80p\x83B\x80\x80\x80\x80\x80\x04R\r\x00 \x00 \x017\x03\x08B\x00!\x02\x0b \x00 \x027\x03\x00\x0b\xb5\x07\x03\x01\x7f\x01~\x01\x7f#\x80\x80\x80\x80\x00A\xc0\x00k\"\x01$\x80\x80\x80\x80\x00 \x01A\x81\x80\x80\x80\x006\x02\x18 \x01(\x02\x18\x1aA\x00-\x00\x87\x88\xc0\x80\x00\x1a \x01A\x84\x80\x80\x80\x006\x02\x18 \x01(\x02\x18\x1aA\x00-\x00\xf9\x87\xc0\x80\x00\x1aA\x00-\x00\xbf\x88\xc0\x80\x00\x1aA\x00-\x00\xa3\x88\xc0\x80\x00\x1a \x01A\x81\x80\x80\x80\x006\x02\x18 \x01(\x02\x18\x1aA\x00-\x00\xbf\x88\xc0\x80\x00\x1aA\x00-\x00\xb1\x88\xc0\x80\x00\x1aA\x00-\x00\xeb\x87\xc0\x80\x00\x1a\x02@ \x00B\xff\x01\x83B\xcb\x00R\r\x00 \x00\x10\x81\x80\x80\x80\x00!\x02 \x01A\x006\x02\x10 \x01 \x007\x03\x08 \x01 \x02B \x88>\x02\x14 \x01A\x18j \x01A\x08j\x10\xa8\x80\x80\x80\x00 \x01)\x03\x18B\x00R\r\x00\x02@ \x01)\x03 \"\x00\xa7A\xff\x01q\"\x03A\xca\x00F\r\x00 \x03A\x0eG\r\x01\x0b \x00A\x98\x87\xc0\x80\x00A\x03\x10\xa9\x80\x80\x80\x00B \x88\"\x00B\x02V\r\x00\x02@\x02@\x02@\x02@ \x00\xa7\x0e\x03\x02\x00\x01\x02\x0b \x01(\x02\x10 \x01(\x02\x14\x10\x97\x80\x80\x80\x00A\x01K\r\x03 \x01A\x18j \x01A\x08j\x10\xa8\x80\x80\x80\x00 \x01)\x03\x18B\x00R\r\x03 \x01)\x03 !\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x01A0j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x00B\xff\x01\x83B\xcc\x00R\r\x03 \x00A\xc8\x89\xc0\x80\x00A\x02 \x01A0jA\x02\x10\xac\x80\x80\x80\x00 \x01A\x18j \x01)\x030\x10\xad\x80\x80\x80\x00 \x01(\x02\x18\r\x03 \x01A\x18j \x01)\x038\x10\xaa\x80\x80\x80\x00 \x01)\x03\x18B\x01Q\r\x03\x0c\x02\x0b \x01(\x02\x10 \x01(\x02\x14\x10\x97\x80\x80\x80\x00A\x01K\r\x02 \x01A\x18j \x01A\x08j\x10\xa8\x80\x80\x80\x00 \x01)\x03\x18B\x00R\r\x02 \x01)\x03 !\x00A\x00!\x03\x02@\x03@ \x03A\x18F\r\x01 \x01A\x18j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x00B\xff\x01\x83B\xcc\x00R\r\x02 \x00A\xd8\x89\xc0\x80\x00A\x03 \x01A\x18jA\x03\x10\xac\x80\x80\x80\x00 \x011\x00\x18B\xcb\x00R\r\x02 \x01A0j \x01)\x03 \x10\xad\x80\x80\x80\x00 \x01(\x020\r\x02 \x01A0j \x01)\x03(\x10\xaa\x80\x80\x80\x00 \x01)\x030B\x01R\r\x01\x0c\x02\x0b \x01(\x02\x10 \x01(\x02\x14\x10\x97\x80\x80\x80\x00A\x01K\r\x01 \x01A\x18j \x01A\x08j\x10\xa8\x80\x80\x80\x00 \x01)\x03\x18B\x00R\r\x01 \x01)\x03 !\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x01A0j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x00B\xff\x01\x83B\xcc\x00R\r\x01 \x00A\xa0\x89\xc0\x80\x00A\x02 \x01A0jA\x02\x10\xac\x80\x80\x80\x00 \x01)\x030!\x00A\x00!\x03\x02@\x03@ \x03A\x18F\r\x01 \x01A\x18j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x00B\xff\x01\x83B\xcc\x00R\r\x01 \x00A\xb0\x89\xc0\x80\x00A\x03 \x01A\x18jA\x03\x10\xac\x80\x80\x80\x00 \x011\x00\x18B\xcb\x00R\r\x01 \x011\x00 B\xcd\x00R\r\x01\x02@ \x01-\x00(\"\x03A\x0eF\r\x00 \x03A\xca\x00G\r\x02\x0b \x011\x008B\xcb\x00R\r\x01\x0b \x01A\xc0\x00j$\x80\x80\x80\x80\x00B\x02\x0f\x0b\x00\x0b1\x00\x02@ \x02 \x04F\r\x00\x00\x0b \x00 \x01\xadB \x86B\x04\x84 \x03\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x85\x80\x80\x80\x00\x1a\x0b\xb0\x02\x03\x01\x7f\x01~\x02\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00\x02@\x02@\x02@ \x01B\xff\x01\x83B\xcb\x00Q\r\x00 \x00B\x017\x03\x00\x0c\x01\x0b \x01\x10\x81\x80\x80\x80\x00!\x03 \x02A\x006\x02\x08 \x02 \x017\x03\x00 \x02 \x03B \x88>\x02\x0c \x02A\x10j \x02\x10\xa8\x80\x80\x80\x00\x02@ \x02)\x03\x10B\x00R\r\x00\x02@ \x02)\x03\x18\"\x01\xa7A\xff\x01q\"\x04A\xca\x00F\r\x00 \x04A\x0eG\r\x01\x0b\x02@ \x01A\x98\x89\xc0\x80\x00A\x01\x10\xa9\x80\x80\x80\x00B\xff\xff\xff\xff\x0fV\r\x00 \x02(\x02\x0c\"\x04 \x02(\x02\x08\"\x05I\r\x03 \x04 \x05kA\x01K\r\x00 \x02A\x10j \x02\x10\xa8\x80\x80\x80\x00 \x02)\x03\x10B\x00R\r\x00 \x02A\x10j \x02)\x03\x18\x10\xaa\x80\x80\x80\x00 \x02(\x02\x10\r\x00 \x02)\x03\x18!\x01 \x00B\x007\x03\x00 \x00 \x017\x03\x08\x0c\x02\x0b \x00B\x017\x03\x00\x0c\x01\x0b \x00B\x017\x03\x00\x0b \x02A j$\x80\x80\x80\x80\x00\x0f\x0b\x10\x98\x80\x80\x80\x00\x00\x0b\x9e\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00 \x01A\x81\x80\x80\x80\x006\x02\x00 \x01(\x02\x00\x1aA\x00!\x02A\x00-\x00\xf0\x89\xc0\x80\x00\x1a\x02@\x03@ \x02A\x10F\r\x01 \x01 \x02jB\x027\x03\x00 \x02A\x08j!\x02\x0c\x00\x0b\x0b\x02@\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\x84\x8a\xc0\x80\x00A\x02 \x01A\x02\x10\xac\x80\x80\x80\x00 \x011\x00\x00B\xcb\x00R\r\x00 \x011\x00\x08B\xcd\x00Q\r\x01\x0b\x00\x0b \x01A\x10j$\x80\x80\x80\x80\x00B\x02\x0bA\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01A\x88\x80\x80\x80\x006\x02\x0c \x01(\x02\x0c\x1a \x01A\x89\x80\x80\x80\x006\x02\x08 \x01(\x02\x08\x1a\x02@ \x00B\xff\x01\x83B\xcc\x00Q\r\x00\x00\x0bB\x02\x0bg\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00A\x00-\x00\x88\x83\xc0\x80\x00\x1a \x01B\x027\x03\x08\x02@\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xbc\x84\xc0\x80\x00A\x01 \x01A\x08jA\x01\x10\xac\x80\x80\x80\x00 \x011\x00\x08B\x04Q\r\x01\x0b\x00\x0b \x01A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\x12\x00A\x00-\x00\xc0\x83\xc0\x80\x00\x1aB\x84\x80\x80\x80\x10\x0br\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00A\x00-\x00\xf0\x80\xc0\x80\x00\x1a\x02@ \x00B\x02Q\r\x00 \x01B\x027\x03\x08\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xfc\x84\xc0\x80\x00A\x01 \x01A\x08jA\x01\x10\xac\x80\x80\x80\x00 \x01)\x03\x08B\xff\x01\x83B\x04Q\r\x01\x0b\x00\x0b \x01A\x10j$\x80\x80\x80\x80\x00B\x02\x0bC\x01\x01\x7f\x02@\x02@\x02@A\x01A\x02A\x00 \x00\xa7A\xff\x01q\"\x01\x1b \x01A\x01F\x1b\x0e\x03\x02\x01\x00\x01\x0b\x00\x0bA\x00-\x00\xf8\x83\xc0\x80\x00\x1aB\x83\x80\x80\x80\x10\x10\xa4\x80\x80\x80\x00\x00\x0bB\x02\x0b:\x01\x01\x7f\x02@\x02@\x02@A\x01A\x02A\x00 \x00\xa7A\xff\x01q\"\x01\x1b \x01A\x01F\x1b\x0e\x03\x02\x01\x00\x01\x0b\x00\x0bB\x83\x80\x80\x80\xf0\x00\x10\xa4\x80\x80\x80\x00\x00\x0bB\x02\x0b\x8a\x02\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00A\x00!\x03A\x00-\x00\x80\x80\xc0\x80\x00\x1aA\x00-\x00\xaa\x80\xc0\x80\x00\x1a\x02@\x03@ \x03A\x10F\r\x01 \x02A\x08j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b\x02@\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xe8\x84\xc0\x80\x00A\x02 \x02A\x08jA\x02\x10\xac\x80\x80\x80\x00 \x021\x00\x08B\x04R\r\x00 \x02B\x027\x03\x18 \x02)\x03\x10\"\x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xbc\x84\xc0\x80\x00A\x01 \x02A\x18jA\x01\x10\xac\x80\x80\x80\x00\x02@ \x02)\x03\x18\"\x00\xa7A\xff\x01q\"\x03A\x07F\r\x00 \x03A\xc1\x00G\r\x01 \x00\x10\x82\x80\x80\x80\x00\x1a\x0bA\x00-\x00\x94\x84\xc0\x80\x00\x1a \x01B\xff\x01\x83B\x04R\r\x00 \x01B \x88\xa7A}jA}K\r\x01\x0b\x00\x0b \x02A j$\x80\x80\x80\x80\x00B\x02\x0b\xfb\x03\x03\x01\x7f\x01~\x01\x7f#\x80\x80\x80\x80\x00A0k\"\x01$\x80\x80\x80\x80\x00A\x00-\x00\xce\x83\xc0\x80\x00\x1a \x01A\x83\x80\x80\x80\x006\x02  \x01(\x02 \x1aA\x00-\x00\xb2\x83\xc0\x80\x00\x1aA\x00-\x00\xa4\x83\xc0\x80\x00\x1aA\x00-\x00\x96\x83\xc0\x80\x00\x1a \x01B\x027\x03\x08\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xbc\x84\xc0\x80\x00A\x01 \x01A\x08jA\x01\x10\xac\x80\x80\x80\x00 \x01)\x03\x08\"\x00B\xff\x01\x83B\xcb\x00R\r\x00 \x00\x10\x81\x80\x80\x80\x00!\x02 \x01A\x006\x02\x18 \x01 \x007\x03\x10 \x01 \x02B \x88>\x02\x1c \x01A j \x01A\x10j\x10\xa8\x80\x80\x80\x00 \x01)\x03 B\x00R\r\x00\x02@ \x01)\x03(\"\x00\xa7A\xff\x01q\"\x03A\xca\x00F\r\x00 \x03A\x0eG\r\x01\x0b \x00A\xd0\x86\xc0\x80\x00A\x02\x10\xa9\x80\x80\x80\x00B \x88\"\x00B\x01V\r\x00\x02@\x02@\x02@ \x00\xa7\x0e\x02\x01\x00\x01\x0b \x01(\x02\x18 \x01(\x02\x1c\x10\x97\x80\x80\x80\x00A\x01K\r\x02 \x01A j \x01A\x10j\x10\xa8\x80\x80\x80\x00 \x01)\x03 B\x00R\r\x02 \x01)\x03(!\x00 \x01B\x027\x03  \x00B\xff\x01\x83B\xcc\x00R\r\x02 \x00A\xbc\x84\xc0\x80\x00A\x01 \x01A jA\x01\x10\xac\x80\x80\x80\x00 \x011\x00 B\xcb\x00Q\r\x01\x0c\x02\x0b \x01(\x02\x18 \x01(\x02\x1c\x10\x97\x80\x80\x80\x00A\x01K\r\x01 \x01A j \x01A\x10j\x10\xa8\x80\x80\x80\x00 \x01)\x03 B\x00R\r\x01 \x01)\x03(!\x00 \x01B\x027\x03  \x00B\xff\x01\x83B\xcc\x00R\r\x01 \x00A\xbc\x84\xc0\x80\x00A\x01 \x01A jA\x01\x10\xac\x80\x80\x80\x00 \x011\x00 B\x04R\r\x01\x0b \x01A0j$\x80\x80\x80\x80\x00B\x02\x0f\x0b\x00\x0bZ\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\x00-\x00\xfe\x80\xc0\x80\x00\x1aA\x00-\x00\xdc\x83\xc0\x80\x00\x1a \x00B\x84\x80\x80\x80\x107\x03\x08A\xfc\x84\xc0\x80\x00A\x01 \x00A\x08jA\x01\x10\x9c\x80\x80\x80\x00!\x01 \x00A\x10j$\x80\x80\x80\x80\x00 \x01\x0bo\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\x00-\x00\x86\x84\xc0\x80\x00\x1a \x00A\xdc\x87\xc0\x80\x00A\x01\x10\xb9\x80\x80\x80\x00\x02@ \x00)\x03\x00B\x01R\r\x00\x00\x0b \x00)\x03\x08!\x01 \x00B\x84\x80\x80\x80\x107\x03\x08 \x00 \x017\x03\x00 \x00\x10\xba\x80\x80\x80\x00!\x01 \x00A\x10j$\x80\x80\x80\x80\x00 \x01\x0b\xdb\x01\x02\x01~\x04\x7f\x02@\x02@ \x02A\tK\r\x00B\x00!\x03 \x02!\x04 \x01!\x05\x03@\x02@ \x04\r\x00 \x03B\x08\x86B\x0e\x84!\x03\x0c\x03\x0bA\x01!\x06\x02@ \x05-\x00\x00\"\x07A\xdf\x00F\r\x00\x02@\x02@ \x07APjA\xff\x01qA\nI\r\x00 \x07A\xbf\x7fjA\xff\x01qA\x1aI\r\x01 \x07A\x9f\x7fjA\xff\x01qA\x1aO\r\x04 \x07AEj!\x06\x0c\x02\x0b \x07ARj!\x06\x0c\x01\x0b \x07AKj!\x06\x0b \x03B\x06\x86 \x06\xadB\xff\x01\x83\x84!\x03 \x04A\x7fj!\x04 \x05A\x01j!\x05\x0c\x00\x0b\x0b \x01\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84\x10\x89\x80\x80\x80\x00!\x03\x0b \x00B\x007\x03\x00 \x00 \x037\x03\x08\x0b\x17\x00 \x00\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x84\x80\x80\x80\x00\x0b\xc4\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x01$\x80\x80\x80\x80\x00A\x00!\x02A\x00-\x00\xec\x82\xc0\x80\x00\x1a\x02@\x02@ \x00B\xff\x01\x83B\xcb\x00R\r\x00\x02@\x03@ \x02A\x10F\r\x01 \x01A\x08j \x02jB\x027\x03\x00 \x02A\x08j!\x02\x0c\x00\x0b\x0b \x00 \x01A\x08j\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x83\x80\x80\x80\x00\x1a \x01B\x027\x03\x18 \x01)\x03\x08\"\x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xbc\x84\xc0\x80\x00A\x01 \x01A\x18jA\x01\x10\xac\x80\x80\x80\x00 \x011\x00\x18B\x04R\r\x00 \x011\x00\x10B\x04Q\r\x01\x0b\x00\x0b \x01A j$\x80\x80\x80\x80\x00B\x02\x0bo\x02\x01\x7f\x01~#\x80\x80\x80\x80\x00A k\"\x00$\x80\x80\x80\x80\x00A\x00-\x00\xfa\x82\xc0\x80\x00\x1a \x00B\x84\x80\x80\x80\x107\x03\x18A\xbc\x84\xc0\x80\x00A\x01 \x00A\x18jA\x01\x10\x9c\x80\x80\x80\x00!\x01 \x00B\x84\x80\x80\x80 7\x03\x10 \x00 \x017\x03\x08 \x00A\x08j\x10\xba\x80\x80\x80\x00!\x01 \x00A j$\x80\x80\x80\x80\x00 \x01\x0b0\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01A\x8a\x80\x80\x80\x006\x02\x0c \x01(\x02\x0c\x1a\x02@ \x00B\xff\x01\x83B\xcb\x00Q\r\x00\x00\x0bB\x02\x0b0\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01A\x8b\x80\x80\x80\x006\x02\x0c \x01(\x02\x0c\x1a\x02@ \x00B\xff\x01\x83B\xcb\x00Q\r\x00\x00\x0bB\x02\x0b\x8d\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00A\x00!\x02A\x00-\x00\xea\x83\xc0\x80\x00\x1a\x02@\x03@ \x02A\x10F\r\x01 \x01 \x02jB\x027\x03\x00 \x02A\x08j!\x02\x0c\x00\x0b\x0b\x02@\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\x84\x8a\xc0\x80\x00A\x02 \x01A\x02\x10\xac\x80\x80\x80\x00 \x011\x00\x00B\x04R\r\x00 \x01)\x03\x08B\xfe\x01\x83P\r\x01\x0b\x00\x0b \x01A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\x03\x00\x00\x0b\x0b\x9e\n\x01\x00A\x80\x80\xc0\x00\x0b\x94\nSpEcV1bRn]\xf5K\\\x98SpEcV1{]\"\xf4\xbcFzfSpEcV1\x0c\xc6\x14\xa1\xe2\xe1y\x08SpEcV1AH\xdfY\x83\xee\x8e`SpEcV1\x15\x11\xd4\x8c\x8f\xba\x17\xfeSpEcV1v1\x0eP\xa9C\xc7*SpEcV1L\xa6\xd7\xe8\x02\xb2\xc3VSpEcV1\x00\xa4}\xc5\xd6\x8a\xedxSpEcV1n\x9f7\x1fpI\xf1\xcfSpEcV1\xc3!+t\x96\xcf\x16ySpEcV1\x81\xe5\xb50f\x80\xf5\x00SpEcV1\x06\x1c%G\xe5\r\n\xdfSpEcV1\x85\xab\xed\xd8\x89\x15D\x88SpEcV1\xe1\xb1\xdb\xa2\x18\x90f\xf4SpEcV1\xd7\x13\xa8\xc1\x1bLk\x8dSpEcV1\xc0\x11\xf8\x80\x9c\x05\x93\x18SpEcV1pv\xf5K\t?\xfc\xfaSpEcV1\xb7\x99\x85\x13XtMrSpEcV16\xd1\xd5!\x99\xc0\x11\xd0SpEcV10\xac\xff\x05\xfa\xbb9\xedSpEcV1\xdc\xb0\x05Fo\n\xbfTSpEcV1\t\xb8\x8d\xad0\x90A\xc5SpEcV1:\xc6<\x96\xf3\x19\x98\xfeSpEcV1\xc7\xce\xa2\x03\xf35\xcf&SpEcV1Yz\x1a\x1dx\x15\xf4\x19SpEcV1\x1d}^\x06T\n\xa7dSpEcV1\x06\x8au\xde\xee\x9eW$SpEcV1\xe1_\x16\x14\xc0bX\xe3SpEcV1\xbbQ?C\x83\x03<ySpEcV1\xa7\xda0\xffC\xdde7SpEcV1\xfd\xaa\x94\xe5\xa3[B(SpEcV1T\xdel\xde\"_\x87xSpEcV1\x9a?-\xb7\x1a\xbb!\x0bSpEcV1p\xf4=\xe1A\xb7\xa6{SpEcV1}x8b\xf3\xdf^\x8eSpEcV1\xf4\x86\xe5c\x9b\xb2\x9a\x83SpEcV1\xb5\xb5\x96\xd1\x92\x82:\x16SpEcV1\x196\x960\xa7\xfc\xe9\x18SpEcV1\x8f\x91&(\x94v\xcbDtransfercoordsnestedval\x00\x00\x006\x02\x10\x00\x03\x00\x00\x00amount\x00\x00D\x02\x10\x00\x06\x00\x00\x00used_event_simplea\x00\x00e\x02\x10\x00\x01\x00\x00\x000\x02\x10\x00\x06\x00\x00\x00datax\x02\x10\x00\x04\x00\x00\x00used_event_with_topic_typeused_event_with_nested_topicxy\xba\x02\x10\x00\x01\x00\x00\x00\xbb\x02\x10\x00\x01\x00\x00\x00payload\x00\xcc\x02\x10\x00\x07\x00\x00\x00used_event_with_data_typeinner\x00\x00\xf5\x02\x10\x00\x05\x00\x00\x000\x02\x10\x00\x06\x00\x00\x00used_event_with_nested_dataused_event_with_refsNotRecursiveRecursive;\x03\x10\x00\x0c\x00\x00\x00G\x03\x10\x00\t\x00\x00\x00ContractCreateContractHostFnCreateContractWithCtorHostFn`\x03\x10\x00\x08\x00\x00\x00h\x03\x10\x00\x14\x00\x00\x00|\x03\x10\x00\x1c\x00\x00\x00StellarAssetAccount\x00v\x04\x10\x00\x04\x00\x00\x00\xb0\x03\x10\x00\x0c\x00\x00\x00\xbc\x03\x10\x00\x07\x00\x00\x00ASpEcV1w\x8e\x08i\xf6T\xf4\xf3SpEcV1\x8e\xa0\x0eh\xb8\xf8B`SpEcV1*$\tO\xbe\xa5#\tSpEcV1\xc2\xa5cFvb\x08YSpEcV1H\x83\x1c\xff\x15\xceZ\xe4SpEcV1\x1ed\xa5\x0cf\xce\xbafSpEcV1\x10e\xa8\xdd\xf5\x12\xd1\x8cSpEcV1kp\xa9h;\xde^nargscontractfn_namecontextsub_invocationsWasmexecutablesaltconstructor_argsv\x04\x10\x00\x04\x00\x00\x00`\x04\x10\x00\x07\x00\x00\x00g\x04\x10\x00\x0f\x00\x00\x00M\x04\x10\x00\x04\x00\x00\x00Q\x04\x10\x00\x08\x00\x00\x00Y\x04\x10\x00\x07\x00\x00\x00z\x04\x10\x00\n\x00\x00\x00\x84\x04\x10\x00\x04\x00\x00\x00\x88\x04\x10\x00\x10\x00\x00\x00z\x04\x10\x00\n\x00\x00\x00\x84\x04\x10\x00\x04\x00\x00\x00SpEcV1\xb2\x9a\xadd\xe6\x8cg\xa7f1f2\x00\x00\xfe\x04\x10\x00\x02\x00\x00\x00\x00\x05\x10\x00\x02\x00\x00\x00\x00\xbff\x0econtractspecv0\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08UsedLeaf\xe4\xb2\xd4\xe1\xe8\xcb\xff\x10\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nUnusedEnum\x00\x00\xbc_\xeb\xd5\x94\xe4\xec\x1d\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01A\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01B\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nUsedMapKey\x00\x00\xc3\x11\xb2\x14\xe0\xb4Q\xe1\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02K1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02K2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nUsedMapVal\x00\x00TJw1q\x8f)\x17\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01v\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bUnusedEvent\x00\x00\x00\x00\x01\x00\x00\x00\x0cunused_event\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04data\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cUnusedStruct_\x05+\x97\xe2\x1b\xbd\x8f\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01x\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cUsedResultOk!.\xdb\r7\x86\x17\xc5\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04data\x00\x00\x00\x04\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rUnusedIntEnum\x00\x00\x00\x19\x80\x07a\xec\xd5\xc7?\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02U1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02U2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rUsedErrorEnum\x00\x00\x00\xd8/\xcd}\xbdNR\xe3\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x08NotFound\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x07Invalid\x00\x00\x00\x00\x02\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0eUnusedPubError\x00\x00\xca\xada\xc1+\x84\xda\x81\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Nope\x00\x00\x00\x01\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0eUsedReturnEnum\x00\x00\xee\n\\\xf5\x9as\x10\xad\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01A\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01B\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0eUsedVecElement\x00\x00C\xea\xaf\xc7\xb3\xf5\x16\xb6\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04data\x00\x00\x00\x04\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fUsedNonPubError\x00\x97\x99I-\xbf\xf3R\xa6\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Fail\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fUsedParamStruct\x00 \xcd\xd6\xc7ZD\xdf\xd2\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01a\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x06nested\x00\x00\x00\x00\x07\xd1\x00\x00\x00\x12UsedNestedInStruct\x00\x00r\xcaf\xc9Ka\xfdb\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fUsedRefDataType\x00h\xca\x18Hm\xb9G\x84\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x06nested\x00\x00\x00\x00\x07\xd1\x00\x00\x00\x10UsedRefDataInner\x19DU{\xaa-\xf8\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fUsedEventSimple\x00\x00\x00\x00\x01\x00\x00\x00\x11used_event_simple\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x06amount\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10UsedNonPubStruct\xfe6c\xfc\x92\x00SM\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10UsedParamIntEnumZ~Qg\x80y\xdc\xd0\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01X\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01Y\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10UsedRefDataInner\x19DU{\xaa-\xf8\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10UsedRefTopicType\xae\xed\x99h\xac\xe4\xa2\xbe\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04Send\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Recv\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10UsedTupleElement\xd5\xd2\x0c\xbc\xee\xc7*\xd4\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11UnusedNonPubError\x00\x00\x00\x07\x83DIT\xf0\x90\xa2\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03Bad\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11UsedEventDataType\x00\x00\x00>\xbb\xf4\xf8\x99\xc7\x86\x95\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01x\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x01y\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11UsedOptionElement\x00\x00\x00\xf5\xa2\x87\x81[\xff\n9\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04data\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11UsedRecursiveLeaf\x00\x00\x00\x0c\xd9\x1a\xe0Z\xc1\xcbr\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x03\xea\x00\x00\x07\xd1\x00\x00\x00\x11UsedRecursiveRoot\x00\x00\x00\x08\xc6\x95\xb1\x9e\xcao\xb8\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11UsedRecursiveNode\x00\x00\x00dVd\xd1).{\x80\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x0cNotRecursive\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x08UsedLeaf\xe4\xb2\xd4\xe1\xe8\xcb\xff\x10\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\tRecursive\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x11UsedRecursiveLeaf\x00\x00\x00\x0c\xd9\x1a\xe0Z\xc1\xcbr\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11UsedRecursiveRoot\x00\x00\x00\x08\xc6\x95\xb1\x9e\xcao\xb8\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x07\xd1\x00\x00\x00\x11UsedRecursiveNode\x00\x00\x00dVd\xd1).{\x80\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11UsedEventWithRefs\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x14used_event_with_refs\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x07\xd1\x00\x00\x00\x10UsedRefTopicType\xae\xed\x99h\xac\xe4\xa2\xbe\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x07payload\x00\x00\x00\x07\xd1\x00\x00\x00\x0fUsedRefDataType\x00h\xca\x18Hm\xb9G\x84\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12UnusedNonPubStruct\x00\x00\x17\xa0\xc3\t\xf6\x1aI\xb4\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01x\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12UsedEventDataInner\x00\x00\xd3<\xab4u\xc9W\xfc\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12UsedEventDataOuter\x00\x00\xeb\x94\xdf\xd5\x17V\x86\xd3\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05inner\x00\x00\x00\x00\x00\x07\xd1\x00\x00\x00\x12UsedEventDataInner\x00\x00\xd3<\xab4u\xc9W\xfc\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12UsedEventTopicType\x00\x00\xe6pA\r\xbc\xea(E\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x08Transfer\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Mint\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12UsedNestedInStruct\x00\x00r\xcaf\xc9Ka\xfdb\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x07\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12UsedPanicErrorEnum\x00\x00\xb9\xbb#U\xb9\xa9kv\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Boom\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13UsedAssertErrorEnum\x00\xe3\xef\x87t\x03\x96r\xc6\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03Bad\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13UsedEventTopicInner\x00A\xf0\t\x97\x18\xd0\xb7,\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13UsedEventTopicOuter\x00\x858dSj\x17\xde8\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05inner\x00\x00\x00\x00\x00\x07\xd1\x00\x00\x00\x13UsedEventTopicInner\x00A\xf0\t\x97\x18\xd0\xb7,\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13UsedVecInnerElement\x00&T\xf4\xa0I^\xd9\x0f\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14UsedVecElementNested$\xca\xa5\x15\n\xf6\xe0V\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x05inner\x00\x00\x00\x00\x00\x07\xd1\x00\x00\x00\x13UsedVecInnerElement\x00&T\xf4\xa0I^\xd9\x0f\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\tvec_inner\x00\x00\x00\x00\x00\x03\xea\x00\x00\x07\xd1\x00\x00\x00\x16UsedVecInnerVecElement\x00\x00\xbc\xbd\x11V\xc5\xec\x83Y\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x15UsedEventWithDataType\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x19used_event_with_data_type\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x07payload\x00\x00\x00\x07\xd1\x00\x00\x00\x11UsedEventDataType\x00\x00\x00>\xbb\xf4\xf8\x99\xc7\x86\x95\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x16UsedTupleReturnElement\x00\x00\xa1\xfb\xff2\xf17\x9b\x1f\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x16UsedVecInnerVecElement\x00\x00\xbc\xbd\x11V\xc5\xec\x83Y\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x03val\x00\x00\x00\x00\x04\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x16UsedEventWithTopicType\x00\x00\x00\x00\x00\x01\x00\x00\x00\x1aused_event_with_topic_type\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x07\xd1\x00\x00\x00\x12UsedEventTopicType\x00\x00\xe6pA\r\xbc\xea(E\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x06amount\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x17UsedEventWithNestedData\x00\x00\x00\x00\x01\x00\x00\x00\x1bused_event_with_nested_data\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04kind\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x07payload\x00\x00\x00\x07\xd1\x00\x00\x00\x12UsedEventDataOuter\x00\x00\xeb\x94\xdf\xd5\x17V\x86\xd3\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x18UnusedNonContractFnParam\xb2\xe2\xa1\x12ay\xe1\x97\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01x\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x18UsedEventWithNestedTopic\x00\x00\x00\x01\x00\x00\x00\x1cused_event_with_nested_topic\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x04info\x00\x00\x07\xd1\x00\x00\x00\x13UsedEventTopicOuter\x00\x858dSj\x17\xde8\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x06amount\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x19UnusedNonContractFnReturn\x00\x00\x00y\xdd\xab\xb4=\xaa\xac\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01x\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumA\x00\x00\x00\x17\xf6\x111R\xeeuP\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumB\x00\x00\x00s\xb21\x8294\xaa\xe8\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x07\x00\x00\x00\x07\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumC\x00\x00\x00\xb5\xb1\x85sc\xaf\xd1\x1f\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x07StructA\x00\xad\xb3!\xee3\xb2l\xe6\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x0cStructTupleA\x81\xb5\xd2\xf0\xf8r\x89\xee\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorA\x00\x00\x8fi\xf8 \x85T\xbd\x94\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorB\x00\x00>Q\x0cKX\xe7e\xe8\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x0c\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorC\x00\x00\x97\x97\x10c\xf7\xc3\x02\x01\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00e\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00f\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventA\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventB\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_b\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventC\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_c\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventD\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_d\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Context\x00;tk\x08\x872\xaf\xbf\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x0fContractContext\x00\x0e\xa5\x03\xd6\xf2.\xf9\xb5\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x1bCreateContractHostFnContext\x00\xc13n\x88\xbb\xf6!\xa1\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\xc2V\x9a\x7f\'\xc5\xf4\x97\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructA\x00\xad\xb3!\xee3\xb2l\xe6\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructB\x00\xac\x87;pOxV\x9a\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructC\x00\xc8\x81\x0f\xb5\x0e\x87#\xa3\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x03\xea\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntA\t\xbb\x14\x9f\x82\xec\xdb7\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntB\xc0\xf3\xfb\xc3\xd9\x18f\xc4\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntC\xd3\x9a\xa6\xdb\x85T[b\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\xc8\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x01,\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nExecutable\x00\x00V\x84\xd9\x05t\x9f\xd6L\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStellarAsset\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Account\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleA\x81\xb5\xd2\xf0\xf8r\x89\xee\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleB\x9dMG@\x98/\xf0t\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleC\x9e\xeb\xcft\xcd@\xa1:\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fContractContext\x00\x0e\xa5\x03\xd6\xf2.\xf9\xb5\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08contract\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x07fn_name\x00\x00\x00\x00\x11\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12ContractExecutable\x00\x00ot\x14\xa3\x8dG\x95\x15\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x15SubContractInvocation\x00\x00\x000\"\x9fO\xd5+\xff*\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x07\xd1\x00\x00\x00\x0fContractContext\x00\x0e\xa5\x03\xd6\xf2.\xf9\xb5\x00\x00\x00\x00\x00\x00\x00\x0fsub_invocations\x00\x00\x00\x03\xea\x00\x00\x07\xd1\x00\x00\x00\x18InvokerContractAuthEntryd{ID\x1bL?\xac\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x18InvokerContractAuthEntryd{ID\x1bL?\xac\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x15SubContractInvocation\x00\x00\x000\"\x9fO\xd5+\xff*\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x1bCreateContractHostFnContext\x00\xc13n\x88\xbb\xf6!\xa1\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\xc2V\x9a\x7f\'\xc5\xf4\x97\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1bCreateContractHostFnContext\x00\xc13n\x88\xbb\xf6!\xa1\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd1\x00\x00\x00\x12ContractExecutable\x00\x00ot\x14\xa3\x8dG\x95\x15\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\xc2V\x9a\x7f\'\xc5\xf4\x97\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x10constructor_args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd1\x00\x00\x00\x12ContractExecutable\x00\x00ot\x14\xa3\x8dG\x95\x15\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08with_map\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01m\x00\x00\x00\x00\x00\x03\xec\x00\x00\x07\xd1\x00\x00\x00\nUsedMapKey\x00\x00\xc3\x11\xb2\x14\xe0\xb4Q\xe1\x00\x00\x07\xd1\x00\x00\x00\nUsedMapVal\x00\x00TJw1q\x8f)\x17\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08with_vec\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01v\x00\x00\x00\x00\x00\x03\xea\x00\x00\x07\xd1\x00\x00\x00\x0eUsedVecElement\x00\x00C\xea\xaf\xc7\xb3\xf5\x16\xb6\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nwith_error\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd1\x00\x00\x00\rUsedErrorEnum\x00\x00\x00\xd8/\xcd}\xbdNR\xe3\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nwith_param\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x01s\x00\x00\x00\x00\x00\x07\xd1\x00\x00\x00\x0fUsedParamStruct\x00 \xcd\xd6\xc7ZD\xdf\xd2\x00\x00\x00\x00\x00\x00\x00\x02ie\x00\x00\x00\x00\x07\xd1\x00\x00\x00\x10UsedParamIntEnumZ~Qg\x80y\xdc\xd0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nwith_tuple\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01t\x00\x00\x00\x00\x00\x03\xed\x00\x00\x00\x02\x00\x00\x07\xd1\x00\x00\x00\x10UsedTupleElement\xd5\xd2\x0c\xbc\xee\xc7*\xd4\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bwith_option\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01o\x00\x00\x00\x00\x00\x03\xe8\x00\x00\x07\xd1\x00\x00\x00\x11UsedOptionElement\x00\x00\x00\xf5\xa2\x87\x81[\xff\n9\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bwith_result\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x07\xd1\x00\x00\x00\x0cUsedResultOk!.\xdb\r7\x86\x17\xc5\x00\x00\x07\xd1\x00\x00\x00\rUsedErrorEnum\x00\x00\x00\xd8/\xcd}\xbdNR\xe3\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bwith_return\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x0eUsedReturnEnum\x00\x00\xee\n\\\xf5\x9as\x10\xad\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cwith_non_pub\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01s\x00\x00\x00\x00\x00\x07\xd1\x00\x00\x00\x10UsedNonPubStruct\xfe6c\xfc\x92\x00SM\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0epublish_simple\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0ewith_recursion\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01r\x00\x00\x00\x00\x00\x07\xd1\x00\x00\x00\x11UsedRecursiveRoot\x00\x00\x00\x08\xc6\x95\xb1\x9e\xcao\xb8\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fwith_executable\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01e\x00\x00\x00\x00\x00\x07\xd1\x00\x00\x00\nExecutable\x00\x00n\x11\xfa\xcd\xde\xb1\xed\xb3\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fwith_lib_struct\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01s\x00\x00\x00\x00\x00\x07\xd1\x00\x00\x00\x07StructC\x00\xb1vV\x1dVy~\xb7\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fwith_vec_nested\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01v\x00\x00\x00\x00\x00\x03\xea\x00\x00\x07\xd1\x00\x00\x00\x14UsedVecElementNested$\xca\xa5\x15\n\xf6\xe0V\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x10with_panic_error\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04fail\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11publish_data_type\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11publish_ref_event\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11with_assert_error\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02ok\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11with_invoker_auth\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01i\x00\x00\x00\x00\x00\x07\xd1\x00\x00\x00\x18InvokerContractAuthEntry`\xc1\x90\xeb\xac\xf1AN\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11with_tuple_return\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x03\xed\x00\x00\x00\x02\x00\x00\x07\xd1\x00\x00\x00\x16UsedTupleReturnElement\x00\x00\xa1\xfb\xff2\xf17\x9b\x1f\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12publish_topic_type\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12with_auth_contexts\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01c\x00\x00\x00\x00\x00\x03\xea\x00\x00\x07\xd1\x00\x00\x00\x07Context\x00%Fl\xc5.\x15\x83G\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12with_non_pub_error\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd1\x00\x00\x00\x0fUsedNonPubError\x00\x97\x99I-\xbf\xf3R\xa6\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12with_wasm_imported\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x01s\x00\x00\x00\x00\x00\x07\xd1\x00\x00\x00\x07StructA\x00\xad\xb3!\xee3\xb2l\xe6\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x13publish_nested_data\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14publish_nested_topic\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x14with_panic_raw_error\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04fail\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\xe3Context of a single authorized call performed by an address.\n\nCustom account contracts that implement `__check_auth` special function\nreceive a list of `Context` values corresponding to all the calls that\nneed to be authorized.\x00\x00\x00\x00\x00\x00\x00\x00\x07Context\x00%Fl\xc5.\x15\x83G\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x14Contract invocation.\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x0fContractContext\x00Zc\xa9U\xe4\xf7\xa8\x8b\x00\x00\x00\x01\x00\x00\x00=Contract that has a constructor with no arguments is created.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x1bCreateContractHostFnContext\x00\xf4\xb8\xe9\xd5\xb0\x84\xaa\xce\x00\x00\x00\x01\x00\x00\x00DContract that has a constructor with 1 or more arguments is created.\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\xc6\xd7\xe5J\x9d\x8f\x11s\x00\x00\x00\x01\x00\x00\x00\xbdAuthorization context of a single contract call.\n\nThis struct corresponds to a `require_auth_for_args` call for an address\nfrom `contract` function with `fn_name` name and `args` arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fContractContext\x00Zc\xa9U\xe4\xf7\xa8\x8b\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08contract\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x07fn_name\x00\x00\x00\x00\x11\x00\x00\x00\x02\x00\x00\x00_Contract executable used for creating a new contract and used in\n`CreateContractHostFnContext`.\x00\x00\x00\x00\x00\x00\x00\x00\x12ContractExecutable\x00\x00\xb1\x0etP\xeaT\x89\xb2\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x008Value of contract node in InvokerContractAuthEntry tree.\x00\x00\x00\x00\x00\x00\x00\x15SubContractInvocation\x00\x00\x00`\x85\xe2\x08OZQ\x10\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x07\xd1\x00\x00\x00\x0fContractContext\x00Zc\xa9U\xe4\xf7\xa8\x8b\x00\x00\x00\x00\x00\x00\x00\x0fsub_invocations\x00\x00\x00\x03\xea\x00\x00\x07\xd1\x00\x00\x00\x18InvokerContractAuthEntry`\xc1\x90\xeb\xac\xf1AN\x00\x00\x00\x02\x00\x00\x01/A node in the tree of authorizations performed on behalf of the current\ncontract as invoker of the contracts deeper in the call stack.\n\nThis is used as an argument of `authorize_as_current_contract` host function.\n\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\ncurrent contract.\x00\x00\x00\x00\x00\x00\x00\x00\x18InvokerContractAuthEntry`\xc1\x90\xeb\xac\xf1AN\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x12Invoke a contract.\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x15SubContractInvocation\x00\x00\x00`\x85\xe2\x08OZQ\x10\x00\x00\x00\x01\x00\x00\x005Create a contract passing 0 arguments to constructor.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x1bCreateContractHostFnContext\x00\xf4\xb8\xe9\xd5\xb0\x84\xaa\xce\x00\x00\x00\x01\x00\x00\x00=Create a contract passing 0 or more arguments to constructor.\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\xc6\xd7\xe5J\x9d\x8f\x11s\x00\x00\x00\x01\x00\x00\x00vAuthorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1bCreateContractHostFnContext\x00\xf4\xb8\xe9\xd5\xb0\x84\xaa\xce\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd1\x00\x00\x00\x12ContractExecutable\x00\x00\xb1\x0etP\xeaT\x89\xb2\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\xd6Authorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\nThis is the same as `CreateContractHostFnContext`, but also has\ncontract constructor arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\xc6\xd7\xe5J\x9d\x8f\x11s\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x10constructor_args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd1\x00\x00\x00\x12ContractExecutable\x00\x00\xb1\x0etP\xeaT\x89\xb2\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nExecutable\x00\x00n\x11\xfa\xcd\xde\xb1\xed\xb3\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStellarAsset\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Account\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumA\x00\x00\x00Q\xd3 \x1a\x06\xca\xb8\xfa\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumB\x00\x00\x00<\"\x12\x9c\xb0\xce~C\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x07\x00\x00\x00\x07\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumC\x00\x00\x00:D\x8e\x9f[\xbf\x94y\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x07StructA\x00\xa85\xf3\xb1\x81\xa4;E\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x0cStructTupleA\xf7(\x81\xa1\xd8\xc0\x11\xcd\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorA\x00\x00\x97\xeb\x1f\x08\xc2Y(f\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorB\x00\x00\xf6\x9d\x1d\xe3\xebW;|\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x0c\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorC\x00\x00\x0b\xe6{\xf3\xef\xcf\x1e\xc7\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00e\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00f\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructA\x00\xa85\xf3\xb1\x81\xa4;E\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructB\x00\xe1\x0f\xcb\xef\xf0\xd7\x81p\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructC\x00\xb1vV\x1dVy~\xb7\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x03\xea\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntA\xcf\xe3\x95\x8f\x12\xe3\xffs\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntBoV\xab\xdf\x8dT^L\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntC\xbbe\xd3/S\x05\xfe\xc6\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\xc8\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x01,\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleA\xf7(\x81\xa1\xd8\xc0\x11\xcd\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleB\xf9\x11\xd6#\xff\xc3V\xed\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleC\x8a/H\xcb\x1e \x0eS\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x0b\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1c\x00\x00\x00\x00\x00O\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.97.1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12rssdk_spec_shaking\x00\x00\x00\x00\x00\x012\x00\x00\x00";
     extern crate test;
     #[rustc_test_marker = "test::test_spec_shaking_v2"]
     #[doc(hidden)]

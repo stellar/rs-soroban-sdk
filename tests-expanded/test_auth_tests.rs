@@ -1,6 +1,5 @@
 #![feature(prelude_import)]
 #![no_std]
-#[macro_use]
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
@@ -395,17 +394,22 @@ mod test_a {
         };
         match (
             &e.auths(),
-            &<[_]>::into_vec(::alloc::boxed::box_new([(
-                a.clone(),
-                AuthorizedInvocation {
-                    function: AuthorizedFunction::Contract((
-                        contract_id.clone(),
-                        Symbol::new(&e, "fn1"),
-                        (&a,).into_val(&e),
-                    )),
-                    sub_invocations: ::alloc::vec::Vec::new(),
-                },
-            )])),
+            &::alloc::boxed::box_assume_init_into_vec_unsafe(
+                ::alloc::intrinsics::write_box_via_move(
+                    ::alloc::boxed::Box::new_uninit(),
+                    [(
+                        a.clone(),
+                        AuthorizedInvocation {
+                            function: AuthorizedFunction::Contract((
+                                contract_id.clone(),
+                                Symbol::new(&e, "fn1"),
+                                (&a,).into_val(&e),
+                            )),
+                            sub_invocations: ::alloc::vec::Vec::new(),
+                        },
+                    )],
+                ),
+            ),
         ) {
             (left_val, right_val) => {
                 if !(*left_val == *right_val) {
@@ -474,17 +478,22 @@ mod test_a {
         };
         match (
             &e.auths(),
-            &<[_]>::into_vec(::alloc::boxed::box_new([(
-                a.clone(),
-                AuthorizedInvocation {
-                    function: AuthorizedFunction::Contract((
-                        contract_id.clone(),
-                        Symbol::new(&e, "fn1"),
-                        (&a,).into_val(&e),
-                    )),
-                    sub_invocations: ::alloc::vec::Vec::new(),
-                },
-            )])),
+            &::alloc::boxed::box_assume_init_into_vec_unsafe(
+                ::alloc::intrinsics::write_box_via_move(
+                    ::alloc::boxed::Box::new_uninit(),
+                    [(
+                        a.clone(),
+                        AuthorizedInvocation {
+                            function: AuthorizedFunction::Contract((
+                                contract_id.clone(),
+                                Symbol::new(&e, "fn1"),
+                                (&a,).into_val(&e),
+                            )),
+                            sub_invocations: ::alloc::vec::Vec::new(),
+                        },
+                    )],
+                ),
+            ),
         ) {
             (left_val, right_val) => {
                 if !(*left_val == *right_val) {
@@ -540,9 +549,12 @@ mod test_a {
                     function: SorobanAuthorizedFunction::ContractFn(InvokeContractArgs {
                         contract_address: contract_id.clone().try_into().unwrap(),
                         function_name: StringM::try_from("fn1").unwrap().into(),
-                        args: <[_]>::into_vec(::alloc::boxed::box_new([ScVal::Address(
-                            a_xdr.clone(),
-                        )]))
+                        args: ::alloc::boxed::box_assume_init_into_vec_unsafe(
+                            ::alloc::intrinsics::write_box_via_move(
+                                ::alloc::boxed::Box::new_uninit(),
+                                [ScVal::Address(a_xdr.clone())],
+                            ),
+                        )
                         .try_into()
                         .unwrap(),
                     }),
@@ -565,17 +577,22 @@ mod test_a {
         };
         match (
             &e.auths(),
-            &<[_]>::into_vec(::alloc::boxed::box_new([(
-                a.clone(),
-                AuthorizedInvocation {
-                    function: AuthorizedFunction::Contract((
-                        contract_id.clone(),
-                        Symbol::new(&e, "fn1"),
-                        (&a,).into_val(&e),
-                    )),
-                    sub_invocations: ::alloc::vec::Vec::new(),
-                },
-            )])),
+            &::alloc::boxed::box_assume_init_into_vec_unsafe(
+                ::alloc::intrinsics::write_box_via_move(
+                    ::alloc::boxed::Box::new_uninit(),
+                    [(
+                        a.clone(),
+                        AuthorizedInvocation {
+                            function: AuthorizedFunction::Contract((
+                                contract_id.clone(),
+                                Symbol::new(&e, "fn1"),
+                                (&a,).into_val(&e),
+                            )),
+                            sub_invocations: ::alloc::vec::Vec::new(),
+                        },
+                    )],
+                ),
+            ),
         ) {
             (left_val, right_val) => {
                 if !(*left_val == *right_val) {
@@ -631,9 +648,12 @@ mod test_a {
                     function: SorobanAuthorizedFunction::ContractFn(InvokeContractArgs {
                         contract_address: contract_id.try_into().unwrap(),
                         function_name: StringM::try_from("fn1").unwrap().into(),
-                        args: <[_]>::into_vec(::alloc::boxed::box_new([ScVal::Address(
-                            a_xdr.clone(),
-                        )]))
+                        args: ::alloc::boxed::box_assume_init_into_vec_unsafe(
+                            ::alloc::intrinsics::write_box_via_move(
+                                ::alloc::boxed::Box::new_uninit(),
+                                [ScVal::Address(a_xdr.clone())],
+                            ),
+                        )
                         .try_into()
                         .unwrap(),
                     }),
@@ -1122,6 +1142,9 @@ mod test_a {
         #[automatically_derived]
         impl ::core::marker::Copy for Error {}
         #[automatically_derived]
+        #[doc(hidden)]
+        unsafe impl ::core::clone::TrivialClone for Error {}
+        #[automatically_derived]
         impl ::core::clone::Clone for Error {
             #[inline]
             fn clone(&self) -> Error {
@@ -1140,7 +1163,7 @@ mod test_a {
             #[inline]
             #[doc(hidden)]
             #[coverage(off)]
-            fn assert_receiver_is_total_eq(&self) -> () {}
+            fn assert_fields_are_eq(&self) {}
         }
         #[automatically_derived]
         impl ::core::marker::StructuralPartialEq for Error {}
@@ -1165,6 +1188,12 @@ mod test_a {
                 ::core::cmp::Ordering::Equal
             }
         }
+        impl Error {
+            #[doc(hidden)]
+            pub const fn spec_type_id() -> [u8; 8] {
+                soroban_sdk::spec_type_id("test_auth::test_a::auth_decline::Error")
+            }
+        }
         pub static __SPEC_XDR_TYPE_ERROR: [u8; Error::__SPEC_XDR_VIEW.const_xdr_len()] =
             Error::spec_xdr();
         impl Error {
@@ -1174,6 +1203,7 @@ mod test_a {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
                         lib: soroban_sdk::xdr::StringMView::new(b""),
                         name: soroban_sdk::xdr::StringMView::new(b"Error"),
+                        id: Error::spec_type_id(),
                         cases: soroban_sdk::xdr::VecMView::new(&[
                             soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
                                 doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -1902,21 +1932,24 @@ mod test_b {
                         },
                         (1, 2).into_val(&e),
                     )),
-                    sub_invocations: <[_]>::into_vec(::alloc::boxed::box_new([
-                        AuthorizedInvocation {
-                            function: AuthorizedFunction::Contract((
-                                contract_a_id.clone(),
-                                {
-                                    #[allow(deprecated)]
-                                    const SYMBOL: soroban_sdk::Symbol =
-                                        soroban_sdk::Symbol::short("fn1");
-                                    SYMBOL
-                                },
-                                (&a,).into_val(&e),
-                            )),
-                            sub_invocations: ::alloc::vec::Vec::new(),
-                        },
-                    ])),
+                    sub_invocations: ::alloc::boxed::box_assume_init_into_vec_unsafe(
+                        ::alloc::intrinsics::write_box_via_move(
+                            ::alloc::boxed::Box::new_uninit(),
+                            [AuthorizedInvocation {
+                                function: AuthorizedFunction::Contract((
+                                    contract_a_id.clone(),
+                                    {
+                                        #[allow(deprecated)]
+                                        const SYMBOL: soroban_sdk::Symbol =
+                                            soroban_sdk::Symbol::short("fn1");
+                                        SYMBOL
+                                    },
+                                    (&a,).into_val(&e),
+                                )),
+                                sub_invocations: ::alloc::vec::Vec::new(),
+                            }],
+                        ),
+                    ),
                 },
             )],
         ) {
@@ -2005,21 +2038,24 @@ mod test_b {
                         },
                         (1, 2).into_val(&e),
                     )),
-                    sub_invocations: <[_]>::into_vec(::alloc::boxed::box_new([
-                        AuthorizedInvocation {
-                            function: AuthorizedFunction::Contract((
-                                contract_a_id.clone(),
-                                {
-                                    #[allow(deprecated)]
-                                    const SYMBOL: soroban_sdk::Symbol =
-                                        soroban_sdk::Symbol::short("fn1");
-                                    SYMBOL
-                                },
-                                (&a,).into_val(&e),
-                            )),
-                            sub_invocations: ::alloc::vec::Vec::new(),
-                        },
-                    ])),
+                    sub_invocations: ::alloc::boxed::box_assume_init_into_vec_unsafe(
+                        ::alloc::intrinsics::write_box_via_move(
+                            ::alloc::boxed::Box::new_uninit(),
+                            [AuthorizedInvocation {
+                                function: AuthorizedFunction::Contract((
+                                    contract_a_id.clone(),
+                                    {
+                                        #[allow(deprecated)]
+                                        const SYMBOL: soroban_sdk::Symbol =
+                                            soroban_sdk::Symbol::short("fn1");
+                                        SYMBOL
+                                    },
+                                    (&a,).into_val(&e),
+                                )),
+                                sub_invocations: ::alloc::vec::Vec::new(),
+                            }],
+                        ),
+                    ),
                 },
             )],
         ) {
@@ -2078,27 +2114,37 @@ mod test_b {
                     function: SorobanAuthorizedFunction::ContractFn(InvokeContractArgs {
                         contract_address: contract_b_id.clone().try_into().unwrap(),
                         function_name: StringM::try_from("fn2").unwrap().into(),
-                        args: <[_]>::into_vec(::alloc::boxed::box_new([
-                            ScVal::I32(1),
-                            ScVal::I32(2),
-                        ]))
+                        args: ::alloc::boxed::box_assume_init_into_vec_unsafe(
+                            ::alloc::intrinsics::write_box_via_move(
+                                ::alloc::boxed::Box::new_uninit(),
+                                [ScVal::I32(1), ScVal::I32(2)],
+                            ),
+                        )
                         .try_into()
                         .unwrap(),
                     }),
-                    sub_invocations: <[_]>::into_vec(::alloc::boxed::box_new([
-                        SorobanAuthorizedInvocation {
-                            function: SorobanAuthorizedFunction::ContractFn(InvokeContractArgs {
-                                contract_address: contract_a_id.clone().try_into().unwrap(),
-                                function_name: StringM::try_from("fn1").unwrap().into(),
-                                args: <[_]>::into_vec(::alloc::boxed::box_new([ScVal::Address(
-                                    a_xdr.clone(),
-                                )]))
-                                .try_into()
-                                .unwrap(),
-                            }),
-                            sub_invocations: Default::default(),
-                        },
-                    ]))
+                    sub_invocations: ::alloc::boxed::box_assume_init_into_vec_unsafe(
+                        ::alloc::intrinsics::write_box_via_move(
+                            ::alloc::boxed::Box::new_uninit(),
+                            [SorobanAuthorizedInvocation {
+                                function: SorobanAuthorizedFunction::ContractFn(
+                                    InvokeContractArgs {
+                                        contract_address: contract_a_id.clone().try_into().unwrap(),
+                                        function_name: StringM::try_from("fn1").unwrap().into(),
+                                        args: ::alloc::boxed::box_assume_init_into_vec_unsafe(
+                                            ::alloc::intrinsics::write_box_via_move(
+                                                ::alloc::boxed::Box::new_uninit(),
+                                                [ScVal::Address(a_xdr.clone())],
+                                            ),
+                                        )
+                                        .try_into()
+                                        .unwrap(),
+                                    },
+                                ),
+                                sub_invocations: Default::default(),
+                            }],
+                        ),
+                    )
                     .try_into()
                     .unwrap(),
                 },
@@ -2131,21 +2177,24 @@ mod test_b {
                         },
                         (1, 2).into_val(&e),
                     )),
-                    sub_invocations: <[_]>::into_vec(::alloc::boxed::box_new([
-                        AuthorizedInvocation {
-                            function: AuthorizedFunction::Contract((
-                                contract_a_id.clone(),
-                                {
-                                    #[allow(deprecated)]
-                                    const SYMBOL: soroban_sdk::Symbol =
-                                        soroban_sdk::Symbol::short("fn1");
-                                    SYMBOL
-                                },
-                                (&a,).into_val(&e),
-                            )),
-                            sub_invocations: ::alloc::vec::Vec::new(),
-                        },
-                    ])),
+                    sub_invocations: ::alloc::boxed::box_assume_init_into_vec_unsafe(
+                        ::alloc::intrinsics::write_box_via_move(
+                            ::alloc::boxed::Box::new_uninit(),
+                            [AuthorizedInvocation {
+                                function: AuthorizedFunction::Contract((
+                                    contract_a_id.clone(),
+                                    {
+                                        #[allow(deprecated)]
+                                        const SYMBOL: soroban_sdk::Symbol =
+                                            soroban_sdk::Symbol::short("fn1");
+                                        SYMBOL
+                                    },
+                                    (&a,).into_val(&e),
+                                )),
+                                sub_invocations: ::alloc::vec::Vec::new(),
+                            }],
+                        ),
+                    ),
                 },
             )],
         ) {
@@ -2204,27 +2253,37 @@ mod test_b {
                     function: SorobanAuthorizedFunction::ContractFn(InvokeContractArgs {
                         contract_address: contract_b_id.try_into().unwrap(),
                         function_name: StringM::try_from("fn2").unwrap().into(),
-                        args: <[_]>::into_vec(::alloc::boxed::box_new([
-                            ScVal::I32(1),
-                            ScVal::I32(2),
-                        ]))
+                        args: ::alloc::boxed::box_assume_init_into_vec_unsafe(
+                            ::alloc::intrinsics::write_box_via_move(
+                                ::alloc::boxed::Box::new_uninit(),
+                                [ScVal::I32(1), ScVal::I32(2)],
+                            ),
+                        )
                         .try_into()
                         .unwrap(),
                     }),
-                    sub_invocations: <[_]>::into_vec(::alloc::boxed::box_new([
-                        SorobanAuthorizedInvocation {
-                            function: SorobanAuthorizedFunction::ContractFn(InvokeContractArgs {
-                                contract_address: contract_a_id.clone().try_into().unwrap(),
-                                function_name: StringM::try_from("fn1").unwrap().into(),
-                                args: <[_]>::into_vec(::alloc::boxed::box_new([ScVal::Address(
-                                    a_xdr.clone(),
-                                )]))
-                                .try_into()
-                                .unwrap(),
-                            }),
-                            sub_invocations: Default::default(),
-                        },
-                    ]))
+                    sub_invocations: ::alloc::boxed::box_assume_init_into_vec_unsafe(
+                        ::alloc::intrinsics::write_box_via_move(
+                            ::alloc::boxed::Box::new_uninit(),
+                            [SorobanAuthorizedInvocation {
+                                function: SorobanAuthorizedFunction::ContractFn(
+                                    InvokeContractArgs {
+                                        contract_address: contract_a_id.clone().try_into().unwrap(),
+                                        function_name: StringM::try_from("fn1").unwrap().into(),
+                                        args: ::alloc::boxed::box_assume_init_into_vec_unsafe(
+                                            ::alloc::intrinsics::write_box_via_move(
+                                                ::alloc::boxed::Box::new_uninit(),
+                                                [ScVal::Address(a_xdr.clone())],
+                                            ),
+                                        )
+                                        .try_into()
+                                        .unwrap(),
+                                    },
+                                ),
+                                sub_invocations: Default::default(),
+                            }],
+                        ),
+                    )
                     .try_into()
                     .unwrap(),
                 },
@@ -2711,6 +2770,9 @@ mod test_b {
         #[automatically_derived]
         impl ::core::marker::Copy for Error {}
         #[automatically_derived]
+        #[doc(hidden)]
+        unsafe impl ::core::clone::TrivialClone for Error {}
+        #[automatically_derived]
         impl ::core::clone::Clone for Error {
             #[inline]
             fn clone(&self) -> Error {
@@ -2729,7 +2791,7 @@ mod test_b {
             #[inline]
             #[doc(hidden)]
             #[coverage(off)]
-            fn assert_receiver_is_total_eq(&self) -> () {}
+            fn assert_fields_are_eq(&self) {}
         }
         #[automatically_derived]
         impl ::core::marker::StructuralPartialEq for Error {}
@@ -2754,6 +2816,12 @@ mod test_b {
                 ::core::cmp::Ordering::Equal
             }
         }
+        impl Error {
+            #[doc(hidden)]
+            pub const fn spec_type_id() -> [u8; 8] {
+                soroban_sdk::spec_type_id("test_auth::test_b::auth_decline::Error")
+            }
+        }
         pub static __SPEC_XDR_TYPE_ERROR: [u8; Error::__SPEC_XDR_VIEW.const_xdr_len()] =
             Error::spec_xdr();
         impl Error {
@@ -2763,6 +2831,7 @@ mod test_b {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
                         lib: soroban_sdk::xdr::StringMView::new(b""),
                         name: soroban_sdk::xdr::StringMView::new(b"Error"),
+                        id: Error::spec_type_id(),
                         cases: soroban_sdk::xdr::VecMView::new(&[
                             soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
                                 doc: soroban_sdk::xdr::StringMView::new(b""),

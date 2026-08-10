@@ -1,6 +1,5 @@
 #![feature(prelude_import)]
 #![no_std]
-#[macro_use]
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
@@ -33,7 +32,7 @@ impl ::core::cmp::Eq for StructA {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<u32>;
         let _: ::core::cmp::AssertParamIsEq<bool>;
     }
@@ -47,6 +46,12 @@ impl ::core::cmp::PartialEq for StructA {
         self.f1 == other.f1 && self.f2 == other.f2
     }
 }
+impl StructA {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_lib::StructA")
+    }
+}
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_STRUCTA: [u8; StructA::__SPEC_XDR_VIEW.const_xdr_len()] =
     StructA::spec_xdr();
@@ -56,6 +61,7 @@ impl StructA {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"StructA"),
+            id: StructA::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -163,7 +169,7 @@ impl ::core::cmp::Eq for StructB {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<i64>;
         let _: ::core::cmp::AssertParamIsEq<soroban_sdk::String>;
     }
@@ -177,6 +183,12 @@ impl ::core::cmp::PartialEq for StructB {
         self.f1 == other.f1 && self.f2 == other.f2
     }
 }
+impl StructB {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_lib::StructB")
+    }
+}
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_STRUCTB: [u8; StructB::__SPEC_XDR_VIEW.const_xdr_len()] =
     StructB::spec_xdr();
@@ -186,6 +198,7 @@ impl StructB {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"StructB"),
+            id: StructB::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -293,7 +306,7 @@ impl ::core::cmp::Eq for StructC {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<Vec<u32>>;
         let _: ::core::cmp::AssertParamIsEq<Address>;
     }
@@ -307,6 +320,12 @@ impl ::core::cmp::PartialEq for StructC {
         self.f1 == other.f1 && self.f2 == other.f2
     }
 }
+impl StructC {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_lib::StructC")
+    }
+}
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_STRUCTC: [u8; StructC::__SPEC_XDR_VIEW.const_xdr_len()] =
     StructC::spec_xdr();
@@ -316,6 +335,7 @@ impl StructC {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"StructC"),
+            id: StructC::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -422,7 +442,7 @@ impl ::core::cmp::Eq for StructTupleA {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<i64>;
     }
 }
@@ -435,6 +455,12 @@ impl ::core::cmp::PartialEq for StructTupleA {
         self.0 == other.0 && self.1 == other.1
     }
 }
+impl StructTupleA {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_lib::StructTupleA")
+    }
+}
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_STRUCTTUPLEA: [u8; StructTupleA::__SPEC_XDR_VIEW.const_xdr_len()] =
     StructTupleA::spec_xdr();
@@ -444,6 +470,7 @@ impl StructTupleA {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"StructTupleA"),
+            id: StructTupleA::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -542,7 +569,7 @@ impl ::core::cmp::Eq for StructTupleB {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<u128>;
     }
 }
@@ -555,6 +582,12 @@ impl ::core::cmp::PartialEq for StructTupleB {
         self.0 == other.0 && self.1 == other.1
     }
 }
+impl StructTupleB {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_lib::StructTupleB")
+    }
+}
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_STRUCTTUPLEB: [u8; StructTupleB::__SPEC_XDR_VIEW.const_xdr_len()] =
     StructTupleB::spec_xdr();
@@ -564,6 +597,7 @@ impl StructTupleB {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"StructTupleB"),
+            id: StructTupleB::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -662,7 +696,7 @@ impl ::core::cmp::Eq for StructTupleC {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<Address>;
         let _: ::core::cmp::AssertParamIsEq<i128>;
     }
@@ -676,6 +710,12 @@ impl ::core::cmp::PartialEq for StructTupleC {
         self.1 == other.1 && self.0 == other.0
     }
 }
+impl StructTupleC {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_lib::StructTupleC")
+    }
+}
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_STRUCTTUPLEC: [u8; StructTupleC::__SPEC_XDR_VIEW.const_xdr_len()] =
     StructTupleC::spec_xdr();
@@ -685,6 +725,7 @@ impl StructTupleC {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"StructTupleC"),
+            id: StructTupleC::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -795,7 +836,7 @@ impl ::core::cmp::Eq for EnumA {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {}
+    fn assert_fields_are_eq(&self) {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for EnumA {}
@@ -808,6 +849,12 @@ impl ::core::cmp::PartialEq for EnumA {
         __self_discr == __arg1_discr
     }
 }
+impl EnumA {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_lib::EnumA")
+    }
+}
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ENUMA: [u8; EnumA::__SPEC_XDR_VIEW.const_xdr_len()] = EnumA::spec_xdr();
 impl EnumA {
@@ -816,6 +863,7 @@ impl EnumA {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"EnumA"),
+            id: EnumA::spec_type_id(),
             cases: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
                     soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
@@ -969,7 +1017,7 @@ impl ::core::cmp::Eq for EnumB {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<i64>;
     }
 }
@@ -991,6 +1039,12 @@ impl ::core::cmp::PartialEq for EnumB {
             }
     }
 }
+impl EnumB {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_lib::EnumB")
+    }
+}
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ENUMB: [u8; EnumB::__SPEC_XDR_VIEW.const_xdr_len()] = EnumB::spec_xdr();
 impl EnumB {
@@ -999,6 +1053,7 @@ impl EnumB {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"EnumB"),
+            id: EnumB::spec_type_id(),
             cases: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
                     soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
@@ -1173,7 +1228,7 @@ impl ::core::cmp::Eq for EnumC {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<StructA>;
         let _: ::core::cmp::AssertParamIsEq<StructTupleA>;
     }
@@ -1194,6 +1249,12 @@ impl ::core::cmp::PartialEq for EnumC {
             }
     }
 }
+impl EnumC {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_lib::EnumC")
+    }
+}
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ENUMC: [u8; EnumC::__SPEC_XDR_VIEW.const_xdr_len()] = EnumC::spec_xdr();
 impl EnumC {
@@ -1202,6 +1263,7 @@ impl EnumC {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"EnumC"),
+            id: EnumC::spec_type_id(),
             cases: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
                     soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
@@ -1214,9 +1276,10 @@ impl EnumC {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
                         name: soroban_sdk::xdr::StringMView::new(b"V2"),
                         type_: soroban_sdk::xdr::VecMView::new(&[
-                            soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                soroban_sdk::xdr::ScSpecTypeUdtView {
+                            soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                     name: soroban_sdk::xdr::StringMView::new(b"StructA"),
+                                    id: <StructA>::spec_type_id(),
                                 },
                             ),
                         ]),
@@ -1227,9 +1290,10 @@ impl EnumC {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
                         name: soroban_sdk::xdr::StringMView::new(b"V3"),
                         type_: soroban_sdk::xdr::VecMView::new(&[
-                            soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                soroban_sdk::xdr::ScSpecTypeUdtView {
+                            soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                     name: soroban_sdk::xdr::StringMView::new(b"StructTupleA"),
+                                    id: <StructTupleA>::spec_type_id(),
                                 },
                             ),
                         ]),
@@ -1352,6 +1416,9 @@ pub enum EnumIntA {
 #[automatically_derived]
 impl ::core::marker::Copy for EnumIntA {}
 #[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for EnumIntA {}
+#[automatically_derived]
 impl ::core::clone::Clone for EnumIntA {
     #[inline]
     fn clone(&self) -> EnumIntA {
@@ -1377,7 +1444,7 @@ impl ::core::cmp::Eq for EnumIntA {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {}
+    fn assert_fields_are_eq(&self) {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for EnumIntA {}
@@ -1390,6 +1457,12 @@ impl ::core::cmp::PartialEq for EnumIntA {
         __self_discr == __arg1_discr
     }
 }
+impl EnumIntA {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_lib::EnumIntA")
+    }
+}
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ENUMINTA: [u8; EnumIntA::__SPEC_XDR_VIEW.const_xdr_len()] =
     EnumIntA::spec_xdr();
@@ -1399,6 +1472,7 @@ impl EnumIntA {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"EnumIntA"),
+            id: EnumIntA::spec_type_id(),
             cases: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -1480,6 +1554,9 @@ pub enum EnumIntB {
 #[automatically_derived]
 impl ::core::marker::Copy for EnumIntB {}
 #[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for EnumIntB {}
+#[automatically_derived]
 impl ::core::clone::Clone for EnumIntB {
     #[inline]
     fn clone(&self) -> EnumIntB {
@@ -1505,7 +1582,7 @@ impl ::core::cmp::Eq for EnumIntB {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {}
+    fn assert_fields_are_eq(&self) {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for EnumIntB {}
@@ -1518,6 +1595,12 @@ impl ::core::cmp::PartialEq for EnumIntB {
         __self_discr == __arg1_discr
     }
 }
+impl EnumIntB {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_lib::EnumIntB")
+    }
+}
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ENUMINTB: [u8; EnumIntB::__SPEC_XDR_VIEW.const_xdr_len()] =
     EnumIntB::spec_xdr();
@@ -1527,6 +1610,7 @@ impl EnumIntB {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"EnumIntB"),
+            id: EnumIntB::spec_type_id(),
             cases: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -1608,6 +1692,9 @@ pub enum EnumIntC {
 #[automatically_derived]
 impl ::core::marker::Copy for EnumIntC {}
 #[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for EnumIntC {}
+#[automatically_derived]
 impl ::core::clone::Clone for EnumIntC {
     #[inline]
     fn clone(&self) -> EnumIntC {
@@ -1633,7 +1720,7 @@ impl ::core::cmp::Eq for EnumIntC {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {}
+    fn assert_fields_are_eq(&self) {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for EnumIntC {}
@@ -1646,6 +1733,12 @@ impl ::core::cmp::PartialEq for EnumIntC {
         __self_discr == __arg1_discr
     }
 }
+impl EnumIntC {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_lib::EnumIntC")
+    }
+}
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ENUMINTC: [u8; EnumIntC::__SPEC_XDR_VIEW.const_xdr_len()] =
     EnumIntC::spec_xdr();
@@ -1655,6 +1748,7 @@ impl EnumIntC {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"EnumIntC"),
+            id: EnumIntC::spec_type_id(),
             cases: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -1736,6 +1830,9 @@ pub enum ErrorA {
 #[automatically_derived]
 impl ::core::marker::Copy for ErrorA {}
 #[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for ErrorA {}
+#[automatically_derived]
 impl ::core::clone::Clone for ErrorA {
     #[inline]
     fn clone(&self) -> ErrorA {
@@ -1761,7 +1858,7 @@ impl ::core::cmp::Eq for ErrorA {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {}
+    fn assert_fields_are_eq(&self) {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for ErrorA {}
@@ -1774,6 +1871,12 @@ impl ::core::cmp::PartialEq for ErrorA {
         __self_discr == __arg1_discr
     }
 }
+impl ErrorA {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_lib::ErrorA")
+    }
+}
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ERRORA: [u8; ErrorA::__SPEC_XDR_VIEW.const_xdr_len()] =
     ErrorA::spec_xdr();
@@ -1784,6 +1887,7 @@ impl ErrorA {
                 doc: soroban_sdk::xdr::StringMView::new(b""),
                 lib: soroban_sdk::xdr::StringMView::new(b""),
                 name: soroban_sdk::xdr::StringMView::new(b"ErrorA"),
+                id: ErrorA::spec_type_id(),
                 cases: soroban_sdk::xdr::VecMView::new(&[
                     soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -1936,6 +2040,9 @@ pub enum ErrorB {
 #[automatically_derived]
 impl ::core::marker::Copy for ErrorB {}
 #[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for ErrorB {}
+#[automatically_derived]
 impl ::core::clone::Clone for ErrorB {
     #[inline]
     fn clone(&self) -> ErrorB {
@@ -1961,7 +2068,7 @@ impl ::core::cmp::Eq for ErrorB {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {}
+    fn assert_fields_are_eq(&self) {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for ErrorB {}
@@ -1974,6 +2081,12 @@ impl ::core::cmp::PartialEq for ErrorB {
         __self_discr == __arg1_discr
     }
 }
+impl ErrorB {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_lib::ErrorB")
+    }
+}
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ERRORB: [u8; ErrorB::__SPEC_XDR_VIEW.const_xdr_len()] =
     ErrorB::spec_xdr();
@@ -1984,6 +2097,7 @@ impl ErrorB {
                 doc: soroban_sdk::xdr::StringMView::new(b""),
                 lib: soroban_sdk::xdr::StringMView::new(b""),
                 name: soroban_sdk::xdr::StringMView::new(b"ErrorB"),
+                id: ErrorB::spec_type_id(),
                 cases: soroban_sdk::xdr::VecMView::new(&[
                     soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -2136,6 +2250,9 @@ pub enum ErrorC {
 #[automatically_derived]
 impl ::core::marker::Copy for ErrorC {}
 #[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for ErrorC {}
+#[automatically_derived]
 impl ::core::clone::Clone for ErrorC {
     #[inline]
     fn clone(&self) -> ErrorC {
@@ -2161,7 +2278,7 @@ impl ::core::cmp::Eq for ErrorC {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {}
+    fn assert_fields_are_eq(&self) {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for ErrorC {}
@@ -2174,6 +2291,12 @@ impl ::core::cmp::PartialEq for ErrorC {
         __self_discr == __arg1_discr
     }
 }
+impl ErrorC {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_spec_lib::ErrorC")
+    }
+}
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ERRORC: [u8; ErrorC::__SPEC_XDR_VIEW.const_xdr_len()] =
     ErrorC::spec_xdr();
@@ -2184,6 +2307,7 @@ impl ErrorC {
                 doc: soroban_sdk::xdr::StringMView::new(b""),
                 lib: soroban_sdk::xdr::StringMView::new(b""),
                 name: soroban_sdk::xdr::StringMView::new(b"ErrorC"),
+                id: ErrorC::spec_type_id(),
                 cases: soroban_sdk::xdr::VecMView::new(&[
                     soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -2356,7 +2480,7 @@ impl ::core::cmp::Eq for EventA {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<Address>;
         let _: ::core::cmp::AssertParamIsEq<soroban_sdk::String>;
     }
@@ -2475,7 +2599,7 @@ impl ::core::cmp::Eq for EventB {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<Address>;
         let _: ::core::cmp::AssertParamIsEq<i128>;
     }
@@ -2605,7 +2729,7 @@ impl ::core::cmp::Eq for EventC {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Symbol>;
         let _: ::core::cmp::AssertParamIsEq<i64>;
     }
@@ -2721,7 +2845,7 @@ impl ::core::cmp::Eq for EventD {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {}
+    fn assert_fields_are_eq(&self) {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for EventD {}

@@ -1,6 +1,5 @@
 #![feature(prelude_import)]
 #![no_std]
-#[macro_use]
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
@@ -36,7 +35,7 @@ impl ::core::cmp::Eq for MyStruct {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<i64>;
     }
 }
@@ -49,6 +48,12 @@ impl ::core::cmp::PartialEq for MyStruct {
         self.a == other.a && self.b == other.b
     }
 }
+impl MyStruct {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_contracttrait_trait::MyStruct")
+    }
+}
 pub static __SPEC_XDR_TYPE_MYSTRUCT: [u8; MyStruct::__SPEC_XDR_VIEW.const_xdr_len()] =
     MyStruct::spec_xdr();
 impl MyStruct {
@@ -57,6 +62,7 @@ impl MyStruct {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"MyStruct"),
+            id: MyStruct::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -200,28 +206,33 @@ impl TryFrom<&MyStruct> for soroban_sdk::xdr::ScMap {
     fn try_from(val: &MyStruct) -> Result<Self, soroban_sdk::xdr::Error> {
         extern crate alloc;
         use soroban_sdk::TryFromVal;
-        soroban_sdk::xdr::ScMap::sorted_from(<[_]>::into_vec(::alloc::boxed::box_new([
-            soroban_sdk::xdr::ScMapEntry {
-                key: soroban_sdk::xdr::ScSymbol(
-                    "a".try_into()
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                )
-                .into(),
-                val: (&val.a)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-            soroban_sdk::xdr::ScMapEntry {
-                key: soroban_sdk::xdr::ScSymbol(
-                    "b".try_into()
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-                )
-                .into(),
-                val: (&val.b)
-                    .try_into()
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
-            },
-        ])))
+        soroban_sdk::xdr::ScMap::sorted_from(::alloc::boxed::box_assume_init_into_vec_unsafe(
+            ::alloc::intrinsics::write_box_via_move(
+                ::alloc::boxed::Box::new_uninit(),
+                [
+                    soroban_sdk::xdr::ScMapEntry {
+                        key: soroban_sdk::xdr::ScSymbol(
+                            "a".try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into(),
+                        val: (&val.a)
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    },
+                    soroban_sdk::xdr::ScMapEntry {
+                        key: soroban_sdk::xdr::ScSymbol(
+                            "b".try_into()
+                                .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                        )
+                        .into(),
+                        val: (&val.b)
+                            .try_into()
+                            .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
+                    },
+                ],
+            ),
+        ))
     }
 }
 impl TryFrom<MyStruct> for soroban_sdk::xdr::ScMap {
@@ -281,7 +292,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<
                 <i64 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -328,29 +339,33 @@ const _: () = {
         #[allow(non_upper_case_globals)]
         const RECURSIVE_COUNT_ArbitraryMyStruct: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -449,6 +464,9 @@ pub enum MyEnumUnit {
 #[automatically_derived]
 impl ::core::marker::Copy for MyEnumUnit {}
 #[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for MyEnumUnit {}
+#[automatically_derived]
 impl ::core::clone::Clone for MyEnumUnit {
     #[inline]
     fn clone(&self) -> MyEnumUnit {
@@ -473,7 +491,7 @@ impl ::core::cmp::Eq for MyEnumUnit {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {}
+    fn assert_fields_are_eq(&self) {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for MyEnumUnit {}
@@ -486,6 +504,12 @@ impl ::core::cmp::PartialEq for MyEnumUnit {
         __self_discr == __arg1_discr
     }
 }
+impl MyEnumUnit {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_contracttrait_trait::MyEnumUnit")
+    }
+}
 pub static __SPEC_XDR_TYPE_MYENUMUNIT: [u8; MyEnumUnit::__SPEC_XDR_VIEW.const_xdr_len()] =
     MyEnumUnit::spec_xdr();
 impl MyEnumUnit {
@@ -494,6 +518,7 @@ impl MyEnumUnit {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"MyEnumUnit"),
+            id: MyEnumUnit::spec_type_id(),
             cases: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -628,7 +653,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {}
+        fn assert_fields_are_eq(&self) {}
     }
     #[automatically_derived]
     impl ::core::marker::StructuralPartialEq for ArbitraryMyEnumUnit {}
@@ -666,29 +691,33 @@ const _: () = {
         #[allow(non_upper_case_globals)]
         const RECURSIVE_COUNT_ArbitraryMyEnumUnit: ::std::thread::LocalKey<std::cell::Cell<u32>> = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -830,7 +859,7 @@ impl ::core::cmp::Eq for MyEnumVariants {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<MyStruct>;
         let _: ::core::cmp::AssertParamIsEq<MyEnumUnit>;
     }
@@ -855,6 +884,12 @@ impl ::core::cmp::PartialEq for MyEnumVariants {
             }
     }
 }
+impl MyEnumVariants {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_contracttrait_trait::MyEnumVariants")
+    }
+}
 pub static __SPEC_XDR_TYPE_MYENUMVARIANTS: [u8; MyEnumVariants::__SPEC_XDR_VIEW.const_xdr_len()] =
     MyEnumVariants::spec_xdr();
 impl MyEnumVariants {
@@ -863,6 +898,7 @@ impl MyEnumVariants {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"MyEnumVariants"),
+            id: MyEnumVariants::spec_type_id(),
             cases: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
                     soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
@@ -875,9 +911,10 @@ impl MyEnumVariants {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
                         name: soroban_sdk::xdr::StringMView::new(b"VarB"),
                         type_: soroban_sdk::xdr::VecMView::new(&[
-                            soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                soroban_sdk::xdr::ScSpecTypeUdtView {
+                            soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                     name: soroban_sdk::xdr::StringMView::new(b"MyStruct"),
+                                    id: <MyStruct>::spec_type_id(),
                                 },
                             ),
                         ]),
@@ -888,9 +925,10 @@ impl MyEnumVariants {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
                         name: soroban_sdk::xdr::StringMView::new(b"VarC"),
                         type_: soroban_sdk::xdr::VecMView::new(&[
-                            soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                soroban_sdk::xdr::ScSpecTypeUdtView {
+                            soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                     name: soroban_sdk::xdr::StringMView::new(b"MyEnumUnit"),
+                                    id: <MyEnumUnit>::spec_type_id(),
                                 },
                             ),
                         ]),
@@ -1176,7 +1214,7 @@ const _: () = {
         #[inline]
         #[doc(hidden)]
         #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
+        fn assert_fields_are_eq(&self) {
             let _: ::core::cmp::AssertParamIsEq<
                 <MyStruct as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype,
             >;
@@ -1257,29 +1295,33 @@ const _: () = {
             std::cell::Cell<u32>,
         > = {
             #[inline]
-            fn __init() -> std::cell::Cell<u32> {
+            fn __rust_std_internal_init_fn() -> std::cell::Cell<u32> {
                 std::cell::Cell::new(0)
             }
             unsafe {
                 ::std::thread::LocalKey::new(
                     const {
                         if ::std::mem::needs_drop::<std::cell::Cell<u32>>() {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    (),
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, ()> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         } else {
-                            |init| {
+                            |__rust_std_internal_init| {
                                 #[thread_local]
-                                static VAL: ::std::thread::local_impl::LazyStorage<
-                                    std::cell::Cell<u32>,
-                                    !,
-                                > = ::std::thread::local_impl::LazyStorage::new();
-                                VAL.get_or_init(init, __init)
+                                static __RUST_STD_INTERNAL_VAL:
+                                    ::std::thread::local_impl::LazyStorage<std::cell::Cell<u32>, !> =
+                                    ::std::thread::local_impl::LazyStorage::new();
+                                __RUST_STD_INTERNAL_VAL.get_or_init(
+                                    __rust_std_internal_init,
+                                    __rust_std_internal_init_fn,
+                                )
                             }
                         }
                     },
@@ -3872,18 +3914,20 @@ impl AllTypesSpec {
                 soroban_sdk::xdr::ScSpecFunctionInputV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"v"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                        soroban_sdk::xdr::ScSpecTypeUdtView {
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
                             name: soroban_sdk::xdr::StringMView::new(b"MyStruct"),
+                            id: <MyStruct>::spec_type_id(),
                         },
                     ),
                 },
             ]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                soroban_sdk::xdr::ScSpecTypeUdtView {
+            outputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2View {
                     name: soroban_sdk::xdr::StringMView::new(b"MyStruct"),
-                },
-            )]),
+                    id: <MyStruct>::spec_type_id(),
+                }),
+            ]),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_struct(
@@ -3903,18 +3947,20 @@ impl AllTypesSpec {
                 soroban_sdk::xdr::ScSpecFunctionInputV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"v"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                        soroban_sdk::xdr::ScSpecTypeUdtView {
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
                             name: soroban_sdk::xdr::StringMView::new(b"MyEnumUnit"),
+                            id: <MyEnumUnit>::spec_type_id(),
                         },
                     ),
                 },
             ]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                soroban_sdk::xdr::ScSpecTypeUdtView {
+            outputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2View {
                     name: soroban_sdk::xdr::StringMView::new(b"MyEnumUnit"),
-                },
-            )]),
+                    id: <MyEnumUnit>::spec_type_id(),
+                }),
+            ]),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_enum_unit(
@@ -3934,18 +3980,20 @@ impl AllTypesSpec {
                 soroban_sdk::xdr::ScSpecFunctionInputV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"v"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                        soroban_sdk::xdr::ScSpecTypeUdtView {
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
                             name: soroban_sdk::xdr::StringMView::new(b"MyEnumVariants"),
+                            id: <MyEnumVariants>::spec_type_id(),
                         },
                     ),
                 },
             ]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                soroban_sdk::xdr::ScSpecTypeUdtView {
+            outputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2View {
                     name: soroban_sdk::xdr::StringMView::new(b"MyEnumVariants"),
-                },
-            )]),
+                    id: <MyEnumVariants>::spec_type_id(),
+                }),
+            ]),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_enum_variants(
@@ -5845,17 +5893,21 @@ mod test {
                     soroban_sdk::xdr::ScSpecFunctionInputV0View {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
                         name: soroban_sdk::xdr::StringMView::new(b"v"),
-                        type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                            soroban_sdk::xdr::ScSpecTypeUdtView {
+                        type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                            soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                 name: soroban_sdk::xdr::StringMView::new(b"MyStruct"),
+                                id: <MyStruct>::spec_type_id(),
                             },
                         ),
                     },
                 ]),
                 outputs: soroban_sdk::xdr::VecMView::new(&[
-                    soroban_sdk::xdr::ScSpecTypeDefView::Udt(soroban_sdk::xdr::ScSpecTypeUdtView {
-                        name: soroban_sdk::xdr::StringMView::new(b"MyStruct"),
-                    }),
+                    soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                            name: soroban_sdk::xdr::StringMView::new(b"MyStruct"),
+                            id: <MyStruct>::spec_type_id(),
+                        },
+                    ),
                 ]),
             });
         #[allow(non_snake_case)]
@@ -5886,17 +5938,21 @@ mod test {
                     soroban_sdk::xdr::ScSpecFunctionInputV0View {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
                         name: soroban_sdk::xdr::StringMView::new(b"v"),
-                        type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                            soroban_sdk::xdr::ScSpecTypeUdtView {
+                        type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                            soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                 name: soroban_sdk::xdr::StringMView::new(b"MyEnumUnit"),
+                                id: <MyEnumUnit>::spec_type_id(),
                             },
                         ),
                     },
                 ]),
                 outputs: soroban_sdk::xdr::VecMView::new(&[
-                    soroban_sdk::xdr::ScSpecTypeDefView::Udt(soroban_sdk::xdr::ScSpecTypeUdtView {
-                        name: soroban_sdk::xdr::StringMView::new(b"MyEnumUnit"),
-                    }),
+                    soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                            name: soroban_sdk::xdr::StringMView::new(b"MyEnumUnit"),
+                            id: <MyEnumUnit>::spec_type_id(),
+                        },
+                    ),
                 ]),
             });
         #[allow(non_snake_case)]
@@ -5927,17 +5983,21 @@ mod test {
                     soroban_sdk::xdr::ScSpecFunctionInputV0View {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
                         name: soroban_sdk::xdr::StringMView::new(b"v"),
-                        type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                            soroban_sdk::xdr::ScSpecTypeUdtView {
+                        type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                            soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                 name: soroban_sdk::xdr::StringMView::new(b"MyEnumVariants"),
+                                id: <MyEnumVariants>::spec_type_id(),
                             },
                         ),
                     },
                 ]),
                 outputs: soroban_sdk::xdr::VecMView::new(&[
-                    soroban_sdk::xdr::ScSpecTypeDefView::Udt(soroban_sdk::xdr::ScSpecTypeUdtView {
-                        name: soroban_sdk::xdr::StringMView::new(b"MyEnumVariants"),
-                    }),
+                    soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                            name: soroban_sdk::xdr::StringMView::new(b"MyEnumVariants"),
+                            id: <MyEnumVariants>::spec_type_id(),
+                        },
+                    ),
                 ]),
             });
         #[allow(non_snake_case)]

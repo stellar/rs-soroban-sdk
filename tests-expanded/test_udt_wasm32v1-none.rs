@@ -1,6 +1,5 @@
 #![feature(prelude_import)]
 #![no_std]
-#[macro_use]
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
@@ -11,6 +10,9 @@ pub enum UdtEnum2 {
 }
 #[automatically_derived]
 impl ::core::marker::Copy for UdtEnum2 {}
+#[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for UdtEnum2 {}
 #[automatically_derived]
 impl ::core::clone::Clone for UdtEnum2 {
     #[inline]
@@ -36,7 +38,7 @@ impl ::core::cmp::Eq for UdtEnum2 {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {}
+    fn assert_fields_are_eq(&self) {}
 }
 #[automatically_derived]
 impl ::core::marker::StructuralPartialEq for UdtEnum2 {}
@@ -49,6 +51,12 @@ impl ::core::cmp::PartialEq for UdtEnum2 {
         __self_discr == __arg1_discr
     }
 }
+impl UdtEnum2 {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_udt::UdtEnum2")
+    }
+}
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_UDTENUM2: [u8; UdtEnum2::__SPEC_XDR_VIEW.const_xdr_len()] =
     UdtEnum2::spec_xdr();
@@ -58,6 +66,7 @@ impl UdtEnum2 {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UdtEnum2"),
+            id: UdtEnum2::spec_type_id(),
             cases: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -165,7 +174,7 @@ impl ::core::cmp::Eq for UdtEnum {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<UdtStruct>;
         let _: ::core::cmp::AssertParamIsEq<UdtEnum2>;
         let _: ::core::cmp::AssertParamIsEq<UdtTuple>;
@@ -188,6 +197,12 @@ impl ::core::cmp::PartialEq for UdtEnum {
             }
     }
 }
+impl UdtEnum {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_udt::UdtEnum")
+    }
+}
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_UDTENUM: [u8; UdtEnum::__SPEC_XDR_VIEW.const_xdr_len()] =
     UdtEnum::spec_xdr();
@@ -197,6 +212,7 @@ impl UdtEnum {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UdtEnum"),
+            id: UdtEnum::spec_type_id(),
             cases: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
                     soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
@@ -209,9 +225,10 @@ impl UdtEnum {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
                         name: soroban_sdk::xdr::StringMView::new(b"UdtB"),
                         type_: soroban_sdk::xdr::VecMView::new(&[
-                            soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                soroban_sdk::xdr::ScSpecTypeUdtView {
+                            soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                     name: soroban_sdk::xdr::StringMView::new(b"UdtStruct"),
+                                    id: <UdtStruct>::spec_type_id(),
                                 },
                             ),
                         ]),
@@ -222,9 +239,10 @@ impl UdtEnum {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
                         name: soroban_sdk::xdr::StringMView::new(b"UdtC"),
                         type_: soroban_sdk::xdr::VecMView::new(&[
-                            soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                soroban_sdk::xdr::ScSpecTypeUdtView {
+                            soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                     name: soroban_sdk::xdr::StringMView::new(b"UdtEnum2"),
+                                    id: <UdtEnum2>::spec_type_id(),
                                 },
                             ),
                         ]),
@@ -235,9 +253,10 @@ impl UdtEnum {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
                         name: soroban_sdk::xdr::StringMView::new(b"UdtD"),
                         type_: soroban_sdk::xdr::VecMView::new(&[
-                            soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                soroban_sdk::xdr::ScSpecTypeUdtView {
+                            soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                     name: soroban_sdk::xdr::StringMView::new(b"UdtTuple"),
+                                    id: <UdtTuple>::spec_type_id(),
                                 },
                             ),
                         ]),
@@ -393,7 +412,7 @@ impl ::core::cmp::Eq for UdtTuple {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<i64>;
         let _: ::core::cmp::AssertParamIsEq<Vec<i64>>;
     }
@@ -407,6 +426,12 @@ impl ::core::cmp::PartialEq for UdtTuple {
         self.0 == other.0 && self.1 == other.1
     }
 }
+impl UdtTuple {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_udt::UdtTuple")
+    }
+}
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_UDTTUPLE: [u8; UdtTuple::__SPEC_XDR_VIEW.const_xdr_len()] =
     UdtTuple::spec_xdr();
@@ -416,6 +441,7 @@ impl UdtTuple {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UdtTuple"),
+            id: UdtTuple::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -532,7 +558,7 @@ impl ::core::cmp::Eq for UdtStruct {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<i64>;
         let _: ::core::cmp::AssertParamIsEq<Vec<i64>>;
     }
@@ -546,6 +572,12 @@ impl ::core::cmp::PartialEq for UdtStruct {
         self.a == other.a && self.b == other.b && self.c == other.c
     }
 }
+impl UdtStruct {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_udt::UdtStruct")
+    }
+}
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_UDTSTRUCT: [u8; UdtStruct::__SPEC_XDR_VIEW.const_xdr_len()] =
     UdtStruct::spec_xdr();
@@ -555,6 +587,7 @@ impl UdtStruct {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UdtStruct"),
+            id: UdtStruct::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -681,7 +714,7 @@ impl ::core::cmp::Eq for UdtRecursive {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<Symbol>;
         let _: ::core::cmp::AssertParamIsEq<Vec<UdtRecursive>>;
     }
@@ -695,6 +728,12 @@ impl ::core::cmp::PartialEq for UdtRecursive {
         self.a == other.a && self.b == other.b
     }
 }
+impl UdtRecursive {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_udt::UdtRecursive")
+    }
+}
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_UDTRECURSIVE: [u8; UdtRecursive::__SPEC_XDR_VIEW.const_xdr_len()] =
     UdtRecursive::spec_xdr();
@@ -704,6 +743,7 @@ impl UdtRecursive {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"UdtRecursive"),
+            id: UdtRecursive::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -715,9 +755,10 @@ impl UdtRecursive {
                     name: soroban_sdk::xdr::StringMView::new(b"b"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
                         &soroban_sdk::xdr::ScSpecTypeVecView {
-                            element_type: &soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                soroban_sdk::xdr::ScSpecTypeUdtView {
+                            element_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                     name: soroban_sdk::xdr::StringMView::new(b"UdtRecursive"),
+                                    id: <UdtRecursive>::spec_type_id(),
                                 },
                             ),
                         },
@@ -824,7 +865,7 @@ impl ::core::cmp::Eq for RecursiveToEnum {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<Symbol>;
         let _: ::core::cmp::AssertParamIsEq<Map<u32, RecursiveEnum>>;
     }
@@ -838,6 +879,12 @@ impl ::core::cmp::PartialEq for RecursiveToEnum {
         self.a == other.a && self.b == other.b
     }
 }
+impl RecursiveToEnum {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_udt::RecursiveToEnum")
+    }
+}
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_RECURSIVETOENUM: [u8; RecursiveToEnum::__SPEC_XDR_VIEW.const_xdr_len()] =
     RecursiveToEnum::spec_xdr();
@@ -847,6 +894,7 @@ impl RecursiveToEnum {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"RecursiveToEnum"),
+            id: RecursiveToEnum::spec_type_id(),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -859,9 +907,10 @@ impl RecursiveToEnum {
                     type_: soroban_sdk::xdr::ScSpecTypeDefView::Map(
                         &soroban_sdk::xdr::ScSpecTypeMapView {
                             key_type: &soroban_sdk::xdr::ScSpecTypeDefView::U32,
-                            value_type: &soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                soroban_sdk::xdr::ScSpecTypeUdtView {
+                            value_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                     name: soroban_sdk::xdr::StringMView::new(b"RecursiveEnum"),
+                                    id: <RecursiveEnum>::spec_type_id(),
                                 },
                             ),
                         },
@@ -968,7 +1017,7 @@ impl ::core::cmp::Eq for RecursiveEnum {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {
+    fn assert_fields_are_eq(&self) {
         let _: ::core::cmp::AssertParamIsEq<RecursiveToEnum>;
     }
 }
@@ -989,6 +1038,12 @@ impl ::core::cmp::PartialEq for RecursiveEnum {
             }
     }
 }
+impl RecursiveEnum {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_udt::RecursiveEnum")
+    }
+}
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_RECURSIVEENUM: [u8; RecursiveEnum::__SPEC_XDR_VIEW.const_xdr_len()] =
     RecursiveEnum::spec_xdr();
@@ -998,6 +1053,7 @@ impl RecursiveEnum {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::StringMView::new(b"RecursiveEnum"),
+            id: RecursiveEnum::spec_type_id(),
             cases: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
                     soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
@@ -1010,9 +1066,10 @@ impl RecursiveEnum {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
                         name: soroban_sdk::xdr::StringMView::new(b"Recursive"),
                         type_: soroban_sdk::xdr::VecMView::new(&[
-                            soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                soroban_sdk::xdr::ScSpecTypeUdtView {
+                            soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                     name: soroban_sdk::xdr::StringMView::new(b"RecursiveToEnum"),
+                                    id: <RecursiveToEnum>::spec_type_id(),
                                 },
                             ),
                         ]),
@@ -1178,18 +1235,20 @@ impl Contract {
                 soroban_sdk::xdr::ScSpecFunctionInputV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"a"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                        soroban_sdk::xdr::ScSpecTypeUdtView {
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
                             name: soroban_sdk::xdr::StringMView::new(b"UdtEnum"),
+                            id: <UdtEnum>::spec_type_id(),
                         },
                     ),
                 },
                 soroban_sdk::xdr::ScSpecFunctionInputV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"b"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                        soroban_sdk::xdr::ScSpecTypeUdtView {
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
                             name: soroban_sdk::xdr::StringMView::new(b"UdtEnum"),
+                            id: <UdtEnum>::spec_type_id(),
                         },
                     ),
                 },
@@ -1221,9 +1280,10 @@ impl Contract {
                 soroban_sdk::xdr::ScSpecFunctionInputV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"a"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                        soroban_sdk::xdr::ScSpecTypeUdtView {
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
                             name: soroban_sdk::xdr::StringMView::new(b"UdtRecursive"),
+                            id: <UdtRecursive>::spec_type_id(),
                         },
                     ),
                 },
@@ -1231,9 +1291,10 @@ impl Contract {
             outputs: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecTypeDefView::Option(
                     &soroban_sdk::xdr::ScSpecTypeOptionView {
-                        value_type: &soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                            soroban_sdk::xdr::ScSpecTypeUdtView {
+                        value_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                            soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                 name: soroban_sdk::xdr::StringMView::new(b"UdtRecursive"),
+                                id: <UdtRecursive>::spec_type_id(),
                             },
                         ),
                     },
@@ -1267,9 +1328,10 @@ impl Contract {
                 soroban_sdk::xdr::ScSpecFunctionInputV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"a"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                        soroban_sdk::xdr::ScSpecTypeUdtView {
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
                             name: soroban_sdk::xdr::StringMView::new(b"RecursiveEnum"),
+                            id: <RecursiveEnum>::spec_type_id(),
                         },
                     ),
                 },
@@ -1284,9 +1346,10 @@ impl Contract {
                     &soroban_sdk::xdr::ScSpecTypeResultView {
                         ok_type: &soroban_sdk::xdr::ScSpecTypeDefView::Option(
                             &soroban_sdk::xdr::ScSpecTypeOptionView {
-                                value_type: &soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                    soroban_sdk::xdr::ScSpecTypeUdtView {
+                                value_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                    soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                         name: soroban_sdk::xdr::StringMView::new(b"RecursiveEnum"),
+                                        id: <RecursiveEnum>::spec_type_id(),
                                     },
                                 ),
                             },

@@ -73,7 +73,7 @@ const SHA256_K: [u32; 64] = [
 ///
 /// A const implementation is needed because the marker is built while the
 /// generated code compiles; `sha2` is not usable in a const context.
-const fn sha256(input: &[u8]) -> [u8; 32] {
+pub(crate) const fn sha256(input: &[u8]) -> [u8; 32] {
     let len = input.len();
     // Message is padded with a 0x80 byte, then zeroes, then the length in bits
     // as a big-endian u64, out to a multiple of the 64-byte block size.

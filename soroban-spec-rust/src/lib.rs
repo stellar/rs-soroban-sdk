@@ -1,4 +1,5 @@
 mod syn_ext;
+pub use syn_ext::TypeIds;
 pub mod r#trait;
 pub mod types;
 
@@ -8,7 +9,7 @@ use std::{fs, io};
 use proc_macro2::TokenStream;
 use quote::quote;
 use sha2::{Digest, Sha256};
-use stellar_xdr::{ScSpecEntry, ScSpecTypeDef, ScSpecTypeUdt, ScSpecUdtUnionCaseV0};
+use stellar_xdr::{ScSpecEntry, ScSpecTypeDef, ScSpecTypeUdtv2, ScSpecUdtUnionCaseV0};
 use syn::Error;
 
 use soroban_spec::read::{from_wasm, FromWasmError};
@@ -127,28 +128,52 @@ pub fn generate_without_file_with_options(
         }
     }
 
+    // The identifiers naming the user-defined types this spec defines, resolved
+    // together by type id so that a reference always marries up with the entry
+    // carrying its id, and two types sharing a name stay distinct.
+    let names = TypeIds::new(
+        spec_structs
+            .iter()
+            .map(|s| (s.name.to_utf8_string_lossy(), s.id))
+            .chain(
+                spec_unions
+                    .iter()
+                    .map(|s| (s.name.to_utf8_string_lossy(), s.id)),
+            )
+            .chain(
+                spec_enums
+                    .iter()
+                    .map(|s| (s.name.to_utf8_string_lossy(), s.id)),
+            )
+            .chain(
+                spec_error_enums
+                    .iter()
+                    .map(|s| (s.name.to_utf8_string_lossy(), s.id)),
+            ),
+    );
+
     let trait_name = "Contract";
 
-    let trait_ = r#trait::generate_trait(trait_name, &spec_fns)?;
+    let trait_ = r#trait::generate_trait(trait_name, &spec_fns, &names)?;
     let structs = spec_structs
         .iter()
-        .map(|s| generate_struct_with_options(s, opts))
+        .map(|s| generate_struct_with_options(s, opts, &names))
         .collect::<Result<Vec<_>, _>>()?;
     let unions = spec_unions
         .iter()
-        .map(|s| generate_union_with_options(s, opts))
+        .map(|s| generate_union_with_options(s, opts, &names))
         .collect::<Result<Vec<_>, _>>()?;
     let enums = spec_enums
         .iter()
-        .map(|s| generate_enum_with_options(s, opts))
+        .map(|s| generate_enum_with_options(s, opts, &names))
         .collect::<Result<Vec<_>, _>>()?;
     let error_enums = spec_error_enums
         .iter()
-        .map(|s| generate_error_enum_with_options(s, opts))
+        .map(|s| generate_error_enum_with_options(s, opts, &names))
         .collect::<Result<Vec<_>, _>>()?;
     let events = spec_events
         .iter()
-        .map(|s| generate_event_with_options(s, opts))
+        .map(|s| generate_event_with_options(s, opts, &names))
         .collect::<Result<Vec<_>, _>>()?;
 
     Ok(quote! {
@@ -180,15 +205,15 @@ pub fn generate_without_file_with_options(
 /// Returns a borrowed slice when no rewrite is needed, otherwise a
 /// freshly-owned `Vec` with the rewrite applied.
 fn apply_error_udt_override(specs: &[ScSpecEntry]) -> Cow<'_, [ScSpecEntry]> {
-    let has_error_udt = specs.iter().any(|e| {
-        matches!(
-            e,
-            ScSpecEntry::UdtErrorEnumV0(err) if err.name.to_utf8_string_lossy() == "Error"
-        )
+    let error_udt_id = specs.iter().find_map(|e| match e {
+        ScSpecEntry::UdtErrorEnumV0(err) if err.name.to_utf8_string_lossy() == "Error" => {
+            Some(err.id)
+        }
+        _ => None,
     });
-    if has_error_udt {
+    if let Some(id) = error_udt_id {
         let mut v = specs.to_vec();
-        rewrite_error_to_udt(&mut v);
+        rewrite_error_to_udt(&mut v, id);
         Cow::Owned(v)
     } else {
         Cow::Borrowed(specs)
@@ -196,30 +221,31 @@ fn apply_error_udt_override(specs: &[ScSpecEntry]) -> Cow<'_, [ScSpecEntry]> {
 }
 
 /// Rewrites every `ScSpecTypeDef::Error` reference in the given entries to
-/// `ScSpecTypeDef::Udt { name: "Error" }`. Called only when the spec contains
-/// a user-defined error enum named `Error`, so the UDT reference resolves to
-/// that enum during code generation.
-fn rewrite_error_to_udt(entries: &mut [ScSpecEntry]) {
-    fn rewrite_ty(t: &mut ScSpecTypeDef) {
+/// `ScSpecTypeDef::UdtV2 { name: "Error", id }`. Called only when the spec
+/// contains a user-defined error enum named `Error`, whose id is given, so the
+/// UDT reference resolves to that enum during code generation.
+fn rewrite_error_to_udt(entries: &mut [ScSpecEntry], id: [u8; 8]) {
+    fn rewrite_ty(t: &mut ScSpecTypeDef, id: [u8; 8]) {
         match t {
             ScSpecTypeDef::Error => {
-                *t = ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                *t = ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
                     name: "Error".try_into().unwrap(),
+                    id,
                 });
             }
-            ScSpecTypeDef::Option(o) => rewrite_ty(&mut o.value_type),
+            ScSpecTypeDef::Option(o) => rewrite_ty(&mut o.value_type, id),
             ScSpecTypeDef::Result(r) => {
-                rewrite_ty(&mut r.ok_type);
-                rewrite_ty(&mut r.error_type);
+                rewrite_ty(&mut r.ok_type, id);
+                rewrite_ty(&mut r.error_type, id);
             }
-            ScSpecTypeDef::Vec(v) => rewrite_ty(&mut v.element_type),
+            ScSpecTypeDef::Vec(v) => rewrite_ty(&mut v.element_type, id),
             ScSpecTypeDef::Map(m) => {
-                rewrite_ty(&mut m.key_type);
-                rewrite_ty(&mut m.value_type);
+                rewrite_ty(&mut m.key_type, id);
+                rewrite_ty(&mut m.value_type, id);
             }
             ScSpecTypeDef::Tuple(tu) => {
                 for vt in tu.value_types.iter_mut() {
-                    rewrite_ty(vt);
+                    rewrite_ty(vt, id);
                 }
             }
             _ => {}
@@ -229,22 +255,22 @@ fn rewrite_error_to_udt(entries: &mut [ScSpecEntry]) {
         match entry {
             ScSpecEntry::FunctionV0(f) => {
                 for input in f.inputs.iter_mut() {
-                    rewrite_ty(&mut input.type_);
+                    rewrite_ty(&mut input.type_, id);
                 }
                 for output in f.outputs.iter_mut() {
-                    rewrite_ty(output);
+                    rewrite_ty(output, id);
                 }
             }
             ScSpecEntry::UdtStructV0(s) => {
                 for field in s.fields.iter_mut() {
-                    rewrite_ty(&mut field.type_);
+                    rewrite_ty(&mut field.type_, id);
                 }
             }
             ScSpecEntry::UdtUnionV0(u) => {
                 for case in u.cases.iter_mut() {
                     if let ScSpecUdtUnionCaseV0::TupleV0(t) = case {
                         for ty in t.type_.iter_mut() {
-                            rewrite_ty(ty);
+                            rewrite_ty(ty, id);
                         }
                     }
                 }
@@ -252,7 +278,7 @@ fn rewrite_error_to_udt(entries: &mut [ScSpecEntry]) {
             ScSpecEntry::UdtEnumV0(_) | ScSpecEntry::UdtErrorEnumV0(_) => {}
             ScSpecEntry::EventV0(e) => {
                 for p in e.params.iter_mut() {
-                    rewrite_ty(&mut p.type_);
+                    rewrite_ty(&mut p.type_, id);
                 }
             }
         }
@@ -280,6 +306,7 @@ mod test {
     use pretty_assertions::assert_eq;
 
     use super::{generate, ToFormattedString};
+    use sha2::{Digest, Sha256};
     use soroban_spec::read::from_wasm;
 
     const EXAMPLE_WASM: &[u8] = include_bytes!("../../target/wasm32v1-none/release/test_udt.wasm");
@@ -555,7 +582,7 @@ pub enum MyError {
             matches!(r.ok_type.as_ref(), ScSpecTypeDef::U64),
             "ok_type should be U64"
         );
-        let ScSpecTypeDef::Udt(u) = r.error_type.as_ref() else {
+        let ScSpecTypeDef::UdtV2(u) = r.error_type.as_ref() else {
             panic!(
                 "error_type should be a UDT for MyError, got {:?}",
                 r.error_type
@@ -566,6 +593,24 @@ pub enum MyError {
             "MyError",
             "error_type should be MyError UDT"
         );
+        // The reference's id is the truncated SHA-256 of the type's fully
+        // qualified name, and must match the id on MyError's own entry.
+        let expect_id: [u8; 8] = Sha256::digest(b"test_add_u64::MyError")[..8]
+            .try_into()
+            .unwrap();
+        assert_eq!(u.id, expect_id, "reference id should hash MyError's name");
+        let my_error_entry = entries
+            .iter()
+            .find_map(|e| match e {
+                ScSpecEntry::UdtErrorEnumV0(err)
+                    if err.name.to_utf8_string().unwrap() == "MyError" =>
+                {
+                    Some(err)
+                }
+                _ => None,
+            })
+            .expect("MyError entry not found");
+        assert_eq!(my_error_entry.id, expect_id, "entry id should match");
     }
 
     /// When the spec references `ScSpecTypeDef::Error` and contains no error
@@ -632,6 +677,7 @@ pub trait Contract {
             doc: "".try_into().unwrap(),
             lib: "".try_into().unwrap(),
             name: "Error".try_into().unwrap(),
+            id: [7; 8],
             cases: [ScSpecUdtErrorEnumCaseV0 {
                 doc: "".try_into().unwrap(),
                 name: "Overflow".try_into().unwrap(),
@@ -689,6 +735,7 @@ pub enum Error {
             doc: "".try_into().unwrap(),
             lib: "".try_into().unwrap(),
             name: "Error".try_into().unwrap(),
+            id: [7; 8],
             cases: [ScSpecUdtErrorEnumCaseV0 {
                 doc: "".try_into().unwrap(),
                 name: "Overflow".try_into().unwrap(),

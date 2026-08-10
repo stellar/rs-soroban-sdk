@@ -308,36 +308,49 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
 /// Renders a [ScSpecTypeDef] as a const expression of type
 /// `#path::xdr::ScSpecTypeDefView`, so the containing spec entry can be encoded
 /// to XDR at compile time by the contract crate.
-pub fn const_view_type_def(path: &Path, t: &ScSpecTypeDef) -> TokenStream2 {
+///
+/// `rust` is the Rust type the spec type was mapped from. A reference to a
+/// user-defined type needs it to compute that type's id, because the id hashes
+/// the fully qualified name only the compiler knows and only the Rust type says
+/// which type that is.
+pub fn const_view_type_def(path: &Path, t: &ScSpecTypeDef, rust: Option<&Type>) -> TokenStream2 {
     let xdr = quote!(#path::xdr);
     let variant = format_ident!("{}", t.name());
+    // The Rust type arguments lining up with this spec type's arguments, so that
+    // a nested reference is paired with the Rust type it was mapped from.
+    let args = rust.map(type_args).unwrap_or_default();
+    let arg = |i: usize| args.get(i).copied();
     // Variants that hold a value. The recursive ones sit behind a reference in
     // the View type, matching the Box in the owned type.
     let value = match t {
         ScSpecTypeDef::Option(o) => {
-            let value_type = const_view_type_def(path, &o.value_type);
+            let value_type = const_view_type_def(path, &o.value_type, arg(0));
             Some(quote!((&#xdr::ScSpecTypeOptionView { value_type: &#value_type })))
         }
         ScSpecTypeDef::Result(r) => {
-            let ok_type = const_view_type_def(path, &r.ok_type);
-            let error_type = const_view_type_def(path, &r.error_type);
+            let ok_type = const_view_type_def(path, &r.ok_type, arg(0));
+            let error_type = const_view_type_def(path, &r.error_type, arg(1));
             Some(
                 quote!((&#xdr::ScSpecTypeResultView { ok_type: &#ok_type, error_type: &#error_type })),
             )
         }
         ScSpecTypeDef::Vec(v) => {
-            let element_type = const_view_type_def(path, &v.element_type);
+            let element_type = const_view_type_def(path, &v.element_type, arg(0));
             Some(quote!((&#xdr::ScSpecTypeVecView { element_type: &#element_type })))
         }
         ScSpecTypeDef::Map(m) => {
-            let key_type = const_view_type_def(path, &m.key_type);
-            let value_type = const_view_type_def(path, &m.value_type);
+            let key_type = const_view_type_def(path, &m.key_type, arg(0));
+            let value_type = const_view_type_def(path, &m.value_type, arg(1));
             Some(
                 quote!((&#xdr::ScSpecTypeMapView { key_type: &#key_type, value_type: &#value_type })),
             )
         }
         ScSpecTypeDef::Tuple(t) => {
-            let value_types = t.value_types.iter().map(|t| const_view_type_def(path, t));
+            let value_types = t
+                .value_types
+                .iter()
+                .enumerate()
+                .map(|(i, t)| const_view_type_def(path, t, arg(i)));
             Some(
                 quote!((&#xdr::ScSpecTypeTupleView { value_types: #xdr::VecMView::new(&[#(#value_types),*]) })),
             )
@@ -346,14 +359,89 @@ pub fn const_view_type_def(path: &Path, t: &ScSpecTypeDef) -> TokenStream2 {
             let n = b.n;
             Some(quote!((#xdr::ScSpecTypeBytesN { n: #n })))
         }
+        // A reference carries the id of the type it refers to, which is hashed
+        // from the fully qualified name only the referenced type's expansion
+        // knows. The Rust type the reference was mapped from is how that type
+        // is reached, and resolving through the type also makes a reference
+        // written through an alias carry the id of the type the alias names.
         ScSpecTypeDef::Udt(u) => {
             let name = const_view_string(path, &u.name);
-            Some(quote!((#xdr::ScSpecTypeUdtView { name: #name })))
+            return match rust.map(unref) {
+                Some(ty) => quote!(#xdr::ScSpecTypeDefView::UdtV2(#xdr::ScSpecTypeUdtv2View {
+                    name: #name,
+                    id: <#ty>::spec_type_id(),
+                })),
+                None => quote!(compile_error!(
+                    "user-defined type reference has no Rust type to take its id from"
+                )),
+            };
         }
         // All remaining variants are void.
         _ => None,
     };
     quote!(#xdr::ScSpecTypeDefView::#variant #value)
+}
+
+/// The Rust type behind any number of references.
+fn unref(t: &Type) -> &Type {
+    match t {
+        Type::Reference(TypeReference { elem, .. }) => unref(elem),
+        _ => t,
+    }
+}
+
+/// The Rust type arguments that line up, in order, with the type arguments of
+/// the spec type [map_type] produced for `t`: the arguments of a container
+/// (`Option<T>`, `Result<T, E>`, `Vec<T>`, `Map<K, V>`) or the elements of a
+/// tuple. Empty for anything else, including the parameterized types whose
+/// arguments are not types in the spec (`BytesN<N>`, `Hash<N>`).
+fn type_args(t: &Type) -> Vec<&Type> {
+    match unref(t) {
+        Type::Tuple(TypeTuple { elems, .. }) => elems.iter().collect(),
+        Type::Path(TypePath {
+            qself: None,
+            path: Path { segments, .. },
+        }) => match segments.last() {
+            Some(PathSegment {
+                ident,
+                arguments: PathArguments::AngleBracketed(args),
+            }) if matches!(
+                &ident.unraw().to_string()[..],
+                "Option" | "Result" | "Vec" | "Map"
+            ) =>
+            {
+                args.args
+                    .iter()
+                    .filter_map(|a| match a {
+                        GenericArgument::Type(ty) => Some(ty),
+                        _ => None,
+                    })
+                    .collect()
+            }
+            _ => Vec::new(),
+        },
+        _ => Vec::new(),
+    }
+}
+
+/// Emits the `spec_type_id` const fn on a user-defined type: the id the
+/// contract spec knows it by, the truncated SHA-256 of its fully qualified
+/// name — the module it is defined in, then its own name.
+///
+/// The module path is only known where the type is defined, and a macro cannot
+/// see it, so `module_path!` is emitted for the compiler to expand in place
+/// rather than resolved here. The type's definition entry and every reference
+/// to the type call this fn, so the two cannot disagree.
+pub fn spec_type_id_gen(path: &Path, ident: &Ident) -> TokenStream2 {
+    let name = Literal::string(&ident.unraw().to_string());
+    quote! {
+        impl #ident {
+            #[doc(hidden)]
+            pub const fn spec_type_id() -> [u8; 8] {
+                #path::spec_type_id(::core::concat!(::core::module_path!(), "::", #name))
+            }
+        }
+    }
 }
 
 /// Renders a [StringM] as a const expression of type `#path::xdr::StringMView`.

@@ -9,7 +9,11 @@ use syn::{
 
 use stellar_xdr::ScSpecUdtEnumCaseV0;
 
-use crate::{doc::docs_from_attrs, map_type::const_view_string, shaking};
+use crate::{
+    doc::docs_from_attrs,
+    map_type::{const_view_string, spec_type_id_gen},
+    shaking,
+};
 
 // TODO: Add conversions to/from ScVal types.
 
@@ -66,11 +70,14 @@ pub fn derive_type_enum_int(
         return quote! { #(#compile_errors)* };
     }
 
-    // Build the spec entry once.
+    // Build the spec entry once. The id is a placeholder: the real id hashes
+    // the fully qualified name only the compiler knows, so it is emitted into
+    // the rendered view below rather than resolved here.
     let spec = ScSpecUdtEnumV0 {
         doc: docs_from_attrs(attrs),
         lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
         name: enum_ident.unraw().to_string().try_into().unwrap(),
+        id: [0; 8],
         cases: spec_cases.try_into().unwrap(),
     };
 
@@ -91,6 +98,7 @@ pub fn derive_type_enum_int(
                 doc: #doc,
                 lib: #lib,
                 name: #name,
+                id: #enum_ident::spec_type_id(),
                 cases: #path::xdr::VecMView::new(&[#(#cases),*]),
             })
         };
@@ -123,8 +131,14 @@ pub fn derive_type_enum_int(
         None,
     );
 
+    // The id the spec knows this type by, emitted for every type so that a
+    // reference to it from anywhere can reach it.
+    let spec_type_id_impl = spec_type_id_gen(path, enum_ident);
+
     // Output.
     let mut output = quote! {
+        #spec_type_id_impl
+
         #spec_gen
 
         #spec_shaking_impl

@@ -1,6 +1,5 @@
 #![feature(prelude_import)]
 #![no_std]
-#[macro_use]
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
@@ -82,11 +81,12 @@ impl Contract {
                     type_: soroban_sdk::xdr::ScSpecTypeDefView::Bool,
                 },
             ]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                soroban_sdk::xdr::ScSpecTypeUdtView {
+            outputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2View {
                     name: soroban_sdk::xdr::StringMView::new(b"StructA"),
-                },
-            )]),
+                    id: <StructA>::spec_type_id(),
+                }),
+            ]),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_fn_struct_a(
@@ -125,11 +125,12 @@ impl Contract {
                     type_: soroban_sdk::xdr::ScSpecTypeDefView::I64,
                 },
             ]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                soroban_sdk::xdr::ScSpecTypeUdtView {
+            outputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2View {
                     name: soroban_sdk::xdr::StringMView::new(b"StructTupleA"),
-                },
-            )]),
+                    id: <StructTupleA>::spec_type_id(),
+                }),
+            ]),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_fn_struct_tuple_a(
@@ -154,11 +155,12 @@ impl Contract {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"fn_enum_a")),
             inputs: soroban_sdk::xdr::VecMView::new(&[]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                soroban_sdk::xdr::ScSpecTypeUdtView {
+            outputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2View {
                     name: soroban_sdk::xdr::StringMView::new(b"EnumA"),
-                },
-            )]),
+                    id: <EnumA>::spec_type_id(),
+                }),
+            ]),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_fn_enum_a() -> [u8; Contract::__SPEC_XDR_VIEW_fn_enum_a.const_xdr_len()] {
@@ -184,11 +186,12 @@ impl Contract {
                 b"fn_enum_int_a",
             )),
             inputs: soroban_sdk::xdr::VecMView::new(&[]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                soroban_sdk::xdr::ScSpecTypeUdtView {
+            outputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2View {
                     name: soroban_sdk::xdr::StringMView::new(b"EnumIntA"),
-                },
-            )]),
+                    id: <EnumIntA>::spec_type_id(),
+                }),
+            ]),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_fn_enum_int_a(
@@ -223,9 +226,10 @@ impl Contract {
                 soroban_sdk::xdr::ScSpecTypeDefView::Result(
                     &soroban_sdk::xdr::ScSpecTypeResultView {
                         ok_type: &soroban_sdk::xdr::ScSpecTypeDefView::U32,
-                        error_type: &soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                            soroban_sdk::xdr::ScSpecTypeUdtView {
+                        error_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                            soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                 name: soroban_sdk::xdr::StringMView::new(b"ErrorA"),
+                                id: <ErrorA>::spec_type_id(),
                             },
                         ),
                     },

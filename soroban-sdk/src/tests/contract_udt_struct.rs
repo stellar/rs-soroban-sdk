@@ -5,7 +5,7 @@ use soroban_sdk::{
 };
 use stellar_xdr::{
     Limits, ReadXdr, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef,
-    ScSpecTypeTuple, ScSpecTypeUdt,
+    ScSpecTypeTuple, ScSpecTypeUdtv2,
 };
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -134,15 +134,17 @@ fn test_spec() {
             ScSpecFunctionInputV0 {
                 doc: "".try_into().unwrap(),
                 name: "a".try_into().unwrap(),
-                type_: ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                type_: ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
                     name: "Udt".try_into().unwrap(),
+                    id: Udt::spec_type_id(),
                 }),
             },
             ScSpecFunctionInputV0 {
                 doc: "".try_into().unwrap(),
                 name: "b".try_into().unwrap(),
-                type_: ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                type_: ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
                     name: "Udt".try_into().unwrap(),
+                    id: Udt::spec_type_id(),
                 }),
             },
         ]
@@ -150,11 +152,13 @@ fn test_spec() {
         .unwrap(),
         outputs: vec![ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
             value_types: vec![
-                ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
                     name: "Udt".try_into().unwrap(),
+                    id: Udt::spec_type_id(),
                 }),
-                ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
                     name: "Udt".try_into().unwrap(),
+                    id: Udt::spec_type_id(),
                 }),
             ]
             .try_into()
@@ -177,15 +181,17 @@ fn test_spec_with_long_names() {
             ScSpecFunctionInputV0 {
                 doc: "".try_into().unwrap(),
                 name: "a".try_into().unwrap(),
-                type_: ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                type_: ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
                     name: "UdtWithLongName".try_into().unwrap(),
+                    id: UdtWithLongName::spec_type_id(),
                 }),
             },
             ScSpecFunctionInputV0 {
                 doc: "".try_into().unwrap(),
                 name: "b".try_into().unwrap(),
-                type_: ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                type_: ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
                     name: "UdtWithLongName".try_into().unwrap(),
+                    id: UdtWithLongName::spec_type_id(),
                 }),
             },
         ]

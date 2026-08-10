@@ -1,6 +1,5 @@
 #![feature(prelude_import)]
 #![no_std]
-#[macro_use]
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
@@ -267,18 +266,20 @@ impl Contract {
                 soroban_sdk::xdr::ScSpecFunctionInputV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"v"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                        soroban_sdk::xdr::ScSpecTypeUdtView {
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
                             name: soroban_sdk::xdr::StringMView::new(b"MyStruct"),
+                            id: <MyStruct>::spec_type_id(),
                         },
                     ),
                 },
             ]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                soroban_sdk::xdr::ScSpecTypeUdtView {
+            outputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2View {
                     name: soroban_sdk::xdr::StringMView::new(b"MyStruct"),
-                },
-            )]),
+                    id: <MyStruct>::spec_type_id(),
+                }),
+            ]),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_struct(
@@ -2195,18 +2196,20 @@ impl Contract {
                 soroban_sdk::xdr::ScSpecFunctionInputV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"v"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                        soroban_sdk::xdr::ScSpecTypeUdtView {
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
                             name: soroban_sdk::xdr::StringMView::new(b"MyEnumUnit"),
+                            id: <MyEnumUnit>::spec_type_id(),
                         },
                     ),
                 },
             ]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                soroban_sdk::xdr::ScSpecTypeUdtView {
+            outputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2View {
                     name: soroban_sdk::xdr::StringMView::new(b"MyEnumUnit"),
-                },
-            )]),
+                    id: <MyEnumUnit>::spec_type_id(),
+                }),
+            ]),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_enum_unit(
@@ -2236,18 +2239,20 @@ impl Contract {
                 soroban_sdk::xdr::ScSpecFunctionInputV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
                     name: soroban_sdk::xdr::StringMView::new(b"v"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                        soroban_sdk::xdr::ScSpecTypeUdtView {
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
                             name: soroban_sdk::xdr::StringMView::new(b"MyEnumVariants"),
+                            id: <MyEnumVariants>::spec_type_id(),
                         },
                     ),
                 },
             ]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                soroban_sdk::xdr::ScSpecTypeUdtView {
+            outputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2View {
                     name: soroban_sdk::xdr::StringMView::new(b"MyEnumVariants"),
-                },
-            )]),
+                    id: <MyEnumVariants>::spec_type_id(),
+                }),
+            ]),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_enum_variants(

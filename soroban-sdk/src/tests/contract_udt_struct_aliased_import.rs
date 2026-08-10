@@ -8,22 +8,19 @@
 //!   correctly, whether values are constructed using the aliased name
 //!   (`Renamed`) or the type's original name (`inner::Inner`) — they are the
 //!   same type, so Rust's own type checking is what makes this work.
-//! - `test_spec` documents a limitation of the macros: the spec generated
-//!   for a field names its UDT after whatever identifier is written at the
-//!   field-declaration site (`Renamed`), while the referenced type's own
-//!   spec entry is generated under its original definition name (`Inner`).
-//!   The macros have no way to resolve an aliased import back to the UDT
-//!   entry of the type it refers to, so the spec for `Outer` ends up
-//!   referencing a UDT name, `Renamed`, for which no `UdtStructV0` entry
-//!   actually exists. This is a real defect: anything that regenerates a
-//!   client from the spec (e.g. `contractimport!` in another crate) has no
-//!   way to know `Renamed` and `Inner` are the same type, and so cannot
-//!   correctly generate a type for that field.
+//! - `test_spec` documents how a reference to an aliased import is resolved:
+//!   the reference's name is still whatever identifier is written at the
+//!   field-declaration site (`Renamed`), while the referenced type's own spec
+//!   entry is generated under its original definition name (`Inner`). The
+//!   reference's id, however, is resolved through the Rust type, so it is the
+//!   id of `Inner`'s own entry: anything that regenerates a client from the
+//!   spec (e.g. `contractimport!` in another crate) can marry the reference up
+//!   with the entry by id, even though the names do not match.
 
 use crate::{self as soroban_sdk};
 use soroban_sdk::{contract, contractimpl, contracttype, Env};
 use stellar_xdr::{
-    Limits, ReadXdr, ScSpecEntry, ScSpecTypeDef, ScSpecTypeUdt, ScSpecUdtStructFieldV0,
+    Limits, ReadXdr, ScSpecEntry, ScSpecTypeDef, ScSpecTypeUdtv2, ScSpecUdtStructFieldV0,
     ScSpecUdtStructV0,
 };
 
@@ -99,6 +96,7 @@ fn test_spec() {
         doc: "".try_into().unwrap(),
         lib: "".try_into().unwrap(),
         name: "Outer".try_into().unwrap(),
+        id: Outer::spec_type_id(),
         fields: vec![
             ScSpecUdtStructFieldV0 {
                 doc: "".try_into().unwrap(),
@@ -108,10 +106,12 @@ fn test_spec() {
             ScSpecUdtStructFieldV0 {
                 doc: "".try_into().unwrap(),
                 name: "inner".try_into().unwrap(),
-                type_: ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                type_: ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
                     // See module doc comment: named after the aliased
-                    // import, not the type's own spec'd name (below).
+                    // import, not the type's own spec'd name (below), but
+                    // carrying the id of the type the alias names.
                     name: "Renamed".try_into().unwrap(),
+                    id: inner::Inner::spec_type_id(),
                 }),
             },
         ]
@@ -127,6 +127,7 @@ fn test_spec() {
         doc: "".try_into().unwrap(),
         lib: "".try_into().unwrap(),
         name: "Inner".try_into().unwrap(),
+        id: inner::Inner::spec_type_id(),
         fields: vec![
             ScSpecUdtStructFieldV0 {
                 doc: "".try_into().unwrap(),

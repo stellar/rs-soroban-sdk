@@ -1190,8 +1190,11 @@ mod into_val_for_contract_fn;
 pub use into_val_for_contract_fn::IntoValForContractFn;
 
 mod spec_shaking;
+mod spec_type_id;
 #[doc(hidden)]
 pub use spec_shaking::{spec_marker, SpecShakingMarker};
+#[doc(hidden)]
+pub use spec_type_id::spec_type_id;
 
 #[doc(hidden)]
 #[deprecated(note = "use storage")]

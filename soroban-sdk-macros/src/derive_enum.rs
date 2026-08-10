@@ -13,7 +13,7 @@ use stellar_xdr::{
 
 use crate::{
     doc::docs_from_attrs,
-    map_type::{const_view_string, const_view_type_def, map_type},
+    map_type::{const_view_string, const_view_type_def, map_type, spec_type_id_gen},
     shaking,
 };
 
@@ -148,11 +148,14 @@ pub fn derive_type_enum(
         return quote! { #(#compile_errors)* };
     }
 
-    // Build the spec entry once.
+    // Build the spec entry once. The id is a placeholder: the real id hashes
+    // the fully qualified name only the compiler knows, so it is emitted into
+    // the rendered view below rather than resolved here.
     let spec = ScSpecUdtUnionV0 {
         doc: docs_from_attrs(attrs),
         lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
         name: enum_ident.unraw().to_string().try_into().unwrap(),
+        id: [0; 8],
         cases: spec_cases.try_into().unwrap(),
     };
 
@@ -162,32 +165,43 @@ pub fn derive_type_enum(
         let doc = const_view_string(path, &spec.doc);
         let lib = const_view_string(path, &spec.lib);
         let name = const_view_string(path, &spec.name);
-        let cases = spec.cases.iter().map(|c| match c {
-            ScSpecUdtUnionCaseV0::VoidV0(c) => {
-                let doc = const_view_string(path, &c.doc);
-                let name = const_view_string(path, &c.name);
-                quote!(#path::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
-                    #path::xdr::ScSpecUdtUnionCaseVoidV0View { doc: #doc, name: #name }
-                ))
-            }
-            ScSpecUdtUnionCaseV0::TupleV0(c) => {
-                let doc = const_view_string(path, &c.doc);
-                let name = const_view_string(path, &c.name);
-                let type_ = c.type_.iter().map(|t| const_view_type_def(path, t));
-                quote!(#path::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
-                    #path::xdr::ScSpecUdtUnionCaseTupleV0View {
-                        doc: #doc,
-                        name: #name,
-                        type_: #path::xdr::VecMView::new(&[#(#type_),*]),
-                    }
-                ))
-            }
-        });
+        // Each case's Rust field types, so a reference to a user-defined type
+        // in a case carries the id that type hashes for itself.
+        let cases = spec
+            .cases
+            .iter()
+            .zip(&variant_field_types)
+            .map(|(c, field_types)| match c {
+                ScSpecUdtUnionCaseV0::VoidV0(c) => {
+                    let doc = const_view_string(path, &c.doc);
+                    let name = const_view_string(path, &c.name);
+                    quote!(#path::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
+                        #path::xdr::ScSpecUdtUnionCaseVoidV0View { doc: #doc, name: #name }
+                    ))
+                }
+                ScSpecUdtUnionCaseV0::TupleV0(c) => {
+                    let doc = const_view_string(path, &c.doc);
+                    let name = const_view_string(path, &c.name);
+                    let type_ = c
+                        .type_
+                        .iter()
+                        .zip(field_types.iter().copied())
+                        .map(|(t, rust)| const_view_type_def(path, t, Some(rust)));
+                    quote!(#path::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
+                        #path::xdr::ScSpecUdtUnionCaseTupleV0View {
+                            doc: #doc,
+                            name: #name,
+                            type_: #path::xdr::VecMView::new(&[#(#type_),*]),
+                        }
+                    ))
+                }
+            });
         let spec_view = quote! {
             #path::xdr::ScSpecEntryView::UdtUnionV0(#path::xdr::ScSpecUdtUnionV0View {
                 doc: #doc,
                 lib: #lib,
                 name: #name,
+                id: #enum_ident::spec_type_id(),
                 cases: #path::xdr::VecMView::new(&[#(#cases),*]),
             })
         };
@@ -228,8 +242,14 @@ pub fn derive_type_enum(
         )
     };
 
+    // The id the spec knows this type by, emitted for every type so that a
+    // reference to it from anywhere can reach it.
+    let spec_type_id_impl = spec_type_id_gen(path, enum_ident);
+
     // Output.
     let mut output = quote! {
+        #spec_type_id_impl
+
         #spec_gen
 
         #spec_shaking_impl

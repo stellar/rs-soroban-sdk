@@ -1,6 +1,5 @@
 #![feature(prelude_import)]
 #![no_std]
-#[macro_use]
 extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
@@ -13,6 +12,9 @@ pub enum Error {
 }
 #[automatically_derived]
 impl ::core::marker::Copy for Error {}
+#[automatically_derived]
+#[doc(hidden)]
+unsafe impl ::core::clone::TrivialClone for Error {}
 #[automatically_derived]
 impl ::core::clone::Clone for Error {
     #[inline]
@@ -34,7 +36,7 @@ impl ::core::cmp::Eq for Error {
     #[inline]
     #[doc(hidden)]
     #[coverage(off)]
-    fn assert_receiver_is_total_eq(&self) -> () {}
+    fn assert_fields_are_eq(&self) {}
 }
 #[automatically_derived]
 impl ::core::cmp::PartialOrd for Error {
@@ -50,6 +52,12 @@ impl ::core::cmp::Ord for Error {
         ::core::cmp::Ordering::Equal
     }
 }
+impl Error {
+    #[doc(hidden)]
+    pub const fn spec_type_id() -> [u8; 8] {
+        soroban_sdk::spec_type_id("test_account::Error")
+    }
+}
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ERROR: [u8; Error::__SPEC_XDR_VIEW.const_xdr_len()] = Error::spec_xdr();
 impl Error {
@@ -59,6 +67,7 @@ impl Error {
                 doc: soroban_sdk::xdr::StringMView::new(b""),
                 lib: soroban_sdk::xdr::StringMView::new(b""),
                 name: soroban_sdk::xdr::StringMView::new(b"Error"),
+                id: Error::spec_type_id(),
                 cases: soroban_sdk::xdr::VecMView::new(&[
                     soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -256,9 +265,10 @@ impl Contract {
                     name: soroban_sdk::xdr::StringMView::new(b"auth_contexts"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
                         &soroban_sdk::xdr::ScSpecTypeVecView {
-                            element_type: &soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                soroban_sdk::xdr::ScSpecTypeUdtView {
+                            element_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                     name: soroban_sdk::xdr::StringMView::new(b"Context"),
+                                    id: <Context>::spec_type_id(),
                                 },
                             ),
                         },

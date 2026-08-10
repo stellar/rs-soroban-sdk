@@ -58,6 +58,7 @@ mod struct_ {
         let expect = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
             doc: "S holds a and\nb.".try_into().unwrap(),
             name: "S".try_into().unwrap(),
+            id: S::spec_type_id(),
             lib: "".try_into().unwrap(),
             fields: [
                 ScSpecUdtStructFieldV0 {
@@ -99,6 +100,7 @@ mod struct_tuple {
         let expect = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
             doc: "S holds two u64s.".try_into().unwrap(),
             name: "S".try_into().unwrap(),
+            id: S::spec_type_id(),
             lib: "".try_into().unwrap(),
             fields: [
                 ScSpecUdtStructFieldV0 {
@@ -146,6 +148,7 @@ mod enum_ {
             doc: "E has variants A and B.".try_into().unwrap(),
             lib: "".try_into().unwrap(),
             name: "E".try_into().unwrap(),
+            id: E::spec_type_id(),
             cases: [
                 ScSpecUdtUnionCaseV0::VoidV0(ScSpecUdtUnionCaseVoidV0 {
                     doc: "A is\na.".try_into().unwrap(),
@@ -192,6 +195,7 @@ mod enum_int {
         let expect = ScSpecEntry::UdtEnumV0(ScSpecUdtEnumV0 {
             doc: "E has variants A and B.".try_into().unwrap(),
             name: "E".try_into().unwrap(),
+            id: E::spec_type_id(),
             lib: "".try_into().unwrap(),
             cases: [
                 ScSpecUdtEnumCaseV0 {
@@ -236,6 +240,7 @@ mod enum_error_int {
         let expect = ScSpecEntry::UdtErrorEnumV0(ScSpecUdtErrorEnumV0 {
             doc: "E has variants A and B.".try_into().unwrap(),
             name: "E".try_into().unwrap(),
+            id: E::spec_type_id(),
             lib: "".try_into().unwrap(),
             cases: [
                 ScSpecUdtErrorEnumCaseV0 {
