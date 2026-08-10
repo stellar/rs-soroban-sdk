@@ -60,20 +60,23 @@ impl Error {
 pub static __SPEC_XDR_TYPE_ERROR: [u8; Error::__SPEC_XDR_VIEW.const_xdr_len()] = Error::spec_xdr();
 impl Error {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtErrorEnumV0(
-            soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
-                doc: soroban_sdk::xdr::StringMView::new(b""),
-                lib: soroban_sdk::xdr::StringMView::new(b""),
-                name: soroban_sdk::xdr::StringMView::new(b"Error"),
-                cases: soroban_sdk::xdr::VecMView::new(&[
-                    soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"Fail"),
-                        value: 1u32,
-                    },
-                ]),
-            },
-        );
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: Error::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtErrorEnumV0(
+                soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"Error"),
+                    cases: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"Fail"),
+                            value: 1u32,
+                        },
+                    ]),
+                },
+            ),
+        });
     pub const fn spec_xdr() -> [u8; Error::__SPEC_XDR_VIEW.const_xdr_len()] {
         Error::__SPEC_XDR_VIEW.const_to_xdr()
     }
@@ -239,47 +242,52 @@ impl Contract {
     #[allow(non_upper_case_globals)]
     #[allow(non_snake_case)]
     const __SPEC_XDR_VIEW___check_auth: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"__check_auth",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_account::Contract::__check_auth"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"signature_payload"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::BytesN(
-                        soroban_sdk::xdr::ScSpecTypeBytesN { n: 32u32 },
-                    ),
-                },
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"signatures"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Void,
-                },
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"auth_contexts"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
-                        &soroban_sdk::xdr::ScSpecTypeVecView {
-                            element_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                                    name: soroban_sdk::xdr::StringMView::new(b"Context"),
-                                    id: <Context>::spec_type_id(),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"__check_auth",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"signature_payload"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::BytesN(
+                                soroban_sdk::xdr::ScSpecTypeBytesN { n: 32u32 },
+                            ),
+                        },
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"signatures"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Void,
+                        },
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"auth_contexts"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
+                                &soroban_sdk::xdr::ScSpecTypeVecView {
+                                    element_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                            name: soroban_sdk::xdr::StringMView::new(b"Context"),
+                                            id: <Context>::spec_type_id(),
+                                        },
+                                    ),
                                 },
                             ),
                         },
-                    ),
+                    ]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecTypeDefView::Result(
+                            &soroban_sdk::xdr::ScSpecTypeResultView {
+                                ok_type: &soroban_sdk::xdr::ScSpecTypeDefView::Void,
+                                error_type: &soroban_sdk::xdr::ScSpecTypeDefView::Error,
+                            },
+                        ),
+                    ]),
                 },
-            ]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecTypeDefView::Result(
-                    &soroban_sdk::xdr::ScSpecTypeResultView {
-                        ok_type: &soroban_sdk::xdr::ScSpecTypeDefView::Void,
-                        error_type: &soroban_sdk::xdr::ScSpecTypeDefView::Error,
-                    },
-                ),
-            ]),
+            ),
         });
     #[allow(non_snake_case)]
     #[allow(non_snake_case)]

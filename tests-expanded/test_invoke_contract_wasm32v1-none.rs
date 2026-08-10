@@ -50,27 +50,36 @@ pub mod __Contract__add_with__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_add_with: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"add_with")),
-            inputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_invoke_contract::Contract::add_with"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"x"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::I32,
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"add_with",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"x"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::I32,
+                        },
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"y"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::I32,
+                        },
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"contract_id"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecTypeDefView::I32,
+                    ]),
                 },
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"y"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::I32,
-                },
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"contract_id"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
-                },
-            ]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::I32]),
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_add_with() -> [u8; Contract::__SPEC_XDR_VIEW_add_with.const_xdr_len()] {
@@ -223,22 +232,31 @@ pub mod __AddContract__add__spec {
 impl AddContract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_add: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"add")),
-            inputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_invoke_contract::AddContract::add"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"a"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::I32,
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"add",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"a"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::I32,
+                        },
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"b"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::I32,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecTypeDefView::I32,
+                    ]),
                 },
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"b"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::I32,
-                },
-            ]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::I32]),
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_add() -> [u8; AddContract::__SPEC_XDR_VIEW_add.const_xdr_len()] {

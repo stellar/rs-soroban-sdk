@@ -166,37 +166,42 @@ impl Flag {
 pub static __SPEC_XDR_TYPE_FLAG: [u8; Flag::__SPEC_XDR_VIEW.const_xdr_len()] = Flag::spec_xdr();
 impl Flag {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtEnumV0(soroban_sdk::xdr::ScSpecUdtEnumV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"Flag"),
-            cases: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: Flag::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtEnumV0(
+                soroban_sdk::xdr::ScSpecUdtEnumV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"A"),
-                    value: 0u32,
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"Flag"),
+                    cases: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"A"),
+                            value: 0u32,
+                        },
+                        soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"B"),
+                            value: 1u32,
+                        },
+                        soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"C"),
+                            value: 2u32,
+                        },
+                        soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"D"),
+                            value: 3u32,
+                        },
+                        soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"E"),
+                            value: 4u32,
+                        },
+                    ]),
                 },
-                soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"B"),
-                    value: 1u32,
-                },
-                soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"C"),
-                    value: 2u32,
-                },
-                soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"D"),
-                    value: 3u32,
-                },
-                soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"E"),
-                    value: 4u32,
-                },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; Flag::__SPEC_XDR_VIEW.const_xdr_len()] {
         Flag::__SPEC_XDR_VIEW.const_to_xdr()
@@ -552,20 +557,23 @@ impl Error {
 pub static __SPEC_XDR_TYPE_ERROR: [u8; Error::__SPEC_XDR_VIEW.const_xdr_len()] = Error::spec_xdr();
 impl Error {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtErrorEnumV0(
-            soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
-                doc: soroban_sdk::xdr::StringMView::new(b""),
-                lib: soroban_sdk::xdr::StringMView::new(b""),
-                name: soroban_sdk::xdr::StringMView::new(b"Error"),
-                cases: soroban_sdk::xdr::VecMView::new(&[
-                    soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"AnError"),
-                        value: 1u32,
-                    },
-                ]),
-            },
-        );
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: Error::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtErrorEnumV0(
+                soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"Error"),
+                    cases: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"AnError"),
+                            value: 1u32,
+                        },
+                    ]),
+                },
+            ),
+        });
     pub const fn spec_xdr() -> [u8; Error::__SPEC_XDR_VIEW.const_xdr_len()] {
         Error::__SPEC_XDR_VIEW.const_to_xdr()
     }
@@ -735,29 +743,36 @@ pub mod __Contract__hello__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_hello: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"hello")),
-            inputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_errors::Contract::hello"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"flag"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                            name: soroban_sdk::xdr::StringMView::new(b"Flag"),
-                            id: <Flag>::spec_type_id(),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"hello",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"flag"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                    name: soroban_sdk::xdr::StringMView::new(b"Flag"),
+                                    id: <Flag>::spec_type_id(),
+                                },
+                            ),
                         },
-                    ),
+                    ]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecTypeDefView::Result(
+                            &soroban_sdk::xdr::ScSpecTypeResultView {
+                                ok_type: &soroban_sdk::xdr::ScSpecTypeDefView::Symbol,
+                                error_type: &soroban_sdk::xdr::ScSpecTypeDefView::Error,
+                            },
+                        ),
+                    ]),
                 },
-            ]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecTypeDefView::Result(
-                    &soroban_sdk::xdr::ScSpecTypeResultView {
-                        ok_type: &soroban_sdk::xdr::ScSpecTypeDefView::Symbol,
-                        error_type: &soroban_sdk::xdr::ScSpecTypeDefView::Error,
-                    },
-                ),
-            ]),
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_hello() -> [u8; Contract::__SPEC_XDR_VIEW_hello.const_xdr_len()] {
@@ -776,11 +791,20 @@ pub mod __Contract__persisted__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_persisted: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"persisted")),
-            inputs: soroban_sdk::xdr::VecMView::new(&[]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::Bool]),
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_errors::Contract::persisted"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"persisted",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecTypeDefView::Bool,
+                    ]),
+                },
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_persisted() -> [u8; Contract::__SPEC_XDR_VIEW_persisted.const_xdr_len()] {

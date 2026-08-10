@@ -154,19 +154,24 @@ pub mod __Contract____constructor__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW___constructor: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"__constructor",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_constructor_with_auth::Contract::__constructor"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"admin"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"__constructor",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"admin"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[]),
                 },
-            ]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[]),
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr___constructor(

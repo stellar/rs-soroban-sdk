@@ -85,27 +85,32 @@ pub static __SPEC_XDR_TYPE_USEDPARAMSTRUCT: [u8; UsedParamStruct::__SPEC_XDR_VIE
     UsedParamStruct::spec_xdr();
 impl UsedParamStruct {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UsedParamStruct"),
-            fields: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UsedParamStruct::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                soroban_sdk::xdr::ScSpecUdtStructV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"a"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
-                },
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"nested"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                            name: soroban_sdk::xdr::StringMView::new(b"UsedNestedInStruct"),
-                            id: <UsedNestedInStruct>::spec_type_id(),
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UsedParamStruct"),
+                    fields: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"a"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
                         },
-                    ),
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"nested"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                    name: soroban_sdk::xdr::StringMView::new(b"UsedNestedInStruct"),
+                                    id: <UsedNestedInStruct>::spec_type_id(),
+                                },
+                            ),
+                        },
+                    ]),
                 },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; UsedParamStruct::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedParamStruct::__SPEC_XDR_VIEW.const_to_xdr()
@@ -240,30 +245,35 @@ pub static __SPEC_XDR_TYPE_USEDRETURNENUM: [u8; UsedReturnEnum::__SPEC_XDR_VIEW.
     UsedReturnEnum::spec_xdr();
 impl UsedReturnEnum {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UsedReturnEnum"),
-            cases: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
-                    soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"A"),
-                        type_: soroban_sdk::xdr::VecMView::new(&[
-                            soroban_sdk::xdr::ScSpecTypeDefView::U32,
-                        ]),
-                    },
-                ),
-                soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
-                    soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"B"),
-                        type_: soroban_sdk::xdr::VecMView::new(&[
-                            soroban_sdk::xdr::ScSpecTypeDefView::I64,
-                        ]),
-                    },
-                ),
-            ]),
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UsedReturnEnum::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtUnionV0(
+                soroban_sdk::xdr::ScSpecUdtUnionV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UsedReturnEnum"),
+                    cases: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
+                            soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"A"),
+                                type_: soroban_sdk::xdr::VecMView::new(&[
+                                    soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                                ]),
+                            },
+                        ),
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
+                            soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"B"),
+                                type_: soroban_sdk::xdr::VecMView::new(&[
+                                    soroban_sdk::xdr::ScSpecTypeDefView::I64,
+                                ]),
+                            },
+                        ),
+                    ]),
+                },
+            ),
         });
     pub const fn spec_xdr() -> [u8; UsedReturnEnum::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedReturnEnum::__SPEC_XDR_VIEW.const_to_xdr()
@@ -416,22 +426,27 @@ pub static __SPEC_XDR_TYPE_USEDPARAMINTENUM: [u8; UsedParamIntEnum::__SPEC_XDR_V
     .const_xdr_len()] = UsedParamIntEnum::spec_xdr();
 impl UsedParamIntEnum {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtEnumV0(soroban_sdk::xdr::ScSpecUdtEnumV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UsedParamIntEnum"),
-            cases: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UsedParamIntEnum::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtEnumV0(
+                soroban_sdk::xdr::ScSpecUdtEnumV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"X"),
-                    value: 1u32,
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UsedParamIntEnum"),
+                    cases: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"X"),
+                            value: 1u32,
+                        },
+                        soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"Y"),
+                            value: 2u32,
+                        },
+                    ]),
                 },
-                soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"Y"),
-                    value: 2u32,
-                },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; UsedParamIntEnum::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedParamIntEnum::__SPEC_XDR_VIEW.const_to_xdr()
@@ -541,25 +556,28 @@ pub static __SPEC_XDR_TYPE_USEDERRORENUM: [u8; UsedErrorEnum::__SPEC_XDR_VIEW.co
     UsedErrorEnum::spec_xdr();
 impl UsedErrorEnum {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtErrorEnumV0(
-            soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
-                doc: soroban_sdk::xdr::StringMView::new(b""),
-                lib: soroban_sdk::xdr::StringMView::new(b""),
-                name: soroban_sdk::xdr::StringMView::new(b"UsedErrorEnum"),
-                cases: soroban_sdk::xdr::VecMView::new(&[
-                    soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"NotFound"),
-                        value: 1u32,
-                    },
-                    soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"Invalid"),
-                        value: 2u32,
-                    },
-                ]),
-            },
-        );
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UsedErrorEnum::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtErrorEnumV0(
+                soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UsedErrorEnum"),
+                    cases: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"NotFound"),
+                            value: 1u32,
+                        },
+                        soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"Invalid"),
+                            value: 2u32,
+                        },
+                    ]),
+                },
+            ),
+        });
     pub const fn spec_xdr() -> [u8; UsedErrorEnum::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedErrorEnum::__SPEC_XDR_VIEW.const_to_xdr()
     }
@@ -727,20 +745,23 @@ pub static __SPEC_XDR_TYPE_USEDPANICERRORENUM: [u8; UsedPanicErrorEnum::__SPEC_X
     .const_xdr_len()] = UsedPanicErrorEnum::spec_xdr();
 impl UsedPanicErrorEnum {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtErrorEnumV0(
-            soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
-                doc: soroban_sdk::xdr::StringMView::new(b""),
-                lib: soroban_sdk::xdr::StringMView::new(b""),
-                name: soroban_sdk::xdr::StringMView::new(b"UsedPanicErrorEnum"),
-                cases: soroban_sdk::xdr::VecMView::new(&[
-                    soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"Boom"),
-                        value: 1u32,
-                    },
-                ]),
-            },
-        );
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UsedPanicErrorEnum::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtErrorEnumV0(
+                soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UsedPanicErrorEnum"),
+                    cases: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"Boom"),
+                            value: 1u32,
+                        },
+                    ]),
+                },
+            ),
+        });
     pub const fn spec_xdr() -> [u8; UsedPanicErrorEnum::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedPanicErrorEnum::__SPEC_XDR_VIEW.const_to_xdr()
     }
@@ -906,20 +927,23 @@ pub static __SPEC_XDR_TYPE_USEDASSERTERRORENUM: [u8; UsedAssertErrorEnum::__SPEC
     .const_xdr_len()] = UsedAssertErrorEnum::spec_xdr();
 impl UsedAssertErrorEnum {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtErrorEnumV0(
-            soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
-                doc: soroban_sdk::xdr::StringMView::new(b""),
-                lib: soroban_sdk::xdr::StringMView::new(b""),
-                name: soroban_sdk::xdr::StringMView::new(b"UsedAssertErrorEnum"),
-                cases: soroban_sdk::xdr::VecMView::new(&[
-                    soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"Bad"),
-                        value: 1u32,
-                    },
-                ]),
-            },
-        );
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UsedAssertErrorEnum::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtErrorEnumV0(
+                soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UsedAssertErrorEnum"),
+                    cases: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"Bad"),
+                            value: 1u32,
+                        },
+                    ]),
+                },
+            ),
+        });
     pub const fn spec_xdr() -> [u8; UsedAssertErrorEnum::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedAssertErrorEnum::__SPEC_XDR_VIEW.const_to_xdr()
     }
@@ -1092,17 +1116,22 @@ pub static __SPEC_XDR_TYPE_USEDNESTEDINSTRUCT: [u8; UsedNestedInStruct::__SPEC_X
     .const_xdr_len()] = UsedNestedInStruct::spec_xdr();
 impl UsedNestedInStruct {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UsedNestedInStruct"),
-            fields: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UsedNestedInStruct::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                soroban_sdk::xdr::ScSpecUdtStructV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"val"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::I64,
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UsedNestedInStruct"),
+                    fields: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"val"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::I64,
+                        },
+                    ]),
                 },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; UsedNestedInStruct::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedNestedInStruct::__SPEC_XDR_VIEW.const_to_xdr()
@@ -1213,17 +1242,22 @@ pub static __SPEC_XDR_TYPE_USEDVECELEMENT: [u8; UsedVecElement::__SPEC_XDR_VIEW.
     UsedVecElement::spec_xdr();
 impl UsedVecElement {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UsedVecElement"),
-            fields: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UsedVecElement::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                soroban_sdk::xdr::ScSpecUdtStructV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"data"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UsedVecElement"),
+                    fields: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"data"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                        },
+                    ]),
                 },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; UsedVecElement::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedVecElement::__SPEC_XDR_VIEW.const_to_xdr()
@@ -1339,22 +1373,27 @@ pub static __SPEC_XDR_TYPE_USEDMAPKEY: [u8; UsedMapKey::__SPEC_XDR_VIEW.const_xd
     UsedMapKey::spec_xdr();
 impl UsedMapKey {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtEnumV0(soroban_sdk::xdr::ScSpecUdtEnumV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UsedMapKey"),
-            cases: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UsedMapKey::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtEnumV0(
+                soroban_sdk::xdr::ScSpecUdtEnumV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"K1"),
-                    value: 1u32,
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UsedMapKey"),
+                    cases: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"K1"),
+                            value: 1u32,
+                        },
+                        soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"K2"),
+                            value: 2u32,
+                        },
+                    ]),
                 },
-                soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"K2"),
-                    value: 2u32,
-                },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; UsedMapKey::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedMapKey::__SPEC_XDR_VIEW.const_to_xdr()
@@ -1457,17 +1496,22 @@ pub static __SPEC_XDR_TYPE_USEDMAPVAL: [u8; UsedMapVal::__SPEC_XDR_VIEW.const_xd
     UsedMapVal::spec_xdr();
 impl UsedMapVal {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UsedMapVal"),
-            fields: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UsedMapVal::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                soroban_sdk::xdr::ScSpecUdtStructV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"v"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UsedMapVal"),
+                    fields: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"v"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                        },
+                    ]),
                 },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; UsedMapVal::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedMapVal::__SPEC_XDR_VIEW.const_to_xdr()
@@ -1581,17 +1625,22 @@ pub static __SPEC_XDR_TYPE_USEDOPTIONELEMENT: [u8; UsedOptionElement::__SPEC_XDR
     .const_xdr_len()] = UsedOptionElement::spec_xdr();
 impl UsedOptionElement {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UsedOptionElement"),
-            fields: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UsedOptionElement::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                soroban_sdk::xdr::ScSpecUdtStructV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"data"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UsedOptionElement"),
+                    fields: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"data"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                        },
+                    ]),
                 },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; UsedOptionElement::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedOptionElement::__SPEC_XDR_VIEW.const_to_xdr()
@@ -1700,17 +1749,22 @@ pub static __SPEC_XDR_TYPE_USEDRESULTOK: [u8; UsedResultOk::__SPEC_XDR_VIEW.cons
     UsedResultOk::spec_xdr();
 impl UsedResultOk {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UsedResultOk"),
-            fields: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UsedResultOk::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                soroban_sdk::xdr::ScSpecUdtStructV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"data"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UsedResultOk"),
+                    fields: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"data"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                        },
+                    ]),
                 },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; UsedResultOk::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedResultOk::__SPEC_XDR_VIEW.const_to_xdr()
@@ -1823,30 +1877,37 @@ pub static __SPEC_XDR_EVENT_USEDEVENTSIMPLE: [u8; UsedEventSimple::__SPEC_XDR_VI
     .const_xdr_len()] = UsedEventSimple::spec_xdr();
 impl UsedEventSimple {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::EventV0(soroban_sdk::xdr::ScSpecEventV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"UsedEventSimple",
-            )),
-            prefix_topics: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSymbolView(
-                soroban_sdk::xdr::StringMView::new(b"used_event_simple"),
-            )]),
-            params: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecEventParamV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedEventSimple"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::EventV0(
+                soroban_sdk::xdr::ScSpecEventV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"kind"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Symbol,
-                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"UsedEventSimple",
+                    )),
+                    prefix_topics: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                            b"used_event_simple",
+                        )),
+                    ]),
+                    params: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecEventParamV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"kind"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Symbol,
+                            location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
+                        },
+                        soroban_sdk::xdr::ScSpecEventParamV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"amount"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::I128,
+                            location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                        },
+                    ]),
+                    data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
                 },
-                soroban_sdk::xdr::ScSpecEventParamV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"amount"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::I128,
-                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
-                },
-            ]),
-            data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
+            ),
         });
     pub const fn spec_xdr() -> [u8; UsedEventSimple::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedEventSimple::__SPEC_XDR_VIEW.const_to_xdr()
@@ -1943,22 +2004,27 @@ pub static __SPEC_XDR_TYPE_USEDEVENTTOPICTYPE: [u8; UsedEventTopicType::__SPEC_X
     .const_xdr_len()] = UsedEventTopicType::spec_xdr();
 impl UsedEventTopicType {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtEnumV0(soroban_sdk::xdr::ScSpecUdtEnumV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UsedEventTopicType"),
-            cases: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UsedEventTopicType::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtEnumV0(
+                soroban_sdk::xdr::ScSpecUdtEnumV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"Transfer"),
-                    value: 1u32,
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UsedEventTopicType"),
+                    cases: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"Transfer"),
+                            value: 1u32,
+                        },
+                        soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"Mint"),
+                            value: 2u32,
+                        },
+                    ]),
                 },
-                soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"Mint"),
-                    value: 2u32,
-                },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; UsedEventTopicType::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedEventTopicType::__SPEC_XDR_VIEW.const_to_xdr()
@@ -2067,35 +2133,42 @@ pub static __SPEC_XDR_EVENT_USEDEVENTWITHTOPICTYPE: [u8; UsedEventWithTopicType:
     .const_xdr_len()] = UsedEventWithTopicType::spec_xdr();
 impl UsedEventWithTopicType {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::EventV0(soroban_sdk::xdr::ScSpecEventV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"UsedEventWithTopicType",
-            )),
-            prefix_topics: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSymbolView(
-                soroban_sdk::xdr::StringMView::new(b"used_event_with_topic_type"),
-            )]),
-            params: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecEventParamV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedEventWithTopicType"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::EventV0(
+                soroban_sdk::xdr::ScSpecEventV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"kind"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                            name: soroban_sdk::xdr::StringMView::new(b"UsedEventTopicType"),
-                            id: <UsedEventTopicType>::spec_type_id(),
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"UsedEventWithTopicType",
+                    )),
+                    prefix_topics: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                            b"used_event_with_topic_type",
+                        )),
+                    ]),
+                    params: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecEventParamV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"kind"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                    name: soroban_sdk::xdr::StringMView::new(b"UsedEventTopicType"),
+                                    id: <UsedEventTopicType>::spec_type_id(),
+                                },
+                            ),
+                            location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
                         },
-                    ),
-                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
+                        soroban_sdk::xdr::ScSpecEventParamV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"amount"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::I128,
+                            location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                        },
+                    ]),
+                    data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
                 },
-                soroban_sdk::xdr::ScSpecEventParamV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"amount"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::I128,
-                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
-                },
-            ]),
-            data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
+            ),
         });
     pub const fn spec_xdr() -> [u8; UsedEventWithTopicType::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedEventWithTopicType::__SPEC_XDR_VIEW.const_to_xdr()
@@ -2197,22 +2270,27 @@ pub static __SPEC_XDR_TYPE_USEDEVENTDATATYPE: [u8; UsedEventDataType::__SPEC_XDR
     .const_xdr_len()] = UsedEventDataType::spec_xdr();
 impl UsedEventDataType {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UsedEventDataType"),
-            fields: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UsedEventDataType::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                soroban_sdk::xdr::ScSpecUdtStructV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"x"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UsedEventDataType"),
+                    fields: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"x"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                        },
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"y"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                        },
+                    ]),
                 },
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"y"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
-                },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; UsedEventDataType::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedEventDataType::__SPEC_XDR_VIEW.const_to_xdr()
@@ -2332,35 +2410,42 @@ pub static __SPEC_XDR_EVENT_USEDEVENTWITHDATATYPE: [u8; UsedEventWithDataType::_
     .const_xdr_len()] = UsedEventWithDataType::spec_xdr();
 impl UsedEventWithDataType {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::EventV0(soroban_sdk::xdr::ScSpecEventV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"UsedEventWithDataType",
-            )),
-            prefix_topics: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSymbolView(
-                soroban_sdk::xdr::StringMView::new(b"used_event_with_data_type"),
-            )]),
-            params: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecEventParamV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedEventWithDataType"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::EventV0(
+                soroban_sdk::xdr::ScSpecEventV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"kind"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Symbol,
-                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
-                },
-                soroban_sdk::xdr::ScSpecEventParamV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"payload"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                            name: soroban_sdk::xdr::StringMView::new(b"UsedEventDataType"),
-                            id: <UsedEventDataType>::spec_type_id(),
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"UsedEventWithDataType",
+                    )),
+                    prefix_topics: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                            b"used_event_with_data_type",
+                        )),
+                    ]),
+                    params: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecEventParamV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"kind"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Symbol,
+                            location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
                         },
-                    ),
-                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                        soroban_sdk::xdr::ScSpecEventParamV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"payload"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                    name: soroban_sdk::xdr::StringMView::new(b"UsedEventDataType"),
+                                    id: <UsedEventDataType>::spec_type_id(),
+                                },
+                            ),
+                            location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                        },
+                    ]),
+                    data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
                 },
-            ]),
-            data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
+            ),
         });
     pub const fn spec_xdr() -> [u8; UsedEventWithDataType::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedEventWithDataType::__SPEC_XDR_VIEW.const_to_xdr()
@@ -2458,22 +2543,29 @@ pub static __SPEC_XDR_TYPE_USEDEVENTTOPICOUTER: [u8; UsedEventTopicOuter::__SPEC
     .const_xdr_len()] = UsedEventTopicOuter::spec_xdr();
 impl UsedEventTopicOuter {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UsedEventTopicOuter"),
-            fields: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UsedEventTopicOuter::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                soroban_sdk::xdr::ScSpecUdtStructV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"inner"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                            name: soroban_sdk::xdr::StringMView::new(b"UsedEventTopicInner"),
-                            id: <UsedEventTopicInner>::spec_type_id(),
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UsedEventTopicOuter"),
+                    fields: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"inner"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                    name: soroban_sdk::xdr::StringMView::new(
+                                        b"UsedEventTopicInner",
+                                    ),
+                                    id: <UsedEventTopicInner>::spec_type_id(),
+                                },
+                            ),
                         },
-                    ),
+                    ]),
                 },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; UsedEventTopicOuter::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedEventTopicOuter::__SPEC_XDR_VIEW.const_to_xdr()
@@ -2591,17 +2683,22 @@ pub static __SPEC_XDR_TYPE_USEDEVENTTOPICINNER: [u8; UsedEventTopicInner::__SPEC
     .const_xdr_len()] = UsedEventTopicInner::spec_xdr();
 impl UsedEventTopicInner {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UsedEventTopicInner"),
-            fields: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UsedEventTopicInner::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                soroban_sdk::xdr::ScSpecUdtStructV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"val"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UsedEventTopicInner"),
+                    fields: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"val"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                        },
+                    ]),
                 },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; UsedEventTopicInner::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedEventTopicInner::__SPEC_XDR_VIEW.const_to_xdr()
@@ -2717,35 +2814,44 @@ pub static __SPEC_XDR_EVENT_USEDEVENTWITHNESTEDTOPIC: [u8;
     UsedEventWithNestedTopic::spec_xdr();
 impl UsedEventWithNestedTopic {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::EventV0(soroban_sdk::xdr::ScSpecEventV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"UsedEventWithNestedTopic",
-            )),
-            prefix_topics: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSymbolView(
-                soroban_sdk::xdr::StringMView::new(b"used_event_with_nested_topic"),
-            )]),
-            params: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecEventParamV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedEventWithNestedTopic"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::EventV0(
+                soroban_sdk::xdr::ScSpecEventV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"info"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                            name: soroban_sdk::xdr::StringMView::new(b"UsedEventTopicOuter"),
-                            id: <UsedEventTopicOuter>::spec_type_id(),
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"UsedEventWithNestedTopic",
+                    )),
+                    prefix_topics: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                            b"used_event_with_nested_topic",
+                        )),
+                    ]),
+                    params: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecEventParamV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"info"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                    name: soroban_sdk::xdr::StringMView::new(
+                                        b"UsedEventTopicOuter",
+                                    ),
+                                    id: <UsedEventTopicOuter>::spec_type_id(),
+                                },
+                            ),
+                            location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
                         },
-                    ),
-                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
+                        soroban_sdk::xdr::ScSpecEventParamV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"amount"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::I128,
+                            location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                        },
+                    ]),
+                    data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
                 },
-                soroban_sdk::xdr::ScSpecEventParamV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"amount"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::I128,
-                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
-                },
-            ]),
-            data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
+            ),
         });
     pub const fn spec_xdr() -> [u8; UsedEventWithNestedTopic::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedEventWithNestedTopic::__SPEC_XDR_VIEW.const_to_xdr()
@@ -2844,22 +2950,27 @@ pub static __SPEC_XDR_TYPE_USEDEVENTDATAOUTER: [u8; UsedEventDataOuter::__SPEC_X
     .const_xdr_len()] = UsedEventDataOuter::spec_xdr();
 impl UsedEventDataOuter {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UsedEventDataOuter"),
-            fields: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UsedEventDataOuter::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                soroban_sdk::xdr::ScSpecUdtStructV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"inner"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                            name: soroban_sdk::xdr::StringMView::new(b"UsedEventDataInner"),
-                            id: <UsedEventDataInner>::spec_type_id(),
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UsedEventDataOuter"),
+                    fields: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"inner"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                    name: soroban_sdk::xdr::StringMView::new(b"UsedEventDataInner"),
+                                    id: <UsedEventDataInner>::spec_type_id(),
+                                },
+                            ),
                         },
-                    ),
+                    ]),
                 },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; UsedEventDataOuter::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedEventDataOuter::__SPEC_XDR_VIEW.const_to_xdr()
@@ -2977,17 +3088,22 @@ pub static __SPEC_XDR_TYPE_USEDEVENTDATAINNER: [u8; UsedEventDataInner::__SPEC_X
     .const_xdr_len()] = UsedEventDataInner::spec_xdr();
 impl UsedEventDataInner {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UsedEventDataInner"),
-            fields: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UsedEventDataInner::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                soroban_sdk::xdr::ScSpecUdtStructV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"val"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UsedEventDataInner"),
+                    fields: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"val"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                        },
+                    ]),
                 },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; UsedEventDataInner::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedEventDataInner::__SPEC_XDR_VIEW.const_to_xdr()
@@ -3102,35 +3218,42 @@ pub static __SPEC_XDR_EVENT_USEDEVENTWITHNESTEDDATA: [u8;
     UsedEventWithNestedData::__SPEC_XDR_VIEW.const_xdr_len()] = UsedEventWithNestedData::spec_xdr();
 impl UsedEventWithNestedData {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::EventV0(soroban_sdk::xdr::ScSpecEventV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"UsedEventWithNestedData",
-            )),
-            prefix_topics: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSymbolView(
-                soroban_sdk::xdr::StringMView::new(b"used_event_with_nested_data"),
-            )]),
-            params: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecEventParamV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedEventWithNestedData"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::EventV0(
+                soroban_sdk::xdr::ScSpecEventV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"kind"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Symbol,
-                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
-                },
-                soroban_sdk::xdr::ScSpecEventParamV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"payload"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                            name: soroban_sdk::xdr::StringMView::new(b"UsedEventDataOuter"),
-                            id: <UsedEventDataOuter>::spec_type_id(),
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"UsedEventWithNestedData",
+                    )),
+                    prefix_topics: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                            b"used_event_with_nested_data",
+                        )),
+                    ]),
+                    params: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecEventParamV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"kind"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Symbol,
+                            location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
                         },
-                    ),
-                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                        soroban_sdk::xdr::ScSpecEventParamV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"payload"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                    name: soroban_sdk::xdr::StringMView::new(b"UsedEventDataOuter"),
+                                    id: <UsedEventDataOuter>::spec_type_id(),
+                                },
+                            ),
+                            location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                        },
+                    ]),
+                    data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
                 },
-            ]),
-            data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
+            ),
         });
     pub const fn spec_xdr() -> [u8; UsedEventWithNestedData::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedEventWithNestedData::__SPEC_XDR_VIEW.const_to_xdr()
@@ -3231,22 +3354,27 @@ pub static __SPEC_XDR_TYPE_USEDREFTOPICTYPE: [u8; UsedRefTopicType::__SPEC_XDR_V
     .const_xdr_len()] = UsedRefTopicType::spec_xdr();
 impl UsedRefTopicType {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtEnumV0(soroban_sdk::xdr::ScSpecUdtEnumV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UsedRefTopicType"),
-            cases: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UsedRefTopicType::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtEnumV0(
+                soroban_sdk::xdr::ScSpecUdtEnumV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"Send"),
-                    value: 1u32,
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UsedRefTopicType"),
+                    cases: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"Send"),
+                            value: 1u32,
+                        },
+                        soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"Recv"),
+                            value: 2u32,
+                        },
+                    ]),
                 },
-                soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"Recv"),
-                    value: 2u32,
-                },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; UsedRefTopicType::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedRefTopicType::__SPEC_XDR_VIEW.const_to_xdr()
@@ -3354,22 +3482,27 @@ pub static __SPEC_XDR_TYPE_USEDREFDATATYPE: [u8; UsedRefDataType::__SPEC_XDR_VIE
     UsedRefDataType::spec_xdr();
 impl UsedRefDataType {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UsedRefDataType"),
-            fields: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UsedRefDataType::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                soroban_sdk::xdr::ScSpecUdtStructV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"nested"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                            name: soroban_sdk::xdr::StringMView::new(b"UsedRefDataInner"),
-                            id: <UsedRefDataInner>::spec_type_id(),
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UsedRefDataType"),
+                    fields: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"nested"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                    name: soroban_sdk::xdr::StringMView::new(b"UsedRefDataInner"),
+                                    id: <UsedRefDataInner>::spec_type_id(),
+                                },
+                            ),
                         },
-                    ),
+                    ]),
                 },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; UsedRefDataType::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedRefDataType::__SPEC_XDR_VIEW.const_to_xdr()
@@ -3480,17 +3613,22 @@ pub static __SPEC_XDR_TYPE_USEDREFDATAINNER: [u8; UsedRefDataInner::__SPEC_XDR_V
     .const_xdr_len()] = UsedRefDataInner::spec_xdr();
 impl UsedRefDataInner {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UsedRefDataInner"),
-            fields: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UsedRefDataInner::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                soroban_sdk::xdr::ScSpecUdtStructV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"val"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UsedRefDataInner"),
+                    fields: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"val"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                        },
+                    ]),
                 },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; UsedRefDataInner::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedRefDataInner::__SPEC_XDR_VIEW.const_to_xdr()
@@ -3603,40 +3741,47 @@ pub static __SPEC_XDR_EVENT_USEDEVENTWITHREFS: [u8; UsedEventWithRefs::__SPEC_XD
     .const_xdr_len()] = UsedEventWithRefs::spec_xdr();
 impl<'a> UsedEventWithRefs<'a> {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::EventV0(soroban_sdk::xdr::ScSpecEventV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"UsedEventWithRefs",
-            )),
-            prefix_topics: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSymbolView(
-                soroban_sdk::xdr::StringMView::new(b"used_event_with_refs"),
-            )]),
-            params: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecEventParamV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_spec_shaking_v2::UsedEventWithRefs"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::EventV0(
+                soroban_sdk::xdr::ScSpecEventV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"kind"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                            name: soroban_sdk::xdr::StringMView::new(b"UsedRefTopicType"),
-                            id: <UsedRefTopicType>::spec_type_id(),
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"UsedEventWithRefs",
+                    )),
+                    prefix_topics: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                            b"used_event_with_refs",
+                        )),
+                    ]),
+                    params: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecEventParamV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"kind"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                    name: soroban_sdk::xdr::StringMView::new(b"UsedRefTopicType"),
+                                    id: <UsedRefTopicType>::spec_type_id(),
+                                },
+                            ),
+                            location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
                         },
-                    ),
-                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
-                },
-                soroban_sdk::xdr::ScSpecEventParamV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"payload"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                            name: soroban_sdk::xdr::StringMView::new(b"UsedRefDataType"),
-                            id: <UsedRefDataType>::spec_type_id(),
+                        soroban_sdk::xdr::ScSpecEventParamV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"payload"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                    name: soroban_sdk::xdr::StringMView::new(b"UsedRefDataType"),
+                                    id: <UsedRefDataType>::spec_type_id(),
+                                },
+                            ),
+                            location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
                         },
-                    ),
-                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                    ]),
+                    data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
                 },
-            ]),
-            data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
+            ),
         });
     pub const fn spec_xdr() -> [u8; UsedEventWithRefs::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedEventWithRefs::__SPEC_XDR_VIEW.const_to_xdr()
@@ -3729,17 +3874,22 @@ pub static __SPEC_XDR_TYPE_USEDTUPLEELEMENT: [u8; UsedTupleElement::__SPEC_XDR_V
     .const_xdr_len()] = UsedTupleElement::spec_xdr();
 impl UsedTupleElement {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UsedTupleElement"),
-            fields: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UsedTupleElement::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                soroban_sdk::xdr::ScSpecUdtStructV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"val"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UsedTupleElement"),
+                    fields: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"val"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                        },
+                    ]),
                 },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; UsedTupleElement::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedTupleElement::__SPEC_XDR_VIEW.const_to_xdr()
@@ -3853,17 +4003,22 @@ pub static __SPEC_XDR_TYPE_USEDTUPLERETURNELEMENT: [u8; UsedTupleReturnElement::
     .const_xdr_len()] = UsedTupleReturnElement::spec_xdr();
 impl UsedTupleReturnElement {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UsedTupleReturnElement"),
-            fields: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UsedTupleReturnElement::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                soroban_sdk::xdr::ScSpecUdtStructV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"val"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UsedTupleReturnElement"),
+                    fields: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"val"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                        },
+                    ]),
                 },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; UsedTupleReturnElement::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedTupleReturnElement::__SPEC_XDR_VIEW.const_to_xdr()
@@ -3979,17 +4134,22 @@ pub static __SPEC_XDR_TYPE_USEDVECINNERVECELEMENT: [u8; UsedVecInnerVecElement::
     .const_xdr_len()] = UsedVecInnerVecElement::spec_xdr();
 impl UsedVecInnerVecElement {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UsedVecInnerVecElement"),
-            fields: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UsedVecInnerVecElement::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                soroban_sdk::xdr::ScSpecUdtStructV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"val"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UsedVecInnerVecElement"),
+                    fields: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"val"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                        },
+                    ]),
                 },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; UsedVecInnerVecElement::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedVecInnerVecElement::__SPEC_XDR_VIEW.const_to_xdr()
@@ -4105,17 +4265,22 @@ pub static __SPEC_XDR_TYPE_USEDVECINNERELEMENT: [u8; UsedVecInnerElement::__SPEC
     .const_xdr_len()] = UsedVecInnerElement::spec_xdr();
 impl UsedVecInnerElement {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UsedVecInnerElement"),
-            fields: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UsedVecInnerElement::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                soroban_sdk::xdr::ScSpecUdtStructV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"val"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UsedVecInnerElement"),
+                    fields: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"val"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                        },
+                    ]),
                 },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; UsedVecInnerElement::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedVecInnerElement::__SPEC_XDR_VIEW.const_to_xdr()
@@ -4241,43 +4406,50 @@ pub static __SPEC_XDR_TYPE_USEDVECELEMENTNESTED: [u8; UsedVecElementNested::__SP
     .const_xdr_len()] = UsedVecElementNested::spec_xdr();
 impl UsedVecElementNested {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UsedVecElementNested"),
-            fields: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UsedVecElementNested::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                soroban_sdk::xdr::ScSpecUdtStructV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"inner"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                            name: soroban_sdk::xdr::StringMView::new(b"UsedVecInnerElement"),
-                            id: <UsedVecInnerElement>::spec_type_id(),
-                        },
-                    ),
-                },
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"val"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
-                },
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"vec_inner"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
-                        &soroban_sdk::xdr::ScSpecTypeVecView {
-                            element_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UsedVecElementNested"),
+                    fields: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"inner"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
                                 soroban_sdk::xdr::ScSpecTypeUdtv2View {
                                     name: soroban_sdk::xdr::StringMView::new(
-                                        b"UsedVecInnerVecElement",
+                                        b"UsedVecInnerElement",
                                     ),
-                                    id: <UsedVecInnerVecElement>::spec_type_id(),
+                                    id: <UsedVecInnerElement>::spec_type_id(),
                                 },
                             ),
                         },
-                    ),
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"val"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                        },
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"vec_inner"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
+                                &soroban_sdk::xdr::ScSpecTypeVecView {
+                                    element_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                            name: soroban_sdk::xdr::StringMView::new(
+                                                b"UsedVecInnerVecElement",
+                                            ),
+                                            id: <UsedVecInnerVecElement>::spec_type_id(),
+                                        },
+                                    ),
+                                },
+                            ),
+                        },
+                    ]),
                 },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; UsedVecElementNested::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedVecElementNested::__SPEC_XDR_VIEW.const_to_xdr()
@@ -4404,17 +4576,22 @@ pub static __SPEC_XDR_TYPE_USEDNONPUBSTRUCT: [u8; UsedNonPubStruct::__SPEC_XDR_V
     .const_xdr_len()] = UsedNonPubStruct::spec_xdr();
 impl UsedNonPubStruct {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UsedNonPubStruct"),
-            fields: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UsedNonPubStruct::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                soroban_sdk::xdr::ScSpecUdtStructV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"val"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UsedNonPubStruct"),
+                    fields: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"val"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                        },
+                    ]),
                 },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; UsedNonPubStruct::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedNonPubStruct::__SPEC_XDR_VIEW.const_to_xdr()
@@ -4521,20 +4698,23 @@ pub static __SPEC_XDR_TYPE_USEDNONPUBERROR: [u8; UsedNonPubError::__SPEC_XDR_VIE
     UsedNonPubError::spec_xdr();
 impl UsedNonPubError {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtErrorEnumV0(
-            soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
-                doc: soroban_sdk::xdr::StringMView::new(b""),
-                lib: soroban_sdk::xdr::StringMView::new(b""),
-                name: soroban_sdk::xdr::StringMView::new(b"UsedNonPubError"),
-                cases: soroban_sdk::xdr::VecMView::new(&[
-                    soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"Fail"),
-                        value: 1u32,
-                    },
-                ]),
-            },
-        );
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UsedNonPubError::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtErrorEnumV0(
+                soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UsedNonPubError"),
+                    cases: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"Fail"),
+                            value: 1u32,
+                        },
+                    ]),
+                },
+            ),
+        });
     pub const fn spec_xdr() -> [u8; UsedNonPubError::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedNonPubError::__SPEC_XDR_VIEW.const_to_xdr()
     }
@@ -4705,22 +4885,27 @@ pub static __SPEC_XDR_TYPE_USEDRECURSIVEROOT: [u8; UsedRecursiveRoot::__SPEC_XDR
     .const_xdr_len()] = UsedRecursiveRoot::spec_xdr();
 impl UsedRecursiveRoot {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UsedRecursiveRoot"),
-            fields: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UsedRecursiveRoot::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                soroban_sdk::xdr::ScSpecUdtStructV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"val"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                            name: soroban_sdk::xdr::StringMView::new(b"UsedRecursiveNode"),
-                            id: <UsedRecursiveNode>::spec_type_id(),
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UsedRecursiveRoot"),
+                    fields: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"val"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                    name: soroban_sdk::xdr::StringMView::new(b"UsedRecursiveNode"),
+                                    id: <UsedRecursiveNode>::spec_type_id(),
+                                },
+                            ),
                         },
-                    ),
+                    ]),
                 },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; UsedRecursiveRoot::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedRecursiveRoot::__SPEC_XDR_VIEW.const_to_xdr()
@@ -4856,40 +5041,47 @@ pub static __SPEC_XDR_TYPE_USEDRECURSIVENODE: [u8; UsedRecursiveNode::__SPEC_XDR
     .const_xdr_len()] = UsedRecursiveNode::spec_xdr();
 impl UsedRecursiveNode {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UsedRecursiveNode"),
-            cases: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
-                    soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"NotRecursive"),
-                        type_: soroban_sdk::xdr::VecMView::new(&[
-                            soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                                    name: soroban_sdk::xdr::StringMView::new(b"UsedLeaf"),
-                                    id: <UsedLeaf>::spec_type_id(),
-                                },
-                            ),
-                        ]),
-                    },
-                ),
-                soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
-                    soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"Recursive"),
-                        type_: soroban_sdk::xdr::VecMView::new(&[
-                            soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                                    name: soroban_sdk::xdr::StringMView::new(b"UsedRecursiveLeaf"),
-                                    id: <UsedRecursiveLeaf>::spec_type_id(),
-                                },
-                            ),
-                        ]),
-                    },
-                ),
-            ]),
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UsedRecursiveNode::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtUnionV0(
+                soroban_sdk::xdr::ScSpecUdtUnionV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UsedRecursiveNode"),
+                    cases: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
+                            soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"NotRecursive"),
+                                type_: soroban_sdk::xdr::VecMView::new(&[
+                                    soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                            name: soroban_sdk::xdr::StringMView::new(b"UsedLeaf"),
+                                            id: <UsedLeaf>::spec_type_id(),
+                                        },
+                                    ),
+                                ]),
+                            },
+                        ),
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
+                            soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"Recursive"),
+                                type_: soroban_sdk::xdr::VecMView::new(&[
+                                    soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                            name: soroban_sdk::xdr::StringMView::new(
+                                                b"UsedRecursiveLeaf",
+                                            ),
+                                            id: <UsedRecursiveLeaf>::spec_type_id(),
+                                        },
+                                    ),
+                                ]),
+                            },
+                        ),
+                    ]),
+                },
+            ),
         });
     pub const fn spec_xdr() -> [u8; UsedRecursiveNode::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedRecursiveNode::__SPEC_XDR_VIEW.const_to_xdr()
@@ -5040,26 +5232,33 @@ pub static __SPEC_XDR_TYPE_USEDRECURSIVELEAF: [u8; UsedRecursiveLeaf::__SPEC_XDR
     .const_xdr_len()] = UsedRecursiveLeaf::spec_xdr();
 impl UsedRecursiveLeaf {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UsedRecursiveLeaf"),
-            fields: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UsedRecursiveLeaf::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                soroban_sdk::xdr::ScSpecUdtStructV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"val"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
-                        &soroban_sdk::xdr::ScSpecTypeVecView {
-                            element_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                                    name: soroban_sdk::xdr::StringMView::new(b"UsedRecursiveRoot"),
-                                    id: <UsedRecursiveRoot>::spec_type_id(),
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UsedRecursiveLeaf"),
+                    fields: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"val"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
+                                &soroban_sdk::xdr::ScSpecTypeVecView {
+                                    element_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                            name: soroban_sdk::xdr::StringMView::new(
+                                                b"UsedRecursiveRoot",
+                                            ),
+                                            id: <UsedRecursiveRoot>::spec_type_id(),
+                                        },
+                                    ),
                                 },
                             ),
                         },
-                    ),
+                    ]),
                 },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; UsedRecursiveLeaf::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedRecursiveLeaf::__SPEC_XDR_VIEW.const_to_xdr()
@@ -5168,17 +5367,22 @@ pub static __SPEC_XDR_TYPE_USEDLEAF: [u8; UsedLeaf::__SPEC_XDR_VIEW.const_xdr_le
     UsedLeaf::spec_xdr();
 impl UsedLeaf {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UsedLeaf"),
-            fields: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UsedLeaf::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                soroban_sdk::xdr::ScSpecUdtStructV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"val"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UsedLeaf"),
+                    fields: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"val"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                        },
+                    ]),
                 },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; UsedLeaf::__SPEC_XDR_VIEW.const_xdr_len()] {
         UsedLeaf::__SPEC_XDR_VIEW.const_to_xdr()
@@ -5240,7 +5444,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedLeaf> for soroban_sdk::Val {
     }
 }
 mod wasm_imported {
-    pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01*\x07`\x02~~\x01~`\x03~~~\x01~`\x01~\x01~`\x00\x01~`\x02\x7f\x7f\x01~`\x04\x7f\x7f\x7f\x7f\x01~`\x02\x7f~\x00\x02%\x06\x01b\x01j\x00\x00\x01x\x011\x00\x00\x01v\x01g\x00\x00\x01m\x019\x00\x01\x01i\x012\x00\x02\x01i\x011\x00\x02\x03\x0c\x0b\x03\x04\x03\x02\x00\x05\x03\x00\x00\x06\x06\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x82\x80\xc0\x00\x0b\x7f\x00A\x80\x81\xc0\x00\x0b\x7f\x00A\x80\x81\xc0\x00\x0b\x07\x8e\x01\x0b\x06memory\x02\x00\tfn_enum_a\x00\x06\rfn_enum_int_a\x00\x08\nfn_error_a\x00\t\nfn_event_a\x00\n\nfn_event_d\x00\x0c\x0bfn_struct_a\x00\r\x11fn_struct_tuple_a\x00\x0e\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\x8d\n\x0b\x95\x02\x03\x01\x7f\x01~\x03\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\x00-\x00\x82\x80\xc0\x80\x00\x1aB\x00!\x01A~!\x02\x03~\x02@\x02@\x02@\x02@\x02@ \x02E\r\x00A\x01!\x03 \x02A\x82\x80\xc0\x80\x00j-\x00\x00\"\x04A\xdf\x00F\r\x04 \x04APjA\xff\x01qA\nI\r\x02 \x04A\xbf\x7fjA\xff\x01qA\x1aI\r\x03\x02@ \x04A\x9f\x7fjA\xff\x01qA\x1aO\r\x00 \x04AEj!\x03\x0c\x05\x0b \x00 \x04\xadB\x08\x86B\x01\x847\x03\x00A\x80\x80\xc0\x80\x00\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x80\x80\x80\x80\x00!\x01\x0c\x01\x0b \x00 \x01B\x08\x86B\x0e\x84\"\x017\x02\x04\x0b \x00 \x017\x03\x00 \x00A\x01\x10\x87\x80\x80\x80\x00!\x01 \x00A\x10j$\x80\x80\x80\x80\x00 \x01\x0f\x0b \x04ARj!\x03\x0c\x01\x0b \x04AKj!\x03\x0b \x01B\x06\x86 \x03\xadB\xff\x01\x83\x84!\x01 \x02A\x01j!\x02\x0c\x00\x0b\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x82\x80\x80\x80\x00\x0b\x12\x00A\x00-\x00\xc8\x80\xc0\x80\x00\x1aB\x84\x80\x80\x800\x0b4\x00\x02@ \x00B\xff\x01\x83B\x04Q\r\x00\x00\x0bA\x00-\x00\x90\x80\xc0\x80\x00\x1aB\x83\x80\x80\x80  \x00B\x84\x80\x80\x80p\x83 \x00B\x80\x80\x80\x80\x10T\x1b\x0b\xe6\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcd\x00R\r\x00 \x01B\xff\x01\x83B\xc9\x00R\r\x00A\x00!\x03A\x00-\x00\x9e\x80\xc0\x80\x00\x1a \x02 \x007\x03\x08 \x02B\x8e\xcc\xc1\xfc\xac\xdd\xab\x017\x03\x00\x03@\x02@ \x03A\x10G\r\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02A\x10j \x03j \x02 \x03j)\x03\x007\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x02A\x10jA\x02\x10\x87\x80\x80\x80\x00!\x00 \x02 \x017\x03\x10 \x00A\xf8\x80\xc0\x80\x00A\x01 \x02A\x10jA\x01\x10\x8b\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x02A j$\x80\x80\x80\x80\x00B\x02\x0f\x0b \x02A\x10j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b\x00\x0b.\x00\x02@ \x01 \x03F\r\x00\x00\x0b \x00\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x83\x80\x80\x80\x00\x0b\x91\x01\x03\x01\x7f\x01~\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\x00-\x00\xac\x80\xc0\x80\x00\x1a \x00B\x8e\xd2\xc1\xfc\xac\xdd\xab\x017\x03\x00B\x02!\x01A\x01!\x02\x02@\x03@ \x02E\r\x01 \x02A\x7fj!\x02B\x8e\xd2\xc1\xfc\xac\xdd\xab\x01!\x01\x0c\x00\x0b\x0b \x00 \x017\x03\x08 \x00A\x08jA\x01\x10\x87\x80\x80\x80\x00A\x04A\x00 \x00A\x08jA\x00\x10\x8b\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\x83\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\x04R\r\x00A\x01A\x02A\x00 \x01\xa7A\xff\x01q\"\x03\x1b \x03A\x01F\x1b\"\x03A\x02F\r\x00A\x00-\x00\xba\x80\xc0\x80\x00\x1a \x02 \x03\xad7\x03\x08 \x02 \x00B\x84\x80\x80\x80p\x837\x03\x00A\xe8\x80\xc0\x80\x00A\x02 \x02A\x02\x10\x8b\x80\x80\x80\x00!\x00 \x02A\x10j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b\xbc\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00 \x02A\x10j \x00\x10\x8f\x80\x80\x80\x00\x02@ \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x8f\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x01A\x00-\x00\xd6\x80\xc0\x80\x00\x1a \x02A\x10j \x00\x10\x90\x80\x80\x80\x00 \x02(\x02\x10\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x90\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02 \x02)\x03\x187\x03\x08 \x02 \x007\x03\x00 \x02A\x02\x10\x87\x80\x80\x80\x00!\x00 \x02A j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b]\x02\x01\x7f\x01~\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc1\x00F\r\x00\x02@ \x02A\x07F\r\x00B\x01!\x03B\x83\x90\x80\x80\x80\x01!\x01\x0c\x02\x0b \x01B\x08\x87!\x01B\x00!\x03\x0c\x01\x0bB\x00!\x03 \x01\x10\x84\x80\x80\x80\x00!\x01\x0b \x00 \x037\x03\x00 \x00 \x017\x03\x08\x0bF\x00\x02@\x02@ \x01B\x80\x80\x80\x80\x80\x80\x80\xc0\x00|B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x01B\x08\x86B\x07\x84!\x01\x0c\x01\x0b \x01\x10\x85\x80\x80\x80\x00!\x01\x0b \x00B\x007\x03\x00 \x00 \x017\x03\x08\x0b\x0b\x8a\x01\x01\x00A\x80\x80\xc0\x00\x0b\x80\x01V2SpEcV1\xa2=N\xc1p\x95\x90\xb2SpEcV1\xe9R\xa7\xe8b\x99\xa2\xc3SpEcV1K\xe6\x8ej\x19\x9en\xbdSpEcV1\x15\xf0Wx\x15\x83\xc0:SpEcV1\xb6\x1c\xfd\xdfhY-dSpEcV1V]\x80\\~\x1a\x08/SpEcV1\xcf)\x97]S\xb2\xfd)f1f2d\x00\x10\x00\x02\x00\x00\x00f\x00\x10\x00\x02\x00\x00\x00f\x00\x10\x00\x02\x00\x00\x00\x00\xab%\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\tfn_enum_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x05EnumA\x00\x00\x00Q\xd3 \x1a\x06\xca\xb8\xfa\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_error_a\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05input\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd1\x00\x00\x00\x06ErrorA\x00\x00\x97\xeb\x1f\x08\xc2Y(f\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_event_a\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_event_d\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bfn_struct_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x07StructA\x00\xa85\xf3\xb1\x81\xa4;E\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rfn_enum_int_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x08EnumIntA\xcf\xe3\x95\x8f\x12\xe3\xffs\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11fn_struct_tuple_a\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x0cStructTupleA\xf7(\x81\xa1\xd8\xc0\x11\xcd\x00\x00\x00\x02\x00\x00\x00\xe3Context of a single authorized call performed by an address.\n\nCustom account contracts that implement `__check_auth` special function\nreceive a list of `Context` values corresponding to all the calls that\nneed to be authorized.\x00\x00\x00\x00\x00\x00\x00\x00\x07Context\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x14Contract invocation.\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x0fContractContext\x00Zc\xa9U\xe4\xf7\xa8\x8b\x00\x00\x00\x01\x00\x00\x00=Contract that has a constructor with no arguments is created.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x1bCreateContractHostFnContext\x00\xf4\xb8\xe9\xd5\xb0\x84\xaa\xce\x00\x00\x00\x01\x00\x00\x00DContract that has a constructor with 1 or more arguments is created.\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\xc6\xd7\xe5J\x9d\x8f\x11s\x00\x00\x00\x01\x00\x00\x00\xbdAuthorization context of a single contract call.\n\nThis struct corresponds to a `require_auth_for_args` call for an address\nfrom `contract` function with `fn_name` name and `args` arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08contract\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x07fn_name\x00\x00\x00\x00\x11\x00\x00\x00\x02\x00\x00\x00_Contract executable used for creating a new contract and used in\n`CreateContractHostFnContext`.\x00\x00\x00\x00\x00\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x008Value of contract node in InvokerContractAuthEntry tree.\x00\x00\x00\x00\x00\x00\x00\x15SubContractInvocation\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x07\xd1\x00\x00\x00\x0fContractContext\x00Zc\xa9U\xe4\xf7\xa8\x8b\x00\x00\x00\x00\x00\x00\x00\x0fsub_invocations\x00\x00\x00\x03\xea\x00\x00\x07\xd1\x00\x00\x00\x18InvokerContractAuthEntry`\xc1\x90\xeb\xac\xf1AN\x00\x00\x00\x02\x00\x00\x01/A node in the tree of authorizations performed on behalf of the current\ncontract as invoker of the contracts deeper in the call stack.\n\nThis is used as an argument of `authorize_as_current_contract` host function.\n\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\ncurrent contract.\x00\x00\x00\x00\x00\x00\x00\x00\x18InvokerContractAuthEntry\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x12Invoke a contract.\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x15SubContractInvocation\x00\x00\x00`\x85\xe2\x08OZQ\x10\x00\x00\x00\x01\x00\x00\x005Create a contract passing 0 arguments to constructor.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x1bCreateContractHostFnContext\x00\xf4\xb8\xe9\xd5\xb0\x84\xaa\xce\x00\x00\x00\x01\x00\x00\x00=Create a contract passing 0 or more arguments to constructor.\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\xc6\xd7\xe5J\x9d\x8f\x11s\x00\x00\x00\x01\x00\x00\x00vAuthorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd1\x00\x00\x00\x12ContractExecutable\x00\x00\xb1\x0etP\xeaT\x89\xb2\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\xd6Authorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\nThis is the same as `CreateContractHostFnContext`, but also has\ncontract constructor arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x10constructor_args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd1\x00\x00\x00\x12ContractExecutable\x00\x00\xb1\x0etP\xeaT\x89\xb2\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nExecutable\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStellarAsset\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Account\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumB\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x07\x00\x00\x00\x07\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumC\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x07StructA\x00\xa85\xf3\xb1\x81\xa4;E\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x0cStructTupleA\xf7(\x81\xa1\xd8\xc0\x11\xcd\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorB\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x0c\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorC\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00e\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00f\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventA\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventB\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_b\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventC\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_c\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventD\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_d\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructA\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructB\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructC\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x03\xea\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntA\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntB\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntC\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\xc8\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x01,\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleB\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleC\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x0b\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1c\x00\x00\x00\x00\x00O\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12rssdk_spec_shaking\x00\x00\x00\x00\x00\x012\x00\x00\x00";
+    pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01*\x07`\x02~~\x01~`\x03~~~\x01~`\x01~\x01~`\x00\x01~`\x02\x7f\x7f\x01~`\x04\x7f\x7f\x7f\x7f\x01~`\x02\x7f~\x00\x02%\x06\x01b\x01j\x00\x00\x01x\x011\x00\x00\x01v\x01g\x00\x00\x01m\x019\x00\x01\x01i\x012\x00\x02\x01i\x011\x00\x02\x03\x0c\x0b\x03\x04\x03\x02\x00\x05\x03\x00\x00\x06\x06\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x82\x80\xc0\x00\x0b\x7f\x00A\x80\x81\xc0\x00\x0b\x7f\x00A\x80\x81\xc0\x00\x0b\x07\x8e\x01\x0b\x06memory\x02\x00\tfn_enum_a\x00\x06\rfn_enum_int_a\x00\x08\nfn_error_a\x00\t\nfn_event_a\x00\n\nfn_event_d\x00\x0c\x0bfn_struct_a\x00\r\x11fn_struct_tuple_a\x00\x0e\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\x8d\n\x0b\x95\x02\x03\x01\x7f\x01~\x03\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\x00-\x00\x82\x80\xc0\x80\x00\x1aB\x00!\x01A~!\x02\x03~\x02@\x02@\x02@\x02@\x02@ \x02E\r\x00A\x01!\x03 \x02A\x82\x80\xc0\x80\x00j-\x00\x00\"\x04A\xdf\x00F\r\x04 \x04APjA\xff\x01qA\nI\r\x02 \x04A\xbf\x7fjA\xff\x01qA\x1aI\r\x03\x02@ \x04A\x9f\x7fjA\xff\x01qA\x1aO\r\x00 \x04AEj!\x03\x0c\x05\x0b \x00 \x04\xadB\x08\x86B\x01\x847\x03\x00A\x80\x80\xc0\x80\x00\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x80\x80\x80\x80\x00!\x01\x0c\x01\x0b \x00 \x01B\x08\x86B\x0e\x84\"\x017\x02\x04\x0b \x00 \x017\x03\x00 \x00A\x01\x10\x87\x80\x80\x80\x00!\x01 \x00A\x10j$\x80\x80\x80\x80\x00 \x01\x0f\x0b \x04ARj!\x03\x0c\x01\x0b \x04AKj!\x03\x0b \x01B\x06\x86 \x03\xadB\xff\x01\x83\x84!\x01 \x02A\x01j!\x02\x0c\x00\x0b\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x82\x80\x80\x80\x00\x0b\x12\x00A\x00-\x00\xc8\x80\xc0\x80\x00\x1aB\x84\x80\x80\x800\x0b4\x00\x02@ \x00B\xff\x01\x83B\x04Q\r\x00\x00\x0bA\x00-\x00\x90\x80\xc0\x80\x00\x1aB\x83\x80\x80\x80  \x00B\x84\x80\x80\x80p\x83 \x00B\x80\x80\x80\x80\x10T\x1b\x0b\xe6\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcd\x00R\r\x00 \x01B\xff\x01\x83B\xc9\x00R\r\x00A\x00!\x03A\x00-\x00\x9e\x80\xc0\x80\x00\x1a \x02 \x007\x03\x08 \x02B\x8e\xcc\xc1\xfc\xac\xdd\xab\x017\x03\x00\x03@\x02@ \x03A\x10G\r\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02A\x10j \x03j \x02 \x03j)\x03\x007\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x02A\x10jA\x02\x10\x87\x80\x80\x80\x00!\x00 \x02 \x017\x03\x10 \x00A\xf8\x80\xc0\x80\x00A\x01 \x02A\x10jA\x01\x10\x8b\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x02A j$\x80\x80\x80\x80\x00B\x02\x0f\x0b \x02A\x10j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b\x00\x0b.\x00\x02@ \x01 \x03F\r\x00\x00\x0b \x00\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x83\x80\x80\x80\x00\x0b\x91\x01\x03\x01\x7f\x01~\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\x00-\x00\xac\x80\xc0\x80\x00\x1a \x00B\x8e\xd2\xc1\xfc\xac\xdd\xab\x017\x03\x00B\x02!\x01A\x01!\x02\x02@\x03@ \x02E\r\x01 \x02A\x7fj!\x02B\x8e\xd2\xc1\xfc\xac\xdd\xab\x01!\x01\x0c\x00\x0b\x0b \x00 \x017\x03\x08 \x00A\x08jA\x01\x10\x87\x80\x80\x80\x00A\x04A\x00 \x00A\x08jA\x00\x10\x8b\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\x83\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\x04R\r\x00A\x01A\x02A\x00 \x01\xa7A\xff\x01q\"\x03\x1b \x03A\x01F\x1b\"\x03A\x02F\r\x00A\x00-\x00\xba\x80\xc0\x80\x00\x1a \x02 \x03\xad7\x03\x08 \x02 \x00B\x84\x80\x80\x80p\x837\x03\x00A\xe8\x80\xc0\x80\x00A\x02 \x02A\x02\x10\x8b\x80\x80\x80\x00!\x00 \x02A\x10j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b\xbc\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00 \x02A\x10j \x00\x10\x8f\x80\x80\x80\x00\x02@ \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x8f\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x01A\x00-\x00\xd6\x80\xc0\x80\x00\x1a \x02A\x10j \x00\x10\x90\x80\x80\x80\x00 \x02(\x02\x10\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x90\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02 \x02)\x03\x187\x03\x08 \x02 \x007\x03\x00 \x02A\x02\x10\x87\x80\x80\x80\x00!\x00 \x02A j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b]\x02\x01\x7f\x01~\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc1\x00F\r\x00\x02@ \x02A\x07F\r\x00B\x01!\x03B\x83\x90\x80\x80\x80\x01!\x01\x0c\x02\x0b \x01B\x08\x87!\x01B\x00!\x03\x0c\x01\x0bB\x00!\x03 \x01\x10\x84\x80\x80\x80\x00!\x01\x0b \x00 \x037\x03\x00 \x00 \x017\x03\x08\x0bF\x00\x02@\x02@ \x01B\x80\x80\x80\x80\x80\x80\x80\xc0\x00|B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x01B\x08\x86B\x07\x84!\x01\x0c\x01\x0b \x01\x10\x85\x80\x80\x80\x00!\x01\x0b \x00B\x007\x03\x00 \x00 \x017\x03\x08\x0b\x0b\x8a\x01\x01\x00A\x80\x80\xc0\x00\x0b\x80\x01V2SpEcV1\x99x\xa3\xbfh\x95\x12YSpEcV1\xc6\xdd!#\xe0\x95\xa4\xb8SpEcV1\x8c\xac\xcb\x97:J|7SpEcV1}\x86\xed\xc1\xdd\xb6\xe5\rSpEcV1\nF\x8e\xe4vj\xbf9SpEcV1\x0f\x96\x9b\x86ol\x9b\x07SpEcV1\x01\x9f/\x11\x17*\x04\xa4f1f2d\x00\x10\x00\x02\x00\x00\x00f\x00\x10\x00\x02\x00\x00\x00f\x00\x10\x00\x02\x00\x00\x00\x00\xc3(\x0econtractspecv0\x00\x00\x00\x069\xf7\x06\xf1\xc0j\xc0\x94\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\tfn_enum_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x05EnumA\x00\x00\x00Q\xd3 \x1a\x06\xca\xb8\xfa\x00\x00\x00\x06\xf9\x98\xf6\x87AqU\xe2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_error_a\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05input\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd1\x00\x00\x00\x06ErrorA\x00\x00\x97\xeb\x1f\x08\xc2Y(f\x00\x00\x00\x06\xc7$\x8d\xb49\xaf0\x9a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_event_a\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x06\xd0\x12\xe6\xbb\x1e\xca.4\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_event_d\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06\xf4\xeb\n\xd5A\x03^/\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bfn_struct_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x07StructA\x00\xa85\xf3\xb1\x81\xa4;E\x00\x00\x00\x06U<Z\x96\x88t\xc4\xe6\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rfn_enum_int_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x08EnumIntA\xcf\xe3\x95\x8f\x12\xe3\xffs\x00\x00\x00\x06q\xb3\x12\xcf\x81\x1f#\xb4\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11fn_struct_tuple_a\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x0cStructTupleA\xf7(\x81\xa1\xd8\xc0\x11\xcd\x00\x00\x00\x06%Fl\xc5.\x15\x83G\x00\x00\x00\x02\x00\x00\x00\xe3Context of a single authorized call performed by an address.\n\nCustom account contracts that implement `__check_auth` special function\nreceive a list of `Context` values corresponding to all the calls that\nneed to be authorized.\x00\x00\x00\x00\x00\x00\x00\x00\x07Context\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x14Contract invocation.\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x0fContractContext\x00Zc\xa9U\xe4\xf7\xa8\x8b\x00\x00\x00\x01\x00\x00\x00=Contract that has a constructor with no arguments is created.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x1bCreateContractHostFnContext\x00\xf4\xb8\xe9\xd5\xb0\x84\xaa\xce\x00\x00\x00\x01\x00\x00\x00DContract that has a constructor with 1 or more arguments is created.\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\xc6\xd7\xe5J\x9d\x8f\x11s\x00\x00\x00\x06Zc\xa9U\xe4\xf7\xa8\x8b\x00\x00\x00\x01\x00\x00\x00\xbdAuthorization context of a single contract call.\n\nThis struct corresponds to a `require_auth_for_args` call for an address\nfrom `contract` function with `fn_name` name and `args` arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08contract\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x07fn_name\x00\x00\x00\x00\x11\x00\x00\x00\x06\xb1\x0etP\xeaT\x89\xb2\x00\x00\x00\x02\x00\x00\x00_Contract executable used for creating a new contract and used in\n`CreateContractHostFnContext`.\x00\x00\x00\x00\x00\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x06`\x85\xe2\x08OZQ\x10\x00\x00\x00\x01\x00\x00\x008Value of contract node in InvokerContractAuthEntry tree.\x00\x00\x00\x00\x00\x00\x00\x15SubContractInvocation\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x07\xd1\x00\x00\x00\x0fContractContext\x00Zc\xa9U\xe4\xf7\xa8\x8b\x00\x00\x00\x00\x00\x00\x00\x0fsub_invocations\x00\x00\x00\x03\xea\x00\x00\x07\xd1\x00\x00\x00\x18InvokerContractAuthEntry`\xc1\x90\xeb\xac\xf1AN\x00\x00\x00\x06`\xc1\x90\xeb\xac\xf1AN\x00\x00\x00\x02\x00\x00\x01/A node in the tree of authorizations performed on behalf of the current\ncontract as invoker of the contracts deeper in the call stack.\n\nThis is used as an argument of `authorize_as_current_contract` host function.\n\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\ncurrent contract.\x00\x00\x00\x00\x00\x00\x00\x00\x18InvokerContractAuthEntry\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x12Invoke a contract.\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x15SubContractInvocation\x00\x00\x00`\x85\xe2\x08OZQ\x10\x00\x00\x00\x01\x00\x00\x005Create a contract passing 0 arguments to constructor.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x1bCreateContractHostFnContext\x00\xf4\xb8\xe9\xd5\xb0\x84\xaa\xce\x00\x00\x00\x01\x00\x00\x00=Create a contract passing 0 or more arguments to constructor.\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\xc6\xd7\xe5J\x9d\x8f\x11s\x00\x00\x00\x06\xf4\xb8\xe9\xd5\xb0\x84\xaa\xce\x00\x00\x00\x01\x00\x00\x00vAuthorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd1\x00\x00\x00\x12ContractExecutable\x00\x00\xb1\x0etP\xeaT\x89\xb2\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x06\xc6\xd7\xe5J\x9d\x8f\x11s\x00\x00\x00\x01\x00\x00\x00\xd6Authorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\nThis is the same as `CreateContractHostFnContext`, but also has\ncontract constructor arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x10constructor_args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd1\x00\x00\x00\x12ContractExecutable\x00\x00\xb1\x0etP\xeaT\x89\xb2\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x06n\x11\xfa\xcd\xde\xb1\xed\xb3\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nExecutable\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStellarAsset\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Account\x00\x00\x00\x00\x06Q\xd3 \x1a\x06\xca\xb8\xfa\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x06<\"\x12\x9c\xb0\xce~C\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumB\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x07\x00\x00\x00\x07\x00\x00\x00\x06:D\x8e\x9f[\xbf\x94y\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumC\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x07StructA\x00\xa85\xf3\xb1\x81\xa4;E\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x0cStructTupleA\xf7(\x81\xa1\xd8\xc0\x11\xcd\x00\x00\x00\x06\x97\xeb\x1f\x08\xc2Y(f\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x06\xf6\x9d\x1d\xe3\xebW;|\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorB\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x0c\x00\x00\x00\x06\x0b\xe6{\xf3\xef\xcf\x1e\xc7\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorC\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00e\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00f\x00\x00\x00\x06\xd4\xce\x9e\x9a\xcf\x96\x04]\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventA\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x06\x17G\tt6\xc9D\xde\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventB\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_b\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x06\xd0z\x86[\xc7\xd2U\xb2\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventC\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_c\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x06,z\x98S\xad\x05\xbb\xdf\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventD\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_d\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x06\xa85\xf3\xb1\x81\xa4;E\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructA\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x06\xe1\x0f\xcb\xef\xf0\xd7\x81p\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructB\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x06\xb1vV\x1dVy~\xb7\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructC\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x03\xea\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x06\xcf\xe3\x95\x8f\x12\xe3\xffs\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntA\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x06oV\xab\xdf\x8dT^L\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntB\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x06\xbbe\xd3/S\x05\xfe\xc6\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntC\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\xc8\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x01,\x00\x00\x00\x06\xf7(\x81\xa1\xd8\xc0\x11\xcd\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x06\xf9\x11\xd6#\xff\xc3V\xed\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleB\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x06\x8a/H\xcb\x1e \x0eS\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleC\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x0b\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1c\x00\x00\x00\x00\x00O\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12rssdk_spec_shaking\x00\x00\x00\x00\x00\x012\x00\x00\x00";
     pub trait Contract {
         fn fn_enum_a(env: soroban_sdk::Env) -> EnumA;
         fn fn_error_a(env: soroban_sdk::Env, input: u32) -> Result<u32, ErrorA>;
@@ -5631,34 +5835,37 @@ mod wasm_imported {
         .const_xdr_len()] = ContractContext::spec_xdr();
     impl ContractContext {
         const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-            soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(
-                soroban_sdk::xdr::ScSpecUdtStructV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    lib: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"ContractContext"),
-                    fields: soroban_sdk::xdr::VecMView::new(&[
-                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"args"),
-                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
-                                &soroban_sdk::xdr::ScSpecTypeVecView {
-                                    element_type: &soroban_sdk::xdr::ScSpecTypeDefView::Val,
-                                },
-                            ),
-                        },
-                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"contract"),
-                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
-                        },
-                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"fn_name"),
-                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Symbol,
-                        },
-                    ]),
-                },
-            );
+            soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+                id: ContractContext::spec_type_id(),
+                body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                    soroban_sdk::xdr::ScSpecUdtStructV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        lib: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"ContractContext"),
+                        fields: soroban_sdk::xdr::VecMView::new(&[
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"args"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
+                                    &soroban_sdk::xdr::ScSpecTypeVecView {
+                                        element_type: &soroban_sdk::xdr::ScSpecTypeDefView::Val,
+                                    },
+                                ),
+                            },
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"contract"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
+                            },
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"fn_name"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefView::Symbol,
+                            },
+                        ]),
+                    },
+                ),
+            });
         pub const fn spec_xdr() -> [u8; ContractContext::__SPEC_XDR_VIEW.const_xdr_len()] {
             ContractContext::__SPEC_XDR_VIEW.const_to_xdr()
         }
@@ -5826,41 +6033,46 @@ mod wasm_imported {
         .const_xdr_len()] = SubContractInvocation::spec_xdr();
     impl SubContractInvocation {
         const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-            soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(
-                soroban_sdk::xdr::ScSpecUdtStructV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    lib: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"SubContractInvocation"),
-                    fields: soroban_sdk::xdr::VecMView::new(&[
-                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"context"),
-                            type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                                    name: soroban_sdk::xdr::StringMView::new(b"ContractContext"),
-                                    id: <ContractContext>::spec_type_id(),
-                                },
-                            ),
-                        },
-                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"sub_invocations"),
-                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
-                                &soroban_sdk::xdr::ScSpecTypeVecView {
-                                    element_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                                            name: soroban_sdk::xdr::StringMView::new(
-                                                b"InvokerContractAuthEntry",
-                                            ),
-                                            id: <InvokerContractAuthEntry>::spec_type_id(),
-                                        },
-                                    ),
-                                },
-                            ),
-                        },
-                    ]),
-                },
-            );
+            soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+                id: SubContractInvocation::spec_type_id(),
+                body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                    soroban_sdk::xdr::ScSpecUdtStructV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        lib: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"SubContractInvocation"),
+                        fields: soroban_sdk::xdr::VecMView::new(&[
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"context"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                    soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                        name: soroban_sdk::xdr::StringMView::new(
+                                            b"ContractContext",
+                                        ),
+                                        id: <ContractContext>::spec_type_id(),
+                                    },
+                                ),
+                            },
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"sub_invocations"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
+                                    &soroban_sdk::xdr::ScSpecTypeVecView {
+                                        element_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                            soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                                name: soroban_sdk::xdr::StringMView::new(
+                                                    b"InvokerContractAuthEntry",
+                                                ),
+                                                id: <InvokerContractAuthEntry>::spec_type_id(),
+                                            },
+                                        ),
+                                    },
+                                ),
+                            },
+                        ]),
+                    },
+                ),
+            });
         pub const fn spec_xdr() -> [u8; SubContractInvocation::__SPEC_XDR_VIEW.const_xdr_len()] {
             SubContractInvocation::__SPEC_XDR_VIEW.const_to_xdr()
         }
@@ -6022,32 +6234,37 @@ mod wasm_imported {
         CreateContractHostFnContext::spec_xdr();
     impl CreateContractHostFnContext {
         const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-            soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(
-                soroban_sdk::xdr::ScSpecUdtStructV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    lib: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"CreateContractHostFnContext"),
-                    fields: soroban_sdk::xdr::VecMView::new(&[
-                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"executable"),
-                            type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                                    name: soroban_sdk::xdr::StringMView::new(b"ContractExecutable"),
-                                    id: <ContractExecutable>::spec_type_id(),
-                                },
-                            ),
-                        },
-                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"salt"),
-                            type_: soroban_sdk::xdr::ScSpecTypeDefView::BytesN(
-                                soroban_sdk::xdr::ScSpecTypeBytesN { n: 32u32 },
-                            ),
-                        },
-                    ]),
-                },
-            );
+            soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+                id: CreateContractHostFnContext::spec_type_id(),
+                body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                    soroban_sdk::xdr::ScSpecUdtStructV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        lib: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"CreateContractHostFnContext"),
+                        fields: soroban_sdk::xdr::VecMView::new(&[
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"executable"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                    soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                        name: soroban_sdk::xdr::StringMView::new(
+                                            b"ContractExecutable",
+                                        ),
+                                        id: <ContractExecutable>::spec_type_id(),
+                                    },
+                                ),
+                            },
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"salt"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefView::BytesN(
+                                    soroban_sdk::xdr::ScSpecTypeBytesN { n: 32u32 },
+                                ),
+                            },
+                        ]),
+                    },
+                ),
+            });
         pub const fn spec_xdr() -> [u8; CreateContractHostFnContext::__SPEC_XDR_VIEW.const_xdr_len()]
         {
             CreateContractHostFnContext::__SPEC_XDR_VIEW.const_to_xdr()
@@ -6230,43 +6447,48 @@ mod wasm_imported {
         CreateContractWithConstructorHostFnContext::spec_xdr();
     impl CreateContractWithConstructorHostFnContext {
         const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-            soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(
-                soroban_sdk::xdr::ScSpecUdtStructV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    lib: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(
-                        b"CreateContractWithConstructorHostFnContext",
-                    ),
-                    fields: soroban_sdk::xdr::VecMView::new(&[
-                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"constructor_args"),
-                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
-                                &soroban_sdk::xdr::ScSpecTypeVecView {
-                                    element_type: &soroban_sdk::xdr::ScSpecTypeDefView::Val,
-                                },
-                            ),
-                        },
-                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"executable"),
-                            type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                                    name: soroban_sdk::xdr::StringMView::new(b"ContractExecutable"),
-                                    id: <ContractExecutable>::spec_type_id(),
-                                },
-                            ),
-                        },
-                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"salt"),
-                            type_: soroban_sdk::xdr::ScSpecTypeDefView::BytesN(
-                                soroban_sdk::xdr::ScSpecTypeBytesN { n: 32u32 },
-                            ),
-                        },
-                    ]),
-                },
-            );
+            soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+                id: CreateContractWithConstructorHostFnContext::spec_type_id(),
+                body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                    soroban_sdk::xdr::ScSpecUdtStructV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        lib: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(
+                            b"CreateContractWithConstructorHostFnContext",
+                        ),
+                        fields: soroban_sdk::xdr::VecMView::new(&[
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"constructor_args"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
+                                    &soroban_sdk::xdr::ScSpecTypeVecView {
+                                        element_type: &soroban_sdk::xdr::ScSpecTypeDefView::Val,
+                                    },
+                                ),
+                            },
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"executable"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                    soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                        name: soroban_sdk::xdr::StringMView::new(
+                                            b"ContractExecutable",
+                                        ),
+                                        id: <ContractExecutable>::spec_type_id(),
+                                    },
+                                ),
+                            },
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"salt"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefView::BytesN(
+                                    soroban_sdk::xdr::ScSpecTypeBytesN { n: 32u32 },
+                                ),
+                            },
+                        ]),
+                    },
+                ),
+            });
         pub const fn spec_xdr(
         ) -> [u8; CreateContractWithConstructorHostFnContext::__SPEC_XDR_VIEW.const_xdr_len()]
         {
@@ -6432,25 +6654,28 @@ mod wasm_imported {
         StructA::spec_xdr();
     impl StructA {
         const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-            soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(
-                soroban_sdk::xdr::ScSpecUdtStructV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    lib: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"StructA"),
-                    fields: soroban_sdk::xdr::VecMView::new(&[
-                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"f1"),
-                            type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
-                        },
-                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"f2"),
-                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Bool,
-                        },
-                    ]),
-                },
-            );
+            soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+                id: StructA::spec_type_id(),
+                body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                    soroban_sdk::xdr::ScSpecUdtStructV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        lib: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"StructA"),
+                        fields: soroban_sdk::xdr::VecMView::new(&[
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"f1"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                            },
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"f2"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefView::Bool,
+                            },
+                        ]),
+                    },
+                ),
+            });
         pub const fn spec_xdr() -> [u8; StructA::__SPEC_XDR_VIEW.const_xdr_len()] {
             StructA::__SPEC_XDR_VIEW.const_to_xdr()
         }
@@ -6592,25 +6817,28 @@ mod wasm_imported {
         StructB::spec_xdr();
     impl StructB {
         const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-            soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(
-                soroban_sdk::xdr::ScSpecUdtStructV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    lib: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"StructB"),
-                    fields: soroban_sdk::xdr::VecMView::new(&[
-                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"f1"),
-                            type_: soroban_sdk::xdr::ScSpecTypeDefView::I64,
-                        },
-                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"f2"),
-                            type_: soroban_sdk::xdr::ScSpecTypeDefView::String,
-                        },
-                    ]),
-                },
-            );
+            soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+                id: StructB::spec_type_id(),
+                body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                    soroban_sdk::xdr::ScSpecUdtStructV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        lib: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"StructB"),
+                        fields: soroban_sdk::xdr::VecMView::new(&[
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"f1"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefView::I64,
+                            },
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"f2"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefView::String,
+                            },
+                        ]),
+                    },
+                ),
+            });
         pub const fn spec_xdr() -> [u8; StructB::__SPEC_XDR_VIEW.const_xdr_len()] {
             StructB::__SPEC_XDR_VIEW.const_to_xdr()
         }
@@ -6752,29 +6980,32 @@ mod wasm_imported {
         StructC::spec_xdr();
     impl StructC {
         const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-            soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(
-                soroban_sdk::xdr::ScSpecUdtStructV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    lib: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"StructC"),
-                    fields: soroban_sdk::xdr::VecMView::new(&[
-                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"f1"),
-                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
-                                &soroban_sdk::xdr::ScSpecTypeVecView {
-                                    element_type: &soroban_sdk::xdr::ScSpecTypeDefView::U32,
-                                },
-                            ),
-                        },
-                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"f2"),
-                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
-                        },
-                    ]),
-                },
-            );
+            soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+                id: StructC::spec_type_id(),
+                body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                    soroban_sdk::xdr::ScSpecUdtStructV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        lib: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"StructC"),
+                        fields: soroban_sdk::xdr::VecMView::new(&[
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"f1"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
+                                    &soroban_sdk::xdr::ScSpecTypeVecView {
+                                        element_type: &soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                                    },
+                                ),
+                            },
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"f2"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
+                            },
+                        ]),
+                    },
+                ),
+            });
         pub const fn spec_xdr() -> [u8; StructC::__SPEC_XDR_VIEW.const_xdr_len()] {
             StructC::__SPEC_XDR_VIEW.const_to_xdr()
         }
@@ -6913,25 +7144,28 @@ mod wasm_imported {
         StructTupleA::spec_xdr();
     impl StructTupleA {
         const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-            soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(
-                soroban_sdk::xdr::ScSpecUdtStructV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    lib: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"StructTupleA"),
-                    fields: soroban_sdk::xdr::VecMView::new(&[
-                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"0"),
-                            type_: soroban_sdk::xdr::ScSpecTypeDefView::I64,
-                        },
-                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"1"),
-                            type_: soroban_sdk::xdr::ScSpecTypeDefView::I64,
-                        },
-                    ]),
-                },
-            );
+            soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+                id: StructTupleA::spec_type_id(),
+                body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                    soroban_sdk::xdr::ScSpecUdtStructV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        lib: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"StructTupleA"),
+                        fields: soroban_sdk::xdr::VecMView::new(&[
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"0"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefView::I64,
+                            },
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"1"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefView::I64,
+                            },
+                        ]),
+                    },
+                ),
+            });
         pub const fn spec_xdr() -> [u8; StructTupleA::__SPEC_XDR_VIEW.const_xdr_len()] {
             StructTupleA::__SPEC_XDR_VIEW.const_to_xdr()
         }
@@ -7066,25 +7300,28 @@ mod wasm_imported {
         StructTupleB::spec_xdr();
     impl StructTupleB {
         const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-            soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(
-                soroban_sdk::xdr::ScSpecUdtStructV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    lib: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"StructTupleB"),
-                    fields: soroban_sdk::xdr::VecMView::new(&[
-                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"0"),
-                            type_: soroban_sdk::xdr::ScSpecTypeDefView::U128,
-                        },
-                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"1"),
-                            type_: soroban_sdk::xdr::ScSpecTypeDefView::U128,
-                        },
-                    ]),
-                },
-            );
+            soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+                id: StructTupleB::spec_type_id(),
+                body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                    soroban_sdk::xdr::ScSpecUdtStructV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        lib: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"StructTupleB"),
+                        fields: soroban_sdk::xdr::VecMView::new(&[
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"0"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefView::U128,
+                            },
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"1"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefView::U128,
+                            },
+                        ]),
+                    },
+                ),
+            });
         pub const fn spec_xdr() -> [u8; StructTupleB::__SPEC_XDR_VIEW.const_xdr_len()] {
             StructTupleB::__SPEC_XDR_VIEW.const_to_xdr()
         }
@@ -7220,25 +7457,28 @@ mod wasm_imported {
         StructTupleC::spec_xdr();
     impl StructTupleC {
         const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-            soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(
-                soroban_sdk::xdr::ScSpecUdtStructV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    lib: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"StructTupleC"),
-                    fields: soroban_sdk::xdr::VecMView::new(&[
-                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"0"),
-                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
-                        },
-                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"1"),
-                            type_: soroban_sdk::xdr::ScSpecTypeDefView::I128,
-                        },
-                    ]),
-                },
-            );
+            soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+                id: StructTupleC::spec_type_id(),
+                body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                    soroban_sdk::xdr::ScSpecUdtStructV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        lib: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"StructTupleC"),
+                        fields: soroban_sdk::xdr::VecMView::new(&[
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"0"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
+                            },
+                            soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"1"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefView::I128,
+                            },
+                        ]),
+                    },
+                ),
+            });
         pub const fn spec_xdr() -> [u8; StructTupleC::__SPEC_XDR_VIEW.const_xdr_len()] {
             StructTupleC::__SPEC_XDR_VIEW.const_to_xdr()
         }
@@ -7441,60 +7681,63 @@ mod wasm_imported {
     pub static __SPEC_XDR_TYPE_CONTEXT: [u8; Context::__SPEC_XDR_VIEW.const_xdr_len()] =
         Context::spec_xdr();
     impl Context {
-        const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> = soroban_sdk::xdr::ScSpecEntryView::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"Context"),
-            cases: soroban_sdk::xdr::VecMView::new(
-                &[
-                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"Contract"),
-                        type_: soroban_sdk::xdr::VecMView::new(
-                            &[
-                                soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                                    name: soroban_sdk::xdr::StringMView::new(
-                                        b"ContractContext",
-                                    ),
-                                    id: <ContractContext>::spec_type_id(),
-                                }),
-                            ],
-                        ),
-                    }),
-                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(
-                            b"CreateContractHostFn",
-                        ),
-                        type_: soroban_sdk::xdr::VecMView::new(
-                            &[
-                                soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                                    name: soroban_sdk::xdr::StringMView::new(
-                                        b"CreateContractHostFnContext",
-                                    ),
-                                    id: <CreateContractHostFnContext>::spec_type_id(),
-                                }),
-                            ],
-                        ),
-                    }),
-                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(
-                            b"CreateContractWithCtorHostFn",
-                        ),
-                        type_: soroban_sdk::xdr::VecMView::new(
-                            &[
-                                soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                                    name: soroban_sdk::xdr::StringMView::new(
-                                        b"CreateContractWithConstructorHostFnContext",
-                                    ),
-                                    id: <CreateContractWithConstructorHostFnContext>::spec_type_id(),
-                                }),
-                            ],
-                        ),
-                    }),
-                ],
-            ),
+        const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> = soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: Context::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0View {
+                doc: soroban_sdk::xdr::StringMView::new(b""),
+                lib: soroban_sdk::xdr::StringMView::new(b""),
+                name: soroban_sdk::xdr::StringMView::new(b"Context"),
+                cases: soroban_sdk::xdr::VecMView::new(
+                    &[
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"Contract"),
+                            type_: soroban_sdk::xdr::VecMView::new(
+                                &[
+                                    soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                        name: soroban_sdk::xdr::StringMView::new(
+                                            b"ContractContext",
+                                        ),
+                                        id: <ContractContext>::spec_type_id(),
+                                    }),
+                                ],
+                            ),
+                        }),
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(
+                                b"CreateContractHostFn",
+                            ),
+                            type_: soroban_sdk::xdr::VecMView::new(
+                                &[
+                                    soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                        name: soroban_sdk::xdr::StringMView::new(
+                                            b"CreateContractHostFnContext",
+                                        ),
+                                        id: <CreateContractHostFnContext>::spec_type_id(),
+                                    }),
+                                ],
+                            ),
+                        }),
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(
+                                b"CreateContractWithCtorHostFn",
+                            ),
+                            type_: soroban_sdk::xdr::VecMView::new(
+                                &[
+                                    soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                        name: soroban_sdk::xdr::StringMView::new(
+                                            b"CreateContractWithConstructorHostFnContext",
+                                        ),
+                                        id: <CreateContractWithConstructorHostFnContext>::spec_type_id(),
+                                    }),
+                                ],
+                            ),
+                        }),
+                    ],
+                ),
+            }),
         });
         pub const fn spec_xdr() -> [u8; Context::__SPEC_XDR_VIEW.const_xdr_len()] {
             Context::__SPEC_XDR_VIEW.const_to_xdr()
@@ -7699,23 +7942,28 @@ mod wasm_imported {
         .const_xdr_len()] = ContractExecutable::spec_xdr();
     impl ContractExecutable {
         const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-            soroban_sdk::xdr::ScSpecEntryView::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0View {
-                doc: soroban_sdk::xdr::StringMView::new(b""),
-                lib: soroban_sdk::xdr::StringMView::new(b""),
-                name: soroban_sdk::xdr::StringMView::new(b"ContractExecutable"),
-                cases: soroban_sdk::xdr::VecMView::new(&[
-                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
-                        soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"Wasm"),
-                            type_: soroban_sdk::xdr::VecMView::new(&[
-                                soroban_sdk::xdr::ScSpecTypeDefView::BytesN(
-                                    soroban_sdk::xdr::ScSpecTypeBytesN { n: 32u32 },
-                                ),
-                            ]),
-                        },
-                    ),
-                ]),
+            soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+                id: ContractExecutable::spec_type_id(),
+                body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtUnionV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        lib: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"ContractExecutable"),
+                        cases: soroban_sdk::xdr::VecMView::new(&[
+                            soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
+                                soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
+                                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                                    name: soroban_sdk::xdr::StringMView::new(b"Wasm"),
+                                    type_: soroban_sdk::xdr::VecMView::new(&[
+                                        soroban_sdk::xdr::ScSpecTypeDefView::BytesN(
+                                            soroban_sdk::xdr::ScSpecTypeBytesN { n: 32u32 },
+                                        ),
+                                    ]),
+                                },
+                            ),
+                        ]),
+                    },
+                ),
             });
         pub const fn spec_xdr() -> [u8; ContractExecutable::__SPEC_XDR_VIEW.const_xdr_len()] {
             ContractExecutable::__SPEC_XDR_VIEW.const_to_xdr()
@@ -7951,60 +8199,63 @@ mod wasm_imported {
         InvokerContractAuthEntry::__SPEC_XDR_VIEW.const_xdr_len()] =
         InvokerContractAuthEntry::spec_xdr();
     impl InvokerContractAuthEntry {
-        const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> = soroban_sdk::xdr::ScSpecEntryView::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"InvokerContractAuthEntry"),
-            cases: soroban_sdk::xdr::VecMView::new(
-                &[
-                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"Contract"),
-                        type_: soroban_sdk::xdr::VecMView::new(
-                            &[
-                                soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                                    name: soroban_sdk::xdr::StringMView::new(
-                                        b"SubContractInvocation",
-                                    ),
-                                    id: <SubContractInvocation>::spec_type_id(),
-                                }),
-                            ],
-                        ),
-                    }),
-                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(
-                            b"CreateContractHostFn",
-                        ),
-                        type_: soroban_sdk::xdr::VecMView::new(
-                            &[
-                                soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                                    name: soroban_sdk::xdr::StringMView::new(
-                                        b"CreateContractHostFnContext",
-                                    ),
-                                    id: <CreateContractHostFnContext>::spec_type_id(),
-                                }),
-                            ],
-                        ),
-                    }),
-                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(
-                            b"CreateContractWithCtorHostFn",
-                        ),
-                        type_: soroban_sdk::xdr::VecMView::new(
-                            &[
-                                soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                                    name: soroban_sdk::xdr::StringMView::new(
-                                        b"CreateContractWithConstructorHostFnContext",
-                                    ),
-                                    id: <CreateContractWithConstructorHostFnContext>::spec_type_id(),
-                                }),
-                            ],
-                        ),
-                    }),
-                ],
-            ),
+        const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> = soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: InvokerContractAuthEntry::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0View {
+                doc: soroban_sdk::xdr::StringMView::new(b""),
+                lib: soroban_sdk::xdr::StringMView::new(b""),
+                name: soroban_sdk::xdr::StringMView::new(b"InvokerContractAuthEntry"),
+                cases: soroban_sdk::xdr::VecMView::new(
+                    &[
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"Contract"),
+                            type_: soroban_sdk::xdr::VecMView::new(
+                                &[
+                                    soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                        name: soroban_sdk::xdr::StringMView::new(
+                                            b"SubContractInvocation",
+                                        ),
+                                        id: <SubContractInvocation>::spec_type_id(),
+                                    }),
+                                ],
+                            ),
+                        }),
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(
+                                b"CreateContractHostFn",
+                            ),
+                            type_: soroban_sdk::xdr::VecMView::new(
+                                &[
+                                    soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                        name: soroban_sdk::xdr::StringMView::new(
+                                            b"CreateContractHostFnContext",
+                                        ),
+                                        id: <CreateContractHostFnContext>::spec_type_id(),
+                                    }),
+                                ],
+                            ),
+                        }),
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(
+                                b"CreateContractWithCtorHostFn",
+                            ),
+                            type_: soroban_sdk::xdr::VecMView::new(
+                                &[
+                                    soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                        name: soroban_sdk::xdr::StringMView::new(
+                                            b"CreateContractWithConstructorHostFnContext",
+                                        ),
+                                        id: <CreateContractWithConstructorHostFnContext>::spec_type_id(),
+                                    }),
+                                ],
+                            ),
+                        }),
+                    ],
+                ),
+            }),
         });
         pub const fn spec_xdr() -> [u8; InvokerContractAuthEntry::__SPEC_XDR_VIEW.const_xdr_len()] {
             InvokerContractAuthEntry::__SPEC_XDR_VIEW.const_to_xdr()
@@ -8228,35 +8479,40 @@ mod wasm_imported {
         Executable::spec_xdr();
     impl Executable {
         const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-            soroban_sdk::xdr::ScSpecEntryView::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0View {
-                doc: soroban_sdk::xdr::StringMView::new(b""),
-                lib: soroban_sdk::xdr::StringMView::new(b""),
-                name: soroban_sdk::xdr::StringMView::new(b"Executable"),
-                cases: soroban_sdk::xdr::VecMView::new(&[
-                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
-                        soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"Wasm"),
-                            type_: soroban_sdk::xdr::VecMView::new(&[
-                                soroban_sdk::xdr::ScSpecTypeDefView::BytesN(
-                                    soroban_sdk::xdr::ScSpecTypeBytesN { n: 32u32 },
-                                ),
-                            ]),
-                        },
-                    ),
-                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
-                        soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"StellarAsset"),
-                        },
-                    ),
-                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
-                        soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"Account"),
-                        },
-                    ),
-                ]),
+            soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+                id: Executable::spec_type_id(),
+                body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtUnionV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        lib: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"Executable"),
+                        cases: soroban_sdk::xdr::VecMView::new(&[
+                            soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
+                                soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
+                                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                                    name: soroban_sdk::xdr::StringMView::new(b"Wasm"),
+                                    type_: soroban_sdk::xdr::VecMView::new(&[
+                                        soroban_sdk::xdr::ScSpecTypeDefView::BytesN(
+                                            soroban_sdk::xdr::ScSpecTypeBytesN { n: 32u32 },
+                                        ),
+                                    ]),
+                                },
+                            ),
+                            soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
+                                soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
+                                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                                    name: soroban_sdk::xdr::StringMView::new(b"StellarAsset"),
+                                },
+                            ),
+                            soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
+                                soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
+                                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                                    name: soroban_sdk::xdr::StringMView::new(b"Account"),
+                                },
+                            ),
+                        ]),
+                    },
+                ),
             });
         pub const fn spec_xdr() -> [u8; Executable::__SPEC_XDR_VIEW.const_xdr_len()] {
             Executable::__SPEC_XDR_VIEW.const_to_xdr()
@@ -8436,30 +8692,35 @@ mod wasm_imported {
         EnumA::spec_xdr();
     impl EnumA {
         const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-            soroban_sdk::xdr::ScSpecEntryView::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0View {
-                doc: soroban_sdk::xdr::StringMView::new(b""),
-                lib: soroban_sdk::xdr::StringMView::new(b""),
-                name: soroban_sdk::xdr::StringMView::new(b"EnumA"),
-                cases: soroban_sdk::xdr::VecMView::new(&[
-                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
-                        soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"V1"),
-                        },
-                    ),
-                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
-                        soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"V2"),
-                        },
-                    ),
-                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
-                        soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"V3"),
-                        },
-                    ),
-                ]),
+            soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+                id: EnumA::spec_type_id(),
+                body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtUnionV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        lib: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"EnumA"),
+                        cases: soroban_sdk::xdr::VecMView::new(&[
+                            soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
+                                soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
+                                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                                    name: soroban_sdk::xdr::StringMView::new(b"V1"),
+                                },
+                            ),
+                            soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
+                                soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
+                                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                                    name: soroban_sdk::xdr::StringMView::new(b"V2"),
+                                },
+                            ),
+                            soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
+                                soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
+                                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                                    name: soroban_sdk::xdr::StringMView::new(b"V3"),
+                                },
+                            ),
+                        ]),
+                    },
+                ),
             });
         pub const fn spec_xdr() -> [u8; EnumA::__SPEC_XDR_VIEW.const_xdr_len()] {
             EnumA::__SPEC_XDR_VIEW.const_to_xdr()
@@ -8674,37 +8935,42 @@ mod wasm_imported {
         EnumB::spec_xdr();
     impl EnumB {
         const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-            soroban_sdk::xdr::ScSpecEntryView::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0View {
-                doc: soroban_sdk::xdr::StringMView::new(b""),
-                lib: soroban_sdk::xdr::StringMView::new(b""),
-                name: soroban_sdk::xdr::StringMView::new(b"EnumB"),
-                cases: soroban_sdk::xdr::VecMView::new(&[
-                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
-                        soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"V1"),
-                        },
-                    ),
-                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
-                        soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"V2"),
-                            type_: soroban_sdk::xdr::VecMView::new(&[
-                                soroban_sdk::xdr::ScSpecTypeDefView::I64,
-                            ]),
-                        },
-                    ),
-                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
-                        soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"V3"),
-                            type_: soroban_sdk::xdr::VecMView::new(&[
-                                soroban_sdk::xdr::ScSpecTypeDefView::I64,
-                                soroban_sdk::xdr::ScSpecTypeDefView::I64,
-                            ]),
-                        },
-                    ),
-                ]),
+            soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+                id: EnumB::spec_type_id(),
+                body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtUnionV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        lib: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"EnumB"),
+                        cases: soroban_sdk::xdr::VecMView::new(&[
+                            soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
+                                soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
+                                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                                    name: soroban_sdk::xdr::StringMView::new(b"V1"),
+                                },
+                            ),
+                            soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
+                                soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
+                                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                                    name: soroban_sdk::xdr::StringMView::new(b"V2"),
+                                    type_: soroban_sdk::xdr::VecMView::new(&[
+                                        soroban_sdk::xdr::ScSpecTypeDefView::I64,
+                                    ]),
+                                },
+                            ),
+                            soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
+                                soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
+                                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                                    name: soroban_sdk::xdr::StringMView::new(b"V3"),
+                                    type_: soroban_sdk::xdr::VecMView::new(&[
+                                        soroban_sdk::xdr::ScSpecTypeDefView::I64,
+                                        soroban_sdk::xdr::ScSpecTypeDefView::I64,
+                                    ]),
+                                },
+                            ),
+                        ]),
+                    },
+                ),
             });
         pub const fn spec_xdr() -> [u8; EnumB::__SPEC_XDR_VIEW.const_xdr_len()] {
             EnumB::__SPEC_XDR_VIEW.const_to_xdr()
@@ -8922,46 +9188,55 @@ mod wasm_imported {
         EnumC::spec_xdr();
     impl EnumC {
         const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-            soroban_sdk::xdr::ScSpecEntryView::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0View {
-                doc: soroban_sdk::xdr::StringMView::new(b""),
-                lib: soroban_sdk::xdr::StringMView::new(b""),
-                name: soroban_sdk::xdr::StringMView::new(b"EnumC"),
-                cases: soroban_sdk::xdr::VecMView::new(&[
-                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
-                        soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"V1"),
-                        },
-                    ),
-                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
-                        soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"V2"),
-                            type_: soroban_sdk::xdr::VecMView::new(&[
-                                soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                                    soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                                        name: soroban_sdk::xdr::StringMView::new(b"StructA"),
-                                        id: <StructA>::spec_type_id(),
-                                    },
-                                ),
-                            ]),
-                        },
-                    ),
-                    soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
-                        soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"V3"),
-                            type_: soroban_sdk::xdr::VecMView::new(&[
-                                soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                                    soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                                        name: soroban_sdk::xdr::StringMView::new(b"StructTupleA"),
-                                        id: <StructTupleA>::spec_type_id(),
-                                    },
-                                ),
-                            ]),
-                        },
-                    ),
-                ]),
+            soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+                id: EnumC::spec_type_id(),
+                body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtUnionV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        lib: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"EnumC"),
+                        cases: soroban_sdk::xdr::VecMView::new(&[
+                            soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
+                                soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
+                                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                                    name: soroban_sdk::xdr::StringMView::new(b"V1"),
+                                },
+                            ),
+                            soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
+                                soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
+                                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                                    name: soroban_sdk::xdr::StringMView::new(b"V2"),
+                                    type_: soroban_sdk::xdr::VecMView::new(&[
+                                        soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                            soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                                name: soroban_sdk::xdr::StringMView::new(
+                                                    b"StructA",
+                                                ),
+                                                id: <StructA>::spec_type_id(),
+                                            },
+                                        ),
+                                    ]),
+                                },
+                            ),
+                            soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
+                                soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
+                                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                                    name: soroban_sdk::xdr::StringMView::new(b"V3"),
+                                    type_: soroban_sdk::xdr::VecMView::new(&[
+                                        soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                            soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                                name: soroban_sdk::xdr::StringMView::new(
+                                                    b"StructTupleA",
+                                                ),
+                                                id: <StructTupleA>::spec_type_id(),
+                                            },
+                                        ),
+                                    ]),
+                                },
+                            ),
+                        ]),
+                    },
+                ),
             });
         pub const fn spec_xdr() -> [u8; EnumC::__SPEC_XDR_VIEW.const_xdr_len()] {
             EnumC::__SPEC_XDR_VIEW.const_to_xdr()
@@ -9146,27 +9421,32 @@ mod wasm_imported {
         EnumIntA::spec_xdr();
     impl EnumIntA {
         const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-            soroban_sdk::xdr::ScSpecEntryView::UdtEnumV0(soroban_sdk::xdr::ScSpecUdtEnumV0View {
-                doc: soroban_sdk::xdr::StringMView::new(b""),
-                lib: soroban_sdk::xdr::StringMView::new(b""),
-                name: soroban_sdk::xdr::StringMView::new(b"EnumIntA"),
-                cases: soroban_sdk::xdr::VecMView::new(&[
-                    soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+            soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+                id: EnumIntA::spec_type_id(),
+                body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtEnumV0(
+                    soroban_sdk::xdr::ScSpecUdtEnumV0View {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"V1"),
-                        value: 1u32,
+                        lib: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"EnumIntA"),
+                        cases: soroban_sdk::xdr::VecMView::new(&[
+                            soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"V1"),
+                                value: 1u32,
+                            },
+                            soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"V2"),
+                                value: 2u32,
+                            },
+                            soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"V3"),
+                                value: 3u32,
+                            },
+                        ]),
                     },
-                    soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"V2"),
-                        value: 2u32,
-                    },
-                    soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"V3"),
-                        value: 3u32,
-                    },
-                ]),
+                ),
             });
         pub const fn spec_xdr() -> [u8; EnumIntA::__SPEC_XDR_VIEW.const_xdr_len()] {
             EnumIntA::__SPEC_XDR_VIEW.const_to_xdr()
@@ -9298,27 +9578,32 @@ mod wasm_imported {
         EnumIntB::spec_xdr();
     impl EnumIntB {
         const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-            soroban_sdk::xdr::ScSpecEntryView::UdtEnumV0(soroban_sdk::xdr::ScSpecUdtEnumV0View {
-                doc: soroban_sdk::xdr::StringMView::new(b""),
-                lib: soroban_sdk::xdr::StringMView::new(b""),
-                name: soroban_sdk::xdr::StringMView::new(b"EnumIntB"),
-                cases: soroban_sdk::xdr::VecMView::new(&[
-                    soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+            soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+                id: EnumIntB::spec_type_id(),
+                body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtEnumV0(
+                    soroban_sdk::xdr::ScSpecUdtEnumV0View {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"V1"),
-                        value: 10u32,
+                        lib: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"EnumIntB"),
+                        cases: soroban_sdk::xdr::VecMView::new(&[
+                            soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"V1"),
+                                value: 10u32,
+                            },
+                            soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"V2"),
+                                value: 20u32,
+                            },
+                            soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"V3"),
+                                value: 30u32,
+                            },
+                        ]),
                     },
-                    soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"V2"),
-                        value: 20u32,
-                    },
-                    soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"V3"),
-                        value: 30u32,
-                    },
-                ]),
+                ),
             });
         pub const fn spec_xdr() -> [u8; EnumIntB::__SPEC_XDR_VIEW.const_xdr_len()] {
             EnumIntB::__SPEC_XDR_VIEW.const_to_xdr()
@@ -9450,27 +9735,32 @@ mod wasm_imported {
         EnumIntC::spec_xdr();
     impl EnumIntC {
         const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-            soroban_sdk::xdr::ScSpecEntryView::UdtEnumV0(soroban_sdk::xdr::ScSpecUdtEnumV0View {
-                doc: soroban_sdk::xdr::StringMView::new(b""),
-                lib: soroban_sdk::xdr::StringMView::new(b""),
-                name: soroban_sdk::xdr::StringMView::new(b"EnumIntC"),
-                cases: soroban_sdk::xdr::VecMView::new(&[
-                    soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+            soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+                id: EnumIntC::spec_type_id(),
+                body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtEnumV0(
+                    soroban_sdk::xdr::ScSpecUdtEnumV0View {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"V1"),
-                        value: 100u32,
+                        lib: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"EnumIntC"),
+                        cases: soroban_sdk::xdr::VecMView::new(&[
+                            soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"V1"),
+                                value: 100u32,
+                            },
+                            soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"V2"),
+                                value: 200u32,
+                            },
+                            soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"V3"),
+                                value: 300u32,
+                            },
+                        ]),
                     },
-                    soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"V2"),
-                        value: 200u32,
-                    },
-                    soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"V3"),
-                        value: 300u32,
-                    },
-                ]),
+                ),
             });
         pub const fn spec_xdr() -> [u8; EnumIntC::__SPEC_XDR_VIEW.const_xdr_len()] {
             EnumIntC::__SPEC_XDR_VIEW.const_to_xdr()
@@ -9602,30 +9892,33 @@ mod wasm_imported {
         ErrorA::spec_xdr();
     impl ErrorA {
         const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-            soroban_sdk::xdr::ScSpecEntryView::UdtErrorEnumV0(
-                soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    lib: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"ErrorA"),
-                    cases: soroban_sdk::xdr::VecMView::new(&[
-                        soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"E1"),
-                            value: 1u32,
-                        },
-                        soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"E2"),
-                            value: 2u32,
-                        },
-                        soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"E3"),
-                            value: 3u32,
-                        },
-                    ]),
-                },
-            );
+            soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+                id: ErrorA::spec_type_id(),
+                body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtErrorEnumV0(
+                    soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        lib: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"ErrorA"),
+                        cases: soroban_sdk::xdr::VecMView::new(&[
+                            soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"E1"),
+                                value: 1u32,
+                            },
+                            soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"E2"),
+                                value: 2u32,
+                            },
+                            soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"E3"),
+                                value: 3u32,
+                            },
+                        ]),
+                    },
+                ),
+            });
         pub const fn spec_xdr() -> [u8; ErrorA::__SPEC_XDR_VIEW.const_xdr_len()] {
             ErrorA::__SPEC_XDR_VIEW.const_to_xdr()
         }
@@ -9826,30 +10119,33 @@ mod wasm_imported {
         ErrorB::spec_xdr();
     impl ErrorB {
         const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-            soroban_sdk::xdr::ScSpecEntryView::UdtErrorEnumV0(
-                soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    lib: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"ErrorB"),
-                    cases: soroban_sdk::xdr::VecMView::new(&[
-                        soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"E1"),
-                            value: 10u32,
-                        },
-                        soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"E2"),
-                            value: 11u32,
-                        },
-                        soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"E3"),
-                            value: 12u32,
-                        },
-                    ]),
-                },
-            );
+            soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+                id: ErrorB::spec_type_id(),
+                body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtErrorEnumV0(
+                    soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        lib: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"ErrorB"),
+                        cases: soroban_sdk::xdr::VecMView::new(&[
+                            soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"E1"),
+                                value: 10u32,
+                            },
+                            soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"E2"),
+                                value: 11u32,
+                            },
+                            soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"E3"),
+                                value: 12u32,
+                            },
+                        ]),
+                    },
+                ),
+            });
         pub const fn spec_xdr() -> [u8; ErrorB::__SPEC_XDR_VIEW.const_xdr_len()] {
             ErrorB::__SPEC_XDR_VIEW.const_to_xdr()
         }
@@ -10050,30 +10346,33 @@ mod wasm_imported {
         ErrorC::spec_xdr();
     impl ErrorC {
         const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-            soroban_sdk::xdr::ScSpecEntryView::UdtErrorEnumV0(
-                soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    lib: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"ErrorC"),
-                    cases: soroban_sdk::xdr::VecMView::new(&[
-                        soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"E1"),
-                            value: 100u32,
-                        },
-                        soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"E2"),
-                            value: 101u32,
-                        },
-                        soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
-                            doc: soroban_sdk::xdr::StringMView::new(b""),
-                            name: soroban_sdk::xdr::StringMView::new(b"E3"),
-                            value: 102u32,
-                        },
-                    ]),
-                },
-            );
+            soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+                id: ErrorC::spec_type_id(),
+                body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtErrorEnumV0(
+                    soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        lib: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"ErrorC"),
+                        cases: soroban_sdk::xdr::VecMView::new(&[
+                            soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"E1"),
+                                value: 100u32,
+                            },
+                            soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"E2"),
+                                value: 101u32,
+                            },
+                            soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"E3"),
+                                value: 102u32,
+                            },
+                        ]),
+                    },
+                ),
+            });
         pub const fn spec_xdr() -> [u8; ErrorC::__SPEC_XDR_VIEW.const_xdr_len()] {
             ErrorC::__SPEC_XDR_VIEW.const_to_xdr()
         }
@@ -10268,28 +10567,37 @@ mod wasm_imported {
         EventA::spec_xdr();
     impl EventA {
         const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-            soroban_sdk::xdr::ScSpecEntryView::EventV0(soroban_sdk::xdr::ScSpecEventV0View {
-                doc: soroban_sdk::xdr::StringMView::new(b""),
-                lib: soroban_sdk::xdr::StringMView::new(b""),
-                name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"EventA")),
-                prefix_topics: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSymbolView(
-                    soroban_sdk::xdr::StringMView::new(b"event_a"),
-                )]),
-                params: soroban_sdk::xdr::VecMView::new(&[
-                    soroban_sdk::xdr::ScSpecEventParamV0View {
+            soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+                id: soroban_sdk::spec_type_id("test_spec_shaking_v2::wasm_imported::EventA"),
+                body: soroban_sdk::xdr::ScSpecEntryV2BodyView::EventV0(
+                    soroban_sdk::xdr::ScSpecEventV0View {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"f1"),
-                        type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
-                        location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
+                        lib: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                            b"EventA",
+                        )),
+                        prefix_topics: soroban_sdk::xdr::VecMView::new(&[
+                            soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                                b"event_a",
+                            )),
+                        ]),
+                        params: soroban_sdk::xdr::VecMView::new(&[
+                            soroban_sdk::xdr::ScSpecEventParamV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"f1"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
+                                location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
+                            },
+                            soroban_sdk::xdr::ScSpecEventParamV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"f2"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefView::String,
+                                location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                            },
+                        ]),
+                        data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
                     },
-                    soroban_sdk::xdr::ScSpecEventParamV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"f2"),
-                        type_: soroban_sdk::xdr::ScSpecTypeDefView::String,
-                        location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
-                    },
-                ]),
-                data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
+                ),
             });
         pub const fn spec_xdr() -> [u8; EventA::__SPEC_XDR_VIEW.const_xdr_len()] {
             EventA::__SPEC_XDR_VIEW.const_to_xdr()
@@ -10418,34 +10726,43 @@ mod wasm_imported {
         EventB::spec_xdr();
     impl EventB {
         const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-            soroban_sdk::xdr::ScSpecEntryView::EventV0(soroban_sdk::xdr::ScSpecEventV0View {
-                doc: soroban_sdk::xdr::StringMView::new(b""),
-                lib: soroban_sdk::xdr::StringMView::new(b""),
-                name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"EventB")),
-                prefix_topics: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSymbolView(
-                    soroban_sdk::xdr::StringMView::new(b"event_b"),
-                )]),
-                params: soroban_sdk::xdr::VecMView::new(&[
-                    soroban_sdk::xdr::ScSpecEventParamV0View {
+            soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+                id: soroban_sdk::spec_type_id("test_spec_shaking_v2::wasm_imported::EventB"),
+                body: soroban_sdk::xdr::ScSpecEntryV2BodyView::EventV0(
+                    soroban_sdk::xdr::ScSpecEventV0View {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"f1"),
-                        type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
-                        location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
+                        lib: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                            b"EventB",
+                        )),
+                        prefix_topics: soroban_sdk::xdr::VecMView::new(&[
+                            soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                                b"event_b",
+                            )),
+                        ]),
+                        params: soroban_sdk::xdr::VecMView::new(&[
+                            soroban_sdk::xdr::ScSpecEventParamV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"f1"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
+                                location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
+                            },
+                            soroban_sdk::xdr::ScSpecEventParamV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"f2"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
+                                location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
+                            },
+                            soroban_sdk::xdr::ScSpecEventParamV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"f3"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefView::I128,
+                                location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                            },
+                        ]),
+                        data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
                     },
-                    soroban_sdk::xdr::ScSpecEventParamV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"f2"),
-                        type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
-                        location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
-                    },
-                    soroban_sdk::xdr::ScSpecEventParamV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"f3"),
-                        type_: soroban_sdk::xdr::ScSpecTypeDefView::I128,
-                        location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
-                    },
-                ]),
-                data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
+                ),
             });
         pub const fn spec_xdr() -> [u8; EventB::__SPEC_XDR_VIEW.const_xdr_len()] {
             EventB::__SPEC_XDR_VIEW.const_to_xdr()
@@ -10578,34 +10895,43 @@ mod wasm_imported {
         EventC::spec_xdr();
     impl EventC {
         const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-            soroban_sdk::xdr::ScSpecEntryView::EventV0(soroban_sdk::xdr::ScSpecEventV0View {
-                doc: soroban_sdk::xdr::StringMView::new(b""),
-                lib: soroban_sdk::xdr::StringMView::new(b""),
-                name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"EventC")),
-                prefix_topics: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSymbolView(
-                    soroban_sdk::xdr::StringMView::new(b"event_c"),
-                )]),
-                params: soroban_sdk::xdr::VecMView::new(&[
-                    soroban_sdk::xdr::ScSpecEventParamV0View {
+            soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+                id: soroban_sdk::spec_type_id("test_spec_shaking_v2::wasm_imported::EventC"),
+                body: soroban_sdk::xdr::ScSpecEntryV2BodyView::EventV0(
+                    soroban_sdk::xdr::ScSpecEventV0View {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"f1"),
-                        type_: soroban_sdk::xdr::ScSpecTypeDefView::Symbol,
-                        location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
+                        lib: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                            b"EventC",
+                        )),
+                        prefix_topics: soroban_sdk::xdr::VecMView::new(&[
+                            soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                                b"event_c",
+                            )),
+                        ]),
+                        params: soroban_sdk::xdr::VecMView::new(&[
+                            soroban_sdk::xdr::ScSpecEventParamV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"f1"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefView::Symbol,
+                                location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
+                            },
+                            soroban_sdk::xdr::ScSpecEventParamV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"f2"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefView::I64,
+                                location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                            },
+                            soroban_sdk::xdr::ScSpecEventParamV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"f3"),
+                                type_: soroban_sdk::xdr::ScSpecTypeDefView::I64,
+                                location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                            },
+                        ]),
+                        data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
                     },
-                    soroban_sdk::xdr::ScSpecEventParamV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"f2"),
-                        type_: soroban_sdk::xdr::ScSpecTypeDefView::I64,
-                        location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
-                    },
-                    soroban_sdk::xdr::ScSpecEventParamV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"f3"),
-                        type_: soroban_sdk::xdr::ScSpecTypeDefView::I64,
-                        location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
-                    },
-                ]),
-                data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
+                ),
             });
         pub const fn spec_xdr() -> [u8; EventC::__SPEC_XDR_VIEW.const_xdr_len()] {
             EventC::__SPEC_XDR_VIEW.const_to_xdr()
@@ -10705,15 +11031,24 @@ mod wasm_imported {
         EventD::spec_xdr();
     impl EventD {
         const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-            soroban_sdk::xdr::ScSpecEntryView::EventV0(soroban_sdk::xdr::ScSpecEventV0View {
-                doc: soroban_sdk::xdr::StringMView::new(b""),
-                lib: soroban_sdk::xdr::StringMView::new(b""),
-                name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"EventD")),
-                prefix_topics: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSymbolView(
-                    soroban_sdk::xdr::StringMView::new(b"event_d"),
-                )]),
-                params: soroban_sdk::xdr::VecMView::new(&[]),
-                data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
+            soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+                id: soroban_sdk::spec_type_id("test_spec_shaking_v2::wasm_imported::EventD"),
+                body: soroban_sdk::xdr::ScSpecEntryV2BodyView::EventV0(
+                    soroban_sdk::xdr::ScSpecEventV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        lib: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                            b"EventD",
+                        )),
+                        prefix_topics: soroban_sdk::xdr::VecMView::new(&[
+                            soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                                b"event_d",
+                            )),
+                        ]),
+                        params: soroban_sdk::xdr::VecMView::new(&[]),
+                        data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
+                    },
+                ),
             });
         pub const fn spec_xdr() -> [u8; EventD::__SPEC_XDR_VIEW.const_xdr_len()] {
             EventD::__SPEC_XDR_VIEW.const_to_xdr()
@@ -10803,17 +11138,22 @@ pub static __SPEC_XDR_TYPE_UNUSEDSTRUCT: [u8; UnusedStruct::__SPEC_XDR_VIEW.cons
     UnusedStruct::spec_xdr();
 impl UnusedStruct {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UnusedStruct"),
-            fields: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UnusedStruct::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                soroban_sdk::xdr::ScSpecUdtStructV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"x"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UnusedStruct"),
+                    fields: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"x"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                        },
+                    ]),
                 },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; UnusedStruct::__SPEC_XDR_VIEW.const_xdr_len()] {
         UnusedStruct::__SPEC_XDR_VIEW.const_to_xdr()
@@ -10935,27 +11275,32 @@ pub static __SPEC_XDR_TYPE_UNUSEDENUM: [u8; UnusedEnum::__SPEC_XDR_VIEW.const_xd
     UnusedEnum::spec_xdr();
 impl UnusedEnum {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UnusedEnum"),
-            cases: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
-                    soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"A"),
-                    },
-                ),
-                soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
-                    soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"B"),
-                        type_: soroban_sdk::xdr::VecMView::new(&[
-                            soroban_sdk::xdr::ScSpecTypeDefView::I64,
-                        ]),
-                    },
-                ),
-            ]),
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UnusedEnum::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtUnionV0(
+                soroban_sdk::xdr::ScSpecUdtUnionV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UnusedEnum"),
+                    cases: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
+                            soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"A"),
+                            },
+                        ),
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
+                            soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"B"),
+                                type_: soroban_sdk::xdr::VecMView::new(&[
+                                    soroban_sdk::xdr::ScSpecTypeDefView::I64,
+                                ]),
+                            },
+                        ),
+                    ]),
+                },
+            ),
         });
     pub const fn spec_xdr() -> [u8; UnusedEnum::__SPEC_XDR_VIEW.const_xdr_len()] {
         UnusedEnum::__SPEC_XDR_VIEW.const_to_xdr()
@@ -11101,22 +11446,27 @@ pub static __SPEC_XDR_TYPE_UNUSEDINTENUM: [u8; UnusedIntEnum::__SPEC_XDR_VIEW.co
     UnusedIntEnum::spec_xdr();
 impl UnusedIntEnum {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtEnumV0(soroban_sdk::xdr::ScSpecUdtEnumV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UnusedIntEnum"),
-            cases: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UnusedIntEnum::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtEnumV0(
+                soroban_sdk::xdr::ScSpecUdtEnumV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"U1"),
-                    value: 1u32,
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UnusedIntEnum"),
+                    cases: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"U1"),
+                            value: 1u32,
+                        },
+                        soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"U2"),
+                            value: 2u32,
+                        },
+                    ]),
                 },
-                soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"U2"),
-                    value: 2u32,
-                },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; UnusedIntEnum::__SPEC_XDR_VIEW.const_xdr_len()] {
         UnusedIntEnum::__SPEC_XDR_VIEW.const_to_xdr()
@@ -11223,30 +11573,37 @@ pub static __SPEC_XDR_EVENT_UNUSEDEVENT: [u8; UnusedEvent::__SPEC_XDR_VIEW.const
     UnusedEvent::spec_xdr();
 impl UnusedEvent {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::EventV0(soroban_sdk::xdr::ScSpecEventV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"UnusedEvent",
-            )),
-            prefix_topics: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSymbolView(
-                soroban_sdk::xdr::StringMView::new(b"unused_event"),
-            )]),
-            params: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecEventParamV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_spec_shaking_v2::UnusedEvent"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::EventV0(
+                soroban_sdk::xdr::ScSpecEventV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"kind"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Symbol,
-                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"UnusedEvent",
+                    )),
+                    prefix_topics: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                            b"unused_event",
+                        )),
+                    ]),
+                    params: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecEventParamV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"kind"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Symbol,
+                            location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
+                        },
+                        soroban_sdk::xdr::ScSpecEventParamV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"data"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                            location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                        },
+                    ]),
+                    data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
                 },
-                soroban_sdk::xdr::ScSpecEventParamV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"data"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
-                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
-                },
-            ]),
-            data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
+            ),
         });
     pub const fn spec_xdr() -> [u8; UnusedEvent::__SPEC_XDR_VIEW.const_xdr_len()] {
         UnusedEvent::__SPEC_XDR_VIEW.const_to_xdr()
@@ -11334,20 +11691,23 @@ pub static __SPEC_XDR_TYPE_UNUSEDPUBERROR: [u8; UnusedPubError::__SPEC_XDR_VIEW.
     UnusedPubError::spec_xdr();
 impl UnusedPubError {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtErrorEnumV0(
-            soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
-                doc: soroban_sdk::xdr::StringMView::new(b""),
-                lib: soroban_sdk::xdr::StringMView::new(b""),
-                name: soroban_sdk::xdr::StringMView::new(b"UnusedPubError"),
-                cases: soroban_sdk::xdr::VecMView::new(&[
-                    soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"Nope"),
-                        value: 1u32,
-                    },
-                ]),
-            },
-        );
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UnusedPubError::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtErrorEnumV0(
+                soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UnusedPubError"),
+                    cases: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"Nope"),
+                            value: 1u32,
+                        },
+                    ]),
+                },
+            ),
+        });
     pub const fn spec_xdr() -> [u8; UnusedPubError::__SPEC_XDR_VIEW.const_xdr_len()] {
         UnusedPubError::__SPEC_XDR_VIEW.const_to_xdr()
     }
@@ -11519,17 +11879,22 @@ pub static __SPEC_XDR_TYPE_UNUSEDNONCONTRACTFNPARAM: [u8;
     UnusedNonContractFnParam::spec_xdr();
 impl UnusedNonContractFnParam {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UnusedNonContractFnParam"),
-            fields: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UnusedNonContractFnParam::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                soroban_sdk::xdr::ScSpecUdtStructV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"x"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UnusedNonContractFnParam"),
+                    fields: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"x"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                        },
+                    ]),
                 },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; UnusedNonContractFnParam::__SPEC_XDR_VIEW.const_xdr_len()] {
         UnusedNonContractFnParam::__SPEC_XDR_VIEW.const_to_xdr()
@@ -11647,17 +12012,22 @@ pub static __SPEC_XDR_TYPE_UNUSEDNONCONTRACTFNRETURN: [u8;
     UnusedNonContractFnReturn::spec_xdr();
 impl UnusedNonContractFnReturn {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UnusedNonContractFnReturn"),
-            fields: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UnusedNonContractFnReturn::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                soroban_sdk::xdr::ScSpecUdtStructV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"x"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UnusedNonContractFnReturn"),
+                    fields: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"x"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                        },
+                    ]),
                 },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; UnusedNonContractFnReturn::__SPEC_XDR_VIEW.const_xdr_len()] {
         UnusedNonContractFnReturn::__SPEC_XDR_VIEW.const_to_xdr()
@@ -11769,17 +12139,22 @@ pub static __SPEC_XDR_TYPE_UNUSEDNONPUBSTRUCT: [u8; UnusedNonPubStruct::__SPEC_X
     .const_xdr_len()] = UnusedNonPubStruct::spec_xdr();
 impl UnusedNonPubStruct {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UnusedNonPubStruct"),
-            fields: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UnusedNonPubStruct::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                soroban_sdk::xdr::ScSpecUdtStructV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"x"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UnusedNonPubStruct"),
+                    fields: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"x"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                        },
+                    ]),
                 },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; UnusedNonPubStruct::__SPEC_XDR_VIEW.const_xdr_len()] {
         UnusedNonPubStruct::__SPEC_XDR_VIEW.const_to_xdr()
@@ -11888,20 +12263,23 @@ pub static __SPEC_XDR_TYPE_UNUSEDNONPUBERROR: [u8; UnusedNonPubError::__SPEC_XDR
     .const_xdr_len()] = UnusedNonPubError::spec_xdr();
 impl UnusedNonPubError {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtErrorEnumV0(
-            soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
-                doc: soroban_sdk::xdr::StringMView::new(b""),
-                lib: soroban_sdk::xdr::StringMView::new(b""),
-                name: soroban_sdk::xdr::StringMView::new(b"UnusedNonPubError"),
-                cases: soroban_sdk::xdr::VecMView::new(&[
-                    soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"Bad"),
-                        value: 1u32,
-                    },
-                ]),
-            },
-        );
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UnusedNonPubError::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtErrorEnumV0(
+                soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UnusedNonPubError"),
+                    cases: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"Bad"),
+                            value: 1u32,
+                        },
+                    ]),
+                },
+            ),
+        });
     pub const fn spec_xdr() -> [u8; UnusedNonPubError::__SPEC_XDR_VIEW.const_xdr_len()] {
         UnusedNonPubError::__SPEC_XDR_VIEW.const_to_xdr()
     }
@@ -12136,32 +12514,39 @@ pub mod __Contract__with_param__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_with_param: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"with_param")),
-            inputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_spec_shaking_v2::Contract::with_param"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"s"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                            name: soroban_sdk::xdr::StringMView::new(b"UsedParamStruct"),
-                            id: <UsedParamStruct>::spec_type_id(),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"with_param",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"s"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                    name: soroban_sdk::xdr::StringMView::new(b"UsedParamStruct"),
+                                    id: <UsedParamStruct>::spec_type_id(),
+                                },
+                            ),
                         },
-                    ),
-                },
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"ie"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                            name: soroban_sdk::xdr::StringMView::new(b"UsedParamIntEnum"),
-                            id: <UsedParamIntEnum>::spec_type_id(),
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"ie"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                    name: soroban_sdk::xdr::StringMView::new(b"UsedParamIntEnum"),
+                                    id: <UsedParamIntEnum>::spec_type_id(),
+                                },
+                            ),
                         },
-                    ),
+                    ]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[]),
                 },
-            ]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[]),
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_param() -> [u8; Contract::__SPEC_XDR_VIEW_with_param.const_xdr_len()]
@@ -12182,18 +12567,25 @@ pub mod __Contract__with_return__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_with_return: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"with_return",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                    name: soroban_sdk::xdr::StringMView::new(b"UsedReturnEnum"),
-                    id: <UsedReturnEnum>::spec_type_id(),
-                }),
-            ]),
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_spec_shaking_v2::Contract::with_return"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"with_return",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                            soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                name: soroban_sdk::xdr::StringMView::new(b"UsedReturnEnum"),
+                                id: <UsedReturnEnum>::spec_type_id(),
+                            },
+                        ),
+                    ]),
+                },
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_return(
@@ -12214,23 +12606,30 @@ pub mod __Contract__with_error__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_with_error: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"with_error")),
-            inputs: soroban_sdk::xdr::VecMView::new(&[]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecTypeDefView::Result(
-                    &soroban_sdk::xdr::ScSpecTypeResultView {
-                        ok_type: &soroban_sdk::xdr::ScSpecTypeDefView::U32,
-                        error_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                            soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                                name: soroban_sdk::xdr::StringMView::new(b"UsedErrorEnum"),
-                                id: <UsedErrorEnum>::spec_type_id(),
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_spec_shaking_v2::Contract::with_error"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"with_error",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecTypeDefView::Result(
+                            &soroban_sdk::xdr::ScSpecTypeResultView {
+                                ok_type: &soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                                error_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                    soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                        name: soroban_sdk::xdr::StringMView::new(b"UsedErrorEnum"),
+                                        id: <UsedErrorEnum>::spec_type_id(),
+                                    },
+                                ),
                             },
                         ),
-                    },
-                ),
-            ]),
+                    ]),
+                },
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_error() -> [u8; Contract::__SPEC_XDR_VIEW_with_error.const_xdr_len()]
@@ -12252,19 +12651,24 @@ pub mod __Contract__with_panic_error__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_with_panic_error: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"with_panic_error",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_spec_shaking_v2::Contract::with_panic_error"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"fail"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Bool,
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"with_panic_error",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"fail"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Bool,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[]),
                 },
-            ]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[]),
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_panic_error(
@@ -12286,19 +12690,24 @@ pub mod __Contract__with_assert_error__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_with_assert_error: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"with_assert_error",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_spec_shaking_v2::Contract::with_assert_error"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"ok"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Bool,
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"with_assert_error",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"ok"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Bool,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[]),
                 },
-            ]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[]),
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_assert_error(
@@ -12320,19 +12729,24 @@ pub mod __Contract__with_panic_raw_error__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_with_panic_raw_error: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"with_panic_raw_error",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_spec_shaking_v2::Contract::with_panic_raw_error"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"fail"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Bool,
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"with_panic_raw_error",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"fail"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Bool,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[]),
                 },
-            ]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[]),
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_panic_raw_error(
@@ -12353,26 +12767,35 @@ pub mod __Contract__with_vec__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_with_vec: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"with_vec")),
-            inputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_spec_shaking_v2::Contract::with_vec"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"v"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
-                        &soroban_sdk::xdr::ScSpecTypeVecView {
-                            element_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                                    name: soroban_sdk::xdr::StringMView::new(b"UsedVecElement"),
-                                    id: <UsedVecElement>::spec_type_id(),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"with_vec",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"v"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
+                                &soroban_sdk::xdr::ScSpecTypeVecView {
+                                    element_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                            name: soroban_sdk::xdr::StringMView::new(
+                                                b"UsedVecElement",
+                                            ),
+                                            id: <UsedVecElement>::spec_type_id(),
+                                        },
+                                    ),
                                 },
                             ),
                         },
-                    ),
+                    ]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[]),
                 },
-            ]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[]),
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_vec() -> [u8; Contract::__SPEC_XDR_VIEW_with_vec.const_xdr_len()] {
@@ -12393,30 +12816,35 @@ pub mod __Contract__with_vec_nested__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_with_vec_nested: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"with_vec_nested",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_spec_shaking_v2::Contract::with_vec_nested"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"v"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
-                        &soroban_sdk::xdr::ScSpecTypeVecView {
-                            element_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                                    name: soroban_sdk::xdr::StringMView::new(
-                                        b"UsedVecElementNested",
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"with_vec_nested",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"v"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
+                                &soroban_sdk::xdr::ScSpecTypeVecView {
+                                    element_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                            name: soroban_sdk::xdr::StringMView::new(
+                                                b"UsedVecElementNested",
+                                            ),
+                                            id: <UsedVecElementNested>::spec_type_id(),
+                                        },
                                     ),
-                                    id: <UsedVecElementNested>::spec_type_id(),
                                 },
                             ),
                         },
-                    ),
+                    ]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[]),
                 },
-            ]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[]),
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_vec_nested(
@@ -12437,32 +12865,39 @@ pub mod __Contract__with_map__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_with_map: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"with_map")),
-            inputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_spec_shaking_v2::Contract::with_map"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"m"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Map(
-                        &soroban_sdk::xdr::ScSpecTypeMapView {
-                            key_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                                    name: soroban_sdk::xdr::StringMView::new(b"UsedMapKey"),
-                                    id: <UsedMapKey>::spec_type_id(),
-                                },
-                            ),
-                            value_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                                    name: soroban_sdk::xdr::StringMView::new(b"UsedMapVal"),
-                                    id: <UsedMapVal>::spec_type_id(),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"with_map",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"m"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Map(
+                                &soroban_sdk::xdr::ScSpecTypeMapView {
+                                    key_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                            name: soroban_sdk::xdr::StringMView::new(b"UsedMapKey"),
+                                            id: <UsedMapKey>::spec_type_id(),
+                                        },
+                                    ),
+                                    value_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                            name: soroban_sdk::xdr::StringMView::new(b"UsedMapVal"),
+                                            id: <UsedMapVal>::spec_type_id(),
+                                        },
+                                    ),
                                 },
                             ),
                         },
-                    ),
+                    ]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[]),
                 },
-            ]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[]),
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_map() -> [u8; Contract::__SPEC_XDR_VIEW_with_map.const_xdr_len()] {
@@ -12482,28 +12917,35 @@ pub mod __Contract__with_option__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_with_option: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"with_option",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_spec_shaking_v2::Contract::with_option"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"o"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Option(
-                        &soroban_sdk::xdr::ScSpecTypeOptionView {
-                            value_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                                    name: soroban_sdk::xdr::StringMView::new(b"UsedOptionElement"),
-                                    id: <UsedOptionElement>::spec_type_id(),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"with_option",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"o"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Option(
+                                &soroban_sdk::xdr::ScSpecTypeOptionView {
+                                    value_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                            name: soroban_sdk::xdr::StringMView::new(
+                                                b"UsedOptionElement",
+                                            ),
+                                            id: <UsedOptionElement>::spec_type_id(),
+                                        },
+                                    ),
                                 },
                             ),
                         },
-                    ),
+                    ]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[]),
                 },
-            ]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[]),
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_option(
@@ -12524,30 +12966,35 @@ pub mod __Contract__with_result__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_with_result: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"with_result",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecTypeDefView::Result(
-                    &soroban_sdk::xdr::ScSpecTypeResultView {
-                        ok_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                            soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                                name: soroban_sdk::xdr::StringMView::new(b"UsedResultOk"),
-                                id: <UsedResultOk>::spec_type_id(),
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_spec_shaking_v2::Contract::with_result"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"with_result",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecTypeDefView::Result(
+                            &soroban_sdk::xdr::ScSpecTypeResultView {
+                                ok_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                    soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                        name: soroban_sdk::xdr::StringMView::new(b"UsedResultOk"),
+                                        id: <UsedResultOk>::spec_type_id(),
+                                    },
+                                ),
+                                error_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                    soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                        name: soroban_sdk::xdr::StringMView::new(b"UsedErrorEnum"),
+                                        id: <UsedErrorEnum>::spec_type_id(),
+                                    },
+                                ),
                             },
                         ),
-                        error_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                            soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                                name: soroban_sdk::xdr::StringMView::new(b"UsedErrorEnum"),
-                                id: <UsedErrorEnum>::spec_type_id(),
-                            },
-                        ),
-                    },
-                ),
-            ]),
+                    ]),
+                },
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_result(
@@ -12568,24 +13015,29 @@ pub mod __Contract__with_recursion__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_with_recursion: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"with_recursion",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_spec_shaking_v2::Contract::with_recursion"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"r"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                            name: soroban_sdk::xdr::StringMView::new(b"UsedRecursiveRoot"),
-                            id: <UsedRecursiveRoot>::spec_type_id(),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"with_recursion",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"r"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                    name: soroban_sdk::xdr::StringMView::new(b"UsedRecursiveRoot"),
+                                    id: <UsedRecursiveRoot>::spec_type_id(),
+                                },
+                            ),
                         },
-                    ),
+                    ]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[]),
                 },
-            ]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[]),
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_recursion(
@@ -12607,28 +13059,33 @@ pub mod __Contract__with_auth_contexts__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_with_auth_contexts: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"with_auth_contexts",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_spec_shaking_v2::Contract::with_auth_contexts"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"c"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
-                        &soroban_sdk::xdr::ScSpecTypeVecView {
-                            element_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                                    name: soroban_sdk::xdr::StringMView::new(b"Context"),
-                                    id: <soroban_sdk::auth::Context>::spec_type_id(),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"with_auth_contexts",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"c"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
+                                &soroban_sdk::xdr::ScSpecTypeVecView {
+                                    element_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                            name: soroban_sdk::xdr::StringMView::new(b"Context"),
+                                            id: <soroban_sdk::auth::Context>::spec_type_id(),
+                                        },
+                                    ),
                                 },
                             ),
                         },
-                    ),
+                    ]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[]),
                 },
-            ]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[]),
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_auth_contexts(
@@ -12650,24 +13107,32 @@ pub mod __Contract__with_invoker_auth__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_with_invoker_auth: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"with_invoker_auth",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_spec_shaking_v2::Contract::with_invoker_auth"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"i"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                            name: soroban_sdk::xdr::StringMView::new(b"InvokerContractAuthEntry"),
-                            id: <soroban_sdk::auth::InvokerContractAuthEntry>::spec_type_id(),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"with_invoker_auth",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"i"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                    name: soroban_sdk::xdr::StringMView::new(
+                                        b"InvokerContractAuthEntry",
+                                    ),
+                                    id: <soroban_sdk::auth::InvokerContractAuthEntry>::spec_type_id(
+                                    ),
+                                },
+                            ),
                         },
-                    ),
+                    ]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[]),
                 },
-            ]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[]),
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_invoker_auth(
@@ -12689,24 +13154,29 @@ pub mod __Contract__with_executable__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_with_executable: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"with_executable",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_spec_shaking_v2::Contract::with_executable"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"e"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                            name: soroban_sdk::xdr::StringMView::new(b"Executable"),
-                            id: <soroban_sdk::Executable>::spec_type_id(),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"with_executable",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"e"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                    name: soroban_sdk::xdr::StringMView::new(b"Executable"),
+                                    id: <soroban_sdk::Executable>::spec_type_id(),
+                                },
+                            ),
                         },
-                    ),
+                    ]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[]),
                 },
-            ]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[]),
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_executable(
@@ -12727,13 +13197,18 @@ pub mod __Contract__publish_simple__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_publish_simple: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"publish_simple",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[]),
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_spec_shaking_v2::Contract::publish_simple"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"publish_simple",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[]),
+                },
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_publish_simple(
@@ -12755,13 +13230,18 @@ pub mod __Contract__publish_topic_type__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_publish_topic_type: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"publish_topic_type",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[]),
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_spec_shaking_v2::Contract::publish_topic_type"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"publish_topic_type",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[]),
+                },
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_publish_topic_type(
@@ -12783,13 +13263,18 @@ pub mod __Contract__publish_data_type__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_publish_data_type: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"publish_data_type",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[]),
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_spec_shaking_v2::Contract::publish_data_type"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"publish_data_type",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[]),
+                },
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_publish_data_type(
@@ -12811,13 +13296,18 @@ pub mod __Contract__publish_nested_topic__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_publish_nested_topic: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"publish_nested_topic",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[]),
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_spec_shaking_v2::Contract::publish_nested_topic"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"publish_nested_topic",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[]),
+                },
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_publish_nested_topic(
@@ -12839,13 +13329,18 @@ pub mod __Contract__publish_nested_data__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_publish_nested_data: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"publish_nested_data",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[]),
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_spec_shaking_v2::Contract::publish_nested_data"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"publish_nested_data",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[]),
+                },
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_publish_nested_data(
@@ -12867,24 +13362,29 @@ pub mod __Contract__with_lib_struct__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_with_lib_struct: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"with_lib_struct",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_spec_shaking_v2::Contract::with_lib_struct"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"s"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                            name: soroban_sdk::xdr::StringMView::new(b"StructC"),
-                            id: <test_spec_lib::StructC>::spec_type_id(),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"with_lib_struct",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"s"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                    name: soroban_sdk::xdr::StringMView::new(b"StructC"),
+                                    id: <test_spec_lib::StructC>::spec_type_id(),
+                                },
+                            ),
                         },
-                    ),
+                    ]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[]),
                 },
-            ]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[]),
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_lib_struct(
@@ -12906,24 +13406,29 @@ pub mod __Contract__with_wasm_imported__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_with_wasm_imported: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"with_wasm_imported",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_spec_shaking_v2::Contract::with_wasm_imported"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"s"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                            name: soroban_sdk::xdr::StringMView::new(b"StructA"),
-                            id: <wasm_imported::StructA>::spec_type_id(),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"with_wasm_imported",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"s"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                    name: soroban_sdk::xdr::StringMView::new(b"StructA"),
+                                    id: <wasm_imported::StructA>::spec_type_id(),
+                                },
+                            ),
                         },
-                    ),
+                    ]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[]),
                 },
-            ]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[]),
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_wasm_imported(
@@ -12944,24 +13449,29 @@ pub mod __Contract__with_non_pub__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_with_non_pub: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"with_non_pub",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_spec_shaking_v2::Contract::with_non_pub"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"s"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                            name: soroban_sdk::xdr::StringMView::new(b"UsedNonPubStruct"),
-                            id: <UsedNonPubStruct>::spec_type_id(),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"with_non_pub",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"s"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                    name: soroban_sdk::xdr::StringMView::new(b"UsedNonPubStruct"),
+                                    id: <UsedNonPubStruct>::spec_type_id(),
+                                },
+                            ),
                         },
-                    ),
+                    ]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[]),
                 },
-            ]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[]),
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_non_pub(
@@ -12983,25 +13493,32 @@ pub mod __Contract__with_non_pub_error__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_with_non_pub_error: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"with_non_pub_error",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecTypeDefView::Result(
-                    &soroban_sdk::xdr::ScSpecTypeResultView {
-                        ok_type: &soroban_sdk::xdr::ScSpecTypeDefView::U32,
-                        error_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                            soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                                name: soroban_sdk::xdr::StringMView::new(b"UsedNonPubError"),
-                                id: <UsedNonPubError>::spec_type_id(),
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_spec_shaking_v2::Contract::with_non_pub_error"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"with_non_pub_error",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecTypeDefView::Result(
+                            &soroban_sdk::xdr::ScSpecTypeResultView {
+                                ok_type: &soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                                error_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                    soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                        name: soroban_sdk::xdr::StringMView::new(
+                                            b"UsedNonPubError",
+                                        ),
+                                        id: <UsedNonPubError>::spec_type_id(),
+                                    },
+                                ),
                             },
                         ),
-                    },
-                ),
-            ]),
+                    ]),
+                },
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_non_pub_error(
@@ -13022,31 +13539,38 @@ pub mod __Contract__with_tuple__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_with_tuple: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"with_tuple")),
-            inputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_spec_shaking_v2::Contract::with_tuple"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"t"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Tuple(
-                        &soroban_sdk::xdr::ScSpecTypeTupleView {
-                            value_types: soroban_sdk::xdr::VecMView::new(&[
-                                soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                                    soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                                        name: soroban_sdk::xdr::StringMView::new(
-                                            b"UsedTupleElement",
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"with_tuple",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"t"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Tuple(
+                                &soroban_sdk::xdr::ScSpecTypeTupleView {
+                                    value_types: soroban_sdk::xdr::VecMView::new(&[
+                                        soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                            soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                                name: soroban_sdk::xdr::StringMView::new(
+                                                    b"UsedTupleElement",
+                                                ),
+                                                id: <UsedTupleElement>::spec_type_id(),
+                                            },
                                         ),
-                                        id: <UsedTupleElement>::spec_type_id(),
-                                    },
-                                ),
-                                soroban_sdk::xdr::ScSpecTypeDefView::U32,
-                            ]),
+                                        soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                                    ]),
+                                },
+                            ),
                         },
-                    ),
+                    ]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[]),
                 },
-            ]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[]),
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_tuple() -> [u8; Contract::__SPEC_XDR_VIEW_with_tuple.const_xdr_len()]
@@ -13068,29 +13592,34 @@ pub mod __Contract__with_tuple_return__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_with_tuple_return: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"with_tuple_return",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecTypeDefView::Tuple(
-                    &soroban_sdk::xdr::ScSpecTypeTupleView {
-                        value_types: soroban_sdk::xdr::VecMView::new(&[
-                            soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                                    name: soroban_sdk::xdr::StringMView::new(
-                                        b"UsedTupleReturnElement",
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_spec_shaking_v2::Contract::with_tuple_return"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"with_tuple_return",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecTypeDefView::Tuple(
+                            &soroban_sdk::xdr::ScSpecTypeTupleView {
+                                value_types: soroban_sdk::xdr::VecMView::new(&[
+                                    soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                            name: soroban_sdk::xdr::StringMView::new(
+                                                b"UsedTupleReturnElement",
+                                            ),
+                                            id: <UsedTupleReturnElement>::spec_type_id(),
+                                        },
                                     ),
-                                    id: <UsedTupleReturnElement>::spec_type_id(),
-                                },
-                            ),
-                            soroban_sdk::xdr::ScSpecTypeDefView::U32,
-                        ]),
-                    },
-                ),
-            ]),
+                                    soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                                ]),
+                            },
+                        ),
+                    ]),
+                },
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_tuple_return(
@@ -13112,13 +13641,18 @@ pub mod __Contract__publish_ref_event__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_publish_ref_event: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"publish_ref_event",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[]),
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_spec_shaking_v2::Contract::publish_ref_event"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"publish_ref_event",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[]),
+                },
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_publish_ref_event(

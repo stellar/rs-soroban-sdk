@@ -123,11 +123,18 @@ pub mod __Contract__hello__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_hello: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"hello")),
-            inputs: soroban_sdk::xdr::VecMView::new(&[]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[]),
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_logging::Contract::hello"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"hello",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[]),
+                },
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_hello() -> [u8; Contract::__SPEC_XDR_VIEW_hello.const_xdr_len()] {

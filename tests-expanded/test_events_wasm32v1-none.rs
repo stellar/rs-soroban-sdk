@@ -35,44 +35,53 @@ pub static __SPEC_XDR_EVENT_TRANSFER: [u8; Transfer::__SPEC_XDR_VIEW.const_xdr_l
     Transfer::spec_xdr();
 impl Transfer {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::EventV0(soroban_sdk::xdr::ScSpecEventV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"Transfer")),
-            prefix_topics: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSymbolView(
-                soroban_sdk::xdr::StringMView::new(b"transfer"),
-            )]),
-            params: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecEventParamV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_events::Transfer"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::EventV0(
+                soroban_sdk::xdr::ScSpecEventV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"from"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
-                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
-                },
-                soroban_sdk::xdr::ScSpecEventParamV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"to"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
-                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
-                },
-                soroban_sdk::xdr::ScSpecEventParamV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"amount"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::I128,
-                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
-                },
-                soroban_sdk::xdr::ScSpecEventParamV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"to_muxed_id"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Option(
-                        &soroban_sdk::xdr::ScSpecTypeOptionView {
-                            value_type: &soroban_sdk::xdr::ScSpecTypeDefView::U64,
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"Transfer",
+                    )),
+                    prefix_topics: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                            b"transfer",
+                        )),
+                    ]),
+                    params: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecEventParamV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"from"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
+                            location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
                         },
-                    ),
-                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                        soroban_sdk::xdr::ScSpecEventParamV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"to"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
+                            location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
+                        },
+                        soroban_sdk::xdr::ScSpecEventParamV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"amount"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::I128,
+                            location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                        },
+                        soroban_sdk::xdr::ScSpecEventParamV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"to_muxed_id"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Option(
+                                &soroban_sdk::xdr::ScSpecTypeOptionView {
+                                    value_type: &soroban_sdk::xdr::ScSpecTypeDefView::U64,
+                                },
+                            ),
+                            location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                        },
+                    ]),
+                    data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
                 },
-            ]),
-            data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
+            ),
         });
     pub const fn spec_xdr() -> [u8; Transfer::__SPEC_XDR_VIEW.const_xdr_len()] {
         Transfer::__SPEC_XDR_VIEW.const_to_xdr()
@@ -164,27 +173,34 @@ pub mod __Contract__transfer__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_transfer: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"transfer")),
-            inputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_events::Contract::transfer"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"from"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"transfer",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"from"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
+                        },
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"to"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::MuxedAddress,
+                        },
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"amount"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::I128,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[]),
                 },
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"to"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::MuxedAddress,
-                },
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"amount"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::I128,
-                },
-            ]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[]),
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_transfer() -> [u8; Contract::__SPEC_XDR_VIEW_transfer.const_xdr_len()] {
@@ -205,29 +221,34 @@ pub mod __Contract__failed_transfer__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_failed_transfer: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"failed_transfer",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_events::Contract::failed_transfer"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"from"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"failed_transfer",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"from"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
+                        },
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"to"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
+                        },
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"amount"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::I128,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[]),
                 },
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"to"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
-                },
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"amount"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::I128,
-                },
-            ]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[]),
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_failed_transfer(

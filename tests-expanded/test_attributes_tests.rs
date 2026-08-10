@@ -57,17 +57,22 @@ pub static __SPEC_XDR_TYPE_ATTRIBUTETYPE: [u8; AttributeType::__SPEC_XDR_VIEW.co
     AttributeType::spec_xdr();
 impl AttributeType {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"AttributeType"),
-            fields: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: AttributeType::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                soroban_sdk::xdr::ScSpecUdtStructV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"value"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"AttributeType"),
+                    fields: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"value"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                        },
+                    ]),
                 },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; AttributeType::__SPEC_XDR_VIEW.const_xdr_len()] {
         AttributeType::__SPEC_XDR_VIEW.const_to_xdr()
@@ -402,30 +407,37 @@ pub static __SPEC_XDR_EVENT_ATTRIBUTEEVENT: [u8; AttributeEvent::__SPEC_XDR_VIEW
     AttributeEvent::spec_xdr();
 impl AttributeEvent {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::EventV0(soroban_sdk::xdr::ScSpecEventV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"AttributeEvent",
-            )),
-            prefix_topics: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSymbolView(
-                soroban_sdk::xdr::StringMView::new(b"attribute_event"),
-            )]),
-            params: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecEventParamV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_attributes::AttributeEvent"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::EventV0(
+                soroban_sdk::xdr::ScSpecEventV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"topic"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
-                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"AttributeEvent",
+                    )),
+                    prefix_topics: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                            b"attribute_event",
+                        )),
+                    ]),
+                    params: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecEventParamV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"topic"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                            location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
+                        },
+                        soroban_sdk::xdr::ScSpecEventParamV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"value"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                            location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                        },
+                    ]),
+                    data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
                 },
-                soroban_sdk::xdr::ScSpecEventParamV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"value"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
-                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
-                },
-            ]),
-            data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
+            ),
         });
     pub const fn spec_xdr() -> [u8; AttributeEvent::__SPEC_XDR_VIEW.const_xdr_len()] {
         AttributeEvent::__SPEC_XDR_VIEW.const_to_xdr()
@@ -1254,13 +1266,20 @@ impl AttributeTraitArgs {
 impl AttributeTraitSpec {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_trait_override: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"trait_override",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_attributes::AttributeTraitSpec::trait_override"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"trait_override",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    ]),
+                },
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_override(
@@ -1271,13 +1290,20 @@ impl AttributeTraitSpec {
 impl AttributeTraitSpec {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_trait_default: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"trait_default",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_attributes::AttributeTraitSpec::trait_default"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"trait_default",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    ]),
+                },
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_default(
@@ -1288,13 +1314,22 @@ impl AttributeTraitSpec {
 impl AttributeTraitSpec {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_trait_default_stacked_cfg: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"trait_default_stacked_cfg",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id(
+                "test_attributes::AttributeTraitSpec::trait_default_stacked_cfg",
+            ),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"trait_default_stacked_cfg",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    ]),
+                },
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_default_stacked_cfg(
@@ -1305,13 +1340,22 @@ impl AttributeTraitSpec {
 impl AttributeTraitSpec {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_trait_override_stacked_cfg: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"trait_override_stacked_cfg",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id(
+                "test_attributes::AttributeTraitSpec::trait_override_stacked_cfg",
+            ),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"trait_override_stacked_cfg",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    ]),
+                },
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_override_stacked_cfg(
@@ -1322,13 +1366,22 @@ impl AttributeTraitSpec {
 impl AttributeTraitSpec {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_trait_override_negated_cfg: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"trait_override_negated_cfg",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id(
+                "test_attributes::AttributeTraitSpec::trait_override_negated_cfg",
+            ),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"trait_override_negated_cfg",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    ]),
+                },
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_override_negated_cfg(
@@ -1339,13 +1392,22 @@ impl AttributeTraitSpec {
 impl AttributeTraitSpec {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_trait_override_dual_cfg: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"trait_override_dual_cfg",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id(
+                "test_attributes::AttributeTraitSpec::trait_override_dual_cfg",
+            ),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"trait_override_dual_cfg",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    ]),
+                },
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_override_dual_cfg(
@@ -1356,13 +1418,22 @@ impl AttributeTraitSpec {
 impl AttributeTraitSpec {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_trait_default_dual_cfg: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"trait_default_dual_cfg",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id(
+                "test_attributes::AttributeTraitSpec::trait_default_dual_cfg",
+            ),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"trait_default_dual_cfg",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    ]),
+                },
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_default_dual_cfg(
@@ -1393,22 +1464,31 @@ pub mod __Contract__always__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_always: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"always")),
-            inputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_attributes::Contract::always"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"value"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                            name: soroban_sdk::xdr::StringMView::new(b"AttributeType"),
-                            id: <AttributeType>::spec_type_id(),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"always",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"value"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                    name: soroban_sdk::xdr::StringMView::new(b"AttributeType"),
+                                    id: <AttributeType>::spec_type_id(),
+                                },
+                            ),
                         },
-                    ),
+                    ]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    ]),
                 },
-            ]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_always() -> [u8; Contract::__SPEC_XDR_VIEW_always.const_xdr_len()] {
@@ -1427,19 +1507,26 @@ pub mod __Contract__cfg_included__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_cfg_included: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"cfg_included",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_attributes::Contract::cfg_included"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"value"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"cfg_included",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"value"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    ]),
                 },
-            ]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_cfg_included(
@@ -1460,22 +1547,29 @@ pub mod __Contract__publish__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_publish: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"publish")),
-            inputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_attributes::Contract::publish"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"topic"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"publish",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"topic"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                        },
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"value"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[]),
                 },
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"value"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
-                },
-            ]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[]),
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_publish() -> [u8; Contract::__SPEC_XDR_VIEW_publish.const_xdr_len()] {
@@ -1959,13 +2053,20 @@ pub mod __Contract__trait_override__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_trait_override: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"trait_override",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_attributes::Contract::trait_override"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"trait_override",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    ]),
+                },
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_override(
@@ -1988,13 +2089,20 @@ pub mod __Contract__trait_override_stacked_cfg__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_trait_override_stacked_cfg: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"trait_override_stacked_cfg",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_attributes::Contract::trait_override_stacked_cfg"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"trait_override_stacked_cfg",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    ]),
+                },
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_override_stacked_cfg(
@@ -2015,13 +2123,20 @@ pub mod __Contract__trait_override_negated_cfg__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_trait_override_negated_cfg: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"trait_override_negated_cfg",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_attributes::Contract::trait_override_negated_cfg"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"trait_override_negated_cfg",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    ]),
+                },
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_override_negated_cfg(
@@ -2042,13 +2157,20 @@ pub mod __Contract__trait_override_dual_cfg__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_trait_override_dual_cfg: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"trait_override_dual_cfg",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_attributes::Contract::trait_override_dual_cfg"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"trait_override_dual_cfg",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    ]),
+                },
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_override_dual_cfg(
@@ -2662,13 +2784,20 @@ pub mod __Contract__trait_default__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_trait_default: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"trait_default",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_attributes::Contract::trait_default"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"trait_default",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    ]),
+                },
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_default(
@@ -2689,13 +2818,20 @@ pub mod __Contract__trait_default_stacked_cfg__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_trait_default_stacked_cfg: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"trait_default_stacked_cfg",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_attributes::Contract::trait_default_stacked_cfg"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"trait_default_stacked_cfg",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    ]),
+                },
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_default_stacked_cfg(
@@ -2719,13 +2855,20 @@ pub mod __Contract__trait_default_dual_cfg__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_trait_default_dual_cfg: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"trait_default_dual_cfg",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_attributes::Contract::trait_default_dual_cfg"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"trait_default_dual_cfg",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    ]),
+                },
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_default_dual_cfg(
@@ -3301,12 +3444,17 @@ mod test {
         };
     fn test_specs_include_active_attribute_items() {
         use soroban_sdk::xdr::{
-            Limits, ReadXdr, ScSpecEntry, ScSpecEventParamLocationV0, ScSpecFunctionV0,
-            ScSpecTypeDef,
+            Limits, ReadXdr, ScSpecEntry, ScSpecEntryV2Body, ScSpecEventParamLocationV0,
+            ScSpecFunctionV0, ScSpecTypeDef,
         };
         use std::collections::HashSet;
         let type_entry = ScSpecEntry::from_xdr(AttributeType::spec_xdr(), Limits::none()).unwrap();
-        let ScSpecEntry::UdtStructV0(type_spec) = type_entry else {
+        let ScSpecEntry::V2(type_entry) = type_entry else {
+            {
+                ::core::panicking::panic_fmt(format_args!("expected v2 spec entry"));
+            };
+        };
+        let ScSpecEntryV2Body::UdtStructV0(type_spec) = type_entry.body else {
             {
                 ::core::panicking::panic_fmt(format_args!("expected struct spec"));
             };
@@ -3339,7 +3487,12 @@ mod test {
         };
         let event_entry =
             ScSpecEntry::from_xdr(AttributeEvent::spec_xdr(), Limits::none()).unwrap();
-        let ScSpecEntry::EventV0(event_spec) = event_entry else {
+        let ScSpecEntry::V2(event_entry) = event_entry else {
+            {
+                ::core::panicking::panic_fmt(format_args!("expected v2 spec entry"));
+            };
+        };
+        let ScSpecEntryV2Body::EventV0(event_spec) = event_entry.body else {
             {
                 ::core::panicking::panic_fmt(format_args!("expected event spec"));
             };
@@ -3384,7 +3537,14 @@ mod test {
         };
         let method_entry =
             ScSpecEntry::from_xdr(Contract::spec_xdr_cfg_included(), Limits::none()).unwrap();
-        let ScSpecEntry::FunctionV0(ScSpecFunctionV0 { name, inputs, .. }) = method_entry else {
+        let ScSpecEntry::V2(method_entry) = method_entry else {
+            {
+                ::core::panicking::panic_fmt(format_args!("expected v2 spec entry"));
+            };
+        };
+        let ScSpecEntryV2Body::FunctionV0(ScSpecFunctionV0 { name, inputs, .. }) =
+            method_entry.body
+        else {
             {
                 ::core::panicking::panic_fmt(format_args!("expected function spec"));
             };
@@ -3415,16 +3575,17 @@ mod test {
                 }
             }
         };
-        let wasm = b"\x00asm\x01\x00\x00\x00\x01\x1f\x05`\x04~~~~\x01~`\x02~~\x01~`\x03~~~\x01~`\x01~\x01~`\x00\x01~\x02\x1f\x05\x01m\x01a\x00\x00\x01b\x01j\x00\x01\x01v\x01g\x00\x01\x01m\x019\x00\x02\x01x\x011\x00\x01\x03\x0b\n\x03\x03\x01\x04\x04\x04\x04\x04\x04\x04\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\xbb\x80\xc0\x00\x0b\x7f\x00A\xbb\x80\xc0\x00\x0b\x7f\x00A\xc0\x80\xc0\x00\x0b\x07\xf5\x01\x0e\x06memory\x02\x00\x06always\x00\x05\x0ccfg_included\x00\x06\x07publish\x00\x07\rtrait_default\x00\x08\x16trait_default_dual_cfg\x00\t\x19trait_default_stacked_cfg\x00\n\x0etrait_override\x00\x0b\x17trait_override_dual_cfg\x00\x0c\x1atrait_override_negated_cfg\x00\r\x1atrait_override_stacked_cfg\x00\x0e\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\x85\x04\n\x85\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00A\x00-\x00\x80\x80\xc0\x80\x00\x1a \x01B\x027\x03\x08\x02@\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xa4\x80\xc0\x80\x00\xadB \x86B\x04\x84 \x01A\x08j\xadB \x86B\x04\x84B\x84\x80\x80\x80\x10\x10\x80\x80\x80\x80\x00\x1a \x01)\x03\x08\"\x00B\xff\x01\x83B\x04Q\r\x01\x0b\x00\x0b \x01A\x10j$\x80\x80\x80\x80\x00 \x00B\x84\x80\x80\x80p\x83\x0b\x1a\x00\x02@ \x00B\xff\x01\x83B\x04Q\r\x00\x00\x0b \x00B\x84\x80\x80\x80p\x83\x0b\x9c\x02\x02\x02\x7f\x01~#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\x04R\r\x00 \x01B\xff\x01\x83B\x04R\r\x00A\x00!\x03A\x00-\x00\x8e\x80\xc0\x80\x00\x1aA\xac\x80\xc0\x80\x00\xadB \x86B\x04\x84B\x84\x80\x80\x80\xf0\x01\x10\x81\x80\x80\x80\x00!\x04 \x02 \x00B\x84\x80\x80\x80p\x837\x03\x08 \x02 \x047\x03\x00\x03@\x02@ \x03A\x10G\r\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02A\x10j \x03j \x02 \x03j)\x03\x007\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x02A\x10j\xadB \x86B\x04\x84\"\x00B\x84\x80\x80\x80 \x10\x82\x80\x80\x80\x00!\x04 \x02 \x01B\x84\x80\x80\x80p\x837\x03\x10 \x04A\xa4\x80\xc0\x80\x00\xadB \x86B\x04\x84 \x00B\x84\x80\x80\x80\x10\x10\x83\x80\x80\x80\x00\x10\x84\x80\x80\x80\x00\x1a \x02A j$\x80\x80\x80\x80\x00B\x02\x0f\x0b \x02A\x10j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b\x00\x0b\x08\x00B\x84\x80\x80\x80 \x0b\t\x00B\x84\x80\x80\x80\xe0\x01\x0b\t\x00B\x84\x80\x80\x80\xd0\x00\x0b\x08\x00B\x84\x80\x80\x800\x0b\t\x00B\x84\x80\x80\x80\xc0\x01\x0b\t\x00B\x84\x80\x80\x80\xa0\x01\x0b\t\x00B\x84\x80\x80\x80\x80\x01\x0b\x0bD\x01\x00A\x80\x80\xc0\x00\x0b;SpEcV1i\t\xb7\x06*\x88\xd7\xf8SpEcV1\xbfO\xc3P\xd4\x14\xb5Vvalue\x00\x00\x00\x1c\x00\x10\x00\x05\x00\x00\x00attribute_event\x00\xb3\x1b\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06always\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05value\x00\x00\x00\x00\x00\x07\xd1\x00\x00\x00\rAttributeType\x00\x00\x00\x92\x00f\x07\xa7\xcb\x04$\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07publish\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x05topic\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x05value\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rAttributeType\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05value\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0ccfg_included\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05value\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rtrait_default\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0eAttributeEvent\x00\x00\x00\x00\x00\x01\x00\x00\x00\x0fattribute_event\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x05topic\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05value\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0etrait_override\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x16trait_default_dual_cfg\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x17trait_override_dual_cfg\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x19trait_default_stacked_cfg\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1atrait_override_negated_cfg\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1atrait_override_stacked_cfg\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x02\x00\x00\x00\xe3Context of a single authorized call performed by an address.\n\nCustom account contracts that implement `__check_auth` special function\nreceive a list of `Context` values corresponding to all the calls that\nneed to be authorized.\x00\x00\x00\x00\x00\x00\x00\x00\x07Context\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x14Contract invocation.\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x0fContractContext\x00Zc\xa9U\xe4\xf7\xa8\x8b\x00\x00\x00\x01\x00\x00\x00=Contract that has a constructor with no arguments is created.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x1bCreateContractHostFnContext\x00\xf4\xb8\xe9\xd5\xb0\x84\xaa\xce\x00\x00\x00\x01\x00\x00\x00DContract that has a constructor with 1 or more arguments is created.\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\xc6\xd7\xe5J\x9d\x8f\x11s\x00\x00\x00\x01\x00\x00\x00\xbdAuthorization context of a single contract call.\n\nThis struct corresponds to a `require_auth_for_args` call for an address\nfrom `contract` function with `fn_name` name and `args` arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08contract\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x07fn_name\x00\x00\x00\x00\x11\x00\x00\x00\x02\x00\x00\x00_Contract executable used for creating a new contract and used in\n`CreateContractHostFnContext`.\x00\x00\x00\x00\x00\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x008Value of contract node in InvokerContractAuthEntry tree.\x00\x00\x00\x00\x00\x00\x00\x15SubContractInvocation\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x07\xd1\x00\x00\x00\x0fContractContext\x00Zc\xa9U\xe4\xf7\xa8\x8b\x00\x00\x00\x00\x00\x00\x00\x0fsub_invocations\x00\x00\x00\x03\xea\x00\x00\x07\xd1\x00\x00\x00\x18InvokerContractAuthEntry`\xc1\x90\xeb\xac\xf1AN\x00\x00\x00\x02\x00\x00\x01/A node in the tree of authorizations performed on behalf of the current\ncontract as invoker of the contracts deeper in the call stack.\n\nThis is used as an argument of `authorize_as_current_contract` host function.\n\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\ncurrent contract.\x00\x00\x00\x00\x00\x00\x00\x00\x18InvokerContractAuthEntry\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x12Invoke a contract.\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x15SubContractInvocation\x00\x00\x00`\x85\xe2\x08OZQ\x10\x00\x00\x00\x01\x00\x00\x005Create a contract passing 0 arguments to constructor.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x1bCreateContractHostFnContext\x00\xf4\xb8\xe9\xd5\xb0\x84\xaa\xce\x00\x00\x00\x01\x00\x00\x00=Create a contract passing 0 or more arguments to constructor.\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\xc6\xd7\xe5J\x9d\x8f\x11s\x00\x00\x00\x01\x00\x00\x00vAuthorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd1\x00\x00\x00\x12ContractExecutable\x00\x00\xb1\x0etP\xeaT\x89\xb2\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\xd6Authorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\nThis is the same as `CreateContractHostFnContext`, but also has\ncontract constructor arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x10constructor_args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd1\x00\x00\x00\x12ContractExecutable\x00\x00\xb1\x0etP\xeaT\x89\xb2\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nExecutable\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStellarAsset\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Account\x00\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1c\x00\x00\x00\x00\x00O\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12rssdk_spec_shaking\x00\x00\x00\x00\x00\x012\x00\x00\x00";
+        let wasm = b"\x00asm\x01\x00\x00\x00\x01\x1f\x05`\x04~~~~\x01~`\x02~~\x01~`\x03~~~\x01~`\x01~\x01~`\x00\x01~\x02\x1f\x05\x01m\x01a\x00\x00\x01b\x01j\x00\x01\x01v\x01g\x00\x01\x01m\x019\x00\x02\x01x\x011\x00\x01\x03\x0b\n\x03\x03\x01\x04\x04\x04\x04\x04\x04\x04\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\xbb\x80\xc0\x00\x0b\x7f\x00A\xbb\x80\xc0\x00\x0b\x7f\x00A\xc0\x80\xc0\x00\x0b\x07\xf5\x01\x0e\x06memory\x02\x00\x06always\x00\x05\x0ccfg_included\x00\x06\x07publish\x00\x07\rtrait_default\x00\x08\x16trait_default_dual_cfg\x00\t\x19trait_default_stacked_cfg\x00\n\x0etrait_override\x00\x0b\x17trait_override_dual_cfg\x00\x0c\x1atrait_override_negated_cfg\x00\r\x1atrait_override_stacked_cfg\x00\x0e\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\x85\x04\n\x85\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00A\x00-\x00\x80\x80\xc0\x80\x00\x1a \x01B\x027\x03\x08\x02@\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xa4\x80\xc0\x80\x00\xadB \x86B\x04\x84 \x01A\x08j\xadB \x86B\x04\x84B\x84\x80\x80\x80\x10\x10\x80\x80\x80\x80\x00\x1a \x01)\x03\x08\"\x00B\xff\x01\x83B\x04Q\r\x01\x0b\x00\x0b \x01A\x10j$\x80\x80\x80\x80\x00 \x00B\x84\x80\x80\x80p\x83\x0b\x1a\x00\x02@ \x00B\xff\x01\x83B\x04Q\r\x00\x00\x0b \x00B\x84\x80\x80\x80p\x83\x0b\x9c\x02\x02\x02\x7f\x01~#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\x04R\r\x00 \x01B\xff\x01\x83B\x04R\r\x00A\x00!\x03A\x00-\x00\x8e\x80\xc0\x80\x00\x1aA\xac\x80\xc0\x80\x00\xadB \x86B\x04\x84B\x84\x80\x80\x80\xf0\x01\x10\x81\x80\x80\x80\x00!\x04 \x02 \x00B\x84\x80\x80\x80p\x837\x03\x08 \x02 \x047\x03\x00\x03@\x02@ \x03A\x10G\r\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02A\x10j \x03j \x02 \x03j)\x03\x007\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x02A\x10j\xadB \x86B\x04\x84\"\x00B\x84\x80\x80\x80 \x10\x82\x80\x80\x80\x00!\x04 \x02 \x01B\x84\x80\x80\x80p\x837\x03\x10 \x04A\xa4\x80\xc0\x80\x00\xadB \x86B\x04\x84 \x00B\x84\x80\x80\x80\x10\x10\x83\x80\x80\x80\x00\x10\x84\x80\x80\x80\x00\x1a \x02A j$\x80\x80\x80\x80\x00B\x02\x0f\x0b \x02A\x10j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b\x00\x0b\x08\x00B\x84\x80\x80\x80 \x0b\t\x00B\x84\x80\x80\x80\xe0\x01\x0b\t\x00B\x84\x80\x80\x80\xd0\x00\x0b\x08\x00B\x84\x80\x80\x800\x0b\t\x00B\x84\x80\x80\x80\xc0\x01\x0b\t\x00B\x84\x80\x80\x80\xa0\x01\x0b\t\x00B\x84\x80\x80\x80\x80\x01\x0b\x0bD\x01\x00A\x80\x80\xc0\x00\x0b;SpEcV1*\'\xd6\x03\xb8@w\x00SpEcV1\xc7\x15=a\x19\x9c^9value\x00\x00\x00\x1c\x00\x10\x00\x05\x00\x00\x00attribute_event\x00\xa3\x1d\x0econtractspecv0\x00\x00\x00\x06Yl\x1f\x05u\x193\x97\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06always\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05value\x00\x00\x00\x00\x00\x07\xd1\x00\x00\x00\rAttributeType\x00\x00\x00\x92\x00f\x07\xa7\xcb\x04$\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x06\x10[\xce\xefi\xda\x9f\xa1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07publish\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x05topic\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x05value\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x06\x92\x00f\x07\xa7\xcb\x04$\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rAttributeType\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05value\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x06[>>\xdb?\x05Nj\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0ccfg_included\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05value\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x06<\x8c\x969]B\x86\xce\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rtrait_default\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x06\xa2x:\x89\x00/\x0b\x17\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0eAttributeEvent\x00\x00\x00\x00\x00\x01\x00\x00\x00\x0fattribute_event\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x05topic\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05value\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x06\x16\xc9\x85\\F\xc4D1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0etrait_override\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x06~F\xb9B\xef\xb6\x13\x94\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x16trait_default_dual_cfg\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x06\x8a\xce\\g\xb7\xb5q\xb6\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x17trait_override_dual_cfg\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x06\x0c\x00\xbf?\x85\xd3+\xc1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x19trait_default_stacked_cfg\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x06a\xe3\x04\x93\xc0N\x8c@\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1atrait_override_negated_cfg\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x06\x1cW\xdf,\xa44:\xff\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1atrait_override_stacked_cfg\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x06%Fl\xc5.\x15\x83G\x00\x00\x00\x02\x00\x00\x00\xe3Context of a single authorized call performed by an address.\n\nCustom account contracts that implement `__check_auth` special function\nreceive a list of `Context` values corresponding to all the calls that\nneed to be authorized.\x00\x00\x00\x00\x00\x00\x00\x00\x07Context\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x14Contract invocation.\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x0fContractContext\x00Zc\xa9U\xe4\xf7\xa8\x8b\x00\x00\x00\x01\x00\x00\x00=Contract that has a constructor with no arguments is created.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x1bCreateContractHostFnContext\x00\xf4\xb8\xe9\xd5\xb0\x84\xaa\xce\x00\x00\x00\x01\x00\x00\x00DContract that has a constructor with 1 or more arguments is created.\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\xc6\xd7\xe5J\x9d\x8f\x11s\x00\x00\x00\x06Zc\xa9U\xe4\xf7\xa8\x8b\x00\x00\x00\x01\x00\x00\x00\xbdAuthorization context of a single contract call.\n\nThis struct corresponds to a `require_auth_for_args` call for an address\nfrom `contract` function with `fn_name` name and `args` arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08contract\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x07fn_name\x00\x00\x00\x00\x11\x00\x00\x00\x06\xb1\x0etP\xeaT\x89\xb2\x00\x00\x00\x02\x00\x00\x00_Contract executable used for creating a new contract and used in\n`CreateContractHostFnContext`.\x00\x00\x00\x00\x00\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x06`\x85\xe2\x08OZQ\x10\x00\x00\x00\x01\x00\x00\x008Value of contract node in InvokerContractAuthEntry tree.\x00\x00\x00\x00\x00\x00\x00\x15SubContractInvocation\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x07\xd1\x00\x00\x00\x0fContractContext\x00Zc\xa9U\xe4\xf7\xa8\x8b\x00\x00\x00\x00\x00\x00\x00\x0fsub_invocations\x00\x00\x00\x03\xea\x00\x00\x07\xd1\x00\x00\x00\x18InvokerContractAuthEntry`\xc1\x90\xeb\xac\xf1AN\x00\x00\x00\x06`\xc1\x90\xeb\xac\xf1AN\x00\x00\x00\x02\x00\x00\x01/A node in the tree of authorizations performed on behalf of the current\ncontract as invoker of the contracts deeper in the call stack.\n\nThis is used as an argument of `authorize_as_current_contract` host function.\n\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\ncurrent contract.\x00\x00\x00\x00\x00\x00\x00\x00\x18InvokerContractAuthEntry\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x12Invoke a contract.\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x15SubContractInvocation\x00\x00\x00`\x85\xe2\x08OZQ\x10\x00\x00\x00\x01\x00\x00\x005Create a contract passing 0 arguments to constructor.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00\x1bCreateContractHostFnContext\x00\xf4\xb8\xe9\xd5\xb0\x84\xaa\xce\x00\x00\x00\x01\x00\x00\x00=Create a contract passing 0 or more arguments to constructor.\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd1\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\xc6\xd7\xe5J\x9d\x8f\x11s\x00\x00\x00\x06\xf4\xb8\xe9\xd5\xb0\x84\xaa\xce\x00\x00\x00\x01\x00\x00\x00vAuthorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd1\x00\x00\x00\x12ContractExecutable\x00\x00\xb1\x0etP\xeaT\x89\xb2\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x06\xc6\xd7\xe5J\x9d\x8f\x11s\x00\x00\x00\x01\x00\x00\x00\xd6Authorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\nThis is the same as `CreateContractHostFnContext`, but also has\ncontract constructor arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x10constructor_args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd1\x00\x00\x00\x12ContractExecutable\x00\x00\xb1\x0etP\xeaT\x89\xb2\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x06n\x11\xfa\xcd\xde\xb1\xed\xb3\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nExecutable\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStellarAsset\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Account\x00\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1c\x00\x00\x00\x00\x00O\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12rssdk_spec_shaking\x00\x00\x00\x00\x00\x012\x00\x00\x00";
         let fn_names: HashSet<std::string::String> = soroban_spec::read::from_wasm(wasm)
             .unwrap()
             .iter()
-            .filter_map(|e| {
-                if let ScSpecEntry::FunctionV0(f) = e {
-                    Some(f.name.to_utf8_string_lossy())
-                } else {
-                    None
-                }
+            .filter_map(|e| match e {
+                ScSpecEntry::FunctionV0(f) => Some(f.name.to_utf8_string_lossy()),
+                ScSpecEntry::V2(v2) => match &v2.body {
+                    ScSpecEntryV2Body::FunctionV0(f) => Some(f.name.to_utf8_string_lossy()),
+                    _ => None,
+                },
+                _ => None,
             })
             .collect();
         if !fn_names.contains("always") {

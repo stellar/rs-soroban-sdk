@@ -192,13 +192,22 @@ impl SuperPathTraitArgs {
 impl SuperPathTraitSpec {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_super_path_method: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"super_path_method",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id(
+                "test_contracttrait_path_super::SuperPathTraitSpec::super_path_method",
+            ),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"super_path_method",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    ]),
+                },
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_super_path_method(
@@ -399,17 +408,23 @@ pub mod submodule {
     }
     impl ContractSuperPath {
         #[allow(non_upper_case_globals)]
-        const __SPEC_XDR_VIEW_super_path_method: soroban_sdk::xdr::ScSpecEntryView<'static> =
-            soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+        const __SPEC_XDR_VIEW_super_path_method: soroban_sdk::xdr::ScSpecEntryView<
+            'static,
+        > = soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id(
+                "test_contracttrait_path_super::submodule::ContractSuperPath::super_path_method",
+            ),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
                 doc: soroban_sdk::xdr::StringMView::new(b""),
-                name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                    b"super_path_method",
-                )),
+                name: soroban_sdk::xdr::ScSymbolView(
+                    soroban_sdk::xdr::StringMView::new(b"super_path_method"),
+                ),
                 inputs: soroban_sdk::xdr::VecMView::new(&[]),
-                outputs: soroban_sdk::xdr::VecMView::new(&[
-                    soroban_sdk::xdr::ScSpecTypeDefView::U32,
-                ]),
-            });
+                outputs: soroban_sdk::xdr::VecMView::new(
+                    &[soroban_sdk::xdr::ScSpecTypeDefView::U32],
+                ),
+            }),
+        });
         #[allow(non_snake_case)]
         pub const fn spec_xdr_super_path_method(
         ) -> [u8; ContractSuperPath::__SPEC_XDR_VIEW_super_path_method.const_xdr_len()] {

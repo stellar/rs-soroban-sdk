@@ -60,22 +60,27 @@ pub static __SPEC_XDR_TYPE_UDTENUM2: [u8; UdtEnum2::__SPEC_XDR_VIEW.const_xdr_le
     UdtEnum2::spec_xdr();
 impl UdtEnum2 {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtEnumV0(soroban_sdk::xdr::ScSpecUdtEnumV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UdtEnum2"),
-            cases: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UdtEnum2::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtEnumV0(
+                soroban_sdk::xdr::ScSpecUdtEnumV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"A"),
-                    value: 10u32,
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UdtEnum2"),
+                    cases: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"A"),
+                            value: 10u32,
+                        },
+                        soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"B"),
+                            value: 15u32,
+                        },
+                    ]),
                 },
-                soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"B"),
-                    value: 15u32,
-                },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; UdtEnum2::__SPEC_XDR_VIEW.const_xdr_len()] {
         UdtEnum2::__SPEC_XDR_VIEW.const_to_xdr()
@@ -205,60 +210,65 @@ pub static __SPEC_XDR_TYPE_UDTENUM: [u8; UdtEnum::__SPEC_XDR_VIEW.const_xdr_len(
     UdtEnum::spec_xdr();
 impl UdtEnum {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UdtEnum"),
-            cases: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
-                    soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"UdtA"),
-                    },
-                ),
-                soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
-                    soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"UdtB"),
-                        type_: soroban_sdk::xdr::VecMView::new(&[
-                            soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                                    name: soroban_sdk::xdr::StringMView::new(b"UdtStruct"),
-                                    id: <UdtStruct>::spec_type_id(),
-                                },
-                            ),
-                        ]),
-                    },
-                ),
-                soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
-                    soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"UdtC"),
-                        type_: soroban_sdk::xdr::VecMView::new(&[
-                            soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                                    name: soroban_sdk::xdr::StringMView::new(b"UdtEnum2"),
-                                    id: <UdtEnum2>::spec_type_id(),
-                                },
-                            ),
-                        ]),
-                    },
-                ),
-                soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
-                    soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"UdtD"),
-                        type_: soroban_sdk::xdr::VecMView::new(&[
-                            soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                                    name: soroban_sdk::xdr::StringMView::new(b"UdtTuple"),
-                                    id: <UdtTuple>::spec_type_id(),
-                                },
-                            ),
-                        ]),
-                    },
-                ),
-            ]),
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UdtEnum::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtUnionV0(
+                soroban_sdk::xdr::ScSpecUdtUnionV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UdtEnum"),
+                    cases: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
+                            soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"UdtA"),
+                            },
+                        ),
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
+                            soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"UdtB"),
+                                type_: soroban_sdk::xdr::VecMView::new(&[
+                                    soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                            name: soroban_sdk::xdr::StringMView::new(b"UdtStruct"),
+                                            id: <UdtStruct>::spec_type_id(),
+                                        },
+                                    ),
+                                ]),
+                            },
+                        ),
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
+                            soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"UdtC"),
+                                type_: soroban_sdk::xdr::VecMView::new(&[
+                                    soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                            name: soroban_sdk::xdr::StringMView::new(b"UdtEnum2"),
+                                            id: <UdtEnum2>::spec_type_id(),
+                                        },
+                                    ),
+                                ]),
+                            },
+                        ),
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
+                            soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"UdtD"),
+                                type_: soroban_sdk::xdr::VecMView::new(&[
+                                    soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                            name: soroban_sdk::xdr::StringMView::new(b"UdtTuple"),
+                                            id: <UdtTuple>::spec_type_id(),
+                                        },
+                                    ),
+                                ]),
+                            },
+                        ),
+                    ]),
+                },
+            ),
         });
     pub const fn spec_xdr() -> [u8; UdtEnum::__SPEC_XDR_VIEW.const_xdr_len()] {
         UdtEnum::__SPEC_XDR_VIEW.const_to_xdr()
@@ -433,26 +443,31 @@ pub static __SPEC_XDR_TYPE_UDTTUPLE: [u8; UdtTuple::__SPEC_XDR_VIEW.const_xdr_le
     UdtTuple::spec_xdr();
 impl UdtTuple {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UdtTuple"),
-            fields: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UdtTuple::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                soroban_sdk::xdr::ScSpecUdtStructV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"0"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::I64,
-                },
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"1"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
-                        &soroban_sdk::xdr::ScSpecTypeVecView {
-                            element_type: &soroban_sdk::xdr::ScSpecTypeDefView::I64,
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UdtTuple"),
+                    fields: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"0"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::I64,
                         },
-                    ),
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"1"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
+                                &soroban_sdk::xdr::ScSpecTypeVecView {
+                                    element_type: &soroban_sdk::xdr::ScSpecTypeDefView::I64,
+                                },
+                            ),
+                        },
+                    ]),
                 },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; UdtTuple::__SPEC_XDR_VIEW.const_xdr_len()] {
         UdtTuple::__SPEC_XDR_VIEW.const_to_xdr()
@@ -578,31 +593,36 @@ pub static __SPEC_XDR_TYPE_UDTSTRUCT: [u8; UdtStruct::__SPEC_XDR_VIEW.const_xdr_
     UdtStruct::spec_xdr();
 impl UdtStruct {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UdtStruct"),
-            fields: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UdtStruct::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                soroban_sdk::xdr::ScSpecUdtStructV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"a"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::I64,
-                },
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"b"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::I64,
-                },
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"c"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
-                        &soroban_sdk::xdr::ScSpecTypeVecView {
-                            element_type: &soroban_sdk::xdr::ScSpecTypeDefView::I64,
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UdtStruct"),
+                    fields: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"a"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::I64,
                         },
-                    ),
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"b"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::I64,
+                        },
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"c"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
+                                &soroban_sdk::xdr::ScSpecTypeVecView {
+                                    element_type: &soroban_sdk::xdr::ScSpecTypeDefView::I64,
+                                },
+                            ),
+                        },
+                    ]),
                 },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; UdtStruct::__SPEC_XDR_VIEW.const_xdr_len()] {
         UdtStruct::__SPEC_XDR_VIEW.const_to_xdr()
@@ -733,31 +753,38 @@ pub static __SPEC_XDR_TYPE_UDTRECURSIVE: [u8; UdtRecursive::__SPEC_XDR_VIEW.cons
     UdtRecursive::spec_xdr();
 impl UdtRecursive {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"UdtRecursive"),
-            fields: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: UdtRecursive::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                soroban_sdk::xdr::ScSpecUdtStructV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"a"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Symbol,
-                },
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"b"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
-                        &soroban_sdk::xdr::ScSpecTypeVecView {
-                            element_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                                    name: soroban_sdk::xdr::StringMView::new(b"UdtRecursive"),
-                                    id: <UdtRecursive>::spec_type_id(),
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"UdtRecursive"),
+                    fields: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"a"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Symbol,
+                        },
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"b"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
+                                &soroban_sdk::xdr::ScSpecTypeVecView {
+                                    element_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                            name: soroban_sdk::xdr::StringMView::new(
+                                                b"UdtRecursive",
+                                            ),
+                                            id: <UdtRecursive>::spec_type_id(),
+                                        },
+                                    ),
                                 },
                             ),
                         },
-                    ),
+                    ]),
                 },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; UdtRecursive::__SPEC_XDR_VIEW.const_xdr_len()] {
         UdtRecursive::__SPEC_XDR_VIEW.const_to_xdr()
@@ -883,32 +910,39 @@ pub static __SPEC_XDR_TYPE_RECURSIVETOENUM: [u8; RecursiveToEnum::__SPEC_XDR_VIE
     RecursiveToEnum::spec_xdr();
 impl RecursiveToEnum {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"RecursiveToEnum"),
-            fields: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: RecursiveToEnum::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                soroban_sdk::xdr::ScSpecUdtStructV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"a"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Symbol,
-                },
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"b"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Map(
-                        &soroban_sdk::xdr::ScSpecTypeMapView {
-                            key_type: &soroban_sdk::xdr::ScSpecTypeDefView::U32,
-                            value_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                                    name: soroban_sdk::xdr::StringMView::new(b"RecursiveEnum"),
-                                    id: <RecursiveEnum>::spec_type_id(),
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"RecursiveToEnum"),
+                    fields: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"a"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Symbol,
+                        },
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"b"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::Map(
+                                &soroban_sdk::xdr::ScSpecTypeMapView {
+                                    key_type: &soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                                    value_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                            name: soroban_sdk::xdr::StringMView::new(
+                                                b"RecursiveEnum",
+                                            ),
+                                            id: <RecursiveEnum>::spec_type_id(),
+                                        },
+                                    ),
                                 },
                             ),
                         },
-                    ),
+                    ]),
                 },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; RecursiveToEnum::__SPEC_XDR_VIEW.const_xdr_len()] {
         RecursiveToEnum::__SPEC_XDR_VIEW.const_to_xdr()
@@ -1041,32 +1075,39 @@ pub static __SPEC_XDR_TYPE_RECURSIVEENUM: [u8; RecursiveEnum::__SPEC_XDR_VIEW.co
     RecursiveEnum::spec_xdr();
 impl RecursiveEnum {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"RecursiveEnum"),
-            cases: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
-                    soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"NotRecursive"),
-                    },
-                ),
-                soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
-                    soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"Recursive"),
-                        type_: soroban_sdk::xdr::VecMView::new(&[
-                            soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                                    name: soroban_sdk::xdr::StringMView::new(b"RecursiveToEnum"),
-                                    id: <RecursiveToEnum>::spec_type_id(),
-                                },
-                            ),
-                        ]),
-                    },
-                ),
-            ]),
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: RecursiveEnum::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtUnionV0(
+                soroban_sdk::xdr::ScSpecUdtUnionV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"RecursiveEnum"),
+                    cases: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
+                            soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"NotRecursive"),
+                            },
+                        ),
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
+                            soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
+                                doc: soroban_sdk::xdr::StringMView::new(b""),
+                                name: soroban_sdk::xdr::StringMView::new(b"Recursive"),
+                                type_: soroban_sdk::xdr::VecMView::new(&[
+                                    soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                            name: soroban_sdk::xdr::StringMView::new(
+                                                b"RecursiveToEnum",
+                                            ),
+                                            id: <RecursiveToEnum>::spec_type_id(),
+                                        },
+                                    ),
+                                ]),
+                            },
+                        ),
+                    ]),
+                },
+            ),
         });
     pub const fn spec_xdr() -> [u8; RecursiveEnum::__SPEC_XDR_VIEW.const_xdr_len()] {
         RecursiveEnum::__SPEC_XDR_VIEW.const_to_xdr()
@@ -1219,32 +1260,41 @@ pub mod __Contract__add__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_add: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"add")),
-            inputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_udt::Contract::add"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"a"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                            name: soroban_sdk::xdr::StringMView::new(b"UdtEnum"),
-                            id: <UdtEnum>::spec_type_id(),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"add",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"a"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                    name: soroban_sdk::xdr::StringMView::new(b"UdtEnum"),
+                                    id: <UdtEnum>::spec_type_id(),
+                                },
+                            ),
                         },
-                    ),
-                },
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"b"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                            name: soroban_sdk::xdr::StringMView::new(b"UdtEnum"),
-                            id: <UdtEnum>::spec_type_id(),
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"b"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                    name: soroban_sdk::xdr::StringMView::new(b"UdtEnum"),
+                                    id: <UdtEnum>::spec_type_id(),
+                                },
+                            ),
                         },
-                    ),
+                    ]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecTypeDefView::I64,
+                    ]),
                 },
-            ]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::I64]),
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_add() -> [u8; Contract::__SPEC_XDR_VIEW_add.const_xdr_len()] {
@@ -1264,33 +1314,40 @@ pub mod __Contract__recursive__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_recursive: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"recursive")),
-            inputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_udt::Contract::recursive"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"a"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                            name: soroban_sdk::xdr::StringMView::new(b"UdtRecursive"),
-                            id: <UdtRecursive>::spec_type_id(),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"recursive",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"a"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                    name: soroban_sdk::xdr::StringMView::new(b"UdtRecursive"),
+                                    id: <UdtRecursive>::spec_type_id(),
+                                },
+                            ),
                         },
-                    ),
-                },
-            ]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecTypeDefView::Option(
-                    &soroban_sdk::xdr::ScSpecTypeOptionView {
-                        value_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                            soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                                name: soroban_sdk::xdr::StringMView::new(b"UdtRecursive"),
-                                id: <UdtRecursive>::spec_type_id(),
+                    ]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecTypeDefView::Option(
+                            &soroban_sdk::xdr::ScSpecTypeOptionView {
+                                value_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                    soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                        name: soroban_sdk::xdr::StringMView::new(b"UdtRecursive"),
+                                        id: <UdtRecursive>::spec_type_id(),
+                                    },
+                                ),
                             },
                         ),
-                    },
-                ),
-            ]),
+                    ]),
+                },
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_recursive() -> [u8; Contract::__SPEC_XDR_VIEW_recursive.const_xdr_len()] {
@@ -1310,45 +1367,52 @@ pub mod __Contract__recursive_enum__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     const __SPEC_XDR_VIEW_recursive_enum: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"recursive_enum",
-            )),
-            inputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: soroban_sdk::spec_type_id("test_udt::Contract::recursive_enum"),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::FunctionV0(
+                soroban_sdk::xdr::ScSpecFunctionV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"a"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                        soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                            name: soroban_sdk::xdr::StringMView::new(b"RecursiveEnum"),
-                            id: <RecursiveEnum>::spec_type_id(),
+                    name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                        b"recursive_enum",
+                    )),
+                    inputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"a"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                    name: soroban_sdk::xdr::StringMView::new(b"RecursiveEnum"),
+                                    id: <RecursiveEnum>::spec_type_id(),
+                                },
+                            ),
                         },
-                    ),
-                },
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
-                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"key"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
-                },
-            ]),
-            outputs: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecTypeDefView::Result(
-                    &soroban_sdk::xdr::ScSpecTypeResultView {
-                        ok_type: &soroban_sdk::xdr::ScSpecTypeDefView::Option(
-                            &soroban_sdk::xdr::ScSpecTypeOptionView {
-                                value_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
-                                    soroban_sdk::xdr::ScSpecTypeUdtv2View {
-                                        name: soroban_sdk::xdr::StringMView::new(b"RecursiveEnum"),
-                                        id: <RecursiveEnum>::spec_type_id(),
+                        soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"key"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecTypeDefView::Result(
+                            &soroban_sdk::xdr::ScSpecTypeResultView {
+                                ok_type: &soroban_sdk::xdr::ScSpecTypeDefView::Option(
+                                    &soroban_sdk::xdr::ScSpecTypeOptionView {
+                                        value_type: &soroban_sdk::xdr::ScSpecTypeDefView::UdtV2(
+                                            soroban_sdk::xdr::ScSpecTypeUdtv2View {
+                                                name: soroban_sdk::xdr::StringMView::new(
+                                                    b"RecursiveEnum",
+                                                ),
+                                                id: <RecursiveEnum>::spec_type_id(),
+                                            },
+                                        ),
                                     },
                                 ),
+                                error_type: &soroban_sdk::xdr::ScSpecTypeDefView::Error,
                             },
                         ),
-                        error_type: &soroban_sdk::xdr::ScSpecTypeDefView::Error,
-                    },
-                ),
-            ]),
+                    ]),
+                },
+            ),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_recursive_enum(

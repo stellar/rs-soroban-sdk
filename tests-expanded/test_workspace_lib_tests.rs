@@ -42,17 +42,22 @@ impl Value {
 pub static __SPEC_XDR_TYPE_VALUE: [u8; Value::__SPEC_XDR_VIEW.const_xdr_len()] = Value::spec_xdr();
 impl Value {
     const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
-            doc: soroban_sdk::xdr::StringMView::new(b""),
-            lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"Value"),
-            fields: soroban_sdk::xdr::VecMView::new(&[
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+        soroban_sdk::xdr::ScSpecEntryView::V2(soroban_sdk::xdr::ScSpecEntryV2View {
+            id: Value::spec_type_id(),
+            body: soroban_sdk::xdr::ScSpecEntryV2BodyView::UdtStructV0(
+                soroban_sdk::xdr::ScSpecUdtStructV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
-                    name: soroban_sdk::xdr::StringMView::new(b"value"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::I32,
+                    lib: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"Value"),
+                    fields: soroban_sdk::xdr::VecMView::new(&[
+                        soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"value"),
+                            type_: soroban_sdk::xdr::ScSpecTypeDefView::I32,
+                        },
+                    ]),
                 },
-            ]),
+            ),
         });
     pub const fn spec_xdr() -> [u8; Value::__SPEC_XDR_VIEW.const_xdr_len()] {
         Value::__SPEC_XDR_VIEW.const_to_xdr()
