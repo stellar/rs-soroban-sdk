@@ -4,8 +4,8 @@ use soroban_sdk::{
     TryFromVal, Val,
 };
 use stellar_xdr::{
-    Limits, ReadXdr, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef,
-    ScSpecTypeTuple, ScSpecTypeUdtv2,
+    Limits, ReadXdr, ScSpecEntry, ScSpecEntryV2, ScSpecEntryV2Body, ScSpecFunctionInputV0,
+    ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeTuple, ScSpecTypeUdtv2,
 };
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -127,45 +127,48 @@ fn test_error_on_partial_decode() {
 #[test]
 fn test_spec() {
     let entries = ScSpecEntry::from_xdr(Contract::spec_xdr_add(), Limits::none()).unwrap();
-    let expect = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
-        doc: "".try_into().unwrap(),
-        name: "add".try_into().unwrap(),
-        inputs: vec![
-            ScSpecFunctionInputV0 {
-                doc: "".try_into().unwrap(),
-                name: "a".try_into().unwrap(),
-                type_: ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
-                    name: "Udt".try_into().unwrap(),
-                    id: Udt::spec_type_id(),
-                }),
-            },
-            ScSpecFunctionInputV0 {
-                doc: "".try_into().unwrap(),
-                name: "b".try_into().unwrap(),
-                type_: ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
-                    name: "Udt".try_into().unwrap(),
-                    id: Udt::spec_type_id(),
-                }),
-            },
-        ]
-        .try_into()
-        .unwrap(),
-        outputs: vec![ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
-            value_types: vec![
-                ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
-                    name: "Udt".try_into().unwrap(),
-                    id: Udt::spec_type_id(),
-                }),
-                ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
-                    name: "Udt".try_into().unwrap(),
-                    id: Udt::spec_type_id(),
-                }),
+    let expect = ScSpecEntry::V2(ScSpecEntryV2 {
+        id: soroban_sdk::spec_type_id(concat!(module_path!(), "::", "Contract::add")),
+        body: ScSpecEntryV2Body::FunctionV0(ScSpecFunctionV0 {
+            doc: "".try_into().unwrap(),
+            name: "add".try_into().unwrap(),
+            inputs: vec![
+                ScSpecFunctionInputV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "a".try_into().unwrap(),
+                    type_: ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
+                        name: "Udt".try_into().unwrap(),
+                        id: Udt::spec_type_id(),
+                    }),
+                },
+                ScSpecFunctionInputV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "b".try_into().unwrap(),
+                    type_: ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
+                        name: "Udt".try_into().unwrap(),
+                        id: Udt::spec_type_id(),
+                    }),
+                },
             ]
             .try_into()
             .unwrap(),
-        }))]
-        .try_into()
-        .unwrap(),
+            outputs: vec![ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
+                value_types: vec![
+                    ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
+                        name: "Udt".try_into().unwrap(),
+                        id: Udt::spec_type_id(),
+                    }),
+                    ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
+                        name: "Udt".try_into().unwrap(),
+                        id: Udt::spec_type_id(),
+                    }),
+                ]
+                .try_into()
+                .unwrap(),
+            }))]
+            .try_into()
+            .unwrap(),
+        }),
     });
     assert_eq!(entries, expect);
 }
@@ -174,30 +177,37 @@ fn test_spec() {
 fn test_spec_with_long_names() {
     let entries =
         ScSpecEntry::from_xdr(Contract::spec_xdr_add_udt_with_long_name(), Limits::none()).unwrap();
-    let expect = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
-        doc: "".try_into().unwrap(),
-        name: "add_udt_with_long_name".try_into().unwrap(),
-        inputs: vec![
-            ScSpecFunctionInputV0 {
-                doc: "".try_into().unwrap(),
-                name: "a".try_into().unwrap(),
-                type_: ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
-                    name: "UdtWithLongName".try_into().unwrap(),
-                    id: UdtWithLongName::spec_type_id(),
-                }),
-            },
-            ScSpecFunctionInputV0 {
-                doc: "".try_into().unwrap(),
-                name: "b".try_into().unwrap(),
-                type_: ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
-                    name: "UdtWithLongName".try_into().unwrap(),
-                    id: UdtWithLongName::spec_type_id(),
-                }),
-            },
-        ]
-        .try_into()
-        .unwrap(),
-        outputs: vec![ScSpecTypeDef::U64].try_into().unwrap(),
+    let expect = ScSpecEntry::V2(ScSpecEntryV2 {
+        id: soroban_sdk::spec_type_id(concat!(
+            module_path!(),
+            "::",
+            "Contract::add_udt_with_long_name"
+        )),
+        body: ScSpecEntryV2Body::FunctionV0(ScSpecFunctionV0 {
+            doc: "".try_into().unwrap(),
+            name: "add_udt_with_long_name".try_into().unwrap(),
+            inputs: vec![
+                ScSpecFunctionInputV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "a".try_into().unwrap(),
+                    type_: ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
+                        name: "UdtWithLongName".try_into().unwrap(),
+                        id: UdtWithLongName::spec_type_id(),
+                    }),
+                },
+                ScSpecFunctionInputV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "b".try_into().unwrap(),
+                    type_: ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
+                        name: "UdtWithLongName".try_into().unwrap(),
+                        id: UdtWithLongName::spec_type_id(),
+                    }),
+                },
+            ]
+            .try_into()
+            .unwrap(),
+            outputs: vec![ScSpecTypeDef::U64].try_into().unwrap(),
+        }),
     });
     assert_eq!(entries, expect);
 }

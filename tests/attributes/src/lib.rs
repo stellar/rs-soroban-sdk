@@ -173,13 +173,16 @@ mod test {
     #[test]
     fn test_specs_include_active_attribute_items() {
         use soroban_sdk::xdr::{
-            Limits, ReadXdr, ScSpecEntry, ScSpecEventParamLocationV0, ScSpecFunctionV0,
-            ScSpecTypeDef,
+            Limits, ReadXdr, ScSpecEntry, ScSpecEntryV2Body, ScSpecEventParamLocationV0,
+            ScSpecFunctionV0, ScSpecTypeDef,
         };
         use std::collections::HashSet;
 
         let type_entry = ScSpecEntry::from_xdr(AttributeType::spec_xdr(), Limits::none()).unwrap();
-        let ScSpecEntry::UdtStructV0(type_spec) = type_entry else {
+        let ScSpecEntry::V2(type_entry) = type_entry else {
+            panic!("expected v2 spec entry");
+        };
+        let ScSpecEntryV2Body::UdtStructV0(type_spec) = type_entry.body else {
             panic!("expected struct spec");
         };
         assert_eq!(type_spec.fields[0].name.to_utf8_string_lossy(), "value");
@@ -187,7 +190,10 @@ mod test {
 
         let event_entry =
             ScSpecEntry::from_xdr(AttributeEvent::spec_xdr(), Limits::none()).unwrap();
-        let ScSpecEntry::EventV0(event_spec) = event_entry else {
+        let ScSpecEntry::V2(event_entry) = event_entry else {
+            panic!("expected v2 spec entry");
+        };
+        let ScSpecEntryV2Body::EventV0(event_spec) = event_entry.body else {
             panic!("expected event spec");
         };
         let event_params = event_spec
@@ -219,7 +225,12 @@ mod test {
 
         let method_entry =
             ScSpecEntry::from_xdr(Contract::spec_xdr_cfg_included(), Limits::none()).unwrap();
-        let ScSpecEntry::FunctionV0(ScSpecFunctionV0 { name, inputs, .. }) = method_entry else {
+        let ScSpecEntry::V2(method_entry) = method_entry else {
+            panic!("expected v2 spec entry");
+        };
+        let ScSpecEntryV2Body::FunctionV0(ScSpecFunctionV0 { name, inputs, .. }) =
+            method_entry.body
+        else {
             panic!("expected function spec");
         };
         assert_eq!(name.to_utf8_string_lossy(), "cfg_included");
@@ -229,12 +240,13 @@ mod test {
         let fn_names: HashSet<std::string::String> = soroban_spec::read::from_wasm(wasm)
             .unwrap()
             .iter()
-            .filter_map(|e| {
-                if let ScSpecEntry::FunctionV0(f) = e {
-                    Some(f.name.to_utf8_string_lossy())
-                } else {
-                    None
-                }
+            .filter_map(|e| match e {
+                ScSpecEntry::FunctionV0(f) => Some(f.name.to_utf8_string_lossy()),
+                ScSpecEntry::V2(v2) => match &v2.body {
+                    ScSpecEntryV2Body::FunctionV0(f) => Some(f.name.to_utf8_string_lossy()),
+                    _ => None,
+                },
+                _ => None,
             })
             .collect();
 

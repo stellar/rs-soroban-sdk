@@ -36,7 +36,7 @@
 use std::collections::HashSet;
 
 use sha2::{Digest, Sha256};
-use stellar_xdr::{Limits, ScMetaEntry, ScSpecEntry, WriteXdr};
+use stellar_xdr::{Limits, ScMetaEntry, ScSpecEntry, ScSpecEntryV2Body, WriteXdr};
 
 /// The contract meta key that indicates the spec shaking version.
 ///
@@ -167,7 +167,12 @@ pub fn filter<'a, I: IntoIterator<Item = ScSpecEntry> + 'a>(
 ) -> impl Iterator<Item = ScSpecEntry> + 'a {
     entries.into_iter().filter(move |entry| {
         // Always keep functions - they're the contract's API
-        if matches!(entry, ScSpecEntry::FunctionV0(_)) {
+        if matches!(entry, ScSpecEntry::FunctionV0(_))
+            || matches!(
+                entry,
+                ScSpecEntry::V2(v2) if matches!(v2.body, ScSpecEntryV2Body::FunctionV0(_))
+            )
+        {
             return true;
         }
         // For all other entries (types, events), check if marker exists

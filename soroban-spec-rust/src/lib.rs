@@ -8,7 +8,10 @@ use std::{fs, io};
 use proc_macro2::TokenStream;
 use quote::quote;
 use sha2::{Digest, Sha256};
-use stellar_xdr::{ScSpecEntry, ScSpecTypeDef, ScSpecTypeUdt, ScSpecUdtUnionCaseV0};
+use stellar_xdr::{
+    ScSpecEntry, ScSpecEntryV2Body, ScSpecEventV0, ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeUdt,
+    ScSpecUdtStructV0, ScSpecUdtUnionCaseV0, ScSpecUdtUnionV0,
+};
 use syn::Error;
 
 use soroban_spec::read::{from_wasm, FromWasmError};
@@ -117,6 +120,8 @@ pub fn generate_without_file_with_options(
     let mut spec_error_enums = Vec::new();
     let mut spec_events = Vec::new();
     for s in specs {
+        // A v2 entry is its v0 body plus the id that identifies the entry;
+        // code generation works from the body alone.
         match s {
             ScSpecEntry::FunctionV0(f) => spec_fns.push(f),
             ScSpecEntry::UdtStructV0(s) => spec_structs.push(s),
@@ -124,6 +129,14 @@ pub fn generate_without_file_with_options(
             ScSpecEntry::UdtEnumV0(e) => spec_enums.push(e),
             ScSpecEntry::UdtErrorEnumV0(e) => spec_error_enums.push(e),
             ScSpecEntry::EventV0(e) => spec_events.push(e),
+            ScSpecEntry::V2(v2) => match &v2.body {
+                ScSpecEntryV2Body::FunctionV0(f) => spec_fns.push(f),
+                ScSpecEntryV2Body::UdtStructV0(s) => spec_structs.push(s),
+                ScSpecEntryV2Body::UdtUnionV0(u) => spec_unions.push(u),
+                ScSpecEntryV2Body::UdtEnumV0(e) => spec_enums.push(e),
+                ScSpecEntryV2Body::UdtErrorEnumV0(e) => spec_error_enums.push(e),
+                ScSpecEntryV2Body::EventV0(e) => spec_events.push(e),
+            },
         }
     }
 
@@ -184,6 +197,12 @@ fn apply_error_udt_override(specs: &[ScSpecEntry]) -> Cow<'_, [ScSpecEntry]> {
         matches!(
             e,
             ScSpecEntry::UdtErrorEnumV0(err) if err.name.to_utf8_string_lossy() == "Error"
+        ) || matches!(
+            e,
+            ScSpecEntry::V2(v2) if matches!(
+                &v2.body,
+                ScSpecEntryV2Body::UdtErrorEnumV0(err) if err.name.to_utf8_string_lossy() == "Error"
+            )
         )
     });
     if has_error_udt {
@@ -225,36 +244,47 @@ fn rewrite_error_to_udt(entries: &mut [ScSpecEntry]) {
             _ => {}
         }
     }
+    fn rewrite_fn(f: &mut ScSpecFunctionV0) {
+        for input in f.inputs.iter_mut() {
+            rewrite_ty(&mut input.type_);
+        }
+        for output in f.outputs.iter_mut() {
+            rewrite_ty(output);
+        }
+    }
+    fn rewrite_struct(s: &mut ScSpecUdtStructV0) {
+        for field in s.fields.iter_mut() {
+            rewrite_ty(&mut field.type_);
+        }
+    }
+    fn rewrite_union(u: &mut ScSpecUdtUnionV0) {
+        for case in u.cases.iter_mut() {
+            if let ScSpecUdtUnionCaseV0::TupleV0(t) = case {
+                for ty in t.type_.iter_mut() {
+                    rewrite_ty(ty);
+                }
+            }
+        }
+    }
+    fn rewrite_event(e: &mut ScSpecEventV0) {
+        for p in e.params.iter_mut() {
+            rewrite_ty(&mut p.type_);
+        }
+    }
     for entry in entries.iter_mut() {
         match entry {
-            ScSpecEntry::FunctionV0(f) => {
-                for input in f.inputs.iter_mut() {
-                    rewrite_ty(&mut input.type_);
-                }
-                for output in f.outputs.iter_mut() {
-                    rewrite_ty(output);
-                }
-            }
-            ScSpecEntry::UdtStructV0(s) => {
-                for field in s.fields.iter_mut() {
-                    rewrite_ty(&mut field.type_);
-                }
-            }
-            ScSpecEntry::UdtUnionV0(u) => {
-                for case in u.cases.iter_mut() {
-                    if let ScSpecUdtUnionCaseV0::TupleV0(t) = case {
-                        for ty in t.type_.iter_mut() {
-                            rewrite_ty(ty);
-                        }
-                    }
-                }
-            }
+            ScSpecEntry::FunctionV0(f) => rewrite_fn(f),
+            ScSpecEntry::UdtStructV0(s) => rewrite_struct(s),
+            ScSpecEntry::UdtUnionV0(u) => rewrite_union(u),
             ScSpecEntry::UdtEnumV0(_) | ScSpecEntry::UdtErrorEnumV0(_) => {}
-            ScSpecEntry::EventV0(e) => {
-                for p in e.params.iter_mut() {
-                    rewrite_ty(&mut p.type_);
-                }
-            }
+            ScSpecEntry::EventV0(e) => rewrite_event(e),
+            ScSpecEntry::V2(v2) => match &mut v2.body {
+                ScSpecEntryV2Body::FunctionV0(f) => rewrite_fn(f),
+                ScSpecEntryV2Body::UdtStructV0(s) => rewrite_struct(s),
+                ScSpecEntryV2Body::UdtUnionV0(u) => rewrite_union(u),
+                ScSpecEntryV2Body::UdtEnumV0(_) | ScSpecEntryV2Body::UdtErrorEnumV0(_) => {}
+                ScSpecEntryV2Body::EventV0(e) => rewrite_event(e),
+            },
         }
     }
 }
@@ -501,7 +531,7 @@ pub enum MyError {
     /// differently-named error enum (`MyError`) is emitted as a UDT reference.
     #[test]
     fn test_add_u64_spec_entries() {
-        use super::ScSpecEntry;
+        use super::{ScSpecEntry, ScSpecEntryV2Body};
         use stellar_xdr::ScSpecTypeDef;
 
         let entries = from_wasm(ADD_U64_WASM).unwrap();
@@ -513,6 +543,14 @@ pub enum MyError {
                 ScSpecEntry::FunctionV0(f) if f.name.to_utf8_string().unwrap() == "safe_add" => {
                     Some(f)
                 }
+                ScSpecEntry::V2(v2) => match &v2.body {
+                    ScSpecEntryV2Body::FunctionV0(f)
+                        if f.name.to_utf8_string().unwrap() == "safe_add" =>
+                    {
+                        Some(f)
+                    }
+                    _ => None,
+                },
                 _ => None,
             })
             .expect("safe_add function not found");
@@ -540,6 +578,14 @@ pub enum MyError {
                 {
                     Some(f)
                 }
+                ScSpecEntry::V2(v2) => match &v2.body {
+                    ScSpecEntryV2Body::FunctionV0(f)
+                        if f.name.to_utf8_string().unwrap() == "safe_add_two" =>
+                    {
+                        Some(f)
+                    }
+                    _ => None,
+                },
                 _ => None,
             })
             .expect("safe_add_two function not found");

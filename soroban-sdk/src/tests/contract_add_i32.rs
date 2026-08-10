@@ -1,7 +1,8 @@
 use crate as soroban_sdk;
 use soroban_sdk::{contract, contractimpl, Env};
 use stellar_xdr::{
-    Limits, ReadXdr, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef,
+    Limits, ReadXdr, ScSpecEntry, ScSpecEntryV2, ScSpecEntryV2Body, ScSpecFunctionInputV0,
+    ScSpecFunctionV0, ScSpecTypeDef,
 };
 
 #[contract]
@@ -28,24 +29,27 @@ fn test_functional() {
 #[test]
 fn test_spec() {
     let entries = ScSpecEntry::from_xdr(Contract::spec_xdr_add(), Limits::none()).unwrap();
-    let expect = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
-        doc: "".try_into().unwrap(),
-        name: "add".try_into().unwrap(),
-        inputs: vec![
-            ScSpecFunctionInputV0 {
-                doc: "".try_into().unwrap(),
-                name: "a".try_into().unwrap(),
-                type_: ScSpecTypeDef::I32,
-            },
-            ScSpecFunctionInputV0 {
-                doc: "".try_into().unwrap(),
-                name: "b".try_into().unwrap(),
-                type_: ScSpecTypeDef::I32,
-            },
-        ]
-        .try_into()
-        .unwrap(),
-        outputs: vec![ScSpecTypeDef::I32].try_into().unwrap(),
+    let expect = ScSpecEntry::V2(ScSpecEntryV2 {
+        id: soroban_sdk::spec_type_id(concat!(module_path!(), "::", "Contract::add")),
+        body: ScSpecEntryV2Body::FunctionV0(ScSpecFunctionV0 {
+            doc: "".try_into().unwrap(),
+            name: "add".try_into().unwrap(),
+            inputs: vec![
+                ScSpecFunctionInputV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "a".try_into().unwrap(),
+                    type_: ScSpecTypeDef::I32,
+                },
+                ScSpecFunctionInputV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "b".try_into().unwrap(),
+                    type_: ScSpecTypeDef::I32,
+                },
+            ]
+            .try_into()
+            .unwrap(),
+            outputs: vec![ScSpecTypeDef::I32].try_into().unwrap(),
+        }),
     });
     assert_eq!(entries, expect);
 }

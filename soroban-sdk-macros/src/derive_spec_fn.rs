@@ -199,12 +199,24 @@ pub fn derive_fn_spec(
             .outputs
             .iter()
             .map(|o| const_view_type_def(path, o, output_type));
+        // The entry's id: the hash of the function's fully qualified name —
+        // the module the contract type is defined in, the contract type, then
+        // the function's own name — assembled the same way a user-defined
+        // type's id is.
+        let fq_fn_name = format!(
+            "{}::{}",
+            quote!(#ty).to_string().replace(' ', "").replace("r#", ""),
+            ident.unraw()
+        );
         quote! {
-            #path::xdr::ScSpecEntryView::FunctionV0(#path::xdr::ScSpecFunctionV0View {
-                doc: #doc,
-                name: #name,
-                inputs: #path::xdr::VecMView::new(&[#(#inputs),*]),
-                outputs: #path::xdr::VecMView::new(&[#(#outputs),*]),
+            #path::xdr::ScSpecEntryView::V2(#path::xdr::ScSpecEntryV2View {
+                id: #path::spec_type_id(::core::concat!(::core::module_path!(), "::", #fq_fn_name)),
+                body: #path::xdr::ScSpecEntryV2BodyView::FunctionV0(#path::xdr::ScSpecFunctionV0View {
+                    doc: #doc,
+                    name: #name,
+                    inputs: #path::xdr::VecMView::new(&[#(#inputs),*]),
+                    outputs: #path::xdr::VecMView::new(&[#(#outputs),*]),
+                }),
             })
         }
     };

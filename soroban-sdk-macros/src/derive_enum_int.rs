@@ -91,11 +91,14 @@ pub fn derive_type_enum_int(
             quote!(#path::xdr::ScSpecUdtEnumCaseV0View { doc: #doc, name: #name, value: #value })
         });
         let spec_view = quote! {
-            #path::xdr::ScSpecEntryView::UdtEnumV0(#path::xdr::ScSpecUdtEnumV0View {
-                doc: #doc,
-                lib: #lib,
-                name: #name,
-                cases: #path::xdr::VecMView::new(&[#(#cases),*]),
+            #path::xdr::ScSpecEntryView::V2(#path::xdr::ScSpecEntryV2View {
+                id: #enum_ident::spec_type_id(),
+                body: #path::xdr::ScSpecEntryV2BodyView::UdtEnumV0(#path::xdr::ScSpecUdtEnumV0View {
+                    doc: #doc,
+                    lib: #lib,
+                    name: #name,
+                    cases: #path::xdr::VecMView::new(&[#(#cases),*]),
+                }),
             })
         };
         let spec_ident = format_ident!(

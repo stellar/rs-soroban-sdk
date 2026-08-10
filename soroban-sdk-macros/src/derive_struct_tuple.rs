@@ -91,11 +91,14 @@ pub fn derive_type_struct_tuple(
                 quote!(#path::xdr::ScSpecUdtStructFieldV0View { doc: #doc, name: #name, type_: #type_ })
             });
         let spec_view = quote! {
-            #path::xdr::ScSpecEntryView::UdtStructV0(#path::xdr::ScSpecUdtStructV0View {
-                doc: #doc,
-                lib: #lib,
-                name: #name,
-                fields: #path::xdr::VecMView::new(&[#(#fields),*]),
+            #path::xdr::ScSpecEntryView::V2(#path::xdr::ScSpecEntryV2View {
+                id: #ident::spec_type_id(),
+                body: #path::xdr::ScSpecEntryV2BodyView::UdtStructV0(#path::xdr::ScSpecUdtStructV0View {
+                    doc: #doc,
+                    lib: #lib,
+                    name: #name,
+                    fields: #path::xdr::VecMView::new(&[#(#fields),*]),
+                }),
             })
         };
         let spec_ident = format_ident!(

@@ -194,11 +194,14 @@ pub fn derive_type_enum(
                 }
             });
         let spec_view = quote! {
-            #path::xdr::ScSpecEntryView::UdtUnionV0(#path::xdr::ScSpecUdtUnionV0View {
-                doc: #doc,
-                lib: #lib,
-                name: #name,
-                cases: #path::xdr::VecMView::new(&[#(#cases),*]),
+            #path::xdr::ScSpecEntryView::V2(#path::xdr::ScSpecEntryV2View {
+                id: #enum_ident::spec_type_id(),
+                body: #path::xdr::ScSpecEntryV2BodyView::UdtUnionV0(#path::xdr::ScSpecUdtUnionV0View {
+                    doc: #doc,
+                    lib: #lib,
+                    name: #name,
+                    cases: #path::xdr::VecMView::new(&[#(#cases),*]),
+                }),
             })
         };
         let spec_ident = format_ident!(

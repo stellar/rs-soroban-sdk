@@ -232,14 +232,21 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
                 })
             });
         let data_format = format_ident!("{}", spec.data_format.name());
+        // The entry's id: the hash of the event type's fully qualified name,
+        // assembled the same way spec_type_id_gen assembles it for a
+        // user-defined type.
+        let ident_name = ident.unraw().to_string();
         quote! {
-            #path::xdr::ScSpecEntryView::EventV0(#path::xdr::ScSpecEventV0View {
-                doc: #doc,
-                lib: #lib,
-                name: #name,
-                prefix_topics: #path::xdr::VecMView::new(&[#(#prefix_topics),*]),
-                params: #path::xdr::VecMView::new(&[#(#params),*]),
-                data_format: #path::xdr::ScSpecEventDataFormat::#data_format,
+            #path::xdr::ScSpecEntryView::V2(#path::xdr::ScSpecEntryV2View {
+                id: #path::spec_type_id(::core::concat!(::core::module_path!(), "::", #ident_name)),
+                body: #path::xdr::ScSpecEntryV2BodyView::EventV0(#path::xdr::ScSpecEventV0View {
+                    doc: #doc,
+                    lib: #lib,
+                    name: #name,
+                    prefix_topics: #path::xdr::VecMView::new(&[#(#prefix_topics),*]),
+                    params: #path::xdr::VecMView::new(&[#(#params),*]),
+                    data_format: #path::xdr::ScSpecEventDataFormat::#data_format,
+                }),
             })
         }
     };

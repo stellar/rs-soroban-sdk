@@ -23,17 +23,20 @@ fn test_functional() {
 fn test_spec() {
     let entries =
         xdr::ScSpecEntry::from_xdr(Contract::spec_xdr_exec(), xdr::Limits::none()).unwrap();
-    let expect = xdr::ScSpecEntry::FunctionV0(xdr::ScSpecFunctionV0 {
-        doc: "".try_into().unwrap(),
-        name: "exec".try_into().unwrap(),
-        inputs: [xdr::ScSpecFunctionInputV0 {
+    let expect = xdr::ScSpecEntry::V2(xdr::ScSpecEntryV2 {
+        id: soroban_sdk::spec_type_id(concat!(module_path!(), "::", "Contract::exec")),
+        body: xdr::ScSpecEntryV2Body::FunctionV0(xdr::ScSpecFunctionV0 {
             doc: "".try_into().unwrap(),
-            name: "t".try_into().unwrap(),
-            type_: xdr::ScSpecTypeDef::Timepoint,
-        }]
-        .try_into()
-        .unwrap(),
-        outputs: [].try_into().unwrap(),
+            name: "exec".try_into().unwrap(),
+            inputs: [xdr::ScSpecFunctionInputV0 {
+                doc: "".try_into().unwrap(),
+                name: "t".try_into().unwrap(),
+                type_: xdr::ScSpecTypeDef::Timepoint,
+            }]
+            .try_into()
+            .unwrap(),
+            outputs: [].try_into().unwrap(),
+        }),
     });
     assert_eq!(entries, expect);
 }

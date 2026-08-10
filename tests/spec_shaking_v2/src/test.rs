@@ -1,6 +1,6 @@
 extern crate std;
 
-use soroban_sdk::xdr::ScSpecEntry;
+use soroban_sdk::xdr::{ScSpecEntry, ScSpecEntryV2Body};
 use std::collections::HashSet;
 use std::vec::Vec;
 
@@ -26,12 +26,13 @@ fn test_spec_shaking_v2() {
     // All functions are always kept.
     let fn_names: Vec<std::string::String> = filtered
         .iter()
-        .filter_map(|e| {
-            if let ScSpecEntry::FunctionV0(f) = e {
-                Some(f.name.to_utf8_string_lossy())
-            } else {
-                None
-            }
+        .filter_map(|e| match e {
+            ScSpecEntry::FunctionV0(f) => Some(f.name.to_utf8_string_lossy()),
+            ScSpecEntry::V2(v2) => match &v2.body {
+                ScSpecEntryV2Body::FunctionV0(f) => Some(f.name.to_utf8_string_lossy()),
+                _ => None,
+            },
+            _ => None,
         })
         .collect();
     for expected_fn in [
@@ -207,5 +208,13 @@ fn entry_name(entry: &ScSpecEntry) -> Option<std::string::String> {
         ScSpecEntry::UdtEnumV0(e) => Some(e.name.to_utf8_string_lossy()),
         ScSpecEntry::UdtErrorEnumV0(e) => Some(e.name.to_utf8_string_lossy()),
         ScSpecEntry::EventV0(e) => Some(e.name.to_utf8_string_lossy()),
+        ScSpecEntry::V2(v2) => match &v2.body {
+            ScSpecEntryV2Body::FunctionV0(_) => None,
+            ScSpecEntryV2Body::UdtStructV0(s) => Some(s.name.to_utf8_string_lossy()),
+            ScSpecEntryV2Body::UdtUnionV0(u) => Some(u.name.to_utf8_string_lossy()),
+            ScSpecEntryV2Body::UdtEnumV0(e) => Some(e.name.to_utf8_string_lossy()),
+            ScSpecEntryV2Body::UdtErrorEnumV0(e) => Some(e.name.to_utf8_string_lossy()),
+            ScSpecEntryV2Body::EventV0(e) => Some(e.name.to_utf8_string_lossy()),
+        },
     }
 }

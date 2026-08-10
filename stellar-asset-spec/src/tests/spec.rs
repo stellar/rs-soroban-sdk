@@ -2,8 +2,8 @@ extern crate std;
 
 use crate::{XDR_INPUT, XDR_LEN};
 use soroban_sdk::xdr::{
-    Error, Limited, Limits, ReadXdr, ScSpecEntry, ScSpecEventParamLocationV0, ScSpecEventParamV0,
-    ScSpecTypeDef, StringM,
+    Error, Limited, Limits, ReadXdr, ScSpecEntry, ScSpecEntryV2Body, ScSpecEventParamLocationV0,
+    ScSpecEventParamV0, ScSpecTypeDef, StringM,
 };
 use std::collections::HashSet;
 
@@ -11,6 +11,23 @@ use std::collections::HashSet;
 fn test_stellar_asset_spec_xdr_len() {
     let len = XDR_INPUT.iter().fold(0usize, |sum, x| sum + x.len());
     assert_eq!(XDR_LEN, len);
+}
+
+/// Unwraps a v2 entry to its body, so entries compare by content: the two
+/// specs' items are defined in different modules and so carry different ids,
+/// and this test compares what the entries describe, not their identities.
+fn unwrap_v2(entry: ScSpecEntry) -> ScSpecEntry {
+    match entry {
+        ScSpecEntry::V2(v2) => match v2.body {
+            ScSpecEntryV2Body::FunctionV0(f) => ScSpecEntry::FunctionV0(f),
+            ScSpecEntryV2Body::UdtStructV0(s) => ScSpecEntry::UdtStructV0(s),
+            ScSpecEntryV2Body::UdtUnionV0(u) => ScSpecEntry::UdtUnionV0(u),
+            ScSpecEntryV2Body::UdtEnumV0(e) => ScSpecEntry::UdtEnumV0(e),
+            ScSpecEntryV2Body::UdtErrorEnumV0(e) => ScSpecEntry::UdtErrorEnumV0(e),
+            ScSpecEntryV2Body::EventV0(e) => ScSpecEntry::EventV0(e),
+        },
+        e => e,
+    }
 }
 
 fn strip_doc(entry: &mut ScSpecEntry) {
@@ -61,7 +78,8 @@ fn test_stellar_asset_spec_includes_token_spec() -> Result<(), Error> {
     let token_entries: HashSet<ScSpecEntry> =
         ScSpecEntry::read_xdr_iter(&mut Limited::new(token_cursor, Limits::none()))
             .map(|e| {
-                e.map(|mut e| {
+                e.map(|e| {
+                    let mut e = unwrap_v2(e);
                     strip_doc(&mut e);
                     if matches!(e, ScSpecEntry::EventV0(_)) {
                         add_sep0011_asset_topic(&mut e);
@@ -77,7 +95,8 @@ fn test_stellar_asset_spec_includes_token_spec() -> Result<(), Error> {
     let stellar_asset_entries: HashSet<ScSpecEntry> =
         ScSpecEntry::read_xdr_iter(&mut Limited::new(stellar_asset_cursor, Limits::none()))
             .map(|e| {
-                e.map(|mut e| {
+                e.map(|e| {
+                    let mut e = unwrap_v2(e);
                     strip_doc(&mut e);
                     e
                 })

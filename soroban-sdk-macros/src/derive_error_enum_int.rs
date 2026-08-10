@@ -88,11 +88,14 @@ pub fn derive_type_error_enum_int(
             quote!(#path::xdr::ScSpecUdtErrorEnumCaseV0View { doc: #doc, name: #name, value: #value })
         });
         let spec_view = quote! {
-            #path::xdr::ScSpecEntryView::UdtErrorEnumV0(#path::xdr::ScSpecUdtErrorEnumV0View {
-                doc: #doc,
-                lib: #lib,
-                name: #name,
-                cases: #path::xdr::VecMView::new(&[#(#cases),*]),
+            #path::xdr::ScSpecEntryView::V2(#path::xdr::ScSpecEntryV2View {
+                id: #enum_ident::spec_type_id(),
+                body: #path::xdr::ScSpecEntryV2BodyView::UdtErrorEnumV0(#path::xdr::ScSpecUdtErrorEnumV0View {
+                    doc: #doc,
+                    lib: #lib,
+                    name: #name,
+                    cases: #path::xdr::VecMView::new(&[#(#cases),*]),
+                }),
             })
         };
         let spec_ident = format_ident!(

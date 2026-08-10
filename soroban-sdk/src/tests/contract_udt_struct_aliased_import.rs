@@ -20,8 +20,8 @@
 use crate::{self as soroban_sdk};
 use soroban_sdk::{contract, contractimpl, contracttype, Env};
 use stellar_xdr::{
-    Limits, ReadXdr, ScSpecEntry, ScSpecTypeDef, ScSpecTypeUdtv2, ScSpecUdtStructFieldV0,
-    ScSpecUdtStructV0,
+    Limits, ReadXdr, ScSpecEntry, ScSpecEntryV2, ScSpecEntryV2Body, ScSpecTypeDef, ScSpecTypeUdtv2,
+    ScSpecUdtStructFieldV0, ScSpecUdtStructV0,
 };
 
 mod inner {
@@ -92,54 +92,60 @@ fn test_functional_with_original_type() {
 #[test]
 fn test_spec() {
     let entries = ScSpecEntry::from_xdr(Outer::spec_xdr(), Limits::none()).unwrap();
-    let expect = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
-        doc: "".try_into().unwrap(),
-        lib: "".try_into().unwrap(),
-        name: "Outer".try_into().unwrap(),
-        fields: vec![
-            ScSpecUdtStructFieldV0 {
-                doc: "".try_into().unwrap(),
-                name: "c".try_into().unwrap(),
-                type_: ScSpecTypeDef::I32,
-            },
-            ScSpecUdtStructFieldV0 {
-                doc: "".try_into().unwrap(),
-                name: "inner".try_into().unwrap(),
-                type_: ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
-                    // See module doc comment: named after the aliased
-                    // import, not the type's own spec'd name (below), but
-                    // carrying the id of the type the alias names.
-                    name: "Renamed".try_into().unwrap(),
-                    id: inner::Inner::spec_type_id(),
-                }),
-            },
-        ]
-        .try_into()
-        .unwrap(),
+    let expect = ScSpecEntry::V2(ScSpecEntryV2 {
+        id: Outer::spec_type_id(),
+        body: ScSpecEntryV2Body::UdtStructV0(ScSpecUdtStructV0 {
+            doc: "".try_into().unwrap(),
+            lib: "".try_into().unwrap(),
+            name: "Outer".try_into().unwrap(),
+            fields: vec![
+                ScSpecUdtStructFieldV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "c".try_into().unwrap(),
+                    type_: ScSpecTypeDef::I32,
+                },
+                ScSpecUdtStructFieldV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "inner".try_into().unwrap(),
+                    type_: ScSpecTypeDef::UdtV2(ScSpecTypeUdtv2 {
+                        // See module doc comment: named after the aliased
+                        // import, not the type's own spec'd name (below), but
+                        // carrying the id of the type the alias names.
+                        name: "Renamed".try_into().unwrap(),
+                        id: inner::Inner::spec_type_id(),
+                    }),
+                },
+            ]
+            .try_into()
+            .unwrap(),
+        }),
     });
     assert_eq!(entries, expect);
 
     // Renamed's own spec entry is generated under its original definition
     // name, "Inner" — confirming no "Renamed" UdtStructV0 entry exists.
     let entries = ScSpecEntry::from_xdr(Renamed::spec_xdr(), Limits::none()).unwrap();
-    let expect = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
-        doc: "".try_into().unwrap(),
-        lib: "".try_into().unwrap(),
-        name: "Inner".try_into().unwrap(),
-        fields: vec![
-            ScSpecUdtStructFieldV0 {
-                doc: "".try_into().unwrap(),
-                name: "a".try_into().unwrap(),
-                type_: ScSpecTypeDef::I32,
-            },
-            ScSpecUdtStructFieldV0 {
-                doc: "".try_into().unwrap(),
-                name: "b".try_into().unwrap(),
-                type_: ScSpecTypeDef::I32,
-            },
-        ]
-        .try_into()
-        .unwrap(),
+    let expect = ScSpecEntry::V2(ScSpecEntryV2 {
+        id: Renamed::spec_type_id(),
+        body: ScSpecEntryV2Body::UdtStructV0(ScSpecUdtStructV0 {
+            doc: "".try_into().unwrap(),
+            lib: "".try_into().unwrap(),
+            name: "Inner".try_into().unwrap(),
+            fields: vec![
+                ScSpecUdtStructFieldV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "a".try_into().unwrap(),
+                    type_: ScSpecTypeDef::I32,
+                },
+                ScSpecUdtStructFieldV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "b".try_into().unwrap(),
+                    type_: ScSpecTypeDef::I32,
+                },
+            ]
+            .try_into()
+            .unwrap(),
+        }),
     });
     assert_eq!(entries, expect);
 }

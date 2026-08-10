@@ -1,6 +1,9 @@
 use crate as soroban_sdk;
 use soroban_sdk::{contract, contractimpl, Address, Env};
-use stellar_xdr::{ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef};
+use stellar_xdr::{
+    ScSpecEntry, ScSpecEntryV2, ScSpecEntryV2Body, ScSpecFunctionInputV0, ScSpecFunctionV0,
+    ScSpecTypeDef,
+};
 
 mod addcontract {
     use crate as soroban_sdk;
@@ -107,29 +110,32 @@ fn test_reregister_over_wasm_with_rust_impl() {
 #[test]
 fn test_spec() {
     let entries = soroban_spec::read::parse_raw(&Contract::spec_xdr_add_with()).unwrap();
-    let expect = vec![ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
-        doc: "".try_into().unwrap(),
-        name: "add_with".try_into().unwrap(),
-        inputs: vec![
-            ScSpecFunctionInputV0 {
-                doc: "".try_into().unwrap(),
-                name: "contract_id".try_into().unwrap(),
-                type_: ScSpecTypeDef::Address,
-            },
-            ScSpecFunctionInputV0 {
-                doc: "".try_into().unwrap(),
-                name: "x".try_into().unwrap(),
-                type_: ScSpecTypeDef::U64,
-            },
-            ScSpecFunctionInputV0 {
-                doc: "".try_into().unwrap(),
-                name: "y".try_into().unwrap(),
-                type_: ScSpecTypeDef::U64,
-            },
-        ]
-        .try_into()
-        .unwrap(),
-        outputs: vec![ScSpecTypeDef::U64].try_into().unwrap(),
+    let expect = vec![ScSpecEntry::V2(ScSpecEntryV2 {
+        id: soroban_sdk::spec_type_id(concat!(module_path!(), "::", "Contract::add_with")),
+        body: ScSpecEntryV2Body::FunctionV0(ScSpecFunctionV0 {
+            doc: "".try_into().unwrap(),
+            name: "add_with".try_into().unwrap(),
+            inputs: vec![
+                ScSpecFunctionInputV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "contract_id".try_into().unwrap(),
+                    type_: ScSpecTypeDef::Address,
+                },
+                ScSpecFunctionInputV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "x".try_into().unwrap(),
+                    type_: ScSpecTypeDef::U64,
+                },
+                ScSpecFunctionInputV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "y".try_into().unwrap(),
+                    type_: ScSpecTypeDef::U64,
+                },
+            ]
+            .try_into()
+            .unwrap(),
+            outputs: vec![ScSpecTypeDef::U64].try_into().unwrap(),
+        }),
     })];
     assert_eq!(entries, expect);
 }

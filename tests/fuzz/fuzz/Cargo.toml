@@ -19,7 +19,7 @@ members = ["."]
 # This crate is its own workspace, so it needs the same patch the root
 # workspace carries while the const XDR serializers are pending release.
 [patch.crates-io]
-stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "d7bf0331c0b212b97010b49c06d6da259c89588d" }
+stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "2e565108988d9181c26477815e708ade929e67e0" }
 
 [profile.release]
 debug = 1

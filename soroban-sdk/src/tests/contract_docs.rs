@@ -1,7 +1,9 @@
 mod fn_ {
     use crate as soroban_sdk;
     use soroban_sdk::{contract, contractimpl, Env};
-    use stellar_xdr::{Limits, ReadXdr, ScSpecEntry, ScSpecFunctionV0};
+    use stellar_xdr::{
+        Limits, ReadXdr, ScSpecEntry, ScSpecEntryV2, ScSpecEntryV2Body, ScSpecFunctionV0,
+    };
 
     #[contract]
     pub struct Contract;
@@ -25,11 +27,14 @@ mod fn_ {
     #[test]
     fn test_spec() {
         let entry = ScSpecEntry::from_xdr(Contract::spec_xdr_add(), Limits::none()).unwrap();
-        let expect = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
-            doc: "Add adds\nthings together.".try_into().unwrap(),
-            name: "add".try_into().unwrap(),
-            inputs: vec![].try_into().unwrap(),
-            outputs: vec![].try_into().unwrap(),
+        let expect = ScSpecEntry::V2(ScSpecEntryV2 {
+            id: soroban_sdk::spec_type_id(concat!(module_path!(), "::", "Contract::add")),
+            body: ScSpecEntryV2Body::FunctionV0(ScSpecFunctionV0 {
+                doc: "Add adds\nthings together.".try_into().unwrap(),
+                name: "add".try_into().unwrap(),
+                inputs: vec![].try_into().unwrap(),
+                outputs: vec![].try_into().unwrap(),
+            }),
         });
         assert_eq!(entry, expect);
     }
@@ -38,7 +43,10 @@ mod fn_ {
 mod struct_ {
     use crate as soroban_sdk;
     use soroban_sdk::contracttype;
-    use stellar_xdr::{Limits, ReadXdr, ScSpecEntry, ScSpecUdtStructFieldV0, ScSpecUdtStructV0};
+    use stellar_xdr::{
+        Limits, ReadXdr, ScSpecEntry, ScSpecEntryV2, ScSpecEntryV2Body, ScSpecUdtStructFieldV0,
+        ScSpecUdtStructV0,
+    };
 
     /// S holds a and
     // TODO: Implement.
@@ -55,24 +63,27 @@ mod struct_ {
     #[test]
     fn test_spec() {
         let entry = ScSpecEntry::from_xdr(__SPEC_XDR_TYPE_S, Limits::none()).unwrap();
-        let expect = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
-            doc: "S holds a and\nb.".try_into().unwrap(),
-            name: "S".try_into().unwrap(),
-            lib: "".try_into().unwrap(),
-            fields: [
-                ScSpecUdtStructFieldV0 {
-                    doc: "a is\na".try_into().unwrap(),
-                    name: "a".try_into().unwrap(),
-                    type_: stellar_xdr::ScSpecTypeDef::U64,
-                },
-                ScSpecUdtStructFieldV0 {
-                    doc: "b is b".try_into().unwrap(),
-                    name: "b".try_into().unwrap(),
-                    type_: stellar_xdr::ScSpecTypeDef::U64,
-                },
-            ]
-            .try_into()
-            .unwrap(),
+        let expect = ScSpecEntry::V2(ScSpecEntryV2 {
+            id: S::spec_type_id(),
+            body: ScSpecEntryV2Body::UdtStructV0(ScSpecUdtStructV0 {
+                doc: "S holds a and\nb.".try_into().unwrap(),
+                name: "S".try_into().unwrap(),
+                lib: "".try_into().unwrap(),
+                fields: [
+                    ScSpecUdtStructFieldV0 {
+                        doc: "a is\na".try_into().unwrap(),
+                        name: "a".try_into().unwrap(),
+                        type_: stellar_xdr::ScSpecTypeDef::U64,
+                    },
+                    ScSpecUdtStructFieldV0 {
+                        doc: "b is b".try_into().unwrap(),
+                        name: "b".try_into().unwrap(),
+                        type_: stellar_xdr::ScSpecTypeDef::U64,
+                    },
+                ]
+                .try_into()
+                .unwrap(),
+            }),
         });
         assert_eq!(entry, expect);
     }
@@ -81,7 +92,10 @@ mod struct_ {
 mod struct_tuple {
     use crate as soroban_sdk;
     use soroban_sdk::contracttype;
-    use stellar_xdr::{Limits, ReadXdr, ScSpecEntry, ScSpecUdtStructFieldV0, ScSpecUdtStructV0};
+    use stellar_xdr::{
+        Limits, ReadXdr, ScSpecEntry, ScSpecEntryV2, ScSpecEntryV2Body, ScSpecUdtStructFieldV0,
+        ScSpecUdtStructV0,
+    };
 
     /// S holds two u64s.
     #[contracttype]
@@ -96,24 +110,27 @@ mod struct_tuple {
     #[test]
     fn test_spec() {
         let entry = ScSpecEntry::from_xdr(__SPEC_XDR_TYPE_S, Limits::none()).unwrap();
-        let expect = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
-            doc: "S holds two u64s.".try_into().unwrap(),
-            name: "S".try_into().unwrap(),
-            lib: "".try_into().unwrap(),
-            fields: [
-                ScSpecUdtStructFieldV0 {
-                    doc: "first\nline".try_into().unwrap(),
-                    name: "0".try_into().unwrap(),
-                    type_: stellar_xdr::ScSpecTypeDef::U64,
-                },
-                ScSpecUdtStructFieldV0 {
-                    doc: "second".try_into().unwrap(),
-                    name: "1".try_into().unwrap(),
-                    type_: stellar_xdr::ScSpecTypeDef::U64,
-                },
-            ]
-            .try_into()
-            .unwrap(),
+        let expect = ScSpecEntry::V2(ScSpecEntryV2 {
+            id: S::spec_type_id(),
+            body: ScSpecEntryV2Body::UdtStructV0(ScSpecUdtStructV0 {
+                doc: "S holds two u64s.".try_into().unwrap(),
+                name: "S".try_into().unwrap(),
+                lib: "".try_into().unwrap(),
+                fields: [
+                    ScSpecUdtStructFieldV0 {
+                        doc: "first\nline".try_into().unwrap(),
+                        name: "0".try_into().unwrap(),
+                        type_: stellar_xdr::ScSpecTypeDef::U64,
+                    },
+                    ScSpecUdtStructFieldV0 {
+                        doc: "second".try_into().unwrap(),
+                        name: "1".try_into().unwrap(),
+                        type_: stellar_xdr::ScSpecTypeDef::U64,
+                    },
+                ]
+                .try_into()
+                .unwrap(),
+            }),
         });
         assert_eq!(entry, expect);
     }
@@ -123,8 +140,8 @@ mod enum_ {
     use crate as soroban_sdk;
     use soroban_sdk::contracttype;
     use stellar_xdr::{
-        Limits, ReadXdr, ScSpecEntry, ScSpecUdtUnionCaseTupleV0, ScSpecUdtUnionCaseV0,
-        ScSpecUdtUnionCaseVoidV0, ScSpecUdtUnionV0,
+        Limits, ReadXdr, ScSpecEntry, ScSpecEntryV2, ScSpecEntryV2Body, ScSpecUdtUnionCaseTupleV0,
+        ScSpecUdtUnionCaseV0, ScSpecUdtUnionCaseVoidV0, ScSpecUdtUnionV0,
     };
 
     /// E has variants A and B.
@@ -142,29 +159,32 @@ mod enum_ {
     #[test]
     fn test_spec() {
         let entry = ScSpecEntry::from_xdr(__SPEC_XDR_TYPE_E, Limits::none()).unwrap();
-        let expect = ScSpecEntry::UdtUnionV0(ScSpecUdtUnionV0 {
-            doc: "E has variants A and B.".try_into().unwrap(),
-            lib: "".try_into().unwrap(),
-            name: "E".try_into().unwrap(),
-            cases: [
-                ScSpecUdtUnionCaseV0::VoidV0(ScSpecUdtUnionCaseVoidV0 {
-                    doc: "A is\na.".try_into().unwrap(),
-                    name: "A".try_into().unwrap(),
-                }),
-                ScSpecUdtUnionCaseV0::TupleV0(ScSpecUdtUnionCaseTupleV0 {
-                    doc: "B is\nb.".try_into().unwrap(),
-                    name: "B".try_into().unwrap(),
-                    type_: [
-                        // TODO: Add docs for tuple values in union cases.
-                        stellar_xdr::ScSpecTypeDef::U64,
-                        stellar_xdr::ScSpecTypeDef::U64,
-                    ]
-                    .try_into()
-                    .unwrap(),
-                }),
-            ]
-            .try_into()
-            .unwrap(),
+        let expect = ScSpecEntry::V2(ScSpecEntryV2 {
+            id: E::spec_type_id(),
+            body: ScSpecEntryV2Body::UdtUnionV0(ScSpecUdtUnionV0 {
+                doc: "E has variants A and B.".try_into().unwrap(),
+                lib: "".try_into().unwrap(),
+                name: "E".try_into().unwrap(),
+                cases: [
+                    ScSpecUdtUnionCaseV0::VoidV0(ScSpecUdtUnionCaseVoidV0 {
+                        doc: "A is\na.".try_into().unwrap(),
+                        name: "A".try_into().unwrap(),
+                    }),
+                    ScSpecUdtUnionCaseV0::TupleV0(ScSpecUdtUnionCaseTupleV0 {
+                        doc: "B is\nb.".try_into().unwrap(),
+                        name: "B".try_into().unwrap(),
+                        type_: [
+                            // TODO: Add docs for tuple values in union cases.
+                            stellar_xdr::ScSpecTypeDef::U64,
+                            stellar_xdr::ScSpecTypeDef::U64,
+                        ]
+                        .try_into()
+                        .unwrap(),
+                    }),
+                ]
+                .try_into()
+                .unwrap(),
+            }),
         });
         assert_eq!(entry, expect);
     }
@@ -173,7 +193,10 @@ mod enum_ {
 mod enum_int {
     use crate as soroban_sdk;
     use soroban_sdk::contracttype;
-    use stellar_xdr::{Limits, ReadXdr, ScSpecEntry, ScSpecUdtEnumCaseV0, ScSpecUdtEnumV0};
+    use stellar_xdr::{
+        Limits, ReadXdr, ScSpecEntry, ScSpecEntryV2, ScSpecEntryV2Body, ScSpecUdtEnumCaseV0,
+        ScSpecUdtEnumV0,
+    };
 
     /// E has variants A and B.
     #[contracttype]
@@ -189,24 +212,27 @@ mod enum_int {
     #[test]
     fn test_spec() {
         let entry = ScSpecEntry::from_xdr(__SPEC_XDR_TYPE_E, Limits::none()).unwrap();
-        let expect = ScSpecEntry::UdtEnumV0(ScSpecUdtEnumV0 {
-            doc: "E has variants A and B.".try_into().unwrap(),
-            name: "E".try_into().unwrap(),
-            lib: "".try_into().unwrap(),
-            cases: [
-                ScSpecUdtEnumCaseV0 {
-                    doc: "A is\na.".try_into().unwrap(),
-                    name: "A".try_into().unwrap(),
-                    value: 1,
-                },
-                ScSpecUdtEnumCaseV0 {
-                    doc: "B is b.".try_into().unwrap(),
-                    name: "B".try_into().unwrap(),
-                    value: 2,
-                },
-            ]
-            .try_into()
-            .unwrap(),
+        let expect = ScSpecEntry::V2(ScSpecEntryV2 {
+            id: E::spec_type_id(),
+            body: ScSpecEntryV2Body::UdtEnumV0(ScSpecUdtEnumV0 {
+                doc: "E has variants A and B.".try_into().unwrap(),
+                name: "E".try_into().unwrap(),
+                lib: "".try_into().unwrap(),
+                cases: [
+                    ScSpecUdtEnumCaseV0 {
+                        doc: "A is\na.".try_into().unwrap(),
+                        name: "A".try_into().unwrap(),
+                        value: 1,
+                    },
+                    ScSpecUdtEnumCaseV0 {
+                        doc: "B is b.".try_into().unwrap(),
+                        name: "B".try_into().unwrap(),
+                        value: 2,
+                    },
+                ]
+                .try_into()
+                .unwrap(),
+            }),
         });
         assert_eq!(entry, expect);
     }
@@ -216,7 +242,8 @@ mod enum_error_int {
     use crate as soroban_sdk;
     use soroban_sdk::contracterror;
     use stellar_xdr::{
-        Limits, ReadXdr, ScSpecEntry, ScSpecUdtErrorEnumCaseV0, ScSpecUdtErrorEnumV0,
+        Limits, ReadXdr, ScSpecEntry, ScSpecEntryV2, ScSpecEntryV2Body, ScSpecUdtErrorEnumCaseV0,
+        ScSpecUdtErrorEnumV0,
     };
 
     /// E has variants A and B.
@@ -233,24 +260,27 @@ mod enum_error_int {
     #[test]
     fn test_spec() {
         let entry = ScSpecEntry::from_xdr(__SPEC_XDR_TYPE_E, Limits::none()).unwrap();
-        let expect = ScSpecEntry::UdtErrorEnumV0(ScSpecUdtErrorEnumV0 {
-            doc: "E has variants A and B.".try_into().unwrap(),
-            name: "E".try_into().unwrap(),
-            lib: "".try_into().unwrap(),
-            cases: [
-                ScSpecUdtErrorEnumCaseV0 {
-                    doc: "A is\na.".try_into().unwrap(),
-                    name: "A".try_into().unwrap(),
-                    value: 1,
-                },
-                ScSpecUdtErrorEnumCaseV0 {
-                    doc: "B is b.".try_into().unwrap(),
-                    name: "B".try_into().unwrap(),
-                    value: 2,
-                },
-            ]
-            .try_into()
-            .unwrap(),
+        let expect = ScSpecEntry::V2(ScSpecEntryV2 {
+            id: E::spec_type_id(),
+            body: ScSpecEntryV2Body::UdtErrorEnumV0(ScSpecUdtErrorEnumV0 {
+                doc: "E has variants A and B.".try_into().unwrap(),
+                name: "E".try_into().unwrap(),
+                lib: "".try_into().unwrap(),
+                cases: [
+                    ScSpecUdtErrorEnumCaseV0 {
+                        doc: "A is\na.".try_into().unwrap(),
+                        name: "A".try_into().unwrap(),
+                        value: 1,
+                    },
+                    ScSpecUdtErrorEnumCaseV0 {
+                        doc: "B is b.".try_into().unwrap(),
+                        name: "B".try_into().unwrap(),
+                        value: 2,
+                    },
+                ]
+                .try_into()
+                .unwrap(),
+            }),
         });
         assert_eq!(entry, expect);
     }
