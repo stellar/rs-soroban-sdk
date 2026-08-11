@@ -607,14 +607,14 @@ mod test {
     #[test]
     fn test_is_mapped_type_udt_unique_xdr_error() {
         let input: DeriveInput = parse_quote!(
-            struct MyTypeIsOverSixtyCharactersLongAndShouldFailToCompileDueToThat {
+            struct MyTypeIsOverTwoHundredAndFiftySixCharactersLongAndShouldFailToCompileDueToThatMyTypeIsOverTwoHundredAndFiftySixCharactersLongAndShouldFailToCompileDueToThatMyTypeIsOverTwoHundredAndFiftySixCharactersLongAndShouldFailToCompileDueToThatMyTypeIsOverTwoHundredAndFiftySixCharactersLongAndShouldFailToCompileDueToThat {
                 pub key: [u8; 32],
             }
         );
         let err = is_mapped_type_udt(&input.ident, &input.generics).unwrap_err();
         assert_eq!(
             err.to_string(),
-            "type `MyTypeIsOverSixtyCharactersLongAndShouldFailToCompileDueToThat` cannot be used in XDR spec: xdr value max length exceeded"
+            "type `MyTypeIsOverTwoHundredAndFiftySixCharactersLongAndShouldFailToCompileDueToThatMyTypeIsOverTwoHundredAndFiftySixCharactersLongAndShouldFailToCompileDueToThatMyTypeIsOverTwoHundredAndFiftySixCharactersLongAndShouldFailToCompileDueToThatMyTypeIsOverTwoHundredAndFiftySixCharactersLongAndShouldFailToCompileDueToThat` cannot be used in XDR spec: xdr value max length exceeded"
         );
     }
 
