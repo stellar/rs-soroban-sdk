@@ -607,7 +607,8 @@ mod test {
     #[test]
     fn test_is_mapped_type_udt_unique_xdr_error() {
         let input: DeriveInput = parse_quote!(
-            struct MyTypeIsOverTwoHundredAndFiftySixCharactersLongAndShouldFailToCompileDueToThatMyTypeIsOverTwoHundredAndFiftySixCharactersLongAndShouldFailToCompileDueToThatMyTypeIsOverTwoHundredAndFiftySixCharactersLongAndShouldFailToCompileDueToThatMyTypeIsOverTwoHundredAndFiftySixCharactersLongAndShouldFailToCompileDueToThat {
+            struct MyTypeIsOverTwoHundredAndFiftySixCharactersLongAndShouldFailToCompileDueToThatMyTypeIsOverTwoHundredAndFiftySixCharactersLongAndShouldFailToCompileDueToThatMyTypeIsOverTwoHundredAndFiftySixCharactersLongAndShouldFailToCompileDueToThatMyTypeIsOverTwoHundredAndFiftySixCharactersLongAndShouldFailToCompileDueToThat
+            {
                 pub key: [u8; 32],
             }
         );
