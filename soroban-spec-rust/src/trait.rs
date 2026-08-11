@@ -2,7 +2,7 @@ use proc_macro2::TokenStream;
 use quote::quote;
 use stellar_xdr::ScSpecFunctionV0;
 
-use super::syn_ext::{str_to_ident, TypeNames};
+use super::syn_ext::str_to_ident;
 use super::types::{generate_type_ident, GenerateError};
 
 // IMPORTANT: The "docs" fields of spec entries are not output in Rust token
@@ -15,13 +15,11 @@ use super::types::{generate_type_ident, GenerateError};
 pub fn generate_trait(
     name: &str,
     specs: &[&ScSpecFunctionV0],
-    names: &TypeNames,
-    depth: usize,
 ) -> Result<TokenStream, GenerateError> {
     let trait_ident = str_to_ident(name)?;
     let fns = specs
         .iter()
-        .map(|s| generate_function(s, names, depth))
+        .map(|s| generate_function(s))
         .collect::<Result<Vec<_>, _>>()?;
     Ok(quote! {
         pub trait #trait_ident { #(#fns;)* }
@@ -36,25 +34,21 @@ pub fn generate_trait(
 ///
 /// # Returns
 /// A `TokenStream` containing the generated function definition.
-pub fn generate_function(
-    s: &ScSpecFunctionV0,
-    names: &TypeNames,
-    depth: usize,
-) -> Result<TokenStream, GenerateError> {
+pub fn generate_function(s: &ScSpecFunctionV0) -> Result<TokenStream, GenerateError> {
     let fn_ident = str_to_ident(&s.name)?;
     let fn_inputs = s
         .inputs
         .iter()
         .map(|input| {
             let name = str_to_ident(&input.name)?;
-            let type_ident = generate_type_ident(&input.type_, names, depth)?;
+            let type_ident = generate_type_ident(&input.type_)?;
             Ok(quote! { #name: #type_ident })
         })
         .collect::<Result<Vec<_>, GenerateError>>()?;
     let fn_output = s
         .outputs
         .to_option()
-        .map(|t| generate_type_ident(&t, names, depth))
+        .map(|t| generate_type_ident(&t))
         .transpose()?
         .map(|t| quote! { -> #t });
     Ok(quote! {

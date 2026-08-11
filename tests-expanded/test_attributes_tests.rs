@@ -607,6 +607,18 @@ pub trait AttributeTrait {
     fn trait_default_stacked_cfg() -> u32 {
         5
     }
+    fn trait_override_stacked_cfg() -> u32 {
+        7
+    }
+    fn trait_override_negated_cfg() -> u32 {
+        9
+    }
+    fn trait_override_dual_cfg() -> u32 {
+        11
+    }
+    fn trait_default_dual_cfg() -> u32 {
+        14
+    }
 }
 ///AttributeTraitClient is a client for calling the contract defined in "AttributeTrait".
 pub struct AttributeTraitClient<'a> {
@@ -915,6 +927,290 @@ impl<'a> AttributeTraitClient<'a> {
         }
         res
     }
+    pub fn trait_override_stacked_cfg(&self) -> u32 {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "trait_override_stacked_cfg") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
+    pub fn try_trait_override_stacked_cfg(
+        &self,
+    ) -> Result<
+        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "trait_override_stacked_cfg") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
+    pub fn trait_override_negated_cfg(&self) -> u32 {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "trait_override_negated_cfg") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
+    pub fn try_trait_override_negated_cfg(
+        &self,
+    ) -> Result<
+        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "trait_override_negated_cfg") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
+    pub fn trait_override_dual_cfg(&self) -> u32 {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "trait_override_dual_cfg") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
+    pub fn try_trait_override_dual_cfg(
+        &self,
+    ) -> Result<
+        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "trait_override_dual_cfg") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
+    pub fn trait_default_dual_cfg(&self) -> u32 {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "trait_default_dual_cfg") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
+    pub fn try_trait_default_dual_cfg(
+        &self,
+    ) -> Result<
+        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "trait_default_dual_cfg") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
 }
 ///AttributeTraitArgs is a type for building arg lists for functions defined in "AttributeTrait".
 pub struct AttributeTraitArgs;
@@ -932,6 +1228,26 @@ impl AttributeTraitArgs {
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn trait_default_stacked_cfg<'i>() -> () {
+        ()
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn trait_override_stacked_cfg<'i>() -> () {
+        ()
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn trait_override_negated_cfg<'i>() -> () {
+        ()
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn trait_override_dual_cfg<'i>() -> () {
+        ()
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn trait_default_dual_cfg<'i>() -> () {
         ()
     }
 }
@@ -984,6 +1300,74 @@ impl AttributeTraitSpec {
     pub const fn spec_xdr_trait_default_stacked_cfg(
     ) -> [u8; AttributeTraitSpec::__SPEC_XDR_VIEW_trait_default_stacked_cfg.const_xdr_len()] {
         AttributeTraitSpec::__SPEC_XDR_VIEW_trait_default_stacked_cfg.const_to_xdr()
+    }
+}
+impl AttributeTraitSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_trait_override_stacked_cfg: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                b"trait_override_stacked_cfg",
+            )),
+            inputs: soroban_sdk::xdr::VecMView::new(&[]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        });
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_trait_override_stacked_cfg(
+    ) -> [u8; AttributeTraitSpec::__SPEC_XDR_VIEW_trait_override_stacked_cfg.const_xdr_len()] {
+        AttributeTraitSpec::__SPEC_XDR_VIEW_trait_override_stacked_cfg.const_to_xdr()
+    }
+}
+impl AttributeTraitSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_trait_override_negated_cfg: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                b"trait_override_negated_cfg",
+            )),
+            inputs: soroban_sdk::xdr::VecMView::new(&[]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        });
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_trait_override_negated_cfg(
+    ) -> [u8; AttributeTraitSpec::__SPEC_XDR_VIEW_trait_override_negated_cfg.const_xdr_len()] {
+        AttributeTraitSpec::__SPEC_XDR_VIEW_trait_override_negated_cfg.const_to_xdr()
+    }
+}
+impl AttributeTraitSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_trait_override_dual_cfg: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                b"trait_override_dual_cfg",
+            )),
+            inputs: soroban_sdk::xdr::VecMView::new(&[]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        });
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_trait_override_dual_cfg(
+    ) -> [u8; AttributeTraitSpec::__SPEC_XDR_VIEW_trait_override_dual_cfg.const_xdr_len()] {
+        AttributeTraitSpec::__SPEC_XDR_VIEW_trait_override_dual_cfg.const_to_xdr()
+    }
+}
+impl AttributeTraitSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_trait_default_dual_cfg: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                b"trait_default_dual_cfg",
+            )),
+            inputs: soroban_sdk::xdr::VecMView::new(&[]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        });
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_trait_default_dual_cfg(
+    ) -> [u8; AttributeTraitSpec::__SPEC_XDR_VIEW_trait_default_dual_cfg.const_xdr_len()] {
+        AttributeTraitSpec::__SPEC_XDR_VIEW_trait_default_dual_cfg.const_to_xdr()
     }
 }
 impl Contract {
@@ -1554,6 +1938,15 @@ impl AttributeTrait for Contract {
     fn trait_override() -> u32 {
         3
     }
+    fn trait_override_stacked_cfg() -> u32 {
+        8
+    }
+    fn trait_override_negated_cfg() -> u32 {
+        10
+    }
+    fn trait_override_dual_cfg() -> u32 {
+        12
+    }
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
@@ -1581,6 +1974,90 @@ impl Contract {
         Contract::__SPEC_XDR_VIEW_trait_override.const_to_xdr()
     }
 }
+impl Contract {}
+impl Contract {}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__trait_override_stacked_cfg__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    pub static __SPEC_XDR_FN_TRAIT_OVERRIDE_STACKED_CFG: [u8;
+        super::Contract::__SPEC_XDR_VIEW_trait_override_stacked_cfg.const_xdr_len()] =
+        super::Contract::spec_xdr_trait_override_stacked_cfg();
+}
+impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_trait_override_stacked_cfg: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                b"trait_override_stacked_cfg",
+            )),
+            inputs: soroban_sdk::xdr::VecMView::new(&[]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        });
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_trait_override_stacked_cfg(
+    ) -> [u8; Contract::__SPEC_XDR_VIEW_trait_override_stacked_cfg.const_xdr_len()] {
+        Contract::__SPEC_XDR_VIEW_trait_override_stacked_cfg.const_to_xdr()
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__trait_override_negated_cfg__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    pub static __SPEC_XDR_FN_TRAIT_OVERRIDE_NEGATED_CFG: [u8;
+        super::Contract::__SPEC_XDR_VIEW_trait_override_negated_cfg.const_xdr_len()] =
+        super::Contract::spec_xdr_trait_override_negated_cfg();
+}
+impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_trait_override_negated_cfg: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                b"trait_override_negated_cfg",
+            )),
+            inputs: soroban_sdk::xdr::VecMView::new(&[]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        });
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_trait_override_negated_cfg(
+    ) -> [u8; Contract::__SPEC_XDR_VIEW_trait_override_negated_cfg.const_xdr_len()] {
+        Contract::__SPEC_XDR_VIEW_trait_override_negated_cfg.const_to_xdr()
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__trait_override_dual_cfg__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    pub static __SPEC_XDR_FN_TRAIT_OVERRIDE_DUAL_CFG: [u8;
+        super::Contract::__SPEC_XDR_VIEW_trait_override_dual_cfg.const_xdr_len()] =
+        super::Contract::spec_xdr_trait_override_dual_cfg();
+}
+impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_trait_override_dual_cfg: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                b"trait_override_dual_cfg",
+            )),
+            inputs: soroban_sdk::xdr::VecMView::new(&[]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        });
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_trait_override_dual_cfg(
+    ) -> [u8; Contract::__SPEC_XDR_VIEW_trait_override_dual_cfg.const_xdr_len()] {
+        Contract::__SPEC_XDR_VIEW_trait_override_dual_cfg.const_to_xdr()
+    }
+}
+impl Contract {}
 impl Contract {}
 impl Contract {}
 impl<'a> ContractClient<'a> {
@@ -1655,11 +2132,239 @@ impl<'a> ContractClient<'a> {
         }
         res
     }
+    pub fn trait_override_stacked_cfg(&self) -> u32 {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "trait_override_stacked_cfg") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
+    pub fn try_trait_override_stacked_cfg(
+        &self,
+    ) -> Result<
+        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "trait_override_stacked_cfg") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
+    pub fn trait_override_negated_cfg(&self) -> u32 {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "trait_override_negated_cfg") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
+    pub fn try_trait_override_negated_cfg(
+        &self,
+    ) -> Result<
+        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "trait_override_negated_cfg") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
+    pub fn trait_override_dual_cfg(&self) -> u32 {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "trait_override_dual_cfg") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
+    pub fn try_trait_override_dual_cfg(
+        &self,
+    ) -> Result<
+        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "trait_override_dual_cfg") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
 }
 impl ContractArgs {
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn trait_override<'i>() -> () {
+        ()
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn trait_override_stacked_cfg<'i>() -> () {
+        ()
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn trait_override_negated_cfg<'i>() -> () {
+        ()
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn trait_override_dual_cfg<'i>() -> () {
         ()
     }
 }
@@ -1698,6 +2403,136 @@ pub fn __Contract__trait_override__invoke_raw_slice(
 pub extern "C" fn __Contract__trait_override__invoke_raw_extern() -> soroban_sdk::Val {
     #[allow(deprecated)]
     __Contract__trait_override__invoke_raw(soroban_sdk::Env::default())
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(
+    note = "use `ContractClient::new(&env, &contract_id).trait_override_stacked_cfg` instead"
+)]
+#[allow(deprecated)]
+pub fn __Contract__trait_override_stacked_cfg__invoke_raw(
+    env: soroban_sdk::Env,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract as AttributeTrait>::trait_override_stacked_cfg(),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(
+    note = "use `ContractClient::new(&env, &contract_id).trait_override_stacked_cfg` instead"
+)]
+pub fn __Contract__trait_override_stacked_cfg__invoke_raw_slice(
+    env: soroban_sdk::Env,
+    args: &[soroban_sdk::Val],
+) -> soroban_sdk::Val {
+    if args.len() != 0usize {
+        {
+            ::core::panicking::panic_fmt(format_args!(
+                "invalid number of input arguments: {0} expected, got {1}",
+                0usize,
+                args.len(),
+            ));
+        };
+    }
+    #[allow(deprecated)]
+    __Contract__trait_override_stacked_cfg__invoke_raw(env)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(
+    note = "use `ContractClient::new(&env, &contract_id).trait_override_stacked_cfg` instead"
+)]
+pub extern "C" fn __Contract__trait_override_stacked_cfg__invoke_raw_extern() -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__trait_override_stacked_cfg__invoke_raw(soroban_sdk::Env::default())
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(
+    note = "use `ContractClient::new(&env, &contract_id).trait_override_negated_cfg` instead"
+)]
+#[allow(deprecated)]
+pub fn __Contract__trait_override_negated_cfg__invoke_raw(
+    env: soroban_sdk::Env,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract as AttributeTrait>::trait_override_negated_cfg(),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(
+    note = "use `ContractClient::new(&env, &contract_id).trait_override_negated_cfg` instead"
+)]
+pub fn __Contract__trait_override_negated_cfg__invoke_raw_slice(
+    env: soroban_sdk::Env,
+    args: &[soroban_sdk::Val],
+) -> soroban_sdk::Val {
+    if args.len() != 0usize {
+        {
+            ::core::panicking::panic_fmt(format_args!(
+                "invalid number of input arguments: {0} expected, got {1}",
+                0usize,
+                args.len(),
+            ));
+        };
+    }
+    #[allow(deprecated)]
+    __Contract__trait_override_negated_cfg__invoke_raw(env)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(
+    note = "use `ContractClient::new(&env, &contract_id).trait_override_negated_cfg` instead"
+)]
+pub extern "C" fn __Contract__trait_override_negated_cfg__invoke_raw_extern() -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__trait_override_negated_cfg__invoke_raw(soroban_sdk::Env::default())
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(
+    note = "use `ContractClient::new(&env, &contract_id).trait_override_dual_cfg` instead"
+)]
+#[allow(deprecated)]
+pub fn __Contract__trait_override_dual_cfg__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract as AttributeTrait>::trait_override_dual_cfg(),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(
+    note = "use `ContractClient::new(&env, &contract_id).trait_override_dual_cfg` instead"
+)]
+pub fn __Contract__trait_override_dual_cfg__invoke_raw_slice(
+    env: soroban_sdk::Env,
+    args: &[soroban_sdk::Val],
+) -> soroban_sdk::Val {
+    if args.len() != 0usize {
+        {
+            ::core::panicking::panic_fmt(format_args!(
+                "invalid number of input arguments: {0} expected, got {1}",
+                0usize,
+                args.len(),
+            ));
+        };
+    }
+    #[allow(deprecated)]
+    __Contract__trait_override_dual_cfg__invoke_raw(env)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(
+    note = "use `ContractClient::new(&env, &contract_id).trait_override_dual_cfg` instead"
+)]
+pub extern "C" fn __Contract__trait_override_dual_cfg__invoke_raw_extern() -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__trait_override_dual_cfg__invoke_raw(soroban_sdk::Env::default())
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
@@ -1779,6 +2614,42 @@ pub extern "C" fn __Contract__trait_default_stacked_cfg__invoke_raw_extern() -> 
     #[allow(deprecated)]
     __Contract__trait_default_stacked_cfg__invoke_raw(soroban_sdk::Env::default())
 }
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).trait_default_dual_cfg` instead")]
+#[allow(deprecated)]
+pub fn __Contract__trait_default_dual_cfg__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract as AttributeTrait>::trait_default_dual_cfg(),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).trait_default_dual_cfg` instead")]
+pub fn __Contract__trait_default_dual_cfg__invoke_raw_slice(
+    env: soroban_sdk::Env,
+    args: &[soroban_sdk::Val],
+) -> soroban_sdk::Val {
+    if args.len() != 0usize {
+        {
+            ::core::panicking::panic_fmt(format_args!(
+                "invalid number of input arguments: {0} expected, got {1}",
+                0usize,
+                args.len(),
+            ));
+        };
+    }
+    #[allow(deprecated)]
+    __Contract__trait_default_dual_cfg__invoke_raw(env)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).trait_default_dual_cfg` instead")]
+pub extern "C" fn __Contract__trait_default_dual_cfg__invoke_raw_extern() -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__trait_default_dual_cfg__invoke_raw(soroban_sdk::Env::default())
+}
 impl Contract {}
 #[doc(hidden)]
 #[allow(non_snake_case)]
@@ -1831,6 +2702,36 @@ impl Contract {
     pub const fn spec_xdr_trait_default_stacked_cfg(
     ) -> [u8; Contract::__SPEC_XDR_VIEW_trait_default_stacked_cfg.const_xdr_len()] {
         Contract::__SPEC_XDR_VIEW_trait_default_stacked_cfg.const_to_xdr()
+    }
+}
+impl Contract {}
+impl Contract {}
+impl Contract {}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+pub mod __Contract__trait_default_dual_cfg__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    pub static __SPEC_XDR_FN_TRAIT_DEFAULT_DUAL_CFG: [u8;
+        super::Contract::__SPEC_XDR_VIEW_trait_default_dual_cfg.const_xdr_len()] =
+        super::Contract::spec_xdr_trait_default_dual_cfg();
+}
+impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_trait_default_dual_cfg: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                b"trait_default_dual_cfg",
+            )),
+            inputs: soroban_sdk::xdr::VecMView::new(&[]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        });
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_trait_default_dual_cfg(
+    ) -> [u8; Contract::__SPEC_XDR_VIEW_trait_default_dual_cfg.const_xdr_len()] {
+        Contract::__SPEC_XDR_VIEW_trait_default_dual_cfg.const_to_xdr()
     }
 }
 impl<'a> ContractClient<'a> {
@@ -1976,6 +2877,77 @@ impl<'a> ContractClient<'a> {
         }
         res
     }
+    pub fn trait_default_dual_cfg(&self) -> u32 {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "trait_default_dual_cfg") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
+    pub fn try_trait_default_dual_cfg(
+        &self,
+    ) -> Result<
+        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use core::ops::Not;
+        let old_auth_manager = self
+            .env
+            .in_contract()
+            .not()
+            .then(|| self.env.host().snapshot_auth_manager().unwrap());
+        {
+            if let Some(set_auths) = self.set_auths {
+                self.env.set_auths(set_auths);
+            }
+            if let Some(mock_auths) = self.mock_auths {
+                self.env.mock_auths(mock_auths);
+            }
+            if self.mock_all_auths {
+                if self.allow_non_root_auth {
+                    self.env.mock_all_auths_allowing_non_root_auth();
+                } else {
+                    self.env.mock_all_auths();
+                }
+            }
+        }
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "trait_default_dual_cfg") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        if let Some(old_auth_manager) = old_auth_manager {
+            self.env.host().set_auth_manager(old_auth_manager).unwrap();
+        }
+        res
+    }
 }
 impl ContractArgs {
     #[inline(always)]
@@ -1988,11 +2960,16 @@ impl ContractArgs {
     pub fn trait_default_stacked_cfg<'i>() -> () {
         ()
     }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn trait_default_dual_cfg<'i>() -> () {
+        ()
+    }
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract__AttributeTrait__5c3dc6ba0d711665380c5f56dcc72fd5dd342c89561cb9e2302a58b4f4cac9dd_ctor(
+fn __Contract__AttributeTrait__8ce1beb22d1cf3a30219e745dd54ab4127700ae1863a7e431a8fddbdbf3f961c_ctor(
 ) {
     #[allow(unsafe_code)]
     {
@@ -2005,7 +2982,7 @@ fn __Contract__AttributeTrait__5c3dc6ba0d711665380c5f56dcc72fd5dd342c89561cb9e23
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract__AttributeTrait__5c3dc6ba0d711665380c5f56dcc72fd5dd342c89561cb9e2302a58b4f4cac9dd_ctor();
+                    __Contract__AttributeTrait__8ce1beb22d1cf3a30219e745dd54ab4127700ae1863a7e431a8fddbdbf3f961c_ctor();
                 };
                 core::default::Default::default()
             }
@@ -2023,12 +3000,17 @@ fn __Contract__AttributeTrait__5c3dc6ba0d711665380c5f56dcc72fd5dd342c89561cb9e23
             #[allow(deprecated)]
             &__Contract__trait_default_stacked_cfg__invoke_raw_slice,
         );
+        <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "trait_default_dual_cfg",
+            #[allow(deprecated)]
+            &__Contract__trait_default_dual_cfg__invoke_raw_slice,
+        );
     }
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(unused)]
-fn __Contract__AttributeTrait__969988e5ad11b5d89373fc419647b603f4e9508cb73e2783cdc5572a30929b70_ctor(
+fn __Contract__AttributeTrait__8904c8f92c2fe5f69c478861e0735de7c22bffee3517a491a4450e32ee923b8f_ctor(
 ) {
     #[allow(unsafe_code)]
     {
@@ -2041,7 +3023,7 @@ fn __Contract__AttributeTrait__969988e5ad11b5d89373fc419647b603f4e9508cb73e2783c
             #[allow(non_snake_case)]
             extern "C" fn f() -> ::ctor::__support::CtorRetType {
                 unsafe {
-                    __Contract__AttributeTrait__969988e5ad11b5d89373fc419647b603f4e9508cb73e2783cdc5572a30929b70_ctor();
+                    __Contract__AttributeTrait__8904c8f92c2fe5f69c478861e0735de7c22bffee3517a491a4450e32ee923b8f_ctor();
                 };
                 core::default::Default::default()
             }
@@ -2053,6 +3035,21 @@ fn __Contract__AttributeTrait__969988e5ad11b5d89373fc419647b603f4e9508cb73e2783c
             "trait_override",
             #[allow(deprecated)]
             &__Contract__trait_override__invoke_raw_slice,
+        );
+        <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "trait_override_stacked_cfg",
+            #[allow(deprecated)]
+            &__Contract__trait_override_stacked_cfg__invoke_raw_slice,
+        );
+        <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "trait_override_negated_cfg",
+            #[allow(deprecated)]
+            &__Contract__trait_override_negated_cfg__invoke_raw_slice,
+        );
+        <Contract as soroban_sdk::testutils::ContractFunctionRegister>::register(
+            "trait_override_dual_cfg",
+            #[allow(deprecated)]
+            &__Contract__trait_override_dual_cfg__invoke_raw_slice,
         );
     }
 }
@@ -2072,9 +3069,9 @@ mod test {
             ignore: false,
             ignore_message: ::core::option::Option::None,
             source_file: "tests/attributes/src/lib.rs",
-            start_line: 89usize,
+            start_line: 138usize,
             start_col: 8usize,
-            end_line: 89usize,
+            end_line: 138usize,
             end_col: 22usize,
             compile_fail: false,
             no_run: false,
@@ -2127,9 +3124,9 @@ mod test {
             ignore: false,
             ignore_message: ::core::option::Option::None,
             source_file: "tests/attributes/src/lib.rs",
-            start_line: 101usize,
+            start_line: 150usize,
             start_col: 8usize,
-            end_line: 101usize,
+            end_line: 150usize,
             end_col: 24usize,
             compile_fail: false,
             no_run: false,
@@ -2169,9 +3166,9 @@ mod test {
                 ignore: false,
                 ignore_message: ::core::option::Option::None,
                 source_file: "tests/attributes/src/lib.rs",
-                start_line: 110usize,
+                start_line: 159usize,
                 start_col: 8usize,
-                end_line: 110usize,
+                end_line: 159usize,
                 end_col: 51usize,
                 compile_fail: false,
                 no_run: false,
@@ -2226,6 +3223,58 @@ mod test {
                 }
             }
         };
+        match (&client.trait_override_stacked_cfg(), &8) {
+            (left_val, right_val) => {
+                if !(*left_val == *right_val) {
+                    let kind = ::core::panicking::AssertKind::Eq;
+                    ::core::panicking::assert_failed(
+                        kind,
+                        &*left_val,
+                        &*right_val,
+                        ::core::option::Option::None,
+                    );
+                }
+            }
+        };
+        match (&client.trait_override_negated_cfg(), &10) {
+            (left_val, right_val) => {
+                if !(*left_val == *right_val) {
+                    let kind = ::core::panicking::AssertKind::Eq;
+                    ::core::panicking::assert_failed(
+                        kind,
+                        &*left_val,
+                        &*right_val,
+                        ::core::option::Option::None,
+                    );
+                }
+            }
+        };
+        match (&client.trait_override_dual_cfg(), &12) {
+            (left_val, right_val) => {
+                if !(*left_val == *right_val) {
+                    let kind = ::core::panicking::AssertKind::Eq;
+                    ::core::panicking::assert_failed(
+                        kind,
+                        &*left_val,
+                        &*right_val,
+                        ::core::option::Option::None,
+                    );
+                }
+            }
+        };
+        match (&client.trait_default_dual_cfg(), &14) {
+            (left_val, right_val) => {
+                if !(*left_val == *right_val) {
+                    let kind = ::core::panicking::AssertKind::Eq;
+                    ::core::panicking::assert_failed(
+                        kind,
+                        &*left_val,
+                        &*right_val,
+                        ::core::option::Option::None,
+                    );
+                }
+            }
+        };
     }
     extern crate test;
     #[rustc_test_marker = "test::test_specs_include_active_attribute_items"]
@@ -2237,9 +3286,9 @@ mod test {
                 ignore: false,
                 ignore_message: ::core::option::Option::None,
                 source_file: "tests/attributes/src/lib.rs",
-                start_line: 121usize,
+                start_line: 174usize,
                 start_col: 8usize,
-                end_line: 121usize,
+                end_line: 174usize,
                 end_col: 49usize,
                 compile_fail: false,
                 no_run: false,
@@ -2367,7 +3416,7 @@ mod test {
                 }
             }
         };
-        let wasm = b"\x00asm\x01\x00\x00\x00\x01\x1f\x05`\x04~~~~\x01~`\x02~~\x01~`\x03~~~\x01~`\x01~\x01~`\x00\x01~\x02\x1f\x05\x01m\x01a\x00\x00\x01b\x01j\x00\x01\x01v\x01g\x00\x01\x01m\x019\x00\x02\x01x\x011\x00\x01\x03\x07\x06\x03\x03\x01\x04\x04\x04\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\xbb\x80\xc0\x00\x0b\x7f\x00A\xbb\x80\xc0\x00\x0b\x7f\x00A\xc0\x80\xc0\x00\x0b\x07\x88\x01\n\x06memory\x02\x00\x06always\x00\x05\x0ccfg_included\x00\x06\x07publish\x00\x07\rtrait_default\x00\x08\x19trait_default_stacked_cfg\x00\t\x0etrait_override\x00\n\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\xdd\x03\x06\x85\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00A\x00-\x00\x80\x80\xc0\x80\x00\x1a \x01B\x027\x03\x08\x02@\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xa4\x80\xc0\x80\x00\xadB \x86B\x04\x84 \x01A\x08j\xadB \x86B\x04\x84B\x84\x80\x80\x80\x10\x10\x80\x80\x80\x80\x00\x1a \x01)\x03\x08\"\x00B\xff\x01\x83B\x04Q\r\x01\x0b\x00\x0b \x01A\x10j$\x80\x80\x80\x80\x00 \x00B\x84\x80\x80\x80p\x83\x0b\x1a\x00\x02@ \x00B\xff\x01\x83B\x04Q\r\x00\x00\x0b \x00B\x84\x80\x80\x80p\x83\x0b\x9c\x02\x02\x02\x7f\x01~#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\x04R\r\x00 \x01B\xff\x01\x83B\x04R\r\x00A\x00!\x03A\x00-\x00\x8e\x80\xc0\x80\x00\x1aA\xac\x80\xc0\x80\x00\xadB \x86B\x04\x84B\x84\x80\x80\x80\xf0\x01\x10\x81\x80\x80\x80\x00!\x04 \x02 \x00B\x84\x80\x80\x80p\x837\x03\x08 \x02 \x047\x03\x00\x03@\x02@ \x03A\x10G\r\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02A\x10j \x03j \x02 \x03j)\x03\x007\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x02A\x10j\xadB \x86B\x04\x84\"\x00B\x84\x80\x80\x80 \x10\x82\x80\x80\x80\x00!\x04 \x02 \x01B\x84\x80\x80\x80p\x837\x03\x10 \x04A\xa4\x80\xc0\x80\x00\xadB \x86B\x04\x84 \x00B\x84\x80\x80\x80\x10\x10\x83\x80\x80\x80\x00\x10\x84\x80\x80\x80\x00\x1a \x02A j$\x80\x80\x80\x80\x00B\x02\x0f\x0b \x02A\x10j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b\x00\x0b\x08\x00B\x84\x80\x80\x80 \x0b\t\x00B\x84\x80\x80\x80\xd0\x00\x0b\x08\x00B\x84\x80\x80\x800\x0b\x0bD\x01\x00A\x80\x80\xc0\x00\x0b;SpEcV1i\t\xb7\x06*\x88\xd7\xf8SpEcV1\xbfO\xc3P\xd4\x14\xb5Vvalue\x00\x00\x00\x1c\x00\x10\x00\x05\x00\x00\x00attribute_event\x00\x93\x1c\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06always\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05value\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x1etest_attributes::AttributeType\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07publish\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x05topic\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x05value\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1etest_attributes::AttributeType\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05value\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0ccfg_included\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05value\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rtrait_default\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0eAttributeEvent\x00\x00\x00\x00\x00\x01\x00\x00\x00\x0fattribute_event\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x05topic\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05value\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0etrait_override\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x19trait_default_stacked_cfg\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x02\x00\x00\x00\xe3Context of a single authorized call performed by an address.\n\nCustom account contracts that implement `__check_auth` special function\nreceive a list of `Context` values corresponding to all the calls that\nneed to be authorized.\x00\x00\x00\x00\x00\x00\x00\x00\x1asoroban_sdk::auth::Context\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x14Contract invocation.\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\"soroban_sdk::auth::ContractContext\x00\x00\x00\x00\x00\x01\x00\x00\x00=Contract that has a constructor with no arguments is created.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00.soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x00\x00\x01\x00\x00\x00DContract that has a constructor with 1 or more arguments is created.\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00=soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\xbdAuthorization context of a single contract call.\n\nThis struct corresponds to a `require_auth_for_args` call for an address\nfrom `contract` function with `fn_name` name and `args` arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\"soroban_sdk::auth::ContractContext\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08contract\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x07fn_name\x00\x00\x00\x00\x11\x00\x00\x00\x02\x00\x00\x00_Contract executable used for creating a new contract and used in\n`CreateContractHostFnContext`.\x00\x00\x00\x00\x00\x00\x00\x00%soroban_sdk::auth::ContractExecutable\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x008Value of contract node in InvokerContractAuthEntry tree.\x00\x00\x00\x00\x00\x00\x00(soroban_sdk::auth::SubContractInvocation\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x07\xd0\x00\x00\x00\"soroban_sdk::auth::ContractContext\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fsub_invocations\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00+soroban_sdk::auth::InvokerContractAuthEntry\x00\x00\x00\x00\x02\x00\x00\x01/A node in the tree of authorizations performed on behalf of the current\ncontract as invoker of the contracts deeper in the call stack.\n\nThis is used as an argument of `authorize_as_current_contract` host function.\n\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\ncurrent contract.\x00\x00\x00\x00\x00\x00\x00\x00+soroban_sdk::auth::InvokerContractAuthEntry\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x12Invoke a contract.\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00(soroban_sdk::auth::SubContractInvocation\x00\x00\x00\x01\x00\x00\x005Create a contract passing 0 arguments to constructor.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00.soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x00\x00\x01\x00\x00\x00=Create a contract passing 0 or more arguments to constructor.\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00=soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00vAuthorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\x00\x00\x00\x00\x00\x00\x00\x00\x00.soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00%soroban_sdk::auth::ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\xd6Authorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\nThis is the same as `CreateContractHostFnContext`, but also has\ncontract constructor arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00=soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x10constructor_args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00%soroban_sdk::auth::ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00 soroban_sdk::address::Executable\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStellarAsset\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Account\x00\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1c\x00\x00\x00\x00\x00O\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12rssdk_spec_shaking\x00\x00\x00\x00\x00\x012\x00\x00\x00";
+        let wasm = b"\x00asm\x01\x00\x00\x00\x01\x1f\x05`\x04~~~~\x01~`\x02~~\x01~`\x03~~~\x01~`\x01~\x01~`\x00\x01~\x02\x1f\x05\x01m\x01a\x00\x00\x01b\x01j\x00\x01\x01v\x01g\x00\x01\x01m\x019\x00\x02\x01x\x011\x00\x01\x03\x0b\n\x03\x03\x01\x04\x04\x04\x04\x04\x04\x04\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\xbb\x80\xc0\x00\x0b\x7f\x00A\xbb\x80\xc0\x00\x0b\x7f\x00A\xc0\x80\xc0\x00\x0b\x07\xf5\x01\x0e\x06memory\x02\x00\x06always\x00\x05\x0ccfg_included\x00\x06\x07publish\x00\x07\rtrait_default\x00\x08\x16trait_default_dual_cfg\x00\t\x19trait_default_stacked_cfg\x00\n\x0etrait_override\x00\x0b\x17trait_override_dual_cfg\x00\x0c\x1atrait_override_negated_cfg\x00\r\x1atrait_override_stacked_cfg\x00\x0e\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\x85\x04\n\x85\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x01$\x80\x80\x80\x80\x00A\x00-\x00\x80\x80\xc0\x80\x00\x1a \x01B\x027\x03\x08\x02@\x02@ \x00B\xff\x01\x83B\xcc\x00R\r\x00 \x00A\xa4\x80\xc0\x80\x00\xadB \x86B\x04\x84 \x01A\x08j\xadB \x86B\x04\x84B\x84\x80\x80\x80\x10\x10\x80\x80\x80\x80\x00\x1a \x01)\x03\x08\"\x00B\xff\x01\x83B\x04Q\r\x01\x0b\x00\x0b \x01A\x10j$\x80\x80\x80\x80\x00 \x00B\x84\x80\x80\x80p\x83\x0b\x1a\x00\x02@ \x00B\xff\x01\x83B\x04Q\r\x00\x00\x0b \x00B\x84\x80\x80\x80p\x83\x0b\x9c\x02\x02\x02\x7f\x01~#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\x04R\r\x00 \x01B\xff\x01\x83B\x04R\r\x00A\x00!\x03A\x00-\x00\x8e\x80\xc0\x80\x00\x1aA\xac\x80\xc0\x80\x00\xadB \x86B\x04\x84B\x84\x80\x80\x80\xf0\x01\x10\x81\x80\x80\x80\x00!\x04 \x02 \x00B\x84\x80\x80\x80p\x837\x03\x08 \x02 \x047\x03\x00\x03@\x02@ \x03A\x10G\r\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02A\x10j \x03j \x02 \x03j)\x03\x007\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x02A\x10j\xadB \x86B\x04\x84\"\x00B\x84\x80\x80\x80 \x10\x82\x80\x80\x80\x00!\x04 \x02 \x01B\x84\x80\x80\x80p\x837\x03\x10 \x04A\xa4\x80\xc0\x80\x00\xadB \x86B\x04\x84 \x00B\x84\x80\x80\x80\x10\x10\x83\x80\x80\x80\x00\x10\x84\x80\x80\x80\x00\x1a \x02A j$\x80\x80\x80\x80\x00B\x02\x0f\x0b \x02A\x10j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b\x00\x0b\x08\x00B\x84\x80\x80\x80 \x0b\t\x00B\x84\x80\x80\x80\xe0\x01\x0b\t\x00B\x84\x80\x80\x80\xd0\x00\x0b\x08\x00B\x84\x80\x80\x800\x0b\t\x00B\x84\x80\x80\x80\xc0\x01\x0b\t\x00B\x84\x80\x80\x80\xa0\x01\x0b\t\x00B\x84\x80\x80\x80\x80\x01\x0b\x0bD\x01\x00A\x80\x80\xc0\x00\x0b;SpEcV1L\x0f\xecG\xb1\x13$mSpEcV1\xbfO\xc3P\xd4\x14\xb5Vvalue\x00\x00\x00\x1c\x00\x10\x00\x05\x00\x00\x00attribute_event\x00\xdb\x1d\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06always\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05value\x00\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x1etest_attributes::AttributeType\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07publish\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x05topic\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x05value\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1etest_attributes::AttributeType\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05value\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0ccfg_included\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05value\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rtrait_default\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0eAttributeEvent\x00\x00\x00\x00\x00\x01\x00\x00\x00\x0fattribute_event\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x05topic\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05value\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0etrait_override\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x16trait_default_dual_cfg\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x17trait_override_dual_cfg\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x19trait_default_stacked_cfg\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1atrait_override_negated_cfg\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1atrait_override_stacked_cfg\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00\x02\x00\x00\x00\xe3Context of a single authorized call performed by an address.\n\nCustom account contracts that implement `__check_auth` special function\nreceive a list of `Context` values corresponding to all the calls that\nneed to be authorized.\x00\x00\x00\x00\x00\x00\x00\x00\x1asoroban_sdk::auth::Context\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x14Contract invocation.\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\"soroban_sdk::auth::ContractContext\x00\x00\x00\x00\x00\x01\x00\x00\x00=Contract that has a constructor with no arguments is created.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00.soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x00\x00\x01\x00\x00\x00DContract that has a constructor with 1 or more arguments is created.\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00=soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\xbdAuthorization context of a single contract call.\n\nThis struct corresponds to a `require_auth_for_args` call for an address\nfrom `contract` function with `fn_name` name and `args` arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\"soroban_sdk::auth::ContractContext\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08contract\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x07fn_name\x00\x00\x00\x00\x11\x00\x00\x00\x02\x00\x00\x00_Contract executable used for creating a new contract and used in\n`CreateContractHostFnContext`.\x00\x00\x00\x00\x00\x00\x00\x00%soroban_sdk::auth::ContractExecutable\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x008Value of contract node in InvokerContractAuthEntry tree.\x00\x00\x00\x00\x00\x00\x00(soroban_sdk::auth::SubContractInvocation\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x07\xd0\x00\x00\x00\"soroban_sdk::auth::ContractContext\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fsub_invocations\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00+soroban_sdk::auth::InvokerContractAuthEntry\x00\x00\x00\x00\x02\x00\x00\x01/A node in the tree of authorizations performed on behalf of the current\ncontract as invoker of the contracts deeper in the call stack.\n\nThis is used as an argument of `authorize_as_current_contract` host function.\n\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\ncurrent contract.\x00\x00\x00\x00\x00\x00\x00\x00+soroban_sdk::auth::InvokerContractAuthEntry\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x12Invoke a contract.\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00(soroban_sdk::auth::SubContractInvocation\x00\x00\x00\x01\x00\x00\x005Create a contract passing 0 arguments to constructor.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00.soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x00\x00\x01\x00\x00\x00=Create a contract passing 0 or more arguments to constructor.\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00=soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00vAuthorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\x00\x00\x00\x00\x00\x00\x00\x00\x00.soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00%soroban_sdk::auth::ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\xd6Authorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\nThis is the same as `CreateContractHostFnContext`, but also has\ncontract constructor arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00=soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x10constructor_args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00%soroban_sdk::auth::ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00 soroban_sdk::address::Executable\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStellarAsset\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Account\x00\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1c\x00\x00\x00\x00\x00O\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12rssdk_spec_shaking\x00\x00\x00\x00\x00\x012\x00\x00\x00";
         let fn_names: HashSet<std::string::String> = soroban_spec::read::from_wasm(wasm)
             .unwrap()
             .iter()
@@ -2397,6 +3446,26 @@ mod test {
         if !fn_names.contains("trait_default_stacked_cfg") {
             ::core::panicking::panic(
                 "assertion failed: fn_names.contains(\"trait_default_stacked_cfg\")",
+            )
+        }
+        if !fn_names.contains("trait_override_stacked_cfg") {
+            ::core::panicking::panic(
+                "assertion failed: fn_names.contains(\"trait_override_stacked_cfg\")",
+            )
+        }
+        if !fn_names.contains("trait_override_negated_cfg") {
+            ::core::panicking::panic(
+                "assertion failed: fn_names.contains(\"trait_override_negated_cfg\")",
+            )
+        }
+        if !fn_names.contains("trait_override_dual_cfg") {
+            ::core::panicking::panic(
+                "assertion failed: fn_names.contains(\"trait_override_dual_cfg\")",
+            )
+        }
+        if !fn_names.contains("trait_default_dual_cfg") {
+            ::core::panicking::panic(
+                "assertion failed: fn_names.contains(\"trait_default_dual_cfg\")",
             )
         }
         if !!fn_names.contains("cfg_excluded") {
