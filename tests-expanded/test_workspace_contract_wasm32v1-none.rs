@@ -49,7 +49,7 @@ impl Contract {
             inputs: soroban_sdk::xdr::VecMView::new(&[]),
             outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                 soroban_sdk::xdr::ScSpecTypeUdtView {
-                    name: soroban_sdk::xdr::StringMView::new(b"Value"),
+                    name: soroban_sdk::xdr::StringMView::new_str(<Value>::spec_type_name()),
                 },
             )]),
         });

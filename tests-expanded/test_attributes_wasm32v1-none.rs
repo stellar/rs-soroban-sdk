@@ -47,6 +47,12 @@ impl ::core::cmp::PartialEq for AttributeType {
         self.value == other.value
     }
 }
+impl AttributeType {
+    #[doc(hidden)]
+    pub const fn spec_type_name() -> &'static str {
+        "test_attributes::AttributeType"
+    }
+}
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ATTRIBUTETYPE: [u8; AttributeType::__SPEC_XDR_VIEW.const_xdr_len()] =
     AttributeType::spec_xdr();
@@ -55,7 +61,7 @@ impl AttributeType {
         soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"AttributeType"),
+            name: soroban_sdk::xdr::StringMView::new_str(AttributeType::spec_type_name()),
             fields: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -129,6 +135,12 @@ pub struct AttributeEvent {
     topic: u32,
     value: u32,
 }
+impl AttributeEvent {
+    #[doc(hidden)]
+    pub const fn spec_type_name() -> &'static str {
+        "test_attributes::AttributeEvent"
+    }
+}
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_EVENT_ATTRIBUTEEVENT: [u8; AttributeEvent::__SPEC_XDR_VIEW.const_xdr_len()] =
     AttributeEvent::spec_xdr();
@@ -137,9 +149,7 @@ impl AttributeEvent {
         soroban_sdk::xdr::ScSpecEntryView::EventV0(soroban_sdk::xdr::ScSpecEventV0View {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
-                b"AttributeEvent",
-            )),
+            name: soroban_sdk::xdr::StringMView::new_str(AttributeEvent::spec_type_name()),
             prefix_topics: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSymbolView(
                 soroban_sdk::xdr::StringMView::new(b"attribute_event"),
             )]),
@@ -621,7 +631,9 @@ impl Contract {
                     name: soroban_sdk::xdr::StringMView::new(b"value"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                         soroban_sdk::xdr::ScSpecTypeUdtView {
-                            name: soroban_sdk::xdr::StringMView::new(b"AttributeType"),
+                            name: soroban_sdk::xdr::StringMView::new_str(
+                                <AttributeType>::spec_type_name(),
+                            ),
                         },
                     ),
                 },

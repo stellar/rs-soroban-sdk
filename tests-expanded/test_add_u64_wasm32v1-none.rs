@@ -43,6 +43,12 @@ impl ::core::cmp::PartialEq for Error {
         true
     }
 }
+impl Error {
+    #[doc(hidden)]
+    pub const fn spec_type_name() -> &'static str {
+        "test_add_u64::Error"
+    }
+}
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ERROR: [u8; Error::__SPEC_XDR_VIEW.const_xdr_len()] = Error::spec_xdr();
 impl Error {
@@ -51,7 +57,7 @@ impl Error {
             soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
                 doc: soroban_sdk::xdr::StringMView::new(b""),
                 lib: soroban_sdk::xdr::StringMView::new(b""),
-                name: soroban_sdk::xdr::StringMView::new(b"Error"),
+                name: soroban_sdk::xdr::StringMView::new_str(Error::spec_type_name()),
                 cases: soroban_sdk::xdr::VecMView::new(&[
                     soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -197,6 +203,12 @@ impl ::core::cmp::PartialEq for MyError {
         true
     }
 }
+impl MyError {
+    #[doc(hidden)]
+    pub const fn spec_type_name() -> &'static str {
+        "test_add_u64::MyError"
+    }
+}
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_MYERROR: [u8; MyError::__SPEC_XDR_VIEW.const_xdr_len()] =
     MyError::spec_xdr();
@@ -206,7 +218,7 @@ impl MyError {
             soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
                 doc: soroban_sdk::xdr::StringMView::new(b""),
                 lib: soroban_sdk::xdr::StringMView::new(b""),
-                name: soroban_sdk::xdr::StringMView::new(b"MyError"),
+                name: soroban_sdk::xdr::StringMView::new_str(MyError::spec_type_name()),
                 cases: soroban_sdk::xdr::VecMView::new(&[
                     soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -457,7 +469,9 @@ impl Contract {
                         ok_type: &soroban_sdk::xdr::ScSpecTypeDefView::U64,
                         error_type: &soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                             soroban_sdk::xdr::ScSpecTypeUdtView {
-                                name: soroban_sdk::xdr::StringMView::new(b"MyError"),
+                                name: soroban_sdk::xdr::StringMView::new_str(
+                                    <MyError>::spec_type_name(),
+                                ),
                             },
                         ),
                     },

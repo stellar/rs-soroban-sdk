@@ -827,7 +827,7 @@ mod test {
 mod test_with_wasm {
     use soroban_sdk::{Env, String};
     mod contract {
-        pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01\x11\x03`\x02~~\x01~`\x00\x01~`\x02\x7f\x7f\x01~\x02\x07\x01\x01b\x01i\x00\x00\x03\x04\x03\x01\x02\x01\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x8f\x80\xc0\x00\x0b\x7f\x00A\x8f\x80\xc0\x00\x0b\x7f\x00A\x90\x80\xc0\x00\x0b\x078\x06\x06memory\x02\x00\x04exec\x00\x01\x05exec2\x00\x03\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n>\x03\x10\x00A\x80\x80\xc0\x80\x00A\x07\x10\x82\x80\x80\x80\x00\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x80\x80\x80\x80\x00\x0b\x10\x00A\x87\x80\xc0\x80\x00A\x08\x10\x82\x80\x80\x80\x00\x0b\x0b\x18\x01\x00A\x80\x80\xc0\x00\x0b\x0fdefaultdefault2\x00\xdf\x15\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04exec\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05exec2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x10\x00\x00\x00\x02\x00\x00\x00\xe3Context of a single authorized call performed by an address.\n\nCustom account contracts that implement `__check_auth` special function\nreceive a list of `Context` values corresponding to all the calls that\nneed to be authorized.\x00\x00\x00\x00\x00\x00\x00\x00\x07Context\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x14Contract invocation.\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x01\x00\x00\x00=Contract that has a constructor with no arguments is created.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00DContract that has a constructor with 1 or more arguments is created.\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x01\x00\x00\x00\xbdAuthorization context of a single contract call.\n\nThis struct corresponds to a `require_auth_for_args` call for an address\nfrom `contract` function with `fn_name` name and `args` arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08contract\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x07fn_name\x00\x00\x00\x00\x11\x00\x00\x00\x02\x00\x00\x00_Contract executable used for creating a new contract and used in\n`CreateContractHostFnContext`.\x00\x00\x00\x00\x00\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x008Value of contract node in InvokerContractAuthEntry tree.\x00\x00\x00\x00\x00\x00\x00\x15SubContractInvocation\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x07\xd0\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x00\x00\x00\x00\x0fsub_invocations\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00\x18InvokerContractAuthEntry\x00\x00\x00\x02\x00\x00\x01/A node in the tree of authorizations performed on behalf of the current\ncontract as invoker of the contracts deeper in the call stack.\n\nThis is used as an argument of `authorize_as_current_contract` host function.\n\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\ncurrent contract.\x00\x00\x00\x00\x00\x00\x00\x00\x18InvokerContractAuthEntry\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x12Invoke a contract.\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x15SubContractInvocation\x00\x00\x00\x00\x00\x00\x01\x00\x00\x005Create a contract passing 0 arguments to constructor.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00=Create a contract passing 0 or more arguments to constructor.\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x01\x00\x00\x00vAuthorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\xd6Authorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\nThis is the same as `CreateContractHostFnContext`, but also has\ncontract constructor arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x10constructor_args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nExecutable\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStellarAsset\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Account\x00\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1c\x00\x00\x00\x00\x00O\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12rssdk_spec_shaking\x00\x00\x00\x00\x00\x012\x00\x00\x00";
+        pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01\x11\x03`\x02~~\x01~`\x00\x01~`\x02\x7f\x7f\x01~\x02\x07\x01\x01b\x01i\x00\x00\x03\x04\x03\x01\x02\x01\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x8f\x80\xc0\x00\x0b\x7f\x00A\x8f\x80\xc0\x00\x0b\x7f\x00A\x90\x80\xc0\x00\x0b\x078\x06\x06memory\x02\x00\x04exec\x00\x01\x05exec2\x00\x03\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n>\x03\x10\x00A\x80\x80\xc0\x80\x00A\x07\x10\x82\x80\x80\x80\x00\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x80\x80\x80\x80\x00\x0b\x10\x00A\x87\x80\xc0\x80\x00A\x08\x10\x82\x80\x80\x80\x00\x0b\x0b\x18\x01\x00A\x80\x80\xc0\x00\x0b\x0fdefaultdefault2\x00\xbf\x18\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04exec\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05exec2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x10\x00\x00\x00\x02\x00\x00\x00\xe3Context of a single authorized call performed by an address.\n\nCustom account contracts that implement `__check_auth` special function\nreceive a list of `Context` values corresponding to all the calls that\nneed to be authorized.\x00\x00\x00\x00\x00\x00\x00\x00\x1asoroban_sdk::auth::Context\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x14Contract invocation.\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\"soroban_sdk::auth::ContractContext\x00\x00\x00\x00\x00\x01\x00\x00\x00=Contract that has a constructor with no arguments is created.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00.soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x00\x00\x01\x00\x00\x00DContract that has a constructor with 1 or more arguments is created.\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00=soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\xbdAuthorization context of a single contract call.\n\nThis struct corresponds to a `require_auth_for_args` call for an address\nfrom `contract` function with `fn_name` name and `args` arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\"soroban_sdk::auth::ContractContext\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08contract\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x07fn_name\x00\x00\x00\x00\x11\x00\x00\x00\x02\x00\x00\x00_Contract executable used for creating a new contract and used in\n`CreateContractHostFnContext`.\x00\x00\x00\x00\x00\x00\x00\x00%soroban_sdk::auth::ContractExecutable\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x008Value of contract node in InvokerContractAuthEntry tree.\x00\x00\x00\x00\x00\x00\x00(soroban_sdk::auth::SubContractInvocation\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x07\xd0\x00\x00\x00\"soroban_sdk::auth::ContractContext\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fsub_invocations\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00+soroban_sdk::auth::InvokerContractAuthEntry\x00\x00\x00\x00\x02\x00\x00\x01/A node in the tree of authorizations performed on behalf of the current\ncontract as invoker of the contracts deeper in the call stack.\n\nThis is used as an argument of `authorize_as_current_contract` host function.\n\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\ncurrent contract.\x00\x00\x00\x00\x00\x00\x00\x00+soroban_sdk::auth::InvokerContractAuthEntry\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x12Invoke a contract.\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00(soroban_sdk::auth::SubContractInvocation\x00\x00\x00\x01\x00\x00\x005Create a contract passing 0 arguments to constructor.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00.soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x00\x00\x01\x00\x00\x00=Create a contract passing 0 or more arguments to constructor.\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00=soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00vAuthorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\x00\x00\x00\x00\x00\x00\x00\x00\x00.soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00%soroban_sdk::auth::ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\xd6Authorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\nThis is the same as `CreateContractHostFnContext`, but also has\ncontract constructor arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00=soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x10constructor_args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00%soroban_sdk::auth::ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00 soroban_sdk::address::Executable\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStellarAsset\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Account\x00\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1c\x00\x00\x00\x00\x00O\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12rssdk_spec_shaking\x00\x00\x00\x00\x00\x012\x00\x00\x00";
         pub trait Contract {
             fn exec(env: soroban_sdk::Env) -> soroban_sdk::String;
             fn exec2(env: soroban_sdk::Env) -> soroban_sdk::String;
@@ -1209,6 +1209,12 @@ mod test_with_wasm {
                 }
             }
         }
+        impl ContractContext {
+            #[doc(hidden)]
+            pub const fn spec_type_name() -> &'static str {
+                "test_associated_types_contracttrait::test_with_wasm::contract::ContractContext"
+            }
+        }
         pub static __SPEC_XDR_TYPE_CONTRACTCONTEXT: [u8; ContractContext::__SPEC_XDR_VIEW
             .const_xdr_len()] = ContractContext::spec_xdr();
         impl ContractContext {
@@ -1217,7 +1223,9 @@ mod test_with_wasm {
                     soroban_sdk::xdr::ScSpecUdtStructV0View {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
                         lib: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"ContractContext"),
+                        name: soroban_sdk::xdr::StringMView::new_str(
+                            ContractContext::spec_type_name(),
+                        ),
                         fields: soroban_sdk::xdr::VecMView::new(&[
                             soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                                 doc: soroban_sdk::xdr::StringMView::new(b""),
@@ -1777,6 +1785,12 @@ mod test_with_wasm {
                 }
             }
         }
+        impl SubContractInvocation {
+            #[doc(hidden)]
+            pub const fn spec_type_name() -> &'static str {
+                "test_associated_types_contracttrait::test_with_wasm::contract::SubContractInvocation"
+            }
+        }
         pub static __SPEC_XDR_TYPE_SUBCONTRACTINVOCATION: [u8;
             SubContractInvocation::__SPEC_XDR_VIEW.const_xdr_len()] =
             SubContractInvocation::spec_xdr();
@@ -1786,15 +1800,17 @@ mod test_with_wasm {
                     soroban_sdk::xdr::ScSpecUdtStructV0View {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
                         lib: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"SubContractInvocation"),
+                        name: soroban_sdk::xdr::StringMView::new_str(
+                            SubContractInvocation::spec_type_name(),
+                        ),
                         fields: soroban_sdk::xdr::VecMView::new(&[
                             soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                                 doc: soroban_sdk::xdr::StringMView::new(b""),
                                 name: soroban_sdk::xdr::StringMView::new(b"context"),
                                 type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                                     soroban_sdk::xdr::ScSpecTypeUdtView {
-                                        name: soroban_sdk::xdr::StringMView::new(
-                                            b"ContractContext",
+                                        name: soroban_sdk::xdr::StringMView::new_str(
+                                            <ContractContext>::spec_type_name(),
                                         ),
                                     },
                                 ),
@@ -1806,8 +1822,8 @@ mod test_with_wasm {
                                     &soroban_sdk::xdr::ScSpecTypeVecView {
                                         element_type: &soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                                             soroban_sdk::xdr::ScSpecTypeUdtView {
-                                                name: soroban_sdk::xdr::StringMView::new(
-                                                    b"InvokerContractAuthEntry",
+                                                name: soroban_sdk::xdr::StringMView::new_str(
+                                                    <InvokerContractAuthEntry>::spec_type_name(),
                                                 ),
                                             },
                                         ),
@@ -2292,6 +2308,12 @@ mod test_with_wasm {
                 }
             }
         }
+        impl CreateContractHostFnContext {
+            #[doc(hidden)]
+            pub const fn spec_type_name() -> &'static str {
+                "test_associated_types_contracttrait::test_with_wasm::contract::CreateContractHostFnContext"
+            }
+        }
         pub static __SPEC_XDR_TYPE_CREATECONTRACTHOSTFNCONTEXT: [u8;
             CreateContractHostFnContext::__SPEC_XDR_VIEW.const_xdr_len()] =
             CreateContractHostFnContext::spec_xdr();
@@ -2301,15 +2323,17 @@ mod test_with_wasm {
                     soroban_sdk::xdr::ScSpecUdtStructV0View {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
                         lib: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"CreateContractHostFnContext"),
+                        name: soroban_sdk::xdr::StringMView::new_str(
+                            CreateContractHostFnContext::spec_type_name(),
+                        ),
                         fields: soroban_sdk::xdr::VecMView::new(&[
                             soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                                 doc: soroban_sdk::xdr::StringMView::new(b""),
                                 name: soroban_sdk::xdr::StringMView::new(b"executable"),
                                 type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                                     soroban_sdk::xdr::ScSpecTypeUdtView {
-                                        name: soroban_sdk::xdr::StringMView::new(
-                                            b"ContractExecutable",
+                                        name: soroban_sdk::xdr::StringMView::new_str(
+                                            <ContractExecutable>::spec_type_name(),
                                         ),
                                     },
                                 ),
@@ -2831,6 +2855,12 @@ mod test_with_wasm {
                 }
             }
         }
+        impl CreateContractWithConstructorHostFnContext {
+            #[doc(hidden)]
+            pub const fn spec_type_name() -> &'static str {
+                "test_associated_types_contracttrait::test_with_wasm::contract::CreateContractWithConstructorHostFnContext"
+            }
+        }
         pub static __SPEC_XDR_TYPE_CREATECONTRACTWITHCONSTRUCTORHOSTFNCONTEXT: [u8;
             CreateContractWithConstructorHostFnContext::__SPEC_XDR_VIEW.const_xdr_len()] =
             CreateContractWithConstructorHostFnContext::spec_xdr();
@@ -2840,8 +2870,8 @@ mod test_with_wasm {
                     soroban_sdk::xdr::ScSpecUdtStructV0View {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
                         lib: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(
-                            b"CreateContractWithConstructorHostFnContext",
+                        name: soroban_sdk::xdr::StringMView::new_str(
+                            CreateContractWithConstructorHostFnContext::spec_type_name(),
                         ),
                         fields: soroban_sdk::xdr::VecMView::new(&[
                             soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
@@ -2858,8 +2888,8 @@ mod test_with_wasm {
                                 name: soroban_sdk::xdr::StringMView::new(b"executable"),
                                 type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                                     soroban_sdk::xdr::ScSpecTypeUdtView {
-                                        name: soroban_sdk::xdr::StringMView::new(
-                                            b"ContractExecutable",
+                                        name: soroban_sdk::xdr::StringMView::new_str(
+                                            <ContractExecutable>::spec_type_name(),
                                         ),
                                     },
                                 ),
@@ -3508,68 +3538,67 @@ mod test_with_wasm {
                 }
             }
         }
+        impl Context {
+            #[doc(hidden)]
+            pub const fn spec_type_name() -> &'static str {
+                "test_associated_types_contracttrait::test_with_wasm::contract::Context"
+            }
+        }
         pub static __SPEC_XDR_TYPE_CONTEXT: [u8; Context::__SPEC_XDR_VIEW.const_xdr_len()] =
             Context::spec_xdr();
         impl Context {
-            const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-                soroban_sdk::xdr::ScSpecEntryView::UdtUnionV0(
-                    soroban_sdk::xdr::ScSpecUdtUnionV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        lib: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"Context"),
-                        cases: soroban_sdk::xdr::VecMView::new(&[
-                            soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
-                                soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
-                                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                                    name: soroban_sdk::xdr::StringMView::new(b"Contract"),
-                                    type_: soroban_sdk::xdr::VecMView::new(&[
-                                        soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                            soroban_sdk::xdr::ScSpecTypeUdtView {
-                                                name: soroban_sdk::xdr::StringMView::new(
-                                                    b"ContractContext",
-                                                ),
-                                            },
+            const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> = soroban_sdk::xdr::ScSpecEntryView::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0View {
+                doc: soroban_sdk::xdr::StringMView::new(b""),
+                lib: soroban_sdk::xdr::StringMView::new(b""),
+                name: soroban_sdk::xdr::StringMView::new_str(Context::spec_type_name()),
+                cases: soroban_sdk::xdr::VecMView::new(
+                    &[
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"Contract"),
+                            type_: soroban_sdk::xdr::VecMView::new(
+                                &[
+                                    soroban_sdk::xdr::ScSpecTypeDefView::Udt(soroban_sdk::xdr::ScSpecTypeUdtView {
+                                        name: soroban_sdk::xdr::StringMView::new_str(
+                                            <ContractContext>::spec_type_name(),
                                         ),
-                                    ]),
-                                },
+                                    }),
+                                ],
                             ),
-                            soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
-                                soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
-                                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                                    name: soroban_sdk::xdr::StringMView::new(
-                                        b"CreateContractHostFn",
-                                    ),
-                                    type_: soroban_sdk::xdr::VecMView::new(&[
-                                        soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                            soroban_sdk::xdr::ScSpecTypeUdtView {
-                                                name: soroban_sdk::xdr::StringMView::new(
-                                                    b"CreateContractHostFnContext",
-                                                ),
-                                            },
+                        }),
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(
+                                b"CreateContractHostFn",
+                            ),
+                            type_: soroban_sdk::xdr::VecMView::new(
+                                &[
+                                    soroban_sdk::xdr::ScSpecTypeDefView::Udt(soroban_sdk::xdr::ScSpecTypeUdtView {
+                                        name: soroban_sdk::xdr::StringMView::new_str(
+                                            <CreateContractHostFnContext>::spec_type_name(),
                                         ),
-                                    ]),
-                                },
+                                    }),
+                                ],
                             ),
-                            soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
-                                soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
-                                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                                    name: soroban_sdk::xdr::StringMView::new(
-                                        b"CreateContractWithCtorHostFn",
-                                    ),
-                                    type_: soroban_sdk::xdr::VecMView::new(&[
-                                        soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                            soroban_sdk::xdr::ScSpecTypeUdtView {
-                                                name: soroban_sdk::xdr::StringMView::new(
-                                                    b"CreateContractWithConstructorHostFnContext",
-                                                ),
-                                            },
+                        }),
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(
+                                b"CreateContractWithCtorHostFn",
+                            ),
+                            type_: soroban_sdk::xdr::VecMView::new(
+                                &[
+                                    soroban_sdk::xdr::ScSpecTypeDefView::Udt(soroban_sdk::xdr::ScSpecTypeUdtView {
+                                        name: soroban_sdk::xdr::StringMView::new_str(
+                                            <CreateContractWithConstructorHostFnContext>::spec_type_name(),
                                         ),
-                                    ]),
-                                },
+                                    }),
+                                ],
                             ),
-                        ]),
-                    },
-                );
+                        }),
+                    ],
+                ),
+            });
             pub const fn spec_xdr() -> [u8; Context::__SPEC_XDR_VIEW.const_xdr_len()] {
                 Context::__SPEC_XDR_VIEW.const_to_xdr()
             }
@@ -4239,6 +4268,12 @@ mod test_with_wasm {
                 }
             }
         }
+        impl ContractExecutable {
+            #[doc(hidden)]
+            pub const fn spec_type_name() -> &'static str {
+                "test_associated_types_contracttrait::test_with_wasm::contract::ContractExecutable"
+            }
+        }
         pub static __SPEC_XDR_TYPE_CONTRACTEXECUTABLE: [u8; ContractExecutable::__SPEC_XDR_VIEW
             .const_xdr_len()] = ContractExecutable::spec_xdr();
         impl ContractExecutable {
@@ -4247,7 +4282,9 @@ mod test_with_wasm {
                     soroban_sdk::xdr::ScSpecUdtUnionV0View {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
                         lib: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"ContractExecutable"),
+                        name: soroban_sdk::xdr::StringMView::new_str(
+                            ContractExecutable::spec_type_name(),
+                        ),
                         cases: soroban_sdk::xdr::VecMView::new(&[
                             soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
                                 soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
@@ -4804,69 +4841,70 @@ mod test_with_wasm {
                 }
             }
         }
+        impl InvokerContractAuthEntry {
+            #[doc(hidden)]
+            pub const fn spec_type_name() -> &'static str {
+                "test_associated_types_contracttrait::test_with_wasm::contract::InvokerContractAuthEntry"
+            }
+        }
         pub static __SPEC_XDR_TYPE_INVOKERCONTRACTAUTHENTRY: [u8;
             InvokerContractAuthEntry::__SPEC_XDR_VIEW.const_xdr_len()] =
             InvokerContractAuthEntry::spec_xdr();
         impl InvokerContractAuthEntry {
-            const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
-                soroban_sdk::xdr::ScSpecEntryView::UdtUnionV0(
-                    soroban_sdk::xdr::ScSpecUdtUnionV0View {
-                        doc: soroban_sdk::xdr::StringMView::new(b""),
-                        lib: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"InvokerContractAuthEntry"),
-                        cases: soroban_sdk::xdr::VecMView::new(&[
-                            soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
-                                soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
-                                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                                    name: soroban_sdk::xdr::StringMView::new(b"Contract"),
-                                    type_: soroban_sdk::xdr::VecMView::new(&[
-                                        soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                            soroban_sdk::xdr::ScSpecTypeUdtView {
-                                                name: soroban_sdk::xdr::StringMView::new(
-                                                    b"SubContractInvocation",
-                                                ),
-                                            },
+            const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> = soroban_sdk::xdr::ScSpecEntryView::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0View {
+                doc: soroban_sdk::xdr::StringMView::new(b""),
+                lib: soroban_sdk::xdr::StringMView::new(b""),
+                name: soroban_sdk::xdr::StringMView::new_str(
+                    InvokerContractAuthEntry::spec_type_name(),
+                ),
+                cases: soroban_sdk::xdr::VecMView::new(
+                    &[
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(b"Contract"),
+                            type_: soroban_sdk::xdr::VecMView::new(
+                                &[
+                                    soroban_sdk::xdr::ScSpecTypeDefView::Udt(soroban_sdk::xdr::ScSpecTypeUdtView {
+                                        name: soroban_sdk::xdr::StringMView::new_str(
+                                            <SubContractInvocation>::spec_type_name(),
                                         ),
-                                    ]),
-                                },
+                                    }),
+                                ],
                             ),
-                            soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
-                                soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
-                                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                                    name: soroban_sdk::xdr::StringMView::new(
-                                        b"CreateContractHostFn",
-                                    ),
-                                    type_: soroban_sdk::xdr::VecMView::new(&[
-                                        soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                            soroban_sdk::xdr::ScSpecTypeUdtView {
-                                                name: soroban_sdk::xdr::StringMView::new(
-                                                    b"CreateContractHostFnContext",
-                                                ),
-                                            },
+                        }),
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(
+                                b"CreateContractHostFn",
+                            ),
+                            type_: soroban_sdk::xdr::VecMView::new(
+                                &[
+                                    soroban_sdk::xdr::ScSpecTypeDefView::Udt(soroban_sdk::xdr::ScSpecTypeUdtView {
+                                        name: soroban_sdk::xdr::StringMView::new_str(
+                                            <CreateContractHostFnContext>::spec_type_name(),
                                         ),
-                                    ]),
-                                },
+                                    }),
+                                ],
                             ),
-                            soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
-                                soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
-                                    doc: soroban_sdk::xdr::StringMView::new(b""),
-                                    name: soroban_sdk::xdr::StringMView::new(
-                                        b"CreateContractWithCtorHostFn",
-                                    ),
-                                    type_: soroban_sdk::xdr::VecMView::new(&[
-                                        soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                                            soroban_sdk::xdr::ScSpecTypeUdtView {
-                                                name: soroban_sdk::xdr::StringMView::new(
-                                                    b"CreateContractWithConstructorHostFnContext",
-                                                ),
-                                            },
+                        }),
+                        soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
+                            doc: soroban_sdk::xdr::StringMView::new(b""),
+                            name: soroban_sdk::xdr::StringMView::new(
+                                b"CreateContractWithCtorHostFn",
+                            ),
+                            type_: soroban_sdk::xdr::VecMView::new(
+                                &[
+                                    soroban_sdk::xdr::ScSpecTypeDefView::Udt(soroban_sdk::xdr::ScSpecTypeUdtView {
+                                        name: soroban_sdk::xdr::StringMView::new_str(
+                                            <CreateContractWithConstructorHostFnContext>::spec_type_name(),
                                         ),
-                                    ]),
-                                },
+                                    }),
+                                ],
                             ),
-                        ]),
-                    },
-                );
+                        }),
+                    ],
+                ),
+            });
             pub const fn spec_xdr(
             ) -> [u8; InvokerContractAuthEntry::__SPEC_XDR_VIEW.const_xdr_len()] {
                 InvokerContractAuthEntry::__SPEC_XDR_VIEW.const_to_xdr()
@@ -5599,6 +5637,12 @@ mod test_with_wasm {
                 }
             }
         }
+        impl Executable {
+            #[doc(hidden)]
+            pub const fn spec_type_name() -> &'static str {
+                "test_associated_types_contracttrait::test_with_wasm::contract::Executable"
+            }
+        }
         pub static __SPEC_XDR_TYPE_EXECUTABLE: [u8; Executable::__SPEC_XDR_VIEW.const_xdr_len()] =
             Executable::spec_xdr();
         impl Executable {
@@ -5607,7 +5651,7 @@ mod test_with_wasm {
                     soroban_sdk::xdr::ScSpecUdtUnionV0View {
                         doc: soroban_sdk::xdr::StringMView::new(b""),
                         lib: soroban_sdk::xdr::StringMView::new(b""),
-                        name: soroban_sdk::xdr::StringMView::new(b"Executable"),
+                        name: soroban_sdk::xdr::StringMView::new_str(Executable::spec_type_name()),
                         cases: soroban_sdk::xdr::VecMView::new(&[
                             soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
                                 soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {

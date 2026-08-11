@@ -141,6 +141,12 @@ pub enum DataKey {
     Temp(u32),
     Instance(u32),
 }
+impl DataKey {
+    #[doc(hidden)]
+    pub const fn spec_type_name() -> &'static str {
+        "test_constructor::DataKey"
+    }
+}
 pub static __SPEC_XDR_TYPE_DATAKEY: [u8; DataKey::__SPEC_XDR_VIEW.const_xdr_len()] =
     DataKey::spec_xdr();
 impl DataKey {
@@ -148,7 +154,7 @@ impl DataKey {
         soroban_sdk::xdr::ScSpecEntryView::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0View {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::StringMView::new(b"DataKey"),
+            name: soroban_sdk::xdr::StringMView::new_str(DataKey::spec_type_name()),
             cases: soroban_sdk::xdr::VecMView::new(&[
                 soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
                     soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
@@ -803,7 +809,9 @@ impl Contract {
                     name: soroban_sdk::xdr::StringMView::new(b"key"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                         soroban_sdk::xdr::ScSpecTypeUdtView {
-                            name: soroban_sdk::xdr::StringMView::new(b"DataKey"),
+                            name: soroban_sdk::xdr::StringMView::new_str(
+                                <DataKey>::spec_type_name(),
+                            ),
                         },
                     ),
                 },
