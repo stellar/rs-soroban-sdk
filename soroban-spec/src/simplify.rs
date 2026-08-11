@@ -1,5 +1,12 @@
 use stellar_xdr::{ScSpecEntry, ScSpecTypeDef, ScSpecUdtUnionCaseV0};
 
+/// The most bytes a spec type name can hold (`SC_SPEC_TYPE_NAME_LIMIT`), which
+/// bounds the names the numbering below may produce.
+const TYPE_NAME_LIMIT: usize = 256;
+
+/// The most bytes an event name can hold (an `ScSymbol`).
+const EVENT_NAME_LIMIT: usize = 32;
+
 /// A spec with its user-defined type names reduced to simple names, along
 /// with how each type's name was resolved.
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -12,12 +19,16 @@ pub struct Simplified {
 }
 
 /// How one user-defined type's name resolved during simplification.
+///
+/// Spec names are byte strings that are not guaranteed to be valid UTF-8, so
+/// the names are byte strings here too, preserved exactly as they appear in
+/// the spec. Decode lossily only for display.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct Rename {
     /// The name as it appears in the input spec.
-    pub from: String,
+    pub from: Vec<u8>,
     /// The name the type has in the simplified spec.
-    pub to: String,
+    pub to: Vec<u8>,
 }
 
 impl Rename {
@@ -34,8 +45,10 @@ impl Rename {
 }
 
 /// The last `::`-separated segment of a fully qualified type name.
-fn last_segment(name: &str) -> &str {
-    name.rsplit("::").next().unwrap_or(name)
+fn last_segment(name: &[u8]) -> &[u8] {
+    name.windows(2)
+        .rposition(|w| w == b"::")
+        .map_or(name, |i| &name[i + 2..])
 }
 
 /// Reduces every user-defined type name in the spec from its fully qualified
@@ -49,15 +62,23 @@ fn last_segment(name: &str) -> &str {
 ///
 /// A reference to a type the spec does not define is reduced to its last
 /// segment, without claiming a name.
+///
+/// Names are treated as byte strings throughout and preserved exactly; the
+/// spec does not guarantee valid UTF-8. A type whose numbered name cannot fit
+/// the spec's name limit keeps its original name.
 pub fn simplify(spec: &[ScSpecEntry]) -> Simplified {
-    // The names the spec defines, in definition order.
-    let defined: Vec<String> = spec
+    // The names the spec defines, in definition order, each with the most
+    // bytes its entry's name field can hold. Events define a name too: the
+    // generated bindings declare a type for each event, so an event and a
+    // type sharing a simple name are a collision like any other.
+    let defined: Vec<(Vec<u8>, usize)> = spec
         .iter()
         .filter_map(|entry| match entry {
-            ScSpecEntry::UdtStructV0(s) => Some(s.name.to_utf8_string_lossy()),
-            ScSpecEntry::UdtUnionV0(u) => Some(u.name.to_utf8_string_lossy()),
-            ScSpecEntry::UdtEnumV0(e) => Some(e.name.to_utf8_string_lossy()),
-            ScSpecEntry::UdtErrorEnumV0(e) => Some(e.name.to_utf8_string_lossy()),
+            ScSpecEntry::UdtStructV0(s) => Some((s.name.to_vec(), TYPE_NAME_LIMIT)),
+            ScSpecEntry::UdtUnionV0(u) => Some((u.name.to_vec(), TYPE_NAME_LIMIT)),
+            ScSpecEntry::UdtEnumV0(e) => Some((e.name.to_vec(), TYPE_NAME_LIMIT)),
+            ScSpecEntry::UdtErrorEnumV0(e) => Some((e.name.to_vec(), TYPE_NAME_LIMIT)),
+            ScSpecEntry::EventV0(e) => Some((e.name.to_vec(), EVENT_NAME_LIMIT)),
             _ => None,
         })
         .collect();
@@ -66,18 +87,23 @@ pub fn simplify(spec: &[ScSpecEntry]) -> Simplified {
     // loses its own name to one defined before it, never to a number handed
     // to a type that collided with something else.
     let mut taken = std::collections::HashSet::new();
-    let colliding: Vec<&String> = defined
+    let colliding: Vec<&(Vec<u8>, usize)> = defined
         .iter()
-        .filter(|name| !taken.insert(last_segment(name).to_string()))
+        .filter(|(name, _)| !taken.insert(last_segment(name).to_vec()))
         .collect();
 
     let mut numbered = std::collections::HashMap::new();
-    for name in colliding {
+    for (name, limit) in colliding {
         let base = last_segment(name);
         let mut n = 1u32;
         let simple = loop {
             n += 1;
-            let simple = format!("{base}{n}");
+            let mut simple = base.to_vec();
+            simple.extend_from_slice(n.to_string().as_bytes());
+            if simple.len() > *limit {
+                // No numbered name fits, so the type keeps its original name.
+                break name.clone();
+            }
             if taken.insert(simple.clone()) {
                 break simple;
             }
@@ -87,24 +113,26 @@ pub fn simplify(spec: &[ScSpecEntry]) -> Simplified {
 
     let renames: Vec<Rename> = defined
         .iter()
-        .map(|name| Rename {
+        .map(|(name, _)| Rename {
             from: name.clone(),
             to: numbered
                 .get(name)
                 .cloned()
-                .unwrap_or_else(|| last_segment(name).to_string()),
+                .unwrap_or_else(|| last_segment(name).to_vec()),
         })
         .collect();
 
-    let to: std::collections::HashMap<&str, &str> = renames
+    let to: std::collections::HashMap<&[u8], &[u8]> = renames
         .iter()
-        .map(|r| (r.from.as_str(), r.to.as_str()))
+        .map(|r| (r.from.as_slice(), r.to.as_slice()))
         .collect();
-    let resolve = |name: &str| -> String {
+    let resolve = |name: &[u8]| -> Vec<u8> {
         to.get(name)
-            .map_or_else(|| last_segment(name).to_string(), ToString::to_string)
+            .map_or_else(|| last_segment(name).to_vec(), |t| t.to_vec())
     };
 
+    // Every resolved name is a fragment of a name that fit the spec, or was
+    // length-checked when numbered, so conversion back cannot fail.
     let mut spec = spec.to_vec();
     for entry in spec.iter_mut() {
         match entry {
@@ -117,13 +145,13 @@ pub fn simplify(spec: &[ScSpecEntry]) -> Simplified {
                 }
             }
             ScSpecEntry::UdtStructV0(s) => {
-                s.name = resolve(&s.name.to_utf8_string_lossy()).try_into().unwrap();
+                s.name = resolve(&s.name).try_into().unwrap();
                 for field in s.fields.iter_mut() {
                     rewrite_ty(&mut field.type_, &resolve);
                 }
             }
             ScSpecEntry::UdtUnionV0(u) => {
-                u.name = resolve(&u.name.to_utf8_string_lossy()).try_into().unwrap();
+                u.name = resolve(&u.name).try_into().unwrap();
                 for case in u.cases.iter_mut() {
                     if let ScSpecUdtUnionCaseV0::TupleV0(t) = case {
                         for ty in t.type_.iter_mut() {
@@ -133,12 +161,13 @@ pub fn simplify(spec: &[ScSpecEntry]) -> Simplified {
                 }
             }
             ScSpecEntry::UdtEnumV0(e) => {
-                e.name = resolve(&e.name.to_utf8_string_lossy()).try_into().unwrap();
+                e.name = resolve(&e.name).try_into().unwrap();
             }
             ScSpecEntry::UdtErrorEnumV0(e) => {
-                e.name = resolve(&e.name.to_utf8_string_lossy()).try_into().unwrap();
+                e.name = resolve(&e.name).try_into().unwrap();
             }
             ScSpecEntry::EventV0(e) => {
+                e.name = stellar_xdr::ScSymbol(resolve(&e.name).try_into().unwrap());
                 for p in e.params.iter_mut() {
                     rewrite_ty(&mut p.type_, &resolve);
                 }
@@ -150,10 +179,10 @@ pub fn simplify(spec: &[ScSpecEntry]) -> Simplified {
 }
 
 /// Rewrites the name of every user-defined type reference in the type.
-fn rewrite_ty(t: &mut ScSpecTypeDef, resolve: &dyn Fn(&str) -> String) {
+fn rewrite_ty(t: &mut ScSpecTypeDef, resolve: &dyn Fn(&[u8]) -> Vec<u8>) {
     match t {
         ScSpecTypeDef::Udt(u) => {
-            u.name = resolve(&u.name.to_utf8_string_lossy()).try_into().unwrap();
+            u.name = resolve(&u.name).try_into().unwrap();
         }
         ScSpecTypeDef::Option(o) => rewrite_ty(&mut o.value_type, resolve),
         ScSpecTypeDef::Result(r) => {
@@ -181,7 +210,7 @@ mod test {
         ScSpecEntry, ScSpecTypeDef, ScSpecTypeUdt, ScSpecUdtStructFieldV0, ScSpecUdtStructV0,
     };
 
-    fn struct_entry(name: &str, field_type_names: &[&str]) -> ScSpecEntry {
+    fn struct_entry_bytes(name: &[u8], field_type_names: &[&[u8]]) -> ScSpecEntry {
         ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
             doc: "".try_into().unwrap(),
             lib: "".try_into().unwrap(),
@@ -201,15 +230,25 @@ mod test {
         })
     }
 
-    fn names(spec: &[ScSpecEntry]) -> Vec<(String, Vec<String>)> {
+    fn struct_entry(name: &str, field_type_names: &[&str]) -> ScSpecEntry {
+        struct_entry_bytes(
+            name.as_bytes(),
+            &field_type_names
+                .iter()
+                .map(|n| n.as_bytes())
+                .collect::<Vec<_>>(),
+        )
+    }
+
+    fn names(spec: &[ScSpecEntry]) -> Vec<(Vec<u8>, Vec<Vec<u8>>)> {
         spec.iter()
             .map(|e| match e {
                 ScSpecEntry::UdtStructV0(s) => (
-                    s.name.to_utf8_string_lossy(),
+                    s.name.to_vec(),
                     s.fields
                         .iter()
                         .map(|f| match &f.type_ {
-                            ScSpecTypeDef::Udt(u) => u.name.to_utf8_string_lossy(),
+                            ScSpecTypeDef::Udt(u) => u.name.to_vec(),
                             _ => unreachable!(),
                         })
                         .collect(),
@@ -223,12 +262,12 @@ mod test {
     fn reduces_a_qualified_name_to_its_last_segment() {
         let spec = [struct_entry("mycrate::mymod::MyType", &[])];
         let simplified = simplify(&spec);
-        assert_eq!(names(&simplified.spec), [("MyType".to_string(), vec![])]);
+        assert_eq!(names(&simplified.spec), [(b"MyType".to_vec(), vec![])]);
         assert_eq!(
             simplified.renames,
             [Rename {
-                from: "mycrate::mymod::MyType".to_string(),
-                to: "MyType".to_string(),
+                from: b"mycrate::mymod::MyType".to_vec(),
+                to: b"MyType".to_vec(),
             }]
         );
         assert!(simplified.renames[0].renamed());
@@ -245,8 +284,8 @@ mod test {
         assert_eq!(
             names(&simplified.spec),
             [
-                ("MyType".to_string(), vec!["MyType2".to_string()]),
-                ("MyType2".to_string(), vec!["MyType".to_string()]),
+                (b"MyType".to_vec(), vec![b"MyType2".to_vec()]),
+                (b"MyType2".to_vec(), vec![b"MyType".to_vec()]),
             ]
         );
         assert!(!simplified.renames[0].collision());
@@ -267,9 +306,9 @@ mod test {
             simplified
                 .renames
                 .iter()
-                .map(|r| r.to.as_str())
+                .map(|r| r.to.as_slice())
                 .collect::<Vec<_>>(),
-            ["MyType", "MyType2", "MyType3"],
+            [b"MyType".as_slice(), b"MyType2", b"MyType3"],
         );
     }
 
@@ -292,9 +331,9 @@ mod test {
             simplified
                 .renames
                 .iter()
-                .map(|r| r.to.as_str())
+                .map(|r| r.to.as_slice())
                 .collect::<Vec<_>>(),
-            ["MyType", "MyType2"],
+            [b"MyType".as_slice(), b"MyType2"],
         );
     }
 
@@ -304,8 +343,33 @@ mod test {
         let simplified = simplify(&spec);
         assert_eq!(
             names(&simplified.spec),
-            [("MyType".to_string(), vec!["Other".to_string()])]
+            [(b"MyType".to_vec(), vec![b"Other".to_vec()])]
         );
         assert_eq!(simplified.renames.len(), 1);
+    }
+
+    #[test]
+    fn a_name_that_is_not_utf8_is_preserved_byte_for_byte() {
+        // Spec names are byte strings with no UTF-8 guarantee. A lossy decode
+        // would swap each invalid byte for a multi-byte replacement character,
+        // changing the name and potentially overflowing the name limit.
+        let name = b"mycrate::\xff\xfeType";
+        let spec = [struct_entry_bytes(name, &[name])];
+        let simplified = simplify(&spec);
+        assert_eq!(
+            names(&simplified.spec),
+            [(b"\xff\xfeType".to_vec(), vec![b"\xff\xfeType".to_vec()])]
+        );
+    }
+
+    #[test]
+    fn a_name_whose_numbered_form_cannot_fit_keeps_its_original_name() {
+        let long = "x".repeat(256);
+        let spec = [
+            struct_entry(&long, &[]),
+            struct_entry_bytes(long.as_bytes(), &[]),
+        ];
+        let simplified = simplify(&spec);
+        assert_eq!(simplified.renames[1].to.as_slice(), long.as_bytes());
     }
 }

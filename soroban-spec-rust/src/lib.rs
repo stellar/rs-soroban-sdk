@@ -728,4 +728,75 @@ pub enum Error {
 "#,
         );
     }
+
+    /// Two user-defined error enums sharing the simple name `Error`
+    /// (`a::Error`, `b::Error`), taken end-to-end through name
+    /// simplification, the error-udt override, and code generation.
+    #[test]
+    fn test_two_error_enums_sharing_a_simple_name() {
+        use stellar_xdr::{
+            ScSpecEntry, ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeResult, ScSpecTypeUdt,
+            ScSpecUdtErrorEnumCaseV0, ScSpecUdtErrorEnumV0,
+        };
+
+        let error_enum = |name: &str| {
+            ScSpecEntry::UdtErrorEnumV0(ScSpecUdtErrorEnumV0 {
+                doc: "".try_into().unwrap(),
+                lib: "".try_into().unwrap(),
+                name: name.try_into().unwrap(),
+                cases: [ScSpecUdtErrorEnumCaseV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "Failed".try_into().unwrap(),
+                    value: 1,
+                }]
+                .try_into()
+                .unwrap(),
+            })
+        };
+        let func = |name: &str, error: ScSpecTypeDef| {
+            ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+                doc: "".try_into().unwrap(),
+                name: name.try_into().unwrap(),
+                inputs: [].try_into().unwrap(),
+                outputs: [ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
+                    ok_type: Box::new(ScSpecTypeDef::U32),
+                    error_type: Box::new(error),
+                }))]
+                .try_into()
+                .unwrap(),
+            })
+        };
+        let entries = [
+            error_enum("mycrate::a::Error"),
+            error_enum("mycrate::b::Error"),
+            func(
+                "use_a",
+                ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                    name: "mycrate::a::Error".try_into().unwrap(),
+                }),
+            ),
+            func(
+                "use_b",
+                ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                    name: "mycrate::b::Error".try_into().unwrap(),
+                }),
+            ),
+            func("use_builtin", ScSpecTypeDef::Error),
+        ];
+
+        let code = super::generate_without_file(&entries)
+            .unwrap()
+            .to_formatted_string()
+            .unwrap();
+
+        // The first enum claims the simple name; the second is numbered.
+        assert!(code.contains("pub enum Error {"), "{code}");
+        assert!(code.contains("pub enum Error2 {"), "{code}");
+        // References follow their type: `use_a` resolves to `Error`, `use_b`
+        // to `Error2`, and the built-in error resolves through the error-udt
+        // override to the enum that claimed `Error`.
+        assert!(code.contains("Result<u32, Error>"), "{code}");
+        assert!(code.contains("Result<u32, Error2>"), "{code}");
+        assert_eq!(code.matches("Result<u32, Error>").count(), 2, "{code}");
+    }
 }
