@@ -33240,14 +33240,22 @@ mod test {
         };
     }
     /// Extract the name from a non-function spec entry.
+    /// The simple name of the type or event the entry defines.
+    ///
+    /// A user-defined type is named in the spec by its fully qualified name
+    /// (`mycrate::mymod::MyType`); this test asserts which types survive shaking,
+    /// so it names each entry by the last segment.
     fn entry_name(entry: &ScSpecEntry) -> Option<std::string::String> {
+        let last_segment = |name: std::string::String| -> std::string::String {
+            name.rsplit("::").next().unwrap_or(&name).into()
+        };
         match entry {
             ScSpecEntry::FunctionV0(_) => None,
-            ScSpecEntry::UdtStructV0(s) => Some(s.name.to_utf8_string_lossy()),
-            ScSpecEntry::UdtUnionV0(u) => Some(u.name.to_utf8_string_lossy()),
-            ScSpecEntry::UdtEnumV0(e) => Some(e.name.to_utf8_string_lossy()),
-            ScSpecEntry::UdtErrorEnumV0(e) => Some(e.name.to_utf8_string_lossy()),
-            ScSpecEntry::EventV0(e) => Some(e.name.to_utf8_string_lossy()),
+            ScSpecEntry::UdtStructV0(s) => Some(last_segment(s.name.to_utf8_string_lossy())),
+            ScSpecEntry::UdtUnionV0(u) => Some(last_segment(u.name.to_utf8_string_lossy())),
+            ScSpecEntry::UdtEnumV0(e) => Some(last_segment(e.name.to_utf8_string_lossy())),
+            ScSpecEntry::UdtErrorEnumV0(e) => Some(last_segment(e.name.to_utf8_string_lossy())),
+            ScSpecEntry::EventV0(e) => Some(last_segment(e.name.to_utf8_string_lossy())),
         }
     }
 }
