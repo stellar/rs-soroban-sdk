@@ -2464,6 +2464,12 @@ impl ::core::cmp::PartialEq for EventA {
         self.f1 == other.f1 && self.f2 == other.f2
     }
 }
+impl EventA {
+    #[doc(hidden)]
+    pub const fn spec_type_name() -> &'static str {
+        "test_spec_lib::EventA"
+    }
+}
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_EVENT_EVENTA: [u8; EventA::__SPEC_XDR_VIEW.const_xdr_len()] =
     EventA::spec_xdr();
@@ -2472,7 +2478,7 @@ impl EventA {
         soroban_sdk::xdr::ScSpecEntryView::EventV0(soroban_sdk::xdr::ScSpecEventV0View {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"EventA")),
+            name: soroban_sdk::xdr::StringMView::new_str(EventA::spec_type_name()),
             prefix_topics: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSymbolView(
                 soroban_sdk::xdr::StringMView::new(b"event_a"),
             )]),
@@ -2583,6 +2589,12 @@ impl ::core::cmp::PartialEq for EventB {
         self.f3 == other.f3 && self.f1 == other.f1 && self.f2 == other.f2
     }
 }
+impl EventB {
+    #[doc(hidden)]
+    pub const fn spec_type_name() -> &'static str {
+        "test_spec_lib::EventB"
+    }
+}
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_EVENT_EVENTB: [u8; EventB::__SPEC_XDR_VIEW.const_xdr_len()] =
     EventB::spec_xdr();
@@ -2591,7 +2603,7 @@ impl EventB {
         soroban_sdk::xdr::ScSpecEntryView::EventV0(soroban_sdk::xdr::ScSpecEventV0View {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"EventB")),
+            name: soroban_sdk::xdr::StringMView::new_str(EventB::spec_type_name()),
             prefix_topics: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSymbolView(
                 soroban_sdk::xdr::StringMView::new(b"event_b"),
             )]),
@@ -2713,6 +2725,12 @@ impl ::core::cmp::PartialEq for EventC {
         self.f2 == other.f2 && self.f3 == other.f3 && self.f1 == other.f1
     }
 }
+impl EventC {
+    #[doc(hidden)]
+    pub const fn spec_type_name() -> &'static str {
+        "test_spec_lib::EventC"
+    }
+}
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_EVENT_EVENTC: [u8; EventC::__SPEC_XDR_VIEW.const_xdr_len()] =
     EventC::spec_xdr();
@@ -2721,7 +2739,7 @@ impl EventC {
         soroban_sdk::xdr::ScSpecEntryView::EventV0(soroban_sdk::xdr::ScSpecEventV0View {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"EventC")),
+            name: soroban_sdk::xdr::StringMView::new_str(EventC::spec_type_name()),
             prefix_topics: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSymbolView(
                 soroban_sdk::xdr::StringMView::new(b"event_c"),
             )]),
@@ -2826,6 +2844,12 @@ impl ::core::cmp::PartialEq for EventD {
         true
     }
 }
+impl EventD {
+    #[doc(hidden)]
+    pub const fn spec_type_name() -> &'static str {
+        "test_spec_lib::EventD"
+    }
+}
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_EVENT_EVENTD: [u8; EventD::__SPEC_XDR_VIEW.const_xdr_len()] =
     EventD::spec_xdr();
@@ -2834,7 +2858,7 @@ impl EventD {
         soroban_sdk::xdr::ScSpecEntryView::EventV0(soroban_sdk::xdr::ScSpecEventV0View {
             doc: soroban_sdk::xdr::StringMView::new(b""),
             lib: soroban_sdk::xdr::StringMView::new(b""),
-            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"EventD")),
+            name: soroban_sdk::xdr::StringMView::new_str(EventD::spec_type_name()),
             prefix_topics: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSymbolView(
                 soroban_sdk::xdr::StringMView::new(b"event_d"),
             )]),

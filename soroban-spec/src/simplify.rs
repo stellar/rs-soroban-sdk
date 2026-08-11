@@ -4,8 +4,8 @@ use stellar_xdr::{ScSpecEntry, ScSpecTypeDef, ScSpecUdtUnionCaseV0};
 /// bounds the names the numbering below may produce.
 const TYPE_NAME_LIMIT: usize = 256;
 
-/// The most bytes an event name can hold (an `ScSymbol`).
-const EVENT_NAME_LIMIT: usize = 32;
+/// The most bytes an event name can hold (`SC_SPEC_TYPE_NAME_LIMIT`).
+const EVENT_NAME_LIMIT: usize = 256;
 
 /// A spec with its user-defined type names reduced to simple names, along
 /// with how each type's name was resolved.
@@ -167,7 +167,7 @@ pub fn simplify(spec: &[ScSpecEntry]) -> Simplified {
                 e.name = resolve(&e.name).try_into().unwrap();
             }
             ScSpecEntry::EventV0(e) => {
-                e.name = stellar_xdr::ScSymbol(resolve(&e.name).try_into().unwrap());
+                e.name = resolve(&e.name).try_into().unwrap();
                 for p in e.params.iter_mut() {
                     rewrite_ty(&mut p.type_, &resolve);
                 }

@@ -12,8 +12,7 @@ use proc_macro2::Span;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use stellar_xdr::{
-    ScSpecEventDataFormat, ScSpecEventParamLocationV0, ScSpecEventParamV0, ScSpecEventV0, ScSymbol,
-    StringM,
+    ScSpecEventDataFormat, ScSpecEventParamLocationV0, ScSpecEventParamV0, ScSpecEventV0, StringM,
 };
 use syn::{ext::IdentExt as _, parse2, spanned::Spanned, Data, DeriveInput, Fields, LitStr, Path};
 
@@ -94,7 +93,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     let path = &args.crate_path;
 
     // Check event name length
-    const EVENT_NAME_LENGTH: u32 = 32;
+    const EVENT_NAME_LENGTH: u32 = 256;
     let event_name = input.ident.unraw().to_string();
     let event_name_len = event_name.len();
     let event_name: StringM<EVENT_NAME_LENGTH> = errors
@@ -183,7 +182,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         data_format: args.data_format.into(),
         doc: docs_from_attrs(&input.attrs),
         lib: args.lib.as_deref().unwrap_or_default().try_into().unwrap(),
-        name: ScSymbol(event_name),
+        name: event_name,
         prefix_topics: prefix_topics
             .iter()
             .map(|t| t.try_into().unwrap())
@@ -208,7 +207,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     let spec_view = {
         let doc = const_view_string(path, &spec.doc);
         let lib = const_view_string(path, &spec.lib);
-        let name = const_view_symbol(path, &spec.name);
+        let name = quote!(#path::xdr::StringMView::new_str(#ident::spec_type_name()));
         let prefix_topics = spec
             .prefix_topics
             .iter()
@@ -351,7 +350,20 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     };
 
     // Output.
+    // Unlike other user-defined types, an event struct can carry generics
+    // (e.g. a lifetime on borrowed fields), so the impl repeats them.
+    let spec_type_name_lit = input.ident.unraw().to_string();
+    let spec_type_name = quote! {
+        impl #gen_impl #ident #gen_types #gen_where {
+            #[doc(hidden)]
+            pub const fn spec_type_name() -> &'static str {
+                ::core::concat!(::core::module_path!(), "::", #spec_type_name_lit)
+            }
+        }
+    };
     let output = quote! {
+        #spec_type_name
+
         #spec_gen
 
         #spec_shaking_impl

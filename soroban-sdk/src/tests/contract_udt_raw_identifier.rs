@@ -343,7 +343,9 @@ fn test_spec_event() {
         ScSpecEntry::EventV0(ScSpecEventV0 {
             doc: "".try_into().unwrap(),
             lib: "".try_into().unwrap(),
-            name: ScSymbol("TestEvent".try_into().unwrap()),
+            name: "soroban_sdk::tests::contract_udt_raw_identifier::TestEvent"
+                .try_into()
+                .unwrap(),
             prefix_topics: [ScSymbol("test_event".try_into().unwrap())]
                 .try_into()
                 .unwrap(),
