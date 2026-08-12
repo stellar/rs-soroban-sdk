@@ -42,15 +42,29 @@
 //! ### Examples
 //!
 //! ```rust
-//! use soroban_sdk::{contract, contractimpl, vec, symbol_short, BytesN, Env, Symbol, Vec};
+//! use soroban_sdk::{contract, contractevent, contractimpl, symbol_short, Address, Env};
 //!
 //! #[contract]
 //! pub struct Contract;
 //!
+//! #[contractevent]
+//! pub struct Hello {
+//!     #[topic]
+//!     pub to: Address,
+//! }
+//!
 //! #[contractimpl]
 //! impl Contract {
-//!     pub fn hello(env: Env, to: Symbol) -> Vec<Symbol> {
-//!         vec![&env, symbol_short!("Hello"), to]
+//!     pub fn __constructor(env: Env, admin: Address) {
+//!         env.storage().instance().set(&symbol_short!("admin"), &admin);
+//!     }
+//!
+//!     pub fn hello(env: Env, to: Address) {
+//!         let admin: Address = env.storage().instance()
+//!             .get(&symbol_short!("admin"))
+//!             .unwrap();
+//!         admin.require_auth();
+//!         Hello { to }.publish(&env);
 //!     }
 //! }
 //!
@@ -59,13 +73,33 @@
 //! # }
 //! # #[cfg(feature = "testutils")]
 //! # fn main() {
+//!     use soroban_sdk::{
+//!         testutils::{Address as _, AuthorizedFunction, AuthorizedInvocation, Events as _},
+//!         Event as _, IntoVal,
+//!     };
+//!
 //!     let env = Env::default();
-//!     let contract_id = env.register(Contract, ());
+//!     let admin = Address::generate(&env);
+//!     let contract_id = env.register(Contract, (&admin,));
 //!     let client = ContractClient::new(&env, &contract_id);
 //!
-//!     let words = client.hello(&symbol_short!("Dev"));
+//!     let to = Address::generate(&env);
 //!
-//!     assert_eq!(words, vec![&env, symbol_short!("Hello"), symbol_short!("Dev"),]);
+//!     client.mock_all_auths().hello(&to);
+//!
+//!     assert_eq!(
+//!         env.auths(),
+//!         [
+//!             (admin, AuthorizedInvocation { function: AuthorizedFunction::Contract((contract_id.clone(), symbol_short!("hello"), (&to,).into_val(&env))), sub_invocations: [].into() }),
+//!         ],
+//!     );
+//!
+//!     assert_eq!(
+//!         env.events().all(),
+//!         [
+//!             Hello { to }.to_xdr(&env, &contract_id),
+//!         ],
+//!     );
 //! }
 //! # #[cfg(not(feature = "testutils"))]
 //! # fn main() { }
