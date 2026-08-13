@@ -31,7 +31,10 @@ impl Contract {
 
 #[cfg(test)]
 mod test {
-    use soroban_sdk::{Address, Env, testutils::proptest::arb};
+    use soroban_sdk::{
+        testutils::{proptest::arb, EnvTestConfig},
+        Address, Env, IntoVal,
+    };
 
     use crate::{Contract, ContractClient, Error};
 
@@ -61,15 +64,20 @@ mod test {
     }
 
     extern crate std;
-    
+
     proptest! {
         #[test]
         fn test_safe_add_2(x: u64, y: u64, a in arb::<Address>()) {
-            let e = Env::default();
+            // The snapshot of this test is a list of randomly generated values
+            // that has no review value, so don't capture one.
+            let e = Env::new_with_config(EnvTestConfig {
+                capture_snapshot_at_drop: false,
+            });
             let contract_id = e.register(Contract, ());
             let client = ContractClient::new(&e, &contract_id);
 
-            std::println!("a: {}", a.into_val(e));
+            let a: Address = a.into_val(&e);
+            std::println!("a: {a:?}");
 
             let z = client.try_safe_add(&x, &y);
             match z {
