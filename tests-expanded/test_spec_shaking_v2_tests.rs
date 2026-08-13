@@ -262,9 +262,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        if map.len() != 2usize {
-            return Err(soroban_sdk::xdr::Error::Invalid);
-        }
         map.validate()?;
         Ok(Self {
             a: {
@@ -273,10 +270,11 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                 )
                 .into();
-                let idx = map
-                    .binary_search_by_key(&key, |entry| entry.key.clone())
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                    Ok(idx) => map[idx].val.clone(),
+                    Err(_) => soroban_sdk::xdr::ScVal::Void,
+                };
+                let rv: soroban_sdk::Val = (&val)
                     .try_into_val(env)
                     .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                 rv.try_into_val(env)
@@ -289,10 +287,11 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                 )
                 .into();
-                let idx = map
-                    .binary_search_by_key(&key, |entry| entry.key.clone())
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                    Ok(idx) => map[idx].val.clone(),
+                    Err(_) => soroban_sdk::xdr::ScVal::Void,
+                };
+                let rv: soroban_sdk::Val = (&val)
                     .try_into_val(env)
                     .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                 rv.try_into_val(env)
@@ -1999,9 +1998,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        if map.len() != 1usize {
-            return Err(soroban_sdk::xdr::Error::Invalid);
-        }
         map.validate()?;
         Ok(Self {
             val: {
@@ -2011,10 +2007,11 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                 )
                 .into();
-                let idx = map
-                    .binary_search_by_key(&key, |entry| entry.key.clone())
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                    Ok(idx) => map[idx].val.clone(),
+                    Err(_) => soroban_sdk::xdr::ScVal::Void,
+                };
+                let rv: soroban_sdk::Val = (&val)
                     .try_into_val(env)
                     .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                 rv.try_into_val(env)
@@ -2361,9 +2358,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        if map.len() != 1usize {
-            return Err(soroban_sdk::xdr::Error::Invalid);
-        }
         map.validate()?;
         Ok(Self {
             data: {
@@ -2373,10 +2367,11 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                 )
                 .into();
-                let idx = map
-                    .binary_search_by_key(&key, |entry| entry.key.clone())
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                    Ok(idx) => map[idx].val.clone(),
+                    Err(_) => soroban_sdk::xdr::ScVal::Void,
+                };
+                let rv: soroban_sdk::Val = (&val)
                     .try_into_val(env)
                     .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                 rv.try_into_val(env)
@@ -3052,9 +3047,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        if map.len() != 1usize {
-            return Err(soroban_sdk::xdr::Error::Invalid);
-        }
         map.validate()?;
         Ok(Self {
             v: {
@@ -3063,10 +3055,11 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                 )
                 .into();
-                let idx = map
-                    .binary_search_by_key(&key, |entry| entry.key.clone())
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                    Ok(idx) => map[idx].val.clone(),
+                    Err(_) => soroban_sdk::xdr::ScVal::Void,
+                };
+                let rv: soroban_sdk::Val = (&val)
                     .try_into_val(env)
                     .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                 rv.try_into_val(env)
@@ -3415,9 +3408,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        if map.len() != 1usize {
-            return Err(soroban_sdk::xdr::Error::Invalid);
-        }
         map.validate()?;
         Ok(Self {
             data: {
@@ -3427,10 +3417,11 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                 )
                 .into();
-                let idx = map
-                    .binary_search_by_key(&key, |entry| entry.key.clone())
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                    Ok(idx) => map[idx].val.clone(),
+                    Err(_) => soroban_sdk::xdr::ScVal::Void,
+                };
+                let rv: soroban_sdk::Val = (&val)
                     .try_into_val(env)
                     .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                 rv.try_into_val(env)
@@ -3777,9 +3768,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        if map.len() != 1usize {
-            return Err(soroban_sdk::xdr::Error::Invalid);
-        }
         map.validate()?;
         Ok(Self {
             data: {
@@ -3789,10 +3777,11 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                 )
                 .into();
-                let idx = map
-                    .binary_search_by_key(&key, |entry| entry.key.clone())
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                    Ok(idx) => map[idx].val.clone(),
+                    Err(_) => soroban_sdk::xdr::ScVal::Void,
+                };
+                let rv: soroban_sdk::Val = (&val)
                     .try_into_val(env)
                     .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                 rv.try_into_val(env)
@@ -4660,9 +4649,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        if map.len() != 2usize {
-            return Err(soroban_sdk::xdr::Error::Invalid);
-        }
         map.validate()?;
         Ok(Self {
             x: {
@@ -4671,10 +4657,11 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                 )
                 .into();
-                let idx = map
-                    .binary_search_by_key(&key, |entry| entry.key.clone())
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                    Ok(idx) => map[idx].val.clone(),
+                    Err(_) => soroban_sdk::xdr::ScVal::Void,
+                };
+                let rv: soroban_sdk::Val = (&val)
                     .try_into_val(env)
                     .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                 rv.try_into_val(env)
@@ -4686,10 +4673,11 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                 )
                 .into();
-                let idx = map
-                    .binary_search_by_key(&key, |entry| entry.key.clone())
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                    Ok(idx) => map[idx].val.clone(),
+                    Err(_) => soroban_sdk::xdr::ScVal::Void,
+                };
+                let rv: soroban_sdk::Val = (&val)
                     .try_into_val(env)
                     .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                 rv.try_into_val(env)
@@ -5164,9 +5152,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        if map.len() != 1usize {
-            return Err(soroban_sdk::xdr::Error::Invalid);
-        }
         map.validate()?;
         Ok(Self {
             inner: {
@@ -5176,10 +5161,11 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                 )
                 .into();
-                let idx = map
-                    .binary_search_by_key(&key, |entry| entry.key.clone())
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                    Ok(idx) => map[idx].val.clone(),
+                    Err(_) => soroban_sdk::xdr::ScVal::Void,
+                };
+                let rv: soroban_sdk::Val = (&val)
                     .try_into_val(env)
                     .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                 rv.try_into_val(env)
@@ -5536,9 +5522,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        if map.len() != 1usize {
-            return Err(soroban_sdk::xdr::Error::Invalid);
-        }
         map.validate()?;
         Ok(Self {
             val: {
@@ -5548,10 +5531,11 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                 )
                 .into();
-                let idx = map
-                    .binary_search_by_key(&key, |entry| entry.key.clone())
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                    Ok(idx) => map[idx].val.clone(),
+                    Err(_) => soroban_sdk::xdr::ScVal::Void,
+                };
+                let rv: soroban_sdk::Val = (&val)
                     .try_into_val(env)
                     .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                 rv.try_into_val(env)
@@ -5998,9 +5982,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        if map.len() != 1usize {
-            return Err(soroban_sdk::xdr::Error::Invalid);
-        }
         map.validate()?;
         Ok(Self {
             inner: {
@@ -6010,10 +5991,11 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                 )
                 .into();
-                let idx = map
-                    .binary_search_by_key(&key, |entry| entry.key.clone())
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                    Ok(idx) => map[idx].val.clone(),
+                    Err(_) => soroban_sdk::xdr::ScVal::Void,
+                };
+                let rv: soroban_sdk::Val = (&val)
                     .try_into_val(env)
                     .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                 rv.try_into_val(env)
@@ -6368,9 +6350,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        if map.len() != 1usize {
-            return Err(soroban_sdk::xdr::Error::Invalid);
-        }
         map.validate()?;
         Ok(Self {
             val: {
@@ -6380,10 +6359,11 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                 )
                 .into();
-                let idx = map
-                    .binary_search_by_key(&key, |entry| entry.key.clone())
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                    Ok(idx) => map[idx].val.clone(),
+                    Err(_) => soroban_sdk::xdr::ScVal::Void,
+                };
+                let rv: soroban_sdk::Val = (&val)
                     .try_into_val(env)
                     .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                 rv.try_into_val(env)
@@ -7157,9 +7137,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        if map.len() != 1usize {
-            return Err(soroban_sdk::xdr::Error::Invalid);
-        }
         map.validate()?;
         Ok(Self {
             nested: {
@@ -7169,10 +7146,11 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                 )
                 .into();
-                let idx = map
-                    .binary_search_by_key(&key, |entry| entry.key.clone())
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                    Ok(idx) => map[idx].val.clone(),
+                    Err(_) => soroban_sdk::xdr::ScVal::Void,
+                };
+                let rv: soroban_sdk::Val = (&val)
                     .try_into_val(env)
                     .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                 rv.try_into_val(env)
@@ -7520,9 +7498,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        if map.len() != 1usize {
-            return Err(soroban_sdk::xdr::Error::Invalid);
-        }
         map.validate()?;
         Ok(Self {
             val: {
@@ -7532,10 +7507,11 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                 )
                 .into();
-                let idx = map
-                    .binary_search_by_key(&key, |entry| entry.key.clone())
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                    Ok(idx) => map[idx].val.clone(),
+                    Err(_) => soroban_sdk::xdr::ScVal::Void,
+                };
+                let rv: soroban_sdk::Val = (&val)
                     .try_into_val(env)
                     .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                 rv.try_into_val(env)
@@ -7970,9 +7946,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        if map.len() != 1usize {
-            return Err(soroban_sdk::xdr::Error::Invalid);
-        }
         map.validate()?;
         Ok(Self {
             val: {
@@ -7982,10 +7955,11 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                 )
                 .into();
-                let idx = map
-                    .binary_search_by_key(&key, |entry| entry.key.clone())
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                    Ok(idx) => map[idx].val.clone(),
+                    Err(_) => soroban_sdk::xdr::ScVal::Void,
+                };
+                let rv: soroban_sdk::Val = (&val)
                     .try_into_val(env)
                     .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                 rv.try_into_val(env)
@@ -8340,9 +8314,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        if map.len() != 1usize {
-            return Err(soroban_sdk::xdr::Error::Invalid);
-        }
         map.validate()?;
         Ok(Self {
             val: {
@@ -8352,10 +8323,11 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                 )
                 .into();
-                let idx = map
-                    .binary_search_by_key(&key, |entry| entry.key.clone())
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                    Ok(idx) => map[idx].val.clone(),
+                    Err(_) => soroban_sdk::xdr::ScVal::Void,
+                };
+                let rv: soroban_sdk::Val = (&val)
                     .try_into_val(env)
                     .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                 rv.try_into_val(env)
@@ -8712,9 +8684,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        if map.len() != 1usize {
-            return Err(soroban_sdk::xdr::Error::Invalid);
-        }
         map.validate()?;
         Ok(Self {
             val: {
@@ -8724,10 +8693,11 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                 )
                 .into();
-                let idx = map
-                    .binary_search_by_key(&key, |entry| entry.key.clone())
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                    Ok(idx) => map[idx].val.clone(),
+                    Err(_) => soroban_sdk::xdr::ScVal::Void,
+                };
+                let rv: soroban_sdk::Val = (&val)
                     .try_into_val(env)
                     .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                 rv.try_into_val(env)
@@ -9083,9 +9053,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        if map.len() != 1usize {
-            return Err(soroban_sdk::xdr::Error::Invalid);
-        }
         map.validate()?;
         Ok(Self {
             val: {
@@ -9095,10 +9062,11 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                 )
                 .into();
-                let idx = map
-                    .binary_search_by_key(&key, |entry| entry.key.clone())
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                    Ok(idx) => map[idx].val.clone(),
+                    Err(_) => soroban_sdk::xdr::ScVal::Void,
+                };
+                let rv: soroban_sdk::Val = (&val)
                     .try_into_val(env)
                     .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                 rv.try_into_val(env)
@@ -9480,9 +9448,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        if map.len() != 3usize {
-            return Err(soroban_sdk::xdr::Error::Invalid);
-        }
         map.validate()?;
         Ok(Self {
             inner: {
@@ -9492,10 +9457,11 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                 )
                 .into();
-                let idx = map
-                    .binary_search_by_key(&key, |entry| entry.key.clone())
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                    Ok(idx) => map[idx].val.clone(),
+                    Err(_) => soroban_sdk::xdr::ScVal::Void,
+                };
+                let rv: soroban_sdk::Val = (&val)
                     .try_into_val(env)
                     .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                 rv.try_into_val(env)
@@ -9508,10 +9474,11 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                 )
                 .into();
-                let idx = map
-                    .binary_search_by_key(&key, |entry| entry.key.clone())
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                    Ok(idx) => map[idx].val.clone(),
+                    Err(_) => soroban_sdk::xdr::ScVal::Void,
+                };
+                let rv: soroban_sdk::Val = (&val)
                     .try_into_val(env)
                     .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                 rv.try_into_val(env)
@@ -9524,10 +9491,11 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                 )
                 .into();
-                let idx = map
-                    .binary_search_by_key(&key, |entry| entry.key.clone())
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                    Ok(idx) => map[idx].val.clone(),
+                    Err(_) => soroban_sdk::xdr::ScVal::Void,
+                };
+                let rv: soroban_sdk::Val = (&val)
                     .try_into_val(env)
                     .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                 rv.try_into_val(env)
@@ -9950,9 +9918,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        if map.len() != 1usize {
-            return Err(soroban_sdk::xdr::Error::Invalid);
-        }
         map.validate()?;
         Ok(Self {
             val: {
@@ -9962,10 +9927,11 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                 )
                 .into();
-                let idx = map
-                    .binary_search_by_key(&key, |entry| entry.key.clone())
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                    Ok(idx) => map[idx].val.clone(),
+                    Err(_) => soroban_sdk::xdr::ScVal::Void,
+                };
+                let rv: soroban_sdk::Val = (&val)
                     .try_into_val(env)
                     .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                 rv.try_into_val(env)
@@ -10466,9 +10432,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        if map.len() != 1usize {
-            return Err(soroban_sdk::xdr::Error::Invalid);
-        }
         map.validate()?;
         Ok(Self {
             val: {
@@ -10478,10 +10441,11 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                 )
                 .into();
-                let idx = map
-                    .binary_search_by_key(&key, |entry| entry.key.clone())
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                    Ok(idx) => map[idx].val.clone(),
+                    Err(_) => soroban_sdk::xdr::ScVal::Void,
+                };
+                let rv: soroban_sdk::Val = (&val)
                     .try_into_val(env)
                     .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                 rv.try_into_val(env)
@@ -11379,9 +11343,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        if map.len() != 1usize {
-            return Err(soroban_sdk::xdr::Error::Invalid);
-        }
         map.validate()?;
         Ok(Self {
             val: {
@@ -11391,10 +11352,11 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                 )
                 .into();
-                let idx = map
-                    .binary_search_by_key(&key, |entry| entry.key.clone())
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                    Ok(idx) => map[idx].val.clone(),
+                    Err(_) => soroban_sdk::xdr::ScVal::Void,
+                };
+                let rv: soroban_sdk::Val = (&val)
                     .try_into_val(env)
                     .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                 rv.try_into_val(env)
@@ -11747,9 +11709,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        if map.len() != 1usize {
-            return Err(soroban_sdk::xdr::Error::Invalid);
-        }
         map.validate()?;
         Ok(Self {
             val: {
@@ -11759,10 +11718,11 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                 )
                 .into();
-                let idx = map
-                    .binary_search_by_key(&key, |entry| entry.key.clone())
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                    Ok(idx) => map[idx].val.clone(),
+                    Err(_) => soroban_sdk::xdr::ScVal::Void,
+                };
+                let rv: soroban_sdk::Val = (&val)
                     .try_into_val(env)
                     .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                 rv.try_into_val(env)
@@ -12877,9 +12837,6 @@ mod wasm_imported {
             use soroban_sdk::xdr::Validate;
             use soroban_sdk::TryIntoVal;
             let map = val;
-            if map.len() != 3usize {
-                return Err(soroban_sdk::xdr::Error::Invalid);
-            }
             map.validate()?;
             Ok(Self {
                 args: {
@@ -12889,10 +12846,11 @@ mod wasm_imported {
                             .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                     )
                     .into();
-                    let idx = map
-                        .binary_search_by_key(&key, |entry| entry.key.clone())
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                    let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                    let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                        Ok(idx) => map[idx].val.clone(),
+                        Err(_) => soroban_sdk::xdr::ScVal::Void,
+                    };
+                    let rv: soroban_sdk::Val = (&val)
                         .try_into_val(env)
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                     rv.try_into_val(env)
@@ -12905,10 +12863,11 @@ mod wasm_imported {
                             .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                     )
                     .into();
-                    let idx = map
-                        .binary_search_by_key(&key, |entry| entry.key.clone())
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                    let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                    let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                        Ok(idx) => map[idx].val.clone(),
+                        Err(_) => soroban_sdk::xdr::ScVal::Void,
+                    };
+                    let rv: soroban_sdk::Val = (&val)
                         .try_into_val(env)
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                     rv.try_into_val(env)
@@ -12921,10 +12880,11 @@ mod wasm_imported {
                             .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                     )
                     .into();
-                    let idx = map
-                        .binary_search_by_key(&key, |entry| entry.key.clone())
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                    let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                    let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                        Ok(idx) => map[idx].val.clone(),
+                        Err(_) => soroban_sdk::xdr::ScVal::Void,
+                    };
+                    let rv: soroban_sdk::Val = (&val)
                         .try_into_val(env)
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                     rv.try_into_val(env)
@@ -13406,9 +13366,6 @@ mod wasm_imported {
             use soroban_sdk::xdr::Validate;
             use soroban_sdk::TryIntoVal;
             let map = val;
-            if map.len() != 2usize {
-                return Err(soroban_sdk::xdr::Error::Invalid);
-            }
             map.validate()?;
             Ok(Self {
                 context: {
@@ -13418,10 +13375,11 @@ mod wasm_imported {
                             .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                     )
                     .into();
-                    let idx = map
-                        .binary_search_by_key(&key, |entry| entry.key.clone())
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                    let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                    let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                        Ok(idx) => map[idx].val.clone(),
+                        Err(_) => soroban_sdk::xdr::ScVal::Void,
+                    };
+                    let rv: soroban_sdk::Val = (&val)
                         .try_into_val(env)
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                     rv.try_into_val(env)
@@ -13434,10 +13392,11 @@ mod wasm_imported {
                             .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                     )
                     .into();
-                    let idx = map
-                        .binary_search_by_key(&key, |entry| entry.key.clone())
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                    let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                    let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                        Ok(idx) => map[idx].val.clone(),
+                        Err(_) => soroban_sdk::xdr::ScVal::Void,
+                    };
+                    let rv: soroban_sdk::Val = (&val)
                         .try_into_val(env)
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                     rv.try_into_val(env)
@@ -13881,9 +13840,6 @@ mod wasm_imported {
             use soroban_sdk::xdr::Validate;
             use soroban_sdk::TryIntoVal;
             let map = val;
-            if map.len() != 2usize {
-                return Err(soroban_sdk::xdr::Error::Invalid);
-            }
             map.validate()?;
             Ok(Self {
                 executable: {
@@ -13893,10 +13849,11 @@ mod wasm_imported {
                             .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                     )
                     .into();
-                    let idx = map
-                        .binary_search_by_key(&key, |entry| entry.key.clone())
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                    let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                    let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                        Ok(idx) => map[idx].val.clone(),
+                        Err(_) => soroban_sdk::xdr::ScVal::Void,
+                    };
+                    let rv: soroban_sdk::Val = (&val)
                         .try_into_val(env)
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                     rv.try_into_val(env)
@@ -13909,10 +13866,11 @@ mod wasm_imported {
                             .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                     )
                     .into();
-                    let idx = map
-                        .binary_search_by_key(&key, |entry| entry.key.clone())
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                    let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                    let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                        Ok(idx) => map[idx].val.clone(),
+                        Err(_) => soroban_sdk::xdr::ScVal::Void,
+                    };
+                    let rv: soroban_sdk::Val = (&val)
                         .try_into_val(env)
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                     rv.try_into_val(env)
@@ -14391,9 +14349,6 @@ mod wasm_imported {
             use soroban_sdk::xdr::Validate;
             use soroban_sdk::TryIntoVal;
             let map = val;
-            if map.len() != 3usize {
-                return Err(soroban_sdk::xdr::Error::Invalid);
-            }
             map.validate()?;
             Ok(Self {
                 constructor_args: {
@@ -14403,10 +14358,11 @@ mod wasm_imported {
                             .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                     )
                     .into();
-                    let idx = map
-                        .binary_search_by_key(&key, |entry| entry.key.clone())
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                    let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                    let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                        Ok(idx) => map[idx].val.clone(),
+                        Err(_) => soroban_sdk::xdr::ScVal::Void,
+                    };
+                    let rv: soroban_sdk::Val = (&val)
                         .try_into_val(env)
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                     rv.try_into_val(env)
@@ -14419,10 +14375,11 @@ mod wasm_imported {
                             .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                     )
                     .into();
-                    let idx = map
-                        .binary_search_by_key(&key, |entry| entry.key.clone())
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                    let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                    let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                        Ok(idx) => map[idx].val.clone(),
+                        Err(_) => soroban_sdk::xdr::ScVal::Void,
+                    };
+                    let rv: soroban_sdk::Val = (&val)
                         .try_into_val(env)
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                     rv.try_into_val(env)
@@ -14435,10 +14392,11 @@ mod wasm_imported {
                             .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                     )
                     .into();
-                    let idx = map
-                        .binary_search_by_key(&key, |entry| entry.key.clone())
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                    let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                    let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                        Ok(idx) => map[idx].val.clone(),
+                        Err(_) => soroban_sdk::xdr::ScVal::Void,
+                    };
+                    let rv: soroban_sdk::Val = (&val)
                         .try_into_val(env)
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                     rv.try_into_val(env)
@@ -14938,9 +14896,6 @@ mod wasm_imported {
             use soroban_sdk::xdr::Validate;
             use soroban_sdk::TryIntoVal;
             let map = val;
-            if map.len() != 2usize {
-                return Err(soroban_sdk::xdr::Error::Invalid);
-            }
             map.validate()?;
             Ok(Self {
                 f1: {
@@ -14949,10 +14904,11 @@ mod wasm_imported {
                             .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                     )
                     .into();
-                    let idx = map
-                        .binary_search_by_key(&key, |entry| entry.key.clone())
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                    let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                    let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                        Ok(idx) => map[idx].val.clone(),
+                        Err(_) => soroban_sdk::xdr::ScVal::Void,
+                    };
+                    let rv: soroban_sdk::Val = (&val)
                         .try_into_val(env)
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                     rv.try_into_val(env)
@@ -14964,10 +14920,11 @@ mod wasm_imported {
                             .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                     )
                     .into();
-                    let idx = map
-                        .binary_search_by_key(&key, |entry| entry.key.clone())
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                    let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                    let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                        Ok(idx) => map[idx].val.clone(),
+                        Err(_) => soroban_sdk::xdr::ScVal::Void,
+                    };
+                    let rv: soroban_sdk::Val = (&val)
                         .try_into_val(env)
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                     rv.try_into_val(env)
@@ -15378,9 +15335,6 @@ mod wasm_imported {
             use soroban_sdk::xdr::Validate;
             use soroban_sdk::TryIntoVal;
             let map = val;
-            if map.len() != 2usize {
-                return Err(soroban_sdk::xdr::Error::Invalid);
-            }
             map.validate()?;
             Ok(Self {
                 f1: {
@@ -15389,10 +15343,11 @@ mod wasm_imported {
                             .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                     )
                     .into();
-                    let idx = map
-                        .binary_search_by_key(&key, |entry| entry.key.clone())
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                    let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                    let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                        Ok(idx) => map[idx].val.clone(),
+                        Err(_) => soroban_sdk::xdr::ScVal::Void,
+                    };
+                    let rv: soroban_sdk::Val = (&val)
                         .try_into_val(env)
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                     rv.try_into_val(env)
@@ -15404,10 +15359,11 @@ mod wasm_imported {
                             .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                     )
                     .into();
-                    let idx = map
-                        .binary_search_by_key(&key, |entry| entry.key.clone())
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                    let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                    let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                        Ok(idx) => map[idx].val.clone(),
+                        Err(_) => soroban_sdk::xdr::ScVal::Void,
+                    };
+                    let rv: soroban_sdk::Val = (&val)
                         .try_into_val(env)
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                     rv.try_into_val(env)
@@ -15818,9 +15774,6 @@ mod wasm_imported {
             use soroban_sdk::xdr::Validate;
             use soroban_sdk::TryIntoVal;
             let map = val;
-            if map.len() != 2usize {
-                return Err(soroban_sdk::xdr::Error::Invalid);
-            }
             map.validate()?;
             Ok(Self {
                 f1: {
@@ -15829,10 +15782,11 @@ mod wasm_imported {
                             .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                     )
                     .into();
-                    let idx = map
-                        .binary_search_by_key(&key, |entry| entry.key.clone())
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                    let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                    let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                        Ok(idx) => map[idx].val.clone(),
+                        Err(_) => soroban_sdk::xdr::ScVal::Void,
+                    };
+                    let rv: soroban_sdk::Val = (&val)
                         .try_into_val(env)
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                     rv.try_into_val(env)
@@ -15844,10 +15798,11 @@ mod wasm_imported {
                             .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                     )
                     .into();
-                    let idx = map
-                        .binary_search_by_key(&key, |entry| entry.key.clone())
-                        .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                    let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                    let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                        Ok(idx) => map[idx].val.clone(),
+                        Err(_) => soroban_sdk::xdr::ScVal::Void,
+                    };
+                    let rv: soroban_sdk::Val = (&val)
                         .try_into_val(env)
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                     rv.try_into_val(env)
@@ -23789,9 +23744,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Unus
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        if map.len() != 1usize {
-            return Err(soroban_sdk::xdr::Error::Invalid);
-        }
         map.validate()?;
         Ok(Self {
             x: {
@@ -23800,10 +23752,11 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Unus
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                 )
                 .into();
-                let idx = map
-                    .binary_search_by_key(&key, |entry| entry.key.clone())
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                    Ok(idx) => map[idx].val.clone(),
+                    Err(_) => soroban_sdk::xdr::ScVal::Void,
+                };
+                let rv: soroban_sdk::Val = (&val)
                     .try_into_val(env)
                     .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                 rv.try_into_val(env)
@@ -25198,9 +25151,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap>
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        if map.len() != 1usize {
-            return Err(soroban_sdk::xdr::Error::Invalid);
-        }
         map.validate()?;
         Ok(Self {
             x: {
@@ -25209,10 +25159,11 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap>
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                 )
                 .into();
-                let idx = map
-                    .binary_search_by_key(&key, |entry| entry.key.clone())
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                    Ok(idx) => map[idx].val.clone(),
+                    Err(_) => soroban_sdk::xdr::ScVal::Void,
+                };
+                let rv: soroban_sdk::Val = (&val)
                     .try_into_val(env)
                     .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                 rv.try_into_val(env)
@@ -25572,9 +25523,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap>
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        if map.len() != 1usize {
-            return Err(soroban_sdk::xdr::Error::Invalid);
-        }
         map.validate()?;
         Ok(Self {
             x: {
@@ -25583,10 +25531,11 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap>
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                 )
                 .into();
-                let idx = map
-                    .binary_search_by_key(&key, |entry| entry.key.clone())
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                    Ok(idx) => map[idx].val.clone(),
+                    Err(_) => soroban_sdk::xdr::ScVal::Void,
+                };
+                let rv: soroban_sdk::Val = (&val)
                     .try_into_val(env)
                     .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                 rv.try_into_val(env)
@@ -25938,9 +25887,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Unus
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        if map.len() != 1usize {
-            return Err(soroban_sdk::xdr::Error::Invalid);
-        }
         map.validate()?;
         Ok(Self {
             x: {
@@ -25949,10 +25895,11 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Unus
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                 )
                 .into();
-                let idx = map
-                    .binary_search_by_key(&key, |entry| entry.key.clone())
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                    Ok(idx) => map[idx].val.clone(),
+                    Err(_) => soroban_sdk::xdr::ScVal::Void,
+                };
+                let rv: soroban_sdk::Val = (&val)
                     .try_into_val(env)
                     .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                 rv.try_into_val(env)

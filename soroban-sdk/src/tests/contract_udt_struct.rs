@@ -4,9 +4,16 @@ use soroban_sdk::{
     TryFromVal, Val,
 };
 use stellar_xdr::{
-    Limits, ReadXdr, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef,
-    ScSpecTypeTuple, ScSpecTypeUdt,
+    Limits, ReadXdr, ScMap, ScMapEntry, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0,
+    ScSpecTypeDef, ScSpecTypeTuple, ScSpecTypeUdt, ScSymbol, ScVal,
 };
+
+fn scmap_entry(key: &str, val: i32) -> ScMapEntry {
+    ScMapEntry {
+        key: ScVal::Symbol(ScSymbol(key.try_into().unwrap())),
+        val: ScVal::I32(val),
+    }
+}
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 #[contracttype]
@@ -123,6 +130,23 @@ fn test_extra_fields_ignored_on_decode() {
     ]
     .to_val();
     let udt = Udt::try_from_val(&env, &map);
+    assert_eq!(udt, Ok(Udt { a: 5, b: 7 }));
+}
+
+#[test]
+fn test_extra_fields_ignored_on_decode_scval() {
+    let env = Env::default();
+
+    // Conversion from an ScVal behaves the same as conversion from a Val.
+    let scval = ScVal::Map(Some(
+        ScMap::sorted_from(vec![
+            scmap_entry("a", 5),
+            scmap_entry("b", 7),
+            scmap_entry("c", 9),
+        ])
+        .unwrap(),
+    ));
+    let udt = Udt::try_from_val(&env, &scval);
     assert_eq!(udt, Ok(Udt { a: 5, b: 7 }));
 }
 

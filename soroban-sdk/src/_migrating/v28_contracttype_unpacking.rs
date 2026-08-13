@@ -25,8 +25,10 @@
 //! Packing (writing to storage) is unchanged. Every field of the struct is written to the map,
 //! including `Option` fields that are `None`, which are written as void.
 //!
-//! The change applies to structs with named fields. Tuple structs and enums are represented as
-//! vecs, not maps, and are unaffected, as are [`contractevent`] and [`contracterror`] types.
+//! The change applies to structs with named fields, when unpacking from a [`Val`], and when
+//! unpacking from the [`ScVal`] and [`ScMap`] XDR types available under the `testutils` feature.
+//! Tuple structs and enums are represented as vecs, not maps, and are unaffected, as are
+//! [`contractevent`] and [`contracterror`] types.
 //!
 //! ## Changed Behaviour
 //!
@@ -122,3 +124,6 @@
 //! [`contracttype`]: crate::contracttype
 //! [`contractevent`]: crate::contractevent
 //! [`contracterror`]: crate::contracterror
+//! [`Val`]: crate::Val
+//! [`ScVal`]: crate::xdr::ScVal
+//! [`ScMap`]: crate::xdr::ScMap

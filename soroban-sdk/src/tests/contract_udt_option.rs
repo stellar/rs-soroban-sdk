@@ -2,6 +2,7 @@ use crate as soroban_sdk;
 use soroban_sdk::{
     contract, contractimpl, contracttype, map, symbol_short, Env, Map, Symbol, TryFromVal, Val,
 };
+use stellar_xdr::{ScMap, ScMapEntry, ScSymbol, ScVal};
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 #[contracttype]
@@ -40,6 +41,22 @@ fn test_missing_option_field_decodes_as_none() {
     // an older version of the contract that did not have the field.
     let map = map![&env, (symbol_short!("a"), 5)].to_val();
     let udt = Udt::try_from_val(&env, &map);
+    assert_eq!(udt, Ok(Udt { a: 5, b: None }));
+}
+
+#[test]
+fn test_missing_option_field_decodes_as_none_scval() {
+    let env = Env::default();
+
+    // Conversion from an ScVal behaves the same as conversion from a Val.
+    let scval = ScVal::Map(Some(
+        ScMap::sorted_from(vec![ScMapEntry {
+            key: ScVal::Symbol(ScSymbol("a".try_into().unwrap())),
+            val: ScVal::I32(5),
+        }])
+        .unwrap(),
+    ));
+    let udt = Udt::try_from_val(&env, &scval);
     assert_eq!(udt, Ok(Udt { a: 5, b: None }));
 }
 

@@ -52,8 +52,13 @@ pub fn derive_type_struct(
             let try_from_xdr = quote! {
                 #field_ident: {
                     let key: #path::xdr::ScVal = #path::xdr::ScSymbol(#field_name.try_into().map_err(|_| #path::xdr::Error::Invalid)?).into();
-                    let idx = map.binary_search_by_key(&key, |entry| entry.key.clone()).map_err(|_| #path::xdr::Error::Invalid)?;
-                    let rv: #path::Val = (&map[idx].val.clone()).try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?;
+                    // Fields absent from the map are void, so that they convert
+                    // to None for Option fields.
+                    let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                        Ok(idx) => map[idx].val.clone(),
+                        Err(_) => #path::xdr::ScVal::Void,
+                    };
+                    let rv: #path::Val = (&val).try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?;
                     rv.try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?
                 }
             };
@@ -164,10 +169,8 @@ pub fn derive_type_struct(
                 fn try_from_val(env: &#path::Env, val: &#path::xdr::ScMap) -> Result<Self, #path::xdr::Error> {
                     use #path::xdr::Validate;
                     use #path::TryIntoVal;
+                    // Map entries that are not fields of the struct are ignored.
                     let map = val;
-                    if map.len() != #field_count_usize {
-                        return Err(#path::xdr::Error::Invalid);
-                    }
                     map.validate()?;
                     Ok(Self{
                         #(#try_from_xdrs,)*
