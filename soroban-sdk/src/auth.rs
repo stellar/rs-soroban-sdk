@@ -1,8 +1,8 @@
 //! Auth contains types for building custom account contracts.
 
 use crate::{
-    contractimpl_trait_macro, contracttype, crypto::Hash, Address, BytesN, Env, Error, Symbol, Val,
-    Vec,
+    contractimpl_trait_macro, contracttype, crypto::Hash, Address, BytesN, Env, Error, String,
+    Symbol, Val, Vec,
 };
 
 /// Context of a single authorized call performed by an address.
@@ -60,6 +60,17 @@ pub struct CreateContractWithConstructorHostFnContext {
 #[contracttype(crate_path = "crate")]
 pub enum ContractExecutable {
     Wasm(BytesN<32>),
+    /// Executable read from an entry owned by an external contract.
+    ExternalRef(ContractExecutableRef),
+}
+
+/// Reference to an executable reference entry owned by `owner` whose storage
+/// key is an `ExecutableTag` with the given `tag` value.
+#[derive(Clone, Debug)]
+#[contracttype(crate_path = "crate")]
+pub struct ContractExecutableRef {
+    pub owner: Address,
+    pub tag: String,
 }
 
 /// A node in the tree of authorizations performed on behalf of the current

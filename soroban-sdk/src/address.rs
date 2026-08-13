@@ -317,11 +317,11 @@ impl Address {
 
     /// Returns the executable type of this address, if any.
     ///
-    /// Returns None when the contract or account does not exist.   
+    /// Returns None when the contract or account does not exist.
     ///
-    /// For Wasm contracts, this also returns the hash of the contract code.
-    /// Otherwise, this just returns which kind of 'built-in' executable this is
-    /// (StellarAsset or Account).
+    /// For Wasm contracts, this also returns the hash of the contract code,
+    /// resolving any executable reference if needed. Otherwise, this just returns
+    /// which kind of 'built-in' executable this is (StellarAsset or Account).
     pub fn executable(&self) -> Option<Executable> {
         let executable_val: Val =
             Env::get_address_executable(&self.env, self.obj).unwrap_infallible();

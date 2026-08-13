@@ -108,6 +108,12 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
                     "MuxedAddress" => Ok(ScSpecTypeDef::MuxedAddress),
                     "Timepoint" => Ok(ScSpecTypeDef::Timepoint),
                     "Duration" => Ok(ScSpecTypeDef::Duration),
+                    // ExecutableTag has no spec type and must be created with the `create_executable_tag`
+                    // host function for it to be used as a contract reference entry key.
+                    "ExecutableTag" => Err(Error::new(
+                        ident.span(),
+                        "ExecutableTag has no contract spec type; use String and construct it with ExecutableTag::new instead",
+                    )),
                     // Check if types that require generics are being used without any path arguments
                     "Result" | "Option" | "Vec" | "Map" | "BytesN" | "Hash" => Err(Error::new(
                         ident.span(),
