@@ -583,8 +583,8 @@ use crate::{
     testutils::{
         budget::Budget, cost_estimate::NetworkInvocationResourceLimits, default_ledger_info,
         Address as _, AuthSnapshot, AuthorizedInvocation, ContractFunctionSet, EventsSnapshot,
-        Generators, Ledger as _, MockAuth, MockAuthContract, Register, Snapshot,
-        SnapshotSourceInput, StellarAssetContract, StellarAssetIssuer,
+        Generators, InternalContractFunctionSet, Ledger as _, MockAuth, MockAuthContract, Register,
+        Snapshot, SnapshotSourceInput, StellarAssetContract, StellarAssetIssuer,
     },
     Bytes, BytesN, ConstructorArgs,
 };
@@ -636,29 +636,16 @@ impl internal::storage::SnapshotSource for FilteringSnapshotSource {
 }
 
 #[cfg(any(test, feature = "testutils"))]
-struct InternalContractFunctionSet<T: ContractFunctionSet>(pub(crate) T);
-
-#[cfg(any(test, feature = "testutils"))]
-impl<T: ContractFunctionSet> internal::ContractFunctionSet for InternalContractFunctionSet<T> {
-    fn call(&self, func: &Symbol, env_impl: &internal::EnvImpl, args: &[Val]) -> Option<Val> {
-        let env = Env {
-            env_impl: env_impl.clone(),
-            test_state: Default::default(),
-        };
-        self.0.call(
-            crate::Symbol::try_from_val(&env, func)
-                .unwrap_infallible()
-                .to_string()
-                .as_str(),
-            env,
-            args,
-        )
-    }
-}
-
-#[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
+    /// Create an [Env] for the given host, with default test state.
+    pub(crate) fn from_env_impl(env_impl: internal::EnvImpl) -> Env {
+        Env {
+            env_impl,
+            test_state: Default::default(),
+        }
+    }
+
     #[doc(hidden)]
     pub fn in_contract(&self) -> bool {
         self.env_impl.has_frame().unwrap()
@@ -1012,8 +999,7 @@ impl Env {
     ///
     /// #[contractimpl]
     /// impl Contract {
-    ///     pub fn hello(env: Env) {
-    ///     }
+    ///     pub fn hello(env: Env) { /* ... */ }
     /// }
     ///
     /// #[test]
@@ -1029,7 +1015,7 @@ impl Env {
         C: ContractFunctionSet + 'static,
     {
         let wasm_hash = BytesN::from_array(self, &self.with_generator(|mut g| g.wasm_hash()));
-        self.upload_at(&wasm_hash, contract)
+        self.upload_at(wasm_hash, contract)
     }
 
     /// Upload a contract that is defined in the current crate to the [Env] for
@@ -1041,7 +1027,7 @@ impl Env {
     ///
     /// Uploading to a Wasm hash that already has a contract, native or Wasm,
     /// uploaded to it replaces it for the purpose of contract calls. Use
-    /// re-uploading with caution as it does not exist in the real (on-chain)
+    /// re-uploading for testing only. It does not exist in the real (on-chain)
     /// environment, where Wasm is immutable. Any ledger entry that already
     /// exists for the Wasm hash is left untouched, including a real Wasm's
     /// entry that a snapshot was loaded with.
@@ -1051,15 +1037,14 @@ impl Env {
     ///
     /// ### Examples
     /// ```
-    /// use soroban_sdk::{contract, contractimpl, BytesN, Env};
+    /// use soroban_sdk::{contract, contractimpl, Env};
     ///
     /// #[contract]
     /// pub struct Contract;
     ///
     /// #[contractimpl]
     /// impl Contract {
-    ///     pub fn hello(env: Env) {
-    ///     }
+    ///     pub fn hello(env: Env) { /* ... */ }
     /// }
     ///
     /// #[test]
@@ -1067,21 +1052,21 @@ impl Env {
     /// # }
     /// # fn main() {
     ///     let env = Env::default();
-    ///     let wasm_hash = BytesN::from_array(&env, &[1u8; 32]);
-    ///     env.upload_at(&wasm_hash, Contract);
+    ///     env.upload_at([1u8; 32], Contract);
     /// }
     /// ```
-    pub fn upload_at<C>(&self, wasm_hash: &BytesN<32>, contract: C) -> BytesN<32>
+    pub fn upload_at<C>(&self, wasm_hash: impl IntoVal<Env, BytesN<32>>, contract: C) -> BytesN<32>
     where
         C: ContractFunctionSet + 'static,
     {
+        let wasm_hash = wasm_hash.into_val(self);
         self.env_impl
             .register_native_contract_as_wasm(
                 Rc::new(InternalContractFunctionSet(contract)),
                 wasm_hash.to_object(),
             )
             .unwrap();
-        wasm_hash.clone()
+        wasm_hash
     }
 
     /// Register a contract with the [Env] for testing.

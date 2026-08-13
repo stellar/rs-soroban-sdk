@@ -100,8 +100,6 @@ fn test_get_existing_contract_address_executable_wasm() {
 fn test_get_existing_contract_address_executable_native() {
     let env = Env::default();
 
-    // Native contracts are registered under a Wasm hash that the Env generates
-    // for them, so the hash the executable points at is unspecified.
     let native_contract_address = env.register(TestContract, ());
     let native_contract_executable = native_contract_address.executable();
     assert!(matches!(

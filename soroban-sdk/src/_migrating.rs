@@ -15,6 +15,23 @@
 //!    [`contracterror`], and [`contractevent`] (it is now a compile error), and build contracts
 //!    with `stellar contract build` from `stellar-cli` v25.2.0 or newer, which is now required.
 //!
+//! 2. Each contract registered natively with [`Env::register`] or [`Env::register_at`] gets its own
+//!    contract code entry, instead of all native contracts sharing a single empty Wasm entry.
+//!    The change comes from the host (`soroban-env-host`), which now uploads a distinct code entry
+//!    per native contract so that native contracts behave like Wasm contracts.
+//!
+//!    Tests that rely on native contracts sharing a code entry, such as tests asserting that
+//!    extending the code TTL of one contract extends it for another, need updating. To test
+//!    contract deployments where a single contract code entry is shared by multiple contracts,
+//!    upload the contract once with the new [`Env::upload`] and deploy it multiple times with
+//!    [`DeployerWithAddress::deploy_v2`].
+//!
+//!    The Wasm hash a native contract is registered under is no longer the hash of empty bytes, and
+//!    test snapshot JSON files that contain natively registered contracts will change when
+//!    upgrading.
+//!
+//! [`Env::upload`]: crate::Env::upload
+//!
 //! # Migrating from v26 to v27
 //!
 //! 1. [`bytes!` and `bytesn!` no longer accept base10 (decimal) integer literals][v27_bytes_literals].

@@ -283,6 +283,32 @@ pub trait ContractFunctionSet {
     fn call(&self, func: &str, env: Env, args: &[Val]) -> Option<Val>;
 }
 
+/// Adapts a [`ContractFunctionSet`] into the function set the host dispatches
+/// native contract calls to.
+pub(crate) struct InternalContractFunctionSet<T: ContractFunctionSet>(pub(crate) T);
+
+impl<T: ContractFunctionSet> crate::env::internal::ContractFunctionSet
+    for InternalContractFunctionSet<T>
+{
+    fn call(
+        &self,
+        func: &crate::env::internal::Symbol,
+        env_impl: &crate::env::internal::EnvImpl,
+        args: &[Val],
+    ) -> Option<Val> {
+        use crate::unwrap::UnwrapInfallible;
+        let env = Env::from_env_impl(env_impl.clone());
+        self.0.call(
+            crate::Symbol::try_from_val(&env, func)
+                .unwrap_infallible()
+                .to_string()
+                .as_str(),
+            env,
+            args,
+        )
+    }
+}
+
 #[doc(inline)]
 pub use crate::env::internal::LedgerInfo;
 
