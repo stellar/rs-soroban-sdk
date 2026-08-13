@@ -40,3 +40,22 @@ fn test_missing_option_field_decodes_as_none() {
     let udt = Udt::try_from_val(&env, &map);
     assert_eq!(udt, Ok(Udt { a: 5, b: None }));
 }
+
+#[derive(Debug, Eq, PartialEq)]
+#[contracttype]
+pub struct UdtAllOptional {
+    pub a: Option<i32>,
+}
+
+#[test]
+fn test_all_option_fields_decode_from_any_map() {
+    let env = Env::default();
+
+    // A struct where every field is an Option decodes from any map, because
+    // every field is absent and so decodes as None, and every key of the map is
+    // ignored. Decoding is not sufficient on its own to determine that a value
+    // is of the expected type.
+    let map = map![&env, (symbol_short!("z"), 5)].to_val();
+    let udt = UdtAllOptional::try_from_val(&env, &map);
+    assert_eq!(udt, Ok(UdtAllOptional { a: None }));
+}

@@ -113,8 +113,8 @@ fn test_extra_fields_ignored_on_decode() {
 
     // If a struct has fields a, b, and a map is decoded into it where the map
     // has fields a, b, and c, the additional field c is ignored. This allows a
-    // contract to decode data that was stored by a newer version of the
-    // contract that had additional fields.
+    // contract to decode a value containing a field that is no longer used, and
+    // automatically ignore and discard it.
     let map = map![
         &env,
         (symbol_short!("a"), 5),

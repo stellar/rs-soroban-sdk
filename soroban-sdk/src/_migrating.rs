@@ -15,6 +15,16 @@
 //!    [`contracterror`], and [`contractevent`] (it is now a compile error), and build contracts
 //!    with `stellar contract build` from `stellar-cli` v25.2.0 or newer, which is now required.
 //!
+//! 2. [`contracttype` structs tolerate missing and additional map fields when
+//!    decoding][v28_contracttype_decoding]. A field of the struct that is absent from the map
+//!    decodes as void, and so decodes as `None` for an [`Option`] field, and errors for any other
+//!    field. A key in the map that is not a field of the struct is ignored and discarded. Both were
+//!    errors before. Encoding is unchanged. No code changes are required, but review any code that
+//!    relied on decoding failing to detect a mismatch, and note that contracts built with v28
+//!    require protocol 28 or later.
+//!
+//! [v28_contracttype_decoding]: v28_contracttype_decoding
+//!
 //! # Migrating from v26 to v27
 //!
 //! 1. [`bytes!` and `bytesn!` no longer accept base10 (decimal) integer literals][v27_bytes_literals].
@@ -361,4 +371,5 @@ pub mod v25_poseidon;
 pub mod v25_resource_limits;
 pub mod v27_bytes_literals;
 pub mod v27_export;
+pub mod v28_contracttype_decoding;
 pub mod v28_spec_shaking;
