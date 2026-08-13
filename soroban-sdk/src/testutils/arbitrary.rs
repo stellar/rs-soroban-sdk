@@ -247,22 +247,26 @@
 //!
 //! ## Limits of generated values
 //!
-//! The following apply to every generated prototype, whether it is generated
-//! by `cargo-fuzz` or by the `arb` `proptest` strategy, because in both cases
-//! the values come from the [`Arbitrary`] implementations.
+//! The following apply to every generated prototype, because in both the
+//! `cargo-fuzz` and the `arb` `proptest` cases the values come from the
+//! [`Arbitrary`] implementations. The lengths given below are those of the
+//! `arb` strategy; under `cargo-fuzz` the lengths of the last field of a fuzz
+//! input can be larger, because libFuzzer generates it with
+//! `arbitrary_take_rest`, which consumes the whole remaining input.
 //!
 //! ### Collection sizes are small
 //!
-//! The lengths of generated `Vec`, `Map`, `Bytes`, and `String` values are
-//! chosen by `arbitrary`'s geometric distribution (p≈0.5), which means about
-//! half of all generated collections are empty and lengths greater than about
-//! eight are effectively unreachable. If a test needs larger inputs, compose
-//! `arb` with `proptest`'s own collection strategies — for example generate a
-//! `std::vec::Vec` of prototypes with [`proptest::collection::vec`] and build
+//! The lengths of generated `Vec`, `Map`, and `Bytes` values are chosen by
+//! `arbitrary` one element at a time, with about a 50% chance of stopping
+//! before each element, which means about half of all generated collections
+//! are empty and lengths greater than about eight are rare — well under 1% of
+//! values. `String` lengths are chosen differently, but come out similarly
+//! small: about 46% of generated strings are empty, and fewer than 1% are
+//! longer than eight characters. If a test needs larger inputs, compose `arb`
+//! with `proptest`'s own collection strategies — for example generate a
+//! `std::vec::Vec` of prototypes with `proptest::collection::vec` and build
 //! the Soroban collection in the test body — or use `prop_filter` to discard
 //! values that are too small.
-//!
-//! [`proptest::collection::vec`]: ::proptest::collection::vec
 //!
 //! ### Addresses are both account and contract addresses
 //!
@@ -1719,6 +1723,11 @@ mod proptest_strategies {
     /// for prototypes that need more entropy, such as a contract type with
     /// many `BytesN` fields.
     ///
+    /// A larger `size` also makes shrinking slower: shrinking works by
+    /// truncating the byte budget one byte at a time and regenerating the
+    /// value, so a failing case takes up to `size` steps to shrink, and the
+    /// counterexample reported is not necessarily minimal.
+    ///
     /// [`Arbitrary`]: ::arbitrary::Arbitrary
     ///
     /// # Example
@@ -1726,14 +1735,24 @@ mod proptest_strategies {
     /// ```
     /// use proptest::prelude::*;
     /// use soroban_sdk::testutils::arbitrary::arb_sized;
-    /// use soroban_sdk::{BytesN, Env, IntoVal};
+    /// use soroban_sdk::{contracttype, BytesN, Env, IntoVal};
+    ///
+    /// // Twelve 32-byte fields need 384 bytes, more than the 256 bytes `arb`
+    /// // provides, so without a larger budget the last fields are all zeros.
+    /// #[contracttype]
+    /// pub struct Keys {
+    ///     pub a: BytesN<32>, pub b: BytesN<32>, pub c: BytesN<32>,
+    ///     pub d: BytesN<32>, pub e: BytesN<32>, pub f: BytesN<32>,
+    ///     pub g: BytesN<32>, pub h: BytesN<32>, pub i: BytesN<32>,
+    ///     pub j: BytesN<32>, pub k: BytesN<32>, pub l: BytesN<32>,
+    /// }
     ///
     /// proptest! {
     ///     #[test]
-    ///     fn test_bytes(bytes in arb_sized::<BytesN<32>>(1024)) {
+    ///     fn test_keys(keys in arb_sized::<Keys>(1024)) {
     ///         let env = Env::default();
-    ///         let bytes: BytesN<32> = bytes.into_val(&env);
-    ///         // test the contract with the bytes
+    ///         let keys: Keys = keys.into_val(&env);
+    ///         // test the contract with the keys
     ///     }
     /// }
     /// ```

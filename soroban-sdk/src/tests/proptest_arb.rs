@@ -3,6 +3,7 @@
 #![cfg(feature = "testutils-proptest")]
 
 use crate::testutils::arbitrary::arb;
+use crate::testutils::EnvTestConfig;
 use crate::{self as soroban_sdk};
 use proptest::prelude::*;
 use proptest::strategy::ValueTree;
@@ -149,7 +150,11 @@ impl AuthContract {
 /// invocation.
 #[test]
 fn test_account_address_require_auth() {
-    let env = Env::default();
+    // The snapshot of this test is a list of randomly generated addresses that
+    // has no review value, so don't capture one.
+    let env = Env::new_with_config(EnvTestConfig {
+        capture_snapshot_at_drop: false,
+    });
     env.mock_all_auths();
     let contract_id = env.register(AuthContract, ());
     let client = AuthContractClient::new(&env, &contract_id);

@@ -10,7 +10,7 @@
 //!
 //! ## `testutils-proptest`
 //!
-//! Enables `testutils`, and the `arb` strategy in the
+//! Enables `testutils`, and the `arb` and `arb_sized` strategies in the
 //! [`testutils::arbitrary`][crate::testutils::arbitrary] module for generating
 //! Soroban values with the [`proptest`](https://github.com/proptest-rs/proptest/)
 //! crate. Only available for non-Wasm targets.
