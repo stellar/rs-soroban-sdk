@@ -1,15 +1,12 @@
 //! Check that the `arb` proptest strategy generates values that can be
 //! converted to their contract types.
-#![cfg(feature = "testutils-proptest")]
 
 use crate::testutils::arbitrary::arb;
-use crate::testutils::EnvTestConfig;
 use crate::{self as soroban_sdk};
 use proptest::prelude::*;
 use proptest::strategy::ValueTree;
 use soroban_sdk::{
-    contract, contractimpl, contracttype, Address, Bytes, Env, IntoVal, Map, MuxedAddress, String,
-    Symbol, Val, Vec,
+    contracttype, Address, Bytes, Env, IntoVal, Map, MuxedAddress, String, Symbol, Val, Vec,
 };
 
 #[contracttype]
@@ -82,7 +79,7 @@ proptest! {
 }
 
 /// Generate values from a strategy, deterministically, for tests that assert
-/// on the distribution of generated values.
+/// on the kinds of values generated.
 fn samples<T: Strategy>(strategy: T, count: usize) -> std::vec::Vec<T::Value> {
     let mut runner = proptest::test_runner::TestRunner::deterministic();
     (0..count)
@@ -90,83 +87,39 @@ fn samples<T: Strategy>(strategy: T, count: usize) -> std::vec::Vec<T::Value> {
         .collect()
 }
 
-/// Addresses are generated as both account addresses, which have a strkey
-/// beginning with "G", and contract addresses, which have a strkey beginning
-/// with "C".
+/// Addresses are generated as contract addresses, which have a strkey
+/// beginning with "C", and never as account addresses.
 #[test]
-fn test_address_variants() {
+fn test_addresses_are_contracts() {
     let env = Env::default();
 
-    let mut accounts = 0;
-    let mut contracts = 0;
     for proto in samples(arb::<Address>(), 100) {
         let address: Address = proto.into_val(&env);
-        match address.to_string().to_string().chars().next().unwrap() {
-            'G' => accounts += 1,
-            'C' => contracts += 1,
-            c => panic!("unexpected address strkey prefix: {c}"),
-        }
+        let strkey = address.to_string().to_string();
+        assert!(
+            strkey.starts_with('C'),
+            "expected a contract address, got {strkey}"
+        );
     }
-
-    assert!(accounts > 0, "no account addresses generated");
-    assert!(contracts > 0, "no contract addresses generated");
 }
 
-/// Muxed addresses are generated as account addresses ("G"), contract
-/// addresses ("C"), and muxed account addresses ("M").
+/// Muxed addresses are generated as contract addresses ("C") and muxed account
+/// addresses ("M").
 #[test]
 fn test_muxed_address_variants() {
     let env = Env::default();
 
-    let mut accounts = 0;
     let mut contracts = 0;
     let mut muxed = 0;
     for proto in samples(arb::<MuxedAddress>(), 100) {
         let address: MuxedAddress = proto.into_val(&env);
         match address.to_strkey().to_string().chars().next().unwrap() {
-            'G' => accounts += 1,
             'C' => contracts += 1,
             'M' => muxed += 1,
             c => panic!("unexpected address strkey prefix: {c}"),
         }
     }
 
-    assert!(accounts > 0, "no account addresses generated");
     assert!(contracts > 0, "no contract addresses generated");
     assert!(muxed > 0, "no muxed addresses generated");
-}
-
-#[contract]
-pub struct AuthContract;
-
-#[contractimpl]
-impl AuthContract {
-    pub fn auth(a: Address) {
-        a.require_auth();
-    }
-}
-
-/// Generated account addresses, not only contract addresses, can authorize an
-/// invocation.
-#[test]
-fn test_account_address_require_auth() {
-    // The snapshot of this test is a list of randomly generated addresses that
-    // has no review value, so don't capture one.
-    let env = Env::new_with_config(EnvTestConfig {
-        capture_snapshot_at_drop: false,
-    });
-    env.mock_all_auths();
-    let contract_id = env.register(AuthContract, ());
-    let client = AuthContractClient::new(&env, &contract_id);
-
-    let mut accounts = 0;
-    for proto in samples(arb::<Address>(), 100) {
-        let address: Address = proto.into_val(&env);
-        if address.to_string().to_string().starts_with('G') {
-            accounts += 1;
-            client.auth(&address);
-        }
-    }
-
-    assert!(accounts > 0, "no account addresses generated");
 }

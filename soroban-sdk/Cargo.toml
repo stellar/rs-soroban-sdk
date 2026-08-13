@@ -68,8 +68,7 @@ trybuild = "1.0.115"
 
 [features]
 alloc = []
-testutils = ["soroban-sdk-macros/testutils", "soroban-env-host/testutils", "soroban-ledger-snapshot/testutils", "dep:ed25519-dalek", "dep:arbitrary", "dep:derive_arbitrary", "dep:ctor", "dep:soroban-ledger-snapshot"]
-testutils-proptest = ["testutils", "dep:proptest", "dep:proptest-arbitrary-interop"]
+testutils = ["soroban-sdk-macros/testutils", "soroban-env-host/testutils", "soroban-ledger-snapshot/testutils", "dep:ed25519-dalek", "dep:arbitrary", "dep:derive_arbitrary", "dep:ctor", "dep:soroban-ledger-snapshot", "dep:proptest", "dep:proptest-arbitrary-interop"]
 docs = []
 
 # Umbrella feature that enables all hazmat sub-features (backwards compatible)
