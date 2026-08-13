@@ -1,8 +1,10 @@
 //! Support for property testing Soroban contracts with [`proptest`].
 //!
 //! This module implements [`proptest`]'s `Arbitrary` trait for the prototypes
-//! defined by the [`arbitrary`][crate::testutils::arbitrary] module, provides
-//! the `arb_sized` strategy, and reexports the [`proptest`] crate.
+//! defined by the [`arbitrary`][crate::testutils::arbitrary] module, and
+//! reexports the [`proptest`] crate. There is no strategy function to use with
+//! `in`; a prototype is named in the parameter list and `proptest` finds the
+//! strategy through the trait.
 //!
 //! This module is only available when the "testutils-proptest" Cargo feature
 //! is defined, which implies the "testutils" feature.
@@ -87,8 +89,6 @@
 //! lengths come from a coin flip before each element rather than from the bytes
 //! remaining, so a larger budget does not generate longer values.
 //!
-//! Use [`arb_sized`] to set the budget explicitly.
-//!
 //! ## Limits of generated values
 //!
 //! Values come from the [`Arbitrary`][::arbitrary::Arbitrary] implementations
@@ -97,10 +97,6 @@
 //! See the [`arbitrary`][crate::testutils::arbitrary] module docs for the
 //! details.
 
-use super::arbitrary::SorobanArbitrary;
-use ::proptest::strategy::Strategy;
-use core::fmt::Debug;
-
 /// A reexport of the `proptest` crate.
 pub use ::proptest;
 
@@ -108,74 +104,6 @@ pub use ::proptest;
 #[doc(hidden)]
 pub use ::proptest_arbitrary_interop;
 
-/// A [`proptest`] strategy that generates prototypes of the Soroban type `T`
-/// with an explicit entropy budget.
-///
-/// Prototypes are converted to their contract type with [`IntoVal`] or
-/// [`FromVal`], which require an [`Env`]. Because an `Env` cannot be carried
-/// through a strategy, the conversion is performed inside the test body.
-///
-/// Naming the prototype is usually better than calling this: the prototypes
-/// implement [`proptest`]'s `Arbitrary`, which sizes the budget from the type
-/// itself, exactly for the types whose size is bounded.
-///
-/// `size` is the number of random bytes fed to the [`Arbitrary`]
-/// implementation of the prototype. When the bytes run out `arbitrary`
-/// zero-fills the rest instead of erroring, so a budget smaller than the
-/// prototype needs produces values with a constant tail.
-///
-/// Note that a budget larger than the default does not generate longer
-/// collections. `arbitrary` decides a collection's length with a coin flip
-/// before each element rather than from the bytes remaining, so lengths are
-/// geometrically distributed no matter how large the budget is.
-///
-/// A larger `size` also makes shrinking slower: shrinking works by truncating
-/// the byte budget one byte at a time and regenerating the value, so a failing
-/// case takes up to `size` steps to shrink, and the counterexample reported is
-/// not necessarily minimal.
-///
-/// [`proptest`]: ::proptest
-/// [`Arbitrary`]: ::arbitrary::Arbitrary
-/// [`Env`]: crate::Env
-/// [`FromVal`]: crate::FromVal
-/// [`IntoVal`]: crate::IntoVal
-///
-/// # Example
-///
-/// ```
-/// use proptest::prelude::*;
-/// use soroban_sdk::testutils::proptest::arb_sized;
-/// use soroban_sdk::{Address, Env, IntoVal, Vec};
-///
-/// proptest! {
-///     #[test]
-///     fn test_addresses(addresses in arb_sized::<Vec<Address>>(4096)) {
-///         let env = Env::default();
-///         let addresses: Vec<Address> = addresses.into_val(&env);
-///         // test the contract with a longer vec than the default budget gives
-///     }
-/// }
-/// ```
-pub fn arb_sized<T>(size: usize) -> impl Strategy<Value = T::Prototype>
-where
-    T: SorobanArbitrary,
-    T::Prototype: Debug + Clone + 'static,
-{
-    proptest_arbitrary_interop::arb_sized::<T::Prototype>(size)
-}
-
-/// Implementations of [`proptest`]'s `Arbitrary` trait for the prototypes.
-///
-/// The prototypes already implement [`arbitrary`]'s `Arbitrary`, and these
-/// implementations forward to it, so that a prototype can be named directly in
-/// the parameter list of a `proptest!` test, in the same way that a fuzz test
-/// names it in its input struct.
-///
-/// The prototypes of the scalar types are the scalar types themselves, and
-/// `proptest` already implements the trait for them. The prototype of a tuple
-/// is a tuple of prototypes, which `proptest` covers with its own tuple
-/// implementations.
-///
 /// The entropy budget given to a prototype whose size the `arbitrary`
 /// implementation does not bound: the collections, the strings, and `Val`.
 ///

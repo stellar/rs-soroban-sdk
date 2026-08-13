@@ -191,9 +191,9 @@
 //! are empty and lengths greater than about eight are rare — well under 1% of
 //! values. `String` lengths are chosen differently, but come out similarly
 //! small: about 46% of generated strings are empty, and fewer than 1% are
-//! longer than eight characters. If a test needs larger inputs, compose `arb`
-//! with `proptest`'s own collection strategies — for example generate a
-//! `std::vec::Vec` of prototypes with `proptest::collection::vec` and build
+//! longer than eight characters. If a test needs larger inputs, compose the
+//! prototype with `proptest`'s own collection strategies — for example generate
+//! a `std::vec::Vec` of prototypes with `proptest::collection::vec` and build
 //! the Soroban collection in the test body — or use `prop_filter` to discard
 //! values that are too small.
 //!

@@ -6,9 +6,8 @@ use crate::{self as soroban_sdk};
 use proptest::prelude::*;
 use proptest::strategy::ValueTree;
 use soroban_sdk::{
-    contracttype,
-    testutils::{arbitrary::SorobanArbitrary, proptest::arb_sized},
-    Address, Bytes, BytesN, Env, IntoVal, Map, MuxedAddress, String, Symbol, Val, Vec,
+    contracttype, testutils::arbitrary::SorobanArbitrary, Address, Bytes, BytesN, Env, IntoVal,
+    Map, MuxedAddress, String, Symbol, Val, Vec,
 };
 
 #[contracttype]
@@ -204,7 +203,10 @@ fn test_entropy_budget_bounds_collection_length() {
             .unwrap()
     }
 
-    let truncated = longest(&env, arb_sized::<Vec<Address>>(64));
+    let truncated = longest(
+        &env,
+        proptest_arbitrary_interop::arb_sized::<<Vec<Address> as SorobanArbitrary>::Prototype>(64),
+    );
     let default = longest(&env, any::<<Vec<Address> as SorobanArbitrary>::Prototype>());
 
     assert!(
