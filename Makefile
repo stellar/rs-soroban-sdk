@@ -20,7 +20,7 @@ test: fmt build-test-wasms test-only
 # together with the umbrella hazmat feature.
 test-only:
 	SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2=1 \
-		cargo hack --feature-powerset --ignore-unknown-features --features testutils,testutils-proptest \
+		cargo hack --feature-powerset --ignore-unknown-features --features testutils \
 			--exclude-features docs \
 			--exclude-features hazmat-crypto \
 			--exclude-features hazmat-address \
