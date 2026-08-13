@@ -31,9 +31,11 @@ impl Contract {
 
 #[cfg(test)]
 mod test {
-    use soroban_sdk::Env;
+    use soroban_sdk::{Address, Env};
 
     use crate::{Contract, ContractClient, Error};
+
+    use proptest::prelude::*;
 
     #[test]
     fn test_add() {
@@ -56,5 +58,27 @@ mod test {
         let y = 1;
         let z = client.try_safe_add(&x, &y);
         assert_eq!(z, Err(Ok(Error::Overflow)));
+    }
+    
+    proptest! {
+        #[test]
+        fn test_safe_add_2(x: u64, y: u64, a in arb::<Address>()) {
+            let e = Env::default();
+            let contract_id = e.register(Contract, ());
+            let client = ContractClient::new(&e, &contract_id);
+
+            let z = client.try_safe_add(&x, &y);
+            match z {
+                Ok(Ok(z)) => {
+                    assert!(z >= x);
+                    assert!(z >= y);
+                    assert!(z >= (x+y));
+                }
+                Err(Ok(Error::Overflow)) => {
+                    // good
+                }
+                _ => todo!(),
+            }
+        }
     }
 }

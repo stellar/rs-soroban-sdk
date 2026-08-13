@@ -1778,6 +1778,7 @@ dependencies = [
 name = "test_add_u64"
 version = "27.0.5"
 dependencies = [
+ "proptest",
  "soroban-sdk",
 ]
 
