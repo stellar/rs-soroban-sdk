@@ -14,8 +14,8 @@ use super::xdr::{ScString, ScVal};
 
 /// ExecutableTag is the key of an executable reference entry.
 ///
-/// An executable reference entry is a persistent contract data entry keyed by
-/// an `ExecutableTag` whose value is a Wasm hash. Contracts can use another
+/// An executable reference entry is a persistent contract data entry with
+/// an `ExecutableTag` key and Wasm hash value. Contracts can use another
 /// contract's executable reference entry as their own executable: their code
 /// is then the Wasm the entry currently points at. Updating the entry to a
 /// new Wasm hash causes the new Wasm to be used by all contracts that use the

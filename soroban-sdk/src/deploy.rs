@@ -88,10 +88,9 @@
 //!
 //! #### Deploy a contract that uses an executable reference (CAP-0085)
 //!
-//! A contract can be deployed with an executable that references an
-//! executable reference entry owned by an external contract, instead of a
-//! fixed Wasm hash. The external contract can update the executable reference
-//! entry and cause all contracts that reference it to use the new Wasm hash
+//! A contract can be deployed with an executable that references a contract data entry
+//! containing a Wasm hash, instead of a direct Wasm hash. The contract that owns the data
+//! entry can update it, causing all contracts that reference it to use the new Wasm hash
 //! value. See [ExecutableTag] for details on the entry.
 //!
 //! ```
@@ -303,15 +302,14 @@ impl Deployer {
             .unwrap_infallible();
     }
 
-    /// Extend the TTL of the contract instance, code, and any executable
-    /// reference entry needed to resolve the code.
+    /// Extends the TTL of the instance, code, and any executable reference entry needed to resolve
+    /// the code, only if the TTL for the provided contract is below `threshold` ledgers. The TTL
+    /// will then become `extend_to`. Note that the `threshold` check and TTL extensions are done
+    /// for both the contract code and contract instance, so it's possible that one is bumped but
+    /// not the other depending on what the current TTL's are.
     ///
-    /// Extends the TTL of the instance and code only if the TTL for the provided contract is below `threshold` ledgers.
-    /// The TTL will then become `extend_to`. Note that the `threshold` check and TTL extensions are done for both the
-    /// contract code and contract instance, so it's possible that one is bumped but not the other depending on what the
-    /// current TTL's are.
-    ///
-    /// The TTL is the number of ledgers between the current ledger and the final ledger the data can still be accessed.
+    /// The TTL is the number of ledgers between the current ledger and the final ledger the data
+    /// can still be accessed.
     pub fn extend_ttl(&self, contract_address: Address, threshold: u32, extend_to: u32) {
         self.env
             .extend_contract_instance_and_code_ttl(
@@ -354,18 +352,16 @@ impl Deployer {
             .unwrap_infallible();
     }
 
-    /// Extend the TTL of the contract instance, code and any executable reference entry
-    /// needed to resolve the code with limits on the extension.
-    ///
-    /// Extends the TTL of the instance and code to be up to `extend_to` ledgers.
-    /// The extension only happens if it exceeds `min_extension` ledgers, otherwise
-    /// this is a no-op. The amount of extension will not exceed `max_extension` ledgers.
+    /// Extends the TTL of the instance, code, and any executable reference entry needed to resolve
+    /// the code to be up to `extend_to` ledgers. The extension only happens if it exceeds
+    /// `min_extension` ledgers, otherwise this is a no-op. The amount of extension will not exceed
+    /// `max_extension` ledgers.
     ///
     /// Note that the extension is applied to both the contract code and contract instance,
     /// so it's possible that one is extended but not the other depending on their current TTLs.
     ///
-    /// The TTL is the number of ledgers between the current ledger and the final ledger
-    /// the data can still be accessed.
+    /// The TTL is the number of ledgers between the current ledger and the final ledger the data
+    /// can still be accessed.
     pub fn extend_ttl_with_limits(
         &self,
         contract_address: Address,
