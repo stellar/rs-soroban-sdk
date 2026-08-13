@@ -4,8 +4,9 @@
 //! This module provides a pattern for generating Soroban contract types for the
 //! purpose of testing Soroban contracts with randomly generated values. It is
 //! focused on implementing the [`Arbitrary`] trait that `cargo-fuzz` relies on
-//! to feed fuzzers with generated Rust values, and that `proptest` can consume
-//! through the `arb` strategy.
+//! to feed fuzzers with generated Rust values, and that the
+//! [`proptest`][crate::testutils::proptest] module builds `proptest` strategies
+//! from.
 //!
 //! [`cargo-fuzz`]: https://github.com/rust-fuzz/cargo-fuzz/
 //! [`proptest`]: https://github.com/proptest-rs/proptest/
@@ -175,12 +176,12 @@
 //!
 //! ## Limits of generated values
 //!
-//! The following apply to every generated prototype, because in both the
-//! `cargo-fuzz` and the `arb` `proptest` cases the values come from the
-//! [`Arbitrary`] implementations. The lengths given below are those of the
-//! `arb` strategy; under `cargo-fuzz` the lengths of the last field of a fuzz
-//! input can be larger, because libFuzzer generates it with
-//! `arbitrary_take_rest`, which consumes the whole remaining input.
+//! The following apply to every generated prototype, because under both
+//! `cargo-fuzz` and `proptest` the values come from the [`Arbitrary`]
+//! implementations. The lengths given below are those of `proptest`; under
+//! `cargo-fuzz` the lengths of the last field of a fuzz input can be larger,
+//! because libFuzzer generates it with `arbitrary_take_rest`, which consumes
+//! the whole remaining input.
 //!
 //! ### Collection sizes are small
 //!

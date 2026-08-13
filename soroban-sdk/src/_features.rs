@@ -11,8 +11,8 @@
 //! ## `testutils-proptest`
 //!
 //! Enables `testutils`, and the [`testutils::proptest`][crate::testutils::proptest]
-//! module, providing the `arb` and `arb_sized` strategies for generating Soroban
-//! values with the [`proptest`](https://github.com/proptest-rs/proptest/) crate.
+//! module, which implements the [`proptest`](https://github.com/proptest-rs/proptest/)
+//! crate's `Arbitrary` trait for the generated prototypes.
 //! Only available for non-Wasm targets.
 //!
 //! ## `alloc`

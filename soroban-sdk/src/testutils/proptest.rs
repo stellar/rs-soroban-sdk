@@ -1,8 +1,8 @@
 //! Support for property testing Soroban contracts with [`proptest`].
 //!
-//! This module provides the `arb` and `arb_sized` strategies, which generate
-//! the prototypes defined by the [`arbitrary`][crate::testutils::arbitrary]
-//! module, and reexports the [`proptest`] crate.
+//! This module implements [`proptest`]'s `Arbitrary` trait for the prototypes
+//! defined by the [`arbitrary`][crate::testutils::arbitrary] module, provides
+//! the `arb_sized` strategy, and reexports the [`proptest`] crate.
 //!
 //! This module is only available when the "testutils-proptest" Cargo feature
 //! is defined, which implies the "testutils" feature.
@@ -15,10 +15,11 @@
 //! soroban-sdk = { version = "*", features = ["testutils-proptest"] }
 //! ```
 //!
-//! `arb::<T>()` generates the prototype of the Soroban type `T`. As with
-//! fuzzing, prototypes are converted to contract types with [`FromVal`] or
-//! [`IntoVal`], which require an [`Env`]. An `Env` cannot be carried through a
-//! strategy, so the conversion happens inside the test body.
+//! A prototype is named in the parameter list of a `proptest!` test, in the
+//! same way that a fuzz test names it in its input struct. As with fuzzing,
+//! prototypes are converted to contract types with [`FromVal`] or [`IntoVal`],
+//! which require an [`Env`]. An `Env` cannot be carried through a strategy, so
+//! the conversion happens inside the test body.
 //!
 //! [`Env`]: crate::Env
 //! [`FromVal`]: crate::FromVal
@@ -27,36 +28,8 @@
 //!
 //! ```
 //! use proptest::prelude::*;
-//! use soroban_sdk::testutils::proptest::arb;
-//! use soroban_sdk::{Address, Env, IntoVal, Vec};
-//!
-//! proptest! {
-//!     #[test]
-//!     fn test_address(address in arb::<Address>()) {
-//!         let env = Env::default();
-//!         let address: Address = address.into_val(&env);
-//!         // test the contract with the address
-//!     }
-//!
-//!     #[test]
-//!     fn test_addresses(addresses in arb::<Vec<Address>>()) {
-//!         let env = Env::default();
-//!         let addresses: Vec<Address> = addresses.into_val(&env);
-//!         // test the contract with the addresses
-//!     }
-//! }
-//! ```
-//!
-//! The prototypes also implement [`proptest`]'s own `Arbitrary` trait, so a
-//! prototype can be named directly in the parameter list instead, in the same
-//! way that a fuzz test names it in its input struct. Use whichever reads
-//! better: `arb` names the contract type, the parameter list names its
-//! prototype.
-//!
-//! ```
-//! use proptest::prelude::*;
 //! use soroban_sdk::testutils::arbitrary::SorobanArbitrary;
-//! use soroban_sdk::{Address, Env, IntoVal};
+//! use soroban_sdk::{Address, Env, IntoVal, Vec};
 //!
 //! proptest! {
 //!     #[test]
@@ -65,6 +38,13 @@
 //!         let address: Address = address.into_val(&env);
 //!         // test the contract with the address
 //!     }
+//!
+//!     #[test]
+//!     fn test_addresses(addresses: <Vec<Address> as SorobanArbitrary>::Prototype) {
+//!         let env = Env::default();
+//!         let addresses: Vec<Address> = addresses.into_val(&env);
+//!         // test the contract with the addresses
+//!     }
 //! }
 //! ```
 //!
@@ -72,7 +52,7 @@
 //!
 //! ```
 //! use proptest::prelude::*;
-//! use soroban_sdk::testutils::proptest::arb;
+//! use soroban_sdk::testutils::arbitrary::SorobanArbitrary;
 //! use soroban_sdk::{contracttype, Address, Env, IntoVal};
 //!
 //! #[contracttype]
@@ -83,7 +63,7 @@
 //!
 //! proptest! {
 //!     #[test]
-//!     fn test_deposit(deposit in arb::<Deposit>()) {
+//!     fn test_deposit(deposit: <Deposit as SorobanArbitrary>::Prototype) {
 //!         let env = Env::default();
 //!         let deposit: Deposit = deposit.into_val(&env);
 //!         // test the contract with the deposit
@@ -102,13 +82,12 @@
 //! `arbitrary` size hint, which is exact for every prototype whose size is
 //! bounded, including the ones `contracttype` generates. A `contracttype`
 //! struct with twelve `BytesN<32>` fields is given the 384 bytes it needs.
-//! Collections, strings, and `Val` have no bounded size — more bytes means
-//! longer collections rather than a more complete value — so they are given a
-//! 256 byte default.
+//! Collections, strings, and `Val` have no bounded size, so they are given a
+//! budget large enough to hold a run of 16 elements of a 32 byte value. Their
+//! lengths come from a coin flip before each element rather than from the bytes
+//! remaining, so a larger budget does not generate longer values.
 //!
-//! `arb` uses a fixed 256 bytes regardless of the type, so a large prototype
-//! generated with it has a zeroed tail. Use `arb_sized` to raise the budget, or
-//! name the prototype and let the size hint do it.
+//! Use [`arb_sized`] to set the budget explicitly.
 //!
 //! ## Limits of generated values
 //!
@@ -129,23 +108,31 @@ pub use ::proptest;
 #[doc(hidden)]
 pub use ::proptest_arbitrary_interop;
 
-/// A [`proptest`] strategy that generates prototypes of the Soroban type `T`.
+/// A [`proptest`] strategy that generates prototypes of the Soroban type `T`
+/// with an explicit entropy budget.
 ///
 /// Prototypes are converted to their contract type with [`IntoVal`] or
-/// [`FromVal`], which require an [`Env`]. Because an `Env` cannot be
-/// carried through a strategy, the conversion is performed inside the test
-/// body.
+/// [`FromVal`], which require an [`Env`]. Because an `Env` cannot be carried
+/// through a strategy, the conversion is performed inside the test body.
 ///
-/// Values are generated by feeding random bytes to the [`Arbitrary`]
-/// implementation of the prototype, with a fixed entropy budget of 256
-/// bytes. A prototype that needs more bytes than that is not an error:
-/// the `arbitrary` crate zero-fills the remainder, so the tail of a large
-/// prototype will be all zeros in every generated value. Use
-/// [`arb_sized`] with a larger budget for large types.
+/// Naming the prototype is usually better than calling this: the prototypes
+/// implement [`proptest`]'s `Arbitrary`, which sizes the budget from the type
+/// itself, exactly for the types whose size is bounded.
 ///
-/// Collection lengths are chosen by `arbitrary`, not by proptest, and so
-/// are small — see the [`arbitrary`][crate::testutils::arbitrary] module docs
-/// for the distribution and how to generate larger collections.
+/// `size` is the number of random bytes fed to the [`Arbitrary`]
+/// implementation of the prototype. When the bytes run out `arbitrary`
+/// zero-fills the rest instead of erroring, so a budget smaller than the
+/// prototype needs produces values with a constant tail.
+///
+/// Note that a budget larger than the default does not generate longer
+/// collections. `arbitrary` decides a collection's length with a coin flip
+/// before each element rather than from the bytes remaining, so lengths are
+/// geometrically distributed no matter how large the budget is.
+///
+/// A larger `size` also makes shrinking slower: shrinking works by truncating
+/// the byte budget one byte at a time and regenerating the value, so a failing
+/// case takes up to `size` steps to shrink, and the counterexample reported is
+/// not necessarily minimal.
 ///
 /// [`proptest`]: ::proptest
 /// [`Arbitrary`]: ::arbitrary::Arbitrary
@@ -157,66 +144,15 @@ pub use ::proptest_arbitrary_interop;
 ///
 /// ```
 /// use proptest::prelude::*;
-/// use soroban_sdk::testutils::proptest::arb;
-/// use soroban_sdk::{Address, Env, IntoVal};
-///
-/// proptest! {
-///     #[test]
-///     fn test_address(address in arb::<Address>()) {
-///         let env = Env::default();
-///         let address: Address = address.into_val(&env);
-///         // test the contract with the address
-///     }
-/// }
-/// ```
-pub fn arb<T>() -> impl Strategy<Value = T::Prototype>
-where
-    T: SorobanArbitrary,
-    T::Prototype: Debug + Clone + 'static,
-{
-    proptest_arbitrary_interop::arb::<T::Prototype>()
-}
-
-/// The same as [`arb`], but with a configurable entropy budget.
-///
-/// `size` is the number of random bytes fed to the [`Arbitrary`]
-/// implementation of the prototype. [`arb`] uses a fixed budget of 256
-/// bytes, which is not enough for large prototypes: when the bytes run out
-/// `arbitrary` zero-fills the rest instead of erroring, and the tail of the
-/// prototype is all zeros in every generated value. Pass a larger `size`
-/// for prototypes that need more entropy, such as a contract type with
-/// many `BytesN` fields.
-///
-/// A larger `size` also makes shrinking slower: shrinking works by
-/// truncating the byte budget one byte at a time and regenerating the
-/// value, so a failing case takes up to `size` steps to shrink, and the
-/// counterexample reported is not necessarily minimal.
-///
-/// [`Arbitrary`]: ::arbitrary::Arbitrary
-///
-/// # Example
-///
-/// ```
-/// use proptest::prelude::*;
 /// use soroban_sdk::testutils::proptest::arb_sized;
-/// use soroban_sdk::{contracttype, BytesN, Env, IntoVal};
-///
-/// // Twelve 32-byte fields need 384 bytes, more than the 256 bytes `arb`
-/// // provides, so without a larger budget the last fields are all zeros.
-/// #[contracttype]
-/// pub struct Keys {
-///     pub a: BytesN<32>, pub b: BytesN<32>, pub c: BytesN<32>,
-///     pub d: BytesN<32>, pub e: BytesN<32>, pub f: BytesN<32>,
-///     pub g: BytesN<32>, pub h: BytesN<32>, pub i: BytesN<32>,
-///     pub j: BytesN<32>, pub k: BytesN<32>, pub l: BytesN<32>,
-/// }
+/// use soroban_sdk::{Address, Env, IntoVal, Vec};
 ///
 /// proptest! {
 ///     #[test]
-///     fn test_keys(keys in arb_sized::<Keys>(1024)) {
+///     fn test_addresses(addresses in arb_sized::<Vec<Address>>(4096)) {
 ///         let env = Env::default();
-///         let keys: Keys = keys.into_val(&env);
-///         // test the contract with the keys
+///         let addresses: Vec<Address> = addresses.into_val(&env);
+///         // test the contract with a longer vec than the default budget gives
 ///     }
 /// }
 /// ```
@@ -241,12 +177,16 @@ where
 /// implementations.
 ///
 /// The entropy budget given to a prototype whose size the `arbitrary`
-/// implementation does not bound, such as a collection or a `Val`. There is no
-/// size that is correct for these, because more bytes means longer collections
-/// rather than a more complete value, so this is the same default that
-/// `proptest-arbitrary-interop` uses.
-#[doc(hidden)]
-pub const UNBOUNDED_ENTROPY_BUDGET: usize = proptest_arbitrary_interop::DEFAULT_SIZE;
+/// implementation does not bound: the collections, the strings, and `Val`.
+///
+/// `arbitrary` decides the length of a collection with a coin flip before each
+/// element, so lengths are geometrically distributed and do not grow with the
+/// budget. The budget only has to be large enough not to cut that distribution
+/// short, and beyond that point a larger one changes nothing. This is enough
+/// for a run of 16 elements of the largest fixed size Soroban value, a 32 byte
+/// `Address` or `BytesN<32>`, which the length distribution reaches about once
+/// in 65536 values.
+const UNBOUNDED_ENTROPY_BUDGET: usize = 16 * 32;
 
 /// A strategy that generates the prototype `A` with an entropy budget taken
 /// from its `arbitrary` implementation's size hint.

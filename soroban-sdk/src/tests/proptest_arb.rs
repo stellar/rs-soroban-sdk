@@ -1,4 +1,4 @@
-//! Check that the `arb` proptest strategy generates values that can be
+//! Check that the proptest strategies generate prototypes that can be
 //! converted to their contract types.
 #![cfg(feature = "testutils-proptest")]
 
@@ -7,7 +7,7 @@ use proptest::prelude::*;
 use proptest::strategy::ValueTree;
 use soroban_sdk::{
     contracttype,
-    testutils::{arbitrary::SorobanArbitrary, proptest::arb},
+    testutils::{arbitrary::SorobanArbitrary, proptest::arb_sized},
     Address, Bytes, BytesN, Env, IntoVal, Map, MuxedAddress, String, Symbol, Val, Vec,
 };
 
@@ -26,7 +26,7 @@ pub enum Action {
 
 proptest! {
     /// Prototypes implement proptest's `Arbitrary`, so they can be named
-    /// directly in the parameter list rather than with the `arb` strategy.
+    /// directly in the parameter list.
     #[test]
     fn test_prototype_in_parameter_list(
         address: <Address as SorobanArbitrary>::Prototype,
@@ -46,55 +46,55 @@ proptest! {
     }
 
     #[test]
-    fn test_address(address in arb::<Address>()) {
+    fn test_address(address: <Address as SorobanArbitrary>::Prototype) {
         let env = Env::default();
         let _address: Address = address.into_val(&env);
     }
 
     #[test]
-    fn test_addresses(addresses in arb::<Vec<Address>>()) {
+    fn test_addresses(addresses: <Vec<Address> as SorobanArbitrary>::Prototype) {
         let env = Env::default();
         let _addresses: Vec<Address> = addresses.into_val(&env);
     }
 
     #[test]
-    fn test_muxed_address(address in arb::<MuxedAddress>()) {
+    fn test_muxed_address(address: <MuxedAddress as SorobanArbitrary>::Prototype) {
         let env = Env::default();
         let _address: MuxedAddress = address.into_val(&env);
     }
 
     #[test]
-    fn test_val(val in arb::<Val>()) {
+    fn test_val(val: <Val as SorobanArbitrary>::Prototype) {
         let env = Env::default();
         let _val: Val = val.into_val(&env);
     }
 
     #[test]
-    fn test_map(map in arb::<Map<Symbol, Val>>()) {
+    fn test_map(map: <Map<Symbol, Val> as SorobanArbitrary>::Prototype) {
         let env = Env::default();
         let _map: Map<Symbol, Val> = map.into_val(&env);
     }
 
     #[test]
-    fn test_bytes(bytes in arb::<Bytes>()) {
+    fn test_bytes(bytes: <Bytes as SorobanArbitrary>::Prototype) {
         let env = Env::default();
         let _bytes: Bytes = bytes.into_val(&env);
     }
 
     #[test]
-    fn test_string(string in arb::<String>()) {
+    fn test_string(string: <String as SorobanArbitrary>::Prototype) {
         let env = Env::default();
         let _string: String = string.into_val(&env);
     }
 
     #[test]
-    fn test_deposit(deposit in arb::<Deposit>()) {
+    fn test_deposit(deposit: <Deposit as SorobanArbitrary>::Prototype) {
         let env = Env::default();
         let _deposit: Deposit = deposit.into_val(&env);
     }
 
     #[test]
-    fn test_action(action in arb::<Action>()) {
+    fn test_action(action: <Action as SorobanArbitrary>::Prototype) {
         let env = Env::default();
         let _action: Action = action.into_val(&env);
     }
@@ -115,7 +115,7 @@ fn samples<T: Strategy>(strategy: T, count: usize) -> std::vec::Vec<T::Value> {
 fn test_addresses_are_contracts() {
     let env = Env::default();
 
-    for proto in samples(arb::<Address>(), 100) {
+    for proto in samples(any::<<Address as SorobanArbitrary>::Prototype>(), 100) {
         let address: Address = proto.into_val(&env);
         let strkey = address.to_string().to_string();
         assert!(
@@ -133,7 +133,7 @@ fn test_muxed_address_variants() {
 
     let mut contracts = 0;
     let mut muxed = 0;
-    for proto in samples(arb::<MuxedAddress>(), 100) {
+    for proto in samples(any::<<MuxedAddress as SorobanArbitrary>::Prototype>(), 100) {
         let address: MuxedAddress = proto.into_val(&env);
         match address.to_strkey().to_string().chars().next().unwrap() {
             'C' => contracts += 1,
@@ -163,8 +163,9 @@ pub struct Keys {
 }
 
 /// The entropy budget comes from the prototype's `arbitrary` size hint, so a
-/// prototype larger than the 256 byte default is generated in full rather than
-/// with a zeroed tail. `Keys` needs 384 bytes for its twelve 32-byte fields.
+/// prototype larger than the budget given to the unbounded types is generated
+/// in full rather than with a zeroed tail. `Keys` needs 384 bytes for its
+/// twelve 32-byte fields.
 #[test]
 fn test_entropy_budget_covers_large_prototype() {
     let env = Env::default();
@@ -179,5 +180,35 @@ fn test_entropy_budget_covers_large_prototype() {
     assert!(
         !last_field_all_zero,
         "the last field was zero in every sample, so the entropy budget ran out"
+    );
+}
+
+/// A budget too small for the value truncates it: `arbitrary` zero-fills once
+/// the bytes run out, so a 64 byte budget cuts a vec of 32 byte addresses short
+/// where the default budget does not.
+#[test]
+fn test_entropy_budget_bounds_collection_length() {
+    let env = Env::default();
+
+    fn longest<S>(env: &Env, strategy: S) -> u32
+    where
+        S: Strategy<Value = <Vec<Address> as SorobanArbitrary>::Prototype>,
+    {
+        samples(strategy, 50)
+            .into_iter()
+            .map(|proto| {
+                let v: Vec<Address> = proto.into_val(env);
+                v.len()
+            })
+            .max()
+            .unwrap()
+    }
+
+    let truncated = longest(&env, arb_sized::<Vec<Address>>(64));
+    let default = longest(&env, any::<<Vec<Address> as SorobanArbitrary>::Prototype>());
+
+    assert!(
+        default > truncated,
+        "expected the default budget to outrun a 64 byte one, got {default} and {truncated}"
     );
 }
