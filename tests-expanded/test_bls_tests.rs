@@ -43,7 +43,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for DummyProof 
         const KEYS: [&'static str; 5usize] = ["fp", "fp2", "fr", "g1", "g2"];
         let mut vals: [Val; 5usize] = [Val::VOID.to_val(); 5usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             fp: vals[0]

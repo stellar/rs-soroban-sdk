@@ -71,7 +71,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructA {
         const KEYS: [&'static str; 2usize] = ["f1", "f2"];
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             f1: vals[0]
@@ -487,7 +487,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructB {
         const KEYS: [&'static str; 2usize] = ["f1", "f2"];
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             f1: vals[0]
@@ -903,7 +903,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructC {
         const KEYS: [&'static str; 2usize] = ["f1", "f2"];
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             f1: vals[0]

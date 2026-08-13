@@ -126,7 +126,7 @@ pub fn derive_type_struct(
                 const KEYS: [&'static str; #field_count_usize] = [#(#field_names),*];
                 let mut vals: [Val; #field_count_usize] = [Val::VOID.to_val(); #field_count_usize];
                 let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-                env.map_unpack_to_slice(map, &KEYS, &mut vals).map_err(|_| ConversionError)?;
+                env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals).map_err(|_| ConversionError)?;
                 Ok(Self {
                     #(#field_idents: vals[#field_idx_lits].try_into_val(env).map_err(|_| #path::ConversionError)?,)*
                 })

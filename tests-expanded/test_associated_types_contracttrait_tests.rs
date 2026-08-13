@@ -1204,7 +1204,7 @@ mod test_with_wasm {
                 const KEYS: [&'static str; 3usize] = ["args", "contract", "fn_name"];
                 let mut vals: [Val; 3usize] = [Val::VOID.to_val(); 3usize];
                 let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-                env.map_unpack_to_slice(map, &KEYS, &mut vals)
+                env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
                     .map_err(|_| ConversionError)?;
                 Ok(Self {
                     args: vals[0]
@@ -1742,7 +1742,7 @@ mod test_with_wasm {
                 const KEYS: [&'static str; 2usize] = ["context", "sub_invocations"];
                 let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
                 let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-                env.map_unpack_to_slice(map, &KEYS, &mut vals)
+                env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
                     .map_err(|_| ConversionError)?;
                 Ok(Self {
                     context: vals[0]
@@ -2217,7 +2217,7 @@ mod test_with_wasm {
                 const KEYS: [&'static str; 2usize] = ["executable", "salt"];
                 let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
                 let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-                env.map_unpack_to_slice(map, &KEYS, &mut vals)
+                env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
                     .map_err(|_| ConversionError)?;
                 Ok(Self {
                     executable: vals[0]
@@ -2731,7 +2731,7 @@ mod test_with_wasm {
                 const KEYS: [&'static str; 3usize] = ["constructor_args", "executable", "salt"];
                 let mut vals: [Val; 3usize] = [Val::VOID.to_val(); 3usize];
                 let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-                env.map_unpack_to_slice(map, &KEYS, &mut vals)
+                env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
                     .map_err(|_| ConversionError)?;
                 Ok(Self {
                     constructor_args: vals[0]

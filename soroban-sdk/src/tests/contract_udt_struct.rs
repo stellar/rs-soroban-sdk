@@ -96,11 +96,8 @@ fn test_out_of_order_functional() {
     );
 }
 
-// TODO: at present UDT try_from_vals actually trap rather than returning
-// catchable errors. This is intentional to minimize code size. Can revisit.
 #[test]
-#[should_panic]
-fn test_error_on_partial_decode() {
+fn test_decode() {
     let env = Env::default();
 
     // Success case, a map will decode to a Udt if the symbol keys match the
@@ -108,11 +105,16 @@ fn test_error_on_partial_decode() {
     let map = map![&env, (symbol_short!("a"), 5), (symbol_short!("b"), 7)].to_val();
     let udt = Udt::try_from_val(&env, &map);
     assert_eq!(udt, Ok(Udt { a: 5, b: 7 }));
+}
+
+#[test]
+fn test_extra_fields_ignored_on_decode() {
+    let env = Env::default();
 
     // If a struct has fields a, b, and a map is decoded into it where the map
-    // has fields a, b, and c, it is an error. It is an error because decoding
-    // and encoding will not round trip the data, and therefore partial decoding
-    // is relatively difficult to use safely.
+    // has fields a, b, and c, the additional field c is ignored. This allows a
+    // contract to decode data that was stored by a newer version of the
+    // contract that had additional fields.
     let map = map![
         &env,
         (symbol_short!("a"), 5),
@@ -120,6 +122,17 @@ fn test_error_on_partial_decode() {
         (symbol_short!("c"), 9)
     ]
     .to_val();
+    let udt = Udt::try_from_val(&env, &map);
+    assert_eq!(udt, Ok(Udt { a: 5, b: 7 }));
+}
+
+#[test]
+fn test_error_on_missing_field() {
+    let env = Env::default();
+
+    // A missing field decodes as void, and so decoding into a field that is not
+    // an Option is an error.
+    let map = map![&env, (symbol_short!("a"), 5)].to_val();
     let udt = Udt::try_from_val(&env, &map);
     assert_eq!(udt, Err(ConversionError));
 }
