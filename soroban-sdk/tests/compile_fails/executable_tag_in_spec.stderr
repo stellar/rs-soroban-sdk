@@ -1,0 +1,11 @@
+error: ExecutableTag has no contract spec type; use String and construct it with ExecutableTag::new instead
+  --> tests/compile_fails/executable_tag_in_spec.rs:11:14
+   |
+11 |     pub tag: ExecutableTag,
+   |              ^^^^^^^^^^^^^
+
+error: ExecutableTag has no contract spec type; use String and construct it with ExecutableTag::new instead
+  --> tests/compile_fails/executable_tag_in_spec.rs:16:39
+   |
+16 |     pub fn takes_tag(_env: Env, _tag: ExecutableTag) {}
+   |                                       ^^^^^^^^^^^^^
