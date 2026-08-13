@@ -2,12 +2,12 @@
 //! converted to their contract types.
 #![cfg(feature = "testutils-proptest")]
 
-use crate::testutils::proptest::arb;
 use crate::{self as soroban_sdk};
 use proptest::prelude::*;
 use proptest::strategy::ValueTree;
 use soroban_sdk::{
-    contracttype, Address, Bytes, Env, IntoVal, Map, MuxedAddress, String, Symbol, Val, Vec,
+    contracttype, testutils::proptest::arb, Address, Bytes, Env, IntoVal, Map, MuxedAddress,
+    String, Symbol, Val, Vec,
 };
 
 #[contracttype]
