@@ -169,7 +169,6 @@ pub fn derive_type_struct(
                 fn try_from_val(env: &#path::Env, val: &#path::xdr::ScMap) -> Result<Self, #path::xdr::Error> {
                     use #path::xdr::Validate;
                     use #path::TryIntoVal;
-                    // Map entries that are not fields of the struct are ignored.
                     let map = val;
                     map.validate()?;
                     Ok(Self{

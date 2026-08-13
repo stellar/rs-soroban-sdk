@@ -8,13 +8,6 @@ use stellar_xdr::{
     ScSpecTypeDef, ScSpecTypeTuple, ScSpecTypeUdt, ScSymbol, ScVal,
 };
 
-fn scmap_entry(key: &str, val: i32) -> ScMapEntry {
-    ScMapEntry {
-        key: ScVal::Symbol(ScSymbol(key.try_into().unwrap())),
-        val: ScVal::I32(val),
-    }
-}
-
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 #[contracttype]
 pub struct Udt {
@@ -140,9 +133,18 @@ fn test_extra_fields_ignored_on_decode_scval() {
     // Conversion from an ScVal behaves the same as conversion from a Val.
     let scval = ScVal::Map(Some(
         ScMap::sorted_from(vec![
-            scmap_entry("a", 5),
-            scmap_entry("b", 7),
-            scmap_entry("c", 9),
+            ScMapEntry {
+                key: ScVal::Symbol(ScSymbol("a".try_into().unwrap())),
+                val: ScVal::I32(5),
+            },
+            ScMapEntry {
+                key: ScVal::Symbol(ScSymbol("b".try_into().unwrap())),
+                val: ScVal::I32(7),
+            },
+            ScMapEntry {
+                key: ScVal::Symbol(ScSymbol("c".try_into().unwrap())),
+                val: ScVal::I32(9),
+            },
         ])
         .unwrap(),
     ));
