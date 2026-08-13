@@ -8,7 +8,7 @@ use proptest::strategy::ValueTree;
 use soroban_sdk::{
     contracttype,
     testutils::{arbitrary::SorobanArbitrary, proptest::arb},
-    Address, Bytes, Env, IntoVal, Map, MuxedAddress, String, Symbol, Val, Vec,
+    Address, Bytes, BytesN, Env, IntoVal, Map, MuxedAddress, String, Symbol, Val, Vec,
 };
 
 #[contracttype]
@@ -144,4 +144,40 @@ fn test_muxed_address_variants() {
 
     assert!(contracts > 0, "no contract addresses generated");
     assert!(muxed > 0, "no muxed addresses generated");
+}
+
+#[contracttype]
+pub struct Keys {
+    pub a: BytesN<32>,
+    pub b: BytesN<32>,
+    pub c: BytesN<32>,
+    pub d: BytesN<32>,
+    pub e: BytesN<32>,
+    pub f: BytesN<32>,
+    pub g: BytesN<32>,
+    pub h: BytesN<32>,
+    pub i: BytesN<32>,
+    pub j: BytesN<32>,
+    pub k: BytesN<32>,
+    pub l: BytesN<32>,
+}
+
+/// The entropy budget comes from the prototype's `arbitrary` size hint, so a
+/// prototype larger than the 256 byte default is generated in full rather than
+/// with a zeroed tail. `Keys` needs 384 bytes for its twelve 32-byte fields.
+#[test]
+fn test_entropy_budget_covers_large_prototype() {
+    let env = Env::default();
+
+    let last_field_all_zero = samples(any::<<Keys as SorobanArbitrary>::Prototype>(), 20)
+        .into_iter()
+        .all(|proto| {
+            let keys: Keys = proto.into_val(&env);
+            keys.l == BytesN::from_array(&env, &[0u8; 32])
+        });
+
+    assert!(
+        !last_field_all_zero,
+        "the last field was zero in every sample, so the entropy budget ran out"
+    );
 }
