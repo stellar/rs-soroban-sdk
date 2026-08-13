@@ -5,6 +5,10 @@
 
 pub mod arbitrary;
 
+#[cfg(feature = "testutils-proptest")]
+#[cfg_attr(feature = "docs", doc(cfg(feature = "testutils-proptest")))]
+pub mod proptest;
+
 mod sign;
 use std::{fmt::Debug, rc::Rc};
 

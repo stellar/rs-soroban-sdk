@@ -8,12 +8,12 @@
 //! Required for using [`Env::default()`] in tests, generating test addresses,
 //! and other test helpers. Only available for non-Wasm targets.
 //!
-//! ## `proptest`
+//! ## `testutils-proptest`
 //!
-//! Enables `testutils`, and the `arb` and `arb_sized` strategies in the
-//! [`testutils::arbitrary`][crate::testutils::arbitrary] module for generating
-//! Soroban values with the [`proptest`](https://github.com/proptest-rs/proptest/)
-//! crate. Only available for non-Wasm targets.
+//! Enables `testutils`, and the [`testutils::proptest`][crate::testutils::proptest]
+//! module, providing the `arb` and `arb_sized` strategies for generating Soroban
+//! values with the [`proptest`](https://github.com/proptest-rs/proptest/) crate.
+//! Only available for non-Wasm targets.
 //!
 //! ## `alloc`
 //!

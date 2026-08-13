@@ -1,8 +1,8 @@
 //! Check that the `arb` proptest strategy generates values that can be
 //! converted to their contract types.
-#![cfg(feature = "proptest")]
+#![cfg(feature = "testutils-proptest")]
 
-use crate::testutils::arbitrary::arb;
+use crate::testutils::proptest::arb;
 use crate::{self as soroban_sdk};
 use proptest::prelude::*;
 use proptest::strategy::ValueTree;
