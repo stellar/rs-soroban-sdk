@@ -31,7 +31,7 @@ impl Contract {
 
 #[cfg(test)]
 mod test {
-    use soroban_sdk::{Address, Env};
+    use soroban_sdk::{Address, Env, testutils::proptest::arb};
 
     use crate::{Contract, ContractClient, Error};
 
@@ -59,6 +59,8 @@ mod test {
         let z = client.try_safe_add(&x, &y);
         assert_eq!(z, Err(Ok(Error::Overflow)));
     }
+
+    extern crate std;
     
     proptest! {
         #[test]
@@ -66,6 +68,8 @@ mod test {
             let e = Env::default();
             let contract_id = e.register(Contract, ());
             let client = ContractClient::new(&e, &contract_id);
+
+            std::println!("a: {}", a.into_val(e));
 
             let z = client.try_safe_add(&x, &y);
             match z {
