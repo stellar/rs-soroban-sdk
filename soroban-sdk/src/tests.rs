@@ -45,6 +45,7 @@ mod crypto_secp256r1;
 mod crypto_sha256;
 mod delegate_auth;
 mod env;
+mod env_upload;
 mod max_ttl;
 mod muxed_address;
 mod num_checked_arith;
