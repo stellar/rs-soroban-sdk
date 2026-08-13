@@ -31,14 +31,9 @@ impl Contract {
 
 #[cfg(test)]
 mod test {
-    use soroban_sdk::{
-        testutils::{proptest::arb, EnvTestConfig},
-        Address, Env, IntoVal,
-    };
+    use soroban_sdk::Env;
 
     use crate::{Contract, ContractClient, Error};
-
-    use proptest::prelude::*;
 
     #[test]
     fn test_add() {
@@ -61,36 +56,5 @@ mod test {
         let y = 1;
         let z = client.try_safe_add(&x, &y);
         assert_eq!(z, Err(Ok(Error::Overflow)));
-    }
-
-    extern crate std;
-
-    proptest! {
-        #[test]
-        fn test_safe_add_2(x: u64, y: u64, a in arb::<Address>()) {
-            // The snapshot of this test is a list of randomly generated values
-            // that has no review value, so don't capture one.
-            let e = Env::new_with_config(EnvTestConfig {
-                capture_snapshot_at_drop: false,
-            });
-            let contract_id = e.register(Contract, ());
-            let client = ContractClient::new(&e, &contract_id);
-
-            let a: Address = a.into_val(&e);
-            std::println!("a: {a:?}");
-
-            let z = client.try_safe_add(&x, &y);
-            match z {
-                Ok(Ok(z)) => {
-                    assert!(z >= x);
-                    assert!(z >= y);
-                    assert!(z >= (x+y));
-                }
-                Err(Ok(Error::Overflow)) => {
-                    // good
-                }
-                _ => todo!(),
-            }
-        }
     }
 }

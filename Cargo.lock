@@ -1778,7 +1778,6 @@ dependencies = [
 name = "test_add_u64"
 version = "27.0.5"
 dependencies = [
- "proptest",
  "soroban-sdk",
 ]
 
@@ -2017,6 +2016,14 @@ dependencies = [
 name = "test_mutability"
 version = "27.0.5"
 dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
+name = "test_proptest"
+version = "27.0.5"
+dependencies = [
+ "proptest",
  "soroban-sdk",
 ]
 

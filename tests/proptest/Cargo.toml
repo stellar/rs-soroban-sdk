@@ -1,5 +1,5 @@
 [package]
-name = "test_add_u64"
+name = "test_proptest"
 version.workspace = true
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 license = "Apache-2.0"
@@ -15,4 +15,5 @@ doctest = false
 soroban-sdk = {path = "../../soroban-sdk"}
 
 [dev-dependencies]
-soroban-sdk = {path = "../../soroban-sdk", features = ["testutils"]}
+soroban-sdk = {path = "../../soroban-sdk", features = ["testutils", "testutils-proptest"]}
+proptest = "1"
