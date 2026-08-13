@@ -345,9 +345,84 @@ mod test {
     use crate::{Contract, ContractClient};
     use proptest::prelude::*;
     use soroban_sdk::{
-        testutils::{proptest::arb, EnvTestConfig},
+        testutils::{arbitrary::SorobanArbitrary, proptest::arb, EnvTestConfig},
         Env, IntoVal, U256,
     };
+    extern crate test;
+    #[rustc_test_marker = "test::test_run_prototype"]
+    #[doc(hidden)]
+    pub const test_run_prototype: test::TestDescAndFn = test::TestDescAndFn {
+        desc: test::TestDesc {
+            name: test::StaticTestName("test::test_run_prototype"),
+            ignore: false,
+            ignore_message: ::core::option::Option::None,
+            source_file: "tests/proptest/src/lib.rs",
+            start_line: 30usize,
+            start_col: 12usize,
+            end_line: 30usize,
+            end_col: 30usize,
+            compile_fail: false,
+            no_run: false,
+            should_panic: test::ShouldPanic::No,
+            test_type: test::TestType::UnitTest,
+        },
+        testfn: test::StaticTestFn(
+            #[coverage(off)]
+            || test::assert_test_result(test_run_prototype()),
+        ),
+    };
+    /// The prototype is named in the parameter list, in the same way that a
+    /// fuzz test names it in its input struct.
+    fn test_run_prototype() {
+        let mut config = ::proptest::test_runner::contextualize_config(
+            ::proptest::test_runner::Config::default().clone(),
+        );
+        config.test_name = Some("test_proptest::test::test_run_prototype");
+        {
+            config.source_file = Some("tests/proptest/src/lib.rs");
+            let mut runner = ::proptest::test_runner::TestRunner::new(config);
+            let names = ("a", "b");
+            match runner.run(
+                &::proptest::strategy::Strategy::prop_map(
+                    (
+                        ::proptest::arbitrary::any::<<U256 as SorobanArbitrary>::Prototype>(),
+                        ::proptest::arbitrary::any::<<U256 as SorobanArbitrary>::Prototype>(),
+                    ),
+                    |values| ::proptest::sugar::NamedArguments(names, values),
+                ),
+                |::proptest::sugar::NamedArguments(_, (a, b))| {
+                    let (): () = {
+                        let env = Env::new_with_config(EnvTestConfig {
+                            capture_snapshot_at_drop: false,
+                        });
+                        let a: U256 = a.into_val(&env);
+                        let b: U256 = b.into_val(&env);
+                        let contract_id = env.register(Contract, ());
+                        let client = ContractClient::new(&env, &contract_id);
+                        match (&client.try_run(&a, &b).is_ok(), &(a >= b)) {
+                            (left_val, right_val) => {
+                                if !(*left_val == *right_val) {
+                                    let kind = ::core::panicking::AssertKind::Eq;
+                                    ::core::panicking::assert_failed(
+                                        kind,
+                                        &*left_val,
+                                        &*right_val,
+                                        ::core::option::Option::None,
+                                    );
+                                }
+                            }
+                        };
+                    };
+                    Ok(())
+                },
+            ) {
+                Ok(()) => {}
+                Err(e) => {
+                    ::core::panicking::panic_fmt(format_args!("{0}\n{1}", e, runner));
+                }
+            }
+        };
+    }
     extern crate test;
     #[rustc_test_marker = "test::test_run"]
     #[doc(hidden)]
@@ -357,9 +432,9 @@ mod test {
             ignore: false,
             ignore_message: ::core::option::Option::None,
             source_file: "tests/proptest/src/lib.rs",
-            start_line: 28usize,
+            start_line: 49usize,
             start_col: 12usize,
-            end_line: 28usize,
+            end_line: 49usize,
             end_col: 20usize,
             compile_fail: false,
             no_run: false,
@@ -371,6 +446,7 @@ mod test {
             || test::assert_test_result(test_run()),
         ),
     };
+    /// The `arb` strategy names the contract type rather than its prototype.
     fn test_run() {
         let mut config = ::proptest::test_runner::contextualize_config(
             ::proptest::test_runner::Config::default().clone(),
@@ -424,5 +500,5 @@ mod test {
 #[doc(hidden)]
 pub fn main() -> () {
     extern crate test;
-    test::test_main_static(&[&test_run])
+    test::test_main_static(&[&test_run, &test_run_prototype])
 }

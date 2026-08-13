@@ -6,8 +6,9 @@ use crate::{self as soroban_sdk};
 use proptest::prelude::*;
 use proptest::strategy::ValueTree;
 use soroban_sdk::{
-    contracttype, testutils::proptest::arb, Address, Bytes, Env, IntoVal, Map, MuxedAddress,
-    String, Symbol, Val, Vec,
+    contracttype,
+    testutils::{arbitrary::SorobanArbitrary, proptest::arb},
+    Address, Bytes, Env, IntoVal, Map, MuxedAddress, String, Symbol, Val, Vec,
 };
 
 #[contracttype]
@@ -24,6 +25,26 @@ pub enum Action {
 }
 
 proptest! {
+    /// Prototypes implement proptest's `Arbitrary`, so they can be named
+    /// directly in the parameter list rather than with the `arb` strategy.
+    #[test]
+    fn test_prototype_in_parameter_list(
+        address: <Address as SorobanArbitrary>::Prototype,
+        addresses: <Vec<Address> as SorobanArbitrary>::Prototype,
+        bytes: <Bytes as SorobanArbitrary>::Prototype,
+        val: <Val as SorobanArbitrary>::Prototype,
+        deposit: <Deposit as SorobanArbitrary>::Prototype,
+        action: <Action as SorobanArbitrary>::Prototype,
+    ) {
+        let env = Env::default();
+        let _address: Address = address.into_val(&env);
+        let _addresses: Vec<Address> = addresses.into_val(&env);
+        let _bytes: Bytes = bytes.into_val(&env);
+        let _val: Val = val.into_val(&env);
+        let _deposit: Deposit = deposit.into_val(&env);
+        let _action: Action = action.into_val(&env);
+    }
+
     #[test]
     fn test_address(address in arb::<Address>()) {
         let env = Env::default();

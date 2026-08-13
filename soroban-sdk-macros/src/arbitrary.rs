@@ -312,6 +312,23 @@ fn quote_arbitrary(
     arbitrary_type_decl: TokenStream2,
     arbitrary_ctor: TokenStream2,
 ) -> TokenStream2 {
+    // Additional output when proptest support is enabled, implementing proptest's Arbitrary for
+    // the prototype by forwarding to the arbitrary implementation derived above. Lets the
+    // prototype be named directly in the parameter list of a proptest! test.
+    let proptest_tokens = if cfg!(feature = "testutils-proptest") {
+        quote! {
+            impl #path::testutils::arbitrary::proptest::arbitrary::Arbitrary for #arbitrary_type_ident {
+                type Parameters = ();
+                type Strategy = #path::testutils::arbitrary::proptest_arbitrary_interop::ArbStrategy<Self>;
+                fn arbitrary_with(_: Self::Parameters) -> Self::Strategy {
+                    #path::testutils::arbitrary::proptest_arbitrary_interop::arb::<Self>()
+                }
+            }
+        }
+    } else {
+        quote! {}
+    };
+
     quote! {
         // This allows us to create a scope to import std and arbitrary, while
         // also keeping everything from the current scope. This is better than a
@@ -336,6 +353,8 @@ fn quote_arbitrary(
                     Ok(#arbitrary_ctor)
                 }
             }
+
+            #proptest_tokens
         };
     }
 }

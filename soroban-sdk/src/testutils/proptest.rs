@@ -47,6 +47,27 @@
 //! }
 //! ```
 //!
+//! The prototypes also implement [`proptest`]'s own `Arbitrary` trait, so a
+//! prototype can be named directly in the parameter list instead, in the same
+//! way that a fuzz test names it in its input struct. Use whichever reads
+//! better: `arb` names the contract type, the parameter list names its
+//! prototype.
+//!
+//! ```
+//! use proptest::prelude::*;
+//! use soroban_sdk::testutils::arbitrary::SorobanArbitrary;
+//! use soroban_sdk::{Address, Env, IntoVal};
+//!
+//! proptest! {
+//!     #[test]
+//!     fn test_address(address: <Address as SorobanArbitrary>::Prototype) {
+//!         let env = Env::default();
+//!         let address: Address = address.into_val(&env);
+//!         // test the contract with the address
+//!     }
+//! }
+//! ```
+//!
 //! Types with the [`contracttype`] attribute work the same way.
 //!
 //! ```

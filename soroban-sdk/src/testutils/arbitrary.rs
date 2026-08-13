@@ -215,6 +215,11 @@ pub use arbitrary::Arbitrary;
 #[doc(hidden)]
 pub use std;
 
+// Used by `contracttype` to implement proptest's `Arbitrary` on the prototype it generates.
+#[cfg(feature = "testutils-proptest")]
+#[doc(hidden)]
+pub use {::proptest, ::proptest_arbitrary_interop};
+
 pub use api::*;
 pub use fuzz_test_helpers::*;
 
@@ -1495,6 +1500,117 @@ mod composite {
                     v.into_val(env)
                 }
             })
+        }
+    }
+}
+
+/// Implementations of [`proptest`]'s `Arbitrary` trait for the prototypes.
+///
+/// The prototypes already implement [`arbitrary`]'s `Arbitrary`, and these
+/// implementations forward to it, so that a prototype can be named directly in
+/// the parameter list of a `proptest!` test, in the same way that a fuzz test
+/// names it in its input struct.
+///
+/// The prototypes of the scalar types are the scalar types themselves, and
+/// `proptest` already implements the trait for them. The prototype of a tuple
+/// is a tuple of prototypes, which `proptest` covers with its own tuple
+/// implementations.
+///
+/// [`proptest`]: https://github.com/proptest-rs/proptest/
+#[cfg(feature = "testutils-proptest")]
+mod proptest_impls {
+    use proptest_arbitrary_interop::{arb, ArbInterop, ArbStrategy};
+
+    use super::composite::*;
+    use super::objects::*;
+
+    /// Implement `proptest`'s `Arbitrary` for prototypes that have no type
+    /// parameters.
+    macro_rules! impl_arbitrary {
+        ($($t:ty,)*) => {
+            $(
+                impl proptest::arbitrary::Arbitrary for $t {
+                    type Parameters = ();
+                    type Strategy = ArbStrategy<Self>;
+                    fn arbitrary_with(_: Self::Parameters) -> Self::Strategy {
+                        arb::<Self>()
+                    }
+                }
+            )*
+        };
+    }
+
+    impl_arbitrary! {
+        ArbitraryU256,
+        ArbitraryI256,
+        ArbitraryBytes,
+        ArbitraryString,
+        ArbitrarySymbol,
+        ArbitraryAddress,
+        ArbitraryMuxedAddress,
+        ArbitraryTimepoint,
+        ArbitraryDuration,
+        ArbitraryBls12381Fp,
+        ArbitraryBls12381Fp2,
+        ArbitraryBls12381G1Affine,
+        ArbitraryBls12381G2Affine,
+        ArbitraryBls12381Fr,
+        ArbitraryBn254G1Affine,
+        ArbitraryBn254G2Affine,
+        ArbitraryBn254Fp,
+        ArbitraryBn254Fr,
+        ArbitraryVal,
+        ArbitraryValVec,
+        ArbitraryValMap,
+        ArbitraryValOption,
+    }
+
+    // The prototypes that have type parameters are implemented individually.
+    // The `Self: ArbInterop` bound defers the requirements on the type
+    // parameters to the prototype's `arbitrary` implementation, so that they do
+    // not need restating here.
+
+    impl<T> proptest::arbitrary::Arbitrary for ArbitraryOption<T>
+    where
+        Self: ArbInterop,
+    {
+        type Parameters = ();
+        type Strategy = ArbStrategy<Self>;
+        fn arbitrary_with(_: Self::Parameters) -> Self::Strategy {
+            arb::<Self>()
+        }
+    }
+
+    impl<T> proptest::arbitrary::Arbitrary for ArbitraryVec<T>
+    where
+        Self: ArbInterop,
+    {
+        type Parameters = ();
+        type Strategy = ArbStrategy<Self>;
+        fn arbitrary_with(_: Self::Parameters) -> Self::Strategy {
+            arb::<Self>()
+        }
+    }
+
+    impl<K, V> proptest::arbitrary::Arbitrary for ArbitraryMap<K, V>
+    where
+        Self: ArbInterop,
+    {
+        type Parameters = ();
+        type Strategy = ArbStrategy<Self>;
+        fn arbitrary_with(_: Self::Parameters) -> Self::Strategy {
+            arb::<Self>()
+        }
+    }
+
+    impl<const N: usize> proptest::arbitrary::Arbitrary for ArbitraryBytesN<N>
+    where
+        Self: ArbInterop,
+    {
+        type Parameters = ();
+        type Strategy = ArbStrategy<Self>;
+        fn arbitrary_with(_: Self::Parameters) -> Self::Strategy {
+            arb::<Self>()
         }
     }
 }

@@ -72,7 +72,7 @@ testutils = ["soroban-sdk-macros/testutils", "soroban-env-host/testutils", "soro
 docs = []
 
 # Support for test frameworks and utilities
-testutils-proptest = ["testutils", "dep:proptest", "dep:proptest-arbitrary-interop"]
+testutils-proptest = ["testutils", "soroban-sdk-macros/testutils-proptest", "dep:proptest", "dep:proptest-arbitrary-interop"]
 
 # Umbrella feature that enables all hazmat sub-features (backwards compatible)
 hazmat = [
