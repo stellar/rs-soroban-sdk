@@ -19,8 +19,8 @@
 //!
 //!   ⚠️ The discarded fields are not remembered. If the value is packed and written back to
 //!   storage, the stored data loses every field the struct being unpacked into did not have. When
-//!   more than one version of a contract, or more than one struct, reads the same stored data, only
-//!   the fields of the struct doing the writing survive.
+//!   more than one version of a struct reads the same stored data, only the fields of the struct
+//!   doing the writing survive.
 //!
 //! Packing (writing to storage) is unchanged. Every field of the struct is written to the map,
 //! including `Option` fields that are `None`, which are written as void.
