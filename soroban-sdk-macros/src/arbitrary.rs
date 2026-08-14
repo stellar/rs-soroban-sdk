@@ -312,22 +312,7 @@ fn quote_arbitrary(
     arbitrary_type_decl: TokenStream2,
     arbitrary_ctor: TokenStream2,
 ) -> TokenStream2 {
-    // Additional output when proptest support is enabled, implementing proptest's Arbitrary for
-    // the prototype by forwarding to the arbitrary implementation derived above. Lets the
-    // prototype be named directly in the parameter list of a proptest! test.
-    let proptest_tokens = if cfg!(feature = "testutils-proptest") {
-        quote! {
-            impl #path::testutils::proptest::proptest::arbitrary::Arbitrary for #arbitrary_type_ident {
-                type Parameters = ();
-                type Strategy = #path::testutils::proptest::proptest_arbitrary_interop::ArbStrategy<Self>;
-                fn arbitrary_with(_: Self::Parameters) -> Self::Strategy {
-                    #path::testutils::proptest::arb_from_size_hint::<Self>()
-                }
-            }
-        }
-    } else {
-        quote! {}
-    };
+    let proptest_tokens = quote_proptest(path, &arbitrary_type_ident);
 
     quote! {
         // This allows us to create a scope to import std and arbitrary, while
@@ -356,5 +341,26 @@ fn quote_arbitrary(
 
             #proptest_tokens
         };
+    }
+}
+
+/// Implement proptest's `Arbitrary` for the prototype, by forwarding to the `arbitrary`
+/// implementation derived for it. Lets the prototype be named directly in the parameter list of a
+/// `proptest!` test.
+///
+/// Empty unless the proptest support is enabled, because the paths it refers to only exist when the
+/// sdk's "testutils-proptest" feature is on, and that feature is what enables this one.
+fn quote_proptest(path: &Path, arbitrary_type_ident: &Ident) -> TokenStream2 {
+    if !cfg!(feature = "testutils-proptest") {
+        return quote! {};
+    }
+    quote! {
+        impl #path::testutils::proptest::proptest::arbitrary::Arbitrary for #arbitrary_type_ident {
+            type Parameters = ();
+            type Strategy = #path::testutils::proptest::proptest_arbitrary_interop::ArbStrategy<Self>;
+            fn arbitrary_with(_: Self::Parameters) -> Self::Strategy {
+                #path::testutils::proptest::arb_from_size_hint::<Self>()
+            }
+        }
     }
 }
