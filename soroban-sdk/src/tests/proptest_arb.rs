@@ -214,3 +214,52 @@ fn test_entropy_budget_bounds_collection_length() {
         "expected the default budget to outrun a 64 byte one, got {default} and {truncated}"
     );
 }
+
+proptest! {
+    /// The prototype of a tuple is an `ArbitraryTupleN` struct rather than a
+    /// tuple of prototypes, so it needs its own `Arbitrary` implementation and
+    /// is not covered by proptest's tuple implementations.
+    #[test]
+    fn test_tuple_prototype_in_parameter_list(
+        pair: <(u32, Address) as SorobanArbitrary>::Prototype,
+        nested: <(Address, Vec<Address>, i128) as SorobanArbitrary>::Prototype,
+    ) {
+        let env = Env::default();
+        let _pair: (u32, Address) = pair.into_val(&env);
+        let _nested: (Address, Vec<Address>, i128) = nested.into_val(&env);
+    }
+}
+
+/// A collection is given entropy sized for its elements, so a collection of a
+/// large prototype is not cut short. `Keys` needs 384 bytes, and with a budget
+/// sized for a small element the second element onwards runs out of bytes part
+/// way through, which `arbitrary` fills with zeros.
+#[test]
+fn test_collection_budget_covers_large_elements() {
+    let env = Env::default();
+    let zero = BytesN::from_array(&env, &[0u8; 32]);
+
+    let mut sampled_long_enough = 0;
+    let mut truncated = 0;
+    for proto in samples(any::<<Vec<Keys> as SorobanArbitrary>::Prototype>(), 100) {
+        let v: Vec<Keys> = proto.into_val(&env);
+        if v.len() < 2 {
+            continue;
+        }
+        sampled_long_enough += 1;
+        let last = v.get(v.len() - 1).unwrap();
+        if last.l == zero {
+            truncated += 1;
+        }
+    }
+
+    assert!(
+        sampled_long_enough > 0,
+        "no sample had 2 or more elements, so the assertion below proves nothing"
+    );
+    assert_eq!(
+        truncated, 0,
+        "the last field was zero in {truncated} of {sampled_long_enough} samples, \
+         so the entropy budget ran out part way through the collection"
+    );
+}

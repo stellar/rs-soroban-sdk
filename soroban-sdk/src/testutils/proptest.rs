@@ -115,17 +115,37 @@ pub use proptest;
 #[doc(hidden)]
 pub use proptest_arbitrary_interop;
 
-/// The entropy budget given to a prototype whose size the `arbitrary`
-/// implementation does not bound: the collections, the strings, and `Val`.
+/// The number of elements a generated collection is given enough entropy to
+/// reach without any of them being cut short.
 ///
 /// `arbitrary` decides the length of a collection with a coin flip before each
 /// element, so lengths are geometrically distributed and do not grow with the
 /// budget. The budget only has to be large enough not to cut that distribution
-/// short, and beyond that point a larger one changes nothing. This is enough
-/// for a run of 16 elements of the largest fixed size Soroban value, a 32 byte
-/// `Address` or `BytesN<32>`, which the length distribution reaches about once
-/// in 65536 values.
-const UNBOUNDED_ENTROPY_BUDGET: usize = 16 * 32;
+/// short. A run this long occurs about once in 65536 values.
+const COLLECTION_ELEMENTS: usize = 16;
+
+/// The entropy budget given to a prototype whose size the `arbitrary`
+/// implementation does not bound, and whose element size is not known either:
+/// the strings and `Val`. Their elements are a byte or a character each, so a
+/// run of [`COLLECTION_ELEMENTS`] of them needs far less than this.
+const UNBOUNDED_ENTROPY_BUDGET: usize = 256;
+
+/// The entropy budget for a collection of `T`, enough for a run of
+/// [`COLLECTION_ELEMENTS`] elements, plus the byte `arbitrary` spends on the
+/// coin flip before each one.
+///
+/// Sized from `T`'s own size hint rather than a fixed number, because the
+/// prototypes vary by two orders of magnitude — a `u32` is 4 bytes and a
+/// `Bls12381G2Affine` is 192 — and a budget that fits the small ones cuts
+/// collections of the large ones short.
+fn collection_entropy_budget<T>() -> usize
+where
+    T: for<'a> ::arbitrary::Arbitrary<'a>,
+{
+    let (lower, upper) = <T as ::arbitrary::Arbitrary>::size_hint(0);
+    let element = upper.unwrap_or(UNBOUNDED_ENTROPY_BUDGET).max(lower);
+    COLLECTION_ELEMENTS * (element + 1)
+}
 
 /// A strategy that generates the prototype `A` with an entropy budget taken
 /// from its `arbitrary` implementation's size hint.
@@ -153,9 +173,12 @@ where
 mod prototype_impls {
     use proptest_arbitrary_interop::{ArbInterop, ArbStrategy};
 
-    use super::arb_from_size_hint;
+    use proptest_arbitrary_interop::arb_sized;
+
+    use super::{arb_from_size_hint, collection_entropy_budget};
     use crate::testutils::arbitrary::composite::*;
     use crate::testutils::arbitrary::objects::*;
+    use crate::testutils::arbitrary::tuples::*;
 
     /// Implement `proptest`'s `Arbitrary` for prototypes that have no type
     /// parameters.
@@ -214,25 +237,31 @@ mod prototype_impls {
         }
     }
 
+    // The collections size their budget from their element types, so that a
+    // collection of a large prototype is not cut short.
+
     impl<T> proptest::arbitrary::Arbitrary for ArbitraryVec<T>
     where
         Self: ArbInterop,
+        T: for<'a> ::arbitrary::Arbitrary<'a>,
     {
         type Parameters = ();
         type Strategy = ArbStrategy<Self>;
         fn arbitrary_with(_: Self::Parameters) -> Self::Strategy {
-            arb_from_size_hint::<Self>()
+            arb_sized::<Self>(collection_entropy_budget::<T>())
         }
     }
 
     impl<K, V> proptest::arbitrary::Arbitrary for ArbitraryMap<K, V>
     where
         Self: ArbInterop,
+        K: for<'a> ::arbitrary::Arbitrary<'a>,
+        V: for<'a> ::arbitrary::Arbitrary<'a>,
     {
         type Parameters = ();
         type Strategy = ArbStrategy<Self>;
         fn arbitrary_with(_: Self::Parameters) -> Self::Strategy {
-            arb_from_size_hint::<Self>()
+            arb_sized::<Self>(collection_entropy_budget::<K>() + collection_entropy_budget::<V>())
         }
     }
 
@@ -245,5 +274,40 @@ mod prototype_impls {
         fn arbitrary_with(_: Self::Parameters) -> Self::Strategy {
             arb_from_size_hint::<Self>()
         }
+    }
+
+    /// Implement `proptest`'s `Arbitrary` for the tuple prototypes. A tuple's
+    /// prototype is one of these structs rather than a tuple of prototypes, so
+    /// `proptest`'s own tuple implementations do not cover them.
+    macro_rules! impl_arbitrary_tuple {
+        ($($t:ident<$($p:ident),*>,)*) => {
+            $(
+                impl<$($p),*> proptest::arbitrary::Arbitrary for $t<$($p),*>
+                where
+                    Self: ArbInterop,
+                {
+                    type Parameters = ();
+                    type Strategy = ArbStrategy<Self>;
+                    fn arbitrary_with(_: Self::Parameters) -> Self::Strategy {
+                        arb_from_size_hint::<Self>()
+                    }
+                }
+            )*
+        };
+    }
+
+    impl_arbitrary_tuple! {
+        ArbitraryTuple1<T1>,
+        ArbitraryTuple2<T1, T2>,
+        ArbitraryTuple3<T1, T2, T3>,
+        ArbitraryTuple4<T1, T2, T3, T4>,
+        ArbitraryTuple5<T1, T2, T3, T4, T5>,
+        ArbitraryTuple6<T1, T2, T3, T4, T5, T6>,
+        ArbitraryTuple7<T1, T2, T3, T4, T5, T6, T7>,
+        ArbitraryTuple8<T1, T2, T3, T4, T5, T6, T7, T8>,
+        ArbitraryTuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9>,
+        ArbitraryTuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>,
+        ArbitraryTuple11<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>,
+        ArbitraryTuple12<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>,
     }
 }

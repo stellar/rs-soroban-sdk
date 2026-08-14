@@ -971,7 +971,7 @@ pub(crate) mod objects {
 /// Implementations of `soroban_sdk::testutils::arbitrary::api` for tuples of Soroban types.
 ///
 /// The implementation is similar to objects, but macroized.
-mod tuples {
+pub(crate) mod tuples {
     use super::api::*;
     use crate::ConversionError;
     use crate::{Env, IntoVal, TryFromVal, TryIntoVal, Val};
