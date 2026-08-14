@@ -520,6 +520,54 @@ fn test_data_map() {
 }
 
 #[test]
+fn test_data_map_none_fields_omitted() {
+    let env = Env::default();
+
+    #[contract]
+    pub struct Contract;
+    let id = env.register(Contract, ());
+
+    #[contractevent(data_format = "map")]
+    pub struct MyEvent {
+        #[topic]
+        name: Symbol,
+        value: Symbol,
+        value2: Option<u32>,
+    }
+
+    let event = MyEvent {
+        name: symbol_short!("hi"),
+        value: symbol_short!("yo"),
+        value2: None,
+    };
+    env.as_contract(&id, || {
+        event.publish(&env);
+    });
+
+    // Fields that are void, which an Option field that is None is, are omitted
+    // from the map.
+    let data: Val = map![
+        &env,
+        (
+            symbol_short!("value"),
+            <_ as IntoVal<Env, Val>>::into_val(&symbol_short!("yo"), &env),
+        ),
+    ]
+    .into_val(&env);
+    let expected_event = xdr::ContractEvent {
+        ext: xdr::ExtensionPoint::V0,
+        type_: xdr::ContractEventType::Contract,
+        contract_id: Some(id.contract_id()),
+        body: xdr::ContractEventBody::V0(xdr::ContractEventV0 {
+            topics: vec![&env, symbol_short!("my_event"), symbol_short!("hi")].into(),
+            data: xdr::ScVal::try_from_val(&env, &data).unwrap(),
+        }),
+    };
+    assert_eq!(env.events().all(), std::vec![expected_event.clone()],);
+    assert_eq!(event.to_xdr(&env, &id), expected_event);
+}
+
+#[test]
 fn test_data_map_no_data() {
     let env = Env::default();
 

@@ -283,7 +283,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
             ).into_val(env)
         },
         DataFormat::Map => {
-            // Must be sorted for map_new_from_slices. Sort by the spec name (the
+            // Must be sorted for sparse_map_new_from_slices. Sort by the spec name (the
             // Soroban-facing Symbol string), and carry the original Ident alongside so
             // that `self.#ident` still uses the raw form where needed.
             let mut data_params_sorted = data_params.clone();
@@ -302,7 +302,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
                 let vals: [#path::Val; #data_params_count] = [
                     #(self.#data_idents_sorted.into_val(env)),*
                 ];
-                env.map_new_from_slices(&KEYS, &vals).unwrap_infallible().into()
+                env.sparse_map_new_from_slices(&KEYS, &vals).unwrap_infallible().into()
             }
         }
     };
