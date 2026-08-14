@@ -19,7 +19,6 @@ mod derive_trait;
 mod doc;
 mod map_type;
 mod path;
-mod proptest;
 mod shaking;
 mod symbol;
 mod syn_ext;
