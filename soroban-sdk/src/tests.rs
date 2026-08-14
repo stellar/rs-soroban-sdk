@@ -20,6 +20,7 @@ mod contract_invoke_arg_count;
 mod contract_meta;
 mod contract_overlapping_type_fn_names;
 mod contract_snapshot;
+mod contract_snapshot_reload_register;
 mod contract_store;
 mod contract_timepoint;
 mod contract_udt_enum;
