@@ -661,29 +661,17 @@ impl Env {
     /// Record that `hash` is the Wasm hash of a native contract, so that
     /// lookups for its ContractCode entry are filtered out before reaching a
     /// [`SnapshotSource`](internal::storage::SnapshotSource).
-    ///
-    /// Must be called before the host is asked to register the contract,
-    /// because registration itself looks the code entry up.
     pub(crate) fn note_native_wasm_hash(&self, hash: [u8; 32]) {
         self.test_state.native_wasm_hashes.borrow_mut().insert(hash);
     }
 
-    /// The Wasm hash the host generates for a native contract registered at
-    /// `contract_id` without an explicit Wasm hash.
-    ///
-    /// This mirrors the host's `register_native_contract_as_wasm_internal`. If
-    /// the two ever drift apart the filtering is silently lost, so
-    /// `tests::snapshot_source_native_wasm_hash` asserts that registering does
-    /// not reach the snapshot source.
-    pub(crate) fn native_wasm_hash_for_contract(&self, contract_id: &Address) -> [u8; 32] {
-        let xdr::ScAddress::Contract(xdr::ContractId(xdr::Hash(id))) = contract_id.into() else {
-            panic!("contract addresses only");
-        };
-        let strkey = stellar_strkey::Strkey::Contract(stellar_strkey::Contract(id)).to_string();
-        let wasm = format!("test_contract_for_contract_id_{strkey}");
-        self.crypto()
-            .sha256(&Bytes::from_slice(self, wasm.as_bytes()))
-            .to_array()
+    /// Record the Wasm hash the host generated for the native contract
+    /// registered at `contract_id`, by reading it back off the contract's
+    /// executable.
+    pub(crate) fn note_native_wasm_hash_of(&self, contract_id: &Address) {
+        if let Some(crate::address::Executable::Wasm(hash)) = contract_id.executable() {
+            self.note_native_wasm_hash(hash.to_array());
+        }
     }
 
     /// Create an Env with the test config.
@@ -1187,7 +1175,6 @@ impl Env {
         // that a panic during conversion cannot leave the environment stuck in
         // recording auth. This matches the wasm registration path.
         let constructor_args = constructor_args.into_val(self).to_object();
-        self.note_native_wasm_hash(self.native_wasm_hash_for_contract(&contract_id));
         let prev_auth_manager = self.env_impl.snapshot_auth_manager().unwrap();
         self.env_impl
             .switch_to_recording_auth_inherited_from_snapshot(&prev_auth_manager)
@@ -1199,6 +1186,7 @@ impl Env {
         );
         self.env_impl.set_auth_manager(prev_auth_manager).unwrap();
         register_result.unwrap();
+        self.note_native_wasm_hash_of(&contract_id);
         contract_id
     }
 
