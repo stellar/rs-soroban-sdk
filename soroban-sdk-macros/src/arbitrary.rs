@@ -99,8 +99,6 @@ fn derive_arbitrary_struct_common(
         },
     };
 
-    let proptest_tokens = quote_proptest(path, &arbitrary_type_ident);
-
     quote_arbitrary(
         path,
         vis,
@@ -108,7 +106,6 @@ fn derive_arbitrary_struct_common(
         arbitrary_type_ident,
         arbitrary_type_decl,
         arbitrary_ctor,
-        proptest_tokens,
     )
 }
 
@@ -246,8 +243,6 @@ pub fn derive_arbitrary_enum(
         }
     };
 
-    let proptest_tokens = quote_proptest(path, &arbitrary_type_ident);
-
     quote_arbitrary(
         path,
         vis,
@@ -255,7 +250,6 @@ pub fn derive_arbitrary_enum(
         arbitrary_type_ident,
         arbitrary_type_decl,
         arbitrary_ctor,
-        proptest_tokens,
     )
 }
 
@@ -300,8 +294,6 @@ pub fn derive_arbitrary_enum_int(
         }
     };
 
-    let proptest_tokens = quote_proptest(path, &arbitrary_type_ident);
-
     quote_arbitrary(
         path,
         vis,
@@ -309,12 +301,9 @@ pub fn derive_arbitrary_enum_int(
         arbitrary_type_ident,
         arbitrary_type_decl,
         arbitrary_ctor,
-        proptest_tokens,
     )
 }
 
-/// `proptest_tokens` is emitted alongside the prototype, inside the same scope, because the
-/// prototype is declared in an anonymous const and cannot be named from outside it.
 fn quote_arbitrary(
     path: &Path,
     vis: &Visibility,
@@ -322,8 +311,9 @@ fn quote_arbitrary(
     arbitrary_type_ident: Ident,
     arbitrary_type_decl: TokenStream2,
     arbitrary_ctor: TokenStream2,
-    proptest_tokens: TokenStream2,
 ) -> TokenStream2 {
+    let proptest_tokens = quote_proptest(path, &arbitrary_type_ident);
+
     quote! {
         // This allows us to create a scope to import std and arbitrary, while
         // also keeping everything from the current scope. This is better than a
