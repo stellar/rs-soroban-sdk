@@ -176,12 +176,8 @@
 //!
 //! ## Limits of generated values
 //!
-//! The following apply to every generated prototype, because under both
-//! `cargo-fuzz` and `proptest` the values come from the [`Arbitrary`]
-//! implementations. The lengths given below are those of `proptest`; under
-//! `cargo-fuzz` the lengths of the last field of a fuzz input can be larger,
-//! because libFuzzer generates it with `arbitrary_take_rest`, which consumes
-//! the whole remaining input.
+//! The following are limits of the [`Arbitrary`] implementations themselves,
+//! so they apply to every generated prototype, however it is generated.
 //!
 //! ### Collection sizes are small
 //!
@@ -191,11 +187,11 @@
 //! are empty and lengths greater than about eight are rare — well under 1% of
 //! values. `String` lengths are chosen differently, but come out similarly
 //! small: about 46% of generated strings are empty, and fewer than 1% are
-//! longer than eight characters. If a test needs larger inputs, compose the
-//! prototype with `proptest`'s own collection strategies — for example generate
-//! a `std::vec::Vec` of prototypes with `proptest::collection::vec` and build
-//! the Soroban collection in the test body — or use `prop_filter` to discard
-//! values that are too small.
+//! longer than eight characters.
+//!
+//! The one exception is the last field of a `cargo-fuzz` input, which
+//! libFuzzer generates with `arbitrary_take_rest`: it consumes all of the
+//! remaining input, so it can be much longer.
 //!
 //! ### Addresses are always contract addresses
 //!

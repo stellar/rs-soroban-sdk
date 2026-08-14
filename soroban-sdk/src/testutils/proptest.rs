@@ -96,13 +96,24 @@
 //! collection lengths are small, and addresses are always contract addresses.
 //! See the [`arbitrary`][crate::testutils::arbitrary] module docs for the
 //! details.
+//!
+//! A prototype is generated as a whole from random bytes, so the controls
+//! `proptest` usually has over the shape of a value do not reach inside it:
+//! neither a strategy's size parameters nor a larger entropy budget make a
+//! generated collection longer. If a test needs larger collections, compose the
+//! prototype with `proptest`'s own collection strategies — for example generate
+//! a `std::vec::Vec` of prototypes with [`proptest::collection::vec`] and build
+//! the Soroban collection from it in the test body — or use `prop_filter` to
+//! discard values that are too small.
+//!
+//! [`proptest::collection::vec`]: proptest::collection::vec
 
 /// A reexport of the `proptest` crate.
-pub use ::proptest;
+pub use proptest;
 
 // Used by `contracttype` to implement proptest's `Arbitrary` on the prototype it generates.
 #[doc(hidden)]
-pub use ::proptest_arbitrary_interop;
+pub use proptest_arbitrary_interop;
 
 /// The entropy budget given to a prototype whose size the `arbitrary`
 /// implementation does not bound: the collections, the strings, and `Val`.
