@@ -10,9 +10,9 @@
 //!
 //! ## `testutils-proptest`
 //!
-//! Enables `testutils`, and the [`testutils::proptest`][crate::testutils::proptest]
-//! module, which implements the [`proptest`](https://github.com/proptest-rs/proptest/)
-//! crate's `Arbitrary` trait for the generated prototypes.
+//! Enables the [`testutils::proptest`][crate::testutils::proptest] module,
+//! which implements the [`proptest`](https://github.com/proptest-rs/proptest/)
+//! crate's `Arbitrary` trait for types in this crate, and contract types.
 //! Only available for non-Wasm targets.
 //!
 //! ## `alloc`
