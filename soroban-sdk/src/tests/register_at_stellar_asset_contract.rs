@@ -19,10 +19,6 @@ impl Contract {
 /// replaces the asset contract, and calls to the address dispatch to the native
 /// contract for both functions the asset contract has and functions it does
 /// not.
-///
-/// This test exists to detect if that behavior changes, because the host
-/// decides whether the test contract registry or the built-in asset contract
-/// wins when both are present at an address.
 #[test]
 fn register_at_replaces_the_stellar_asset_contract() {
     let env = Env::default();
