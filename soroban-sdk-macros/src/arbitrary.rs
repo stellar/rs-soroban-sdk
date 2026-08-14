@@ -2,6 +2,8 @@ use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use syn::{DataEnum, DataStruct, Ident, Path, Visibility};
 
+use crate::proptest::quote_proptest;
+
 pub fn derive_arbitrary_struct(
     path: &Path,
     vis: &Visibility,
@@ -105,7 +107,7 @@ fn derive_arbitrary_struct_common(
         path,
         vis,
         ident,
-        arbitrary_type_ident,
+        &arbitrary_type_ident,
         arbitrary_type_decl,
         arbitrary_ctor,
         proptest_tokens,
@@ -252,7 +254,7 @@ pub fn derive_arbitrary_enum(
         path,
         vis,
         ident,
-        arbitrary_type_ident,
+        &arbitrary_type_ident,
         arbitrary_type_decl,
         arbitrary_ctor,
         proptest_tokens,
@@ -306,23 +308,23 @@ pub fn derive_arbitrary_enum_int(
         path,
         vis,
         ident,
-        arbitrary_type_ident,
+        &arbitrary_type_ident,
         arbitrary_type_decl,
         arbitrary_ctor,
         proptest_tokens,
     )
 }
 
-/// `proptest_tokens` is emitted alongside the prototype, inside the same scope, because the
-/// prototype is declared in an anonymous const and cannot be named from outside it.
+/// `extra` is emitted inside the scope that declares the prototype, for implementations on the
+/// prototype that cannot be written beside it because it is declared in an anonymous const.
 fn quote_arbitrary(
     path: &Path,
     vis: &Visibility,
     ident: &Ident,
-    arbitrary_type_ident: Ident,
+    arbitrary_type_ident: &Ident,
     arbitrary_type_decl: TokenStream2,
     arbitrary_ctor: TokenStream2,
-    proptest_tokens: TokenStream2,
+    extra: TokenStream2,
 ) -> TokenStream2 {
     quote! {
         // This allows us to create a scope to import std and arbitrary, while
@@ -349,28 +351,7 @@ fn quote_arbitrary(
                 }
             }
 
-            #proptest_tokens
+            #extra
         };
-    }
-}
-
-/// Implement proptest's `Arbitrary` for the prototype, by forwarding to the `arbitrary`
-/// implementation derived for it. Lets the prototype be named directly in the parameter list of a
-/// `proptest!` test.
-///
-/// Empty unless the proptest support is enabled, because the paths it refers to only exist when the
-/// sdk's "testutils-proptest" feature is on, and that feature is what enables this one.
-fn quote_proptest(path: &Path, arbitrary_type_ident: &Ident) -> TokenStream2 {
-    if !cfg!(feature = "testutils-proptest") {
-        return quote! {};
-    }
-    quote! {
-        impl #path::testutils::proptest::proptest::arbitrary::Arbitrary for #arbitrary_type_ident {
-            type Parameters = ();
-            type Strategy = #path::testutils::proptest::proptest_arbitrary_interop::ArbStrategy<Self>;
-            fn arbitrary_with(_: Self::Parameters) -> Self::Strategy {
-                #path::testutils::proptest::arb_from_size_hint::<Self>()
-            }
-        }
     }
 }
