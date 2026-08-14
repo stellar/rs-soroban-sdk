@@ -153,6 +153,35 @@ fn test_extra_fields_ignored_on_decode_scval() {
 }
 
 #[test]
+fn test_error_on_duplicate_keys_scmap() {
+    let env = Env::default();
+
+    // Fields are found in the map by binary search, which finds only one of the
+    // entries for a duplicated key, and so a map containing duplicate keys is
+    // an error rather than an arbitrary choice between the values.
+    let scval = ScVal::Map(Some(ScMap(
+        vec![
+            ScMapEntry {
+                key: ScVal::Symbol(ScSymbol("a".try_into().unwrap())),
+                val: ScVal::I32(5),
+            },
+            ScMapEntry {
+                key: ScVal::Symbol(ScSymbol("a".try_into().unwrap())),
+                val: ScVal::I32(6),
+            },
+            ScMapEntry {
+                key: ScVal::Symbol(ScSymbol("b".try_into().unwrap())),
+                val: ScVal::I32(7),
+            },
+        ]
+        .try_into()
+        .unwrap(),
+    )));
+    let udt = Udt::try_from_val(&env, &scval);
+    assert_eq!(udt, Err(stellar_xdr::Error::Invalid));
+}
+
+#[test]
 fn test_error_on_missing_field() {
     let env = Env::default();
 
