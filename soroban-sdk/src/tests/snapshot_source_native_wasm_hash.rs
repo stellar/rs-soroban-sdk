@@ -46,25 +46,23 @@ fn contract_code_requested(keys: &Rc<RefCell<Vec<xdr::LedgerKey>>>) -> bool {
         .any(|k| matches!(k, xdr::LedgerKey::ContractCode(_)))
 }
 
-/// `register` does not tell the SDK which Wasm hash the host picked until the
-/// contract exists, so the code entry lookup the host makes while registering
-/// happens before the hash can be filtered, and reaches the snapshot source.
+/// Native contracts each have their own Wasm hash, and none of those hashes
+/// exist on any real network, so none of them should ever be looked up against
+/// the snapshot source.
 ///
-/// Everything after that is filtered: see
-/// [`using_a_registered_contract_does_not_request_the_native_wasm_hash`].
+/// This also guards the SDK's copy of the host's Wasm hash derivation: if the
+/// host changes how it derives the hash for a contract registered without an
+/// explicit hash, the SDK stops recognising it and this test fails rather than
+/// silently losing the filtering.
 #[test]
-fn registering_requests_the_native_wasm_hash_once() {
+fn registering_does_not_request_the_native_wasm_hash() {
     let (env, keys) = recording_env();
 
     let _ = env.register(Contract, ());
 
-    assert_eq!(
-        keys.borrow()
-            .iter()
-            .filter(|k| matches!(k, xdr::LedgerKey::ContractCode(_)))
-            .count(),
-        1,
-        "recorded keys: {:?}",
+    assert!(
+        !contract_code_requested(&keys),
+        "no ContractCode entry should be requested from the snapshot source, recorded keys: {:?}",
         keys.borrow()
     );
 
@@ -77,25 +75,6 @@ fn registering_requests_the_native_wasm_hash_once() {
     assert!(
         requested_contract_data,
         "expected the contract instance ContractData lookup to reach the snapshot source, recorded keys: {:?}",
-        keys.borrow()
-    );
-}
-
-/// Once a native contract is registered its Wasm hash is known, so calling it
-/// and re-registering over it never reach the snapshot source.
-#[test]
-fn using_a_registered_contract_does_not_request_the_native_wasm_hash() {
-    let (env, keys) = recording_env();
-
-    let contract_id = env.register(Contract, ());
-    keys.borrow_mut().clear();
-
-    ContractClient::new(&env, &contract_id).hello();
-    let _ = env.register_at(&contract_id, Contract, ());
-
-    assert!(
-        !contract_code_requested(&keys),
-        "no ContractCode entry should be requested from the snapshot source, recorded keys: {:?}",
         keys.borrow()
     );
 }
