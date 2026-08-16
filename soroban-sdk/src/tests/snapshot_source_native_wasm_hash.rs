@@ -2,7 +2,7 @@ use crate::{self as soroban_sdk};
 use soroban_sdk::{
     contract, contractimpl,
     testutils::{HostError, SnapshotSource, SnapshotSourceInput},
-    xdr, Env,
+    xdr, BytesN, Env,
 };
 use std::{cell::RefCell, rc::Rc};
 
@@ -40,75 +40,66 @@ fn recording_env() -> (Env, Rc<RefCell<Vec<xdr::LedgerKey>>>) {
     (Env::from_ledger_snapshot(input), keys)
 }
 
-fn contract_code_requested(keys: &Rc<RefCell<Vec<xdr::LedgerKey>>>) -> bool {
+fn contract_code_keys(keys: &Rc<RefCell<Vec<xdr::LedgerKey>>>) -> Vec<xdr::LedgerKey> {
     keys.borrow()
         .iter()
-        .any(|k| matches!(k, xdr::LedgerKey::ContractCode(_)))
+        .filter(|k| matches!(k, xdr::LedgerKey::ContractCode(_)))
+        .cloned()
+        .collect()
 }
 
-/// Native contracts each have their own Wasm hash, and none of those hashes
-/// exist on any real network, so none of them should ever be looked up against
-/// the snapshot source.
+/// Native contracts have Wasm hashes that exist on no real network, so their
+/// ContractCode entries must never be looked up against the snapshot source,
+/// during registration or afterwards. The host looks the code entries of native
+/// contracts up in the storage map only, so no filtering is needed in the SDK.
 ///
-/// This also guards the SDK's copy of the host's Wasm hash derivation: if the
-/// host changes how it derives the hash for a contract registered without an
-/// explicit hash, the SDK stops recognising it and this test fails rather than
-/// silently losing the filtering.
+/// See issue #1635 "Empty WASM hash leaks to SnapshotSource".
 #[test]
-fn registering_does_not_request_the_native_wasm_hash() {
+fn native_contracts_never_request_contract_code() {
     let (env, keys) = recording_env();
 
-    let _ = env.register(Contract, ());
+    // Registering, at a generated address and at a given address.
+    let contract_id = env.register(Contract, ());
+    let _ = env.register_at(&contract_id, Contract, ());
 
-    assert!(
-        !contract_code_requested(&keys),
-        "no ContractCode entry should be requested from the snapshot source, recorded keys: {:?}",
+    // Uploading, at a generated hash and at a given hash.
+    let wasm_hash = env.upload(Contract);
+    let _ = env.upload_at([9u8; 32], Contract);
+
+    // Calling.
+    ContractClient::new(&env, &contract_id).hello();
+
+    // Deploying an instance from an uploaded native contract, and calling it.
+    let deployed = env.as_contract(&contract_id, || {
+        env.deployer()
+            .with_address(contract_id.clone(), BytesN::from_array(&env, &[0u8; 32]))
+            .deploy_v2(wasm_hash, ())
+    });
+    ContractClient::new(&env, &deployed).hello();
+
+    assert_eq!(
+        contract_code_keys(&keys),
+        Vec::new(),
+        "no ContractCode entry should be requested from the snapshot source, all recorded keys: {:?}",
         keys.borrow()
     );
 
     // Sanity check: other lookups (such as the contract instance ContractData
-    // entry) are still allowed to reach the snapshot source.
-    let requested_contract_data = keys
-        .borrow()
-        .iter()
-        .any(|k| matches!(k, xdr::LedgerKey::ContractData(_)));
+    // entries) do still reach the snapshot source, so the assertion above is
+    // not passing simply because nothing is recorded.
     assert!(
-        requested_contract_data,
-        "expected the contract instance ContractData lookup to reach the snapshot source, recorded keys: {:?}",
+        keys.borrow()
+            .iter()
+            .any(|k| matches!(k, xdr::LedgerKey::ContractData(_))),
+        "expected contract instance ContractData lookups to reach the snapshot source, recorded keys: {:?}",
         keys.borrow()
     );
 }
 
+/// Wasm contracts are unaffected: their ContractCode entry is still looked up
+/// against the snapshot source.
 #[test]
-fn uploading_does_not_request_the_native_wasm_hash() {
-    let (env, keys) = recording_env();
-
-    let _ = env.upload(Contract);
-
-    assert!(
-        !contract_code_requested(&keys),
-        "no ContractCode entry should be requested from the snapshot source, recorded keys: {:?}",
-        keys.borrow()
-    );
-}
-
-#[test]
-fn uploading_at_a_hash_does_not_request_the_native_wasm_hash() {
-    let (env, keys) = recording_env();
-
-    let _ = env.upload_at([9u8; 32], Contract);
-
-    assert!(
-        !contract_code_requested(&keys),
-        "no ContractCode entry should be requested from the snapshot source, recorded keys: {:?}",
-        keys.borrow()
-    );
-}
-
-/// The filter is limited to native contracts: a Wasm hash the SDK has not
-/// registered natively still reaches the snapshot source.
-#[test]
-fn other_wasm_hashes_still_reach_the_snapshot_source() {
+fn wasm_contracts_still_request_contract_code() {
     const WASM: &[u8] = include_bytes!("../../doctest_fixtures/contract.wasm");
 
     let (env, keys) = recording_env();
@@ -116,7 +107,7 @@ fn other_wasm_hashes_still_reach_the_snapshot_source() {
     let _ = env.register(WASM, ());
 
     assert!(
-        contract_code_requested(&keys),
+        !contract_code_keys(&keys).is_empty(),
         "the Wasm contract's ContractCode lookup should reach the snapshot source, recorded keys: {:?}",
         keys.borrow()
     );

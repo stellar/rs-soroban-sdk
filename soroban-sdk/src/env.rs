@@ -262,7 +262,6 @@ struct EnvTestState {
     generators: Rc<RefCell<Generators>>,
     auth_snapshot: Rc<RefCell<AuthSnapshot>>,
     snapshot: Option<Rc<LedgerSnapshot>>,
-    native_wasm_hashes: Rc<RefCell<HashSet<[u8; 32]>>>,
 }
 
 /// Config for changing the default behavior of the Env when used in tests.
@@ -596,41 +595,9 @@ use internal::{InvocationEvent, InvocationResourceLimits};
 #[cfg(any(test, feature = "testutils"))]
 use soroban_ledger_snapshot::LedgerSnapshot;
 #[cfg(any(test, feature = "testutils"))]
-use std::{collections::HashSet, path::Path, rc::Rc};
+use std::{path::Path, rc::Rc};
 #[cfg(any(test, feature = "testutils"))]
 use xdr::{LedgerEntry, LedgerKey, LedgerKeyContractData, SorobanAuthorizationEntry};
-
-/// Wraps a [`SnapshotSource`](internal::storage::SnapshotSource) and
-/// short-circuits lookups for the ContractCode entries of native test
-/// contracts, returning `Ok(None)` without ever consulting the inner source.
-/// This is an optimization that avoids wasteful (and always-failing) lookups
-/// against remote snapshot sources for entries that will never exist on any
-/// real network.
-///
-/// Every native contract has its own Wasm hash, so the hashes to filter are
-/// collected as contracts are registered and uploaded, via
-/// [`Env::note_native_wasm_hash`].
-#[cfg(any(test, feature = "testutils"))]
-struct FilteringSnapshotSource {
-    inner: Rc<dyn internal::storage::SnapshotSource>,
-    native_wasm_hashes: Rc<RefCell<HashSet<[u8; 32]>>>,
-}
-
-#[cfg(any(test, feature = "testutils"))]
-impl internal::storage::SnapshotSource for FilteringSnapshotSource {
-    fn get(
-        &self,
-        key: &Rc<xdr::LedgerKey>,
-    ) -> Result<Option<(Rc<xdr::LedgerEntry>, Option<u32>)>, soroban_env_host::HostError> {
-        if let xdr::LedgerKey::ContractCode(xdr::LedgerKeyContractCode { hash, .. }) = key.as_ref()
-        {
-            if self.native_wasm_hashes.borrow().contains(&hash.0) {
-                return Ok(None);
-            }
-        }
-        self.inner.get(key)
-    }
-}
 
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
@@ -656,34 +623,6 @@ impl Env {
     #[doc(hidden)]
     pub(crate) fn with_generator<T>(&self, f: impl FnOnce(RefMut<'_, Generators>) -> T) -> T {
         f((*self.test_state.generators).borrow_mut())
-    }
-
-    /// Record that `hash` is the Wasm hash of a native contract, so that
-    /// lookups for its ContractCode entry are filtered out before reaching a
-    /// [`SnapshotSource`](internal::storage::SnapshotSource).
-    ///
-    /// Must be called before the host is asked to register the contract,
-    /// because registration itself looks the code entry up.
-    pub(crate) fn note_native_wasm_hash(&self, hash: [u8; 32]) {
-        self.test_state.native_wasm_hashes.borrow_mut().insert(hash);
-    }
-
-    /// The Wasm hash the host generates for a native contract registered at
-    /// `contract_id` without an explicit Wasm hash.
-    ///
-    /// This mirrors the host's `register_native_contract_as_wasm_internal`. If
-    /// the two ever drift apart the filtering is silently lost, so
-    /// `tests::snapshot_source_native_wasm_hash` asserts that registering does
-    /// not reach the snapshot source.
-    pub(crate) fn native_wasm_hash_for_contract(&self, contract_id: &Address) -> [u8; 32] {
-        let xdr::ScAddress::Contract(xdr::ContractId(xdr::Hash(id))) = contract_id.into() else {
-            panic!("contract addresses only");
-        };
-        let strkey = stellar_strkey::Strkey::Contract(stellar_strkey::Contract(id)).to_string();
-        let wasm = format!("test_contract_for_contract_id_{strkey}");
-        self.crypto()
-            .sha256(&Bytes::from_slice(self, wasm.as_bytes()))
-            .to_array()
     }
 
     /// Create an Env with the test config.
@@ -752,16 +691,6 @@ impl Env {
             1
         };
 
-        // Wrap the incoming snapshot source so that lookups for the ContractCode
-        // entries of native test contracts are short-circuited and never reach
-        // the underlying source. See issue #1635 "Empty WASM hash leaks to
-        // SnapshotSource".
-        let native_wasm_hashes = Rc::new(RefCell::new(HashSet::new()));
-        let recording_footprint: Rc<dyn internal::storage::SnapshotSource> =
-            Rc::new(FilteringSnapshotSource {
-                inner: recording_footprint,
-                native_wasm_hashes: native_wasm_hashes.clone(),
-            });
         let storage = internal::storage::Storage::with_recording_footprint(recording_footprint);
         let budget = internal::budget::Budget::default();
         let env_impl = internal::EnvImpl::with_storage_and_budget(storage, budget.clone());
@@ -806,7 +735,6 @@ impl Env {
                 generators: generators.unwrap_or_default(),
                 snapshot,
                 auth_snapshot,
-                native_wasm_hashes,
             },
         };
 
@@ -1088,7 +1016,6 @@ impl Env {
         C: ContractFunctionSet + 'static,
     {
         let wasm_hash = wasm_hash.into_val(self);
-        self.note_native_wasm_hash(wasm_hash.to_array());
         self.env_impl
             .register_native_contract_as_wasm(
                 Rc::new(InternalContractFunctionSet(contract)),
@@ -1187,7 +1114,6 @@ impl Env {
         // that a panic during conversion cannot leave the environment stuck in
         // recording auth. This matches the wasm registration path.
         let constructor_args = constructor_args.into_val(self).to_object();
-        self.note_native_wasm_hash(self.native_wasm_hash_for_contract(&contract_id));
         let prev_auth_manager = self.env_impl.snapshot_auth_manager().unwrap();
         self.env_impl
             .switch_to_recording_auth_inherited_from_snapshot(&prev_auth_manager)
