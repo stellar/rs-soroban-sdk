@@ -200,15 +200,6 @@
 //! proptest-arbitrary-interop = "0.1"
 //! ```
 //!
-//! As with fuzzing, `SorobanArbitrary` is only derived when the "testutils"
-//! Cargo feature is active, so the contract crate must be built with
-//! "soroban-sdk/testutils" on. For property tests that live in the contract
-//! crate itself, the dev-dependency on `soroban-sdk` with the "testutils"
-//! feature — the one that contract crates already declare to write tests — is
-//! enough, because Cargo unifies the feature into the `cargo test` build. A
-//! "testutils" feature on the contract crate is only needed when the tests live
-//! in a separate crate, as fuzz tests do.
-//!
 //! [`proptest-arbitrary-interop`]: https://docs.rs/proptest-arbitrary-interop
 //!
 //!
@@ -238,7 +229,7 @@
 //! Note that generated `Address` prototypes always convert to contract
 //! addresses, never to account (`G...`) addresses. A property test that also
 //! needs account addresses must construct them itself with
-//! `Address::from_str`; `Address::generate` yields contract addresses too.
+//! `Address::from_str`.
 //!
 //!
 //! ## Example: generate a custom contract type in a property test
