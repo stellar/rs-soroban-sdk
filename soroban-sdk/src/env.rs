@@ -2104,10 +2104,13 @@ impl Env {
     ///
     /// If there is any error writing the file.
     pub(crate) fn to_test_snapshot_file(&self) {
-        // An Env without test state has no test name to write a snapshot for,
-        // and reading its test state would panic, so there is nothing to do.
+        // If there's no test state, or no test name, we're not in a test
+        // context, so don't write snapshots. An Env without test state would
+        // panic if its test state were read.
         let EnvTestState::Test {
-            test_name, number, ..
+            test_name: Some(test_name),
+            number,
+            ..
         } = &self.test_state
         else {
             return;
@@ -2124,10 +2127,6 @@ impl Env {
         }
 
         // Determine path to write test snapshots to.
-        let Some(test_name) = test_name else {
-            // If there's no test name, we're not in a test context, so don't write snapshots.
-            return;
-        };
         // Break up the test name into directories, using :: as the separator.
         // The :: module separator cannot be written into the filename because
         // some operating systems (e.g. Windows) do not allow the : character in
