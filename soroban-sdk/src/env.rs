@@ -278,6 +278,13 @@ enum EnvTestState {
 
 #[cfg(any(test, feature = "testutils"))]
 impl EnvTestState {
+    fn config_mut(&mut self) -> &mut EnvTestConfig {
+        match self {
+            Self::Test { config, .. } => config,
+            Self::Contract => panic!("the test config is unavailable inside a contract function"),
+        }
+    }
+
     fn generators(&self) -> &Rc<RefCell<Generators>> {
         match self {
             Self::Test { generators, .. } => generators,
@@ -291,13 +298,6 @@ impl EnvTestState {
             Self::Contract => {
                 panic!("the record of authorizations is unavailable inside a contract function")
             }
-        }
-    }
-
-    fn config_mut(&mut self) -> &mut EnvTestConfig {
-        match self {
-            Self::Test { config, .. } => config,
-            Self::Contract => panic!("the test config is unavailable inside a contract function"),
         }
     }
 
