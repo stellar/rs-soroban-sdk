@@ -1,0 +1,25 @@
+[package]
+name = "test_fuzzcheck-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2021"
+
+[dependencies]
+fuzzcheck = "0.13.0"
+soroban-sdk = { path = "../../../soroban-sdk", features = ["fuzzcheck"] }
+test_fuzzcheck = { path = "..", features = ["fuzzcheck"] }
+
+# Prevent this from interfering with workspaces. The crate requires a nightly
+# compiler, while the rest of the workspace is built with stable.
+[workspace]
+members = ["."]
+
+# The fuzzcheck release on crates.io does not build with recent nightly
+# compilers. Until a new release is made, build the version in the repository.
+[patch.crates-io]
+fuzzcheck = { git = "https://github.com/loiclec/fuzzcheck-rs", rev = "816f44962aa46dfbbb6dcc35875c3826cf037340" }
+fuzzcheck_common = { git = "https://github.com/loiclec/fuzzcheck-rs", rev = "816f44962aa46dfbbb6dcc35875c3826cf037340" }
+fuzzcheck_mutators_derive = { git = "https://github.com/loiclec/fuzzcheck-rs", rev = "816f44962aa46dfbbb6dcc35875c3826cf037340" }
+
+[profile.release]
+debug = 1

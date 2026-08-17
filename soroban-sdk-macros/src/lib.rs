@@ -459,6 +459,10 @@ struct ContractTypeArgs {
     crate_path: Path,
     lib: Option<String>,
     export: Option<SpannedValue<bool>>,
+    /// Whether to derive a fuzzcheck mutator for the type when the sdk's
+    /// "fuzzcheck" feature is enabled. Defaults to true. Set to false for
+    /// recursive types, whose mutators cannot be derived.
+    fuzzcheck: Option<bool>,
 }
 
 #[proc_macro_attribute]
@@ -487,12 +491,24 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let lib_deprecation = lib_arg_deprecation(&args.lib, ident);
     let derived = match &input.data {
         Data::Struct(s) => match s.fields {
-            Fields::Named(_) => {
-                derive_type_struct(&args.crate_path, vis, ident, attrs, s, &args.lib)
-            }
-            Fields::Unnamed(_) => {
-                derive_type_struct_tuple(&args.crate_path, vis, ident, attrs, s, &args.lib)
-            }
+            Fields::Named(_) => derive_type_struct(
+                &args.crate_path,
+                vis,
+                ident,
+                attrs,
+                s,
+                &args.lib,
+                args.fuzzcheck.unwrap_or(true),
+            ),
+            Fields::Unnamed(_) => derive_type_struct_tuple(
+                &args.crate_path,
+                vis,
+                ident,
+                attrs,
+                s,
+                &args.lib,
+                args.fuzzcheck.unwrap_or(true),
+            ),
             Fields::Unit => Error::new(
                 s.fields.span(),
                 "unit structs are not supported as contract types",
@@ -507,9 +523,25 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 .filter(|v| v.discriminant.is_some())
                 .count();
             if count_of_int_variants == 0 {
-                derive_type_enum(&args.crate_path, vis, ident, attrs, e, &args.lib)
+                derive_type_enum(
+                    &args.crate_path,
+                    vis,
+                    ident,
+                    attrs,
+                    e,
+                    &args.lib,
+                    args.fuzzcheck.unwrap_or(true),
+                )
             } else if count_of_int_variants == count_of_variants {
-                derive_type_enum_int(&args.crate_path, vis, ident, attrs, e, &args.lib)
+                derive_type_enum_int(
+                    &args.crate_path,
+                    vis,
+                    ident,
+                    attrs,
+                    e,
+                    &args.lib,
+                    args.fuzzcheck.unwrap_or(true),
+                )
             } else {
                 Error::new(input.span(), "enums are supported as contract types only when all variants have an explicit integer literal, or when all variants are unit or single field")
                     .to_compile_error()

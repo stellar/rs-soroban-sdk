@@ -70,7 +70,7 @@ pub enum ContractExecutable {
 /// This tree corresponds `require_auth[_for_args]` calls on behalf of the
 /// current contract.
 #[derive(Clone)]
-#[contracttype(crate_path = "crate")]
+#[contracttype(crate_path = "crate", fuzzcheck = false)]
 pub enum InvokerContractAuthEntry {
     /// Invoke a contract.
     Contract(SubContractInvocation),
@@ -82,7 +82,7 @@ pub enum InvokerContractAuthEntry {
 
 /// Value of contract node in InvokerContractAuthEntry tree.
 #[derive(Clone)]
-#[contracttype(crate_path = "crate")]
+#[contracttype(crate_path = "crate", fuzzcheck = false)]
 pub struct SubContractInvocation {
     pub context: ContractContext,
     pub sub_invocations: Vec<InvokerContractAuthEntry>,

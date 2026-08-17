@@ -20,6 +20,7 @@ pub fn derive_type_enum_int(
     attrs: &[Attribute],
     data: &DataEnum,
     lib: &Option<String>,
+    fuzzcheck: bool,
 ) -> TokenStream2 {
     // Collect errors as they are encountered and emit them at the end.
     let mut errors = Vec::<Error>::new();
@@ -147,7 +148,7 @@ pub fn derive_type_enum_int(
     // Additional output when testutils are enabled.
     if cfg!(feature = "testutils") {
         let arbitrary_tokens =
-            crate::arbitrary::derive_arbitrary_enum_int(path, vis, enum_ident, data);
+            crate::arbitrary::derive_arbitrary_enum_int(path, vis, enum_ident, data, fuzzcheck);
         output.extend(quote! {
             impl #path::TryFromVal<#path::Env, #path::xdr::ScVal> for #enum_ident {
                 type Error = #path::xdr::Error;

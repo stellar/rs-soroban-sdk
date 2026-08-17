@@ -111,6 +111,13 @@
 
 #![cfg_attr(target_family = "wasm", no_std)]
 #![cfg_attr(feature = "docs", feature(doc_cfg))]
+// The "fuzzcheck" feature requires a nightly compiler. The `coverage_attribute`
+// feature is required by the code fuzzcheck's derive macros generate, and
+// `impl_trait_in_assoc_type` is used to name the mutator types.
+#![cfg_attr(
+    feature = "fuzzcheck",
+    feature(coverage_attribute, impl_trait_in_assoc_type)
+)]
 #![allow(dead_code)]
 
 pub mod _features;
@@ -657,6 +664,15 @@ pub use soroban_sdk_macros::contractmeta;
 ///
 /// Includes the type in the contract spec so that clients can generate bindings
 /// for the type.
+///
+/// ### Arguments
+///
+/// - `fuzzcheck` – whether to derive a [fuzzcheck] mutator for the type when the
+/// "fuzzcheck" feature is enabled. Defaults to true. Set to false for recursive
+/// types, those with a field that contains the type itself, because fuzzcheck
+/// mutators cannot be derived for them.
+///
+/// [fuzzcheck]: https://github.com/loiclec/fuzzcheck-rs
 ///
 /// ### Examples
 ///

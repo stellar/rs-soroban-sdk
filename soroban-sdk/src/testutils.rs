@@ -5,6 +5,9 @@
 
 pub mod arbitrary;
 
+#[cfg(feature = "fuzzcheck")]
+pub mod fuzzcheck;
+
 mod sign;
 use std::{fmt::Debug, rc::Rc};
 

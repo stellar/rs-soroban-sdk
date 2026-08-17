@@ -22,6 +22,7 @@ test-only:
 	SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2=1 \
 		cargo hack --feature-powerset --ignore-unknown-features --features testutils \
 			--exclude-features docs \
+			--exclude-features fuzzcheck \
 			--exclude-features hazmat-crypto \
 			--exclude-features hazmat-address \
 			test
@@ -45,6 +46,15 @@ build-test-wasms: fmt
 
 build-fuzz:
 	cd tests/fuzz/fuzz && cargo +nightly fuzz check
+
+# Build and test the fuzzcheck tests. Fuzzcheck requires a nightly compiler, and
+# so these tests live in a crate outside the workspace.
+#
+# Run the fuzz tests themselves with cargo-fuzzcheck, which builds them with the
+# coverage instrumentation they require:
+#   cd tests/fuzzcheck/fuzz && cargo +nightly fuzzcheck tests::fuzz_run
+test-fuzzcheck:
+	cd tests/fuzzcheck/fuzz && cargo +nightly test
 
 readme:
 	cd soroban-sdk \
