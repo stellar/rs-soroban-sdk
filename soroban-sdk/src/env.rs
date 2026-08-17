@@ -278,40 +278,35 @@ enum EnvTestState {
 
 #[cfg(any(test, feature = "testutils"))]
 impl EnvTestState {
-    #[cold]
-    fn unavailable(what: &str) -> ! {
-        panic!(
-            "{what} is unavailable because this Env was created by the host for a contract \
-             function invocation and has no test state, use this functionality outside the \
-             contract function, in the test that invokes it"
-        );
-    }
-
     fn generators(&self) -> &Rc<RefCell<Generators>> {
         match self {
             Self::Test { generators, .. } => generators,
-            Self::Contract => Self::unavailable("generating values for tests"),
+            Self::Contract => panic!("generating values is unavailable inside a contract function"),
         }
     }
 
     fn auth_snapshot(&self) -> &Rc<RefCell<AuthSnapshot>> {
         match self {
             Self::Test { auth_snapshot, .. } => auth_snapshot,
-            Self::Contract => Self::unavailable("the record of authorizations"),
+            Self::Contract => {
+                panic!("the record of authorizations is unavailable inside a contract function")
+            }
         }
     }
 
     fn config_mut(&mut self) -> &mut EnvTestConfig {
         match self {
             Self::Test { config, .. } => config,
-            Self::Contract => Self::unavailable("the test config"),
+            Self::Contract => panic!("the test config is unavailable inside a contract function"),
         }
     }
 
     fn snapshot(&self) -> &Option<Rc<LedgerSnapshot>> {
         match self {
             Self::Test { snapshot, .. } => snapshot,
-            Self::Contract => Self::unavailable("the ledger snapshot"),
+            Self::Contract => {
+                panic!("the ledger snapshot is unavailable inside a contract function")
+            }
         }
     }
 }
