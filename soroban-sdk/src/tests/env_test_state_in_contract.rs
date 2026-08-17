@@ -61,7 +61,7 @@ impl Contract {
 /// every invocation, silently returning addresses that collide with addresses
 /// the calling test generated, and with each other.
 #[test]
-#[should_panic(expected = "generating values is unavailable inside a contract function")]
+#[should_panic(expected = "generating values like addresses is unavailable inside a contract function")]
 fn test_generate_address_in_contract() {
     let env = Env::default();
     let client = ContractClient::new(&env, &env.register(Contract, ()));
@@ -71,7 +71,7 @@ fn test_generate_address_in_contract() {
 /// Registering a contract generates the contract id to register at, and so it
 /// too depends on the generators.
 #[test]
-#[should_panic(expected = "generating values is unavailable inside a contract function")]
+#[should_panic(expected = "generating values like addresses is unavailable inside a contract function")]
 fn test_register_in_contract() {
     let env = Env::default();
     let client = ContractClient::new(&env, &env.register(Contract, ()));
@@ -116,7 +116,7 @@ fn test_to_ledger_snapshot_in_contract() {
 /// snapshot, all of which live in the test state, so creating a snapshot inside
 /// a contract panics.
 #[test]
-#[should_panic(expected = "generating values is unavailable inside a contract function")]
+#[should_panic(expected = "generating values like addresses is unavailable inside a contract function")]
 fn test_to_snapshot_in_contract() {
     let env = Env::default();
     let client = ContractClient::new(&env, &env.register(Contract, ()));

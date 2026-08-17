@@ -281,14 +281,14 @@ impl EnvTestState {
     fn config_mut(&mut self) -> &mut EnvTestConfig {
         match self {
             Self::Test { config, .. } => config,
-            Self::Contract => panic!("the test config is unavailable inside a contract function"),
+            Self::Contract => panic!("the test config is unavailable inside a contract function and must be access only from the test code outside the contract function"),
         }
     }
 
     fn generators(&self) -> &Rc<RefCell<Generators>> {
         match self {
             Self::Test { generators, .. } => generators,
-            Self::Contract => panic!("generating values is unavailable inside a contract function"),
+            Self::Contract => panic!("generating values like addresses is unavailable inside a contract function and must be access only from the test code outside the contract function"),
         }
     }
 
@@ -296,7 +296,7 @@ impl EnvTestState {
         match self {
             Self::Test { auth_snapshot, .. } => auth_snapshot,
             Self::Contract => {
-                panic!("the record of authorizations is unavailable inside a contract function")
+                panic!("the record of authorizations is unavailable inside a contract function and must be access only from the test code outside the contract function")
             }
         }
     }
@@ -305,7 +305,7 @@ impl EnvTestState {
         match self {
             Self::Test { snapshot, .. } => snapshot,
             Self::Contract => {
-                panic!("the ledger snapshot is unavailable inside a contract function")
+                panic!("the ledger snapshot is unavailable inside a contract function and must be access only from the test code outside the contract function")
             }
         }
     }
