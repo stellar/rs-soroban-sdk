@@ -61,7 +61,7 @@ impl Contract {
 /// every invocation, silently returning addresses that collide with addresses
 /// the calling test generated, and with each other.
 #[test]
-#[should_panic(expected = "Error(WasmVm, InvalidAction)")]
+#[should_panic(expected = "generating values is unavailable inside a contract function")]
 fn test_generate_address_in_contract() {
     let env = Env::default();
     let client = ContractClient::new(&env, &env.register(Contract, ()));
@@ -71,7 +71,7 @@ fn test_generate_address_in_contract() {
 /// Registering a contract generates the contract id to register at, and so it
 /// too depends on the generators.
 #[test]
-#[should_panic(expected = "Error(WasmVm, InvalidAction)")]
+#[should_panic(expected = "generating values is unavailable inside a contract function")]
 fn test_register_in_contract() {
     let env = Env::default();
     let client = ContractClient::new(&env, &env.register(Contract, ()));
@@ -82,7 +82,7 @@ fn test_register_in_contract() {
 /// contract panics. Without the panic the contract would observe an empty
 /// snapshot, and assertions made on it inside a contract would pass vacuously.
 #[test]
-#[should_panic(expected = "Error(WasmVm, InvalidAction)")]
+#[should_panic(expected = "the record of authorizations is unavailable inside a contract function")]
 fn test_auths_in_contract() {
     let env = Env::default();
     env.mock_all_auths();
@@ -95,7 +95,7 @@ fn test_auths_in_contract() {
 /// Without the panic the change would apply to an Env that is dropped when the
 /// invocation returns, and so would have no effect.
 #[test]
-#[should_panic(expected = "Error(WasmVm, InvalidAction)")]
+#[should_panic(expected = "the test config is unavailable inside a contract function")]
 fn test_set_config_in_contract() {
     let env = Env::default();
     let client = ContractClient::new(&env, &env.register(Contract, ()));
@@ -105,7 +105,7 @@ fn test_set_config_in_contract() {
 /// The ledger snapshot the Env was created from lives in the test state, so
 /// creating a ledger snapshot inside a contract panics.
 #[test]
-#[should_panic(expected = "Error(WasmVm, InvalidAction)")]
+#[should_panic(expected = "the ledger snapshot is unavailable inside a contract function")]
 fn test_to_ledger_snapshot_in_contract() {
     let env = Env::default();
     let client = ContractClient::new(&env, &env.register(Contract, ()));
@@ -116,7 +116,7 @@ fn test_to_ledger_snapshot_in_contract() {
 /// snapshot, all of which live in the test state, so creating a snapshot inside
 /// a contract panics.
 #[test]
-#[should_panic(expected = "Error(WasmVm, InvalidAction)")]
+#[should_panic(expected = "generating values is unavailable inside a contract function")]
 fn test_to_snapshot_in_contract() {
     let env = Env::default();
     let client = ContractClient::new(&env, &env.register(Contract, ()));
