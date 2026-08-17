@@ -6,11 +6,8 @@
 //! come back, so the SDK builds one on the spot. The `env_impl` half is cloned,
 //! so everything a contract can observe on chain is real and shared. The
 //! `test_state` half has no counterpart to clone, so testutils functionality
-//! that depends on it cannot work inside a contract function.
-//!
-//! Both tests below are `#[ignore]`d because they assert the behaviour that is
-//! wanted, not the behaviour that exists, and so they fail today. Run them with
-//! `cargo test -- --ignored`.
+//! that depends on it cannot work inside a contract function, and panics when
+//! used there rather than silently operating on empty state.
 
 use crate::{self as soroban_sdk};
 use soroban_sdk::{contract, contractimpl, testutils::Address as _, Address, Env};
@@ -30,30 +27,26 @@ impl Contract {
     }
 }
 
-/// The generators live in the test state, so today they restart from zero on
-/// every invocation, and addresses generated inside a contract silently collide
-/// with addresses the calling test generated, and with each other.
+/// The generators live in the test state, so generating an address inside a
+/// contract panics. Without the panic the generators would restart from zero on
+/// every invocation, silently returning addresses that collide with addresses
+/// the calling test generated, and with each other.
 #[test]
-#[ignore = "generating an address inside a contract silently collides"]
+#[should_panic(expected = "Error(WasmVm, InvalidAction)")]
 fn test_generate_address_in_contract() {
     let env = Env::default();
 
-    let outer = Address::generate(&env);
     let contract_id = env.register(Contract, ());
     let client = ContractClient::new(&env, &contract_id);
 
-    let first = client.gen_address();
-    let second = client.gen_address();
-
-    assert_ne!(outer, first);
-    assert_ne!(first, second);
+    client.gen_address();
 }
 
-/// The auth snapshot lives in the test state, so today a contract always
-/// observes an empty one, and assertions made on it inside a contract pass
-/// vacuously.
+/// The auth snapshot lives in the test state, so calling `auths` inside a
+/// contract panics. Without the panic the contract would observe an empty
+/// snapshot, and assertions made on it inside a contract would pass vacuously.
 #[test]
-#[ignore = "env.auths() inside a contract silently observes nothing"]
+#[should_panic(expected = "Error(WasmVm, InvalidAction)")]
 fn test_auths_in_contract() {
     let env = Env::default();
     env.mock_all_auths();
@@ -62,8 +55,23 @@ fn test_auths_in_contract() {
     let client = ContractClient::new(&env, &contract_id);
     let addr = Address::generate(&env);
 
-    let seen_inside = client.auth_count(&addr) as usize;
-    let seen_outside = env.auths().len();
+    client.auth_count(&addr);
+}
 
-    assert_eq!(seen_inside, seen_outside);
+/// The test's own Env keeps its test state even while executing in a contract
+/// frame, so testutils functionality remains available to the test. It is the
+/// Env the host passes to a contract function that has no test state, not any
+/// Env executing in a contract frame.
+#[test]
+fn test_generate_address_in_contract_frame() {
+    let env = Env::default();
+
+    let contract_id = env.register(Contract, ());
+
+    let first = Address::generate(&env);
+    let second = env.as_contract(&contract_id, || Address::generate(&env));
+    let third = env.as_contract(&contract_id, || Address::generate(&env));
+
+    assert_ne!(first, second);
+    assert_ne!(second, third);
 }
