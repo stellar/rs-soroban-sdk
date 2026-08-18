@@ -51,14 +51,6 @@
 //!     // The published data map holds only amount. The to_muxed_id field is
 //!     // None, which is void, and so is omitted from the map. Before v28 the
 //!     // map also held to_muxed_id with a void value.
-//!     let data: Val = map![
-//!         &env,
-//!         (
-//!             symbol_short!("amount"),
-//!             <_ as IntoVal<Env, Val>>::into_val(&1i128, &env)
-//!         ),
-//!     ]
-//!     .to_val();
 //!     assert_eq!(
 //!         env.events().all(),
 //!         vec![
@@ -66,7 +58,14 @@
 //!             (
 //!                 id.clone(),
 //!                 (symbol_short!("transfer"), symbol_short!("to")).into_val(&env),
-//!                 data
+//!                 map![
+//!                     &env,
+//!                     (
+//!                         symbol_short!("amount"),
+//!                         <_ as IntoVal<Env, Val>>::into_val(&1i128, &env)
+//!                     ),
+//!                 ]
+//!                 .to_val()
 //!             )
 //!         ],
 //!     );
