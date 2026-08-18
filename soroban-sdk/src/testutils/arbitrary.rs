@@ -181,6 +181,10 @@ pub use std;
 pub use api::*;
 pub use fuzz_test_helpers::*;
 
+/// The characters that may appear in a `Symbol`.
+pub(crate) const SYMBOL_CHARS: &str =
+    "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
 /// The traits that must be implemented on Soroban types to support fuzzing.
 ///
 /// These allow for ergonomic conversion from a randomly-generated "prototype"
@@ -309,7 +313,7 @@ mod simple {
 /// Examples:
 ///
 /// - `Vec`
-mod objects {
+pub(crate) mod objects {
     use arbitrary::{Arbitrary, Result as ArbitraryResult, Unstructured};
 
     use super::api::*;
@@ -338,7 +342,7 @@ mod objects {
     //////////////////////////////////
 
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
-    pub struct ArbitraryOption<T>(Option<T>);
+    pub struct ArbitraryOption<T>(pub(crate) Option<T>);
 
     impl<T> SorobanArbitrary for Option<T>
     where
@@ -365,7 +369,7 @@ mod objects {
 
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
     pub struct ArbitraryU256 {
-        parts: (u64, u64, u64, u64),
+        pub(crate) parts: (u64, u64, u64, u64),
     }
 
     impl SorobanArbitrary for U256 {
@@ -390,7 +394,7 @@ mod objects {
 
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
     pub struct ArbitraryI256 {
-        parts: (i64, u64, u64, u64),
+        pub(crate) parts: (i64, u64, u64, u64),
     }
 
     impl SorobanArbitrary for I256 {
@@ -415,7 +419,7 @@ mod objects {
 
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
     pub struct ArbitraryBytes {
-        vec: RustVec<u8>,
+        pub(crate) vec: RustVec<u8>,
     }
 
     impl SorobanArbitrary for Bytes {
@@ -433,7 +437,7 @@ mod objects {
 
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
     pub struct ArbitraryString {
-        inner: RustString,
+        pub(crate) inner: RustString,
     }
 
     impl SorobanArbitrary for String {
@@ -451,7 +455,7 @@ mod objects {
 
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
     pub struct ArbitraryBytesN<const N: usize> {
-        array: [u8; N],
+        pub(crate) array: [u8; N],
     }
 
     impl<const N: usize> SorobanArbitrary for BytesN<N> {
@@ -469,13 +473,12 @@ mod objects {
 
     #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
     pub struct ArbitrarySymbol {
-        s: RustString,
+        pub(crate) s: RustString,
     }
 
     impl<'a> Arbitrary<'a> for ArbitrarySymbol {
         fn arbitrary(u: &mut Unstructured<'a>) -> ArbitraryResult<ArbitrarySymbol> {
-            let valid_chars = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            let valid_chars = valid_chars.as_bytes();
+            let valid_chars = super::SYMBOL_CHARS.as_bytes();
             let mut chars = vec![];
             let len = u.int_in_range(0..=32)?;
             for _ in 0..len {
@@ -635,7 +638,7 @@ mod objects {
 
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
     pub struct ArbitraryAddress {
-        inner: [u8; 32],
+        pub(crate) inner: [u8; 32],
     }
 
     impl SorobanArbitrary for Address {
@@ -689,7 +692,7 @@ mod objects {
 
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
     pub struct ArbitraryTimepoint {
-        inner: u64,
+        pub(crate) inner: u64,
     }
 
     impl SorobanArbitrary for Timepoint {
@@ -708,7 +711,7 @@ mod objects {
 
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
     pub struct ArbitraryDuration {
-        inner: u64,
+        pub(crate) inner: u64,
     }
 
     impl SorobanArbitrary for Duration {
@@ -726,7 +729,7 @@ mod objects {
     // For Bls12381Fp (48 bytes)
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
     pub struct ArbitraryBls12381Fp {
-        bytes: [u8; FP_SERIALIZED_SIZE],
+        pub(crate) bytes: [u8; FP_SERIALIZED_SIZE],
     }
 
     impl SorobanArbitrary for Bls12381Fp {
@@ -748,7 +751,7 @@ mod objects {
     // For Bls12381Fp2 (96 bytes)
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
     pub struct ArbitraryBls12381Fp2 {
-        bytes: [u8; FP2_SERIALIZED_SIZE],
+        pub(crate) bytes: [u8; FP2_SERIALIZED_SIZE],
     }
 
     impl SorobanArbitrary for Bls12381Fp2 {
@@ -770,7 +773,7 @@ mod objects {
     // For Bls12381G1Affine (96 bytes)
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
     pub struct ArbitraryBls12381G1Affine {
-        bytes: [u8; G1_SERIALIZED_SIZE],
+        pub(crate) bytes: [u8; G1_SERIALIZED_SIZE],
     }
 
     impl SorobanArbitrary for Bls12381G1Affine {
@@ -805,7 +808,7 @@ mod objects {
     // For Bls12381G2Affine (192 bytes)
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
     pub struct ArbitraryBls12381G2Affine {
-        bytes: [u8; G2_SERIALIZED_SIZE],
+        pub(crate) bytes: [u8; G2_SERIALIZED_SIZE],
     }
 
     impl SorobanArbitrary for Bls12381G2Affine {
@@ -839,7 +842,7 @@ mod objects {
 
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
     pub struct ArbitraryBls12381Fr {
-        bytes: [u8; 32],
+        pub(crate) bytes: [u8; 32],
     }
 
     impl SorobanArbitrary for Bls12381Fr {
@@ -860,7 +863,7 @@ mod objects {
     // For BN254 G1Affine (64 bytes)
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
     pub struct ArbitraryBn254G1Affine {
-        bytes: [u8; BN254_G1_SERIALIZED_SIZE],
+        pub(crate) bytes: [u8; BN254_G1_SERIALIZED_SIZE],
     }
 
     impl SorobanArbitrary for Bn254G1Affine {
@@ -878,7 +881,7 @@ mod objects {
     // For BN254 G2Affine (128 bytes)
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
     pub struct ArbitraryBn254G2Affine {
-        bytes: [u8; BN254_G2_SERIALIZED_SIZE],
+        pub(crate) bytes: [u8; BN254_G2_SERIALIZED_SIZE],
     }
 
     impl SorobanArbitrary for Bn254G2Affine {
@@ -896,7 +899,7 @@ mod objects {
     // For Bn254Fp (32 bytes)
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
     pub struct ArbitraryBn254Fp {
-        bytes: [u8; BN254_FP_SERIALIZED_SIZE],
+        pub(crate) bytes: [u8; BN254_FP_SERIALIZED_SIZE],
     }
 
     impl SorobanArbitrary for Bn254Fp {
@@ -918,7 +921,7 @@ mod objects {
     // For BN254 Fr (32 bytes)
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
     pub struct ArbitraryBn254Fr {
-        bytes: [u8; 32],
+        pub(crate) bytes: [u8; 32],
     }
 
     impl SorobanArbitrary for Bn254Fr {
@@ -937,7 +940,7 @@ mod objects {
 /// Implementations of `soroban_sdk::testutils::arbitrary::api` for tuples of Soroban types.
 ///
 /// The implementation is similar to objects, but macroized.
-mod tuples {
+pub(crate) mod tuples {
     use super::api::*;
     use crate::ConversionError;
     use crate::{Env, IntoVal, TryFromVal, TryIntoVal, Val};
@@ -948,7 +951,7 @@ mod tuples {
             #[allow(non_snake_case)] // naming fields T1, etc.
             #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
             pub struct $name<$($ty,)*> {
-                $($ty: $ty,)*
+                $(pub(crate) $ty: $ty,)*
             }
 
             impl<$($ty,)*> SorobanArbitrary for ($($ty,)*)
@@ -1012,7 +1015,7 @@ mod tuples {
 }
 
 /// Implementations of `soroban_sdk::testutils::arbitrary::api` for `Val`.
-mod composite {
+pub(crate) mod composite {
     use arbitrary::Arbitrary;
 
     use super::api::*;
