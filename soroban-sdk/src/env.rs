@@ -129,8 +129,10 @@ use internal::{
 #[doc(hidden)]
 #[derive(Clone)]
 pub struct MaybeEnv {
-    // There is nothing to store on wasm, because on wasm an Env is always
-    // available and costs nothing to construct.
+    // On wasm an Env is always available and costs nothing to store, so it is
+    // never absent.
+    #[cfg(target_family = "wasm")]
+    env: Env,
     #[cfg(not(target_family = "wasm"))]
     env: Option<Env>,
 }
@@ -139,10 +141,8 @@ pub struct MaybeEnv {
 impl TryFrom<MaybeEnv> for Env {
     type Error = Infallible;
 
-    fn try_from(_value: MaybeEnv) -> Result<Self, Self::Error> {
-        Ok(Env {
-            env_impl: internal::EnvImpl {},
-        })
+    fn try_from(value: MaybeEnv) -> Result<Self, Self::Error> {
+        Ok(value.env)
     }
 }
 
@@ -156,7 +156,11 @@ impl Default for MaybeEnv {
 impl MaybeEnv {
     // separate function to be const
     pub const fn none() -> Self {
-        Self {}
+        Self {
+            env: Env {
+                env_impl: internal::EnvImpl {},
+            },
+        }
     }
 }
 
@@ -170,8 +174,8 @@ impl MaybeEnv {
 
 #[cfg(target_family = "wasm")]
 impl From<Env> for MaybeEnv {
-    fn from(_value: Env) -> Self {
-        MaybeEnv {}
+    fn from(value: Env) -> Self {
+        MaybeEnv { env: value }
     }
 }
 
