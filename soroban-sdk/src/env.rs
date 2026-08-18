@@ -6,7 +6,6 @@ pub mod internal {
 
     pub use soroban_env_guest::*;
     pub type EnvImpl = Guest;
-    pub type MaybeEnvImpl = Guest;
 
     // In the Guest case, Env::Error is already Infallible so there is no work
     // to do to "reject an error": if an error occurs in the environment, the
@@ -22,7 +21,6 @@ pub mod internal {
 
     pub use soroban_env_host::*;
     pub type EnvImpl = Host;
-    pub type MaybeEnvImpl = Option<Host>;
 
     // When we have `feature="testutils"` (or are in cfg(test)) we enable feature
     // `soroban-env-{common,host}/testutils` which in turn adds the helper method
@@ -131,19 +129,19 @@ use internal::{
 #[doc(hidden)]
 #[derive(Clone)]
 pub struct MaybeEnv {
-    maybe_env_impl: internal::MaybeEnvImpl,
-    #[cfg(any(test, feature = "testutils"))]
-    test_state: Option<EnvTestState>,
+    // On wasm an Env is always available.
+    #[cfg(target_family = "wasm")]
+    env: Env,
+    #[cfg(not(target_family = "wasm"))]
+    env: Option<Env>,
 }
 
 #[cfg(target_family = "wasm")]
 impl TryFrom<MaybeEnv> for Env {
     type Error = Infallible;
 
-    fn try_from(_value: MaybeEnv) -> Result<Self, Self::Error> {
-        Ok(Env {
-            env_impl: internal::EnvImpl {},
-        })
+    fn try_from(value: MaybeEnv) -> Result<Self, Self::Error> {
+        Ok(value.env)
     }
 }
 
@@ -158,7 +156,9 @@ impl MaybeEnv {
     // separate function to be const
     pub const fn none() -> Self {
         Self {
-            maybe_env_impl: internal::EnvImpl {},
+            env: Env {
+                env_impl: internal::EnvImpl {},
+            },
         }
     }
 }
@@ -167,20 +167,14 @@ impl MaybeEnv {
 impl MaybeEnv {
     // separate function to be const
     pub const fn none() -> Self {
-        Self {
-            maybe_env_impl: None,
-            #[cfg(any(test, feature = "testutils"))]
-            test_state: None,
-        }
+        Self { env: None }
     }
 }
 
 #[cfg(target_family = "wasm")]
 impl From<Env> for MaybeEnv {
     fn from(value: Env) -> Self {
-        MaybeEnv {
-            maybe_env_impl: value.env_impl,
-        }
+        MaybeEnv { env: value }
     }
 }
 
@@ -189,26 +183,14 @@ impl TryFrom<MaybeEnv> for Env {
     type Error = ConversionError;
 
     fn try_from(value: MaybeEnv) -> Result<Self, Self::Error> {
-        if let Some(env_impl) = value.maybe_env_impl {
-            Ok(Env {
-                env_impl,
-                #[cfg(any(test, feature = "testutils"))]
-                test_state: value.test_state.unwrap_or_default(),
-            })
-        } else {
-            Err(ConversionError)
-        }
+        value.env.ok_or(ConversionError)
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
 impl From<Env> for MaybeEnv {
     fn from(value: Env) -> Self {
-        MaybeEnv {
-            maybe_env_impl: Some(value.env_impl.clone()),
-            #[cfg(any(test, feature = "testutils"))]
-            test_state: Some(value.test_state.clone()),
-        }
+        MaybeEnv { env: Some(value) }
     }
 }
 
@@ -253,15 +235,60 @@ thread_local! {
     static LAST_ENV: RefCell<Option<LastEnv>> = RefCell::new(None);
 }
 
+/// The test state of an [Env].
+///
+/// An [Env] created by a test has test state. An [Env] created for a contract
+/// function invocation does not, because the host that creates it knows nothing
+/// of the SDK's test state and has none to pass on. Testutils functionality
+/// that depends on the test state panics rather than silently operating on
+/// empty state when used inside a contract function.
 #[cfg(any(test, feature = "testutils"))]
-#[derive(Clone, Default)]
-struct EnvTestState {
-    test_name: Option<String>,
-    number: usize,
-    config: EnvTestConfig,
-    generators: Rc<RefCell<Generators>>,
-    auth_snapshot: Rc<RefCell<AuthSnapshot>>,
-    snapshot: Option<Rc<LedgerSnapshot>>,
+#[derive(Clone)]
+enum EnvTestState {
+    Test {
+        test_name: Option<String>,
+        number: usize,
+        config: EnvTestConfig,
+        generators: Rc<RefCell<Generators>>,
+        auth_snapshot: Rc<RefCell<AuthSnapshot>>,
+        snapshot: Option<Rc<LedgerSnapshot>>,
+    },
+    Contract,
+}
+
+#[cfg(any(test, feature = "testutils"))]
+impl EnvTestState {
+    fn config_mut(&mut self) -> &mut EnvTestConfig {
+        match self {
+            Self::Test { config, .. } => config,
+            Self::Contract => panic!("the test config is unavailable inside a contract function and must be accessed only from the test code outside the contract function"),
+        }
+    }
+
+    fn generators(&self) -> &Rc<RefCell<Generators>> {
+        match self {
+            Self::Test { generators, .. } => generators,
+            Self::Contract => panic!("generating values like addresses is unavailable inside a contract function and must be done only from the test code outside the contract function"),
+        }
+    }
+
+    fn auth_snapshot(&self) -> &Rc<RefCell<AuthSnapshot>> {
+        match self {
+            Self::Test { auth_snapshot, .. } => auth_snapshot,
+            Self::Contract => {
+                panic!("the record of authorizations is unavailable inside a contract function and must be accessed only from the test code outside the contract function")
+            }
+        }
+    }
+
+    fn snapshot(&self) -> &Option<Rc<LedgerSnapshot>> {
+        match self {
+            Self::Test { snapshot, .. } => snapshot,
+            Self::Contract => {
+                panic!("the ledger snapshot is unavailable inside a contract function and must be accessed only from the test code outside the contract function")
+            }
+        }
+    }
 }
 
 /// Config for changing the default behavior of the Env when used in tests.
@@ -599,42 +626,6 @@ use std::{path::Path, rc::Rc};
 #[cfg(any(test, feature = "testutils"))]
 use xdr::{LedgerEntry, LedgerKey, LedgerKeyContractData, SorobanAuthorizationEntry};
 
-/// Wraps a [`SnapshotSource`](internal::storage::SnapshotSource) and
-/// short-circuits lookups for the empty WASM hash ContractCode entry used by
-/// native test contracts, returning `Ok(None)` without ever consulting the
-/// inner source. This is an optimization that avoids wasteful (and
-/// always-failing) lookups against remote snapshot sources for an entry that
-/// will never exist on any real network.
-#[cfg(any(test, feature = "testutils"))]
-struct FilteringSnapshotSource {
-    inner: Rc<dyn internal::storage::SnapshotSource>,
-}
-
-#[cfg(any(test, feature = "testutils"))]
-impl internal::storage::SnapshotSource for FilteringSnapshotSource {
-    fn get(
-        &self,
-        key: &Rc<xdr::LedgerKey>,
-    ) -> Result<Option<(Rc<xdr::LedgerEntry>, Option<u32>)>, soroban_env_host::HostError> {
-        // The SHA256 of empty/zero bytes, which the host uses as the synthetic
-        // WASM hash for native (non-WASM) test contracts. ContractCode entries
-        // for this hash never exist on any real network, so lookups for them
-        // are filtered out before reaching a `SnapshotSource`.
-        const EMPTY_WASM_HASH: [u8; 32] = [
-            0xe3, 0xb0, 0xc4, 0x42, 0x98, 0xfc, 0x1c, 0x14, 0x9a, 0xfb, 0xf4, 0xc8, 0x99, 0x6f,
-            0xb9, 0x24, 0x27, 0xae, 0x41, 0xe4, 0x64, 0x9b, 0x93, 0x4c, 0xa4, 0x95, 0x99, 0x1b,
-            0x78, 0x52, 0xb8, 0x55,
-        ];
-        if let xdr::LedgerKey::ContractCode(xdr::LedgerKeyContractCode { hash, .. }) = key.as_ref()
-        {
-            if hash.0 == EMPTY_WASM_HASH {
-                return Ok(None);
-            }
-        }
-        self.inner.get(key)
-    }
-}
-
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
@@ -650,7 +641,7 @@ impl Env {
 
     #[doc(hidden)]
     pub(crate) fn with_generator<T>(&self, f: impl FnOnce(RefMut<'_, Generators>) -> T) -> T {
-        f((*self.test_state.generators).borrow_mut())
+        f((*self.test_state.generators()).borrow_mut())
     }
 
     /// Create an Env with the test config.
@@ -674,7 +665,7 @@ impl Env {
 
     /// Change the test config of an Env.
     pub fn set_config(&mut self, config: EnvTestConfig) {
-        self.test_state.config = config;
+        *self.test_state.config_mut() = config;
     }
 
     /// Used by multiple constructors to configure test environments consistently.
@@ -719,14 +710,6 @@ impl Env {
             1
         };
 
-        // Wrap the incoming snapshot source so that lookups for the empty WASM
-        // hash ContractCode entry (used by native test contracts) are
-        // short-circuited and never reach the underlying source. See issue
-        // #1635 "Empty WASM hash leaks to SnapshotSource".
-        let recording_footprint: Rc<dyn internal::storage::SnapshotSource> =
-            Rc::new(FilteringSnapshotSource {
-                inner: recording_footprint,
-            });
         let storage = internal::storage::Storage::with_recording_footprint(recording_footprint);
         let budget = internal::budget::Budget::default();
         let env_impl = internal::EnvImpl::with_storage_and_budget(storage, budget.clone());
@@ -764,7 +747,7 @@ impl Env {
 
         let env = Env {
             env_impl,
-            test_state: EnvTestState {
+            test_state: EnvTestState::Test {
                 test_name,
                 number,
                 config,
@@ -1060,7 +1043,7 @@ impl Env {
             ) -> Option<Val> {
                 let env = Env {
                     env_impl: env_impl.clone(),
-                    test_state: Default::default(),
+                    test_state: EnvTestState::Contract,
                 };
                 self.0.call(
                     crate::Symbol::try_from_val(&env, func)
@@ -1601,7 +1584,7 @@ impl Env {
     /// # fn main() { }
     /// ```
     pub fn auths(&self) -> std::vec::Vec<(Address, AuthorizedInvocation)> {
-        (*self.test_state.auth_snapshot)
+        (*self.test_state.auth_snapshot())
             .borrow()
             .0
             .last()
@@ -1927,8 +1910,8 @@ impl Env {
     /// Create a snapshot from the Env's current state.
     pub fn to_snapshot(&self) -> Snapshot {
         Snapshot {
-            generators: (*self.test_state.generators).borrow().clone(),
-            auth: (*self.test_state.auth_snapshot).borrow().clone(),
+            generators: (*self.test_state.generators()).borrow().clone(),
+            auth: (*self.test_state.auth_snapshot()).borrow().clone(),
             ledger: self.to_ledger_snapshot(),
             events: self.to_events_snapshot(),
         }
@@ -1973,7 +1956,7 @@ impl Env {
 
     /// Create a snapshot from the Env's current state.
     pub fn to_ledger_snapshot(&self) -> LedgerSnapshot {
-        let snapshot = self.test_state.snapshot.clone().unwrap_or_default();
+        let snapshot = self.test_state.snapshot().clone().unwrap_or_default();
         let mut snapshot = (*snapshot).clone();
         snapshot.set_ledger_info(self.ledger().get());
         snapshot.update_entries(&self.host().get_stored_entries().unwrap());
@@ -2028,7 +2011,10 @@ impl Drop for Env {
         // snapshot at that point when no other references to the host exist,
         // because it is only when there are no other references that the host
         // is being dropped.
-        if self.env_impl.can_finish() && self.test_state.config.capture_snapshot_at_drop {
+        let EnvTestState::Test { config, .. } = &self.test_state else {
+            return;
+        };
+        if self.env_impl.can_finish() && config.capture_snapshot_at_drop {
             self.to_test_snapshot_file();
         }
     }
@@ -2054,6 +2040,18 @@ impl Env {
     ///
     /// If there is any error writing the file.
     pub(crate) fn to_test_snapshot_file(&self) {
+        // If there's no test state, or no test name, we're not in a test
+        // context, so don't write snapshots. An Env without test state would
+        // panic if its test state were read.
+        let EnvTestState::Test {
+            test_name: Some(test_name),
+            number,
+            ..
+        } = &self.test_state
+        else {
+            return;
+        };
+
         let snapshot = self.to_snapshot();
 
         // Don't write a snapshot that has no data in it.
@@ -2065,11 +2063,6 @@ impl Env {
         }
 
         // Determine path to write test snapshots to.
-        let Some(test_name) = &self.test_state.test_name else {
-            // If there's no test name, we're not in a test context, so don't write snapshots.
-            return;
-        };
-        let number = self.test_state.number;
         // Break up the test name into directories, using :: as the separator.
         // The :: module separator cannot be written into the filename because
         // some operating systems (e.g. Windows) do not allow the : character in
