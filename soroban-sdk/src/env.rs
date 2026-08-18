@@ -129,8 +129,7 @@ use internal::{
 #[doc(hidden)]
 #[derive(Clone)]
 pub struct MaybeEnv {
-    // On wasm an Env is always available and costs nothing to store, so it is
-    // never absent.
+    // On wasm an Env is always available.
     #[cfg(target_family = "wasm")]
     env: Env,
     #[cfg(not(target_family = "wasm"))]
