@@ -244,7 +244,7 @@ thread_local! {
 /// empty state when used inside a contract function.
 #[cfg(any(test, feature = "testutils"))]
 #[derive(Clone)]
-pub(crate) enum EnvTestState {
+enum EnvTestState {
     Test {
         test_name: Option<String>,
         number: usize,
@@ -262,7 +262,7 @@ pub(crate) enum EnvTestState {
 /// Shared by contract registration and Wasm upload, both of which hand the host
 /// a native contract to dispatch to.
 #[cfg(any(test, feature = "testutils"))]
-pub(crate) struct InternalContractFunctionSet<T: ContractFunctionSet>(pub(crate) T);
+struct InternalContractFunctionSet<T: ContractFunctionSet>(T);
 
 #[cfg(any(test, feature = "testutils"))]
 impl<T: ContractFunctionSet> internal::ContractFunctionSet for InternalContractFunctionSet<T> {
