@@ -143,6 +143,8 @@ jobs:
 
   test:
     needs: [setup, build]
+    permissions:
+      contents: write
     strategy:
       fail-fast: false
       matrix:
@@ -151,6 +153,9 @@ jobs:
     runs-on: ${{ matrix.sys.os }}
     steps:
     - uses: actions/checkout@v3
+      with:
+        ref: ${{ github.head_ref || github.ref }}
+        fetch-depth: 0
     - name: Install minimum supported rust version
       if: matrix.rust == 'msrv'
       run: |
@@ -189,7 +194,26 @@ jobs:
       run: rm -fr **/test_snapshots
     - run: cargo version
     - run: make test-only
+    - name: Push any diffs to the branch
+      if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+      env:
+        BRANCH: ${{ github.head_ref }}
+      run: |
+        git config user.name 'github-actions[bot]'
+        git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+        git add -A
+        if git diff --cached --quiet; then
+          echo "No diffs."
+          exit 0
+        fi
+        git commit -m 'Update test snapshots'
+        for i in 1 2 3 4 5; do
+          git pull --rebase origin "$BRANCH" && git push origin "HEAD:refs/heads/$BRANCH" && exit 0
+          sleep $((i * 5))
+        done
+        exit 1
     - name: Check no diffs exist
+      if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
       run: git add -N . && git diff HEAD --exit-code
 
   build-fuzz:
@@ -238,8 +262,13 @@ jobs:
 
   expand-test-wasms:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
     - uses: actions/checkout@v5
+      with:
+        ref: ${{ github.head_ref || github.ref }}
+        fetch-depth: 0
     - uses: stellar/actions/rust-cache@main
     - name: Install minimum supported rust version
       run: |
@@ -256,7 +285,26 @@ jobs:
         name: cargo-expand
         version: 1.0.116
     - run: make expand-tests
+    - name: Push any diffs to the branch
+      if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+      env:
+        BRANCH: ${{ github.head_ref }}
+      run: |
+        git config user.name 'github-actions[bot]'
+        git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+        git add -A
+        if git diff --cached --quiet; then
+          echo "No diffs."
+          exit 0
+        fi
+        git commit -m 'Update expanded tests'
+        for i in 1 2 3 4 5; do
+          git pull --rebase origin "$BRANCH" && git push origin "HEAD:refs/heads/$BRANCH" && exit 0
+          sleep $((i * 5))
+        done
+        exit 1
     - name: Check no diffs exist
+      if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
       run: git add -N . && git diff HEAD --exit-code
 
   publish-dry-run:
