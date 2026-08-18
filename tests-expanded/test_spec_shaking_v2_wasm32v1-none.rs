@@ -103,7 +103,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedParamSt
         const KEYS: [&'static str; 2usize] = ["a", "nested"];
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             a: vals[0]
@@ -950,7 +950,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedNestedI
         const KEYS: [&'static str; 1usize] = ["val"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             val: vals[0]
@@ -1051,7 +1051,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedVecElem
         const KEYS: [&'static str; 1usize] = ["data"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             data: vals[0]
@@ -1250,7 +1250,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedMapVal 
         const KEYS: [&'static str; 1usize] = ["v"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             v: vals[0]
@@ -1354,7 +1354,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedOptionE
         const KEYS: [&'static str; 1usize] = ["data"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             data: vals[0]
@@ -1453,7 +1453,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedResultO
         const KEYS: [&'static str; 1usize] = ["data"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             data: vals[0]
@@ -1848,7 +1848,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventDa
         const KEYS: [&'static str; 2usize] = ["x", "y"];
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             x: vals[0]
@@ -2052,7 +2052,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventTo
         const KEYS: [&'static str; 1usize] = ["inner"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             inner: vals[0]
@@ -2160,7 +2160,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventTo
         const KEYS: [&'static str; 1usize] = ["val"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             val: vals[0]
@@ -2360,7 +2360,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventDa
         const KEYS: [&'static str; 1usize] = ["inner"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             inner: vals[0]
@@ -2468,7 +2468,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventDa
         const KEYS: [&'static str; 1usize] = ["val"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             val: vals[0]
@@ -2768,7 +2768,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRefData
         const KEYS: [&'static str; 1usize] = ["nested"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             nested: vals[0]
@@ -2869,7 +2869,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRefData
         const KEYS: [&'static str; 1usize] = ["val"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             val: vals[0]
@@ -3061,7 +3061,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedTupleEl
         const KEYS: [&'static str; 1usize] = ["val"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             val: vals[0]
@@ -3166,7 +3166,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedTupleRe
         const KEYS: [&'static str; 1usize] = ["val"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             val: vals[0]
@@ -3273,7 +3273,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedVecInne
         const KEYS: [&'static str; 1usize] = ["val"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             val: vals[0]
@@ -3379,7 +3379,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedVecInne
         const KEYS: [&'static str; 1usize] = ["val"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             val: vals[0]
@@ -3497,7 +3497,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedVecElem
         const KEYS: [&'static str; 3usize] = ["inner", "val", "vec_inner"];
         let mut vals: [Val; 3usize] = [Val::VOID.to_val(); 3usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             inner: vals[0]
@@ -3612,7 +3612,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedNonPubS
         const KEYS: [&'static str; 1usize] = ["val"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             val: vals[0]
@@ -3871,7 +3871,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRecursi
         const KEYS: [&'static str; 1usize] = ["val"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             val: vals[0]
@@ -4138,7 +4138,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRecursi
         const KEYS: [&'static str; 1usize] = ["val"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             val: vals[0]
@@ -4237,7 +4237,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedLeaf {
         const KEYS: [&'static str; 1usize] = ["val"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             val: vals[0]
@@ -4684,7 +4684,7 @@ mod wasm_imported {
             const KEYS: [&'static str; 3usize] = ["args", "contract", "fn_name"];
             let mut vals: [Val; 3usize] = [Val::VOID.to_val(); 3usize];
             let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-            env.map_unpack_to_slice(map, &KEYS, &mut vals)
+            env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
                 .map_err(|_| ConversionError)?;
             Ok(Self {
                 args: vals[0]
@@ -4843,7 +4843,7 @@ mod wasm_imported {
             const KEYS: [&'static str; 2usize] = ["context", "sub_invocations"];
             let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
             let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-            env.map_unpack_to_slice(map, &KEYS, &mut vals)
+            env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
                 .map_err(|_| ConversionError)?;
             Ok(Self {
                 context: vals[0]
@@ -4991,7 +4991,7 @@ mod wasm_imported {
             const KEYS: [&'static str; 2usize] = ["executable", "salt"];
             let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
             let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-            env.map_unpack_to_slice(map, &KEYS, &mut vals)
+            env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
                 .map_err(|_| ConversionError)?;
             Ok(Self {
                 executable: vals[0]
@@ -5166,7 +5166,7 @@ mod wasm_imported {
             const KEYS: [&'static str; 3usize] = ["constructor_args", "executable", "salt"];
             let mut vals: [Val; 3usize] = [Val::VOID.to_val(); 3usize];
             let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-            env.map_unpack_to_slice(map, &KEYS, &mut vals)
+            env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
                 .map_err(|_| ConversionError)?;
             Ok(Self {
                 constructor_args: vals[0]
@@ -5314,7 +5314,7 @@ mod wasm_imported {
             const KEYS: [&'static str; 2usize] = ["f1", "f2"];
             let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
             let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-            env.map_unpack_to_slice(map, &KEYS, &mut vals)
+            env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
                 .map_err(|_| ConversionError)?;
             Ok(Self {
                 f1: vals[0]
@@ -5447,7 +5447,7 @@ mod wasm_imported {
             const KEYS: [&'static str; 2usize] = ["f1", "f2"];
             let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
             let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-            env.map_unpack_to_slice(map, &KEYS, &mut vals)
+            env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
                 .map_err(|_| ConversionError)?;
             Ok(Self {
                 f1: vals[0]
@@ -5580,7 +5580,7 @@ mod wasm_imported {
             const KEYS: [&'static str; 2usize] = ["f1", "f2"];
             let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
             let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-            env.map_unpack_to_slice(map, &KEYS, &mut vals)
+            env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
                 .map_err(|_| ConversionError)?;
             Ok(Self {
                 f1: vals[0]
@@ -8920,7 +8920,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedStruc
         const KEYS: [&'static str; 1usize] = ["x"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             x: vals[0]
@@ -9512,7 +9512,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedNonCo
         const KEYS: [&'static str; 1usize] = ["x"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             x: vals[0]
@@ -9619,7 +9619,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedNonCo
         const KEYS: [&'static str; 1usize] = ["x"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             x: vals[0]
@@ -9720,7 +9720,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedNonPu
         const KEYS: [&'static str; 1usize] = ["x"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             x: vals[0]
