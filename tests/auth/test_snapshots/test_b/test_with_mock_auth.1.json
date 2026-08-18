@@ -68,7 +68,7 @@
               "val": {
                 "contract_instance": {
                   "executable": {
-                    "wasm": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+                    "wasm": "a41146d7d116b29faf18d228425fa97194e16df1d4f3e5d4f51c58ca557fcc6d"
                   },
                   "storage": null
                 }
@@ -91,7 +91,7 @@
               "val": {
                 "contract_instance": {
                   "executable": {
-                    "wasm": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+                    "wasm": "74beb3d1766e5455fda0dc427f938b1490e614db4e1af37a884e05f94d87a7d6"
                   },
                   "storage": null
                 }
@@ -114,7 +114,7 @@
               "val": {
                 "contract_instance": {
                   "executable": {
-                    "wasm": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+                    "wasm": "36cb30a16206e339600b3e02e18c499ee8ebafd6221bb78473568e1fe0c2db8b"
                   },
                   "storage": null
                 }
@@ -151,8 +151,36 @@
           "data": {
             "contract_code": {
               "ext": "v0",
-              "hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-              "code": ""
+              "hash": "36cb30a16206e339600b3e02e18c499ee8ebafd6221bb78473568e1fe0c2db8b",
+              "code": "746573745f636f6e74726163745f666f725f636f6e74726163745f69645f43414141414141414141414141414141414141414141414141414141414141414141414141414141414141414141414141414141484b334d"
+            }
+          },
+          "ext": "v0"
+        },
+        "live_until": 4095
+      },
+      {
+        "entry": {
+          "last_modified_ledger_seq": 0,
+          "data": {
+            "contract_code": {
+              "ext": "v0",
+              "hash": "74beb3d1766e5455fda0dc427f938b1490e614db4e1af37a884e05f94d87a7d6",
+              "code": "746573745f636f6e74726163745f666f725f636f6e74726163745f69645f4341414141414141414141414141414141414141414141414141414141414141414141414141414141414141414141414141414146435434"
+            }
+          },
+          "ext": "v0"
+        },
+        "live_until": 4095
+      },
+      {
+        "entry": {
+          "last_modified_ledger_seq": 0,
+          "data": {
+            "contract_code": {
+              "ext": "v0",
+              "hash": "a41146d7d116b29faf18d228425fa97194e16df1d4f3e5d4f51c58ca557fcc6d",
+              "code": "746573745f636f6e74726163745f666f725f636f6e74726163745f69645f4341414141414141414141414141414141414141414141414141414141414141414141414141414141414141414141414141414144324b4d"
             }
           },
           "ext": "v0"
