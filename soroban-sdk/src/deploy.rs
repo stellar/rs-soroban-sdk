@@ -86,6 +86,58 @@
 //! # fn main() { }
 //! ```
 //!
+//! #### Deploy a contract that uses an executable reference
+//!
+//! A contract can be deployed with an executable that references a contract data entry
+//! containing a Wasm hash, instead of a direct Wasm hash. The contract that owns the data
+//! entry can update it, causing all contracts that reference it to use the new Wasm hash
+//! value. See [ExecutableRefs] for details on the entries.
+//!
+//! ```
+//! use soroban_sdk::{contract, contractimpl, Address, BytesN, Env, String};
+//!
+//! const DEPLOYED_WASM: &[u8] = include_bytes!("../doctest_fixtures/contract.wasm");
+//!
+//! #[contract]
+//! pub struct Contract;
+//!
+//! #[contractimpl]
+//! impl Contract {
+//!     /// Publish the executable reference entry, keyed by `name`, pointing
+//!     /// at `wasm_hash`. Calling this for an existing executable reference
+//!     /// entry will cause all contracts using the executable reference entry
+//!     /// as their executable to use the new `wasm_hash`, so a real contract
+//!     /// must restrict who can call this.
+//!     pub fn publish(env: Env, name: String, wasm_hash: BytesN<32>) {
+//!         env.executable_refs().set(&name, &wasm_hash);
+//!     }
+//!
+//!     /// Deploy a contract using the executable reference entry keyed by `name`.
+//!     pub fn deploy(env: Env, name: String) -> Address {
+//!         let salt = [0u8; 32];
+//!         let deployer = env.deployer().with_current_contract(salt);
+//!         deployer.deploy_executable_ref(&env.current_contract_address(), &name, ())
+//!     }
+//! }
+//!
+//! #[test]
+//! fn test() {
+//! # }
+//! # #[cfg(feature = "testutils")]
+//! # fn main() {
+//!     let env = Env::default();
+//!     let contract_address = env.register(Contract, ());
+//!     let contract = ContractClient::new(&env, &contract_address);
+//!     // Upload the contract code before deploying its instance.
+//!     let wasm_hash = env.deployer().upload_contract_wasm(DEPLOYED_WASM);
+//!     let name = String::from_str(&env, "fleet");
+//!     contract.publish(&name, &wasm_hash);
+//!     contract.deploy(&name);
+//! }
+//! # #[cfg(not(feature = "testutils"))]
+//! # fn main() { }
+//! ```
+//!
 //! #### Derive before deployment what the address of a contract will be
 //!
 //! ```
@@ -126,8 +178,11 @@
 use crate::{
     env::internal::{ContractTtlExtension, Env as _},
     unwrap::UnwrapInfallible,
-    Address, Bytes, BytesN, ConstructorArgs, Env, IntoVal,
+    Address, Bytes, BytesN, ConstructorArgs, Env, IntoVal, String,
 };
+
+#[cfg(doc)]
+use crate::executable_refs::ExecutableRefs;
 
 /// Deployer provides access to deploying contracts.
 pub struct Deployer {
@@ -225,14 +280,37 @@ impl Deployer {
             .unwrap_infallible();
     }
 
-    /// Extend the TTL of the contract instance and code.
+    /// Replaces the executable of the current contract with an executable
+    /// reference.
     ///
-    /// Extends the TTL of the instance and code only if the TTL for the provided contract is below `threshold` ledgers.
-    /// The TTL will then become `extend_to`. Note that the `threshold` check and TTL extensions are done for both the
-    /// contract code and contract instance, so it's possible that one is bumped but not the other depending on what the
-    /// current TTL's are.
+    /// The executable is read from `owner`'s executable reference entry keyed
+    /// by `tag`, a persistent contract data entry containing a Wasm hash. The
+    /// entry has to already exist, or this panics. See [ExecutableRefs] for
+    /// details on the entries and how a contract manages the entries it owns.
     ///
-    /// The TTL is the number of ledgers between the current ledger and the final ledger the data can still be accessed.
+    /// **Important**: `owner` now controls and can update the Wasm of the
+    /// current contract. The owner may be the current contract itself.
+    ///
+    /// The function won't do anything immediately. The contract executable
+    /// will only be updated after the invocation has successfully finished.
+    pub fn update_current_contract_executable_ref(&self, owner: &Address, tag: &String) {
+        let tag = self
+            .env
+            .create_executable_tag(tag.to_object())
+            .unwrap_infallible();
+        self.env
+            .update_current_contract_executable_ref(owner.to_object(), tag)
+            .unwrap_infallible();
+    }
+
+    /// Extends the TTL of the instance, code, and any executable reference entry needed to resolve
+    /// the code, only if the TTL for the provided contract is below `threshold` ledgers. The TTL
+    /// will then become `extend_to`. Note that the `threshold` check and TTL extensions are done
+    /// for both the contract code and contract instance, so it's possible that one is bumped but
+    /// not the other depending on what the current TTL's are.
+    ///
+    /// The TTL is the number of ledgers between the current ledger and the final ledger the data
+    /// can still be accessed.
     pub fn extend_ttl(&self, contract_address: Address, threshold: u32, extend_to: u32) {
         self.env
             .extend_contract_instance_and_code_ttl(
@@ -261,7 +339,8 @@ impl Deployer {
             .unwrap_infallible();
     }
 
-    /// Extend the TTL of the contract code.
+    /// Extend the TTL of the contract code and any executable reference entry
+    /// needed to resolve the code.
     ///
     /// Same as [`extend_ttl`](Self::extend_ttl) but only for contract code.
     pub fn extend_ttl_for_code(&self, contract_address: Address, threshold: u32, extend_to: u32) {
@@ -274,17 +353,16 @@ impl Deployer {
             .unwrap_infallible();
     }
 
-    /// Extend the TTL of the contract instance and code with limits on the extension.
-    ///
-    /// Extends the TTL of the instance and code to be up to `extend_to` ledgers.
-    /// The extension only happens if it exceeds `min_extension` ledgers, otherwise
-    /// this is a no-op. The amount of extension will not exceed `max_extension` ledgers.
+    /// Extends the TTL of the instance, code, and any executable reference entry needed to resolve
+    /// the code to be up to `extend_to` ledgers. The extension only happens if it exceeds
+    /// `min_extension` ledgers, otherwise this is a no-op. The amount of extension will not exceed
+    /// `max_extension` ledgers.
     ///
     /// Note that the extension is applied to both the contract code and contract instance,
     /// so it's possible that one is extended but not the other depending on their current TTLs.
     ///
-    /// The TTL is the number of ledgers between the current ledger and the final ledger
-    /// the data can still be accessed.
+    /// The TTL is the number of ledgers between the current ledger and the final ledger the data
+    /// can still be accessed.
     pub fn extend_ttl_with_limits(
         &self,
         contract_address: Address,
@@ -408,6 +486,49 @@ impl DeployerWithAddress {
             .create_contract_with_constructor(
                 self.address.to_object(),
                 wasm_hash.into_val(env).to_object(),
+                self.salt.to_object(),
+                constructor_args.into_val(env).to_object(),
+            )
+            .unwrap_infallible();
+        unsafe { Address::unchecked_new(env.clone(), address_obj) }
+    }
+
+    /// Deploy a contract that uses an executable reference.
+    ///
+    /// The executable is read from `owner`'s executable reference entry keyed
+    /// by `tag`, a persistent contract data entry containing a Wasm hash. The
+    /// entry has to already exist, or this panics. See [ExecutableRefs] for
+    /// details on the entries and how a contract manages the entries it owns.
+    ///
+    /// **Important**: `owner` controls and can update the Wasm of the
+    /// deployed contract.
+    ///
+    /// The constructor args will be passed to the contract's constructor. Pass
+    /// `()` for contracts with no constructor or a constructor with zero
+    /// arguments.
+    ///
+    /// The address of the deployed contract is defined by the deployer address
+    /// and provided salt.
+    ///
+    /// Returns the deployed contract's address.
+    pub fn deploy_executable_ref<A>(
+        &self,
+        owner: &Address,
+        tag: &String,
+        constructor_args: A,
+    ) -> Address
+    where
+        A: ConstructorArgs,
+    {
+        let env = &self.env;
+        let tag = env
+            .create_executable_tag(tag.to_object())
+            .unwrap_infallible();
+        let address_obj = env
+            .create_external_ref_contract(
+                self.address.to_object(),
+                owner.to_object(),
+                tag,
                 self.salt.to_object(),
                 constructor_args.into_val(env).to_object(),
             )

@@ -117,8 +117,8 @@ use crate::unwrap::UnwrapInfallible;
 use crate::unwrap::UnwrapOptimized;
 use crate::InvokeError;
 use crate::{
-    crypto::Crypto, deploy::Deployer, events::Events, ledger::Ledger, logs::Logs, prng::Prng,
-    storage::Storage, Address, Vec,
+    crypto::Crypto, deploy::Deployer, events::Events, executable_refs::ExecutableRefs,
+    ledger::Ledger, logs::Logs, prng::Prng, storage::Storage, Address, Vec,
 };
 use internal::{
     AddressObject, Bool, BytesObject, DurationObject, ExecutableTagObject, I128Object, I256Object,
@@ -360,6 +360,13 @@ impl Env {
     #[inline(always)]
     pub fn deployer(&self) -> Deployer {
         Deployer::new(self)
+    }
+
+    /// Get an [ExecutableRefs] for managing the executable reference entries
+    /// owned by the currently executing contract.
+    #[inline(always)]
+    pub fn executable_refs(&self) -> ExecutableRefs {
+        ExecutableRefs::new(self)
     }
 
     /// Get an accessor for functions used for custom account implementation.
