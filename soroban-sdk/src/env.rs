@@ -998,8 +998,7 @@ impl Env {
     where
         C: ContractFunctionSet + 'static,
     {
-        let wasm_hash = BytesN::from_array(self, &self.with_generator(|mut g| g.wasm_hash()));
-        self.upload_at(wasm_hash, contract)
+        self.upload_at(self.with_generator(|mut g| g.wasm_hash()), contract)
     }
 
     /// Upload a contract that is defined in the current crate to the [Env] for
