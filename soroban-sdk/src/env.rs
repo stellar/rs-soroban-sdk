@@ -256,6 +256,34 @@ pub(crate) enum EnvTestState {
     Contract,
 }
 
+/// Adapts a [`ContractFunctionSet`] into the function set the host dispatches
+/// native contract calls to.
+///
+/// Shared by contract registration and Wasm upload, both of which hand the host
+/// a native contract to dispatch to.
+#[cfg(any(test, feature = "testutils"))]
+pub(crate) struct InternalContractFunctionSet<T: ContractFunctionSet>(pub(crate) T);
+
+#[cfg(any(test, feature = "testutils"))]
+impl<T: ContractFunctionSet> internal::ContractFunctionSet for InternalContractFunctionSet<T> {
+    fn call(&self, func: &Symbol, env_impl: &internal::EnvImpl, args: &[Val]) -> Option<Val> {
+        let env = Env {
+            env_impl: env_impl.clone(),
+            // The test state is unavailable inside the invocation, because the
+            // code is running as the contract.
+            test_state: EnvTestState::Contract,
+        };
+        self.0.call(
+            crate::Symbol::try_from_val(&env, func)
+                .unwrap_infallible()
+                .to_string()
+                .as_str(),
+            env,
+            args,
+        )
+    }
+}
+
 #[cfg(any(test, feature = "testutils"))]
 impl EnvTestState {
     fn config_mut(&mut self) -> &mut EnvTestConfig {
@@ -610,8 +638,8 @@ use crate::{
     testutils::{
         budget::Budget, cost_estimate::NetworkInvocationResourceLimits, default_ledger_info,
         Address as _, AuthSnapshot, AuthorizedInvocation, ContractFunctionSet, EventsSnapshot,
-        Generators, InternalContractFunctionSet, Ledger as _, MockAuth, MockAuthContract, Register,
-        Snapshot, SnapshotSourceInput, StellarAssetContract, StellarAssetIssuer,
+        Generators, Ledger as _, MockAuth, MockAuthContract, Register, Snapshot,
+        SnapshotSourceInput, StellarAssetContract, StellarAssetIssuer,
     },
     Bytes, BytesN, ConstructorArgs,
 };
@@ -629,14 +657,6 @@ use xdr::{LedgerEntry, LedgerKey, LedgerKeyContractData, SorobanAuthorizationEnt
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
-    /// Create an [Env] for the given host, in the given test state.
-    pub(crate) fn new(env_impl: internal::EnvImpl, test_state: EnvTestState) -> Env {
-        Env {
-            env_impl,
-            test_state,
-        }
-    }
-
     #[doc(hidden)]
     pub fn in_contract(&self) -> bool {
         self.env_impl.has_frame().unwrap()
