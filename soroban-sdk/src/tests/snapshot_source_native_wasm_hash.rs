@@ -2,7 +2,7 @@ use crate::{self as soroban_sdk};
 use soroban_sdk::{
     contract, contractimpl,
     testutils::{HostError, SnapshotSource, SnapshotSourceInput},
-    xdr, Env,
+    xdr, BytesN, Env,
 };
 use std::{cell::RefCell, rc::Rc};
 
@@ -62,8 +62,20 @@ fn native_contracts_never_request_contract_code() {
     let contract_id = env.register(Contract, ());
     let _ = env.register_at(&contract_id, Contract, ());
 
+    // Uploading, at a generated hash and at a given hash.
+    let wasm_hash = env.upload(Contract);
+    let _ = env.upload_at([9u8; 32], Contract);
+
     // Calling.
     ContractClient::new(&env, &contract_id).hello();
+
+    // Deploying an instance from an uploaded native contract, and calling it.
+    let deployed = env.as_contract(&contract_id, || {
+        env.deployer()
+            .with_address(contract_id.clone(), BytesN::from_array(&env, &[0u8; 32]))
+            .deploy_v2(wasm_hash, ())
+    });
+    ContractClient::new(&env, &deployed).hello();
 
     assert_eq!(
         contract_code_keys(&keys),
