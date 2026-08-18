@@ -15,6 +15,25 @@
 //!    [`contracterror`], and [`contractevent`] (it is now a compile error), and build contracts
 //!    with `stellar contract build` from `stellar-cli` v25.2.0 or newer, which is now required.
 //!
+//! 2. [`contracttype` structs tolerate missing and additional map fields when
+//!    unpacking][v28_contracttype_unpacking]. A field of the struct that is absent from the map
+//!    unpacks as void, and so unpacks as `None` for an [`Option`] field, and errors for any other
+//!    field. A key in the map that is not a field of the struct is ignored and discarded, and is
+//!    lost if the value is packed and written back. Both were errors before. Packing is unchanged.
+//!    No code changes are required for most contracts, but review any code that relied on unpacking
+//!    failing to detect a mismatch.
+//!
+//! 3. [Each contract registered natively gets its own contract code
+//!    entry][v28_native_contract_code], instead of all native contracts sharing a single empty Wasm
+//!    entry. Tests that rely on native contracts sharing a code entry need updating, and test
+//!    snapshot JSON files containing natively registered contracts change when upgrading. To test
+//!    contract deployments where a single contract code entry is shared by multiple contracts,
+//!    upload the contract once with the new [`Env::upload`] and deploy it multiple times with
+//!    [`DeployerWithAddress::deploy_v2`].
+//!
+//! [`Env::upload`]: crate::Env::upload
+//! [v28_contracttype_unpacking]: v28_contracttype_unpacking
+//!
 //! # Migrating from v26 to v27
 //!
 //! 1. [`bytes!` and `bytesn!` no longer accept base10 (decimal) integer literals][v27_bytes_literals].
@@ -361,4 +380,6 @@ pub mod v25_poseidon;
 pub mod v25_resource_limits;
 pub mod v27_bytes_literals;
 pub mod v27_export;
+pub mod v28_contracttype_unpacking;
+pub mod v28_native_contract_code;
 pub mod v28_spec_shaking;
