@@ -1236,15 +1236,34 @@ pub mod __ContractGlobalPath__test_u32__spec {
     #[allow(non_upper_case_globals)]
     /// Test u32 values.
     /// Returns the input unchanged.
-    pub static __SPEC_XDR_FN_TEST_U32: [u8; 96usize] =
-        super::ContractGlobalPath::spec_xdr_test_u32();
+    pub static __SPEC_XDR_FN_TEST_U32: [u8; super::ContractGlobalPath::__SPEC_XDR_VIEW_test_u32
+        .const_xdr_len()] = super::ContractGlobalPath::spec_xdr_test_u32();
 }
 impl ContractGlobalPath {
+    #[allow(non_upper_case_globals)]
+    /// Test u32 values.
+    /// Returns the input unchanged.
+    const __SPEC_XDR_VIEW_test_u32: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(
+                b"Test u32 values.\nReturns the input unchanged.",
+            ),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"test_u32")),
+            inputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"v"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        });
     #[allow(non_snake_case)]
     /// Test u32 values.
     /// Returns the input unchanged.
-    pub const fn spec_xdr_test_u32() -> [u8; 96usize] {
-        *b"\0\0\0\0\0\0\0-Test u32 values.\nReturns the input unchanged.\0\0\0\0\0\0\x08test_u32\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x04\0\0\0\x01\0\0\0\x04"
+    pub const fn spec_xdr_test_u32(
+    ) -> [u8; ContractGlobalPath::__SPEC_XDR_VIEW_test_u32.const_xdr_len()] {
+        ContractGlobalPath::__SPEC_XDR_VIEW_test_u32.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -1255,14 +1274,30 @@ pub mod __ContractGlobalPath__test_i32__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     /// Test i32 values.
-    pub static __SPEC_XDR_FN_TEST_I32: [u8; 64usize] =
-        super::ContractGlobalPath::spec_xdr_test_i32();
+    pub static __SPEC_XDR_FN_TEST_I32: [u8; super::ContractGlobalPath::__SPEC_XDR_VIEW_test_i32
+        .const_xdr_len()] = super::ContractGlobalPath::spec_xdr_test_i32();
 }
 impl ContractGlobalPath {
+    #[allow(non_upper_case_globals)]
+    /// Test i32 values.
+    const __SPEC_XDR_VIEW_test_i32: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b"Test i32 values."),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"test_i32")),
+            inputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"v"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::I32,
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::I32]),
+        });
     #[allow(non_snake_case)]
     /// Test i32 values.
-    pub const fn spec_xdr_test_i32() -> [u8; 64usize] {
-        *b"\0\0\0\0\0\0\0\x10Test i32 values.\0\0\0\x08test_i32\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x05\0\0\0\x01\0\0\0\x05"
+    pub const fn spec_xdr_test_i32(
+    ) -> [u8; ContractGlobalPath::__SPEC_XDR_VIEW_test_i32.const_xdr_len()] {
+        ContractGlobalPath::__SPEC_XDR_VIEW_test_i32.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -1271,13 +1306,28 @@ pub mod __ContractGlobalPath__test_u64__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_U64: [u8; 48usize] =
-        super::ContractGlobalPath::spec_xdr_test_u64();
+    pub static __SPEC_XDR_FN_TEST_U64: [u8; super::ContractGlobalPath::__SPEC_XDR_VIEW_test_u64
+        .const_xdr_len()] = super::ContractGlobalPath::spec_xdr_test_u64();
 }
 impl ContractGlobalPath {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_test_u64: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"test_u64")),
+            inputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"v"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U64,
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U64]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_u64() -> [u8; 48usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_u64\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x06\0\0\0\x01\0\0\0\x06"
+    pub const fn spec_xdr_test_u64(
+    ) -> [u8; ContractGlobalPath::__SPEC_XDR_VIEW_test_u64.const_xdr_len()] {
+        ContractGlobalPath::__SPEC_XDR_VIEW_test_u64.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -1286,13 +1336,28 @@ pub mod __ContractGlobalPath__test_i64__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_I64: [u8; 48usize] =
-        super::ContractGlobalPath::spec_xdr_test_i64();
+    pub static __SPEC_XDR_FN_TEST_I64: [u8; super::ContractGlobalPath::__SPEC_XDR_VIEW_test_i64
+        .const_xdr_len()] = super::ContractGlobalPath::spec_xdr_test_i64();
 }
 impl ContractGlobalPath {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_test_i64: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"test_i64")),
+            inputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"v"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::I64,
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::I64]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_i64() -> [u8; 48usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_i64\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x07\0\0\0\x01\0\0\0\x07"
+    pub const fn spec_xdr_test_i64(
+    ) -> [u8; ContractGlobalPath::__SPEC_XDR_VIEW_test_i64.const_xdr_len()] {
+        ContractGlobalPath::__SPEC_XDR_VIEW_test_i64.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -1301,13 +1366,28 @@ pub mod __ContractGlobalPath__test_u128__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_U128: [u8; 52usize] =
-        super::ContractGlobalPath::spec_xdr_test_u128();
+    pub static __SPEC_XDR_FN_TEST_U128: [u8; super::ContractGlobalPath::__SPEC_XDR_VIEW_test_u128
+        .const_xdr_len()] = super::ContractGlobalPath::spec_xdr_test_u128();
 }
 impl ContractGlobalPath {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_test_u128: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"test_u128")),
+            inputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"v"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U128,
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U128]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_u128() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_u128\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\n\0\0\0\x01\0\0\0\n"
+    pub const fn spec_xdr_test_u128(
+    ) -> [u8; ContractGlobalPath::__SPEC_XDR_VIEW_test_u128.const_xdr_len()] {
+        ContractGlobalPath::__SPEC_XDR_VIEW_test_u128.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -1316,13 +1396,28 @@ pub mod __ContractGlobalPath__test_i128__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_I128: [u8; 52usize] =
-        super::ContractGlobalPath::spec_xdr_test_i128();
+    pub static __SPEC_XDR_FN_TEST_I128: [u8; super::ContractGlobalPath::__SPEC_XDR_VIEW_test_i128
+        .const_xdr_len()] = super::ContractGlobalPath::spec_xdr_test_i128();
 }
 impl ContractGlobalPath {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_test_i128: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"test_i128")),
+            inputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"v"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::I128,
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::I128]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_i128() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_i128\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x0b\0\0\0\x01\0\0\0\x0b"
+    pub const fn spec_xdr_test_i128(
+    ) -> [u8; ContractGlobalPath::__SPEC_XDR_VIEW_test_i128.const_xdr_len()] {
+        ContractGlobalPath::__SPEC_XDR_VIEW_test_i128.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -1331,13 +1426,28 @@ pub mod __ContractGlobalPath__test_bool__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_BOOL: [u8; 52usize] =
-        super::ContractGlobalPath::spec_xdr_test_bool();
+    pub static __SPEC_XDR_FN_TEST_BOOL: [u8; super::ContractGlobalPath::__SPEC_XDR_VIEW_test_bool
+        .const_xdr_len()] = super::ContractGlobalPath::spec_xdr_test_bool();
 }
 impl ContractGlobalPath {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_test_bool: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"test_bool")),
+            inputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"v"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Bool,
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::Bool]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_bool() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_bool\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x01\0\0\0\x01\0\0\0\x01"
+    pub const fn spec_xdr_test_bool(
+    ) -> [u8; ContractGlobalPath::__SPEC_XDR_VIEW_test_bool.const_xdr_len()] {
+        ContractGlobalPath::__SPEC_XDR_VIEW_test_bool.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -1346,13 +1456,33 @@ pub mod __ContractGlobalPath__test_address__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_ADDRESS: [u8; 52usize] =
+    pub static __SPEC_XDR_FN_TEST_ADDRESS: [u8;
+        super::ContractGlobalPath::__SPEC_XDR_VIEW_test_address.const_xdr_len()] =
         super::ContractGlobalPath::spec_xdr_test_address();
 }
 impl ContractGlobalPath {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_test_address: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                b"test_address",
+            )),
+            inputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"v"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecTypeDefView::Address,
+            ]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_address() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0ctest_address\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x13\0\0\0\x01\0\0\0\x13"
+    pub const fn spec_xdr_test_address(
+    ) -> [u8; ContractGlobalPath::__SPEC_XDR_VIEW_test_address.const_xdr_len()] {
+        ContractGlobalPath::__SPEC_XDR_VIEW_test_address.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -1361,13 +1491,29 @@ pub mod __ContractGlobalPath__test_bytes__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_BYTES: [u8; 52usize] =
+    pub static __SPEC_XDR_FN_TEST_BYTES: [u8;
+        super::ContractGlobalPath::__SPEC_XDR_VIEW_test_bytes.const_xdr_len()] =
         super::ContractGlobalPath::spec_xdr_test_bytes();
 }
 impl ContractGlobalPath {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_test_bytes: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"test_bytes")),
+            inputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"v"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Bytes,
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::Bytes]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_bytes() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\ntest_bytes\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x0e\0\0\0\x01\0\0\0\x0e"
+    pub const fn spec_xdr_test_bytes(
+    ) -> [u8; ContractGlobalPath::__SPEC_XDR_VIEW_test_bytes.const_xdr_len()] {
+        ContractGlobalPath::__SPEC_XDR_VIEW_test_bytes.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -1376,13 +1522,37 @@ pub mod __ContractGlobalPath__test_bytes_n__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_BYTES_N: [u8; 60usize] =
+    pub static __SPEC_XDR_FN_TEST_BYTES_N: [u8;
+        super::ContractGlobalPath::__SPEC_XDR_VIEW_test_bytes_n.const_xdr_len()] =
         super::ContractGlobalPath::spec_xdr_test_bytes_n();
 }
 impl ContractGlobalPath {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_test_bytes_n: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                b"test_bytes_n",
+            )),
+            inputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"v"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::BytesN(
+                        soroban_sdk::xdr::ScSpecTypeBytesN { n: 32u32 },
+                    ),
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecTypeDefView::BytesN(soroban_sdk::xdr::ScSpecTypeBytesN {
+                    n: 32u32,
+                }),
+            ]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_bytes_n() -> [u8; 60usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0ctest_bytes_n\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x03\xee\0\0\0 \0\0\0\x01\0\0\x03\xee\0\0\0 "
+    pub const fn spec_xdr_test_bytes_n(
+    ) -> [u8; ContractGlobalPath::__SPEC_XDR_VIEW_test_bytes_n.const_xdr_len()] {
+        ContractGlobalPath::__SPEC_XDR_VIEW_test_bytes_n.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -1391,13 +1561,33 @@ pub mod __ContractGlobalPath__test_string__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_STRING: [u8; 52usize] =
+    pub static __SPEC_XDR_FN_TEST_STRING: [u8;
+        super::ContractGlobalPath::__SPEC_XDR_VIEW_test_string.const_xdr_len()] =
         super::ContractGlobalPath::spec_xdr_test_string();
 }
 impl ContractGlobalPath {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_test_string: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                b"test_string",
+            )),
+            inputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"v"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::String,
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecTypeDefView::String,
+            ]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_string() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0btest_string\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x10\0\0\0\x01\0\0\0\x10"
+    pub const fn spec_xdr_test_string(
+    ) -> [u8; ContractGlobalPath::__SPEC_XDR_VIEW_test_string.const_xdr_len()] {
+        ContractGlobalPath::__SPEC_XDR_VIEW_test_string.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -1406,13 +1596,33 @@ pub mod __ContractGlobalPath__test_symbol__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_SYMBOL: [u8; 52usize] =
+    pub static __SPEC_XDR_FN_TEST_SYMBOL: [u8;
+        super::ContractGlobalPath::__SPEC_XDR_VIEW_test_symbol.const_xdr_len()] =
         super::ContractGlobalPath::spec_xdr_test_symbol();
 }
 impl ContractGlobalPath {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_test_symbol: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                b"test_symbol",
+            )),
+            inputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"v"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Symbol,
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecTypeDefView::Symbol,
+            ]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_symbol() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0btest_symbol\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x11\0\0\0\x01\0\0\0\x11"
+    pub const fn spec_xdr_test_symbol(
+    ) -> [u8; ContractGlobalPath::__SPEC_XDR_VIEW_test_symbol.const_xdr_len()] {
+        ContractGlobalPath::__SPEC_XDR_VIEW_test_symbol.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -1421,13 +1631,36 @@ pub mod __ContractGlobalPath__test_vec__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_VEC: [u8; 56usize] =
-        super::ContractGlobalPath::spec_xdr_test_vec();
+    pub static __SPEC_XDR_FN_TEST_VEC: [u8; super::ContractGlobalPath::__SPEC_XDR_VIEW_test_vec
+        .const_xdr_len()] = super::ContractGlobalPath::spec_xdr_test_vec();
 }
 impl ContractGlobalPath {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_test_vec: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"test_vec")),
+            inputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"v"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
+                        &soroban_sdk::xdr::ScSpecTypeVecView {
+                            element_type: &soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                        },
+                    ),
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::Vec(
+                &soroban_sdk::xdr::ScSpecTypeVecView {
+                    element_type: &soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                },
+            )]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_vec() -> [u8; 56usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_vec\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x03\xea\0\0\0\x04\0\0\0\x01\0\0\x03\xea\0\0\0\x04"
+    pub const fn spec_xdr_test_vec(
+    ) -> [u8; ContractGlobalPath::__SPEC_XDR_VIEW_test_vec.const_xdr_len()] {
+        ContractGlobalPath::__SPEC_XDR_VIEW_test_vec.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -1436,13 +1669,38 @@ pub mod __ContractGlobalPath__test_map__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_MAP: [u8; 64usize] =
-        super::ContractGlobalPath::spec_xdr_test_map();
+    pub static __SPEC_XDR_FN_TEST_MAP: [u8; super::ContractGlobalPath::__SPEC_XDR_VIEW_test_map
+        .const_xdr_len()] = super::ContractGlobalPath::spec_xdr_test_map();
 }
 impl ContractGlobalPath {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_test_map: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"test_map")),
+            inputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"v"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Map(
+                        &soroban_sdk::xdr::ScSpecTypeMapView {
+                            key_type: &soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                            value_type: &soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                        },
+                    ),
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::Map(
+                &soroban_sdk::xdr::ScSpecTypeMapView {
+                    key_type: &soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                    value_type: &soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                },
+            )]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_map() -> [u8; 64usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_map\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x03\xec\0\0\0\x04\0\0\0\x04\0\0\0\x01\0\0\x03\xec\0\0\0\x04\0\0\0\x04"
+    pub const fn spec_xdr_test_map(
+    ) -> [u8; ContractGlobalPath::__SPEC_XDR_VIEW_test_map.const_xdr_len()] {
+        ContractGlobalPath::__SPEC_XDR_VIEW_test_map.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -1451,13 +1709,33 @@ pub mod __ContractGlobalPath__test_duration__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_DURATION: [u8; 56usize] =
+    pub static __SPEC_XDR_FN_TEST_DURATION: [u8;
+        super::ContractGlobalPath::__SPEC_XDR_VIEW_test_duration.const_xdr_len()] =
         super::ContractGlobalPath::spec_xdr_test_duration();
 }
 impl ContractGlobalPath {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_test_duration: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                b"test_duration",
+            )),
+            inputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"v"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Duration,
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecTypeDefView::Duration,
+            ]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_duration() -> [u8; 56usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\rtest_duration\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\t\0\0\0\x01\0\0\0\t"
+    pub const fn spec_xdr_test_duration(
+    ) -> [u8; ContractGlobalPath::__SPEC_XDR_VIEW_test_duration.const_xdr_len()] {
+        ContractGlobalPath::__SPEC_XDR_VIEW_test_duration.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -1466,13 +1744,33 @@ pub mod __ContractGlobalPath__test_timepoint__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_TIMEPOINT: [u8; 56usize] =
+    pub static __SPEC_XDR_FN_TEST_TIMEPOINT: [u8;
+        super::ContractGlobalPath::__SPEC_XDR_VIEW_test_timepoint.const_xdr_len()] =
         super::ContractGlobalPath::spec_xdr_test_timepoint();
 }
 impl ContractGlobalPath {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_test_timepoint: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                b"test_timepoint",
+            )),
+            inputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"v"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Timepoint,
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecTypeDefView::Timepoint,
+            ]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_timepoint() -> [u8; 56usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0etest_timepoint\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x08\0\0\0\x01\0\0\0\x08"
+    pub const fn spec_xdr_test_timepoint(
+    ) -> [u8; ContractGlobalPath::__SPEC_XDR_VIEW_test_timepoint.const_xdr_len()] {
+        ContractGlobalPath::__SPEC_XDR_VIEW_test_timepoint.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -1481,13 +1779,28 @@ pub mod __ContractGlobalPath__test_i256__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_I256: [u8; 52usize] =
-        super::ContractGlobalPath::spec_xdr_test_i256();
+    pub static __SPEC_XDR_FN_TEST_I256: [u8; super::ContractGlobalPath::__SPEC_XDR_VIEW_test_i256
+        .const_xdr_len()] = super::ContractGlobalPath::spec_xdr_test_i256();
 }
 impl ContractGlobalPath {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_test_i256: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"test_i256")),
+            inputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"v"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::I256,
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::I256]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_i256() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_i256\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\r\0\0\0\x01\0\0\0\r"
+    pub const fn spec_xdr_test_i256(
+    ) -> [u8; ContractGlobalPath::__SPEC_XDR_VIEW_test_i256.const_xdr_len()] {
+        ContractGlobalPath::__SPEC_XDR_VIEW_test_i256.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -1496,13 +1809,28 @@ pub mod __ContractGlobalPath__test_u256__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_U256: [u8; 52usize] =
-        super::ContractGlobalPath::spec_xdr_test_u256();
+    pub static __SPEC_XDR_FN_TEST_U256: [u8; super::ContractGlobalPath::__SPEC_XDR_VIEW_test_u256
+        .const_xdr_len()] = super::ContractGlobalPath::spec_xdr_test_u256();
 }
 impl ContractGlobalPath {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_test_u256: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"test_u256")),
+            inputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"v"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U256,
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U256]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_u256() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_u256\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x0c\0\0\0\x01\0\0\0\x0c"
+    pub const fn spec_xdr_test_u256(
+    ) -> [u8; ContractGlobalPath::__SPEC_XDR_VIEW_test_u256.const_xdr_len()] {
+        ContractGlobalPath::__SPEC_XDR_VIEW_test_u256.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -1511,13 +1839,25 @@ pub mod __ContractGlobalPath__test_env_param__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_ENV_PARAM: [u8; 40usize] =
+    pub static __SPEC_XDR_FN_TEST_ENV_PARAM: [u8;
+        super::ContractGlobalPath::__SPEC_XDR_VIEW_test_env_param.const_xdr_len()] =
         super::ContractGlobalPath::spec_xdr_test_env_param();
 }
 impl ContractGlobalPath {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_test_env_param: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                b"test_env_param",
+            )),
+            inputs: soroban_sdk::xdr::VecMView::new(&[]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::U32]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_env_param() -> [u8; 40usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0etest_env_param\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
+    pub const fn spec_xdr_test_env_param(
+    ) -> [u8; ContractGlobalPath::__SPEC_XDR_VIEW_test_env_param.const_xdr_len()] {
+        ContractGlobalPath::__SPEC_XDR_VIEW_test_env_param.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -1526,13 +1866,39 @@ pub mod __ContractGlobalPath__test_struct__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_STRUCT: [u8; 76usize] =
+    pub static __SPEC_XDR_FN_TEST_STRUCT: [u8;
+        super::ContractGlobalPath::__SPEC_XDR_VIEW_test_struct.const_xdr_len()] =
         super::ContractGlobalPath::spec_xdr_test_struct();
 }
 impl ContractGlobalPath {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_test_struct: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                b"test_struct",
+            )),
+            inputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"v"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
+                        soroban_sdk::xdr::ScSpecTypeUdtView {
+                            name: soroban_sdk::xdr::StringMView::new(b"MyStruct"),
+                        },
+                    ),
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::Udt(
+                soroban_sdk::xdr::ScSpecTypeUdtView {
+                    name: soroban_sdk::xdr::StringMView::new(b"MyStruct"),
+                },
+            )]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_struct() -> [u8; 76usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0btest_struct\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd0\0\0\0\x08MyStruct\0\0\0\x01\0\0\x07\xd0\0\0\0\x08MyStruct"
+    pub const fn spec_xdr_test_struct(
+    ) -> [u8; ContractGlobalPath::__SPEC_XDR_VIEW_test_struct.const_xdr_len()] {
+        ContractGlobalPath::__SPEC_XDR_VIEW_test_struct.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -1541,13 +1907,39 @@ pub mod __ContractGlobalPath__test_enum_unit__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_ENUM_UNIT: [u8; 88usize] =
+    pub static __SPEC_XDR_FN_TEST_ENUM_UNIT: [u8;
+        super::ContractGlobalPath::__SPEC_XDR_VIEW_test_enum_unit.const_xdr_len()] =
         super::ContractGlobalPath::spec_xdr_test_enum_unit();
 }
 impl ContractGlobalPath {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_test_enum_unit: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                b"test_enum_unit",
+            )),
+            inputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"v"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
+                        soroban_sdk::xdr::ScSpecTypeUdtView {
+                            name: soroban_sdk::xdr::StringMView::new(b"MyEnumUnit"),
+                        },
+                    ),
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::Udt(
+                soroban_sdk::xdr::ScSpecTypeUdtView {
+                    name: soroban_sdk::xdr::StringMView::new(b"MyEnumUnit"),
+                },
+            )]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_enum_unit() -> [u8; 88usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0etest_enum_unit\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd0\0\0\0\nMyEnumUnit\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\nMyEnumUnit\0\0"
+    pub const fn spec_xdr_test_enum_unit(
+    ) -> [u8; ContractGlobalPath::__SPEC_XDR_VIEW_test_enum_unit.const_xdr_len()] {
+        ContractGlobalPath::__SPEC_XDR_VIEW_test_enum_unit.const_to_xdr()
     }
 }
 #[doc(hidden)]
@@ -1556,13 +1948,39 @@ pub mod __ContractGlobalPath__test_enum_variants__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_TEST_ENUM_VARIANTS: [u8; 100usize] =
+    pub static __SPEC_XDR_FN_TEST_ENUM_VARIANTS: [u8;
+        super::ContractGlobalPath::__SPEC_XDR_VIEW_test_enum_variants.const_xdr_len()] =
         super::ContractGlobalPath::spec_xdr_test_enum_variants();
 }
 impl ContractGlobalPath {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_VIEW_test_enum_variants: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(
+                b"test_enum_variants",
+            )),
+            inputs: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"v"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
+                        soroban_sdk::xdr::ScSpecTypeUdtView {
+                            name: soroban_sdk::xdr::StringMView::new(b"MyEnumVariants"),
+                        },
+                    ),
+                },
+            ]),
+            outputs: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSpecTypeDefView::Udt(
+                soroban_sdk::xdr::ScSpecTypeUdtView {
+                    name: soroban_sdk::xdr::StringMView::new(b"MyEnumVariants"),
+                },
+            )]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_enum_variants() -> [u8; 100usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x12test_enum_variants\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd0\0\0\0\x0eMyEnumVariants\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x0eMyEnumVariants\0\0"
+    pub const fn spec_xdr_test_enum_variants(
+    ) -> [u8; ContractGlobalPath::__SPEC_XDR_VIEW_test_enum_variants.const_xdr_len()] {
+        ContractGlobalPath::__SPEC_XDR_VIEW_test_enum_variants.const_to_xdr()
     }
 }
 impl<'a> ContractGlobalPathClient<'a> {

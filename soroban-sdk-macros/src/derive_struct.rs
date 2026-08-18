@@ -3,11 +3,13 @@ use proc_macro2::{Literal, TokenStream as TokenStream2};
 use quote::{format_ident, quote};
 use syn::{ext::IdentExt as _, Attribute, DataStruct, Error, Ident, Path, Visibility};
 
-use stellar_xdr::{
-    ScSpecEntry, ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, StringM, WriteXdr,
-};
+use stellar_xdr::{ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, StringM};
 
-use crate::{doc::docs_from_attrs, map_type::map_type, shaking, DEFAULT_XDR_RW_LIMITS};
+use crate::{
+    doc::docs_from_attrs,
+    map_type::{const_view_string, const_view_type_def, map_type},
+    shaking,
+};
 
 // TODO: Add field attribute for including/excluding fields in types.
 // TODO: Better handling of partial types and types without all their fields and
@@ -73,30 +75,47 @@ pub fn derive_type_struct(
         return quote! { #(#compile_errors)* };
     }
 
-    // Compute spec XDR once.
-    let spec_entry = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
+    // Build the spec entry once.
+    let spec = ScSpecUdtStructV0 {
         doc: docs_from_attrs(attrs),
         lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
         name: ident.unraw().to_string().try_into().unwrap(),
         fields: spec_fields.try_into().unwrap(),
-    });
-    let spec_xdr = spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap();
+    };
 
-    // Generated code spec.
+    // Generated code spec. The spec entry is rendered as the equivalent const
+    // ScSpecEntryView, which the contract crate encodes to XDR at compile time.
     let spec_gen = {
-        let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
-        let spec_xdr_len = spec_xdr.len();
+        let doc = const_view_string(path, &spec.doc);
+        let lib = const_view_string(path, &spec.lib);
+        let name = const_view_string(path, &spec.name);
+        let fields = spec.fields.iter().map(|f| {
+            let doc = const_view_string(path, &f.doc);
+            let name = const_view_string(path, &f.name);
+            let type_ = const_view_type_def(path, &f.type_);
+            quote!(#path::xdr::ScSpecUdtStructFieldV0View { doc: #doc, name: #name, type_: #type_ })
+        });
+        let spec_view = quote! {
+            #path::xdr::ScSpecEntryView::UdtStructV0(#path::xdr::ScSpecUdtStructV0View {
+                doc: #doc,
+                lib: #lib,
+                name: #name,
+                fields: #path::xdr::VecMView::new(&[#(#fields),*]),
+            })
+        };
         let spec_ident = format_ident!(
             "__SPEC_XDR_TYPE_{}",
             ident.unraw().to_string().to_uppercase()
         );
         quote! {
             #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
-            pub static #spec_ident: [u8; #spec_xdr_len] = #ident::spec_xdr();
+            pub static #spec_ident: [u8; #ident::__SPEC_XDR_VIEW.const_xdr_len()] = #ident::spec_xdr();
 
             impl #ident {
-                pub const fn spec_xdr() -> [u8; #spec_xdr_len] {
-                    *#spec_xdr_lit
+                const __SPEC_XDR_VIEW: #path::xdr::ScSpecEntryView<'static> = #spec_view;
+
+                pub const fn spec_xdr() -> [u8; #ident::__SPEC_XDR_VIEW.const_xdr_len()] {
+                    #ident::__SPEC_XDR_VIEW.const_to_xdr()
                 }
             }
         }
@@ -106,7 +125,7 @@ pub fn derive_type_struct(
     let spec_shaking_impl = shaking::generate_marker_impl(
         path,
         quote!(#ident),
-        &spec_xdr,
+        quote!(#ident::spec_xdr()),
         field_types.iter().cloned(),
         None,
         None,

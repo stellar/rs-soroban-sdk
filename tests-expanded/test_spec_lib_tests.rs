@@ -47,10 +47,29 @@ impl ::core::cmp::PartialEq for StructA {
         self.f1 == other.f1 && self.f2 == other.f2
     }
 }
-pub static __SPEC_XDR_TYPE_STRUCTA: [u8; 60usize] = StructA::spec_xdr();
+pub static __SPEC_XDR_TYPE_STRUCTA: [u8; StructA::__SPEC_XDR_VIEW.const_xdr_len()] =
+    StructA::spec_xdr();
 impl StructA {
-    pub const fn spec_xdr() -> [u8; 60usize] {
-        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07StructA\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x04\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x01"
+    const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            lib: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::StringMView::new(b"StructA"),
+            fields: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"f1"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                },
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"f2"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Bool,
+                },
+            ]),
+        });
+    pub const fn spec_xdr() -> [u8; StructA::__SPEC_XDR_VIEW.const_xdr_len()] {
+        StructA::__SPEC_XDR_VIEW.const_to_xdr()
     }
 }
 impl soroban_sdk::SpecShakingMarker for StructA {
@@ -463,10 +482,29 @@ impl ::core::cmp::PartialEq for StructB {
         self.f1 == other.f1 && self.f2 == other.f2
     }
 }
-pub static __SPEC_XDR_TYPE_STRUCTB: [u8; 60usize] = StructB::spec_xdr();
+pub static __SPEC_XDR_TYPE_STRUCTB: [u8; StructB::__SPEC_XDR_VIEW.const_xdr_len()] =
+    StructB::spec_xdr();
 impl StructB {
-    pub const fn spec_xdr() -> [u8; 60usize] {
-        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07StructB\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x07\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x10"
+    const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            lib: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::StringMView::new(b"StructB"),
+            fields: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"f1"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::I64,
+                },
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"f2"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::String,
+                },
+            ]),
+        });
+    pub const fn spec_xdr() -> [u8; StructB::__SPEC_XDR_VIEW.const_xdr_len()] {
+        StructB::__SPEC_XDR_VIEW.const_to_xdr()
     }
 }
 impl soroban_sdk::SpecShakingMarker for StructB {
@@ -879,10 +917,33 @@ impl ::core::cmp::PartialEq for StructC {
         self.f1 == other.f1 && self.f2 == other.f2
     }
 }
-pub static __SPEC_XDR_TYPE_STRUCTC: [u8; 64usize] = StructC::spec_xdr();
+pub static __SPEC_XDR_TYPE_STRUCTC: [u8; StructC::__SPEC_XDR_VIEW.const_xdr_len()] =
+    StructC::spec_xdr();
 impl StructC {
-    pub const fn spec_xdr() -> [u8; 64usize] {
-        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07StructC\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\x03\xea\0\0\0\x04\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x13"
+    const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            lib: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::StringMView::new(b"StructC"),
+            fields: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"f1"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
+                        &soroban_sdk::xdr::ScSpecTypeVecView {
+                            element_type: &soroban_sdk::xdr::ScSpecTypeDefView::U32,
+                        },
+                    ),
+                },
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"f2"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
+                },
+            ]),
+        });
+    pub const fn spec_xdr() -> [u8; StructC::__SPEC_XDR_VIEW.const_xdr_len()] {
+        StructC::__SPEC_XDR_VIEW.const_to_xdr()
     }
 }
 impl soroban_sdk::SpecShakingMarker for StructC {
@@ -1291,10 +1352,29 @@ impl ::core::cmp::PartialEq for StructTupleA {
         self.0 == other.0 && self.1 == other.1
     }
 }
-pub static __SPEC_XDR_TYPE_STRUCTTUPLEA: [u8; 64usize] = StructTupleA::spec_xdr();
+pub static __SPEC_XDR_TYPE_STRUCTTUPLEA: [u8; StructTupleA::__SPEC_XDR_VIEW.const_xdr_len()] =
+    StructTupleA::spec_xdr();
 impl StructTupleA {
-    pub const fn spec_xdr() -> [u8; 64usize] {
-        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleA\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x011\0\0\0\0\0\0\x07"
+    const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            lib: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::StringMView::new(b"StructTupleA"),
+            fields: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"0"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::I64,
+                },
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"1"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::I64,
+                },
+            ]),
+        });
+    pub const fn spec_xdr() -> [u8; StructTupleA::__SPEC_XDR_VIEW.const_xdr_len()] {
+        StructTupleA::__SPEC_XDR_VIEW.const_to_xdr()
     }
 }
 impl soroban_sdk::SpecShakingMarker for StructTupleA {
@@ -1667,10 +1747,29 @@ impl ::core::cmp::PartialEq for StructTupleB {
         self.0 == other.0 && self.1 == other.1
     }
 }
-pub static __SPEC_XDR_TYPE_STRUCTTUPLEB: [u8; 64usize] = StructTupleB::spec_xdr();
+pub static __SPEC_XDR_TYPE_STRUCTTUPLEB: [u8; StructTupleB::__SPEC_XDR_VIEW.const_xdr_len()] =
+    StructTupleB::spec_xdr();
 impl StructTupleB {
-    pub const fn spec_xdr() -> [u8; 64usize] {
-        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleB\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\n\0\0\0\0\0\0\0\x011\0\0\0\0\0\0\n"
+    const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            lib: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::StringMView::new(b"StructTupleB"),
+            fields: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"0"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U128,
+                },
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"1"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U128,
+                },
+            ]),
+        });
+    pub const fn spec_xdr() -> [u8; StructTupleB::__SPEC_XDR_VIEW.const_xdr_len()] {
+        StructTupleB::__SPEC_XDR_VIEW.const_to_xdr()
     }
 }
 impl soroban_sdk::SpecShakingMarker for StructTupleB {
@@ -2044,10 +2143,29 @@ impl ::core::cmp::PartialEq for StructTupleC {
         self.1 == other.1 && self.0 == other.0
     }
 }
-pub static __SPEC_XDR_TYPE_STRUCTTUPLEC: [u8; 64usize] = StructTupleC::spec_xdr();
+pub static __SPEC_XDR_TYPE_STRUCTTUPLEC: [u8; StructTupleC::__SPEC_XDR_VIEW.const_xdr_len()] =
+    StructTupleC::spec_xdr();
 impl StructTupleC {
-    pub const fn spec_xdr() -> [u8; 64usize] {
-        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleC\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\x13\0\0\0\0\0\0\0\x011\0\0\0\0\0\0\x0b"
+    const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            lib: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::StringMView::new(b"StructTupleC"),
+            fields: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"0"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
+                },
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"1"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::I128,
+                },
+            ]),
+        });
+    pub const fn spec_xdr() -> [u8; StructTupleC::__SPEC_XDR_VIEW.const_xdr_len()] {
+        StructTupleC::__SPEC_XDR_VIEW.const_to_xdr()
     }
 }
 impl soroban_sdk::SpecShakingMarker for StructTupleC {
@@ -2432,10 +2550,36 @@ impl ::core::cmp::PartialEq for EnumA {
         __self_discr == __arg1_discr
     }
 }
-pub static __SPEC_XDR_TYPE_ENUMA: [u8; 76usize] = EnumA::spec_xdr();
+pub static __SPEC_XDR_TYPE_ENUMA: [u8; EnumA::__SPEC_XDR_VIEW.const_xdr_len()] = EnumA::spec_xdr();
 impl EnumA {
-    pub const fn spec_xdr() -> [u8; 76usize] {
-        *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumA\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\0\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\0\0\0\0\0\0\0\0\x02V3\0\0"
+    const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            lib: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::StringMView::new(b"EnumA"),
+            cases: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"V1"),
+                    },
+                ),
+                soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"V2"),
+                    },
+                ),
+                soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"V3"),
+                    },
+                ),
+            ]),
+        });
+    pub const fn spec_xdr() -> [u8; EnumA::__SPEC_XDR_VIEW.const_xdr_len()] {
+        EnumA::__SPEC_XDR_VIEW.const_to_xdr()
     }
 }
 impl soroban_sdk::SpecShakingMarker for EnumA {
@@ -2902,10 +3046,43 @@ impl ::core::cmp::PartialEq for EnumB {
             }
     }
 }
-pub static __SPEC_XDR_TYPE_ENUMB: [u8; 96usize] = EnumB::spec_xdr();
+pub static __SPEC_XDR_TYPE_ENUMB: [u8; EnumB::__SPEC_XDR_VIEW.const_xdr_len()] = EnumB::spec_xdr();
 impl EnumB {
-    pub const fn spec_xdr() -> [u8; 96usize] {
-        *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumB\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x01\0\0\0\x07\0\0\0\x01\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x02\0\0\0\x07\0\0\0\x07"
+    const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            lib: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::StringMView::new(b"EnumB"),
+            cases: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"V1"),
+                    },
+                ),
+                soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"V2"),
+                        type_: soroban_sdk::xdr::VecMView::new(&[
+                            soroban_sdk::xdr::ScSpecTypeDefView::I64,
+                        ]),
+                    },
+                ),
+                soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"V3"),
+                        type_: soroban_sdk::xdr::VecMView::new(&[
+                            soroban_sdk::xdr::ScSpecTypeDefView::I64,
+                            soroban_sdk::xdr::ScSpecTypeDefView::I64,
+                        ]),
+                    },
+                ),
+            ]),
+        });
+    pub const fn spec_xdr() -> [u8; EnumB::__SPEC_XDR_VIEW.const_xdr_len()] {
+        EnumB::__SPEC_XDR_VIEW.const_to_xdr()
     }
 }
 impl soroban_sdk::SpecShakingMarker for EnumB {
@@ -3496,10 +3673,50 @@ impl ::core::cmp::PartialEq for EnumC {
             }
     }
 }
-pub static __SPEC_XDR_TYPE_ENUMC: [u8; 120usize] = EnumC::spec_xdr();
+pub static __SPEC_XDR_TYPE_ENUMC: [u8; EnumC::__SPEC_XDR_VIEW.const_xdr_len()] = EnumC::spec_xdr();
 impl EnumC {
-    pub const fn spec_xdr() -> [u8; 120usize] {
-        *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumC\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x07StructA\0\0\0\0\x01\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x0cStructTupleA"
+    const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            lib: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::StringMView::new(b"EnumC"),
+            cases: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"V1"),
+                    },
+                ),
+                soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"V2"),
+                        type_: soroban_sdk::xdr::VecMView::new(&[
+                            soroban_sdk::xdr::ScSpecTypeDefView::Udt(
+                                soroban_sdk::xdr::ScSpecTypeUdtView {
+                                    name: soroban_sdk::xdr::StringMView::new(b"StructA"),
+                                },
+                            ),
+                        ]),
+                    },
+                ),
+                soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
+                    soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"V3"),
+                        type_: soroban_sdk::xdr::VecMView::new(&[
+                            soroban_sdk::xdr::ScSpecTypeDefView::Udt(
+                                soroban_sdk::xdr::ScSpecTypeUdtView {
+                                    name: soroban_sdk::xdr::StringMView::new(b"StructTupleA"),
+                                },
+                            ),
+                        ]),
+                    },
+                ),
+            ]),
+        });
+    pub const fn spec_xdr() -> [u8; EnumC::__SPEC_XDR_VIEW.const_xdr_len()] {
+        EnumC::__SPEC_XDR_VIEW.const_to_xdr()
     }
 }
 impl soroban_sdk::SpecShakingMarker for EnumC {
@@ -4042,10 +4259,34 @@ impl ::core::cmp::PartialEq for EnumIntA {
         __self_discr == __arg1_discr
     }
 }
-pub static __SPEC_XDR_TYPE_ENUMINTA: [u8; 76usize] = EnumIntA::spec_xdr();
+pub static __SPEC_XDR_TYPE_ENUMINTA: [u8; EnumIntA::__SPEC_XDR_VIEW.const_xdr_len()] =
+    EnumIntA::spec_xdr();
 impl EnumIntA {
-    pub const fn spec_xdr() -> [u8; 76usize] {
-        *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08EnumIntA\0\0\0\x03\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x03"
+    const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::UdtEnumV0(soroban_sdk::xdr::ScSpecUdtEnumV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            lib: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::StringMView::new(b"EnumIntA"),
+            cases: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"V1"),
+                    value: 1u32,
+                },
+                soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"V2"),
+                    value: 2u32,
+                },
+                soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"V3"),
+                    value: 3u32,
+                },
+            ]),
+        });
+    pub const fn spec_xdr() -> [u8; EnumIntA::__SPEC_XDR_VIEW.const_xdr_len()] {
+        EnumIntA::__SPEC_XDR_VIEW.const_to_xdr()
     }
 }
 impl soroban_sdk::SpecShakingMarker for EnumIntA {
@@ -4385,10 +4626,34 @@ impl ::core::cmp::PartialEq for EnumIntB {
         __self_discr == __arg1_discr
     }
 }
-pub static __SPEC_XDR_TYPE_ENUMINTB: [u8; 76usize] = EnumIntB::spec_xdr();
+pub static __SPEC_XDR_TYPE_ENUMINTB: [u8; EnumIntB::__SPEC_XDR_VIEW.const_xdr_len()] =
+    EnumIntB::spec_xdr();
 impl EnumIntB {
-    pub const fn spec_xdr() -> [u8; 76usize] {
-        *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08EnumIntB\0\0\0\x03\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\n\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x14\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x1e"
+    const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::UdtEnumV0(soroban_sdk::xdr::ScSpecUdtEnumV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            lib: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::StringMView::new(b"EnumIntB"),
+            cases: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"V1"),
+                    value: 10u32,
+                },
+                soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"V2"),
+                    value: 20u32,
+                },
+                soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"V3"),
+                    value: 30u32,
+                },
+            ]),
+        });
+    pub const fn spec_xdr() -> [u8; EnumIntB::__SPEC_XDR_VIEW.const_xdr_len()] {
+        EnumIntB::__SPEC_XDR_VIEW.const_to_xdr()
     }
 }
 impl soroban_sdk::SpecShakingMarker for EnumIntB {
@@ -4728,10 +4993,34 @@ impl ::core::cmp::PartialEq for EnumIntC {
         __self_discr == __arg1_discr
     }
 }
-pub static __SPEC_XDR_TYPE_ENUMINTC: [u8; 76usize] = EnumIntC::spec_xdr();
+pub static __SPEC_XDR_TYPE_ENUMINTC: [u8; EnumIntC::__SPEC_XDR_VIEW.const_xdr_len()] =
+    EnumIntC::spec_xdr();
 impl EnumIntC {
-    pub const fn spec_xdr() -> [u8; 76usize] {
-        *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08EnumIntC\0\0\0\x03\0\0\0\0\0\0\0\x02V1\0\0\0\0\0d\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\xc8\0\0\0\0\0\0\0\x02V3\0\0\0\0\x01,"
+    const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::UdtEnumV0(soroban_sdk::xdr::ScSpecUdtEnumV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            lib: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::StringMView::new(b"EnumIntC"),
+            cases: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"V1"),
+                    value: 100u32,
+                },
+                soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"V2"),
+                    value: 200u32,
+                },
+                soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"V3"),
+                    value: 300u32,
+                },
+            ]),
+        });
+    pub const fn spec_xdr() -> [u8; EnumIntC::__SPEC_XDR_VIEW.const_xdr_len()] {
+        EnumIntC::__SPEC_XDR_VIEW.const_to_xdr()
     }
 }
 impl soroban_sdk::SpecShakingMarker for EnumIntC {
@@ -5071,10 +5360,36 @@ impl ::core::cmp::PartialEq for ErrorA {
         __self_discr == __arg1_discr
     }
 }
-pub static __SPEC_XDR_TYPE_ERRORA: [u8; 76usize] = ErrorA::spec_xdr();
+pub static __SPEC_XDR_TYPE_ERRORA: [u8; ErrorA::__SPEC_XDR_VIEW.const_xdr_len()] =
+    ErrorA::spec_xdr();
 impl ErrorA {
-    pub const fn spec_xdr() -> [u8; 76usize] {
-        *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x06ErrorA\0\0\0\0\0\x03\0\0\0\0\0\0\0\x02E1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02E2\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02E3\0\0\0\0\0\x03"
+    const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::UdtErrorEnumV0(
+            soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
+                doc: soroban_sdk::xdr::StringMView::new(b""),
+                lib: soroban_sdk::xdr::StringMView::new(b""),
+                name: soroban_sdk::xdr::StringMView::new(b"ErrorA"),
+                cases: soroban_sdk::xdr::VecMView::new(&[
+                    soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"E1"),
+                        value: 1u32,
+                    },
+                    soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"E2"),
+                        value: 2u32,
+                    },
+                    soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"E3"),
+                        value: 3u32,
+                    },
+                ]),
+            },
+        );
+    pub const fn spec_xdr() -> [u8; ErrorA::__SPEC_XDR_VIEW.const_xdr_len()] {
+        ErrorA::__SPEC_XDR_VIEW.const_to_xdr()
     }
 }
 impl soroban_sdk::SpecShakingMarker for ErrorA {
@@ -5239,10 +5554,36 @@ impl ::core::cmp::PartialEq for ErrorB {
         __self_discr == __arg1_discr
     }
 }
-pub static __SPEC_XDR_TYPE_ERRORB: [u8; 76usize] = ErrorB::spec_xdr();
+pub static __SPEC_XDR_TYPE_ERRORB: [u8; ErrorB::__SPEC_XDR_VIEW.const_xdr_len()] =
+    ErrorB::spec_xdr();
 impl ErrorB {
-    pub const fn spec_xdr() -> [u8; 76usize] {
-        *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x06ErrorB\0\0\0\0\0\x03\0\0\0\0\0\0\0\x02E1\0\0\0\0\0\n\0\0\0\0\0\0\0\x02E2\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02E3\0\0\0\0\0\x0c"
+    const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::UdtErrorEnumV0(
+            soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
+                doc: soroban_sdk::xdr::StringMView::new(b""),
+                lib: soroban_sdk::xdr::StringMView::new(b""),
+                name: soroban_sdk::xdr::StringMView::new(b"ErrorB"),
+                cases: soroban_sdk::xdr::VecMView::new(&[
+                    soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"E1"),
+                        value: 10u32,
+                    },
+                    soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"E2"),
+                        value: 11u32,
+                    },
+                    soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"E3"),
+                        value: 12u32,
+                    },
+                ]),
+            },
+        );
+    pub const fn spec_xdr() -> [u8; ErrorB::__SPEC_XDR_VIEW.const_xdr_len()] {
+        ErrorB::__SPEC_XDR_VIEW.const_to_xdr()
     }
 }
 impl soroban_sdk::SpecShakingMarker for ErrorB {
@@ -5407,10 +5748,36 @@ impl ::core::cmp::PartialEq for ErrorC {
         __self_discr == __arg1_discr
     }
 }
-pub static __SPEC_XDR_TYPE_ERRORC: [u8; 76usize] = ErrorC::spec_xdr();
+pub static __SPEC_XDR_TYPE_ERRORC: [u8; ErrorC::__SPEC_XDR_VIEW.const_xdr_len()] =
+    ErrorC::spec_xdr();
 impl ErrorC {
-    pub const fn spec_xdr() -> [u8; 76usize] {
-        *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x06ErrorC\0\0\0\0\0\x03\0\0\0\0\0\0\0\x02E1\0\0\0\0\0d\0\0\0\0\0\0\0\x02E2\0\0\0\0\0e\0\0\0\0\0\0\0\x02E3\0\0\0\0\0f"
+    const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::UdtErrorEnumV0(
+            soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
+                doc: soroban_sdk::xdr::StringMView::new(b""),
+                lib: soroban_sdk::xdr::StringMView::new(b""),
+                name: soroban_sdk::xdr::StringMView::new(b"ErrorC"),
+                cases: soroban_sdk::xdr::VecMView::new(&[
+                    soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"E1"),
+                        value: 100u32,
+                    },
+                    soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"E2"),
+                        value: 101u32,
+                    },
+                    soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
+                        doc: soroban_sdk::xdr::StringMView::new(b""),
+                        name: soroban_sdk::xdr::StringMView::new(b"E3"),
+                        value: 102u32,
+                    },
+                ]),
+            },
+        );
+    pub const fn spec_xdr() -> [u8; ErrorC::__SPEC_XDR_VIEW.const_xdr_len()] {
+        ErrorC::__SPEC_XDR_VIEW.const_to_xdr()
     }
 }
 impl soroban_sdk::SpecShakingMarker for ErrorC {
@@ -5571,10 +5938,35 @@ impl ::core::cmp::PartialEq for EventA {
         self.f1 == other.f1 && self.f2 == other.f2
     }
 }
-pub static __SPEC_XDR_EVENT_EVENTA: [u8; 88usize] = EventA::spec_xdr();
+pub static __SPEC_XDR_EVENT_EVENTA: [u8; EventA::__SPEC_XDR_VIEW.const_xdr_len()] =
+    EventA::spec_xdr();
 impl EventA {
-    pub const fn spec_xdr() -> [u8; 88usize] {
-        *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventA\0\0\0\0\0\x01\0\0\0\x07event_a\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x10\0\0\0\0\0\0\0\x02"
+    const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::EventV0(soroban_sdk::xdr::ScSpecEventV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            lib: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"EventA")),
+            prefix_topics: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSymbolView(
+                soroban_sdk::xdr::StringMView::new(b"event_a"),
+            )]),
+            params: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecEventParamV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"f1"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
+                },
+                soroban_sdk::xdr::ScSpecEventParamV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"f2"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::String,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                },
+            ]),
+            data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
+        });
+    pub const fn spec_xdr() -> [u8; EventA::__SPEC_XDR_VIEW.const_xdr_len()] {
+        EventA::__SPEC_XDR_VIEW.const_to_xdr()
     }
 }
 impl soroban_sdk::SpecShakingMarker for EventA {
@@ -5660,10 +6052,41 @@ impl ::core::cmp::PartialEq for EventB {
         self.f3 == other.f3 && self.f1 == other.f1 && self.f2 == other.f2
     }
 }
-pub static __SPEC_XDR_EVENT_EVENTB: [u8; 108usize] = EventB::spec_xdr();
+pub static __SPEC_XDR_EVENT_EVENTB: [u8; EventB::__SPEC_XDR_VIEW.const_xdr_len()] =
+    EventB::spec_xdr();
 impl EventB {
-    pub const fn spec_xdr() -> [u8; 108usize] {
-        *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventB\0\0\0\0\0\x01\0\0\0\x07event_b\0\0\0\0\x03\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02f3\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02"
+    const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::EventV0(soroban_sdk::xdr::ScSpecEventV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            lib: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"EventB")),
+            prefix_topics: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSymbolView(
+                soroban_sdk::xdr::StringMView::new(b"event_b"),
+            )]),
+            params: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecEventParamV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"f1"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
+                },
+                soroban_sdk::xdr::ScSpecEventParamV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"f2"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
+                },
+                soroban_sdk::xdr::ScSpecEventParamV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"f3"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::I128,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                },
+            ]),
+            data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
+        });
+    pub const fn spec_xdr() -> [u8; EventB::__SPEC_XDR_VIEW.const_xdr_len()] {
+        EventB::__SPEC_XDR_VIEW.const_to_xdr()
     }
 }
 impl soroban_sdk::SpecShakingMarker for EventB {
@@ -5754,10 +6177,41 @@ impl ::core::cmp::PartialEq for EventC {
         self.f2 == other.f2 && self.f3 == other.f3 && self.f1 == other.f1
     }
 }
-pub static __SPEC_XDR_EVENT_EVENTC: [u8; 108usize] = EventC::spec_xdr();
+pub static __SPEC_XDR_EVENT_EVENTC: [u8; EventC::__SPEC_XDR_VIEW.const_xdr_len()] =
+    EventC::spec_xdr();
 impl EventC {
-    pub const fn spec_xdr() -> [u8; 108usize] {
-        *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventC\0\0\0\0\0\x01\0\0\0\x07event_c\0\0\0\0\x03\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x11\0\0\0\x01\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x07\0\0\0\0\0\0\0\0\0\0\0\x02f3\0\0\0\0\0\x07\0\0\0\0\0\0\0\x02"
+    const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::EventV0(soroban_sdk::xdr::ScSpecEventV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            lib: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"EventC")),
+            prefix_topics: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSymbolView(
+                soroban_sdk::xdr::StringMView::new(b"event_c"),
+            )]),
+            params: soroban_sdk::xdr::VecMView::new(&[
+                soroban_sdk::xdr::ScSpecEventParamV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"f1"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Symbol,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
+                },
+                soroban_sdk::xdr::ScSpecEventParamV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"f2"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::I64,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                },
+                soroban_sdk::xdr::ScSpecEventParamV0View {
+                    doc: soroban_sdk::xdr::StringMView::new(b""),
+                    name: soroban_sdk::xdr::StringMView::new(b"f3"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::I64,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                },
+            ]),
+            data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
+        });
+    pub const fn spec_xdr() -> [u8; EventC::__SPEC_XDR_VIEW.const_xdr_len()] {
+        EventC::__SPEC_XDR_VIEW.const_to_xdr()
     }
 }
 impl soroban_sdk::SpecShakingMarker for EventC {
@@ -5831,10 +6285,22 @@ impl ::core::cmp::PartialEq for EventD {
         true
     }
 }
-pub static __SPEC_XDR_EVENT_EVENTD: [u8; 48usize] = EventD::spec_xdr();
+pub static __SPEC_XDR_EVENT_EVENTD: [u8; EventD::__SPEC_XDR_VIEW.const_xdr_len()] =
+    EventD::spec_xdr();
 impl EventD {
-    pub const fn spec_xdr() -> [u8; 48usize] {
-        *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventD\0\0\0\0\0\x01\0\0\0\x07event_d\0\0\0\0\0\0\0\0\x02"
+    const __SPEC_XDR_VIEW: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::EventV0(soroban_sdk::xdr::ScSpecEventV0View {
+            doc: soroban_sdk::xdr::StringMView::new(b""),
+            lib: soroban_sdk::xdr::StringMView::new(b""),
+            name: soroban_sdk::xdr::ScSymbolView(soroban_sdk::xdr::StringMView::new(b"EventD")),
+            prefix_topics: soroban_sdk::xdr::VecMView::new(&[soroban_sdk::xdr::ScSymbolView(
+                soroban_sdk::xdr::StringMView::new(b"event_d"),
+            )]),
+            params: soroban_sdk::xdr::VecMView::new(&[]),
+            data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
+        });
+    pub const fn spec_xdr() -> [u8; EventD::__SPEC_XDR_VIEW.const_xdr_len()] {
+        EventD::__SPEC_XDR_VIEW.const_to_xdr()
     }
 }
 impl soroban_sdk::SpecShakingMarker for EventD {
