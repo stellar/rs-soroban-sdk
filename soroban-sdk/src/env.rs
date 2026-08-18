@@ -6,7 +6,6 @@ pub mod internal {
 
     pub use soroban_env_guest::*;
     pub type EnvImpl = Guest;
-    pub type MaybeEnvImpl = Guest;
 
     // In the Guest case, Env::Error is already Infallible so there is no work
     // to do to "reject an error": if an error occurs in the environment, the
@@ -22,7 +21,6 @@ pub mod internal {
 
     pub use soroban_env_host::*;
     pub type EnvImpl = Host;
-    pub type MaybeEnvImpl = Option<Host>;
 
     // When we have `feature="testutils"` (or are in cfg(test)) we enable feature
     // `soroban-env-{common,host}/testutils` which in turn adds the helper method
@@ -131,19 +129,19 @@ use internal::{
 #[doc(hidden)]
 #[derive(Clone)]
 pub struct MaybeEnv {
-    maybe_env_impl: internal::MaybeEnvImpl,
-    #[cfg(any(test, feature = "testutils"))]
-    test_state: Option<EnvTestState>,
+    // On wasm an Env is always available.
+    #[cfg(target_family = "wasm")]
+    env: Env,
+    #[cfg(not(target_family = "wasm"))]
+    env: Option<Env>,
 }
 
 #[cfg(target_family = "wasm")]
 impl TryFrom<MaybeEnv> for Env {
     type Error = Infallible;
 
-    fn try_from(_value: MaybeEnv) -> Result<Self, Self::Error> {
-        Ok(Env {
-            env_impl: internal::EnvImpl {},
-        })
+    fn try_from(value: MaybeEnv) -> Result<Self, Self::Error> {
+        Ok(value.env)
     }
 }
 
@@ -158,7 +156,9 @@ impl MaybeEnv {
     // separate function to be const
     pub const fn none() -> Self {
         Self {
-            maybe_env_impl: internal::EnvImpl {},
+            env: Env {
+                env_impl: internal::EnvImpl {},
+            },
         }
     }
 }
@@ -167,20 +167,14 @@ impl MaybeEnv {
 impl MaybeEnv {
     // separate function to be const
     pub const fn none() -> Self {
-        Self {
-            maybe_env_impl: None,
-            #[cfg(any(test, feature = "testutils"))]
-            test_state: None,
-        }
+        Self { env: None }
     }
 }
 
 #[cfg(target_family = "wasm")]
 impl From<Env> for MaybeEnv {
     fn from(value: Env) -> Self {
-        MaybeEnv {
-            maybe_env_impl: value.env_impl,
-        }
+        MaybeEnv { env: value }
     }
 }
 
@@ -189,26 +183,14 @@ impl TryFrom<MaybeEnv> for Env {
     type Error = ConversionError;
 
     fn try_from(value: MaybeEnv) -> Result<Self, Self::Error> {
-        if let Some(env_impl) = value.maybe_env_impl {
-            Ok(Env {
-                env_impl,
-                #[cfg(any(test, feature = "testutils"))]
-                test_state: value.test_state.unwrap_or_default(),
-            })
-        } else {
-            Err(ConversionError)
-        }
+        value.env.ok_or(ConversionError)
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
 impl From<Env> for MaybeEnv {
     fn from(value: Env) -> Self {
-        MaybeEnv {
-            maybe_env_impl: Some(value.env_impl.clone()),
-            #[cfg(any(test, feature = "testutils"))]
-            test_state: Some(value.test_state.clone()),
-        }
+        MaybeEnv { env: Some(value) }
     }
 }
 
