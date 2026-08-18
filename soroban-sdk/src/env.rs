@@ -629,9 +629,9 @@ use xdr::{LedgerEntry, LedgerKey, LedgerKeyContractData, SorobanAuthorizationEnt
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
-    /// Create an [Env] for a call into a native contract's function, where the
-    /// test state is unavailable because the code is running as the contract.
-    pub(crate) fn for_contract_fn(env_impl: internal::EnvImpl) -> Env {
+    /// Create an [Env] for use inside a contract invocation, where the test
+    /// state is unavailable because the code is running as the contract.
+    pub(crate) fn for_inside_contract_invocation(env_impl: internal::EnvImpl) -> Env {
         Env {
             env_impl,
             test_state: EnvTestState::Contract,
