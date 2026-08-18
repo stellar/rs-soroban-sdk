@@ -235,15 +235,86 @@ thread_local! {
     static LAST_ENV: RefCell<Option<LastEnv>> = RefCell::new(None);
 }
 
+/// The test state of an [Env].
+///
+/// An [Env] created by a test has test state. An [Env] created for a contract
+/// function invocation does not, because the host that creates it knows nothing
+/// of the SDK's test state and has none to pass on. Testutils functionality
+/// that depends on the test state panics rather than silently operating on
+/// empty state when used inside a contract function.
 #[cfg(any(test, feature = "testutils"))]
-#[derive(Clone, Default)]
-struct EnvTestState {
-    test_name: Option<String>,
-    number: usize,
-    config: EnvTestConfig,
-    generators: Rc<RefCell<Generators>>,
-    auth_snapshot: Rc<RefCell<AuthSnapshot>>,
-    snapshot: Option<Rc<LedgerSnapshot>>,
+#[derive(Clone)]
+enum EnvTestState {
+    Test {
+        test_name: Option<String>,
+        number: usize,
+        config: EnvTestConfig,
+        generators: Rc<RefCell<Generators>>,
+        auth_snapshot: Rc<RefCell<AuthSnapshot>>,
+        snapshot: Option<Rc<LedgerSnapshot>>,
+    },
+    Contract,
+}
+
+/// Adapts a [`ContractFunctionSet`] into the function set the host dispatches
+/// native contract calls to.
+///
+/// Shared by contract registration and Wasm upload, both of which hand the host
+/// a native contract to dispatch to.
+#[cfg(any(test, feature = "testutils"))]
+pub(crate) struct InternalContractFunctionSet<T: ContractFunctionSet>(pub(crate) T);
+
+#[cfg(any(test, feature = "testutils"))]
+impl<T: ContractFunctionSet> internal::ContractFunctionSet for InternalContractFunctionSet<T> {
+    fn call(&self, func: &Symbol, env_impl: &internal::EnvImpl, args: &[Val]) -> Option<Val> {
+        let env = Env {
+            env_impl: env_impl.clone(),
+            test_state: EnvTestState::Contract,
+        };
+        self.0.call(
+            crate::Symbol::try_from_val(&env, func)
+                .unwrap_infallible()
+                .to_string()
+                .as_str(),
+            env,
+            args,
+        )
+    }
+}
+
+#[cfg(any(test, feature = "testutils"))]
+impl EnvTestState {
+    fn config_mut(&mut self) -> &mut EnvTestConfig {
+        match self {
+            Self::Test { config, .. } => config,
+            Self::Contract => panic!("the test config is unavailable inside a contract function and must be accessed only from the test code outside the contract function"),
+        }
+    }
+
+    fn generators(&self) -> &Rc<RefCell<Generators>> {
+        match self {
+            Self::Test { generators, .. } => generators,
+            Self::Contract => panic!("generating values like addresses is unavailable inside a contract function and must be done only from the test code outside the contract function"),
+        }
+    }
+
+    fn auth_snapshot(&self) -> &Rc<RefCell<AuthSnapshot>> {
+        match self {
+            Self::Test { auth_snapshot, .. } => auth_snapshot,
+            Self::Contract => {
+                panic!("the record of authorizations is unavailable inside a contract function and must be accessed only from the test code outside the contract function")
+            }
+        }
+    }
+
+    fn snapshot(&self) -> &Option<Rc<LedgerSnapshot>> {
+        match self {
+            Self::Test { snapshot, .. } => snapshot,
+            Self::Contract => {
+                panic!("the ledger snapshot is unavailable inside a contract function and must be accessed only from the test code outside the contract function")
+            }
+        }
+    }
 }
 
 /// Config for changing the default behavior of the Env when used in tests.
@@ -565,8 +636,8 @@ use crate::{
     testutils::{
         budget::Budget, cost_estimate::NetworkInvocationResourceLimits, default_ledger_info,
         Address as _, AuthSnapshot, AuthorizedInvocation, ContractFunctionSet, EventsSnapshot,
-        Generators, InternalContractFunctionSet, Ledger as _, MockAuth, MockAuthContract, Register,
-        Snapshot, SnapshotSourceInput, StellarAssetContract, StellarAssetIssuer,
+        Generators, Ledger as _, MockAuth, MockAuthContract, Register, Snapshot,
+        SnapshotSourceInput, StellarAssetContract, StellarAssetIssuer,
     },
     Bytes, BytesN, ConstructorArgs,
 };
@@ -584,14 +655,6 @@ use xdr::{LedgerEntry, LedgerKey, LedgerKeyContractData, SorobanAuthorizationEnt
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
-    /// Create an [Env] for the given host, with default test state.
-    pub(crate) fn from_env_impl(env_impl: internal::EnvImpl) -> Env {
-        Env {
-            env_impl,
-            test_state: Default::default(),
-        }
-    }
-
     #[doc(hidden)]
     pub fn in_contract(&self) -> bool {
         self.env_impl.has_frame().unwrap()
@@ -604,7 +667,7 @@ impl Env {
 
     #[doc(hidden)]
     pub(crate) fn with_generator<T>(&self, f: impl FnOnce(RefMut<'_, Generators>) -> T) -> T {
-        f((*self.test_state.generators).borrow_mut())
+        f((*self.test_state.generators()).borrow_mut())
     }
 
     /// Create an Env with the test config.
@@ -628,7 +691,7 @@ impl Env {
 
     /// Change the test config of an Env.
     pub fn set_config(&mut self, config: EnvTestConfig) {
-        self.test_state.config = config;
+        *self.test_state.config_mut() = config;
     }
 
     /// Used by multiple constructors to configure test environments consistently.
@@ -710,7 +773,7 @@ impl Env {
 
         let env = Env {
             env_impl,
-            test_state: EnvTestState {
+            test_state: EnvTestState::Test {
                 test_name,
                 number,
                 config,
@@ -1615,7 +1678,7 @@ impl Env {
     /// # fn main() { }
     /// ```
     pub fn auths(&self) -> std::vec::Vec<(Address, AuthorizedInvocation)> {
-        (*self.test_state.auth_snapshot)
+        (*self.test_state.auth_snapshot())
             .borrow()
             .0
             .last()
@@ -1941,8 +2004,8 @@ impl Env {
     /// Create a snapshot from the Env's current state.
     pub fn to_snapshot(&self) -> Snapshot {
         Snapshot {
-            generators: (*self.test_state.generators).borrow().clone(),
-            auth: (*self.test_state.auth_snapshot).borrow().clone(),
+            generators: (*self.test_state.generators()).borrow().clone(),
+            auth: (*self.test_state.auth_snapshot()).borrow().clone(),
             ledger: self.to_ledger_snapshot(),
             events: self.to_events_snapshot(),
         }
@@ -1987,7 +2050,7 @@ impl Env {
 
     /// Create a snapshot from the Env's current state.
     pub fn to_ledger_snapshot(&self) -> LedgerSnapshot {
-        let snapshot = self.test_state.snapshot.clone().unwrap_or_default();
+        let snapshot = self.test_state.snapshot().clone().unwrap_or_default();
         let mut snapshot = (*snapshot).clone();
         snapshot.set_ledger_info(self.ledger().get());
         snapshot.update_entries(&self.host().get_stored_entries().unwrap());
@@ -2042,7 +2105,10 @@ impl Drop for Env {
         // snapshot at that point when no other references to the host exist,
         // because it is only when there are no other references that the host
         // is being dropped.
-        if self.env_impl.can_finish() && self.test_state.config.capture_snapshot_at_drop {
+        let EnvTestState::Test { config, .. } = &self.test_state else {
+            return;
+        };
+        if self.env_impl.can_finish() && config.capture_snapshot_at_drop {
             self.to_test_snapshot_file();
         }
     }
@@ -2068,6 +2134,18 @@ impl Env {
     ///
     /// If there is any error writing the file.
     pub(crate) fn to_test_snapshot_file(&self) {
+        // If there's no test state, or no test name, we're not in a test
+        // context, so don't write snapshots. An Env without test state would
+        // panic if its test state were read.
+        let EnvTestState::Test {
+            test_name: Some(test_name),
+            number,
+            ..
+        } = &self.test_state
+        else {
+            return;
+        };
+
         let snapshot = self.to_snapshot();
 
         // Don't write a snapshot that has no data in it.
@@ -2079,11 +2157,6 @@ impl Env {
         }
 
         // Determine path to write test snapshots to.
-        let Some(test_name) = &self.test_state.test_name else {
-            // If there's no test name, we're not in a test context, so don't write snapshots.
-            return;
-        };
-        let number = self.test_state.number;
         // Break up the test name into directories, using :: as the separator.
         // The :: module separator cannot be written into the filename because
         // some operating systems (e.g. Windows) do not allow the : character in

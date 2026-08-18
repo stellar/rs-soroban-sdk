@@ -45,6 +45,7 @@ mod crypto_secp256r1;
 mod crypto_sha256;
 mod delegate_auth;
 mod env;
+mod env_test_state_in_contract;
 mod env_upload;
 mod max_ttl;
 mod muxed_address;
