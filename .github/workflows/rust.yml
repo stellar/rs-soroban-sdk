@@ -203,7 +203,6 @@ jobs:
       run: |
         git config user.name 'github-actions[bot]'
         git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-        git config merge.ours.driver true
         git add -A -- ':(glob)**/test_snapshots/**'
         if git diff --cached --quiet; then
           echo "No diffs."
@@ -294,7 +293,6 @@ jobs:
       run: |
         git config user.name 'github-actions[bot]'
         git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-        git config merge.ours.driver true
         git add -A -- tests-expanded
         if git diff --cached --quiet; then
           echo "No diffs."
