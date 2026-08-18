@@ -6,7 +6,7 @@ use soroban_sdk::{
         ContractExecutable, ContractExecutableExternalRef, ContractIdPreimage,
         ContractIdPreimageFromAddress, CreateContractArgsV2, ScString, Uint256,
     },
-    Address, BytesN, Env, Executable, String, Val,
+    Address, BytesN, Env, Executable, String,
 };
 
 mod add_u64_contract {
