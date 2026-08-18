@@ -238,6 +238,36 @@ pub struct TupleRecursive {
     pub a: Vec<(TupleRecursive, TupleRecursive, TupleRecursive)>,
 }
 
+/// Nine recursive fields, of nearly every container shape. The widest recursive
+/// struct that has come up.
+#[contracttype(crate_path = "crate")]
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct WiderRecursive {
+    pub a: Vec<WiderRecursive>,
+    pub b: Map<u32, WiderRecursive>,
+    pub c: Map<i32, WiderRecursive>,
+    pub d: Map<u64, WiderRecursive>,
+    pub e: Map<i64, WiderRecursive>,
+    pub f: Map<Symbol, WiderRecursive>,
+    pub g: Vec<Option<WiderRecursive>>,
+    pub h: Vec<(WiderRecursive, WiderRecursive)>,
+    pub i: Map<u128, WiderRecursive>,
+}
+
+/// Recursion through a four-element tuple in four container fields, which
+/// multiplies the fan-out by the tuple arity. Converting a value of this shape
+/// exhausted the host budget under an earlier bound.
+pub type Quad = (TupleWide, TupleWide, TupleWide, TupleWide);
+
+#[contracttype(crate_path = "crate")]
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct TupleWide {
+    pub a: Vec<Quad>,
+    pub b: Map<u32, Quad>,
+    pub c: Map<i32, Quad>,
+    pub d: Vec<Option<Quad>>,
+}
+
 /// A recursive enum with many recursive variants. All of the variants are built
 /// even though only one is generated, so this is the shape that bounds
 /// construction work rather than value size.
@@ -268,8 +298,14 @@ pub enum WideRecursiveEnum {
 /// when it is set, so a stress run can ask for more.
 fn recursive_config() -> Config {
     let default = Config::default();
+    // `Config::default` reads PROPTEST_CASES, so only override it when the
+    // variable is unset.
+    let cases = match std::env::var("PROPTEST_CASES") {
+        Ok(_) => default.cases,
+        Err(_) => 8,
+    };
     Config {
-        cases: default.cases.min(8),
+        cases,
         failure_persistence: None,
         ..default
     }
@@ -289,6 +325,8 @@ proptest! {
         w in arb::<WideRecursive>(),
         t in arb::<TupleRecursive>(),
         e in arb::<WideRecursiveEnum>(),
+        wider in arb::<WiderRecursive>(),
+        tw in arb::<TupleWide>(),
     ) {
         let env = &Env::default();
         check!(env, UdtRecursive, r);
@@ -298,6 +336,8 @@ proptest! {
         check!(env, WideRecursive, w);
         check!(env, TupleRecursive, t);
         check!(env, WideRecursiveEnum, e);
+        check!(env, WiderRecursive, wider);
+        check!(env, TupleWide, tw);
     }
 }
 
@@ -599,31 +639,43 @@ fn test_every_prototype_implements_proto_strategy() {
     assert_proto::<UdtWithError>();
 }
 
-/// The budget bounds the collection elements a generated value holds. Counted
-/// from `Debug`, which is the only view of a prototype's insides available here,
-/// so the count is approximate — a floor as well as a ceiling, because a
-/// regression that emptied every collection would otherwise pass.
-fn debug_elements<T: core::fmt::Debug>(proto: &T) -> usize {
+/// A rough size for a generated prototype: the separators in its `Debug`, which
+/// is the only view of a prototype's insides available from outside the module.
+///
+/// This over-counts the collection elements [`NODE_BUDGET`] bounds, because the
+/// fields of every struct and enum variant on the way down are separated too, so
+/// it is a bound on the size of the whole prototype rather than on its
+/// collection elements alone. Both directions matter here: too large means the
+/// budget stopped bounding recursion, and too small means it emptied the
+/// collections out instead of shrinking them.
+fn debug_size<T: core::fmt::Debug>(proto: &T) -> usize {
     std::format!("{proto:?}").matches(',').count()
 }
 
 #[test]
-fn test_recursive_values_stay_within_the_budget() {
-    let mut largest = 0usize;
-    for _ in 0..1 {
-        sample(arb::<WideRecursive>(), 16, |proto| {
-            largest = largest.max(debug_elements(&proto));
-        });
-        sample(arb::<TupleRecursive>(), 16, |proto| {
-            largest = largest.max(debug_elements(&proto));
-        });
-        sample(arb::<WideRecursiveEnum>(), 16, |proto| {
-            largest = largest.max(debug_elements(&proto));
-        });
+fn test_recursive_values_stay_small() {
+    // Each node of the widest of these types contributes its own field
+    // separators, so allow a generous multiple of the element budget.
+    const LIMIT: usize = NODE_BUDGET * 4;
+    for (name, size) in [
+        ("WideRecursive", sample_max(arb::<WideRecursive>())),
+        ("TupleRecursive", sample_max(arb::<TupleRecursive>())),
+        ("WideRecursiveEnum", sample_max(arb::<WideRecursiveEnum>())),
+        ("WiderRecursive", sample_max(arb::<WiderRecursive>())),
+        ("TupleWide", sample_max(arb::<TupleWide>())),
+    ] {
+        assert!(size <= LIMIT, "{name} generated a value of size {size}");
+        assert!(size > 0, "{name} generated nothing at all");
     }
-    assert!(
-        largest <= NODE_BUDGET,
-        "a generated value held {largest} elements"
-    );
-    assert!(largest > 0, "recursive types generated nothing at all");
+}
+
+fn sample_max<S: Strategy>(strategy: S) -> usize
+where
+    S::Value: core::fmt::Debug,
+{
+    let mut largest = 0usize;
+    sample(strategy, 16, |value| {
+        largest = largest.max(debug_size(&value));
+    });
+    largest
 }
