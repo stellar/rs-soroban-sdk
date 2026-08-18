@@ -566,6 +566,32 @@ const _: () = {
             })
         }
     }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryUsedParamStruct {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::with_fields(2usize, || {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                            (
+                                <<u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                <<UsedNestedInStruct as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                            ),
+                            |(field_0, field_1)| ArbitraryUsedParamStruct {
+                                a: field_0,
+                                nested: field_1,
+                            },
+                        ),
+                    )
+            })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary for ArbitraryUsedParamStruct {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+        }
+    }
 };
 pub enum UsedReturnEnum {
     A(u32),
@@ -1092,6 +1118,44 @@ const _: () = {
             })
         }
     }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryUsedReturnEnum {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                soroban_sdk::testutils::proptest::proptest::strategy::Union::new(<[_]>::into_vec(
+                    ::alloc::boxed::box_new([
+                        soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                            (
+                                                <<u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                            ),
+                                            |(field_0,)| ArbitraryUsedReturnEnum::A(field_0),
+                                        ),
+                                    )
+                        }),
+                        soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                            (
+                                                <<i64 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                            ),
+                                            |(field_0,)| ArbitraryUsedReturnEnum::B(field_0),
+                                        ),
+                                    )
+                        }),
+                    ]),
+                )),
+            )
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary for ArbitraryUsedReturnEnum {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+        }
+    }
 };
 pub enum UsedParamIntEnum {
     X = 1,
@@ -1421,6 +1485,36 @@ const _: () = {
                 ArbitraryUsedParamIntEnum::X => UsedParamIntEnum::X,
                 ArbitraryUsedParamIntEnum::Y => UsedParamIntEnum::Y,
             })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryUsedParamIntEnum {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                soroban_sdk::testutils::proptest::proptest::strategy::Union::new(<[_]>::into_vec(
+                    ::alloc::boxed::box_new([
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                            soroban_sdk::testutils::proptest::proptest::strategy::Just(
+                                ArbitraryUsedParamIntEnum::X,
+                            ),
+                        ),
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                            soroban_sdk::testutils::proptest::proptest::strategy::Just(
+                                ArbitraryUsedParamIntEnum::Y,
+                            ),
+                        ),
+                    ]),
+                )),
+            )
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary
+        for ArbitraryUsedParamIntEnum
+    {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
         }
     }
 };
@@ -2256,6 +2350,32 @@ const _: () = {
             })
         }
     }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryUsedNestedInStruct {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                            (
+                                <<i64 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                            ),
+                            |(field_0,)| ArbitraryUsedNestedInStruct {
+                                val: field_0,
+                            },
+                        ),
+                    )
+            })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary
+        for ArbitraryUsedNestedInStruct
+    {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+        }
+    }
 };
 pub struct UsedVecElement {
     pub data: u32,
@@ -2618,6 +2738,30 @@ const _: () = {
             })
         }
     }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryUsedVecElement {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                            (
+                                <<u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                            ),
+                            |(field_0,)| ArbitraryUsedVecElement {
+                                data: field_0,
+                            },
+                        ),
+                    )
+            })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary for ArbitraryUsedVecElement {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+        }
+    }
 };
 pub enum UsedMapKey {
     K1 = 1,
@@ -2945,6 +3089,34 @@ const _: () = {
                 ArbitraryUsedMapKey::K1 => UsedMapKey::K1,
                 ArbitraryUsedMapKey::K2 => UsedMapKey::K2,
             })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryUsedMapKey {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                soroban_sdk::testutils::proptest::proptest::strategy::Union::new(<[_]>::into_vec(
+                    ::alloc::boxed::box_new([
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                            soroban_sdk::testutils::proptest::proptest::strategy::Just(
+                                ArbitraryUsedMapKey::K1,
+                            ),
+                        ),
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                            soroban_sdk::testutils::proptest::proptest::strategy::Just(
+                                ArbitraryUsedMapKey::K2,
+                            ),
+                        ),
+                    ]),
+                )),
+            )
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary for ArbitraryUsedMapKey {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
         }
     }
 };
@@ -3303,6 +3475,28 @@ const _: () = {
             Ok(UsedMapVal {
                 v: soroban_sdk::IntoVal::into_val(&v.v, env),
             })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryUsedMapVal {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                            (
+                                <<u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                            ),
+                            |(field_0,)| ArbitraryUsedMapVal { v: field_0 },
+                        ),
+                    )
+            })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary for ArbitraryUsedMapVal {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
         }
     }
 };
@@ -3672,6 +3866,32 @@ const _: () = {
             })
         }
     }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryUsedOptionElement {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                            (
+                                <<u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                            ),
+                            |(field_0,)| ArbitraryUsedOptionElement {
+                                data: field_0,
+                            },
+                        ),
+                    )
+            })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary
+        for ArbitraryUsedOptionElement
+    {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+        }
+    }
 };
 pub struct UsedResultOk {
     pub data: u32,
@@ -4030,6 +4250,30 @@ const _: () = {
             Ok(UsedResultOk {
                 data: soroban_sdk::IntoVal::into_val(&v.data, env),
             })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryUsedResultOk {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                            (
+                                <<u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                            ),
+                            |(field_0,)| ArbitraryUsedResultOk {
+                                data: field_0,
+                            },
+                        ),
+                    )
+            })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary for ArbitraryUsedResultOk {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
         }
     }
 };
@@ -4448,6 +4692,36 @@ const _: () = {
                 ArbitraryUsedEventTopicType::Transfer => UsedEventTopicType::Transfer,
                 ArbitraryUsedEventTopicType::Mint => UsedEventTopicType::Mint,
             })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryUsedEventTopicType {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                soroban_sdk::testutils::proptest::proptest::strategy::Union::new(<[_]>::into_vec(
+                    ::alloc::boxed::box_new([
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                            soroban_sdk::testutils::proptest::proptest::strategy::Just(
+                                ArbitraryUsedEventTopicType::Transfer,
+                            ),
+                        ),
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                            soroban_sdk::testutils::proptest::proptest::strategy::Just(
+                                ArbitraryUsedEventTopicType::Mint,
+                            ),
+                        ),
+                    ]),
+                )),
+            )
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary
+        for ArbitraryUsedEventTopicType
+    {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
         }
     }
 };
@@ -4961,6 +5235,34 @@ const _: () = {
             })
         }
     }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryUsedEventDataType {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::with_fields(2usize, || {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                            (
+                                <<u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                <<u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                            ),
+                            |(field_0, field_1)| ArbitraryUsedEventDataType {
+                                x: field_0,
+                                y: field_1,
+                            },
+                        ),
+                    )
+            })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary
+        for ArbitraryUsedEventDataType
+    {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+        }
+    }
 };
 pub struct UsedEventWithDataType {
     pub kind: Symbol,
@@ -5424,6 +5726,32 @@ const _: () = {
             })
         }
     }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryUsedEventTopicOuter {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                            (
+                                <<UsedEventTopicInner as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                            ),
+                            |(field_0,)| ArbitraryUsedEventTopicOuter {
+                                inner: field_0,
+                            },
+                        ),
+                    )
+            })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary
+        for ArbitraryUsedEventTopicOuter
+    {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+        }
+    }
 };
 pub struct UsedEventTopicInner {
     pub val: u32,
@@ -5793,6 +6121,32 @@ const _: () = {
             Ok(UsedEventTopicInner {
                 val: soroban_sdk::IntoVal::into_val(&v.val, env),
             })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryUsedEventTopicInner {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                            (
+                                <<u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                            ),
+                            |(field_0,)| ArbitraryUsedEventTopicInner {
+                                val: field_0,
+                            },
+                        ),
+                    )
+            })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary
+        for ArbitraryUsedEventTopicInner
+    {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
         }
     }
 };
@@ -6256,6 +6610,32 @@ const _: () = {
             })
         }
     }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryUsedEventDataOuter {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                            (
+                                <<UsedEventDataInner as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                            ),
+                            |(field_0,)| ArbitraryUsedEventDataOuter {
+                                inner: field_0,
+                            },
+                        ),
+                    )
+            })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary
+        for ArbitraryUsedEventDataOuter
+    {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+        }
+    }
 };
 pub struct UsedEventDataInner {
     pub val: u32,
@@ -6623,6 +7003,32 @@ const _: () = {
             Ok(UsedEventDataInner {
                 val: soroban_sdk::IntoVal::into_val(&v.val, env),
             })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryUsedEventDataInner {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                            (
+                                <<u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                            ),
+                            |(field_0,)| ArbitraryUsedEventDataInner {
+                                val: field_0,
+                            },
+                        ),
+                    )
+            })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary
+        for ArbitraryUsedEventDataInner
+    {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
         }
     }
 };
@@ -7045,6 +7451,36 @@ const _: () = {
             })
         }
     }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryUsedRefTopicType {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                soroban_sdk::testutils::proptest::proptest::strategy::Union::new(<[_]>::into_vec(
+                    ::alloc::boxed::box_new([
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                            soroban_sdk::testutils::proptest::proptest::strategy::Just(
+                                ArbitraryUsedRefTopicType::Send,
+                            ),
+                        ),
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                            soroban_sdk::testutils::proptest::proptest::strategy::Just(
+                                ArbitraryUsedRefTopicType::Recv,
+                            ),
+                        ),
+                    ]),
+                )),
+            )
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary
+        for ArbitraryUsedRefTopicType
+    {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+        }
+    }
 };
 pub struct UsedRefDataType {
     pub nested: UsedRefDataInner,
@@ -7415,6 +7851,30 @@ const _: () = {
             })
         }
     }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryUsedRefDataType {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                            (
+                                <<UsedRefDataInner as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                            ),
+                            |(field_0,)| ArbitraryUsedRefDataType {
+                                nested: field_0,
+                            },
+                        ),
+                    )
+            })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary for ArbitraryUsedRefDataType {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+        }
+    }
 };
 pub struct UsedRefDataInner {
     pub val: u32,
@@ -7775,6 +8235,32 @@ const _: () = {
             Ok(UsedRefDataInner {
                 val: soroban_sdk::IntoVal::into_val(&v.val, env),
             })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryUsedRefDataInner {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                            (
+                                <<u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                            ),
+                            |(field_0,)| ArbitraryUsedRefDataInner {
+                                val: field_0,
+                            },
+                        ),
+                    )
+            })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary
+        for ArbitraryUsedRefDataInner
+    {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
         }
     }
 };
@@ -8227,6 +8713,32 @@ const _: () = {
             })
         }
     }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryUsedTupleElement {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                            (
+                                <<u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                            ),
+                            |(field_0,)| ArbitraryUsedTupleElement {
+                                val: field_0,
+                            },
+                        ),
+                    )
+            })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary
+        for ArbitraryUsedTupleElement
+    {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+        }
+    }
 };
 pub struct UsedTupleReturnElement {
     pub val: u32,
@@ -8597,6 +9109,32 @@ const _: () = {
             Ok(UsedTupleReturnElement {
                 val: soroban_sdk::IntoVal::into_val(&v.val, env),
             })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryUsedTupleReturnElement {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                            (
+                                <<u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                            ),
+                            |(field_0,)| ArbitraryUsedTupleReturnElement {
+                                val: field_0,
+                            },
+                        ),
+                    )
+            })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary
+        for ArbitraryUsedTupleReturnElement
+    {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
         }
     }
 };
@@ -8971,6 +9509,32 @@ const _: () = {
             })
         }
     }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryUsedVecInnerVecElement {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                            (
+                                <<u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                            ),
+                            |(field_0,)| ArbitraryUsedVecInnerVecElement {
+                                val: field_0,
+                            },
+                        ),
+                    )
+            })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary
+        for ArbitraryUsedVecInnerVecElement
+    {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+        }
+    }
 };
 pub struct UsedVecInnerElement {
     pub val: u32,
@@ -9340,6 +9904,32 @@ const _: () = {
             Ok(UsedVecInnerElement {
                 val: soroban_sdk::IntoVal::into_val(&v.val, env),
             })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryUsedVecInnerElement {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                            (
+                                <<u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                            ),
+                            |(field_0,)| ArbitraryUsedVecInnerElement {
+                                val: field_0,
+                            },
+                        ),
+                    )
+            })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary
+        for ArbitraryUsedVecInnerElement
+    {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
         }
     }
 };
@@ -9845,6 +10435,38 @@ const _: () = {
             })
         }
     }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryUsedVecElementNested {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::with_fields(3usize, || {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                            (
+                                <<u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                <<UsedVecInnerElement as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                <<Vec<
+                                    UsedVecInnerVecElement,
+                                > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                            ),
+                            |(field_0, field_1, field_2)| ArbitraryUsedVecElementNested {
+                                val: field_0,
+                                inner: field_1,
+                                vec_inner: field_2,
+                            },
+                        ),
+                    )
+            })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary
+        for ArbitraryUsedVecElementNested
+    {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+        }
+    }
 };
 struct UsedNonPubStruct {
     pub val: u32,
@@ -10205,6 +10827,32 @@ const _: () = {
             Ok(UsedNonPubStruct {
                 val: soroban_sdk::IntoVal::into_val(&v.val, env),
             })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryUsedNonPubStruct {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                            (
+                                <<u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                            ),
+                            |(field_0,)| ArbitraryUsedNonPubStruct {
+                                val: field_0,
+                            },
+                        ),
+                    )
+            })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary
+        for ArbitraryUsedNonPubStruct
+    {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
         }
     }
 };
@@ -10721,6 +11369,32 @@ const _: () = {
             Ok(UsedRecursiveRoot {
                 val: soroban_sdk::IntoVal::into_val(&v.val, env),
             })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryUsedRecursiveRoot {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                            (
+                                <<UsedRecursiveNode as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                            ),
+                            |(field_0,)| ArbitraryUsedRecursiveRoot {
+                                val: field_0,
+                            },
+                        ),
+                    )
+            })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary
+        for ArbitraryUsedRecursiveRoot
+    {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
         }
     }
 };
@@ -11269,6 +11943,48 @@ const _: () = {
             })
         }
     }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryUsedRecursiveNode {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                soroban_sdk::testutils::proptest::proptest::strategy::Union::new(<[_]>::into_vec(
+                    ::alloc::boxed::box_new([
+                        soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                            (
+                                                <<UsedLeaf as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                            ),
+                                            |(field_0,)| ArbitraryUsedRecursiveNode::NotRecursive(
+                                                field_0,
+                                            ),
+                                        ),
+                                    )
+                        }),
+                        soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                            (
+                                                <<UsedRecursiveLeaf as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                            ),
+                                            |(field_0,)| ArbitraryUsedRecursiveNode::Recursive(field_0),
+                                        ),
+                                    )
+                        }),
+                    ]),
+                )),
+            )
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary
+        for ArbitraryUsedRecursiveNode
+    {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+        }
+    }
 };
 pub struct UsedRecursiveLeaf {
     pub val: Vec<UsedRecursiveRoot>,
@@ -11642,6 +12358,34 @@ const _: () = {
             })
         }
     }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryUsedRecursiveLeaf {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                            (
+                                <<Vec<
+                                    UsedRecursiveRoot,
+                                > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                            ),
+                            |(field_0,)| ArbitraryUsedRecursiveLeaf {
+                                val: field_0,
+                            },
+                        ),
+                    )
+            })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary
+        for ArbitraryUsedRecursiveLeaf
+    {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+        }
+    }
 };
 pub struct UsedLeaf {
     pub val: u32,
@@ -12000,6 +12744,28 @@ const _: () = {
             Ok(UsedLeaf {
                 val: soroban_sdk::IntoVal::into_val(&v.val, env),
             })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryUsedLeaf {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                            (
+                                <<u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                            ),
+                            |(field_0,)| ArbitraryUsedLeaf { val: field_0 },
+                        ),
+                    )
+            })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary for ArbitraryUsedLeaf {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
         }
     }
 };
@@ -13245,6 +14011,38 @@ mod wasm_imported {
                 })
             }
         }
+        impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryContractContext {
+            fn proto_strategy(
+            ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>
+            {
+                soroban_sdk::testutils::proptest::with_fields(3usize, || {
+                    soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                (
+                                    <<soroban_sdk::Vec<
+                                        soroban_sdk::Val,
+                                    > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                    <<soroban_sdk::Address as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                    <<soroban_sdk::Symbol as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                ),
+                                |(field_0, field_1, field_2)| ArbitraryContractContext {
+                                    args: field_0,
+                                    contract: field_1,
+                                    fn_name: field_2,
+                                },
+                            ),
+                        )
+                })
+            }
+        }
+        impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary for ArbitraryContractContext {
+            type Parameters = ();
+            type Strategy =
+                soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+            fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+                <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+            }
+        }
     };
     pub struct SubContractInvocation {
         pub context: ContractContext,
@@ -13726,6 +14524,38 @@ mod wasm_imported {
                 })
             }
         }
+        impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitrarySubContractInvocation {
+            fn proto_strategy(
+            ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>
+            {
+                soroban_sdk::testutils::proptest::with_fields(2usize, || {
+                    soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                (
+                                    <<ContractContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                    <<soroban_sdk::Vec<
+                                        InvokerContractAuthEntry,
+                                    > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                ),
+                                |(field_0, field_1)| ArbitrarySubContractInvocation {
+                                    context: field_0,
+                                    sub_invocations: field_1,
+                                },
+                            ),
+                        )
+                })
+            }
+        }
+        impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary
+            for ArbitrarySubContractInvocation
+        {
+            type Parameters = ();
+            type Strategy =
+                soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+            fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+                <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+            }
+        }
     };
     pub struct CreateContractHostFnContext {
         pub executable: ContractExecutable,
@@ -14196,6 +15026,38 @@ mod wasm_imported {
                     executable: soroban_sdk::IntoVal::into_val(&v.executable, env),
                     salt: soroban_sdk::IntoVal::into_val(&v.salt, env),
                 })
+            }
+        }
+        impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryCreateContractHostFnContext {
+            fn proto_strategy(
+            ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>
+            {
+                soroban_sdk::testutils::proptest::with_fields(2usize, || {
+                    soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                (
+                                    <<ContractExecutable as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                    <<soroban_sdk::BytesN<
+                                        32,
+                                    > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                ),
+                                |(field_0, field_1)| ArbitraryCreateContractHostFnContext {
+                                    executable: field_0,
+                                    salt: field_1,
+                                },
+                            ),
+                        )
+                })
+            }
+        }
+        impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary
+            for ArbitraryCreateContractHostFnContext
+        {
+            type Parameters = ();
+            type Strategy =
+                soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+            fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+                <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
             }
         }
     };
@@ -14799,6 +15661,44 @@ mod wasm_imported {
                 })
             }
         }
+        impl soroban_sdk::testutils::proptest::ProtoStrategy
+            for ArbitraryCreateContractWithConstructorHostFnContext
+        {
+            fn proto_strategy(
+            ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>
+            {
+                soroban_sdk::testutils::proptest::with_fields(3usize, || {
+                    soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                (
+                                    <<soroban_sdk::Vec<
+                                        soroban_sdk::Val,
+                                    > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                    <<ContractExecutable as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                    <<soroban_sdk::BytesN<
+                                        32,
+                                    > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                ),
+                                |(field_0, field_1, field_2)| ArbitraryCreateContractWithConstructorHostFnContext {
+                                    constructor_args: field_0,
+                                    executable: field_1,
+                                    salt: field_2,
+                                },
+                            ),
+                        )
+                })
+            }
+        }
+        impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary
+            for ArbitraryCreateContractWithConstructorHostFnContext
+        {
+            type Parameters = ();
+            type Strategy =
+                soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+            fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+                <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+            }
+        }
     };
     pub struct StructA {
         pub f1: u32,
@@ -15239,6 +16139,34 @@ mod wasm_imported {
                 })
             }
         }
+        impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryStructA {
+            fn proto_strategy(
+            ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>
+            {
+                soroban_sdk::testutils::proptest::with_fields(2usize, || {
+                    soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                (
+                                    <<u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                    <<bool as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                ),
+                                |(field_0, field_1)| ArbitraryStructA {
+                                    f1: field_0,
+                                    f2: field_1,
+                                },
+                            ),
+                        )
+                })
+            }
+        }
+        impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary for ArbitraryStructA {
+            type Parameters = ();
+            type Strategy =
+                soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+            fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+                <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+            }
+        }
     };
     pub struct StructB {
         pub f1: i64,
@@ -15677,6 +16605,34 @@ mod wasm_imported {
                     f1: soroban_sdk::IntoVal::into_val(&v.f1, env),
                     f2: soroban_sdk::IntoVal::into_val(&v.f2, env),
                 })
+            }
+        }
+        impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryStructB {
+            fn proto_strategy(
+            ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>
+            {
+                soroban_sdk::testutils::proptest::with_fields(2usize, || {
+                    soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                (
+                                    <<i64 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                    <<soroban_sdk::String as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                ),
+                                |(field_0, field_1)| ArbitraryStructB {
+                                    f1: field_0,
+                                    f2: field_1,
+                                },
+                            ),
+                        )
+                })
+            }
+        }
+        impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary for ArbitraryStructB {
+            type Parameters = ();
+            type Strategy =
+                soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+            fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+                <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
             }
         }
     };
@@ -16125,6 +17081,36 @@ mod wasm_imported {
                 })
             }
         }
+        impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryStructC {
+            fn proto_strategy(
+            ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>
+            {
+                soroban_sdk::testutils::proptest::with_fields(2usize, || {
+                    soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                (
+                                    <<soroban_sdk::Vec<
+                                        u32,
+                                    > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                    <<soroban_sdk::Address as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                ),
+                                |(field_0, field_1)| ArbitraryStructC {
+                                    f1: field_0,
+                                    f2: field_1,
+                                },
+                            ),
+                        )
+                })
+            }
+        }
+        impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary for ArbitraryStructC {
+            type Parameters = ();
+            type Strategy =
+                soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+            fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+                <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+            }
+        }
     };
     pub struct StructTupleA(pub i64, pub i64);
     #[automatically_derived]
@@ -16528,6 +17514,31 @@ mod wasm_imported {
                     soroban_sdk::IntoVal::into_val(&v.0, env),
                     soroban_sdk::IntoVal::into_val(&v.1, env),
                 ))
+            }
+        }
+        impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryStructTupleA {
+            fn proto_strategy(
+            ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>
+            {
+                soroban_sdk::testutils::proptest::with_fields(2usize, || {
+                    soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                (
+                                    <<i64 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                    <<i64 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                ),
+                                |(field_0, field_1)| ArbitraryStructTupleA(field_0, field_1),
+                            ),
+                        )
+                })
+            }
+        }
+        impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary for ArbitraryStructTupleA {
+            type Parameters = ();
+            type Strategy =
+                soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+            fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+                <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
             }
         }
     };
@@ -16935,6 +17946,31 @@ mod wasm_imported {
                 ))
             }
         }
+        impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryStructTupleB {
+            fn proto_strategy(
+            ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>
+            {
+                soroban_sdk::testutils::proptest::with_fields(2usize, || {
+                    soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                (
+                                    <<u128 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                    <<u128 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                ),
+                                |(field_0, field_1)| ArbitraryStructTupleB(field_0, field_1),
+                            ),
+                        )
+                })
+            }
+        }
+        impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary for ArbitraryStructTupleB {
+            type Parameters = ();
+            type Strategy =
+                soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+            fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+                <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+            }
+        }
     };
     pub struct StructTupleC(pub soroban_sdk::Address, pub i128);
     #[automatically_derived]
@@ -17339,6 +18375,31 @@ mod wasm_imported {
                     soroban_sdk::IntoVal::into_val(&v.0, env),
                     soroban_sdk::IntoVal::into_val(&v.1, env),
                 ))
+            }
+        }
+        impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryStructTupleC {
+            fn proto_strategy(
+            ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>
+            {
+                soroban_sdk::testutils::proptest::with_fields(2usize, || {
+                    soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                (
+                                    <<soroban_sdk::Address as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                    <<i128 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                ),
+                                |(field_0, field_1)| ArbitraryStructTupleC(field_0, field_1),
+                            ),
+                        )
+                })
+            }
+        }
+        impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary for ArbitraryStructTupleC {
+            type Parameters = ();
+            type Strategy =
+                soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+            fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+                <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
             }
         }
     };
@@ -18059,6 +19120,58 @@ mod wasm_imported {
                 })
             }
         }
+        impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryContext {
+            fn proto_strategy(
+            ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>
+            {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                    soroban_sdk::testutils::proptest::proptest::strategy::Union::new(
+                        <[_]>::into_vec(::alloc::boxed::box_new([
+                            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                                (
+                                                    <<ContractContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                                ),
+                                                |(field_0,)| ArbitraryContext::Contract(field_0),
+                                            ),
+                                        )
+                            }),
+                            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                                (
+                                                    <<CreateContractHostFnContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                                ),
+                                                |(field_0,)| ArbitraryContext::CreateContractHostFn(field_0),
+                                            ),
+                                        )
+                            }),
+                            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                                (
+                                                    <<CreateContractWithConstructorHostFnContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                                ),
+                                                |(field_0,)| ArbitraryContext::CreateContractWithCtorHostFn(
+                                                    field_0,
+                                                ),
+                                            ),
+                                        )
+                            }),
+                        ])),
+                    ),
+                )
+            }
+        }
+        impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary for ArbitraryContext {
+            type Parameters = ();
+            type Strategy =
+                soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+            fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+                <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+            }
+        }
     };
     pub enum ContractExecutable {
         Wasm(soroban_sdk::BytesN<32>),
@@ -18531,6 +19644,40 @@ mod wasm_imported {
                         ContractExecutable::Wasm(soroban_sdk::IntoVal::into_val(field_0, env))
                     }
                 })
+            }
+        }
+        impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryContractExecutable {
+            fn proto_strategy(
+            ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>
+            {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                    soroban_sdk::testutils::proptest::proptest::strategy::Union::new(
+                        <[_]>::into_vec(::alloc::boxed::box_new([
+                            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                                (
+                                                    <<soroban_sdk::BytesN<
+                                                        32,
+                                                    > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                                ),
+                                                |(field_0,)| ArbitraryContractExecutable::Wasm(field_0),
+                                            ),
+                                        )
+                            }),
+                        ])),
+                    ),
+                )
+            }
+        }
+        impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary
+            for ArbitraryContractExecutable
+        {
+            type Parameters = ();
+            type Strategy =
+                soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+            fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+                <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
             }
         }
     };
@@ -19290,6 +20437,64 @@ mod wasm_imported {
                 })
             }
         }
+        impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryInvokerContractAuthEntry {
+            fn proto_strategy(
+            ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>
+            {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                    soroban_sdk::testutils::proptest::proptest::strategy::Union::new(
+                        <[_]>::into_vec(::alloc::boxed::box_new([
+                            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                                (
+                                                    <<SubContractInvocation as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                                ),
+                                                |(field_0,)| ArbitraryInvokerContractAuthEntry::Contract(
+                                                    field_0,
+                                                ),
+                                            ),
+                                        )
+                            }),
+                            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                                (
+                                                    <<CreateContractHostFnContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                                ),
+                                                |(field_0,)| ArbitraryInvokerContractAuthEntry::CreateContractHostFn(
+                                                    field_0,
+                                                ),
+                                            ),
+                                        )
+                            }),
+                            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                                (
+                                                    <<CreateContractWithConstructorHostFnContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                                ),
+                                                |(field_0,)| ArbitraryInvokerContractAuthEntry::CreateContractWithCtorHostFn(
+                                                    field_0,
+                                                ),
+                                            ),
+                                        )
+                            }),
+                        ])),
+                    ),
+                )
+            }
+        }
+        impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary
+            for ArbitraryInvokerContractAuthEntry
+        {
+            type Parameters = ();
+            type Strategy =
+                soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+            fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+                <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+            }
+        }
     };
     pub enum Executable {
         Wasm(soroban_sdk::BytesN<32>),
@@ -19862,6 +21067,48 @@ mod wasm_imported {
                 })
             }
         }
+        impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryExecutable {
+            fn proto_strategy(
+            ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>
+            {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                    soroban_sdk::testutils::proptest::proptest::strategy::Union::new(
+                        <[_]>::into_vec(::alloc::boxed::box_new([
+                            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                                (
+                                                    <<soroban_sdk::BytesN<
+                                                        32,
+                                                    > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                                ),
+                                                |(field_0,)| ArbitraryExecutable::Wasm(field_0),
+                                            ),
+                                        )
+                            }),
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                soroban_sdk::testutils::proptest::proptest::strategy::Just(
+                                    ArbitraryExecutable::StellarAsset,
+                                ),
+                            ),
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                soroban_sdk::testutils::proptest::proptest::strategy::Just(
+                                    ArbitraryExecutable::Account,
+                                ),
+                            ),
+                        ])),
+                    ),
+                )
+            }
+        }
+        impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary for ArbitraryExecutable {
+            type Parameters = ();
+            type Strategy =
+                soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+            fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+                <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+            }
+        }
     };
     pub enum EnumA {
         V1,
@@ -20340,6 +21587,41 @@ mod wasm_imported {
                     ArbitraryEnumA::V2 => EnumA::V2,
                     ArbitraryEnumA::V3 => EnumA::V3,
                 })
+            }
+        }
+        impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryEnumA {
+            fn proto_strategy(
+            ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>
+            {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                    soroban_sdk::testutils::proptest::proptest::strategy::Union::new(
+                        <[_]>::into_vec(::alloc::boxed::box_new([
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                soroban_sdk::testutils::proptest::proptest::strategy::Just(
+                                    ArbitraryEnumA::V1,
+                                ),
+                            ),
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                soroban_sdk::testutils::proptest::proptest::strategy::Just(
+                                    ArbitraryEnumA::V2,
+                                ),
+                            ),
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                soroban_sdk::testutils::proptest::proptest::strategy::Just(
+                                    ArbitraryEnumA::V3,
+                                ),
+                            ),
+                        ])),
+                    ),
+                )
+            }
+        }
+        impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary for ArbitraryEnumA {
+            type Parameters = ();
+            type Strategy =
+                soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+            fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+                <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
             }
         }
     };
@@ -20996,6 +22278,52 @@ mod wasm_imported {
                 })
             }
         }
+        impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryEnumB {
+            fn proto_strategy(
+            ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>
+            {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                    soroban_sdk::testutils::proptest::proptest::strategy::Union::new(
+                        <[_]>::into_vec(::alloc::boxed::box_new([
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                soroban_sdk::testutils::proptest::proptest::strategy::Just(
+                                    ArbitraryEnumB::V1,
+                                ),
+                            ),
+                            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                                (
+                                                    <<i64 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                                ),
+                                                |(field_0,)| ArbitraryEnumB::V2(field_0),
+                                            ),
+                                        )
+                            }),
+                            soroban_sdk::testutils::proptest::with_fields(2usize, || {
+                                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                                (
+                                                    <<i64 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                                    <<i64 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                                ),
+                                                |(field_0, field_1)| ArbitraryEnumB::V3(field_0, field_1),
+                                            ),
+                                        )
+                            }),
+                        ])),
+                    ),
+                )
+            }
+        }
+        impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary for ArbitraryEnumB {
+            type Parameters = ();
+            type Strategy =
+                soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+            fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+                <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+            }
+        }
     };
     pub enum EnumC {
         V1,
@@ -21595,6 +22923,51 @@ mod wasm_imported {
                 })
             }
         }
+        impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryEnumC {
+            fn proto_strategy(
+            ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>
+            {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                    soroban_sdk::testutils::proptest::proptest::strategy::Union::new(
+                        <[_]>::into_vec(::alloc::boxed::box_new([
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                soroban_sdk::testutils::proptest::proptest::strategy::Just(
+                                    ArbitraryEnumC::V1,
+                                ),
+                            ),
+                            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                                (
+                                                    <<StructA as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                                ),
+                                                |(field_0,)| ArbitraryEnumC::V2(field_0),
+                                            ),
+                                        )
+                            }),
+                            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                                (
+                                                    <<StructTupleA as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                                ),
+                                                |(field_0,)| ArbitraryEnumC::V3(field_0),
+                                            ),
+                                        )
+                            }),
+                        ])),
+                    ),
+                )
+            }
+        }
+        impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary for ArbitraryEnumC {
+            type Parameters = ();
+            type Strategy =
+                soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+            fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+                <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+            }
+        }
     };
     pub enum EnumIntA {
         V1 = 1,
@@ -21958,6 +23331,41 @@ mod wasm_imported {
                     ArbitraryEnumIntA::V2 => EnumIntA::V2,
                     ArbitraryEnumIntA::V3 => EnumIntA::V3,
                 })
+            }
+        }
+        impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryEnumIntA {
+            fn proto_strategy(
+            ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>
+            {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                    soroban_sdk::testutils::proptest::proptest::strategy::Union::new(
+                        <[_]>::into_vec(::alloc::boxed::box_new([
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                soroban_sdk::testutils::proptest::proptest::strategy::Just(
+                                    ArbitraryEnumIntA::V1,
+                                ),
+                            ),
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                soroban_sdk::testutils::proptest::proptest::strategy::Just(
+                                    ArbitraryEnumIntA::V2,
+                                ),
+                            ),
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                soroban_sdk::testutils::proptest::proptest::strategy::Just(
+                                    ArbitraryEnumIntA::V3,
+                                ),
+                            ),
+                        ])),
+                    ),
+                )
+            }
+        }
+        impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary for ArbitraryEnumIntA {
+            type Parameters = ();
+            type Strategy =
+                soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+            fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+                <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
             }
         }
     };
@@ -22325,6 +23733,41 @@ mod wasm_imported {
                 })
             }
         }
+        impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryEnumIntB {
+            fn proto_strategy(
+            ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>
+            {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                    soroban_sdk::testutils::proptest::proptest::strategy::Union::new(
+                        <[_]>::into_vec(::alloc::boxed::box_new([
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                soroban_sdk::testutils::proptest::proptest::strategy::Just(
+                                    ArbitraryEnumIntB::V1,
+                                ),
+                            ),
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                soroban_sdk::testutils::proptest::proptest::strategy::Just(
+                                    ArbitraryEnumIntB::V2,
+                                ),
+                            ),
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                soroban_sdk::testutils::proptest::proptest::strategy::Just(
+                                    ArbitraryEnumIntB::V3,
+                                ),
+                            ),
+                        ])),
+                    ),
+                )
+            }
+        }
+        impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary for ArbitraryEnumIntB {
+            type Parameters = ();
+            type Strategy =
+                soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+            fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+                <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+            }
+        }
     };
     pub enum EnumIntC {
         V1 = 100,
@@ -22688,6 +24131,41 @@ mod wasm_imported {
                     ArbitraryEnumIntC::V2 => EnumIntC::V2,
                     ArbitraryEnumIntC::V3 => EnumIntC::V3,
                 })
+            }
+        }
+        impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryEnumIntC {
+            fn proto_strategy(
+            ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>
+            {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                    soroban_sdk::testutils::proptest::proptest::strategy::Union::new(
+                        <[_]>::into_vec(::alloc::boxed::box_new([
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                soroban_sdk::testutils::proptest::proptest::strategy::Just(
+                                    ArbitraryEnumIntC::V1,
+                                ),
+                            ),
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                soroban_sdk::testutils::proptest::proptest::strategy::Just(
+                                    ArbitraryEnumIntC::V2,
+                                ),
+                            ),
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                soroban_sdk::testutils::proptest::proptest::strategy::Just(
+                                    ArbitraryEnumIntC::V3,
+                                ),
+                            ),
+                        ])),
+                    ),
+                )
+            }
+        }
+        impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary for ArbitraryEnumIntC {
+            type Parameters = ();
+            type Strategy =
+                soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+            fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+                <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
             }
         }
     };
@@ -24042,6 +25520,30 @@ const _: () = {
             })
         }
     }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryUnusedStruct {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                            (
+                                <<u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                            ),
+                            |(field_0,)| ArbitraryUnusedStruct {
+                                x: field_0,
+                            },
+                        ),
+                    )
+            })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary for ArbitraryUnusedStruct {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+        }
+    }
 };
 pub enum UnusedEnum {
     A,
@@ -24518,6 +26020,39 @@ const _: () = {
             })
         }
     }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryUnusedEnum {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                soroban_sdk::testutils::proptest::proptest::strategy::Union::new(<[_]>::into_vec(
+                    ::alloc::boxed::box_new([
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                            soroban_sdk::testutils::proptest::proptest::strategy::Just(
+                                ArbitraryUnusedEnum::A,
+                            ),
+                        ),
+                        soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                            (
+                                                <<i64 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                            ),
+                                            |(field_0,)| ArbitraryUnusedEnum::B(field_0),
+                                        ),
+                                    )
+                        }),
+                    ]),
+                )),
+            )
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary for ArbitraryUnusedEnum {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+        }
+    }
 };
 pub enum UnusedIntEnum {
     U1 = 1,
@@ -24847,6 +26382,34 @@ const _: () = {
                 ArbitraryUnusedIntEnum::U1 => UnusedIntEnum::U1,
                 ArbitraryUnusedIntEnum::U2 => UnusedIntEnum::U2,
             })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryUnusedIntEnum {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                soroban_sdk::testutils::proptest::proptest::strategy::Union::new(<[_]>::into_vec(
+                    ::alloc::boxed::box_new([
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                            soroban_sdk::testutils::proptest::proptest::strategy::Just(
+                                ArbitraryUnusedIntEnum::U1,
+                            ),
+                        ),
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                            soroban_sdk::testutils::proptest::proptest::strategy::Just(
+                                ArbitraryUnusedIntEnum::U2,
+                            ),
+                        ),
+                    ]),
+                )),
+            )
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary for ArbitraryUnusedIntEnum {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
         }
     }
 };
@@ -25457,6 +27020,32 @@ const _: () = {
             })
         }
     }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryUnusedNonContractFnParam {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                            (
+                                <<u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                            ),
+                            |(field_0,)| ArbitraryUnusedNonContractFnParam {
+                                x: field_0,
+                            },
+                        ),
+                    )
+            })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary
+        for ArbitraryUnusedNonContractFnParam
+    {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+        }
+    }
 };
 pub struct UnusedNonContractFnReturn {
     pub x: u32,
@@ -25831,6 +27420,32 @@ const _: () = {
             })
         }
     }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryUnusedNonContractFnReturn {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                            (
+                                <<u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                            ),
+                            |(field_0,)| ArbitraryUnusedNonContractFnReturn {
+                                x: field_0,
+                            },
+                        ),
+                    )
+            })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary
+        for ArbitraryUnusedNonContractFnReturn
+    {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+        }
+    }
 };
 struct UnusedNonPubStruct {
     pub x: u32,
@@ -26191,6 +27806,32 @@ const _: () = {
             Ok(UnusedNonPubStruct {
                 x: soroban_sdk::IntoVal::into_val(&v.x, env),
             })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryUnusedNonPubStruct {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                            (
+                                <<u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                            ),
+                            |(field_0,)| ArbitraryUnusedNonPubStruct {
+                                x: field_0,
+                            },
+                        ),
+                    )
+            })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary
+        for ArbitraryUnusedNonPubStruct
+    {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
         }
     }
 };

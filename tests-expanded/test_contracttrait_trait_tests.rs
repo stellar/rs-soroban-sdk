@@ -422,6 +422,32 @@ const _: () = {
             })
         }
     }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryMyStruct {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::with_fields(2usize, || {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                            (
+                                <<i64 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                <<i64 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                            ),
+                            |(field_0, field_1)| ArbitraryMyStruct {
+                                a: field_0,
+                                b: field_1,
+                            },
+                        ),
+                    )
+            })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary for ArbitraryMyStruct {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+        }
+    }
 };
 pub enum MyEnumUnit {
     A = 1,
@@ -749,6 +775,34 @@ const _: () = {
                 ArbitraryMyEnumUnit::A => MyEnumUnit::A,
                 ArbitraryMyEnumUnit::B => MyEnumUnit::B,
             })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryMyEnumUnit {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                soroban_sdk::testutils::proptest::proptest::strategy::Union::new(<[_]>::into_vec(
+                    ::alloc::boxed::box_new([
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                            soroban_sdk::testutils::proptest::proptest::strategy::Just(
+                                ArbitraryMyEnumUnit::A,
+                            ),
+                        ),
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                            soroban_sdk::testutils::proptest::proptest::strategy::Just(
+                                ArbitraryMyEnumUnit::B,
+                            ),
+                        ),
+                    ]),
+                )),
+            )
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary for ArbitraryMyEnumUnit {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
         }
     }
 };
@@ -1329,6 +1383,49 @@ const _: () = {
                     MyEnumVariants::VarC(soroban_sdk::IntoVal::into_val(field_0, env))
                 }
             })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryMyEnumVariants {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                soroban_sdk::testutils::proptest::proptest::strategy::Union::new(<[_]>::into_vec(
+                    ::alloc::boxed::box_new([
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                            soroban_sdk::testutils::proptest::proptest::strategy::Just(
+                                ArbitraryMyEnumVariants::VarA,
+                            ),
+                        ),
+                        soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                            (
+                                                <<MyStruct as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                            ),
+                                            |(field_0,)| ArbitraryMyEnumVariants::VarB(field_0),
+                                        ),
+                                    )
+                        }),
+                        soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                            (
+                                                <<MyEnumUnit as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                            ),
+                                            |(field_0,)| ArbitraryMyEnumVariants::VarC(field_0),
+                                        ),
+                                    )
+                        }),
+                    ]),
+                )),
+            )
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary for ArbitraryMyEnumVariants {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
         }
     }
 };

@@ -30,6 +30,10 @@ build: build-libs build-test-wasms
 
 build-libs: fmt
 	cargo hack build --release $(foreach c,$(LIB_CRATES),--package $(c))
+	# Build with testutils on its own too: test builds pull in dev-dependencies
+	# that turn features of the optional dependencies back on, so this is the
+	# only place the shipped feature configuration is compiled.
+	cargo build --release --package soroban-sdk --features testutils
 
 build-test-wasms: fmt
 	# Build the test wasms with MSRV by default, with some meta disabled for

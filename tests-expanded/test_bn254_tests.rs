@@ -394,6 +394,36 @@ const _: () = {
             })
         }
     }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryMockProof {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::with_fields(2usize, || {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                            (
+                                <<Vec<
+                                    Bn254G1Affine,
+                                > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                <<Vec<
+                                    Bn254G2Affine,
+                                > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                            ),
+                            |(field_0, field_1)| ArbitraryMockProof {
+                                g1: field_0,
+                                g2: field_1,
+                            },
+                        ),
+                    )
+            })
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary for ArbitraryMockProof {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+        }
+    }
 };
 #[automatically_derived]
 impl ::core::clone::Clone for MockProof {

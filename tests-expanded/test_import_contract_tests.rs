@@ -934,6 +934,38 @@ mod addcontract {
                 })
             }
         }
+        impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryContractContext {
+            fn proto_strategy(
+            ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>
+            {
+                soroban_sdk::testutils::proptest::with_fields(3usize, || {
+                    soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                (
+                                    <<soroban_sdk::Vec<
+                                        soroban_sdk::Val,
+                                    > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                    <<soroban_sdk::Address as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                    <<soroban_sdk::Symbol as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                ),
+                                |(field_0, field_1, field_2)| ArbitraryContractContext {
+                                    args: field_0,
+                                    contract: field_1,
+                                    fn_name: field_2,
+                                },
+                            ),
+                        )
+                })
+            }
+        }
+        impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary for ArbitraryContractContext {
+            type Parameters = ();
+            type Strategy =
+                soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+            fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+                <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+            }
+        }
     };
     pub struct SubContractInvocation {
         pub context: ContractContext,
@@ -1415,6 +1447,38 @@ mod addcontract {
                 })
             }
         }
+        impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitrarySubContractInvocation {
+            fn proto_strategy(
+            ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>
+            {
+                soroban_sdk::testutils::proptest::with_fields(2usize, || {
+                    soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                (
+                                    <<ContractContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                    <<soroban_sdk::Vec<
+                                        InvokerContractAuthEntry,
+                                    > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                ),
+                                |(field_0, field_1)| ArbitrarySubContractInvocation {
+                                    context: field_0,
+                                    sub_invocations: field_1,
+                                },
+                            ),
+                        )
+                })
+            }
+        }
+        impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary
+            for ArbitrarySubContractInvocation
+        {
+            type Parameters = ();
+            type Strategy =
+                soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+            fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+                <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+            }
+        }
     };
     pub struct CreateContractHostFnContext {
         pub executable: ContractExecutable,
@@ -1885,6 +1949,38 @@ mod addcontract {
                     executable: soroban_sdk::IntoVal::into_val(&v.executable, env),
                     salt: soroban_sdk::IntoVal::into_val(&v.salt, env),
                 })
+            }
+        }
+        impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryCreateContractHostFnContext {
+            fn proto_strategy(
+            ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>
+            {
+                soroban_sdk::testutils::proptest::with_fields(2usize, || {
+                    soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                (
+                                    <<ContractExecutable as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                    <<soroban_sdk::BytesN<
+                                        32,
+                                    > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                ),
+                                |(field_0, field_1)| ArbitraryCreateContractHostFnContext {
+                                    executable: field_0,
+                                    salt: field_1,
+                                },
+                            ),
+                        )
+                })
+            }
+        }
+        impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary
+            for ArbitraryCreateContractHostFnContext
+        {
+            type Parameters = ();
+            type Strategy =
+                soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+            fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+                <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
             }
         }
     };
@@ -2486,6 +2582,44 @@ mod addcontract {
                     executable: soroban_sdk::IntoVal::into_val(&v.executable, env),
                     salt: soroban_sdk::IntoVal::into_val(&v.salt, env),
                 })
+            }
+        }
+        impl soroban_sdk::testutils::proptest::ProtoStrategy
+            for ArbitraryCreateContractWithConstructorHostFnContext
+        {
+            fn proto_strategy(
+            ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>
+            {
+                soroban_sdk::testutils::proptest::with_fields(3usize, || {
+                    soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                (
+                                    <<soroban_sdk::Vec<
+                                        soroban_sdk::Val,
+                                    > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                    <<ContractExecutable as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                    <<soroban_sdk::BytesN<
+                                        32,
+                                    > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                ),
+                                |(field_0, field_1, field_2)| ArbitraryCreateContractWithConstructorHostFnContext {
+                                    constructor_args: field_0,
+                                    executable: field_1,
+                                    salt: field_2,
+                                },
+                            ),
+                        )
+                })
+            }
+        }
+        impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary
+            for ArbitraryCreateContractWithConstructorHostFnContext
+        {
+            type Parameters = ();
+            type Strategy =
+                soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+            fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+                <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
             }
         }
     };
@@ -3206,6 +3340,58 @@ mod addcontract {
                 })
             }
         }
+        impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryContext {
+            fn proto_strategy(
+            ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>
+            {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                    soroban_sdk::testutils::proptest::proptest::strategy::Union::new(
+                        <[_]>::into_vec(::alloc::boxed::box_new([
+                            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                                (
+                                                    <<ContractContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                                ),
+                                                |(field_0,)| ArbitraryContext::Contract(field_0),
+                                            ),
+                                        )
+                            }),
+                            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                                (
+                                                    <<CreateContractHostFnContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                                ),
+                                                |(field_0,)| ArbitraryContext::CreateContractHostFn(field_0),
+                                            ),
+                                        )
+                            }),
+                            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                                (
+                                                    <<CreateContractWithConstructorHostFnContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                                ),
+                                                |(field_0,)| ArbitraryContext::CreateContractWithCtorHostFn(
+                                                    field_0,
+                                                ),
+                                            ),
+                                        )
+                            }),
+                        ])),
+                    ),
+                )
+            }
+        }
+        impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary for ArbitraryContext {
+            type Parameters = ();
+            type Strategy =
+                soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+            fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+                <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+            }
+        }
     };
     pub enum ContractExecutable {
         Wasm(soroban_sdk::BytesN<32>),
@@ -3678,6 +3864,40 @@ mod addcontract {
                         ContractExecutable::Wasm(soroban_sdk::IntoVal::into_val(field_0, env))
                     }
                 })
+            }
+        }
+        impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryContractExecutable {
+            fn proto_strategy(
+            ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>
+            {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                    soroban_sdk::testutils::proptest::proptest::strategy::Union::new(
+                        <[_]>::into_vec(::alloc::boxed::box_new([
+                            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                                (
+                                                    <<soroban_sdk::BytesN<
+                                                        32,
+                                                    > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                                ),
+                                                |(field_0,)| ArbitraryContractExecutable::Wasm(field_0),
+                                            ),
+                                        )
+                            }),
+                        ])),
+                    ),
+                )
+            }
+        }
+        impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary
+            for ArbitraryContractExecutable
+        {
+            type Parameters = ();
+            type Strategy =
+                soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+            fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+                <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
             }
         }
     };
@@ -4437,6 +4657,64 @@ mod addcontract {
                 })
             }
         }
+        impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryInvokerContractAuthEntry {
+            fn proto_strategy(
+            ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>
+            {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                    soroban_sdk::testutils::proptest::proptest::strategy::Union::new(
+                        <[_]>::into_vec(::alloc::boxed::box_new([
+                            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                                (
+                                                    <<SubContractInvocation as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                                ),
+                                                |(field_0,)| ArbitraryInvokerContractAuthEntry::Contract(
+                                                    field_0,
+                                                ),
+                                            ),
+                                        )
+                            }),
+                            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                                (
+                                                    <<CreateContractHostFnContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                                ),
+                                                |(field_0,)| ArbitraryInvokerContractAuthEntry::CreateContractHostFn(
+                                                    field_0,
+                                                ),
+                                            ),
+                                        )
+                            }),
+                            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                                (
+                                                    <<CreateContractWithConstructorHostFnContext as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                                ),
+                                                |(field_0,)| ArbitraryInvokerContractAuthEntry::CreateContractWithCtorHostFn(
+                                                    field_0,
+                                                ),
+                                            ),
+                                        )
+                            }),
+                        ])),
+                    ),
+                )
+            }
+        }
+        impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary
+            for ArbitraryInvokerContractAuthEntry
+        {
+            type Parameters = ();
+            type Strategy =
+                soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+            fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+                <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+            }
+        }
     };
     pub enum Executable {
         Wasm(soroban_sdk::BytesN<32>),
@@ -5007,6 +5285,48 @@ mod addcontract {
                     ArbitraryExecutable::StellarAsset => Executable::StellarAsset,
                     ArbitraryExecutable::Account => Executable::Account,
                 })
+            }
+        }
+        impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryExecutable {
+            fn proto_strategy(
+            ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>
+            {
+                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                    soroban_sdk::testutils::proptest::proptest::strategy::Union::new(
+                        <[_]>::into_vec(::alloc::boxed::box_new([
+                            soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                                soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                                (
+                                                    <<soroban_sdk::BytesN<
+                                                        32,
+                                                    > as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                                ),
+                                                |(field_0,)| ArbitraryExecutable::Wasm(field_0),
+                                            ),
+                                        )
+                            }),
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                soroban_sdk::testutils::proptest::proptest::strategy::Just(
+                                    ArbitraryExecutable::StellarAsset,
+                                ),
+                            ),
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                soroban_sdk::testutils::proptest::proptest::strategy::Just(
+                                    ArbitraryExecutable::Account,
+                                ),
+                            ),
+                        ])),
+                    ),
+                )
+            }
+        }
+        impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary for ArbitraryExecutable {
+            type Parameters = ();
+            type Strategy =
+                soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+            fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+                <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
             }
         }
     };

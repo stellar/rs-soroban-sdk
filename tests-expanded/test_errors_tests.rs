@@ -477,6 +477,49 @@ const _: () = {
             })
         }
     }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryFlag {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                soroban_sdk::testutils::proptest::proptest::strategy::Union::new(<[_]>::into_vec(
+                    ::alloc::boxed::box_new([
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                            soroban_sdk::testutils::proptest::proptest::strategy::Just(
+                                ArbitraryFlag::A,
+                            ),
+                        ),
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                            soroban_sdk::testutils::proptest::proptest::strategy::Just(
+                                ArbitraryFlag::B,
+                            ),
+                        ),
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                            soroban_sdk::testutils::proptest::proptest::strategy::Just(
+                                ArbitraryFlag::C,
+                            ),
+                        ),
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                            soroban_sdk::testutils::proptest::proptest::strategy::Just(
+                                ArbitraryFlag::D,
+                            ),
+                        ),
+                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                            soroban_sdk::testutils::proptest::proptest::strategy::Just(
+                                ArbitraryFlag::E,
+                            ),
+                        ),
+                    ]),
+                )),
+            )
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary for ArbitraryFlag {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+        }
+    }
 };
 pub enum Error {
     AnError = 1,

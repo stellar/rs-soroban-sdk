@@ -688,6 +688,54 @@ const _: () = {
             })
         }
     }
+    impl soroban_sdk::testutils::proptest::ProtoStrategy for ArbitraryDataKey {
+        fn proto_strategy(
+        ) -> soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self> {
+            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                soroban_sdk::testutils::proptest::proptest::strategy::Union::new(<[_]>::into_vec(
+                    ::alloc::boxed::box_new([
+                        soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                            (
+                                                <<u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                            ),
+                                            |(field_0,)| ArbitraryDataKey::Persistent(field_0),
+                                        ),
+                                    )
+                        }),
+                        soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                            (
+                                                <<u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                            ),
+                                            |(field_0,)| ArbitraryDataKey::Temp(field_0),
+                                        ),
+                                    )
+                        }),
+                        soroban_sdk::testutils::proptest::with_fields(1usize, || {
+                            soroban_sdk::testutils::proptest::proptest::strategy::Strategy::boxed(
+                                        soroban_sdk::testutils::proptest::proptest::strategy::Strategy::prop_map(
+                                            (
+                                                <<u32 as soroban_sdk::testutils::arbitrary::SorobanArbitrary>::Prototype as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy(),
+                                            ),
+                                            |(field_0,)| ArbitraryDataKey::Instance(field_0),
+                                        ),
+                                    )
+                        }),
+                    ]),
+                )),
+            )
+        }
+    }
+    impl soroban_sdk::testutils::proptest::proptest::arbitrary::Arbitrary for ArbitraryDataKey {
+        type Parameters = ();
+        type Strategy = soroban_sdk::testutils::proptest::proptest::strategy::BoxedStrategy<Self>;
+        fn arbitrary_with(_args: Self::Parameters) -> Self::Strategy {
+            <Self as soroban_sdk::testutils::proptest::ProtoStrategy>::proto_strategy()
+        }
+    }
 };
 impl Contract {
     pub fn __constructor(env: Env, init_key: u32, init_value: i64) {
