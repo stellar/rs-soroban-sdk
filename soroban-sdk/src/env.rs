@@ -6,7 +6,6 @@ pub mod internal {
 
     pub use soroban_env_guest::*;
     pub type EnvImpl = Guest;
-    pub type MaybeEnvImpl = Guest;
 
     // In the Guest case, Env::Error is already Infallible so there is no work
     // to do to "reject an error": if an error occurs in the environment, the
@@ -22,7 +21,6 @@ pub mod internal {
 
     pub use soroban_env_host::*;
     pub type EnvImpl = Host;
-    pub type MaybeEnvImpl = Option<super::Env>;
 
     // When we have `feature="testutils"` (or are in cfg(test)) we enable feature
     // `soroban-env-{common,host}/testutils` which in turn adds the helper method
@@ -131,7 +129,10 @@ use internal::{
 #[doc(hidden)]
 #[derive(Clone)]
 pub struct MaybeEnv {
-    maybe_env_impl: internal::MaybeEnvImpl,
+    // There is nothing to store on wasm, because on wasm an Env is always
+    // available and costs nothing to construct.
+    #[cfg(not(target_family = "wasm"))]
+    env: Option<Env>,
 }
 
 #[cfg(target_family = "wasm")]
@@ -155,9 +156,7 @@ impl Default for MaybeEnv {
 impl MaybeEnv {
     // separate function to be const
     pub const fn none() -> Self {
-        Self {
-            maybe_env_impl: internal::EnvImpl {},
-        }
+        Self {}
     }
 }
 
@@ -165,18 +164,14 @@ impl MaybeEnv {
 impl MaybeEnv {
     // separate function to be const
     pub const fn none() -> Self {
-        Self {
-            maybe_env_impl: None,
-        }
+        Self { env: None }
     }
 }
 
 #[cfg(target_family = "wasm")]
 impl From<Env> for MaybeEnv {
-    fn from(value: Env) -> Self {
-        MaybeEnv {
-            maybe_env_impl: value.env_impl,
-        }
+    fn from(_value: Env) -> Self {
+        MaybeEnv {}
     }
 }
 
@@ -185,16 +180,14 @@ impl TryFrom<MaybeEnv> for Env {
     type Error = ConversionError;
 
     fn try_from(value: MaybeEnv) -> Result<Self, Self::Error> {
-        value.maybe_env_impl.ok_or(ConversionError)
+        value.env.ok_or(ConversionError)
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
 impl From<Env> for MaybeEnv {
     fn from(value: Env) -> Self {
-        MaybeEnv {
-            maybe_env_impl: Some(value),
-        }
+        MaybeEnv { env: Some(value) }
     }
 }
 
