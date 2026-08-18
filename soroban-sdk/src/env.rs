@@ -22,7 +22,7 @@ pub mod internal {
 
     pub use soroban_env_host::*;
     pub type EnvImpl = Host;
-    pub type MaybeEnvImpl = Option<Host>;
+    pub type MaybeEnvImpl = Option<super::Env>;
 
     // When we have `feature="testutils"` (or are in cfg(test)) we enable feature
     // `soroban-env-{common,host}/testutils` which in turn adds the helper method
@@ -132,8 +132,6 @@ use internal::{
 #[derive(Clone)]
 pub struct MaybeEnv {
     maybe_env_impl: internal::MaybeEnvImpl,
-    #[cfg(any(test, feature = "testutils"))]
-    test_state: Option<EnvTestState>,
 }
 
 #[cfg(target_family = "wasm")]
@@ -169,8 +167,6 @@ impl MaybeEnv {
     pub const fn none() -> Self {
         Self {
             maybe_env_impl: None,
-            #[cfg(any(test, feature = "testutils"))]
-            test_state: None,
         }
     }
 }
@@ -189,15 +185,7 @@ impl TryFrom<MaybeEnv> for Env {
     type Error = ConversionError;
 
     fn try_from(value: MaybeEnv) -> Result<Self, Self::Error> {
-        if let Some(env_impl) = value.maybe_env_impl {
-            Ok(Env {
-                env_impl,
-                #[cfg(any(test, feature = "testutils"))]
-                test_state: value.test_state.unwrap_or_default(),
-            })
-        } else {
-            Err(ConversionError)
-        }
+        value.maybe_env_impl.ok_or(ConversionError)
     }
 }
 
@@ -205,9 +193,7 @@ impl TryFrom<MaybeEnv> for Env {
 impl From<Env> for MaybeEnv {
     fn from(value: Env) -> Self {
         MaybeEnv {
-            maybe_env_impl: Some(value.env_impl.clone()),
-            #[cfg(any(test, feature = "testutils"))]
-            test_state: Some(value.test_state.clone()),
+            maybe_env_impl: Some(value),
         }
     }
 }
