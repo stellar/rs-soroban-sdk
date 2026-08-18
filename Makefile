@@ -46,6 +46,10 @@ build-test-wasms: fmt
 build-fuzz:
 	cd tests/fuzz/fuzz && cargo +nightly fuzz check
 
+# Builds the afl fuzz test. Requires cargo-afl, see tests/fuzz_afl/README.md.
+build-fuzz-afl:
+	cd tests/fuzz_afl/fuzz && cargo afl build
+
 readme:
 	cd soroban-sdk \
 		&& cargo +nightly rustdoc --features testutils -- -Zunstable-options -wjson \
