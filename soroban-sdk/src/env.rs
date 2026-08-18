@@ -240,9 +240,7 @@ thread_local! {
 struct EnvTestState {
     test_name: Option<String>,
     number: usize,
-    // Shared between clones of the Env, so that a config change is seen by
-    // every clone, including the clones held inside values such as Symbol.
-    config: Rc<RefCell<EnvTestConfig>>,
+    config: EnvTestConfig,
     generators: Rc<RefCell<Generators>>,
     auth_snapshot: Rc<RefCell<AuthSnapshot>>,
     snapshot: Option<Rc<LedgerSnapshot>>,
@@ -658,7 +656,7 @@ impl Env {
 
     /// Change the test config of an Env.
     pub fn set_config(&mut self, config: EnvTestConfig) {
-        *(*self.test_state.config).borrow_mut() = config;
+        self.test_state.config = config;
     }
 
     /// Used by multiple constructors to configure test environments consistently.
@@ -751,7 +749,7 @@ impl Env {
             test_state: EnvTestState {
                 test_name,
                 number,
-                config: Rc::new(RefCell::new(config)),
+                config,
                 generators: generators.unwrap_or_default(),
                 snapshot,
                 auth_snapshot,
@@ -2012,8 +2010,7 @@ impl Drop for Env {
         // snapshot at that point when no other references to the host exist,
         // because it is only when there are no other references that the host
         // is being dropped.
-        if self.env_impl.can_finish() && (*self.test_state.config).borrow().capture_snapshot_at_drop
-        {
+        if self.env_impl.can_finish() && self.test_state.config.capture_snapshot_at_drop {
             self.to_test_snapshot_file();
         }
     }

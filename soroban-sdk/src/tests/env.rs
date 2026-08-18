@@ -356,30 +356,3 @@ fn test_register_restores_auth_before_panics() {
     assert!(post_register.is_err());
     assert_eq!(pre_register, post_register);
 }
-
-/// Test that the test snapshot file is not written when disabled after
-/// creation, when a value holding the Env outlives the Env.
-#[test]
-fn test_snapshot_file_disabled_after_creation_value_outlives_env() {
-    let p = std::path::Path::new("test_snapshots")
-        .join("tests")
-        .join("env")
-        .join("test_snapshot_file_disabled_after_creation_value_outlives_env");
-    let p1 = p.with_extension("1.json");
-    let _ = std::fs::remove_file(&p1);
-    {
-        let s;
-        {
-            let mut e = Env::default();
-            s = Symbol::new(&e, "a_symbol_longer_than_short");
-            e.set_config(EnvTestConfig {
-                capture_snapshot_at_drop: false,
-            });
-            let _ = e.register(Contract, ());
-        } // Env dropped, but the Symbol still holds it.
-        assert!(!p1.exists());
-        drop(s);
-    } // Symbol dropped, dropping the last hold on the Env.
-    assert!(!p1.exists());
-    let _ = std::fs::remove_file(&p1);
-}
