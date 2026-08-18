@@ -5,9 +5,7 @@
 //! whose value is void, such as an [`Option`] field that is `None`.
 //!
 //! In v28 a field whose value is void is omitted from the map, so the published event carries only
-//! the fields that hold a value. A consumer unpacking the event into a struct reads an omitted
-//! field back as `None` for an `Option` field, because [unpacking is sparse][v28_contracttype_unpacking],
-//! and so the value round trips even though the map is smaller.
+//! the fields that hold a value.
 //!
 //! This applies only to the top level of an event's data map. Packing everywhere else is unchanged:
 //! a [`contracttype`] struct writes all of its fields whether it is stored, passed to a contract
@@ -17,8 +15,8 @@
 //!
 //! ```
 //! use soroban_sdk::{
-//!     contract, contractevent, map, symbol_short, testutils::Events as _, vec, Env, Event,
-//!     IntoVal, Symbol, Val,
+//!     contract, contractevent, map, symbol_short, testutils::Events as _, xdr, Env, Event,
+//!     IntoVal, Symbol, TryFromVal, Val,
 //! };
 //!
 //! #[contractevent]
@@ -39,13 +37,13 @@
 //! # fn main() {
 //!     let env = Env::default();
 //!     let id = env.register(Contract, ());
+//!     let event = Transfer {
+//!         to: symbol_short!("to"),
+//!         to_muxed_id: None,
+//!         amount: 1,
+//!     };
 //!     env.as_contract(&id, || {
-//!         Transfer {
-//!             to: symbol_short!("to"),
-//!             to_muxed_id: None,
-//!             amount: 1,
-//!         }
-//!         .publish(&env);
+//!         event.publish(&env);
 //!     });
 //!
 //!     // The to_muxed_id field is None, which is void, and so is omitted from
@@ -58,17 +56,10 @@
 //!         ),
 //!     ]
 //!     .to_val();
-//!     assert_eq!(
-//!         env.events().all(),
-//!         vec![
-//!             &env,
-//!             (
-//!                 id.clone(),
-//!                 (symbol_short!("transfer"), symbol_short!("to")).into_val(&env),
-//!                 data
-//!             )
-//!         ],
-//!     );
+//!     let expected_event = event.to_xdr(&env, &id);
+//!     assert_eq!(env.events().all(), [expected_event.clone()]);
+//!     let xdr::ContractEventBody::V0(body) = expected_event.body;
+//!     assert_eq!(body.data, xdr::ScVal::try_from_val(&env, &data).unwrap());
 //! }
 //! # #[cfg(not(feature = "testutils"))]
 //! # fn main() { }
@@ -86,4 +77,3 @@
 //!
 //! [`contractevent`]: crate::contractevent
 //! [`contracttype`]: crate::contracttype
-//! [v28_contracttype_unpacking]: super::v28_contracttype_unpacking
