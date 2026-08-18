@@ -102,6 +102,8 @@ jobs:
     runs-on: ${{ matrix.sys.os }}
     steps:
     - uses: actions/checkout@v3
+      with:
+        ref: ${{ github.head_ref || github.ref }}
     - name: Install minimum supported rust version
       if: matrix.rust == 'msrv'
       run: |
