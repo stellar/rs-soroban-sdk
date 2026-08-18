@@ -198,8 +198,8 @@ pub struct Generators {
     address: u64,
     nonce: i64,
     mux_id: u64,
-    // Omitted from snapshots when unused, so that adding the generator did not
-    // change the snapshots of every test that does not upload a Wasm.
+    // Uploading is less common than the other generated values, so the
+    // generator is omitted from snapshots when unused.
     #[serde(default, skip_serializing_if = "is_zero")]
     wasm_hash: u64,
 }
