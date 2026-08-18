@@ -153,6 +153,34 @@ fn test_extra_fields_ignored_on_decode_scval() {
 }
 
 #[test]
+fn test_error_on_non_symbol_key_scmap() {
+    let env = Env::default();
+
+    // The host traps when unpacking a map with keys that are not symbols, and
+    // so a map containing them is an error rather than an ignored entry, which
+    // would let a test pass on a value that a contract would trap on.
+    let scval = ScVal::Map(Some(
+        ScMap::sorted_from(vec![
+            ScMapEntry {
+                key: ScVal::U32(99),
+                val: ScVal::I32(9),
+            },
+            ScMapEntry {
+                key: ScVal::Symbol(ScSymbol("a".try_into().unwrap())),
+                val: ScVal::I32(5),
+            },
+            ScMapEntry {
+                key: ScVal::Symbol(ScSymbol("b".try_into().unwrap())),
+                val: ScVal::I32(7),
+            },
+        ])
+        .unwrap(),
+    ));
+    let udt = Udt::try_from_val(&env, &scval);
+    assert_eq!(udt, Err(stellar_xdr::Error::Invalid));
+}
+
+#[test]
 fn test_error_on_duplicate_keys_scmap() {
     let env = Env::default();
 

@@ -76,3 +76,22 @@ fn test_all_option_fields_decode_from_empty_map() {
     let udt = UdtAllOptional::try_from_val(&env, &map);
     assert_eq!(udt, Ok(UdtAllOptional { a: None }));
 }
+
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[contracttype]
+pub struct UdtUnit {
+    pub a: i32,
+    pub u: (),
+}
+
+#[test]
+fn test_missing_void_accepting_field_takes_void() {
+    let env = Env::default();
+
+    // A field missing from the map is void, and so a field whose type is not an
+    // Option but that accepts void, such as the unit type and Val, takes the
+    // void value rather than being an error.
+    let map = map![&env, (symbol_short!("a"), 5)].to_val();
+    let udt = UdtUnit::try_from_val(&env, &map);
+    assert_eq!(udt, Ok(UdtUnit { a: 5, u: () }));
+}

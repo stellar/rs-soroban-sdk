@@ -11,8 +11,8 @@
 //!
 //! - **Fields absent from the map unpack as void.** Void unpacks into an [`Option`] field as
 //!   `None`, so a field added to a struct as an `Option` reads back as `None` from data stored
-//!   before the field existed. A field that is not an `Option` still errors, because void does not
-//!   unpack into it.
+//!   before the field existed. A field of any other type errors, unless its type accepts void, as
+//!   the unit type and [`Val`] do, in which case the field takes the void value.
 //!
 //! - **Keys in the map that are not fields of the struct are ignored.** A field removed from a
 //!   struct is discarded when reading data stored while the field still existed.
@@ -29,6 +29,11 @@
 //! unpacking from the [`ScVal`] and [`ScMap`] XDR types available under the `testutils` feature.
 //! Tuple structs and enums are represented as vecs, not maps, and are unaffected, as are
 //! [`contractevent`] and [`contracterror`] types.
+//!
+//! It applies to every unpack of such a struct, not only to values read from storage. A contract
+//! function that takes a struct as an argument accepts a map that omits its `Option` fields and
+//! that carries keys the struct does not define, and there is no way to ask for the strict
+//! unpacking of earlier versions.
 //!
 //! ## Changed Behaviour
 //!
@@ -118,8 +123,8 @@
 //! storage keys.
 //!
 //! When adding a field to a stored struct, make it an `Option` so that existing stored data unpacks
-//! with the field as `None`. A field that is not an `Option` still requires the stored data to be
-//! migrated, because there is no value to unpack it from.
+//! with the field as `None`. A field of a type that does not accept void still requires the stored
+//! data to be migrated, because there is no value to unpack it from.
 //!
 //! [`contracttype`]: crate::contracttype
 //! [`contractevent`]: crate::contractevent
