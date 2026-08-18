@@ -262,7 +262,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        map.validate()?;
         if map
             .iter()
             .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -273,6 +272,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         {
             return Err(soroban_sdk::xdr::Error::Invalid);
         }
+        map.validate()?;
         Ok(Self {
             a: {
                 let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -2008,7 +2008,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        map.validate()?;
         if map
             .iter()
             .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -2019,6 +2018,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         {
             return Err(soroban_sdk::xdr::Error::Invalid);
         }
+        map.validate()?;
         Ok(Self {
             val: {
                 let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -2378,7 +2378,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        map.validate()?;
         if map
             .iter()
             .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -2389,6 +2388,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         {
             return Err(soroban_sdk::xdr::Error::Invalid);
         }
+        map.validate()?;
         Ok(Self {
             data: {
                 let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -3077,7 +3077,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        map.validate()?;
         if map
             .iter()
             .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -3088,6 +3087,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         {
             return Err(soroban_sdk::xdr::Error::Invalid);
         }
+        map.validate()?;
         Ok(Self {
             v: {
                 let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -3448,7 +3448,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        map.validate()?;
         if map
             .iter()
             .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -3459,6 +3458,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         {
             return Err(soroban_sdk::xdr::Error::Invalid);
         }
+        map.validate()?;
         Ok(Self {
             data: {
                 let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -3818,7 +3818,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        map.validate()?;
         if map
             .iter()
             .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -3829,6 +3828,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         {
             return Err(soroban_sdk::xdr::Error::Invalid);
         }
+        map.validate()?;
         Ok(Self {
             data: {
                 let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -4709,7 +4709,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        map.validate()?;
         if map
             .iter()
             .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -4720,6 +4719,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         {
             return Err(soroban_sdk::xdr::Error::Invalid);
         }
+        map.validate()?;
         Ok(Self {
             x: {
                 let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -5222,7 +5222,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        map.validate()?;
         if map
             .iter()
             .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -5233,6 +5232,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         {
             return Err(soroban_sdk::xdr::Error::Invalid);
         }
+        map.validate()?;
         Ok(Self {
             inner: {
                 let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -5602,7 +5602,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        map.validate()?;
         if map
             .iter()
             .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -5613,6 +5612,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         {
             return Err(soroban_sdk::xdr::Error::Invalid);
         }
+        map.validate()?;
         Ok(Self {
             val: {
                 let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -6072,7 +6072,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        map.validate()?;
         if map
             .iter()
             .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -6083,6 +6082,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         {
             return Err(soroban_sdk::xdr::Error::Invalid);
         }
+        map.validate()?;
         Ok(Self {
             inner: {
                 let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -6450,7 +6450,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        map.validate()?;
         if map
             .iter()
             .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -6461,6 +6460,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         {
             return Err(soroban_sdk::xdr::Error::Invalid);
         }
+        map.validate()?;
         Ok(Self {
             val: {
                 let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -7247,7 +7247,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        map.validate()?;
         if map
             .iter()
             .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -7258,6 +7257,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         {
             return Err(soroban_sdk::xdr::Error::Invalid);
         }
+        map.validate()?;
         Ok(Self {
             nested: {
                 let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -7618,7 +7618,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        map.validate()?;
         if map
             .iter()
             .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -7629,6 +7628,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         {
             return Err(soroban_sdk::xdr::Error::Invalid);
         }
+        map.validate()?;
         Ok(Self {
             val: {
                 let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -8076,7 +8076,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        map.validate()?;
         if map
             .iter()
             .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -8087,6 +8086,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         {
             return Err(soroban_sdk::xdr::Error::Invalid);
         }
+        map.validate()?;
         Ok(Self {
             val: {
                 let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -8454,7 +8454,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        map.validate()?;
         if map
             .iter()
             .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -8465,6 +8464,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         {
             return Err(soroban_sdk::xdr::Error::Invalid);
         }
+        map.validate()?;
         Ok(Self {
             val: {
                 let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -8834,7 +8834,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        map.validate()?;
         if map
             .iter()
             .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -8845,6 +8844,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         {
             return Err(soroban_sdk::xdr::Error::Invalid);
         }
+        map.validate()?;
         Ok(Self {
             val: {
                 let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -9213,7 +9213,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        map.validate()?;
         if map
             .iter()
             .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -9224,6 +9223,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         {
             return Err(soroban_sdk::xdr::Error::Invalid);
         }
+        map.validate()?;
         Ok(Self {
             val: {
                 let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -9618,7 +9618,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        map.validate()?;
         if map
             .iter()
             .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -9629,6 +9628,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         {
             return Err(soroban_sdk::xdr::Error::Invalid);
         }
+        map.validate()?;
         Ok(Self {
             inner: {
                 let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -10098,7 +10098,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        map.validate()?;
         if map
             .iter()
             .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -10109,6 +10108,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         {
             return Err(soroban_sdk::xdr::Error::Invalid);
         }
+        map.validate()?;
         Ok(Self {
             val: {
                 let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -10622,7 +10622,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        map.validate()?;
         if map
             .iter()
             .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -10633,6 +10632,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         {
             return Err(soroban_sdk::xdr::Error::Invalid);
         }
+        map.validate()?;
         Ok(Self {
             val: {
                 let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -11543,7 +11543,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        map.validate()?;
         if map
             .iter()
             .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -11554,6 +11553,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         {
             return Err(soroban_sdk::xdr::Error::Invalid);
         }
+        map.validate()?;
         Ok(Self {
             val: {
                 let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -11919,7 +11919,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        map.validate()?;
         if map
             .iter()
             .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -11930,6 +11929,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Used
         {
             return Err(soroban_sdk::xdr::Error::Invalid);
         }
+        map.validate()?;
         Ok(Self {
             val: {
                 let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -13057,7 +13057,6 @@ mod wasm_imported {
             use soroban_sdk::xdr::Validate;
             use soroban_sdk::TryIntoVal;
             let map = val;
-            map.validate()?;
             if map
                 .iter()
                 .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -13068,6 +13067,7 @@ mod wasm_imported {
             {
                 return Err(soroban_sdk::xdr::Error::Invalid);
             }
+            map.validate()?;
             Ok(Self {
                 args: {
                     let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -13596,7 +13596,6 @@ mod wasm_imported {
             use soroban_sdk::xdr::Validate;
             use soroban_sdk::TryIntoVal;
             let map = val;
-            map.validate()?;
             if map
                 .iter()
                 .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -13607,6 +13606,7 @@ mod wasm_imported {
             {
                 return Err(soroban_sdk::xdr::Error::Invalid);
             }
+            map.validate()?;
             Ok(Self {
                 context: {
                     let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -14080,7 +14080,6 @@ mod wasm_imported {
             use soroban_sdk::xdr::Validate;
             use soroban_sdk::TryIntoVal;
             let map = val;
-            map.validate()?;
             if map
                 .iter()
                 .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -14091,6 +14090,7 @@ mod wasm_imported {
             {
                 return Err(soroban_sdk::xdr::Error::Invalid);
             }
+            map.validate()?;
             Ok(Self {
                 executable: {
                     let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -14599,7 +14599,6 @@ mod wasm_imported {
             use soroban_sdk::xdr::Validate;
             use soroban_sdk::TryIntoVal;
             let map = val;
-            map.validate()?;
             if map
                 .iter()
                 .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -14610,6 +14609,7 @@ mod wasm_imported {
             {
                 return Err(soroban_sdk::xdr::Error::Invalid);
             }
+            map.validate()?;
             Ok(Self {
                 constructor_args: {
                     let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -15156,7 +15156,6 @@ mod wasm_imported {
             use soroban_sdk::xdr::Validate;
             use soroban_sdk::TryIntoVal;
             let map = val;
-            map.validate()?;
             if map
                 .iter()
                 .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -15167,6 +15166,7 @@ mod wasm_imported {
             {
                 return Err(soroban_sdk::xdr::Error::Invalid);
             }
+            map.validate()?;
             Ok(Self {
                 f1: {
                     let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -15605,7 +15605,6 @@ mod wasm_imported {
             use soroban_sdk::xdr::Validate;
             use soroban_sdk::TryIntoVal;
             let map = val;
-            map.validate()?;
             if map
                 .iter()
                 .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -15616,6 +15615,7 @@ mod wasm_imported {
             {
                 return Err(soroban_sdk::xdr::Error::Invalid);
             }
+            map.validate()?;
             Ok(Self {
                 f1: {
                     let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -16054,7 +16054,6 @@ mod wasm_imported {
             use soroban_sdk::xdr::Validate;
             use soroban_sdk::TryIntoVal;
             let map = val;
-            map.validate()?;
             if map
                 .iter()
                 .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -16065,6 +16064,7 @@ mod wasm_imported {
             {
                 return Err(soroban_sdk::xdr::Error::Invalid);
             }
+            map.validate()?;
             Ok(Self {
                 f1: {
                     let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -24034,7 +24034,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Unus
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        map.validate()?;
         if map
             .iter()
             .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -24045,6 +24044,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Unus
         {
             return Err(soroban_sdk::xdr::Error::Invalid);
         }
+        map.validate()?;
         Ok(Self {
             x: {
                 let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -25451,7 +25451,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap>
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        map.validate()?;
         if map
             .iter()
             .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -25462,6 +25461,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap>
         {
             return Err(soroban_sdk::xdr::Error::Invalid);
         }
+        map.validate()?;
         Ok(Self {
             x: {
                 let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -25833,7 +25833,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap>
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        map.validate()?;
         if map
             .iter()
             .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -25844,6 +25843,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap>
         {
             return Err(soroban_sdk::xdr::Error::Invalid);
         }
+        map.validate()?;
         Ok(Self {
             x: {
                 let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -26207,7 +26207,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Unus
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        map.validate()?;
         if map
             .iter()
             .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -26218,6 +26217,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for Unus
         {
             return Err(soroban_sdk::xdr::Error::Invalid);
         }
+        map.validate()?;
         Ok(Self {
             x: {
                 let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
