@@ -336,6 +336,12 @@ pub struct ContractContext {
 }
 #[soroban_sdk::contracttype]
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub struct ContractExecutableRef {
+    pub owner: soroban_sdk::Address,
+    pub tag: soroban_sdk::String,
+}
+#[soroban_sdk::contracttype]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub struct SubContractInvocation {
     pub context: ContractContext,
     pub sub_invocations: soroban_sdk::Vec<InvokerContractAuthEntry>,
@@ -378,6 +384,7 @@ pub enum Context {
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub enum ContractExecutable {
     Wasm(soroban_sdk::BytesN<32>),
+    ExternalRef(ContractExecutableRef),
 }
 #[soroban_sdk::contracttype]
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
@@ -436,6 +443,12 @@ pub struct ContractContext {
 }
 #[soroban_sdk::contracttype]
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub struct ContractExecutableRef {
+    pub owner: soroban_sdk::Address,
+    pub tag: soroban_sdk::String,
+}
+#[soroban_sdk::contracttype]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub struct SubContractInvocation {
     pub context: ContractContext,
     pub sub_invocations: soroban_sdk::Vec<InvokerContractAuthEntry>,
@@ -464,6 +477,7 @@ pub enum Context {
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub enum ContractExecutable {
     Wasm(soroban_sdk::BytesN<32>),
+    ExternalRef(ContractExecutableRef),
 }
 #[soroban_sdk::contracttype]
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
