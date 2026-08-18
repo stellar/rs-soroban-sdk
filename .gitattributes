@@ -1,1 +1,3 @@
 .github/workflows/*.lock.yml linguist-generated=true merge=ours
+**/test_snapshots/** merge=ours
+tests-expanded/** merge=ours
