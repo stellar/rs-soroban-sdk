@@ -201,7 +201,7 @@ jobs:
       run: |
         git config user.name 'github-actions[bot]'
         git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-        git add -A
+        git add -A -- ':(glob)**/test_snapshots/**'
         if git diff --cached --quiet; then
           echo "No diffs."
           exit 0
@@ -213,7 +213,6 @@ jobs:
         done
         exit 1
     - name: Check no diffs exist
-      if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
       run: git add -N . && git diff HEAD --exit-code
 
   build-fuzz:
@@ -292,7 +291,7 @@ jobs:
       run: |
         git config user.name 'github-actions[bot]'
         git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-        git add -A
+        git add -A -- tests-expanded
         if git diff --cached --quiet; then
           echo "No diffs."
           exit 0
@@ -304,7 +303,6 @@ jobs:
         done
         exit 1
     - name: Check no diffs exist
-      if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name != github.repository
       run: git add -N . && git diff HEAD --exit-code
 
   publish-dry-run:
