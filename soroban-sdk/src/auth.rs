@@ -61,7 +61,7 @@ pub struct CreateContractWithConstructorHostFnContext {
 pub enum ContractExecutable {
     /// Executable specified by the contract instance as a specific Wasm contract code entry identified by its Wasm sha256 hash.
     Wasm(BytesN<32>),
-    /// Executable reference via an persistent storage entry owned by this contract or another contract.
+    /// Executable reference via a persistent storage entry owned by this contract or another contract.
     ExternalRef(ContractExecutableRef),
 }
 

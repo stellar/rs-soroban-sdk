@@ -11,7 +11,7 @@ use crate::deploy::{Deployer, DeployerWithAddress};
 ///
 /// An executable reference entry is a persistent contract data entry, keyed by
 /// a tag, containing a Wasm hash. Contracts can use any contract's executable
-/// reference entry as their own executable. Contract's that have a reference entry
+/// reference entry as their own executable. Contracts that have a reference entry
 /// as their executable will have their contract code loaded from entries Wasm hash
 /// value when invoked. Updating the entry to point at a new Wasm hash causes the
 /// new Wasm to be used by all contracts that use the entry as their executable.
