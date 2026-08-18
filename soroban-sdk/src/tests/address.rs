@@ -100,6 +100,8 @@ fn test_get_existing_contract_address_executable_wasm() {
 fn test_get_existing_contract_address_executable_native() {
     let env = Env::default();
 
+    // Natively registered contracts have a stub Wasm entry that is unique to
+    // every registered contract.
     let native_contract_address = env.register(TestContract, ());
     let native_contract_executable = native_contract_address.executable();
     assert!(matches!(
@@ -107,6 +109,11 @@ fn test_get_existing_contract_address_executable_native() {
         Some(Executable::Wasm(_))
     ));
     assert!(native_contract_address.exists());
+    let other_native_contract_address = env.register(TestContract, ());
+    assert_ne!(
+        native_contract_executable,
+        other_native_contract_address.executable()
+    );
 }
 
 #[test]

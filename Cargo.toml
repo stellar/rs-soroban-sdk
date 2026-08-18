@@ -32,17 +32,17 @@ stellar-asset-spec = { version = "27.0.5", path = "stellar-asset-spec" }
 [workspace.dependencies.soroban-env-common]
 version = "=28.0.2"
 #git = "https://github.com/stellar/rs-soroban-env"
-#rev = "5061e9c40ce6fc74ade9b9b3b49465b0cf7fdccb"
+#rev = "7fb0a840812fe8921bb48bebf7b4aa7160467ec8"
 
 [workspace.dependencies.soroban-env-guest]
 version = "=28.0.2"
 #git = "https://github.com/stellar/rs-soroban-env"
-#rev = "5061e9c40ce6fc74ade9b9b3b49465b0cf7fdccb"
+#rev = "7fb0a840812fe8921bb48bebf7b4aa7160467ec8"
 
 [workspace.dependencies.soroban-env-host]
 version = "=28.0.2"
 #git = "https://github.com/stellar/rs-soroban-env"
-#rev = "5061e9c40ce6fc74ade9b9b3b49465b0cf7fdccb"
+#rev = "7fb0a840812fe8921bb48bebf7b4aa7160467ec8"
 
 [workspace.dependencies.stellar-strkey]
 version = "=0.0.16"

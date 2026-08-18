@@ -338,7 +338,8 @@ fn test_deployer_extensions_with_limits() {
     });
     assert_eq!(e.deployer().get_contract_instance_ttl(&contract_a), 299);
     assert_eq!(e.deployer().get_contract_code_ttl(&contract_a), 299);
-    // Contract B should be unaffected, it has its own instance and code
+    // Contract B should be unaffected, as every registered contract has its own
+    // instance and code entries.
     assert_eq!(e.deployer().get_contract_instance_ttl(&contract_b), 99);
     assert_eq!(e.deployer().get_contract_code_ttl(&contract_b), 99);
 
@@ -368,7 +369,7 @@ fn test_deployer_extensions_with_limits() {
     });
     assert_eq!(e.deployer().get_contract_instance_ttl(&contract_a), 599);
     assert_eq!(e.deployer().get_contract_code_ttl(&contract_a), 799);
-    // Contract B has its own code, so it's unaffected
+    // Contract B has its own code entry, so it's unaffected
     assert_eq!(e.deployer().get_contract_code_ttl(&contract_b), 99);
 
     // Test that min_extension prevents extension when below threshold

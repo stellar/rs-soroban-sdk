@@ -82,8 +82,7 @@ fn ttl_getters() {
     }
 
     // Extend instance, code and entry TTLs for contract A.
-    // Contract A and B have their own code entries because each native contract
-    // is a separate code entry, so this doesn't extend anything for B. To test
+    // Contract A and B have their own code entries, so B is unaffected. To test
     // contract deployments where a single contract code entry is shared by
     // multiple contracts, upload the contract with [`Env::upload`] instead of
     // registering it, then use [`DeployerWithAddress::deploy_v2`] to deploy the
