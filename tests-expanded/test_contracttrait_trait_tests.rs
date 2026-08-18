@@ -123,7 +123,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for MySt
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        map.validate()?;
         if map
             .iter()
             .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -134,6 +133,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for MySt
         {
             return Err(soroban_sdk::xdr::Error::Invalid);
         }
+        map.validate()?;
         Ok(Self {
             a: {
                 let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(

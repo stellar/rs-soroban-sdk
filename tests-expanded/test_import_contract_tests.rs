@@ -566,7 +566,6 @@ mod addcontract {
             use soroban_sdk::xdr::Validate;
             use soroban_sdk::TryIntoVal;
             let map = val;
-            map.validate()?;
             if map
                 .iter()
                 .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -577,6 +576,7 @@ mod addcontract {
             {
                 return Err(soroban_sdk::xdr::Error::Invalid);
             }
+            map.validate()?;
             Ok(Self {
                 args: {
                     let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -1105,7 +1105,6 @@ mod addcontract {
             use soroban_sdk::xdr::Validate;
             use soroban_sdk::TryIntoVal;
             let map = val;
-            map.validate()?;
             if map
                 .iter()
                 .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -1116,6 +1115,7 @@ mod addcontract {
             {
                 return Err(soroban_sdk::xdr::Error::Invalid);
             }
+            map.validate()?;
             Ok(Self {
                 context: {
                     let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -1589,7 +1589,6 @@ mod addcontract {
             use soroban_sdk::xdr::Validate;
             use soroban_sdk::TryIntoVal;
             let map = val;
-            map.validate()?;
             if map
                 .iter()
                 .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -1600,6 +1599,7 @@ mod addcontract {
             {
                 return Err(soroban_sdk::xdr::Error::Invalid);
             }
+            map.validate()?;
             Ok(Self {
                 executable: {
                     let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -2108,7 +2108,6 @@ mod addcontract {
             use soroban_sdk::xdr::Validate;
             use soroban_sdk::TryIntoVal;
             let map = val;
-            map.validate()?;
             if map
                 .iter()
                 .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
@@ -2119,6 +2118,7 @@ mod addcontract {
             {
                 return Err(soroban_sdk::xdr::Error::Invalid);
             }
+            map.validate()?;
             Ok(Self {
                 constructor_args: {
                     let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
