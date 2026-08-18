@@ -1837,6 +1837,7 @@ mod tests {
         run_test::<Map<Duration, Duration>>()
     }
 
+    #[test]
     fn test_map_map_u32() {
         run_test::<Map<Map<u32, u32>, Map<u32, u32>>>()
     }
@@ -2225,6 +2226,7 @@ mod tests {
             run_test::<Bar>();
         }
 
+        #[test]
         fn test_structs_and_enums_inside_tuples() {
             #[contracttype]
             struct Foo(u32);
