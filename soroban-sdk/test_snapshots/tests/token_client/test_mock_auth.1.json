@@ -2,8 +2,7 @@
   "generators": {
     "address": 5,
     "nonce": 1,
-    "mux_id": 0,
-    "wasm_hash": 0
+    "mux_id": 0
   },
   "auth": [
     [],
