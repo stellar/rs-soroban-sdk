@@ -15,8 +15,7 @@
 //!
 //! ```
 //! use soroban_sdk::{
-//!     contract, contractevent, map, symbol_short, testutils::Events as _, xdr, Env, Event,
-//!     IntoVal, Symbol, TryFromVal, Val,
+//!     contract, contractevent, symbol_short, testutils::Events as _, Env, Event, Symbol,
 //! };
 //!
 //! #[contractevent]
@@ -46,20 +45,10 @@
 //!         event.publish(&env);
 //!     });
 //!
-//!     // The to_muxed_id field is None, which is void, and so is omitted from
-//!     // the map. Before v28 the map also held to_muxed_id with a void value.
-//!     let data: Val = map![
-//!         &env,
-//!         (
-//!             symbol_short!("amount"),
-//!             <_ as IntoVal<Env, Val>>::into_val(&1i128, &env)
-//!         ),
-//!     ]
-//!     .to_val();
-//!     let expected_event = event.to_xdr(&env, &id);
-//!     assert_eq!(env.events().all(), [expected_event.clone()]);
-//!     let xdr::ContractEventBody::V0(body) = expected_event.body;
-//!     assert_eq!(body.data, xdr::ScVal::try_from_val(&env, &data).unwrap());
+//!     // The published data map holds only amount. The to_muxed_id field is
+//!     // None, which is void, and so is omitted from the map. Before v28 the
+//!     // map also held to_muxed_id with a void value.
+//!     assert_eq!(env.events().all(), std::vec![event.to_xdr(&env, &id)]);
 //! }
 //! # #[cfg(not(feature = "testutils"))]
 //! # fn main() { }
@@ -68,8 +57,16 @@
 //! ## Migrating
 //!
 //! No code changes are required to publish events. Review any consumer that reads the published
-//! map, because a field it expects to be present with a void value is now absent, and any test that
-//! asserts on the full data map of an event that has a void field.
+//! map, because a field it expects to be present with a void value is now absent.
+//!
+//! A test that asserts on the data map of an event that has a void field needs updating, because
+//! the field it asserted on is no longer in the map. Rather than asserting on each field, compare
+//! the event with its `to_xdr` form, which is built the same way as the published event and so
+//! stays correct as the packing changes:
+//!
+//! ```ignore
+//! assert_eq!(env.events().all(), std::vec![event.to_xdr(&env, &id)]);
+//! ```
 //!
 //! An event type can carry a field that is only sometimes meaningful without paying for it in every
 //! event, so a single event can serve the shapes a contract needs rather than one event type per
