@@ -244,7 +244,7 @@ thread_local! {
 /// empty state when used inside a contract function.
 #[cfg(any(test, feature = "testutils"))]
 #[derive(Clone)]
-enum EnvTestState {
+pub(crate) enum EnvTestState {
     Test {
         test_name: Option<String>,
         number: usize,
@@ -629,12 +629,11 @@ use xdr::{LedgerEntry, LedgerKey, LedgerKeyContractData, SorobanAuthorizationEnt
 #[cfg(any(test, feature = "testutils"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
-    /// Create an [Env] for use inside a contract invocation, where the test
-    /// state is unavailable because the code is running as the contract.
-    pub(crate) fn for_inside_contract_invocation(env_impl: internal::EnvImpl) -> Env {
+    /// Create an [Env] for the given host, in the given test state.
+    pub(crate) fn new(env_impl: internal::EnvImpl, test_state: EnvTestState) -> Env {
         Env {
             env_impl,
-            test_state: EnvTestState::Contract,
+            test_state,
         }
     }
 

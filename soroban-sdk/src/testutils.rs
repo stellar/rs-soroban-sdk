@@ -306,7 +306,9 @@ impl<T: ContractFunctionSet> crate::env::internal::ContractFunctionSet
         args: &[Val],
     ) -> Option<Val> {
         use crate::unwrap::UnwrapInfallible;
-        let env = Env::for_inside_contract_invocation(env_impl.clone());
+        // The test state is unavailable inside the invocation, because the code
+        // is running as the contract.
+        let env = Env::new(env_impl.clone(), crate::env::EnvTestState::Contract);
         self.0.call(
             crate::Symbol::try_from_val(&env, func)
                 .unwrap_infallible()
