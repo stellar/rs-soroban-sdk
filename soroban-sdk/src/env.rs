@@ -268,7 +268,7 @@ impl EnvTestState {
     fn generators(&self) -> &Rc<RefCell<Generators>> {
         match self {
             Self::Test { generators, .. } => generators,
-            Self::Contract => panic!("generating values like addresses is unavailable inside a contract function and must be accessed only from the test code outside the contract function"),
+            Self::Contract => panic!("generating values like addresses is unavailable inside a contract function and must be done only from the test code outside the contract function"),
         }
     }
 
