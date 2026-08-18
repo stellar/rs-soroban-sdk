@@ -15,7 +15,8 @@
 //!
 //! ```
 //! use soroban_sdk::{
-//!     contract, contractevent, symbol_short, testutils::Events as _, Env, Event, Symbol,
+//!     contract, contractevent, map, symbol_short, testutils::Events as _, vec, Env, Event,
+//!     IntoVal, Symbol, Val,
 //! };
 //!
 //! #[contractevent]
@@ -45,10 +46,30 @@
 //!         event.publish(&env);
 //!     });
 //!
+//!     assert_eq!(env.events().all(), [event.to_xdr(&env, &id)]);
+//!
 //!     // The published data map holds only amount. The to_muxed_id field is
 //!     // None, which is void, and so is omitted from the map. Before v28 the
 //!     // map also held to_muxed_id with a void value.
-//!     assert_eq!(env.events().all(), std::vec![event.to_xdr(&env, &id)]);
+//!     let data: Val = map![
+//!         &env,
+//!         (
+//!             symbol_short!("amount"),
+//!             <_ as IntoVal<Env, Val>>::into_val(&1i128, &env)
+//!         ),
+//!     ]
+//!     .to_val();
+//!     assert_eq!(
+//!         env.events().all(),
+//!         vec![
+//!             &env,
+//!             (
+//!                 id.clone(),
+//!                 (symbol_short!("transfer"), symbol_short!("to")).into_val(&env),
+//!                 data
+//!             )
+//!         ],
+//!     );
 //! }
 //! # #[cfg(not(feature = "testutils"))]
 //! # fn main() { }
