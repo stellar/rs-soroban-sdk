@@ -30,7 +30,16 @@
 //!    test snapshot JSON files that contain natively registered contracts will change when
 //!    upgrading.
 //!
+//! 3. [`contracttype` structs tolerate missing and additional map fields when
+//!    unpacking][v28_contracttype_unpacking]. A field of the struct that is absent from the map
+//!    unpacks as void, and so unpacks as `None` for an [`Option`] field, and errors for any other
+//!    field. A key in the map that is not a field of the struct is ignored and discarded, and is
+//!    lost if the value is packed and written back. Both were errors before. Packing is unchanged.
+//!    No code changes are required for most contracts, but review any code that relied on unpacking
+//!    failing to detect a mismatch.
+//!
 //! [`Env::upload`]: crate::Env::upload
+//! [v28_contracttype_unpacking]: v28_contracttype_unpacking
 //!
 //! # Migrating from v26 to v27
 //!
@@ -378,4 +387,5 @@ pub mod v25_poseidon;
 pub mod v25_resource_limits;
 pub mod v27_bytes_literals;
 pub mod v27_export;
+pub mod v28_contracttype_unpacking;
 pub mod v28_spec_shaking;
