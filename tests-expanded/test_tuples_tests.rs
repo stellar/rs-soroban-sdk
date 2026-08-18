@@ -1201,6 +1201,16 @@ mod test {
                 use soroban_sdk::TryIntoVal;
                 let map = val;
                 map.validate()?;
+                if map
+                    .iter()
+                    .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
+                    match entry.key {
+                        soroban_sdk::xdr::ScVal::Symbol(_) => true,
+                        _ => false,
+                    })
+                {
+                    return Err(soroban_sdk::xdr::Error::Invalid);
+                }
                 Ok(Self {
                     args: {
                         let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -1736,6 +1746,16 @@ mod test {
                 use soroban_sdk::TryIntoVal;
                 let map = val;
                 map.validate()?;
+                if map
+                    .iter()
+                    .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
+                    match entry.key {
+                        soroban_sdk::xdr::ScVal::Symbol(_) => true,
+                        _ => false,
+                    })
+                {
+                    return Err(soroban_sdk::xdr::Error::Invalid);
+                }
                 Ok(Self {
                     context: {
                         let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -2210,6 +2230,16 @@ mod test {
                 use soroban_sdk::TryIntoVal;
                 let map = val;
                 map.validate()?;
+                if map
+                    .iter()
+                    .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
+                    match entry.key {
+                        soroban_sdk::xdr::ScVal::Symbol(_) => true,
+                        _ => false,
+                    })
+                {
+                    return Err(soroban_sdk::xdr::Error::Invalid);
+                }
                 Ok(Self {
                     executable: {
                         let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(
@@ -2733,6 +2763,16 @@ mod test {
                 use soroban_sdk::TryIntoVal;
                 let map = val;
                 map.validate()?;
+                if map
+                    .iter()
+                    .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
+                    match entry.key {
+                        soroban_sdk::xdr::ScVal::Symbol(_) => true,
+                        _ => false,
+                    })
+                {
+                    return Err(soroban_sdk::xdr::Error::Invalid);
+                }
                 Ok(Self {
                     constructor_args: {
                         let key: soroban_sdk::xdr::ScVal = soroban_sdk::xdr::ScSymbol(

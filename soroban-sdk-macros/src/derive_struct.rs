@@ -171,6 +171,11 @@ pub fn derive_type_struct(
                     use #path::TryIntoVal;
                     let map = val;
                     map.validate()?;
+                    // The host requires the keys of a struct's map be symbols,
+                    // and traps otherwise, so reject them here too.
+                    if map.iter().any(|entry| !matches!(entry.key, #path::xdr::ScVal::Symbol(_))) {
+                        return Err(#path::xdr::Error::Invalid);
+                    }
                     Ok(Self{
                         #(#try_from_xdrs,)*
                     })
