@@ -245,11 +245,6 @@
 //! ```text
 //! RUST_BACKTRACE=1 ./target/debug/fuzz_target_1 < out/default/crashes/id:000000*
 //! ```
-//!
-//! The `tests/fuzz_afl` crate in the [SDK repository] is a complete worked
-//! example, with a README that walks through a fuzzing session from scratch.
-//!
-//! [SDK repository]: https://github.com/stellar/rs-soroban-sdk/tree/main/tests/fuzz_afl
 
 /// A reexport of the `arbitrary` crate.
 ///
