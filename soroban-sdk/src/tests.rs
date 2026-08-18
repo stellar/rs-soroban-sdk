@@ -50,6 +50,7 @@ mod muxed_address;
 mod num_checked_arith;
 mod prng;
 mod prng_range;
+mod proptest_direct;
 mod proptest_scval_cmp;
 mod proptest_val_cmp;
 mod snapshot_source_empty_wasm_hash;
