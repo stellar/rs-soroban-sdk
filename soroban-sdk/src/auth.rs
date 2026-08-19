@@ -65,6 +65,17 @@ pub enum ContractExecutable {
     ExternalRef(ContractExecutableRef),
 }
 
+/// Executable referenced via a persistent storage entry owned by a contract,
+/// either this contract or another contract.
+///
+/// The persistent storage entry owned by the `owner` has the `tag` as its key.
+#[derive(Clone, Debug)]
+#[contracttype(crate_path = "crate")]
+pub struct ContractExecutableRef {
+    pub owner: Address,
+    pub tag: String,
+}
+
 impl TryFromVal<Env, ContractExecutable> for ContractExecutable {
     type Error = ConversionError;
 
@@ -87,17 +98,6 @@ impl TryFromVal<Env, [u8; 32]> for ContractExecutable {
     fn try_from_val(env: &Env, v: &[u8; 32]) -> Result<Self, Self::Error> {
         Ok(ContractExecutable::Wasm(BytesN::from_array(env, v)))
     }
-}
-
-/// Executable referenced via a persistent storage entry owned by a contract,
-/// either this contract or another contract.
-///
-/// The persistent storage entry owned by the `owner` has the `tag` as its key.
-#[derive(Clone, Debug)]
-#[contracttype(crate_path = "crate")]
-pub struct ContractExecutableRef {
-    pub owner: Address,
-    pub tag: String,
 }
 
 /// A node in the tree of authorizations performed on behalf of the current
