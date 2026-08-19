@@ -31,6 +31,14 @@
 //!    upload the contract once with the new [`Env::upload`] and deploy it multiple times with
 //!    [`DeployerWithAddress::deploy_v2`].
 //!
+//! 4. [The `lib` argument has been removed, and has no replacement][v28_lib].
+//!    The `lib` argument on [`contracttype`], [`contracterror`], and [`contractevent`] set the
+//!    `lib` field of a type's spec entry, which caused bindings generators to emit an alias to a
+//!    crate of that name instead of generating the type. It was undocumented, never completed, and
+//!    unused on Mainnet. Remove any `lib = ...` argument from these annotations (it is now a
+//!    compile error). To share types across contracts, define them in a common crate and depend on
+//!    it from each contract.
+//!
 //! [`Env::upload`]: crate::Env::upload
 //! [v28_contracttype_unpacking]: v28_contracttype_unpacking
 //!
@@ -381,5 +389,6 @@ pub mod v25_resource_limits;
 pub mod v27_bytes_literals;
 pub mod v27_export;
 pub mod v28_contracttype_unpacking;
+pub mod v28_lib;
 pub mod v28_native_contract_code;
 pub mod v28_spec_shaking;
