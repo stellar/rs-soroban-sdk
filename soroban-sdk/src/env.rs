@@ -256,6 +256,34 @@ enum EnvTestState {
     Contract,
 }
 
+/// Adapts a [`ContractFunctionSet`] into the function set the host dispatches
+/// native contract calls to.
+///
+/// Shared by contract registration and Wasm upload, both of which hand the host
+/// a native contract to dispatch to.
+#[cfg(any(test, feature = "testutils"))]
+struct InternalContractFunctionSet<T: ContractFunctionSet>(T);
+
+#[cfg(any(test, feature = "testutils"))]
+impl<T: ContractFunctionSet> internal::ContractFunctionSet for InternalContractFunctionSet<T> {
+    fn call(&self, func: &Symbol, env_impl: &internal::EnvImpl, args: &[Val]) -> Option<Val> {
+        let env = Env {
+            env_impl: env_impl.clone(),
+            // The test state is unavailable inside the invocation, because the
+            // code is running as the contract.
+            test_state: EnvTestState::Contract,
+        };
+        self.0.call(
+            crate::Symbol::try_from_val(&env, func)
+                .unwrap_infallible()
+                .to_string()
+                .as_str(),
+            env,
+            args,
+        )
+    }
+}
+
 #[cfg(any(test, feature = "testutils"))]
 impl EnvTestState {
     fn config_mut(&mut self) -> &mut EnvTestConfig {
@@ -960,6 +988,96 @@ impl Env {
         contract.register(self, contract_id, constructor_args)
     }
 
+    /// Upload a contract that is defined in the current crate to the [Env] for
+    /// testing, as if it was a contract Wasm.
+    ///
+    /// Contract instances that use the returned Wasm hash as their executable,
+    /// such as instances deployed with [`Env::deployer`], dispatch their calls
+    /// to the uploaded contract.
+    ///
+    /// A new Wasm hash is generated for every call. If you need to specify the
+    /// Wasm hash the contract should be uploaded to, use [`Env::upload_at`].
+    ///
+    /// Returns the Wasm hash the contract was uploaded to.
+    ///
+    /// ### Examples
+    /// ```
+    /// use soroban_sdk::{contract, contractimpl, Env};
+    ///
+    /// #[contract]
+    /// pub struct Contract;
+    ///
+    /// #[contractimpl]
+    /// impl Contract {
+    ///     pub fn hello(env: Env) { /* ... */ }
+    /// }
+    ///
+    /// #[test]
+    /// fn test() {
+    /// # }
+    /// # fn main() {
+    ///     let env = Env::default();
+    ///     let wasm_hash = env.upload(Contract);
+    /// }
+    /// ```
+    pub fn upload<C>(&self, contract: C) -> BytesN<32>
+    where
+        C: ContractFunctionSet + 'static,
+    {
+        self.upload_at(self.with_generator(|mut g| g.wasm_hash()), contract)
+    }
+
+    /// Upload a contract that is defined in the current crate to the [Env] for
+    /// testing, as if it was a contract Wasm, at the Wasm hash specified.
+    ///
+    /// Contract instances that use the Wasm hash as their executable, such as
+    /// instances deployed with [`Env::deployer`], dispatch their calls to the
+    /// uploaded contract.
+    ///
+    /// Uploading to a Wasm hash that already has a contract, native or Wasm,
+    /// uploaded to it replaces it for the purpose of contract calls. Use
+    /// re-uploading for testing only. It does not exist in the real (on-chain)
+    /// environment, where Wasm is immutable. Any ledger entry that already
+    /// exists for the Wasm hash is left untouched, including a real Wasm's
+    /// entry that a snapshot was loaded with.
+    ///
+    /// Returns the Wasm hash the contract was uploaded to, which is the same as
+    /// the Wasm hash passed in.
+    ///
+    /// ### Examples
+    /// ```
+    /// use soroban_sdk::{contract, contractimpl, Env};
+    ///
+    /// #[contract]
+    /// pub struct Contract;
+    ///
+    /// #[contractimpl]
+    /// impl Contract {
+    ///     pub fn hello(env: Env) { /* ... */ }
+    /// }
+    ///
+    /// #[test]
+    /// fn test() {
+    /// # }
+    /// # fn main() {
+    ///     let env = Env::default();
+    ///     env.upload_at([1u8; 32], Contract);
+    /// }
+    /// ```
+    pub fn upload_at<C>(&self, wasm_hash: impl IntoVal<Env, BytesN<32>>, contract: C) -> BytesN<32>
+    where
+        C: ContractFunctionSet + 'static,
+    {
+        let wasm_hash = wasm_hash.into_val(self);
+        self.env_impl
+            .register_native_contract_as_wasm(
+                Rc::new(InternalContractFunctionSet(contract)),
+                wasm_hash.to_object(),
+            )
+            .unwrap();
+        wasm_hash
+    }
+
     /// Register a contract with the [Env] for testing.
     ///
     /// Passing a contract ID for the first arguments registers the contract
@@ -1040,29 +1158,6 @@ impl Env {
         contract: T,
         constructor_args: A,
     ) -> Address {
-        struct InternalContractFunctionSet<T: ContractFunctionSet>(pub(crate) T);
-        impl<T: ContractFunctionSet> internal::ContractFunctionSet for InternalContractFunctionSet<T> {
-            fn call(
-                &self,
-                func: &Symbol,
-                env_impl: &internal::EnvImpl,
-                args: &[Val],
-            ) -> Option<Val> {
-                let env = Env {
-                    env_impl: env_impl.clone(),
-                    test_state: EnvTestState::Contract,
-                };
-                self.0.call(
-                    crate::Symbol::try_from_val(&env, func)
-                        .unwrap_infallible()
-                        .to_string()
-                        .as_str(),
-                    env,
-                    args,
-                )
-            }
-        }
-
         let contract_id = if let Some(contract_id) = contract_id.into() {
             contract_id.clone()
         } else {
