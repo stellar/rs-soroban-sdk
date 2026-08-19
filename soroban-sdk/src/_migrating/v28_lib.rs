@@ -5,14 +5,16 @@
 //! set, emitted a type alias pointing at a crate of that name instead of generating the type:
 //!
 //! ```text
-//! pub type StructA = ::libname::StructA;
+//! type StructA = ::libname::StructA;
 //! ```
 //!
 //! The intent was to let a contract declare that a type it uses is defined in a shared library
 //! crate, so that generated bindings could reuse the library's definition rather than duplicating
 //! it. The idea was never completed: nothing shipped that produced the referenced crate, an alias
 //! to a crate the consumer does not depend on does not compile, and the argument remained
-//! undocumented. No contract on Mainnet sets it.
+//! undocumented. For structs and events the alias was generated without a `pub`, as above, so it
+//! was private to the generated module and never even nameable by the code meant to use it. No
+//! contract on Mainnet sets the argument.
 //!
 //! The argument is therefore gone, along with the code generation that consumed the spec field.
 //! There is no replacement. The `lib` field remains in the spec XDR for compatibility, but the SDK
