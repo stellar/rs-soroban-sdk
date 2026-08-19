@@ -51,8 +51,13 @@ pub fn derive_type_struct(
             let try_from_xdr = quote! {
                 #field_ident: {
                     let key: #path::xdr::ScVal = #path::xdr::ScSymbol(#field_name.try_into().map_err(|_| #path::xdr::Error::Invalid)?).into();
-                    let idx = map.binary_search_by_key(&key, |entry| entry.key.clone()).map_err(|_| #path::xdr::Error::Invalid)?;
-                    let rv: #path::Val = (&map[idx].val.clone()).try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?;
+                    // Fields absent from the map are void, so that they convert
+                    // to None for Option fields.
+                    let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                        Ok(idx) => map[idx].val.clone(),
+                        Err(_) => #path::xdr::ScVal::Void,
+                    };
+                    let rv: #path::Val = (&val).try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?;
                     rv.try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?
                 }
             };
@@ -125,7 +130,7 @@ pub fn derive_type_struct(
                 const KEYS: [&'static str; #field_count_usize] = [#(#field_names),*];
                 let mut vals: [Val; #field_count_usize] = [Val::VOID.to_val(); #field_count_usize];
                 let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-                env.map_unpack_to_slice(map, &KEYS, &mut vals).map_err(|_| ConversionError)?;
+                env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals).map_err(|_| ConversionError)?;
                 Ok(Self {
                     #(#field_idents: vals[#field_idx_lits].try_into_val(env).map_err(|_| #path::ConversionError)?,)*
                 })
@@ -164,7 +169,9 @@ pub fn derive_type_struct(
                     use #path::xdr::Validate;
                     use #path::TryIntoVal;
                     let map = val;
-                    if map.len() != #field_count_usize {
+                    // The host requires the keys of a struct's map be symbols,
+                    // and traps otherwise, so reject them here too.
+                    if map.iter().any(|entry| !matches!(entry.key, #path::xdr::ScVal::Symbol(_))) {
                         return Err(#path::xdr::Error::Invalid);
                     }
                     map.validate()?;
