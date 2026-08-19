@@ -309,11 +309,16 @@ pub fn generate_type_ident(spec: &ScSpecTypeDef) -> Result<TokenStream, Generate
 mod test {
     use crate::ToFormattedString;
 
-    use super::{generate_event, generate_struct, GenerateError};
+    use super::{
+        generate_enum, generate_error_enum, generate_event, generate_struct, generate_union,
+        GenerateError,
+    };
     use quote::quote;
     use stellar_xdr::{
         ScSpecEventDataFormat, ScSpecEventParamLocationV0, ScSpecEventParamV0, ScSpecEventV0,
-        ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, ScSymbol, VecM,
+        ScSpecTypeDef, ScSpecUdtEnumCaseV0, ScSpecUdtEnumV0, ScSpecUdtErrorEnumCaseV0,
+        ScSpecUdtErrorEnumV0, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, ScSpecUdtUnionCaseV0,
+        ScSpecUdtUnionCaseVoidV0, ScSpecUdtUnionV0, ScSymbol, VecM,
     };
 
     #[test]
@@ -421,5 +426,142 @@ mod test {
         };
         let result = generate_struct(&spec);
         assert!(result.is_err());
+    }
+
+    // The `lib` field of a spec entry is ignored: a non-empty value must still
+    // produce a full type definition, not a type alias into an external crate.
+
+    #[test]
+    fn test_generate_struct_ignores_lib() {
+        let tokens = generate_struct(&ScSpecUdtStructV0 {
+            doc: "".try_into().unwrap(),
+            lib: "libname".try_into().unwrap(),
+            name: "Point".try_into().unwrap(),
+            fields: [ScSpecUdtStructFieldV0 {
+                doc: "".try_into().unwrap(),
+                name: "x".try_into().unwrap(),
+                type_: ScSpecTypeDef::U32,
+            }]
+            .try_into()
+            .unwrap(),
+        })
+        .unwrap();
+        let expect = quote! {
+            #[soroban_sdk::contracttype]
+            #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+            pub struct Point { pub x: u32, }
+        };
+        assert_eq!(
+            tokens.to_formatted_string().unwrap(),
+            expect.to_formatted_string().unwrap()
+        );
+    }
+
+    #[test]
+    fn test_generate_union_ignores_lib() {
+        let tokens = generate_union(&ScSpecUdtUnionV0 {
+            doc: "".try_into().unwrap(),
+            lib: "libname".try_into().unwrap(),
+            name: "MyUnion".try_into().unwrap(),
+            cases: [ScSpecUdtUnionCaseV0::VoidV0(ScSpecUdtUnionCaseVoidV0 {
+                doc: "".try_into().unwrap(),
+                name: "V1".try_into().unwrap(),
+            })]
+            .try_into()
+            .unwrap(),
+        })
+        .unwrap();
+        let expect = quote! {
+            #[soroban_sdk::contracttype]
+            #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+            pub enum MyUnion { V1, }
+        };
+        assert_eq!(
+            tokens.to_formatted_string().unwrap(),
+            expect.to_formatted_string().unwrap()
+        );
+    }
+
+    #[test]
+    fn test_generate_enum_ignores_lib() {
+        let tokens = generate_enum(&ScSpecUdtEnumV0 {
+            doc: "".try_into().unwrap(),
+            lib: "libname".try_into().unwrap(),
+            name: "MyEnum".try_into().unwrap(),
+            cases: [ScSpecUdtEnumCaseV0 {
+                doc: "".try_into().unwrap(),
+                name: "V1".try_into().unwrap(),
+                value: 1,
+            }]
+            .try_into()
+            .unwrap(),
+        })
+        .unwrap();
+        let expect = quote! {
+            #[soroban_sdk::contracttype]
+            #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
+            pub enum MyEnum { V1 = 1, }
+        };
+        assert_eq!(
+            tokens.to_formatted_string().unwrap(),
+            expect.to_formatted_string().unwrap()
+        );
+    }
+
+    #[test]
+    fn test_generate_error_enum_ignores_lib() {
+        let tokens = generate_error_enum(&ScSpecUdtErrorEnumV0 {
+            doc: "".try_into().unwrap(),
+            lib: "libname".try_into().unwrap(),
+            name: "MyError".try_into().unwrap(),
+            cases: [ScSpecUdtErrorEnumCaseV0 {
+                doc: "".try_into().unwrap(),
+                name: "Overflow".try_into().unwrap(),
+                value: 1,
+            }]
+            .try_into()
+            .unwrap(),
+        })
+        .unwrap();
+        let expect = quote! {
+            #[soroban_sdk::contracterror]
+            #[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
+            pub enum MyError { Overflow = 1, }
+        };
+        assert_eq!(
+            tokens.to_formatted_string().unwrap(),
+            expect.to_formatted_string().unwrap()
+        );
+    }
+
+    #[test]
+    fn test_generate_event_ignores_lib() {
+        let tokens = generate_event(&ScSpecEventV0 {
+            lib: "libname".try_into().unwrap(),
+            doc: "".try_into().unwrap(),
+            name: "MyEvent".try_into().unwrap(),
+            prefix_topics: [ScSymbol("my_event".try_into().unwrap())]
+                .try_into()
+                .unwrap(),
+            params: [ScSpecEventParamV0 {
+                doc: "".try_into().unwrap(),
+                name: "from".try_into().unwrap(),
+                type_: ScSpecTypeDef::U32,
+                location: ScSpecEventParamLocationV0::Data,
+            }]
+            .try_into()
+            .unwrap(),
+            data_format: ScSpecEventDataFormat::Map,
+        })
+        .unwrap();
+        let expect = quote! {
+            #[soroban_sdk::contractevent(topics = ["my_event"])]
+            #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+            pub struct MyEvent { pub from: u32, }
+        };
+        assert_eq!(
+            tokens.to_formatted_string().unwrap(),
+            expect.to_formatted_string().unwrap()
+        );
     }
 }
