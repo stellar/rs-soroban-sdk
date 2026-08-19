@@ -425,3 +425,44 @@ fn test_deprecated_update_current_contract_wasm() {
         3
     );
 }
+
+/// deploy_v2 and update_current_contract accept a Wasm hash, and anything that
+/// converts into one, as well as a ContractExecutable.
+#[test]
+fn test_deploy_v2_and_update_current_contract_accept_wasm_hash() {
+    let env = Env::default();
+    let wasm_hash = env.deployer().upload_contract_wasm(add_u64_contract::WASM);
+
+    let contract = env.register(OwnerContract, ());
+    env.as_contract(&contract, || {
+        let deployed = env
+            .deployer()
+            .with_current_contract(BytesN::from_array(&env, &[8; 32]))
+            .deploy_v2(wasm_hash.clone(), ());
+        assert_eq!(
+            deployed.executable(),
+            Some(Executable::Wasm(wasm_hash.clone()))
+        );
+
+        let deployed = env
+            .deployer()
+            .with_current_contract(BytesN::from_array(&env, &[9; 32]))
+            .deploy_v2(wasm_hash.to_array(), ());
+        assert_eq!(
+            deployed.executable(),
+            Some(Executable::Wasm(wasm_hash.clone()))
+        );
+
+        env.deployer().update_current_contract(wasm_hash.clone());
+    });
+    assert_eq!(
+        contract.executable(),
+        Some(Executable::Wasm(wasm_hash.clone()))
+    );
+
+    let contract = env.register(OwnerContract, ());
+    env.as_contract(&contract, || {
+        env.deployer().update_current_contract(wasm_hash.to_array());
+    });
+    assert_eq!(contract.executable(), Some(Executable::Wasm(wasm_hash)));
+}
