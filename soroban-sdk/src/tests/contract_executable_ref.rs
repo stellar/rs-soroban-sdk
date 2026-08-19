@@ -69,6 +69,32 @@ impl DeployerContract {
         env.deployer().update_current_contract(executable);
     }
 
+    /// Deploy passing a Wasm hash, the argument accepted before the functions
+    /// accepted any executable.
+    pub fn deploy_wasm(env: Env, wasm_hash: BytesN<32>, salt: BytesN<32>) -> Address {
+        env.deployer()
+            .with_current_contract(salt)
+            .deploy_v2(wasm_hash, ())
+    }
+
+    /// Deploy passing a value that converts into a Wasm hash.
+    pub fn deploy_wasm_array(env: Env, wasm_hash: BytesN<32>, salt: BytesN<32>) -> Address {
+        env.deployer()
+            .with_current_contract(salt)
+            .deploy_v2(wasm_hash.to_array(), ())
+    }
+
+    /// Upgrade passing a Wasm hash, the argument accepted before the functions
+    /// accepted any executable.
+    pub fn upgrade_wasm(env: Env, wasm_hash: BytesN<32>) {
+        env.deployer().update_current_contract(wasm_hash);
+    }
+
+    /// Upgrade passing a value that converts into a Wasm hash.
+    pub fn upgrade_wasm_array(env: Env, wasm_hash: BytesN<32>) {
+        env.deployer().update_current_contract(wasm_hash.to_array());
+    }
+
     pub fn deploy_with_args(
         env: Env,
         owner: Address,
@@ -92,6 +118,19 @@ impl DeployerContract {
         env.deployer()
             .with_address(deployer, salt)
             .deploy_v2(ref_executable(&owner, &name), ())
+    }
+}
+
+/// Uses the deprecated update_current_contract_wasm, which now delegates to
+/// update_current_contract.
+#[contract]
+pub struct DeprecatedUpgraderContract;
+
+#[contractimpl]
+impl DeprecatedUpgraderContract {
+    #[allow(deprecated)]
+    pub fn upgrade(env: Env, wasm_hash: BytesN<32>) {
+        env.deployer().update_current_contract_wasm(wasm_hash);
     }
 }
 
@@ -394,6 +433,55 @@ fn test_update_current_contract_with_ref_executable() {
             tag: String::from_str(&env, "fleet"),
         },
     ));
+
+    assert_eq!(contract.executable(), Some(Executable::Wasm(wasm_hash)));
+    assert_eq!(
+        add_u64_contract::Client::new(&env, &contract).add(&1, &2),
+        3
+    );
+}
+
+/// The functions that gained an executable parameter still accept the Wasm hash
+/// argument they accepted before, and anything that converts into one.
+#[test]
+fn test_deploy_v2_and_update_accept_wasm_hash() {
+    let env = Env::default();
+    let wasm_hash = env.deployer().upload_contract_wasm(add_u64_contract::WASM);
+
+    let contract = env.register(DeployerContract, ());
+    let client = DeployerContractClient::new(&env, &contract);
+
+    let deployed = client.deploy_wasm(&wasm_hash, &BytesN::from_array(&env, &[4; 32]));
+    assert_eq!(
+        deployed.executable(),
+        Some(Executable::Wasm(wasm_hash.clone()))
+    );
+    let deployed = client.deploy_wasm_array(&wasm_hash, &BytesN::from_array(&env, &[5; 32]));
+    assert_eq!(
+        deployed.executable(),
+        Some(Executable::Wasm(wasm_hash.clone()))
+    );
+
+    client.upgrade_wasm(&wasm_hash);
+    assert_eq!(
+        contract.executable(),
+        Some(Executable::Wasm(wasm_hash.clone()))
+    );
+
+    let contract = env.register(DeployerContract, ());
+    DeployerContractClient::new(&env, &contract).upgrade_wasm_array(&wasm_hash);
+    assert_eq!(contract.executable(), Some(Executable::Wasm(wasm_hash)));
+}
+
+/// The deprecated update_current_contract_wasm still accepts a Wasm hash and
+/// has the same effect as update_current_contract.
+#[test]
+fn test_deprecated_update_current_contract_wasm() {
+    let env = Env::default();
+    let wasm_hash = env.deployer().upload_contract_wasm(add_u64_contract::WASM);
+
+    let contract = env.register(DeprecatedUpgraderContract, ());
+    DeprecatedUpgraderContractClient::new(&env, &contract).upgrade(&wasm_hash);
 
     assert_eq!(contract.executable(), Some(Executable::Wasm(wasm_hash)));
     assert_eq!(

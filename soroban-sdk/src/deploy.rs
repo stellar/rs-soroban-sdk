@@ -14,7 +14,7 @@
 //! #### Deploy a contract without constructor (or 0-argument constructor)
 //!
 //! ```
-//! use soroban_sdk::{auth::ContractExecutable, contract, contractimpl, BytesN, Env, Symbol};
+//! use soroban_sdk::{contract, contractimpl, BytesN, Env, Symbol};
 //!
 //! const DEPLOYED_WASM: &[u8] = include_bytes!("../doctest_fixtures/contract.wasm");
 //!
@@ -26,7 +26,7 @@
 //!     pub fn deploy(env: Env, wasm_hash: BytesN<32>) {
 //!         let salt = [0u8; 32];
 //!         let deployer = env.deployer().with_current_contract(salt);
-//!         let contract_address = deployer.deploy_v2(ContractExecutable::Wasm(wasm_hash), ());
+//!         let contract_address = deployer.deploy_v2(wasm_hash, ());
 //!         // ...
 //!     }
 //! }
@@ -50,7 +50,7 @@
 //! #### Deploy a contract with a multi-argument constructor
 //!
 //! ```
-//! use soroban_sdk::{auth::ContractExecutable, contract, contractimpl, BytesN, Env, Symbol, IntoVal};
+//! use soroban_sdk::{contract, contractimpl, BytesN, Env, Symbol, IntoVal};
 //!
 //! const DEPLOYED_WASM_WITH_CTOR: &[u8] = include_bytes!("../doctest_fixtures/contract_with_constructor.wasm");
 //!
@@ -63,7 +63,7 @@
 //!         let salt = [1u8; 32];
 //!         let deployer = env.deployer().with_current_contract(salt);
 //!         let contract_address = deployer.deploy_v2(
-//!              ContractExecutable::Wasm(wasm_hash),
+//!              wasm_hash,
 //!              (1_u32, 2_i64),
 //!         );
 //!         // ...
@@ -325,9 +325,8 @@ impl Deployer {
     /// will only be updated after the invocation has successfully finished.
     #[deprecated(note = "use update_current_contract")]
     pub fn update_current_contract_wasm(&self, wasm_hash: impl IntoVal<Env, BytesN<32>>) {
-        self.env
-            .update_current_contract_wasm(wasm_hash.into_val(&self.env).to_object())
-            .unwrap_infallible();
+        let wasm_hash: BytesN<32> = wasm_hash.into_val(&self.env);
+        self.update_current_contract(wasm_hash);
     }
 
     /// Replaces the executable of the current contract with the provided
@@ -346,6 +345,9 @@ impl Deployer {
     /// **Important**: for [ContractExecutable::ExternalRef], the owner now
     /// controls and can update the Wasm of the current contract. The owner may
     /// be the current contract itself.
+    ///
+    /// A Wasm hash may be passed directly, and is equivalent to passing a
+    /// [ContractExecutable::Wasm].
     ///
     /// The function won't do anything immediately. The contract executable
     /// will only be updated after the invocation has successfully finished.
@@ -540,6 +542,9 @@ impl DeployerWithAddress {
     ///
     /// **Important**: for [ContractExecutable::ExternalRef], the owner controls
     /// and can update the Wasm of the deployed contract.
+    ///
+    /// A Wasm hash may be passed directly, and is equivalent to passing a
+    /// [ContractExecutable::Wasm].
     ///
     /// The constructor args will be passed to the contract's constructor. Pass
     /// `()` for contract's with no constructor or a constructor with zero
