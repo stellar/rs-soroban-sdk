@@ -73,22 +73,6 @@ impl TryFromVal<Env, ContractExecutable> for ContractExecutable {
     }
 }
 
-impl TryFromVal<Env, BytesN<32>> for ContractExecutable {
-    type Error = ConversionError;
-
-    fn try_from_val(_env: &Env, v: &BytesN<32>) -> Result<Self, Self::Error> {
-        Ok(ContractExecutable::Wasm(v.clone()))
-    }
-}
-
-impl TryFromVal<Env, [u8; 32]> for ContractExecutable {
-    type Error = ConversionError;
-
-    fn try_from_val(env: &Env, v: &[u8; 32]) -> Result<Self, Self::Error> {
-        Ok(ContractExecutable::Wasm(BytesN::from_array(env, v)))
-    }
-}
-
 /// Executable referenced via a persistent storage entry owned by a contract,
 /// either this contract or another contract.
 ///
