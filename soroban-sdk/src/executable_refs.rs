@@ -11,10 +11,11 @@ use crate::deploy::{Deployer, DeployerWithAddress};
 ///
 /// An executable reference entry is a persistent contract data entry, keyed by
 /// a tag, containing a Wasm hash. Contracts can use any contract's executable
-/// reference entry as their own executable. Contracts that have a reference entry
-/// as their executable will have their contract code loaded from entries Wasm hash
-/// value when invoked. Updating the entry to point at a new Wasm hash causes the
-/// new Wasm to be used by all contracts that use the entry as their executable.
+/// reference entry as their own executable. Contracts that have an executable
+/// reference as their executable will have their contract code loaded from the
+/// executable reference's Wasm hash when invoked. Updating the entry to point at
+/// a new Wasm hash causes the new Wasm to be used by all contracts that use the
+/// entry as their executable.
 ///
 /// Contracts use an executable reference entry as their executable by being
 /// deployed with [DeployerWithAddress::deploy_executable_ref], or by replacing
@@ -22,9 +23,12 @@ use crate::deploy::{Deployer, DeployerWithAddress};
 /// [Deployer::update_current_contract_executable_ref].
 ///
 /// Entries are stored in the owning contract's persistent storage under a
-/// protocol-defined key type that only the functions here produce, so entries
-/// never collide with other keys the contract stores, even other [String]
-/// keys with the same value as the tag.
+/// protocol-defined key type, `ExecutableTag`. They do not collide with
+/// ordinary storage keys, including [String] keys with the same value.
+///
+/// Callers can construct `ExecutableTag` keys off-chain and pass them
+/// to the contract as a [Val], which can collide with these entries if
+/// used as a persistent storage key.
 ///
 /// The protocol enforces rules on the entries, which is why they are managed
 /// with these functions rather than the regular storage functions:
@@ -51,7 +55,8 @@ impl ExecutableRefs {
     /// `wasm_hash`, creating the entry if it does not exist.
     ///
     /// If the entry already exists, all contracts using the entry as their
-    /// executable will use the new `wasm_hash` as their code.
+    /// executable will use the new `wasm_hash` as their code at their
+    /// next invocation.
     ///
     /// Once created, the entry can never be removed.
     ///
