@@ -1,12 +1,9 @@
 use crate as soroban_sdk;
+use soroban_sdk::auth::{ContractExecutable, ContractExecutableRef};
 use soroban_sdk::{
     contract, contractimpl,
     testutils::{Address as _, AuthorizedFunction, AuthorizedInvocation},
-    xdr::{
-        ContractExecutable, ContractExecutableExternalRef, ContractIdPreimage,
-        ContractIdPreimageFromAddress, CreateContractArgsV2, ScString, Uint256,
-    },
-    Address, BytesN, Env, Executable, String,
+    xdr, Address, BytesN, Env, Executable, String,
 };
 
 mod add_u64_contract {
@@ -34,7 +31,10 @@ impl OwnerContract {
     /// the contract itself owns.
     pub fn upgrade_to_own_ref(env: Env, name: String) {
         env.deployer()
-            .update_current_contract_executable_ref(&env.current_contract_address(), &name);
+            .update_current_contract(ContractExecutable::ExternalRef(ContractExecutableRef {
+                owner: env.current_contract_address(),
+                tag: name,
+            }));
     }
 }
 
@@ -48,12 +48,25 @@ impl DeployerContract {
     pub fn deploy(env: Env, owner: Address, name: String, salt: BytesN<32>) -> Address {
         env.deployer()
             .with_current_contract(salt)
-            .deploy_executable_ref(&owner, &name, ())
+            .deploy_v2(ref_executable(&owner, &name), ())
     }
 
     pub fn upgrade_to_ref(env: Env, owner: Address, name: String) {
         env.deployer()
-            .update_current_contract_executable_ref(&owner, &name);
+            .update_current_contract(ref_executable(&owner, &name));
+    }
+
+    /// Deploy using whatever executable the caller provides, demonstrating that
+    /// an executable can be passed around as a single type.
+    pub fn deploy_any(env: Env, executable: ContractExecutable, salt: BytesN<32>) -> Address {
+        env.deployer()
+            .with_current_contract(salt)
+            .deploy_v2(executable, ())
+    }
+
+    /// Upgrade to whatever executable the caller provides.
+    pub fn upgrade_any(env: Env, executable: ContractExecutable) {
+        env.deployer().update_current_contract(executable);
     }
 
     pub fn deploy_with_args(
@@ -66,7 +79,7 @@ impl DeployerContract {
     ) -> Address {
         env.deployer()
             .with_current_contract(salt)
-            .deploy_executable_ref(&owner, &name, (a, b))
+            .deploy_v2(ref_executable(&owner, &name), (a, b))
     }
 
     pub fn deploy_for(
@@ -78,8 +91,15 @@ impl DeployerContract {
     ) -> Address {
         env.deployer()
             .with_address(deployer, salt)
-            .deploy_executable_ref(&owner, &name, ())
+            .deploy_v2(ref_executable(&owner, &name), ())
     }
+}
+
+fn ref_executable(owner: &Address, tag: &String) -> ContractExecutable {
+    ContractExecutable::ExternalRef(ContractExecutableRef {
+        owner: owner.clone(),
+        tag: tag.clone(),
+    })
 }
 
 fn setup_owner_with_entry(env: &Env, wasm: &[u8]) -> (Address, BytesN<32>) {
@@ -256,17 +276,19 @@ fn test_deploy_executable_ref_auth() {
         std::vec![(
             deployer_address.clone(),
             AuthorizedInvocation {
-                function: AuthorizedFunction::CreateContractV2HostFn(CreateContractArgsV2 {
-                    contract_id_preimage: ContractIdPreimage::Address(
-                        ContractIdPreimageFromAddress {
+                function: AuthorizedFunction::CreateContractV2HostFn(xdr::CreateContractArgsV2 {
+                    contract_id_preimage: xdr::ContractIdPreimage::Address(
+                        xdr::ContractIdPreimageFromAddress {
                             address: (&deployer_address).try_into().unwrap(),
-                            salt: Uint256([7; 32]),
+                            salt: xdr::Uint256([7; 32]),
                         }
                     ),
-                    executable: ContractExecutable::ExternalRef(ContractExecutableExternalRef {
-                        executable_owner: (&owner).try_into().unwrap(),
-                        tag: ScString("fleet".try_into().unwrap()),
-                    }),
+                    executable: xdr::ContractExecutable::ExternalRef(
+                        xdr::ContractExecutableExternalRef {
+                            executable_owner: (&owner).try_into().unwrap(),
+                            tag: xdr::ScString("fleet".try_into().unwrap()),
+                        }
+                    ),
                     constructor_args: Default::default(),
                 }),
                 sub_invocations: std::vec![],
@@ -323,5 +345,59 @@ fn test_deploy_executable_ref_missing_entry() {
         &owner,
         &String::from_str(&env, "missing"),
         &BytesN::from_array(&env, &[0; 32]),
+    );
+}
+
+#[test]
+fn test_deploy_any_with_wasm_executable() {
+    let env = Env::default();
+    let wasm_hash = env.deployer().upload_contract_wasm(add_u64_contract::WASM);
+
+    let deployer = env.register(DeployerContract, ());
+    let deployed = DeployerContractClient::new(&env, &deployer).deploy_any(
+        &ContractExecutable::Wasm(wasm_hash.clone()),
+        &BytesN::from_array(&env, &[3; 32]),
+    );
+
+    assert_eq!(deployed.executable(), Some(Executable::Wasm(wasm_hash)));
+    assert_eq!(
+        add_u64_contract::Client::new(&env, &deployed).add(&1, &2),
+        3
+    );
+}
+
+#[test]
+fn test_update_current_contract_with_wasm_executable() {
+    let env = Env::default();
+    let wasm_hash = env.deployer().upload_contract_wasm(add_u64_contract::WASM);
+
+    let contract = env.register(DeployerContract, ());
+    DeployerContractClient::new(&env, &contract)
+        .upgrade_any(&ContractExecutable::Wasm(wasm_hash.clone()));
+
+    assert_eq!(contract.executable(), Some(Executable::Wasm(wasm_hash)));
+    assert_eq!(
+        add_u64_contract::Client::new(&env, &contract).add(&1, &2),
+        3
+    );
+}
+
+#[test]
+fn test_update_current_contract_with_ref_executable() {
+    let env = Env::default();
+    let (owner, wasm_hash) = setup_owner_with_entry(&env, add_u64_contract::WASM);
+
+    let contract = env.register(DeployerContract, ());
+    DeployerContractClient::new(&env, &contract).upgrade_any(&ContractExecutable::ExternalRef(
+        ContractExecutableRef {
+            owner,
+            tag: String::from_str(&env, "fleet"),
+        },
+    ));
+
+    assert_eq!(contract.executable(), Some(Executable::Wasm(wasm_hash)));
+    assert_eq!(
+        add_u64_contract::Client::new(&env, &contract).add(&1, &2),
+        3
     );
 }

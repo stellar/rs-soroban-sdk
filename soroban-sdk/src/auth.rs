@@ -1,8 +1,8 @@
 //! Auth contains types for building custom account contracts.
 
 use crate::{
-    contractimpl_trait_macro, contracttype, crypto::Hash, Address, BytesN, Env, Error, String,
-    Symbol, Val, Vec,
+    contractimpl_trait_macro, contracttype, crypto::Hash, env::ConversionError, Address, BytesN,
+    Env, Error, String, Symbol, TryFromVal, Val, Vec,
 };
 
 /// Context of a single authorized call performed by an address.
@@ -63,6 +63,14 @@ pub enum ContractExecutable {
     Wasm(BytesN<32>),
     /// Executable reference via a persistent storage entry owned by this contract or another contract.
     ExternalRef(ContractExecutableRef),
+}
+
+impl TryFromVal<Env, ContractExecutable> for ContractExecutable {
+    type Error = ConversionError;
+
+    fn try_from_val(_env: &Env, v: &ContractExecutable) -> Result<Self, Self::Error> {
+        Ok(v.clone())
+    }
 }
 
 /// Executable referenced via a persistent storage entry owned by a contract,

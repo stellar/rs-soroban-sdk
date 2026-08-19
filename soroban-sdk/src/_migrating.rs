@@ -23,7 +23,56 @@
 //!    No code changes are required for most contracts, but review any code that relied on unpacking
 //!    failing to detect a mismatch.
 //!
+//! 3. [`DeployerWithAddress::deploy_v2`] and [`Deployer::update_current_contract`] accept any
+//!    contract executable. Both accept a [`ContractExecutable`], which is either a Wasm hash or a
+//!    reference to an executable reference entry owned by a contract (see [`ExecutableRefs`]).
+//!    Wrap the Wasm hash passed to [`deploy_v2`] in [`ContractExecutable::Wasm`], and replace calls
+//!    to [`Deployer::update_current_contract_wasm`], which is now deprecated, with
+//!    [`Deployer::update_current_contract`].
+//!
+//!    ```
+//!    use soroban_sdk::{auth::ContractExecutable, contract, contractimpl, BytesN, Env};
+//!
+//!    #[contract]
+//!    pub struct Contract;
+//!
+//!    #[contractimpl]
+//!    impl Contract {
+//!        pub fn exec(env: Env, wasm_hash: BytesN<32>) {
+//!            let salt = [0u8; 32];
+//!            let deployer = env.deployer().with_current_contract(salt);
+//!            let contract_address = deployer.deploy_v2(
+//!                ContractExecutable::Wasm(wasm_hash.clone()), // 👈 👀 The executable to use.
+//!                (),
+//!            );
+//!            // Or, to replace the current contract's own executable:
+//!            // env.deployer().update_current_contract(ContractExecutable::Wasm(wasm_hash));
+//!        }
+//!    }
+//!
+//!    #[test]
+//!    fn test() {
+//!    # }
+//!    # #[cfg(feature = "testutils")]
+//!    # fn main() {
+//!        let env = Env::default();
+//!        let contract_address = env.register(Contract, ());
+//!        let contract = ContractClient::new(&env, &contract_address);
+//!        // Upload the contract code before deploying its instance.
+//!        const WASM: &[u8] = include_bytes!("../doctest_fixtures/contract.wasm");
+//!        let wasm_hash = env.deployer().upload_contract_wasm(WASM);
+//!        contract.exec(&wasm_hash);
+//!    }
+//!    # #[cfg(not(feature = "testutils"))]
+//!    # fn main() { }
+//!    ```
+//!
 //! [v28_contracttype_unpacking]: v28_contracttype_unpacking
+//! [`ContractExecutable`]: crate::auth::ContractExecutable
+//! [`ContractExecutable::Wasm`]: crate::auth::ContractExecutable::Wasm
+//! [`ExecutableRefs`]: crate::executable_refs::ExecutableRefs
+//! [`Deployer::update_current_contract`]: crate::deploy::Deployer::update_current_contract
+//! [`Deployer::update_current_contract_wasm`]: crate::deploy::Deployer::update_current_contract_wasm
 //!
 //! # Migrating from v26 to v27
 //!
@@ -199,7 +248,7 @@
 //!    constructors, pass `()`.
 //!
 //!    ```
-//!    use soroban_sdk::{contract, contractimpl, BytesN, Env};
+//!    use soroban_sdk::{auth::ContractExecutable, contract, contractimpl, BytesN, Env};
 //!
 //!    #[contract]
 //!    pub struct Contract;
@@ -212,7 +261,8 @@
 //!            // Pass `()` for contracts that have no contstructor, or have a
 //!            // constructor and require no arguments. Pass arguments in a
 //!            // tuple if any required.
-//!            let contract_address = deployer.deploy_v2(wasm_hash, ());
+//!            let contract_address =
+//!                deployer.deploy_v2(ContractExecutable::Wasm(wasm_hash), ());
 //!        }
 //!    }
 //!
