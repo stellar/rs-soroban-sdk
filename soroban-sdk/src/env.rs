@@ -852,7 +852,7 @@ impl Env {
     /// To test constructor authorization, deploy the contract the way it is
     /// deployed on-chain using the deployer returned by [`Env::deployer`],
     /// e.g. [`Deployer::with_address`] followed by
-    /// [`deploy_v2`][crate::deploy::DeployerWithAddress::deploy_v2]. Deploying
+    /// [`deploy_contract`][crate::deploy::DeployerWithAddress::deploy_contract]. Deploying
     /// that way runs the constructor subject to the environment's
     /// authorization, so `require_auth` behaves as it would on-chain.
     ///
@@ -932,7 +932,7 @@ impl Env {
     /// To test constructor authorization, deploy the contract the way it is
     /// deployed on-chain using the deployer returned by [`Env::deployer`],
     /// e.g. [`Deployer::with_address`] followed by
-    /// [`deploy_v2`][crate::deploy::DeployerWithAddress::deploy_v2]. Deploying
+    /// [`deploy_contract`][crate::deploy::DeployerWithAddress::deploy_contract]. Deploying
     /// that way runs the constructor subject to the environment's
     /// authorization, so `require_auth` behaves as it would on-chain.
     ///

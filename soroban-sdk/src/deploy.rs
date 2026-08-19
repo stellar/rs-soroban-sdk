@@ -14,7 +14,7 @@
 //! #### Deploy a contract without constructor (or 0-argument constructor)
 //!
 //! ```
-//! use soroban_sdk::{contract, contractimpl, BytesN, Env, Symbol};
+//! use soroban_sdk::{auth::ContractExecutable, contract, contractimpl, BytesN, Env, Symbol};
 //!
 //! const DEPLOYED_WASM: &[u8] = include_bytes!("../doctest_fixtures/contract.wasm");
 //!
@@ -26,7 +26,7 @@
 //!     pub fn deploy(env: Env, wasm_hash: BytesN<32>) {
 //!         let salt = [0u8; 32];
 //!         let deployer = env.deployer().with_current_contract(salt);
-//!         let contract_address = deployer.deploy_v2(wasm_hash, ());
+//!         let contract_address = deployer.deploy_contract(ContractExecutable::Wasm(wasm_hash), ());
 //!         // ...
 //!     }
 //! }
@@ -50,7 +50,7 @@
 //! #### Deploy a contract with a multi-argument constructor
 //!
 //! ```
-//! use soroban_sdk::{contract, contractimpl, BytesN, Env, Symbol, IntoVal};
+//! use soroban_sdk::{auth::ContractExecutable, contract, contractimpl, BytesN, Env, Symbol, IntoVal};
 //!
 //! const DEPLOYED_WASM_WITH_CTOR: &[u8] = include_bytes!("../doctest_fixtures/contract_with_constructor.wasm");
 //!
@@ -62,8 +62,8 @@
 //!     pub fn deploy_with_constructor(env: Env, wasm_hash: BytesN<32>) {
 //!         let salt = [1u8; 32];
 //!         let deployer = env.deployer().with_current_contract(salt);
-//!         let contract_address = deployer.deploy_v2(
-//!              wasm_hash,
+//!         let contract_address = deployer.deploy_contract(
+//!              ContractExecutable::Wasm(wasm_hash),
 //!              (1_u32, 2_i64),
 //!         );
 //!         // ...
@@ -94,7 +94,10 @@
 //! value. See [ExecutableRefs] for details on the entries.
 //!
 //! ```
-//! use soroban_sdk::{contract, contractimpl, Address, BytesN, Env, String};
+//! use soroban_sdk::{
+//!     auth::{ContractExecutable, ContractExecutableRef},
+//!     contract, contractimpl, Address, BytesN, Env, String,
+//! };
 //!
 //! const DEPLOYED_WASM: &[u8] = include_bytes!("../doctest_fixtures/contract.wasm");
 //!
@@ -116,7 +119,13 @@
 //!     pub fn deploy(env: Env, name: String) -> Address {
 //!         let salt = [0u8; 32];
 //!         let deployer = env.deployer().with_current_contract(salt);
-//!         deployer.deploy_executable_ref(&env.current_contract_address(), &name, ())
+//!         deployer.deploy_contract(
+//!             ContractExecutable::ExternalRef(ContractExecutableRef {
+//!                 owner: env.current_contract_address(),
+//!                 tag: name,
+//!             }),
+//!             (),
+//!         )
 //!     }
 //! }
 //!
@@ -176,9 +185,10 @@
 //! ```
 
 use crate::{
+    auth::{ContractExecutable, ContractExecutableRef},
     env::internal::{ContractTtlExtension, Env as _},
     unwrap::UnwrapInfallible,
-    Address, Bytes, BytesN, ConstructorArgs, Env, IntoVal, String,
+    Address, Bytes, BytesN, ConstructorArgs, Env, IntoVal,
 };
 
 #[cfg(doc)]
@@ -274,33 +284,47 @@ impl Deployer {
     ///
     /// The function won't do anything immediately. The contract executable
     /// will only be updated after the invocation has successfully finished.
+    #[deprecated(note = "use update_current_contract")]
     pub fn update_current_contract_wasm(&self, wasm_hash: impl IntoVal<Env, BytesN<32>>) {
         self.env
             .update_current_contract_wasm(wasm_hash.into_val(&self.env).to_object())
             .unwrap_infallible();
     }
 
-    /// Replaces the executable of the current contract with an executable
-    /// reference.
+    /// Replaces the executable of the current contract with the provided
+    /// executable.
     ///
-    /// The executable is read from `owner`'s executable reference entry keyed
-    /// by `tag`, a persistent contract data entry containing a Wasm hash. The
-    /// entry has to already exist, or this panics. See [ExecutableRefs] for
-    /// details on the entries and how a contract manages the entries it owns.
+    /// For [ContractExecutable::Wasm], the Wasm blob identified by the Wasm
+    /// hash has to be already present in the ledger (uploaded via
+    /// [Deployer::upload_contract_wasm]).
     ///
-    /// **Important**: `owner` now controls and can update the Wasm of the
-    /// current contract. The owner may be the current contract itself.
+    /// For [ContractExecutable::ExternalRef], the executable is read from the
+    /// owner's executable reference entry keyed by the tag, a persistent
+    /// contract data entry containing a Wasm hash. The entry has to already
+    /// exist, or this panics. See [ExecutableRefs] for details on the entries
+    /// and how a contract manages the entries it owns.
+    ///
+    /// **Important**: for [ContractExecutable::ExternalRef], the owner now
+    /// controls and can update the Wasm of the current contract. The owner
+    /// may be the current contract itself.
     ///
     /// The function won't do anything immediately. The contract executable
     /// will only be updated after the invocation has successfully finished.
-    pub fn update_current_contract_executable_ref(&self, owner: &Address, tag: &String) {
-        let tag = self
-            .env
-            .create_executable_tag(tag.to_object())
-            .unwrap_infallible();
-        self.env
-            .update_current_contract_executable_ref(owner.to_object(), tag)
-            .unwrap_infallible();
+    pub fn update_current_contract(&self, executable: ContractExecutable) {
+        let env = &self.env;
+        match executable {
+            ContractExecutable::Wasm(wasm_hash) => {
+                env.update_current_contract_wasm(wasm_hash.to_object())
+                    .unwrap_infallible();
+            }
+            ContractExecutable::ExternalRef(ContractExecutableRef { owner, tag }) => {
+                let tag = env
+                    .create_executable_tag(tag.to_object())
+                    .unwrap_infallible();
+                env.update_current_contract_executable_ref(owner.to_object(), tag)
+                    .unwrap_infallible();
+            }
+        }
     }
 
     /// Extends the TTL of the instance, code, and any executable reference entry needed to resolve
@@ -450,7 +474,7 @@ impl DeployerWithAddress {
     /// and provided salt.
     ///
     /// Returns the deployed contract's address.
-    #[deprecated(note = "use deploy_v2")]
+    #[deprecated(note = "use deploy_contract")]
     pub fn deploy(&self, wasm_hash: impl IntoVal<Env, BytesN<32>>) -> Address {
         let env = &self.env;
         let address_obj = env
@@ -473,6 +497,7 @@ impl DeployerWithAddress {
     /// and provided salt.
     ///
     /// Returns the deployed contract's address.
+    #[deprecated(note = "use deploy_contract")]
     pub fn deploy_v2<A>(
         &self,
         wasm_hash: impl IntoVal<Env, BytesN<32>>,
@@ -493,15 +518,20 @@ impl DeployerWithAddress {
         unsafe { Address::unchecked_new(env.clone(), address_obj) }
     }
 
-    /// Deploy a contract that uses an executable reference.
+    /// Deploy a contract that uses the provided executable.
     ///
-    /// The executable is read from `owner`'s executable reference entry keyed
-    /// by `tag`, a persistent contract data entry containing a Wasm hash. The
-    /// entry has to already exist, or this panics. See [ExecutableRefs] for
-    /// details on the entries and how a contract manages the entries it owns.
+    /// For [ContractExecutable::Wasm], the Wasm blob identified by the Wasm
+    /// hash has to be already present in the ledger (uploaded via
+    /// [Deployer::upload_contract_wasm]).
     ///
-    /// **Important**: `owner` controls and can update the Wasm of the
-    /// deployed contract.
+    /// For [ContractExecutable::ExternalRef], the executable is read from the
+    /// owner's executable reference entry keyed by the tag, a persistent
+    /// contract data entry containing a Wasm hash. The entry has to already
+    /// exist, or this panics. See [ExecutableRefs] for details on the entries
+    /// and how a contract manages the entries it owns.
+    ///
+    /// **Important**: for [ContractExecutable::ExternalRef], the owner
+    /// controls and can update the Wasm of the deployed contract.
     ///
     /// The constructor args will be passed to the contract's constructor. Pass
     /// `()` for contracts with no constructor or a constructor with zero
@@ -511,28 +541,34 @@ impl DeployerWithAddress {
     /// and provided salt.
     ///
     /// Returns the deployed contract's address.
-    pub fn deploy_executable_ref<A>(
-        &self,
-        owner: &Address,
-        tag: &String,
-        constructor_args: A,
-    ) -> Address
+    pub fn deploy_contract<A>(&self, executable: ContractExecutable, constructor_args: A) -> Address
     where
         A: ConstructorArgs,
     {
         let env = &self.env;
-        let tag = env
-            .create_executable_tag(tag.to_object())
-            .unwrap_infallible();
-        let address_obj = env
-            .create_external_ref_contract(
-                self.address.to_object(),
-                owner.to_object(),
-                tag,
-                self.salt.to_object(),
-                constructor_args.into_val(env).to_object(),
-            )
-            .unwrap_infallible();
+        let address_obj = match executable {
+            ContractExecutable::Wasm(wasm_hash) => env
+                .create_contract_with_constructor(
+                    self.address.to_object(),
+                    wasm_hash.to_object(),
+                    self.salt.to_object(),
+                    constructor_args.into_val(env).to_object(),
+                )
+                .unwrap_infallible(),
+            ContractExecutable::ExternalRef(ContractExecutableRef { owner, tag }) => {
+                let tag = env
+                    .create_executable_tag(tag.to_object())
+                    .unwrap_infallible();
+                env.create_external_ref_contract(
+                    self.address.to_object(),
+                    owner.to_object(),
+                    tag,
+                    self.salt.to_object(),
+                    constructor_args.into_val(env).to_object(),
+                )
+                .unwrap_infallible()
+            }
+        };
         unsafe { Address::unchecked_new(env.clone(), address_obj) }
     }
 }

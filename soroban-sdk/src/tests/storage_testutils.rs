@@ -85,7 +85,7 @@ fn ttl_getters() {
     // Contract A and B have their own code entries, so B is unaffected. To test
     // contract deployments where a single contract code entry is shared by
     // multiple contracts, upload the contract with [`Env::upload`] instead of
-    // registering it, then use [`DeployerWithAddress::deploy_v2`] to deploy the
+    // registering it, then use [`DeployerWithAddress::deploy_contract`] to deploy the
     // contract.
     e.as_contract(&contract_a, || {
         e.storage().instance().extend_ttl(100, 1000);

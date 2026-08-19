@@ -1,4 +1,4 @@
-use crate::{self as soroban_sdk, contract, contractimpl, BytesN, Env};
+use crate::{self as soroban_sdk, auth::ContractExecutable, contract, contractimpl, BytesN, Env};
 
 #[contract]
 struct Contract;
@@ -40,7 +40,7 @@ fn uploaded_contract_is_deployable() {
     let contract_id = env.as_contract(&deployer, || {
         env.deployer()
             .with_address(deployer.clone(), BytesN::from_array(&env, &[0u8; 32]))
-            .deploy_v2(wasm_hash, ())
+            .deploy_contract(ContractExecutable::Wasm(wasm_hash), ())
     });
 
     let client = ContractClient::new(&env, &contract_id);
@@ -58,7 +58,7 @@ fn upload_at_uploads_to_the_wasm_hash_given() {
     let contract_id = env.as_contract(&deployer, || {
         env.deployer()
             .with_address(deployer.clone(), BytesN::from_array(&env, &[0u8; 32]))
-            .deploy_v2(wasm_hash, ())
+            .deploy_contract(ContractExecutable::Wasm(wasm_hash), ())
     });
 
     let client = ContractClient::new(&env, &contract_id);
@@ -75,7 +75,7 @@ fn upload_at_replaces_the_contract_uploaded_to_the_wasm_hash() {
     let contract_id = env.as_contract(&deployer, || {
         env.deployer()
             .with_address(deployer.clone(), BytesN::from_array(&env, &[0u8; 32]))
-            .deploy_v2(wasm_hash.clone(), ())
+            .deploy_contract(ContractExecutable::Wasm(wasm_hash.clone()), ())
     });
 
     let client = ContractClient::new(&env, &contract_id);

@@ -1,5 +1,6 @@
 use crate::{self as soroban_sdk};
 use soroban_sdk::{
+    auth::ContractExecutable,
     contract, contractimpl,
     testutils::{HostError, SnapshotSource, SnapshotSourceInput},
     xdr, BytesN, Env,
@@ -73,7 +74,7 @@ fn native_contracts_never_request_contract_code() {
     let deployed = env.as_contract(&contract_id, || {
         env.deployer()
             .with_address(contract_id.clone(), BytesN::from_array(&env, &[0u8; 32]))
-            .deploy_v2(wasm_hash, ())
+            .deploy_contract(ContractExecutable::Wasm(wasm_hash), ())
     });
     ContractClient::new(&env, &deployed).hello();
 

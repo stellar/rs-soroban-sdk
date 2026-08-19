@@ -4,6 +4,9 @@
 use crate::{env::internal, unwrap::UnwrapInfallible, BytesN, Env, String, Val};
 
 #[cfg(doc)]
+use crate::auth::ContractExecutable;
+
+#[cfg(doc)]
 use crate::deploy::{Deployer, DeployerWithAddress};
 
 /// ExecutableRefs manages the executable reference entries owned by the
@@ -18,9 +21,9 @@ use crate::deploy::{Deployer, DeployerWithAddress};
 /// entry as their executable.
 ///
 /// Contracts use an executable reference entry as their executable by being
-/// deployed with [DeployerWithAddress::deploy_executable_ref], or by replacing
-/// their own executable with
-/// [Deployer::update_current_contract_executable_ref].
+/// deployed with [DeployerWithAddress::deploy_contract], or by replacing
+/// their own executable with [Deployer::update_current_contract], passing a
+/// [ContractExecutable::ExternalRef].
 ///
 /// Entries are stored in the owning contract's persistent storage under a
 /// protocol-defined key type, `ExecutableTag`. They do not collide with
