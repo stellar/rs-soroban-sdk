@@ -46,14 +46,18 @@ pub struct DeployerContract;
 #[contractimpl]
 impl DeployerContract {
     pub fn deploy(env: Env, owner: Address, name: String, salt: BytesN<32>) -> Address {
-        env.deployer()
-            .with_current_contract(salt)
-            .deploy_v2(ref_executable(&owner, &name), ())
+        env.deployer().with_current_contract(salt).deploy_v2(
+            ContractExecutable::ExternalRef(ContractExecutableRef { owner, tag: name }),
+            (),
+        )
     }
 
     pub fn upgrade_to_ref(env: Env, owner: Address, name: String) {
         env.deployer()
-            .update_current_contract(ref_executable(&owner, &name));
+            .update_current_contract(ContractExecutable::ExternalRef(ContractExecutableRef {
+                owner,
+                tag: name,
+            }));
     }
 
     /// Deploy using whatever executable the caller provides, demonstrating that
@@ -77,9 +81,10 @@ impl DeployerContract {
         a: u32,
         b: i64,
     ) -> Address {
-        env.deployer()
-            .with_current_contract(salt)
-            .deploy_v2(ref_executable(&owner, &name), (a, b))
+        env.deployer().with_current_contract(salt).deploy_v2(
+            ContractExecutable::ExternalRef(ContractExecutableRef { owner, tag: name }),
+            (a, b),
+        )
     }
 
     pub fn deploy_for(
@@ -89,17 +94,11 @@ impl DeployerContract {
         name: String,
         salt: BytesN<32>,
     ) -> Address {
-        env.deployer()
-            .with_address(deployer, salt)
-            .deploy_v2(ref_executable(&owner, &name), ())
+        env.deployer().with_address(deployer, salt).deploy_v2(
+            ContractExecutable::ExternalRef(ContractExecutableRef { owner, tag: name }),
+            (),
+        )
     }
-}
-
-fn ref_executable(owner: &Address, tag: &String) -> ContractExecutable {
-    ContractExecutable::ExternalRef(ContractExecutableRef {
-        owner: owner.clone(),
-        tag: tag.clone(),
-    })
 }
 
 fn setup_owner_with_entry(env: &Env, wasm: &[u8]) -> (Address, BytesN<32>) {
