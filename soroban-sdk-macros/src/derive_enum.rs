@@ -146,7 +146,8 @@ pub fn derive_type_enum(
     // Compute spec XDR once.
     let spec_entry = ScSpecEntry::UdtUnionV0(ScSpecUdtUnionV0 {
         doc: docs_from_attrs(attrs),
-        lib: Default::default(),
+        // set to empty string always because the field is no longer used
+        lib: StringM::default(),
         name: enum_ident.unraw().to_string().try_into().unwrap(),
         cases: spec_cases.try_into().unwrap(),
     });

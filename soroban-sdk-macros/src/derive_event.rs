@@ -175,7 +175,8 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     let spec_entry = ScSpecEntry::EventV0(ScSpecEventV0 {
         data_format: args.data_format.into(),
         doc: docs_from_attrs(&input.attrs),
-        lib: Default::default(),
+        // set to empty string always because the field is no longer used
+        lib: StringM::default(),
         name: ScSymbol(event_name),
         prefix_topics: prefix_topics
             .iter()

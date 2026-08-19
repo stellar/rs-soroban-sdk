@@ -64,7 +64,8 @@ pub fn derive_type_struct_tuple(
     // Compute spec XDR once.
     let spec_entry = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
         doc: docs_from_attrs(attrs),
-        lib: Default::default(),
+        // set to empty string always because the field is no longer used
+        lib: StringM::default(),
         name: ident.unraw().to_string().try_into().unwrap(),
         fields: field_specs.try_into().unwrap(),
     });
