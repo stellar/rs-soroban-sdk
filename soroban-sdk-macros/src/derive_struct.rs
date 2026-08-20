@@ -19,8 +19,6 @@ pub fn derive_type_struct(
     ident: &Ident,
     attrs: &[Attribute],
     data: &DataStruct,
-    spec: bool,
-    lib: &Option<String>,
 ) -> TokenStream2 {
     // Collect errors as they are encountered and emit them at the end.
     let mut errors = Vec::<Error>::new();
@@ -53,8 +51,13 @@ pub fn derive_type_struct(
             let try_from_xdr = quote! {
                 #field_ident: {
                     let key: #path::xdr::ScVal = #path::xdr::ScSymbol(#field_name.try_into().map_err(|_| #path::xdr::Error::Invalid)?).into();
-                    let idx = map.binary_search_by_key(&key, |entry| entry.key.clone()).map_err(|_| #path::xdr::Error::Invalid)?;
-                    let rv: #path::Val = (&map[idx].val.clone()).try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?;
+                    // Fields absent from the map are void, so that they convert
+                    // to None for Option fields.
+                    let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                        Ok(idx) => map[idx].val.clone(),
+                        Err(_) => #path::xdr::ScVal::Void,
+                    };
+                    let rv: #path::Val = (&val).try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?;
                     rv.try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?
                 }
             };
@@ -74,28 +77,25 @@ pub fn derive_type_struct(
         return quote! { #(#compile_errors)* };
     }
 
-    // Compute spec XDR once if spec is enabled.
-    let spec_xdr = if spec {
-        let spec_entry = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
-            doc: docs_from_attrs(attrs),
-            lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
-            name: ident.unraw().to_string().try_into().unwrap(),
-            fields: spec_fields.try_into().unwrap(),
-        });
-        Some(spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap())
-    } else {
-        None
-    };
+    // Compute spec XDR once.
+    let spec_entry = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
+        doc: docs_from_attrs(attrs),
+        // set to empty string always because the field is no longer used
+        lib: StringM::default(),
+        name: ident.unraw().to_string().try_into().unwrap(),
+        fields: spec_fields.try_into().unwrap(),
+    });
+    let spec_xdr = spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap();
 
     // Generated code spec.
-    let spec_gen = if let Some(ref spec_xdr) = spec_xdr {
+    let spec_gen = {
         let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
         let spec_xdr_len = spec_xdr.len();
         let spec_ident = format_ident!(
             "__SPEC_XDR_TYPE_{}",
             ident.unraw().to_string().to_uppercase()
         );
-        Some(quote! {
+        quote! {
             #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
             pub static #spec_ident: [u8; #spec_xdr_len] = #ident::spec_xdr();
 
@@ -104,28 +104,19 @@ pub fn derive_type_struct(
                     *#spec_xdr_lit
                 }
             }
-        })
-    } else {
-        None
+        }
     };
 
-    // SpecShakingMarker impl - only generated when spec is true and the
-    // experimental_spec_shaking_v2 feature is enabled.
-    let spec_shaking_impl = if cfg!(feature = "experimental_spec_shaking_v2") {
-        spec_xdr.as_ref().map(|spec_xdr| {
-            shaking::generate_marker_impl(
-                path,
-                quote!(#ident),
-                spec_xdr,
-                field_types.iter().cloned(),
-                None,
-                None,
-                None,
-            )
-        })
-    } else {
-        None
-    };
+    // SpecShakingMarker impl.
+    let spec_shaking_impl = shaking::generate_marker_impl(
+        path,
+        quote!(#ident),
+        &spec_xdr,
+        field_types.iter().cloned(),
+        None,
+        None,
+        None,
+    );
 
     // Output.
     let mut output = quote! {
@@ -140,7 +131,7 @@ pub fn derive_type_struct(
                 const KEYS: [&'static str; #field_count_usize] = [#(#field_names),*];
                 let mut vals: [Val; #field_count_usize] = [Val::VOID.to_val(); #field_count_usize];
                 let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-                env.map_unpack_to_slice(map, &KEYS, &mut vals).map_err(|_| ConversionError)?;
+                env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals).map_err(|_| ConversionError)?;
                 Ok(Self {
                     #(#field_idents: vals[#field_idx_lits].try_into_val(env).map_err(|_| #path::ConversionError)?,)*
                 })
@@ -179,7 +170,9 @@ pub fn derive_type_struct(
                     use #path::xdr::Validate;
                     use #path::TryIntoVal;
                     let map = val;
-                    if map.len() != #field_count_usize {
+                    // The host requires the keys of a struct's map be symbols,
+                    // and traps otherwise, so reject them here too.
+                    if map.iter().any(|entry| !matches!(entry.key, #path::xdr::ScVal::Symbol(_))) {
                         return Err(#path::xdr::Error::Invalid);
                     }
                     map.validate()?;

@@ -82,7 +82,11 @@ fn ttl_getters() {
     }
 
     // Extend instance, code and entry TTLs for contract A.
-    // Contract A and B share the code, so this also extends code (but not instance) for B.
+    // Contract A and B have their own code entries, so B is unaffected. To test
+    // contract deployments where a single contract code entry is shared by
+    // multiple contracts, upload the contract with [`Env::upload`] instead of
+    // registering it, then use [`DeployerWithAddress::deploy_contract`] to deploy the
+    // contract.
     e.as_contract(&contract_a, || {
         e.storage().instance().extend_ttl(100, 1000);
         e.deployer()
@@ -102,10 +106,9 @@ fn ttl_getters() {
 
     assert_eq!(e.deployer().get_contract_instance_ttl(&contract_a), 1000);
     assert_eq!(e.deployer().get_contract_code_ttl(&contract_a), 2000);
-    // Instance hasn't been extended for B.
+    // Neither instance nor code have been extended for B.
     assert_eq!(e.deployer().get_contract_instance_ttl(&contract_b), 99);
-    // Code has been extended for B.
-    assert_eq!(e.deployer().get_contract_code_ttl(&contract_b), 2000);
+    assert_eq!(e.deployer().get_contract_code_ttl(&contract_b), 99);
 }
 
 #[test]
