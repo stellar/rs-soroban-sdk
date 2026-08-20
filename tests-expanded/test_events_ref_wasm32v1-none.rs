@@ -76,7 +76,7 @@ impl<'a> soroban_sdk::Event for Transfer<'a> {
         const KEYS: [&'static str; 2usize] = ["amount", "to_muxed_id"];
         let vals: [soroban_sdk::Val; 2usize] =
             [self.amount.into_val(env), self.to_muxed_id.into_val(env)];
-        env.sparse_map_new_from_slices(&KEYS, &vals)
+        env.map_new_from_slices(&KEYS, &vals)
             .unwrap_infallible()
             .into()
     }

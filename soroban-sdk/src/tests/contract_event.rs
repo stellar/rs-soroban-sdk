@@ -520,7 +520,7 @@ fn test_data_map() {
 }
 
 #[test]
-fn test_data_map_none_fields_omitted() {
+fn test_data_map_none_fields_written_by_default() {
     let env = Env::default();
 
     #[contract]
@@ -544,8 +544,57 @@ fn test_data_map_none_fields_omitted() {
         event.publish(&env);
     });
 
-    // Fields that are void, which an Option field that is None is, are omitted
-    // from the map.
+    // Without sparse = true every field is written, including the value2 field
+    // that is None, which is written with a void value.
+    let data: Val = map![
+        &env,
+        (
+            symbol_short!("value"),
+            <_ as IntoVal<Env, Val>>::into_val(&symbol_short!("yo"), &env),
+        ),
+        (symbol_short!("value2"), Val::VOID.to_val()),
+    ]
+    .into_val(&env);
+    let expected_event = xdr::ContractEvent {
+        ext: xdr::ExtensionPoint::V0,
+        type_: xdr::ContractEventType::Contract,
+        contract_id: Some(id.contract_id()),
+        body: xdr::ContractEventBody::V0(xdr::ContractEventV0 {
+            topics: vec![&env, symbol_short!("my_event"), symbol_short!("hi")].into(),
+            data: xdr::ScVal::try_from_val(&env, &data).unwrap(),
+        }),
+    };
+    assert_eq!(env.events().all(), std::vec![expected_event.clone()],);
+    assert_eq!(event.to_xdr(&env, &id), expected_event);
+}
+
+#[test]
+fn test_data_map_sparse_none_fields_omitted() {
+    let env = Env::default();
+
+    #[contract]
+    pub struct Contract;
+    let id = env.register(Contract, ());
+
+    #[contractevent(data_format = "map", sparse = true)]
+    pub struct MyEvent {
+        #[topic]
+        name: Symbol,
+        value: Symbol,
+        value2: Option<u32>,
+    }
+
+    let event = MyEvent {
+        name: symbol_short!("hi"),
+        value: symbol_short!("yo"),
+        value2: None,
+    };
+    env.as_contract(&id, || {
+        event.publish(&env);
+    });
+
+    // With sparse = true, fields that are void, which an Option field that is
+    // None is, are omitted from the map.
     let data: Val = map![
         &env,
         (
@@ -568,7 +617,7 @@ fn test_data_map_none_fields_omitted() {
 }
 
 #[test]
-fn test_data_map_none_nested_in_contracttype_not_omitted() {
+fn test_data_map_sparse_none_nested_in_contracttype_not_omitted() {
     let env = Env::default();
 
     #[contract]
@@ -581,7 +630,7 @@ fn test_data_map_none_nested_in_contracttype_not_omitted() {
         pub note: Option<u32>,
     }
 
-    #[contractevent(data_format = "map")]
+    #[contractevent(data_format = "map", sparse = true)]
     pub struct MyEvent {
         #[topic]
         name: Symbol,
@@ -598,7 +647,8 @@ fn test_data_map_none_nested_in_contracttype_not_omitted() {
         event.publish(&env);
     });
 
-    // Only the event's own map is packed sparsely. The value2 field of the event
+    // Only the event's own map is packed sparsely, even with sparse = true. The
+    // value2 field of the event
     // is None, and so is omitted, but the note field of the Detail struct is
     // packed by contracttype, which writes every field, and so is present with a
     // void value.

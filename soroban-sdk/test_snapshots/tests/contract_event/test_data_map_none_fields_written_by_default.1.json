@@ -1,6 +1,6 @@
 {
   "generators": {
-    "address": 3,
+    "address": 1,
     "nonce": 0,
     "mux_id": 0
   },
@@ -67,28 +67,25 @@
           "v0": {
             "topics": [
               {
-                "symbol": "transfer"
+                "symbol": "my_event"
               },
               {
-                "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFCT4"
-              },
-              {
-                "address": "CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHK3M"
+                "symbol": "hi"
               }
             ],
             "data": {
               "map": [
                 {
                   "key": {
-                    "symbol": "amount"
+                    "symbol": "value"
                   },
                   "val": {
-                    "i128": "1"
+                    "symbol": "yo"
                   }
                 },
                 {
                   "key": {
-                    "symbol": "to_muxed_id"
+                    "symbol": "value2"
                   },
                   "val": "void"
                 }

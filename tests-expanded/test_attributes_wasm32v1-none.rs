@@ -147,7 +147,7 @@ impl soroban_sdk::Event for AttributeEvent {
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 1usize] = ["value"];
         let vals: [soroban_sdk::Val; 1usize] = [self.value.into_val(env)];
-        env.sparse_map_new_from_slices(&KEYS, &vals)
+        env.map_new_from_slices(&KEYS, &vals)
             .unwrap_infallible()
             .into()
     }

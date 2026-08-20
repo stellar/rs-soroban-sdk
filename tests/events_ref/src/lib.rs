@@ -132,14 +132,14 @@ mod test {
                     contract_id.clone(),
                     // Expect these event topics.
                     (Symbol::new(&env, "transfer"), &from, &to).into_val(&env),
-                    // Expect this event body. The to_muxed_id field is None,
-                    // and so is omitted from the map.
+                    // Expect this event body.
                     map![
                         &env,
                         (
                             symbol_short!("amount"),
                             <_ as IntoVal<Env, Val>>::into_val(&1i128, &env)
                         ),
+                        (Symbol::new(&env, "to_muxed_id"), ().into_val(&env),),
                     ]
                     .to_val()
                 ),
