@@ -185,10 +185,10 @@
 //! ```
 
 use crate::{
-    auth::{ContractExecutable, ContractExecutableRef},
     env::internal::{ContractTtlExtension, Env as _},
     unwrap::UnwrapInfallible,
-    Address, Bytes, BytesN, ConstructorArgs, Env, IntoVal,
+    Address, Bytes, BytesN, ConstructorArgs, ContractExecutable, ContractExecutableRef, Env,
+    IntoVal,
 };
 
 #[cfg(doc)]

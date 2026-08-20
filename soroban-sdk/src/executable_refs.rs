@@ -4,7 +4,7 @@
 use crate::{env::internal, unwrap::UnwrapInfallible, BytesN, Env, String, Val};
 
 #[cfg(doc)]
-use crate::auth::ContractExecutable;
+use crate::ContractExecutable;
 
 #[cfg(doc)]
 use crate::deploy::{Deployer, DeployerWithAddress};
