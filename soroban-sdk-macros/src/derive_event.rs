@@ -1,7 +1,6 @@
 use crate::{
     attribute::remove_attributes_from_item, default_crate_path, doc::docs_from_attrs,
-    export_arg_error, lib_arg_deprecation, map_type::map_type, shaking, symbol,
-    DEFAULT_XDR_RW_LIMITS,
+    export_arg_error, map_type::map_type, shaking, symbol, DEFAULT_XDR_RW_LIMITS,
 };
 use darling::{ast::NestedMeta, util::SpannedValue, Error, FromMeta};
 use heck::ToSnakeCase;
@@ -18,7 +17,6 @@ use syn::{ext::IdentExt as _, parse2, spanned::Spanned, Data, DeriveInput, Field
 struct ContractEventArgs {
     #[darling(default = "default_crate_path")]
     crate_path: Path,
-    lib: Option<String>,
     export: Option<SpannedValue<bool>>,
     #[darling(default)]
     topics: Option<Vec<LitStr>>,
@@ -71,14 +69,12 @@ fn derive_event_or_err(metadata: TokenStream2, input: TokenStream2) -> Result<To
     let args = ContractEventArgs::from_list(&args)?;
     let input = parse2::<DeriveInput>(input)?;
     let export_error = export_arg_error(&args.export);
-    let lib_deprecation = lib_arg_deprecation(&args.lib, &input.ident);
     let derived = derive_impls(&args, &input)?;
     let mut input = input;
     remove_attributes_from_item(&mut input.data, &["topic", "data"]);
     Ok(quote! {
         #input
         #export_error
-        #lib_deprecation
         #derived
     }
     .into())
@@ -181,7 +177,8 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     let spec_entry = ScSpecEntry::EventV0(ScSpecEventV0 {
         data_format: args.data_format.into(),
         doc: docs_from_attrs(&input.attrs),
-        lib: args.lib.as_deref().unwrap_or_default().try_into().unwrap(),
+        // set to empty string always because the field is no longer used
+        lib: StringM::default(),
         name: ScSymbol(event_name),
         prefix_topics: prefix_topics
             .iter()

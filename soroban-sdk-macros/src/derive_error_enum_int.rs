@@ -13,7 +13,6 @@ pub fn derive_type_error_enum_int(
     enum_ident: &Ident,
     attrs: &[Attribute],
     data: &DataEnum,
-    lib: &Option<String>,
 ) -> TokenStream2 {
     // Collect errors as they are encountered and emit them at the end.
     let mut errors = Vec::<Error>::new();
@@ -66,7 +65,8 @@ pub fn derive_type_error_enum_int(
     // Compute spec XDR once.
     let spec_entry = ScSpecEntry::UdtErrorEnumV0(ScSpecUdtErrorEnumV0 {
         doc: docs_from_attrs(attrs),
-        lib: lib.as_deref().unwrap_or_default().try_into().unwrap(),
+        // set to empty string always because the field is no longer used
+        lib: StringM::default(),
         name: enum_ident.unraw().to_string().try_into().unwrap(),
         cases: spec_cases.try_into().unwrap(),
     });
