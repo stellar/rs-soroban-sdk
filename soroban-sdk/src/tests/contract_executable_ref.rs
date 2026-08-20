@@ -1,12 +1,16 @@
-use crate as soroban_sdk;
+use crate::{self as soroban_sdk, auth::ContractExecutable};
 use soroban_sdk::{
-    contract, contractimpl,
-    testutils::{Address as _, AuthorizedFunction, AuthorizedInvocation},
+    auth::{Context, CustomAccountInterface},
+    contract, contracterror, contractimpl,
+    crypto::Hash,
+    symbol_short,
     xdr::{
-        ContractExecutable, ContractExecutableExternalRef, ContractIdPreimage,
-        ContractIdPreimageFromAddress, CreateContractArgsV2, ScString, Uint256,
+        ContractExecutable as XdrContractExecutable, ContractExecutableExternalRef,
+        ContractIdPreimage, ContractIdPreimageFromAddress, CreateContractArgsV2, ScString, ScVal,
+        SorobanAddressCredentials, SorobanAuthorizationEntry, SorobanAuthorizedFunction,
+        SorobanAuthorizedInvocation, SorobanCredentials, Uint256,
     },
-    Address, BytesN, Env, Executable, String,
+    Address, BytesN, Env, Executable, String, Vec,
 };
 
 mod add_u64_contract {
@@ -79,6 +83,40 @@ impl DeployerContract {
         env.deployer()
             .with_address(deployer, salt)
             .deploy_executable_ref(&owner, &name, ())
+    }
+}
+
+/// A custom account that records the executable from any create-contract auth
+/// context it is asked to authorize, so tests can verify that the context the
+/// host passes to `__check_auth` decodes through the SDK auth types.
+#[contract]
+pub struct RecordingAccount;
+
+#[contracterror]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub enum RecordingAccountError {
+    Fail = 1,
+}
+
+#[contractimpl]
+impl CustomAccountInterface for RecordingAccount {
+    type Signature = ();
+    type Error = RecordingAccountError;
+
+    fn __check_auth(
+        env: Env,
+        _signature_payload: Hash<32>,
+        _signatures: (),
+        auth_contexts: Vec<Context>,
+    ) -> Result<(), RecordingAccountError> {
+        for ctx in auth_contexts.iter() {
+            if let Context::CreateContractHostFn(create) = ctx {
+                env.storage()
+                    .instance()
+                    .set(&symbol_short!("exec"), &create.executable);
+            }
+        }
+        Ok(())
     }
 }
 
@@ -237,46 +275,6 @@ fn test_update_current_contract_executable_ref_self_owned() {
 }
 
 #[test]
-fn test_deploy_executable_ref_auth() {
-    let env = Env::default();
-    env.mock_all_auths_allowing_non_root_auth();
-    let (owner, _) = setup_owner_with_entry(&env, add_u64_contract::WASM);
-
-    let deployer_address = Address::generate(&env);
-    let deployer_contract = env.register(DeployerContract, ());
-    let deployed = DeployerContractClient::new(&env, &deployer_contract).deploy_for(
-        &deployer_address,
-        &owner,
-        &String::from_str(&env, "fleet"),
-        &BytesN::from_array(&env, &[7; 32]),
-    );
-
-    assert_eq!(
-        env.auths(),
-        std::vec![(
-            deployer_address.clone(),
-            AuthorizedInvocation {
-                function: AuthorizedFunction::CreateContractV2HostFn(CreateContractArgsV2 {
-                    contract_id_preimage: ContractIdPreimage::Address(
-                        ContractIdPreimageFromAddress {
-                            address: (&deployer_address).try_into().unwrap(),
-                            salt: Uint256([7; 32]),
-                        }
-                    ),
-                    executable: ContractExecutable::ExternalRef(ContractExecutableExternalRef {
-                        executable_owner: (&owner).try_into().unwrap(),
-                        tag: ScString("fleet".try_into().unwrap()),
-                    }),
-                    constructor_args: Default::default(),
-                }),
-                sub_invocations: std::vec![],
-            }
-        )]
-    );
-    assert!(deployed.executable().is_some());
-}
-
-#[test]
 fn test_deploy_executable_ref_with_constructor_args() {
     let env = Env::default();
     let wasm_hash = env
@@ -298,6 +296,63 @@ fn test_deploy_executable_ref_with_constructor_args() {
     // The constructor ran with the forwarded args; wrong or missing args
     // would have failed the deploy.
     assert_eq!(deployed.executable(), Some(Executable::Wasm(wasm_hash)));
+}
+
+#[test]
+fn test_check_auth_receives_external_ref_context() {
+    let env = Env::default();
+    let (owner, _) = setup_owner_with_entry(&env, add_u64_contract::WASM);
+
+    let account = env.register(RecordingAccount, ());
+    let deployer_contract = env.register(DeployerContract, ());
+
+    // Authorize the deployment with real address credentials, so that the
+    // host authenticates the account by invoking its `__check_auth` with the
+    // authorization context the host builds.
+    env.set_auths(&[SorobanAuthorizationEntry {
+        credentials: SorobanCredentials::Address(SorobanAddressCredentials {
+            address: (&account).try_into().unwrap(),
+            nonce: 123,
+            signature_expiration_ledger: 100,
+            signature: ScVal::Void,
+        }),
+        root_invocation: SorobanAuthorizedInvocation {
+            function: SorobanAuthorizedFunction::CreateContractV2HostFn(CreateContractArgsV2 {
+                contract_id_preimage: ContractIdPreimage::Address(ContractIdPreimageFromAddress {
+                    address: (&account).try_into().unwrap(),
+                    salt: Uint256([7; 32]),
+                }),
+                executable: XdrContractExecutable::ExternalRef(ContractExecutableExternalRef {
+                    executable_owner: (&owner).try_into().unwrap(),
+                    tag: ScString("fleet".try_into().unwrap()),
+                }),
+                constructor_args: Default::default(),
+            }),
+            sub_invocations: Default::default(),
+        },
+    }]);
+
+    let deployed = DeployerContractClient::new(&env, &deployer_contract).deploy_for(
+        &account,
+        &owner,
+        &String::from_str(&env, "fleet"),
+        &BytesN::from_array(&env, &[7; 32]),
+    );
+    assert!(deployed.executable().is_some());
+
+    let recorded: ContractExecutable = env.as_contract(&account, || {
+        env.storage()
+            .instance()
+            .get(&symbol_short!("exec"))
+            .unwrap()
+    });
+    match recorded {
+        ContractExecutable::ExternalRef(exec_ref) => {
+            assert_eq!(exec_ref.owner, owner);
+            assert_eq!(exec_ref.tag, String::from_str(&env, "fleet"));
+        }
+        ContractExecutable::Wasm(_) => panic!("expected external ref executable"),
+    }
 }
 
 #[test]
