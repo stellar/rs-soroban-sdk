@@ -33,9 +33,7 @@
 //! deployed many times.
 //!
 //! ```
-//! use soroban_sdk::{
-//!     auth::ContractExecutable, contract, contractimpl, testutils::Address as _, Address, Env,
-//! };
+//! use soroban_sdk::{contract, contractimpl, testutils::Address as _, Address, ContractExecutable, Env};
 //!
 //! #[contract]
 //! pub struct Contract;

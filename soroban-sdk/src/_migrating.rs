@@ -40,7 +40,7 @@
 //!    [`ContractExecutable::Wasm`].
 //!
 //!    ```
-//!    use soroban_sdk::{auth::ContractExecutable, contract, contractimpl, BytesN, Env};
+//!    use soroban_sdk::{contract, contractimpl, BytesN, ContractExecutable, Env};
 //!
 //!    #[contract]
 //!    pub struct Contract;
@@ -73,9 +73,9 @@
 //!
 //! [`Env::upload`]: crate::Env::upload
 //! [v28_contracttype_unpacking]: v28_contracttype_unpacking
-//! [`ContractExecutable`]: crate::auth::ContractExecutable
-//! [`ContractExecutable::Wasm`]: crate::auth::ContractExecutable::Wasm
-//! [`ContractExecutable::ExternalRef`]: crate::auth::ContractExecutable::ExternalRef
+//! [`ContractExecutable`]: crate::ContractExecutable
+//! [`ContractExecutable::Wasm`]: crate::ContractExecutable::Wasm
+//! [`ContractExecutable::ExternalRef`]: crate::ContractExecutable::ExternalRef
 //! [`ExecutableRefs`]: crate::executable_refs::ExecutableRefs
 //! [`DeployerWithAddress::deploy_contract`]: crate::deploy::DeployerWithAddress::deploy_contract
 //! [`Deployer::update_current_contract`]: crate::deploy::Deployer::update_current_contract

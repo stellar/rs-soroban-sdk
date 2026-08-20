@@ -1,6 +1,6 @@
 use crate as soroban_sdk;
 use soroban_sdk::{
-    auth::{Context, ContractExecutable, ContractExecutableRef, CustomAccountInterface},
+    auth::{Context, CustomAccountInterface},
     contract, contracterror, contractimpl,
     crypto::Hash,
     symbol_short,
@@ -10,7 +10,7 @@ use soroban_sdk::{
         SorobanAddressCredentials, SorobanAuthorizationEntry, SorobanAuthorizedFunction,
         SorobanAuthorizedInvocation, SorobanCredentials, Uint256,
     },
-    Address, BytesN, Env, Executable, String, Vec,
+    Address, BytesN, ContractExecutable, ContractExecutableRef, Env, Executable, String, Vec,
 };
 
 mod add_u64_contract {

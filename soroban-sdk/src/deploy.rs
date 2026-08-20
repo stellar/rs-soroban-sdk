@@ -14,7 +14,7 @@
 //! #### Deploy a contract without constructor (or 0-argument constructor)
 //!
 //! ```
-//! use soroban_sdk::{auth::ContractExecutable, contract, contractimpl, BytesN, Env, Symbol};
+//! use soroban_sdk::{contract, contractimpl, BytesN, ContractExecutable, Env, Symbol};
 //!
 //! const DEPLOYED_WASM: &[u8] = include_bytes!("../doctest_fixtures/contract.wasm");
 //!
@@ -50,7 +50,7 @@
 //! #### Deploy a contract with a multi-argument constructor
 //!
 //! ```
-//! use soroban_sdk::{auth::ContractExecutable, contract, contractimpl, BytesN, Env, Symbol, IntoVal};
+//! use soroban_sdk::{contract, contractimpl, BytesN, ContractExecutable, Env, Symbol, IntoVal};
 //!
 //! const DEPLOYED_WASM_WITH_CTOR: &[u8] = include_bytes!("../doctest_fixtures/contract_with_constructor.wasm");
 //!
@@ -95,8 +95,8 @@
 //!
 //! ```
 //! use soroban_sdk::{
-//!     auth::{ContractExecutable, ContractExecutableRef},
-//!     contract, contractimpl, Address, BytesN, Env, String,
+//!     contract, contractimpl, Address, BytesN, ContractExecutable, ContractExecutableRef, Env,
+//!     String,
 //! };
 //!
 //! const DEPLOYED_WASM: &[u8] = include_bytes!("../doctest_fixtures/contract.wasm");

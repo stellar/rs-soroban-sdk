@@ -1,9 +1,8 @@
 use crate::{self as soroban_sdk};
 use soroban_sdk::{
-    auth::ContractExecutable,
     contract, contractimpl,
     testutils::{HostError, SnapshotSource, SnapshotSourceInput},
-    xdr, BytesN, Env,
+    xdr, BytesN, ContractExecutable, Env,
 };
 use std::{cell::RefCell, rc::Rc};
 

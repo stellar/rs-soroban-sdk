@@ -1,4 +1,4 @@
-use crate::{self as soroban_sdk, auth::ContractExecutable, contract, contractimpl, BytesN, Env};
+use crate::{self as soroban_sdk, contract, contractimpl, BytesN, ContractExecutable, Env};
 
 #[contract]
 struct Contract;

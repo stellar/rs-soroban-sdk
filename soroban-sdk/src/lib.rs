@@ -1254,6 +1254,7 @@ pub mod storage;
 pub mod token;
 mod vec;
 pub use address::{Address, Executable};
+pub use auth::{ContractExecutable, ContractExecutableRef};
 pub use bytes::{Bytes, BytesN};
 pub use map::Map;
 pub use muxed_address::MuxedAddress;
