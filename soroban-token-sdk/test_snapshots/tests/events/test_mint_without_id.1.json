@@ -82,12 +82,6 @@
                   "val": {
                     "i128": "123"
                   }
-                },
-                {
-                  "key": {
-                    "symbol": "to_muxed_id"
-                  },
-                  "val": "void"
                 }
               ]
             }

@@ -31,8 +31,14 @@
 //!    upload the contract once with the new [`Env::upload`] and deploy it multiple times with
 //!    [`DeployerWithAddress::deploy_v2`].
 //!
+//! 4. [Events with a map data format omit void fields when publishing][v28_contractevent_packing].
+//!    A data field of a [`contractevent`] whose value is void, as an [`Option`] field that is
+//!    `None` is, is omitted from the published map instead of being written with a void value. Only
+//!    events pack this way; a `contracttype` struct still writes all of its fields.
+//!
 //! [`Env::upload`]: crate::Env::upload
 //! [v28_contracttype_unpacking]: v28_contracttype_unpacking
+//! [v28_contractevent_packing]: v28_contractevent_packing
 //!
 //! # Migrating from v26 to v27
 //!
@@ -380,6 +386,7 @@ pub mod v25_poseidon;
 pub mod v25_resource_limits;
 pub mod v27_bytes_literals;
 pub mod v27_export;
+pub mod v28_contractevent_packing;
 pub mod v28_contracttype_unpacking;
 pub mod v28_native_contract_code;
 pub mod v28_spec_shaking;
