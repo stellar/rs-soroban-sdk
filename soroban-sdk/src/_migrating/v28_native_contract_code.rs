@@ -29,11 +29,11 @@
 //!
 //! To test contract deployments where a single contract code entry is shared by multiple contracts,
 //! upload the contract once with [`Env::upload`] and deploy it multiple times with
-//! [`DeployerWithAddress::deploy_v2`], the same way a Wasm contract would be uploaded once and
+//! [`DeployerWithAddress::deploy_contract`], the same way a Wasm contract would be uploaded once and
 //! deployed many times.
 //!
 //! ```
-//! use soroban_sdk::{contract, contractimpl, testutils::Address as _, Address, Env};
+//! use soroban_sdk::{contract, contractimpl, testutils::Address as _, Address, ContractExecutable, Env};
 //!
 //! #[contract]
 //! pub struct Contract;
@@ -59,11 +59,11 @@
 //!     let contract_a = env
 //!         .deployer()
 //!         .with_address(deployer.clone(), [0u8; 32])
-//!         .deploy_v2(wasm_hash.clone(), ());
+//!         .deploy_contract(ContractExecutable::Wasm(wasm_hash.clone()), ());
 //!     let contract_b = env
 //!         .deployer()
 //!         .with_address(deployer, [1u8; 32])
-//!         .deploy_v2(wasm_hash, ());
+//!         .deploy_contract(ContractExecutable::Wasm(wasm_hash), ());
 //! }
 //! ```
 //!
@@ -74,4 +74,4 @@
 //! [`Env::register_at`]: crate::Env::register_at
 //! [`Env::upload`]: crate::Env::upload
 //! [`Env::upload_at`]: crate::Env::upload_at
-//! [`DeployerWithAddress::deploy_v2`]: crate::deploy::DeployerWithAddress::deploy_v2
+//! [`DeployerWithAddress::deploy_contract`]: crate::deploy::DeployerWithAddress::deploy_contract
