@@ -14,6 +14,7 @@ mod contract_custom_account_impl;
 mod contract_docs;
 mod contract_duration;
 mod contract_event;
+mod contract_executable_ref;
 mod contract_fn;
 mod contract_invoke;
 mod contract_invoke_arg_count;
