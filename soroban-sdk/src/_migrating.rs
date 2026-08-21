@@ -74,7 +74,8 @@
 //! 5. [Events with a map data format omit void fields when publishing][v28_contractevent_packing].
 //!    A data field of a [`contractevent`] whose value is void, as an [`Option`] field that is
 //!    `None` is, is omitted from the published map instead of being written with a void value. Only
-//!    events pack this way; a `contracttype` struct still writes all of its fields.
+//!    events pack this way; a `contracttype` struct still writes all of its fields. An event that
+//!    must keep publishing every field opts out with `#[contractevent(sparse = false)]`.
 //!
 //! [`Env::upload`]: crate::Env::upload
 //! [v28_contracttype_unpacking]: v28_contracttype_unpacking

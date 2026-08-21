@@ -22,6 +22,8 @@ struct ContractEventArgs {
     topics: Option<Vec<LitStr>>,
     #[darling(default)]
     data_format: DataFormat,
+    #[darling(default)]
+    sparse: Option<bool>,
 }
 
 #[derive(Copy, Clone, Debug, Default)]
@@ -254,6 +256,11 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         .iter()
         .map(|(ident, _)| ident.clone())
         .collect::<Vec<_>>();
+    if args.sparse.is_some() && !matches!(args.data_format, DataFormat::Map) {
+        errors.push(Error::custom(
+            "sparse is only supported with data_format = \"map\"",
+        ));
+    }
     let data_to_val = match args.data_format {
         DataFormat::SingleValue if data_params_count == 0 => quote! {
             #path::Val::VOID.to_val()
@@ -280,9 +287,9 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
             ).into_val(env)
         },
         DataFormat::Map => {
-            // Must be sorted for sparse_map_new_from_slices. Sort by the spec name (the
-            // Soroban-facing Symbol string), and carry the original Ident alongside so
-            // that `self.#ident` still uses the raw form where needed.
+            // Must be sorted for map_new_from_slices and sparse_map_new_from_slices. Sort by
+            // the spec name (the Soroban-facing Symbol string), and carry the original Ident
+            // alongside so that `self.#ident` still uses the raw form where needed.
             let mut data_params_sorted = data_params.clone();
             data_params_sorted.sort_by_key(|(_, p)| p.name.to_string());
             let data_idents_sorted = data_params_sorted
@@ -293,13 +300,20 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
                 .iter()
                 .map(|(_, p)| p.name.to_string())
                 .collect::<Vec<_>>();
+            // A sparse map, which is the default, omits fields whose value is void, such as
+            // an Option field that is None, instead of writing them with a void value.
+            let map_new_fn = if args.sparse.unwrap_or(true) {
+                format_ident!("sparse_map_new_from_slices")
+            } else {
+                format_ident!("map_new_from_slices")
+            };
             quote! {
                 use #path::{EnvBase,IntoVal,unwrap::UnwrapInfallible};
                 const KEYS: [&'static str; #data_params_count] = [#(#data_strs_sorted),*];
                 let vals: [#path::Val; #data_params_count] = [
                     #(self.#data_idents_sorted.into_val(env)),*
                 ];
-                env.sparse_map_new_from_slices(&KEYS, &vals).unwrap_infallible().into()
+                env.#map_new_fn(&KEYS, &vals).unwrap_infallible().into()
             }
         }
     };
