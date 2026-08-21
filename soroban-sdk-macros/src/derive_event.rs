@@ -23,7 +23,7 @@ struct ContractEventArgs {
     #[darling(default)]
     data_format: DataFormat,
     #[darling(default)]
-    sparse: Option<bool>,
+    sparse: Option<SpannedValue<bool>>,
 }
 
 #[derive(Copy, Clone, Debug, Default)]
@@ -256,10 +256,13 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         .iter()
         .map(|(ident, _)| ident.clone())
         .collect::<Vec<_>>();
-    if args.sparse.is_some() && !matches!(args.data_format, DataFormat::Map) {
-        errors.push(Error::custom(
-            "sparse is only supported with data_format = \"map\"",
-        ));
+    if let Some(sparse) = &args.sparse {
+        if !matches!(args.data_format, DataFormat::Map) {
+            errors.push(
+                Error::custom("sparse is only supported with data_format = \"map\"")
+                    .with_span(&sparse.span()),
+            );
+        }
     }
     let data_to_val = match args.data_format {
         DataFormat::SingleValue if data_params_count == 0 => quote! {
@@ -302,7 +305,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
                 .collect::<Vec<_>>();
             // A sparse map, which is the default, omits fields whose value is void, such as
             // an Option field that is None, instead of writing them with a void value.
-            let map_new_fn = if args.sparse.unwrap_or(true) {
+            let map_new_fn = if args.sparse.as_deref().copied().unwrap_or(true) {
                 format_ident!("sparse_map_new_from_slices")
             } else {
                 format_ident!("map_new_from_slices")
