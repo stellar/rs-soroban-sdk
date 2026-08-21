@@ -1,6 +1,7 @@
 #[test]
 fn compile_fails() {
     let t = trybuild::TestCases::new();
+    t.compile_fail("tests/compile_fails/contractevent_sparse_arg_errors.rs");
     t.compile_fail("tests/compile_fails/contracttrait_cfg_errors.rs");
     t.compile_fail("tests/compile_fails/contracttrait_without_trait.rs");
     t.compile_fail("tests/compile_fails/contracttype_lib_removed.rs");
