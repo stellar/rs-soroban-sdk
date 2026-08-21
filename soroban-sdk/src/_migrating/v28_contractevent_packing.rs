@@ -87,7 +87,7 @@
 //! stays correct as the packing changes:
 //!
 //! ```ignore
-//! assert_eq!(env.events().all(), std::vec![event.to_xdr(&env, &id)]);
+//! assert_eq!(env.events().all(), [event.to_xdr(&env, &id)]);
 //! ```
 //!
 //! An event that must keep publishing every field, including the fields whose value is void, opts
@@ -105,10 +105,11 @@
 //! }
 //! ```
 //!
-//! The opt out exists for events that already have consumers depending on the fields being present.
-//! Prefer the default, because an event type can then carry a field that is only sometimes
-//! meaningful without paying for it in every event, so a single event can serve the shapes a
-//! contract needs rather than one event type per shape.
+//! The opt out exists for the edge cases where an event needs to visibly publish fields that are
+//! `Option::None`. Prefer the default behaviour of not publishing those fields, because an event
+//! type can then carry a field that is only sometimes meaningful without paying for it in every
+//! event, so a single event can serve the shapes a contract needs rather than one event type per
+//! shape.
 //!
 //! The `sparse` argument only applies to the map data format, and is a compile error on the
 //! `single-value` and `vec` data formats.
