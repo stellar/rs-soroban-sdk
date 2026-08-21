@@ -1,0 +1,24 @@
+[package]
+name = "test_fuzz_afl-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2021"
+
+[dependencies]
+afl = "0.18"
+arbitrary = { version = "~1.3.0", features = ["derive"] }
+soroban-sdk = { path = "../../../soroban-sdk", features = [ "testutils" ]}
+test_fuzz_afl = { path = ".." }
+
+# Prevent this from interfering with workspaces
+[workspace]
+members = ["."]
+
+[profile.release]
+debug = 1
+
+[[bin]]
+name = "fuzz_target_1"
+path = "src/fuzz_target_1.rs"
+test = false
+doc = false

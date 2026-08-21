@@ -1963,6 +1963,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_fuzz_afl"
+version = "27.0.5"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
 name = "test_generics"
 version = "27.0.5"
 dependencies = [
