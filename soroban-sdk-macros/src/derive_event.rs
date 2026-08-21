@@ -11,7 +11,9 @@ use stellar_xdr::{
     ScSpecEntry, ScSpecEventDataFormat, ScSpecEventParamLocationV0, ScSpecEventParamV0,
     ScSpecEventV0, ScSymbol, StringM, WriteXdr,
 };
-use syn::{ext::IdentExt as _, parse2, spanned::Spanned, Data, DeriveInput, Fields, LitStr, Path};
+use syn::{
+    ext::IdentExt as _, parse2, spanned::Spanned, Data, DeriveInput, Fields, LitStr, Meta, Path,
+};
 
 #[derive(Debug, FromMeta)]
 struct ContractEventArgs {
@@ -23,7 +25,24 @@ struct ContractEventArgs {
     #[darling(default)]
     data_format: DataFormat,
     #[darling(default)]
-    sparse: Option<SpannedValue<bool>>,
+    sparse: Option<SparseArg>,
+}
+
+/// The `sparse` argument, carrying the span of the whole `sparse = ...` argument so that an error
+/// about the argument points at all of it and not only at the value.
+#[derive(Copy, Clone, Debug)]
+struct SparseArg {
+    sparse: bool,
+    span: Span,
+}
+
+impl FromMeta for SparseArg {
+    fn from_meta(item: &Meta) -> Result<Self, Error> {
+        Ok(Self {
+            sparse: bool::from_meta(item)?,
+            span: item.span(),
+        })
+    }
 }
 
 #[derive(Copy, Clone, Debug, Default)]
@@ -260,7 +279,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         if !matches!(args.data_format, DataFormat::Map) {
             errors.push(
                 Error::custom("sparse is only supported with data_format = \"map\"")
-                    .with_span(&sparse.span()),
+                    .with_span(&sparse.span),
             );
         }
     }
@@ -305,7 +324,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
                 .collect::<Vec<_>>();
             // A sparse map, which is the default, omits fields whose value is void, such as
             // an Option field that is None, instead of writing them with a void value.
-            let map_new_fn = if args.sparse.as_deref().copied().unwrap_or(true) {
+            let map_new_fn = if args.sparse.map_or(true, |s| s.sparse) {
                 format_ident!("sparse_map_new_from_slices")
             } else {
                 format_ident!("map_new_from_slices")

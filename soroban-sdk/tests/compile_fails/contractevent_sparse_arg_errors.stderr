@@ -1,11 +1,11 @@
 error: sparse is only supported with data_format = "map"
- --> tests/compile_fails/contractevent_sparse_arg_errors.rs:5:47
+ --> tests/compile_fails/contractevent_sparse_arg_errors.rs:5:38
   |
 5 | #[contractevent(data_format = "vec", sparse = false)]
-  |                                               ^^^^^
+  |                                      ^^^^^^
 
 error: sparse is only supported with data_format = "map"
-  --> tests/compile_fails/contractevent_sparse_arg_errors.rs:10:56
+  --> tests/compile_fails/contractevent_sparse_arg_errors.rs:10:47
    |
 10 | #[contractevent(data_format = "single-value", sparse = true)]
-   |                                                        ^^^^
+   |                                               ^^^^^^
