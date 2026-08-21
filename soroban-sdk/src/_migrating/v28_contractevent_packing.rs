@@ -109,7 +109,8 @@
 //! `Option::None`. Prefer the default behaviour of not publishing those fields, because an event
 //! type can then carry a field that is only sometimes meaningful without paying for it in every
 //! event, so a single event can serve the shapes a contract needs rather than one event type per
-//! shape.
+//! shape. For example, a single `Transfer` event with an optional `to_muxed_id: Option<u64>` field,
+//! instead of two events, one with the muxed id and one without.
 //!
 //! The `sparse` argument only applies to the map data format, and is a compile error on the
 //! `single-value` and `vec` data formats.
