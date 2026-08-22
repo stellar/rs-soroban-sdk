@@ -4,6 +4,9 @@ on:
   push:
     branches: [main, release/**]
   pull_request:
+  schedule:
+  # Daily, to catch breakages caused by upcoming rust versions (beta, nightly).
+  - cron: '0 6 * * *'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref_protected == 'true' && github.sha || github.ref }}-{{ github.event_name }}
@@ -36,6 +39,8 @@ jobs:
       fail-fast: false
       matrix:
         working-directory: ${{ fromJSON(needs.collect-crates.outputs.dirs) }}
+        # Scheduled runs also test against the upcoming rust versions.
+        rust: ${{ github.event_name == 'schedule' && fromJSON('["latest", "beta", "nightly"]') || fromJSON('["latest"]') }}
     defaults:
       run:
         working-directory: stellar-contracts/${{ matrix.working-directory }}
@@ -57,6 +62,13 @@ jobs:
       run: |
         rustup update
         rustup target add wasm32v1-none
+
+    - name: Install and use beta or nightly rust version
+      if: matrix.rust != 'latest'
+      run: |
+        rustup install ${{ matrix.rust }}
+        rustup target add --toolchain ${{ matrix.rust }} wasm32v1-none
+        echo RUSTUP_TOOLCHAIN='${{ matrix.rust }}' >> $GITHUB_ENV
 
     - uses: stellar/actions/rust-cache@main
 
@@ -208,7 +220,7 @@ jobs:
     - name: Set artifact name
       if: steps.check-if-contract.outputs.is-a-contract == 'true'
       id: artifact-name
-      run: echo "name=wasm-$(echo ${{ matrix.working-directory }} | sed 's/\//-/g')" | tee -a $GITHUB_OUTPUT
+      run: echo "name=wasm-${{ matrix.rust }}-$(echo ${{ matrix.working-directory }} | sed 's/\//-/g')" | tee -a $GITHUB_OUTPUT
 
     - name: Upload WASM artifacts
       if: steps.check-if-contract.outputs.is-a-contract == 'true'
