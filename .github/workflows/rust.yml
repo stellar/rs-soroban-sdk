@@ -5,6 +5,9 @@ on:
     branches: [main, release/**]
   pull_request:
   merge_group:
+  schedule:
+  # Daily, to catch breakages caused by upcoming rust versions (beta, nightly).
+  - cron: '0 6 * * *'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref_protected == 'true' && github.sha || github.ref }}-{{ github.event_name }}
@@ -32,6 +35,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       sys: ${{ steps.sys.outputs.sys }}
+      rust: ${{ steps.rust.outputs.rust }}
+      rust-expand-test-wasms: ${{ steps.rust.outputs.rust-expand-test-wasms }}
     steps:
     - id: sys
       run: |
@@ -63,6 +68,17 @@ jobs:
           ]'
         fi
         echo "sys=$(<<< $sys jq -c)" >> $GITHUB_OUTPUT
+    - id: rust
+      run: |
+        if [ "${{ github.event_name }}" == "schedule" ]; then
+          rust='["msrv", "latest", "beta", "nightly"]'
+          rust_expand_test_wasms='["msrv", "beta", "nightly"]'
+        else
+          rust='["msrv", "latest"]'
+          rust_expand_test_wasms='["msrv"]'
+        fi
+        echo "rust=$(<<< $rust jq -c)" >> $GITHUB_OUTPUT
+        echo "rust-expand-test-wasms=$(<<< $rust_expand_test_wasms jq -c)" >> $GITHUB_OUTPUT
 
   fmt:
     runs-on: ubuntu-latest
@@ -97,7 +113,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        rust: [msrv, latest]
+        rust: ${{ fromJSON(needs.setup.outputs.rust) }}
         sys: ${{ fromJSON(needs.setup.outputs.sys) }}
     runs-on: ${{ matrix.sys.os }}
     steps:
@@ -116,6 +132,16 @@ jobs:
         rustup update
         rustup target add ${{ matrix.sys.target }}
         rustup target add wasm32v1-none
+    - name: Install beta or nightly rust version
+      if: matrix.rust == 'beta' || matrix.rust == 'nightly'
+      run: |
+        rustup install ${{ matrix.rust }}
+        rustup component add --toolchain ${{ matrix.rust }} clippy rustfmt
+        rustup target add --toolchain ${{ matrix.rust }} ${{ matrix.sys.target }}
+        rustup target add --toolchain ${{ matrix.rust }} wasm32v1-none
+    - name: Set beta or nightly toolchain
+      if: matrix.rust == 'beta' || matrix.rust == 'nightly'
+      run: echo RUSTUP_TOOLCHAIN='${{ matrix.rust }}' >> $GITHUB_ENV
     - name: Use the minimum supported rust version
       if: matrix.rust == 'msrv'
       run: echo RUSTUP_TOOLCHAIN="$(make msrv)" >> $GITHUB_ENV
@@ -146,7 +172,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        rust: [msrv, latest]
+        rust: ${{ fromJSON(needs.setup.outputs.rust) }}
         sys: ${{ fromJSON(needs.setup.outputs.sys) }}
     runs-on: ${{ matrix.sys.os }}
     steps:
@@ -165,6 +191,16 @@ jobs:
         rustup update
         rustup target add ${{ matrix.sys.target }}
         rustup target add wasm32v1-none
+    - name: Install beta or nightly rust version
+      if: matrix.rust == 'beta' || matrix.rust == 'nightly'
+      run: |
+        rustup install ${{ matrix.rust }}
+        rustup component add --toolchain ${{ matrix.rust }} clippy rustfmt
+        rustup target add --toolchain ${{ matrix.rust }} ${{ matrix.sys.target }}
+        rustup target add --toolchain ${{ matrix.rust }} wasm32v1-none
+    - name: Set beta or nightly toolchain
+      if: matrix.rust == 'beta' || matrix.rust == 'nightly'
+      run: echo RUSTUP_TOOLCHAIN='${{ matrix.rust }}' >> $GITHUB_ENV
     - name: Use the minimum supported rust version
       if: matrix.rust == 'msrv'
       run: echo RUSTUP_TOOLCHAIN="$(make msrv)" >> $GITHUB_ENV
@@ -190,6 +226,7 @@ jobs:
     - run: cargo version
     - run: make test-only
     - name: Check no diffs exist
+      if: github.event_name != 'schedule'
       run: git add -N . && git diff HEAD --exit-code
 
   build-fuzz:
@@ -204,6 +241,7 @@ jobs:
         version: 0.13.1
     - run: make build-fuzz
     - name: Check no diffs exist
+      if: github.event_name != 'schedule'
       run: git add -N . && git diff HEAD --exit-code
 
   docs:
@@ -214,6 +252,7 @@ jobs:
     - run: rustup install nightly
     - run: make doc
     - name: Check no diffs exist
+      if: github.event_name != 'schedule'
       run: git add -N . && git diff HEAD --exit-code
 
   readme:
@@ -223,7 +262,9 @@ jobs:
     - uses: stellar/actions/rust-cache@main
     - run: rustup install nightly
     - run: make readme
-    - run: git add -N . && git diff HEAD --exit-code
+    - name: Check no diffs exist
+      if: github.event_name != 'schedule'
+      run: git add -N . && git diff HEAD --exit-code
 
   migration-docs:
     runs-on: ubuntu-latest
@@ -237,16 +278,30 @@ jobs:
           || (echo "The _migrating ${version} section is missing." && exit 1)
 
   expand-test-wasms:
+    needs: setup
+    strategy:
+      fail-fast: false
+      matrix:
+        rust: ${{ fromJSON(needs.setup.outputs.rust-expand-test-wasms) }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v5
     - uses: stellar/actions/rust-cache@main
     - name: Install minimum supported rust version
+      if: matrix.rust == 'msrv'
       run: |
         msrv="$(make msrv)"
         rustup install $msrv
         rustup target add --toolchain $msrv wasm32v1-none
         rustup component add rustfmt
+        echo TOOLCHAIN="$msrv" >> $GITHUB_ENV
+    - name: Install beta or nightly rust version
+      if: matrix.rust == 'beta' || matrix.rust == 'nightly'
+      run: |
+        rustup install ${{ matrix.rust }}
+        rustup target add --toolchain ${{ matrix.rust }} wasm32v1-none
+        rustup component add --toolchain ${{ matrix.rust }} rustfmt
+        echo TOOLCHAIN='${{ matrix.rust }}' >> $GITHUB_ENV
     - uses: stellar/binaries@v45
       with:
         name: cargo-hack
@@ -255,8 +310,9 @@ jobs:
       with:
         name: cargo-expand
         version: 1.0.116
-    - run: make expand-tests
+    - run: make expand-tests TEST_CRATES_RUSTUP_TOOLCHAIN=$TOOLCHAIN
     - name: Check no diffs exist
+      if: github.event_name != 'schedule'
       run: git add -N . && git diff HEAD --exit-code
 
   publish-dry-run:
