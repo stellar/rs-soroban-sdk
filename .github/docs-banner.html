@@ -1,0 +1,23 @@
+<style>
+/* Let the banner sit on its own row above rustdoc's sidebar and content. */
+body.rustdoc { flex-wrap: wrap; }
+.dev-docs-banner {
+  flex: 0 0 100%;
+  box-sizing: border-box;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid #806600;
+  background: #ffe680;
+  color: #332900;
+  font-family: "Fira Sans", Arial, sans-serif;
+  text-align: center;
+}
+.dev-docs-banner a { color: #332900; text-decoration: underline; }
+</style>
+<div class="dev-docs-banner">
+  <strong>Warning:</strong>
+  these docs are generated from the unreleased development branch at
+  <a href="https://github.com/stellar/rs-soroban-sdk">github.com/stellar/rs-soroban-sdk</a>
+  and are not intended for use.
+  For the released docs go to
+  <a href="https://docs.rs/soroban-sdk">docs.rs/soroban-sdk</a>.
+</div>
