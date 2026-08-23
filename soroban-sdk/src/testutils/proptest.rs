@@ -65,10 +65,30 @@
 //! # fn main() { }
 //! ```
 //!
-//! Note that generated `Address` prototypes always convert to contract
-//! addresses, never to account (`G...`) addresses. A property test that also
-//! needs account addresses must construct them itself with
-//! `Address::from_str`.
+//! Generated `Address` prototypes convert to both account (`G...`) and
+//! contract (`C...`) addresses. To generate only one kind, use the
+//! [`ArbitraryAddressAccount`] or [`ArbitraryAddressContract`] prototype in
+//! place of the default:
+//!
+//! ```
+//! use proptest::prelude::*;
+//! use proptest_arbitrary_interop::arb;
+//! use soroban_sdk::testutils::arbitrary::ArbitraryAddressAccount;
+//! use soroban_sdk::{Address, Env, IntoVal};
+//!
+//! proptest! {
+//!     #[test]
+//!     fn test_deposit(address_proto in arb::<ArbitraryAddressAccount>()) {
+//!         let env = Env::default();
+//!         let address: Address = address_proto.into_val(&env);
+//!         // call the contract with `address`
+//!     }
+//! }
+//! # fn main() { }
+//! ```
+//!
+//! [`ArbitraryAddressAccount`]: crate::testutils::arbitrary::ArbitraryAddressAccount
+//! [`ArbitraryAddressContract`]: crate::testutils::arbitrary::ArbitraryAddressContract
 //!
 //!
 //! ## Example: generate a custom contract type in a property test
