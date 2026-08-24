@@ -217,13 +217,7 @@ jobs:
     - name: Check no diffs exist
       # Scheduled runs print the diff without failing on it, because generated
       # snapshots vary between rust versions.
-      run: |
-        git add -N .
-        if [ "${{ github.event_name }}" == "schedule" ]; then
-          git diff HEAD
-        else
-          git diff HEAD --exit-code
-        fi
+      run: git add -N . && git diff HEAD ${{ github.event_name != 'schedule' && '--exit-code' || '' }}
 
   build-fuzz:
     runs-on: ubuntu-latest
