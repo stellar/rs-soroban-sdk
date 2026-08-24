@@ -35,8 +35,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       sys: ${{ steps.sys.outputs.sys }}
-      rust: ${{ steps.rust.outputs.rust }}
-      rust-expand-test-wasms: ${{ steps.rust.outputs.rust-expand-test-wasms }}
     steps:
     - id: sys
       run: |
@@ -68,17 +66,6 @@ jobs:
           ]'
         fi
         echo "sys=$(<<< $sys jq -c)" >> $GITHUB_OUTPUT
-    - id: rust
-      run: |
-        if [ "${{ github.event_name }}" == "schedule" ]; then
-          rust='["msrv", "latest", "beta", "nightly"]'
-          rust_expand_test_wasms='["msrv", "beta", "nightly"]'
-        else
-          rust='["msrv", "latest"]'
-          rust_expand_test_wasms='["msrv"]'
-        fi
-        echo "rust=$(<<< $rust jq -c)" >> $GITHUB_OUTPUT
-        echo "rust-expand-test-wasms=$(<<< $rust_expand_test_wasms jq -c)" >> $GITHUB_OUTPUT
 
   fmt:
     runs-on: ubuntu-latest
@@ -113,7 +100,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        rust: ${{ fromJSON(needs.setup.outputs.rust) }}
+        # Scheduled runs also test against the upcoming rust versions.
+        rust: ${{ github.event_name == 'schedule' && fromJSON('["msrv", "latest", "beta", "nightly"]') || fromJSON('["msrv", "latest"]') }}
         sys: ${{ fromJSON(needs.setup.outputs.sys) }}
     runs-on: ${{ matrix.sys.os }}
     steps:
@@ -172,7 +160,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        rust: ${{ fromJSON(needs.setup.outputs.rust) }}
+        # Scheduled runs also test against the upcoming rust versions.
+        rust: ${{ github.event_name == 'schedule' && fromJSON('["msrv", "latest", "beta", "nightly"]') || fromJSON('["msrv", "latest"]') }}
         sys: ${{ fromJSON(needs.setup.outputs.sys) }}
     runs-on: ${{ matrix.sys.os }}
     steps:
@@ -278,11 +267,11 @@ jobs:
           || (echo "The _migrating ${version} section is missing." && exit 1)
 
   expand-test-wasms:
-    needs: setup
     strategy:
       fail-fast: false
       matrix:
-        rust: ${{ fromJSON(needs.setup.outputs.rust-expand-test-wasms) }}
+        # Scheduled runs also test against the upcoming rust versions.
+        rust: ${{ github.event_name == 'schedule' && fromJSON('["msrv", "beta", "nightly"]') || fromJSON('["msrv"]') }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v5
