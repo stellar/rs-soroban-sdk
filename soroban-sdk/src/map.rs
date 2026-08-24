@@ -308,11 +308,13 @@ impl<K, V> Map<K, V> {
     }
 
     #[inline(always)]
+    #[doc(hidden)]
     pub fn as_object(&self) -> &MapObject {
         &self.obj
     }
 
     #[inline(always)]
+    #[doc(hidden)]
     pub fn to_object(&self) -> MapObject {
         self.obj
     }
