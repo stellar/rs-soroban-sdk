@@ -40,8 +40,7 @@ jobs:
       matrix:
         working-directory: ${{ fromJSON(needs.collect-crates.outputs.dirs) }}
         # Scheduled runs also test against the upcoming rust versions.
-        # TEMPORARY: also on pull_request, to exercise beta and nightly before merge.
-        rust: ${{ (github.event_name == 'schedule' || github.event_name == 'pull_request') && fromJSON('["latest", "beta", "nightly"]') || fromJSON('["latest"]') }}
+        rust: ${{ (github.event_name == 'schedule') && fromJSON('["latest", "beta", "nightly"]') || fromJSON('["latest"]') }}
     defaults:
       run:
         working-directory: stellar-contracts/${{ matrix.working-directory }}
