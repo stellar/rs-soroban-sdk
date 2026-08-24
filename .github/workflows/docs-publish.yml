@@ -3,8 +3,6 @@ name: Docs Publish
 on:
   push:
     branches: [main]
-  # Also runs on pull requests so that changes to this workflow can be tested.
-  pull_request:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref_protected == 'true' && github.sha || github.ref }}
