@@ -308,12 +308,12 @@ impl<K, V> Map<K, V> {
     }
 
     #[inline(always)]
-    pub(crate) fn as_object(&self) -> &MapObject {
+    pub fn as_object(&self) -> &MapObject {
         &self.obj
     }
 
     #[inline(always)]
-    pub(crate) fn to_object(&self) -> MapObject {
+    pub fn to_object(&self) -> MapObject {
         self.obj
     }
 }
