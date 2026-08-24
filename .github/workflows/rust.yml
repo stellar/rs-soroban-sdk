@@ -215,9 +215,15 @@ jobs:
     - run: cargo version
     - run: make test-only
     - name: Check no diffs exist
-      # Skipped on scheduled runs: snapshots vary between rust versions.
-      if: github.event_name != 'schedule'
-      run: git add -N . && git diff HEAD --exit-code
+      # Scheduled runs print the diff without failing on it, because generated
+      # snapshots vary between rust versions.
+      run: |
+        git add -N .
+        if [ "${{ github.event_name }}" == "schedule" ]; then
+          git diff HEAD
+        else
+          git diff HEAD --exit-code
+        fi
 
   build-fuzz:
     runs-on: ubuntu-latest
