@@ -214,6 +214,13 @@ jobs:
         path: target/wasm32v1-none/release/
     - name: Clear test snapshots for checking no diffs exists after test run
       run: rm -fr **/test_snapshots
+    - name: Record rather than assert compile-fail output on beta and nightly
+      # Compiler diagnostics change between rust versions, so let trybuild
+      # rewrite its expectations and report them in the diff below. Whether the
+      # code still fails to compile at all is asserted either way. Only the
+      # events that include these toolchains skip the diff assertion.
+      if: matrix.rust == 'beta' || matrix.rust == 'nightly'
+      run: echo TRYBUILD=overwrite >> $GITHUB_ENV
     - run: cargo version
     - run: make test-only
     - name: Check no diffs exist
