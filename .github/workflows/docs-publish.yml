@@ -24,8 +24,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: actions/configure-pages@v5
-      with:
-        enablement: true
     - uses: stellar/actions/rust-cache@main
     - run: rustup install nightly
     - name: Build docs for all library crates
