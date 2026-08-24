@@ -222,9 +222,10 @@ jobs:
     - run: cargo version
     - run: make test-only
     - name: Check no diffs exist
-      # Scheduled runs print the diff without failing on it, because generated
-      # snapshots vary between rust versions.
-      run: git add -N . && git diff HEAD ${{ github.event_name != 'schedule' && '--exit-code' || '' }}
+      # Beta and nightly print the diff without failing on it, because generated
+      # snapshots vary between rust versions. The msrv and latest toolchains
+      # always assert, including on scheduled runs.
+      run: git add -N . && git diff HEAD ${{ (matrix.rust == 'msrv' || matrix.rust == 'latest') && '--exit-code' || '' }}
 
   build-fuzz:
     runs-on: ubuntu-latest
