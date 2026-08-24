@@ -101,7 +101,8 @@ jobs:
       fail-fast: false
       matrix:
         # Scheduled runs also test against the upcoming rust versions.
-        rust: ${{ github.event_name == 'schedule' && fromJSON('["msrv", "latest", "beta", "nightly"]') || fromJSON('["msrv", "latest"]') }}
+        # TEMPORARY: also on pull_request, to exercise beta and nightly before merge.
+        rust: ${{ (github.event_name == 'schedule' || github.event_name == 'pull_request') && fromJSON('["msrv", "latest", "beta", "nightly"]') || fromJSON('["msrv", "latest"]') }}
         sys: ${{ fromJSON(needs.setup.outputs.sys) }}
     runs-on: ${{ matrix.sys.os }}
     steps:
@@ -161,7 +162,8 @@ jobs:
       fail-fast: false
       matrix:
         # Scheduled runs also test against the upcoming rust versions.
-        rust: ${{ github.event_name == 'schedule' && fromJSON('["msrv", "latest", "beta", "nightly"]') || fromJSON('["msrv", "latest"]') }}
+        # TEMPORARY: also on pull_request, to exercise beta and nightly before merge.
+        rust: ${{ (github.event_name == 'schedule' || github.event_name == 'pull_request') && fromJSON('["msrv", "latest", "beta", "nightly"]') || fromJSON('["msrv", "latest"]') }}
         sys: ${{ fromJSON(needs.setup.outputs.sys) }}
     runs-on: ${{ matrix.sys.os }}
     steps:
@@ -217,7 +219,8 @@ jobs:
     - name: Check no diffs exist
       # Scheduled runs print the diff without failing on it, because generated
       # snapshots vary between rust versions.
-      run: git add -N . && git diff HEAD ${{ github.event_name != 'schedule' && '--exit-code' || '' }}
+      # TEMPORARY: pull_request treated like schedule, to exercise beta and nightly.
+      run: git add -N . && git diff HEAD ${{ github.event_name != 'schedule' && github.event_name != 'pull_request' && '--exit-code' || '' }}
 
   build-fuzz:
     runs-on: ubuntu-latest
