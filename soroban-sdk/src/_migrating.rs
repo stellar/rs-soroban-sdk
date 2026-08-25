@@ -77,6 +77,36 @@
 //!    events pack this way; a `contracttype` struct still writes all of its fields. An event that
 //!    must keep publishing every field opts out with `#[contractevent(sparse = false)]`.
 //!
+//! 6. The `lib` argument is removed from [`contracttype`], [`contracterror`], and
+//!    [`contractevent`]. It was deprecated in v27, and setting it is now a compile error. The
+//!    argument named an external crate that the type was defined in, and [`contractimport`] aliased
+//!    into that crate instead of generating the type. Generated code now always defines the type in
+//!    full. Remove any `lib = ...` argument from these annotations. The `lib` field remains in the
+//!    spec XDR, but is always empty and is ignored when generating code.
+//!
+//! 7. [`contractimpl`] with the `contracttrait` argument requires the impl block to implement a
+//!    trait. The argument was accepted and silently ignored on an inherent impl, giving the impl
+//!    none of the contracttrait behaviour and no diagnostic. It is now a compile error. Remove the
+//!    argument from any inherent impl, or change the impl block to implement a trait annotated with
+//!    [`contracttrait`].
+//!
+//! 8. Test utilities that depend on test state panic when called inside a contract function. An
+//!    [`Env`] created by a test carries test state, but the [`Env`] the host passes into a contract
+//!    function does not, because the host knows nothing of the SDK's test state and has none to
+//!    pass on. Generating values such as with [`Address::generate`], reading the record of
+//!    authorizations with [`Env::auths`], reading the ledger snapshot, and changing the test config
+//!    with [`Env::set_config`] all operated on empty state when used inside a contract function,
+//!    which produced surprising results rather than an error. They now panic with a message saying
+//!    the operation must be done from the test code outside the contract function. Move any such
+//!    call out of the contract function and into the test.
+//!
+//! [`Env`]: crate::Env
+//! [`Env::auths`]: crate::Env::auths
+//! [`Env::set_config`]: crate::Env::set_config
+//! [`Address::generate`]: crate::testutils::Address::generate
+//! [`contractimpl`]: crate::contractimpl
+//! [`contracttrait`]: crate::contracttrait
+//! [`contractimport`]: crate::contractimport
 //! [`Env::upload`]: crate::Env::upload
 //! [v28_contracttype_unpacking]: v28_contracttype_unpacking
 //! [v28_contractevent_packing]: v28_contractevent_packing
