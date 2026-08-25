@@ -215,17 +215,16 @@ jobs:
     - name: Record rather than assert compile-fail output on beta and nightly
       # Compiler diagnostics change between rust versions, so let trybuild
       # rewrite its expectations and report them in the diff below. Whether the
-      # code still fails to compile at all is asserted either way. Only the
-      # events that include these toolchains skip the diff assertion.
+      # code still fails to compile at all is asserted either way.
       if: matrix.rust == 'beta' || matrix.rust == 'nightly'
       run: echo TRYBUILD=overwrite >> $GITHUB_ENV
     - run: cargo version
     - run: make test-only
     - name: Check no diffs exist
       # Beta and nightly print the diff without failing on it, because generated
-      # snapshots vary between rust versions. The msrv and latest toolchains
-      # always assert, including on scheduled runs.
-      run: git add -N . && git diff HEAD ${{ (matrix.rust == 'msrv' || matrix.rust == 'latest') && '--exit-code' || '' }}
+      # snapshots and compile-fail expectations vary between rust versions.
+      # Every other toolchain asserts, including on scheduled runs.
+      run: git add -N . && git diff HEAD ${{ !contains(fromJSON('["beta", "nightly"]'), matrix.rust) && '--exit-code' || '' }}
 
   build-fuzz:
     runs-on: ubuntu-latest
