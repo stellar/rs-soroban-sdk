@@ -65,10 +65,9 @@
 //! # fn main() { }
 //! ```
 //!
-//! Generated `Address` prototypes convert to both account (`G...`) and
-//! contract (`C...`) addresses. To generate only one kind, use the
-//! [`ArbitraryAddressAccount`] or [`ArbitraryAddressContract`] prototype in
-//! place of the default:
+//! Note that generated `Address` prototypes always convert to contract
+//! (`C...`) addresses. To generate account (`G...`) addresses, use the
+//! [`ArbitraryAddressAccount`] prototype in place of the default:
 //!
 //! ```
 //! use proptest::prelude::*;
@@ -88,7 +87,6 @@
 //! ```
 //!
 //! [`ArbitraryAddressAccount`]: crate::testutils::arbitrary::ArbitraryAddressAccount
-//! [`ArbitraryAddressContract`]: crate::testutils::arbitrary::ArbitraryAddressContract
 //!
 //!
 //! ## Example: generate a custom contract type in a property test

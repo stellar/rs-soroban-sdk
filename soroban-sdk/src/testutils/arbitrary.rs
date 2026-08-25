@@ -179,10 +179,10 @@
 //! A prototype that generates a narrower set of values can be named directly,
 //! in place of the default, wherever a fuzz test needs it.
 //!
-//! [`Address`] has three prototypes: [`ArbitraryAddress`], its default, which
-//! generates account (`G...`) and contract (`C...`) addresses;
-//! [`ArbitraryAddressAccount`], which generates only account addresses; and
-//! [`ArbitraryAddressContract`], which generates only contract addresses.
+//! [`Address`] has two prototypes: [`ArbitraryAddressContract`], its default,
+//! also named [`ArbitraryAddress`], which generates only contract (`C...`)
+//! addresses; and [`ArbitraryAddressAccount`], which generates only account
+//! (`G...`) addresses.
 //!
 //! ```
 //! # macro_rules! fuzz_target {
@@ -190,15 +190,15 @@
 //! # }
 //! use soroban_sdk::{Address, Env, IntoVal, Vec};
 //! use soroban_sdk::testutils::arbitrary::{
-//!     Arbitrary, ArbitraryAddress, ArbitraryAddressContract, ArbitraryVec,
+//!     Arbitrary, ArbitraryAddressAccount, ArbitraryVec,
 //! };
 //!
 //! #[derive(Arbitrary, Debug)]
 //! struct TestInput {
-//!     // Either an account or a contract address.
-//!     from: ArbitraryAddress,
-//!     // Always contract addresses.
-//!     to: ArbitraryVec<ArbitraryAddressContract>,
+//!     // Always an account address.
+//!     from: ArbitraryAddressAccount,
+//!     // Always account addresses.
+//!     to: ArbitraryVec<ArbitraryAddressAccount>,
 //! }
 //!
 //! fuzz_target!(|input: TestInput| {
@@ -679,6 +679,10 @@ mod objects {
 
     /// A prototype of an [`Address`] that is always a contract address, `C...`.
     ///
+    /// This is the default prototype of `Address`, i.e. `<Address as
+    /// SorobanArbitrary>::Prototype`, and is also named [`ArbitraryAddress`].
+    /// Use [`ArbitraryAddressAccount`] to generate account addresses instead.
+    ///
     /// Convert it to an `Address` with [`IntoVal`] or [`FromVal`].
     ///
     /// [`IntoVal`]: crate::IntoVal
@@ -686,6 +690,14 @@ mod objects {
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
     pub struct ArbitraryAddressContract {
         inner: [u8; 32],
+    }
+
+    /// The default prototype of an [`Address`], an alias of
+    /// [`ArbitraryAddressContract`], which is always a contract address, `C...`.
+    pub type ArbitraryAddress = ArbitraryAddressContract;
+
+    impl SorobanArbitrary for Address {
+        type Prototype = ArbitraryAddressContract;
     }
 
     impl TryFromVal<Env, ArbitraryAddressContract> for Address {
@@ -721,42 +733,9 @@ mod objects {
         }
     }
 
-    /// A prototype of an [`Address`] that is either an account address, `G...`,
-    /// or a contract address, `C...`.
-    ///
-    /// This is the default prototype of `Address`, i.e. `<Address as
-    /// SorobanArbitrary>::Prototype`. Use [`ArbitraryAddressAccount`] or
-    /// [`ArbitraryAddressContract`] to generate only one kind.
-    ///
-    /// Convert it to an `Address` with [`IntoVal`] or [`FromVal`].
-    ///
-    /// [`IntoVal`]: crate::IntoVal
-    /// [`FromVal`]: crate::FromVal
-    #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
-    #[non_exhaustive]
-    pub enum ArbitraryAddress {
-        Account(ArbitraryAddressAccount),
-        Contract(ArbitraryAddressContract),
-    }
-
-    impl SorobanArbitrary for Address {
-        type Prototype = ArbitraryAddress;
-    }
-
-    impl TryFromVal<Env, ArbitraryAddress> for Address {
-        type Error = ConversionError;
-        fn try_from_val(env: &Env, v: &ArbitraryAddress) -> Result<Self, Self::Error> {
-            match v {
-                ArbitraryAddress::Account(v) => Address::try_from_val(env, v),
-                ArbitraryAddress::Contract(v) => Address::try_from_val(env, v),
-            }
-        }
-    }
-
     //////////////////////////////////
 
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
-    #[non_exhaustive]
     pub enum ArbitraryMuxedAddress {
         Address(ArbitraryAddress),
         Muxed { ed25519: [u8; 32], id: u64 },
@@ -1756,57 +1735,13 @@ mod tests {
         }
     }
 
+    /// The default prototype of `Address` is the contract prototype.
     #[test]
     fn test_address_contract_is_always_a_contract() {
         let env = Env::default();
-        for proto in gen_prototypes::<ArbitraryAddressContract>(100) {
-            let address: Address = proto.into_val(&env);
-            assert!(matches!(ScAddress::from(&address), ScAddress::Contract(_)));
-        }
-    }
-
-    #[test]
-    fn test_address_is_account_or_contract() {
-        let env = Env::default();
-        let mut accounts = 0;
-        let mut contracts = 0;
         for proto in gen_prototypes::<<Address as SorobanArbitrary>::Prototype>(100) {
             let address: Address = proto.into_val(&env);
-            match ScAddress::from(&address) {
-                ScAddress::Account(_) => accounts += 1,
-                ScAddress::Contract(_) => contracts += 1,
-                other => panic!("unexpected address kind: {other:?}"),
-            }
-        }
-        assert!(accounts > 0, "no account addresses generated");
-        assert!(contracts > 0, "no contract addresses generated");
-    }
-
-    /// An alternative prototype can be used in place of the default prototype
-    /// inside the container prototypes.
-    #[test]
-    fn test_address_account_in_containers() {
-        let env = Env::default();
-        for proto in gen_prototypes::<ArbitraryVec<ArbitraryAddressAccount>>(10) {
-            let addresses: Vec<Address> = proto.into_val(&env);
-            for address in addresses.iter() {
-                assert!(matches!(ScAddress::from(&address), ScAddress::Account(_)));
-            }
-        }
-        for proto in gen_prototypes::<ArbitraryOption<ArbitraryAddressAccount>>(10) {
-            let address: Option<Address> = proto.into_val(&env);
-            if let Some(address) = address {
-                assert!(matches!(ScAddress::from(&address), ScAddress::Account(_)));
-            }
-        }
-        for proto in
-            gen_prototypes::<ArbitraryMap<ArbitraryAddressAccount, ArbitraryAddressContract>>(10)
-        {
-            let map: Map<Address, Address> = proto.into_val(&env);
-            for (k, v) in map.iter() {
-                assert!(matches!(ScAddress::from(&k), ScAddress::Account(_)));
-                assert!(matches!(ScAddress::from(&v), ScAddress::Contract(_)));
-            }
+            assert!(matches!(ScAddress::from(&address), ScAddress::Contract(_)));
         }
     }
 

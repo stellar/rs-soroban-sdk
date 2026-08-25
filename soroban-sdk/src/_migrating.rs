@@ -77,18 +77,7 @@
 //!    events pack this way; a `contracttype` struct still writes all of its fields. An event that
 //!    must keep publishing every field opts out with `#[contractevent(sparse = false)]`.
 //!
-//! 6. [The `Address` fuzzing prototype generates account addresses as well as contract
-//!    addresses][v28_arbitrary_address]. `<Address as SorobanArbitrary>::Prototype`, i.e.
-//!    [`ArbitraryAddress`], generated only contract (`C...`) addresses, and now generates account
-//!    (`G...`) addresses too. Two new prototypes generate a single kind:
-//!    [`ArbitraryAddressAccount`] and [`ArbitraryAddressContract`], and either can be named in
-//!    place of the default wherever a fuzz test or property test needs one kind.
-//!
 //! [`Env::upload`]: crate::Env::upload
-//! [v28_arbitrary_address]: v28_arbitrary_address
-//! [`ArbitraryAddress`]: crate::testutils::arbitrary::ArbitraryAddress
-//! [`ArbitraryAddressAccount`]: crate::testutils::arbitrary::ArbitraryAddressAccount
-//! [`ArbitraryAddressContract`]: crate::testutils::arbitrary::ArbitraryAddressContract
 //! [v28_contracttype_unpacking]: v28_contracttype_unpacking
 //! [v28_contractevent_packing]: v28_contractevent_packing
 //! [`ContractExecutable`]: crate::ContractExecutable
@@ -446,7 +435,6 @@ pub mod v25_poseidon;
 pub mod v25_resource_limits;
 pub mod v27_bytes_literals;
 pub mod v27_export;
-pub mod v28_arbitrary_address;
 pub mod v28_contractevent_packing;
 pub mod v28_contracttype_unpacking;
 pub mod v28_native_contract_code;
