@@ -65,10 +65,12 @@ impl<const N: usize> Hash<N> {
         self.0.to_val()
     }
 
+    #[doc(hidden)]
     pub fn as_object(&self) -> &BytesObject {
         self.0.as_object()
     }
 
+    #[doc(hidden)]
     pub fn to_object(&self) -> BytesObject {
         self.0.to_object()
     }
