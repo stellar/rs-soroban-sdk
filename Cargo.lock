@@ -1964,7 +1964,7 @@ dependencies = [
 
 [[package]]
 name = "test_fuzz_afl"
-version = "27.0.5"
+version = "28.0.0-rc.1"
 dependencies = [
  "soroban-sdk",
 ]
