@@ -5,6 +5,8 @@ use crate::{
     Vec,
 };
 
+pub use crate::{ContractExecutable, ContractExecutableRef};
+
 /// Context of a single authorized call performed by an address.
 ///
 /// Custom account contracts that implement `__check_auth` special function
@@ -52,14 +54,6 @@ pub struct CreateContractWithConstructorHostFnContext {
     pub executable: ContractExecutable,
     pub salt: BytesN<32>,
     pub constructor_args: Vec<Val>,
-}
-
-/// Contract executable used for creating a new contract and used in
-/// `CreateContractHostFnContext`.
-#[derive(Clone, Debug)]
-#[contracttype(crate_path = "crate")]
-pub enum ContractExecutable {
-    Wasm(BytesN<32>),
 }
 
 /// A node in the tree of authorizations performed on behalf of the current

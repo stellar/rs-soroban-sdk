@@ -174,6 +174,43 @@
 //! ```
 //!
 //!
+//! ## Alternative prototypes
+//!
+//! [`SorobanArbitrary::Prototype`] names the _default_ prototype of a contract
+//! type, but a contract type may be converted from more than one prototype.
+//! A prototype that generates a narrower set of values can be named directly,
+//! in place of the default, wherever a fuzz test needs it.
+//!
+//! [`Address`] has two prototypes: [`ArbitraryAddressContract`], its default,
+//! also named [`ArbitraryAddress`], which generates only contract (`C...`)
+//! addresses; and [`ArbitraryAddressAccount`], which generates only account
+//! (`G...`) addresses.
+//!
+//! ```
+//! # macro_rules! fuzz_target {
+//! #     (|$data:ident: $dty: ty| $body:block) => { };
+//! # }
+//! use soroban_sdk::{Address, Env, IntoVal, Vec};
+//! use soroban_sdk::testutils::arbitrary::{
+//!     Arbitrary, ArbitraryAddressAccount, ArbitraryVec,
+//! };
+//!
+//! #[derive(Arbitrary, Debug)]
+//! struct TestInput {
+//!     // Always an account address.
+//!     from: ArbitraryAddressAccount,
+//!     // Always account addresses.
+//!     to: ArbitraryVec<ArbitraryAddressAccount>,
+//! }
+//!
+//! fuzz_target!(|input: TestInput| {
+//!     let env = Env::default();
+//!     let from: Address = input.from.into_val(&env);
+//!     let to: Vec<Address> = input.to.into_val(&env);
+//!     // fuzz the program based on the input
+//! });
+//! ```
+//!
 //! ## Fuzzing with `cargo-afl` instead of `cargo-fuzz`
 //!
 //! Everything above applies unchanged when fuzzing with [`cargo-afl`], which
@@ -266,6 +303,10 @@ pub use std;
 
 pub use api::*;
 pub use fuzz_test_helpers::*;
+pub use objects::{
+    ArbitraryAddress, ArbitraryAddressAccount, ArbitraryAddressContract, ArbitraryMap,
+    ArbitraryMuxedAddress, ArbitraryOption, ArbitraryVec,
+};
 
 /// The traits that must be implemented on Soroban types to support fuzzing.
 ///
@@ -434,12 +475,12 @@ mod objects {
         type Prototype = ArbitraryOption<T::Prototype>;
     }
 
-    impl<T> TryFromVal<Env, ArbitraryOption<T::Prototype>> for Option<T>
+    impl<T, P> TryFromVal<Env, ArbitraryOption<P>> for Option<T>
     where
-        T: SorobanArbitrary,
+        T: SorobanArbitrary + TryFromVal<Env, P>,
     {
         type Error = ConversionError;
-        fn try_from_val(env: &Env, v: &ArbitraryOption<T::Prototype>) -> Result<Self, Self::Error> {
+        fn try_from_val(env: &Env, v: &ArbitraryOption<P>) -> Result<Self, Self::Error> {
             match v.0 {
                 Some(ref t) => Ok(Some(t.into_val(env))),
                 None => Ok(None),
@@ -617,12 +658,12 @@ mod objects {
         type Prototype = ArbitraryVec<T::Prototype>;
     }
 
-    impl<T> TryFromVal<Env, ArbitraryVec<T::Prototype>> for Vec<T>
+    impl<T, P> TryFromVal<Env, ArbitraryVec<P>> for Vec<T>
     where
-        T: SorobanArbitrary,
+        T: SorobanArbitrary + TryFromVal<Env, P>,
     {
         type Error = ConversionError;
-        fn try_from_val(env: &Env, v: &ArbitraryVec<T::Prototype>) -> Result<Self, Self::Error> {
+        fn try_from_val(env: &Env, v: &ArbitraryVec<P>) -> Result<Self, Self::Error> {
             match v {
                 ArbitraryVec::Good(vec) => {
                     let mut buf: Vec<T> = Vec::new(env);
@@ -681,16 +722,13 @@ mod objects {
         type Prototype = ArbitraryMap<K::Prototype, V::Prototype>;
     }
 
-    impl<K, V> TryFromVal<Env, ArbitraryMap<K::Prototype, V::Prototype>> for Map<K, V>
+    impl<K, V, KP, VP> TryFromVal<Env, ArbitraryMap<KP, VP>> for Map<K, V>
     where
-        K: SorobanArbitrary,
-        V: SorobanArbitrary,
+        K: SorobanArbitrary + TryFromVal<Env, KP>,
+        V: SorobanArbitrary + TryFromVal<Env, VP>,
     {
         type Error = ConversionError;
-        fn try_from_val(
-            env: &Env,
-            v: &ArbitraryMap<K::Prototype, V::Prototype>,
-        ) -> Result<Self, Self::Error> {
+        fn try_from_val(env: &Env, v: &ArbitraryMap<KP, VP>) -> Result<Self, Self::Error> {
             match v {
                 ArbitraryMap::Good(vec) => {
                     let mut map: Map<K, V> = Map::new(env);
@@ -719,21 +757,58 @@ mod objects {
 
     //////////////////////////////////
 
+    /// A prototype of an [`Address`] that is always a contract address, `C...`.
+    ///
+    /// This is the default prototype of `Address`, i.e. `<Address as
+    /// SorobanArbitrary>::Prototype`, and is also named [`ArbitraryAddress`].
+    /// Use [`ArbitraryAddressAccount`] to generate account addresses instead.
+    ///
+    /// Convert it to an `Address` with [`IntoVal`] or [`FromVal`].
+    ///
+    /// [`IntoVal`]: crate::IntoVal
+    /// [`FromVal`]: crate::FromVal
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
-    pub struct ArbitraryAddress {
+    pub struct ArbitraryAddressContract {
         inner: [u8; 32],
     }
 
+    /// The default prototype of an [`Address`], an alias of
+    /// [`ArbitraryAddressContract`], which is always a contract address, `C...`.
+    pub type ArbitraryAddress = ArbitraryAddressContract;
+
     impl SorobanArbitrary for Address {
-        type Prototype = ArbitraryAddress;
+        type Prototype = ArbitraryAddressContract;
     }
 
-    impl TryFromVal<Env, ArbitraryAddress> for Address {
+    impl TryFromVal<Env, ArbitraryAddressContract> for Address {
         type Error = ConversionError;
-        fn try_from_val(env: &Env, v: &ArbitraryAddress) -> Result<Self, Self::Error> {
+        fn try_from_val(env: &Env, v: &ArbitraryAddressContract) -> Result<Self, Self::Error> {
             use crate::env::xdr::{ContractId, Hash, ScAddress};
 
             let sc_addr = ScVal::Address(ScAddress::Contract(ContractId(Hash(v.inner))));
+            Ok(sc_addr.into_val(env))
+        }
+    }
+
+    /// A prototype of an [`Address`] that is always an account address, `G...`.
+    ///
+    /// Convert it to an `Address` with [`IntoVal`] or [`FromVal`].
+    ///
+    /// [`IntoVal`]: crate::IntoVal
+    /// [`FromVal`]: crate::FromVal
+    #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+    pub struct ArbitraryAddressAccount {
+        inner: [u8; 32],
+    }
+
+    impl TryFromVal<Env, ArbitraryAddressAccount> for Address {
+        type Error = ConversionError;
+        fn try_from_val(env: &Env, v: &ArbitraryAddressAccount) -> Result<Self, Self::Error> {
+            use crate::env::xdr::{AccountId, PublicKey, ScAddress, Uint256};
+
+            let sc_addr = ScVal::Address(ScAddress::Account(AccountId(
+                PublicKey::PublicKeyTypeEd25519(Uint256(v.inner)),
+            )));
             Ok(sc_addr.into_val(env))
         }
     }
@@ -1601,6 +1676,9 @@ mod fuzz_test_helpers {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::testutils::Address as _;
+    use crate::token::{Client as TokenClient, StellarAssetClient};
+    use crate::xdr::{self, ScAddress};
     use crate::{
         Address, Bytes, BytesN, Duration, Error, Map, String, Symbol, Timepoint, Val, Vec, I256,
         U256,
@@ -1608,6 +1686,8 @@ mod tests {
     use crate::{Env, IntoVal};
     use arbitrary::{Arbitrary, Unstructured};
     use rand::{RngCore, SeedableRng};
+    use std::rc::Rc;
+    use std::vec::Vec as RustVec;
 
     fn run_test<T>()
     where
@@ -1706,6 +1786,135 @@ mod tests {
     #[test]
     fn test_address() {
         run_test::<Address>()
+    }
+
+    /// Generate `count` prototypes with a deterministic rng.
+    fn gen_prototypes<P>(count: usize) -> RustVec<P>
+    where
+        P: for<'a> Arbitrary<'a>,
+    {
+        let mut rng = rand::rngs::StdRng::seed_from_u64(0);
+        let mut rng_data = [0u8; 64];
+        let mut protos = RustVec::new();
+        while protos.len() < count {
+            rng.fill_bytes(&mut rng_data);
+            let mut unstructured = Unstructured::new(&rng_data);
+            if let Ok(proto) = P::arbitrary(&mut unstructured) {
+                protos.push(proto);
+            }
+        }
+        protos
+    }
+
+    #[test]
+    fn test_address_account_is_always_an_account() {
+        let env = Env::default();
+        for proto in gen_prototypes::<ArbitraryAddressAccount>(100) {
+            let address: Address = proto.into_val(&env);
+            assert!(matches!(ScAddress::from(&address), ScAddress::Account(_)));
+        }
+    }
+
+    /// The default prototype of `Address` is the contract prototype.
+    #[test]
+    fn test_address_contract_is_always_a_contract() {
+        let env = Env::default();
+        for proto in gen_prototypes::<<Address as SorobanArbitrary>::Prototype>(100) {
+            let address: Address = proto.into_val(&env);
+            assert!(matches!(ScAddress::from(&address), ScAddress::Contract(_)));
+        }
+    }
+
+    /// A generated account address holds no asset until it has a trustline for
+    /// it, while a generated contract address needs none, so a test written when
+    /// the `Address` prototype generated only contract addresses can fail on a
+    /// generated account address.
+    #[test]
+    fn test_stellar_asset_contract_needs_a_trustline_for_an_account_address() {
+        let env = Env::default();
+        env.mock_all_auths();
+        let sac = env.register_stellar_asset_contract_v2(Address::generate(&env));
+        let asset = StellarAssetClient::new(&env, &sac.address());
+        let token = TokenClient::new(&env, &sac.address());
+
+        // A contract address holds the asset without a trustline.
+        let contract: Address = gen_prototypes::<ArbitraryAddressContract>(1)[0].into_val(&env);
+        asset.mint(&contract, &100);
+        assert_eq!(token.balance(&contract), 100);
+
+        // An account address does not, until the account holds a trustline for
+        // the asset, which the test has to create itself.
+        let account: Address = gen_prototypes::<ArbitraryAddressAccount>(1)[0].into_val(&env);
+        assert!(asset.try_mint(&account, &100).is_err());
+
+        create_account(&env, &account);
+        create_trustline(&env, &account, &sac.asset());
+        asset.mint(&account, &100);
+        assert_eq!(token.balance(&account), 100);
+    }
+
+    fn account_id(address: &Address) -> xdr::AccountId {
+        match ScAddress::from(address) {
+            ScAddress::Account(account_id) => account_id,
+            other => panic!("not an account address: {other:?}"),
+        }
+    }
+
+    fn add_ledger_entry(env: &Env, key: xdr::LedgerKey, data: xdr::LedgerEntryData) {
+        let entry = xdr::LedgerEntry {
+            data,
+            last_modified_ledger_seq: 0,
+            ext: xdr::LedgerEntryExt::V0,
+        };
+        env.host()
+            .add_ledger_entry(&Rc::new(key), &Rc::new(entry), None)
+            .unwrap();
+    }
+
+    fn create_account(env: &Env, address: &Address) {
+        let account_id = account_id(address);
+        add_ledger_entry(
+            env,
+            xdr::LedgerKey::Account(xdr::LedgerKeyAccount {
+                account_id: account_id.clone(),
+            }),
+            xdr::LedgerEntryData::Account(xdr::AccountEntry {
+                account_id,
+                balance: 0,
+                flags: 0,
+                home_domain: Default::default(),
+                inflation_dest: None,
+                num_sub_entries: 0,
+                seq_num: xdr::SequenceNumber(0),
+                thresholds: xdr::Thresholds([1; 4]),
+                signers: xdr::VecM::default(),
+                ext: xdr::AccountEntryExt::V0,
+            }),
+        );
+    }
+
+    fn create_trustline(env: &Env, address: &Address, asset: &xdr::Asset) {
+        let account_id = account_id(address);
+        let asset = match asset.clone() {
+            xdr::Asset::Native => xdr::TrustLineAsset::Native,
+            xdr::Asset::CreditAlphanum4(a) => xdr::TrustLineAsset::CreditAlphanum4(a),
+            xdr::Asset::CreditAlphanum12(a) => xdr::TrustLineAsset::CreditAlphanum12(a),
+        };
+        add_ledger_entry(
+            env,
+            xdr::LedgerKey::Trustline(xdr::LedgerKeyTrustLine {
+                account_id: account_id.clone(),
+                asset: asset.clone(),
+            }),
+            xdr::LedgerEntryData::Trustline(xdr::TrustLineEntry {
+                account_id,
+                asset,
+                balance: 0,
+                limit: i64::MAX,
+                flags: xdr::TrustLineFlags::AuthorizedFlag as u32,
+                ext: xdr::TrustLineEntryExt::V0,
+            }),
+        );
     }
 
     #[test]

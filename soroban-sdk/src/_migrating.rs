@@ -29,10 +29,64 @@
 //!    snapshot JSON files containing natively registered contracts change when upgrading. To test
 //!    contract deployments where a single contract code entry is shared by multiple contracts,
 //!    upload the contract once with the new [`Env::upload`] and deploy it multiple times with
-//!    [`DeployerWithAddress::deploy_v2`].
+//!    [`DeployerWithAddress::deploy_contract`].
+//!
+//! 4. [`DeployerWithAddress::deploy_contract`] and [`Deployer::update_current_contract`] replace
+//!    [`DeployerWithAddress::deploy_v2`] and [`Deployer::update_current_contract_wasm`], which are
+//!    deprecated. The new functions accept a [`ContractExecutable`], which is either a Wasm hash
+//!    ([`ContractExecutable::Wasm`]) or a reference to an executable reference entry owned by a
+//!    contract ([`ContractExecutable::ExternalRef`], see [`ExecutableRefs`]). The deprecated
+//!    functions are unchanged and behave exactly as before. To migrate, wrap the Wasm hash in
+//!    [`ContractExecutable::Wasm`].
+//!
+//!    ```
+//!    use soroban_sdk::{contract, contractimpl, BytesN, ContractExecutable, Env};
+//!
+//!    #[contract]
+//!    pub struct Contract;
+//!
+//!    #[contractimpl]
+//!    impl Contract {
+//!        pub fn upgrade(env: Env, wasm_hash: BytesN<32>) {
+//!            // 👇 👀 Replaces update_current_contract_wasm, and takes any executable.
+//!            env.deployer()
+//!                .update_current_contract(ContractExecutable::Wasm(wasm_hash));
+//!        }
+//!    }
+//!
+//!    #[test]
+//!    fn test() {
+//!    # }
+//!    # #[cfg(feature = "testutils")]
+//!    # fn main() {
+//!        let env = Env::default();
+//!        let contract_address = env.register(Contract, ());
+//!        let contract = ContractClient::new(&env, &contract_address);
+//!        // Upload the contract code before using it as the executable.
+//!        const WASM: &[u8] = include_bytes!("../doctest_fixtures/contract.wasm");
+//!        let wasm_hash = env.deployer().upload_contract_wasm(WASM);
+//!        contract.upgrade(&wasm_hash);
+//!    }
+//!    # #[cfg(not(feature = "testutils"))]
+//!    # fn main() { }
+//!    ```
+//!
+//! 5. [Events with a map data format omit void fields when publishing][v28_contractevent_packing].
+//!    A data field of a [`contractevent`] whose value is void (a `None` [`Option`], or the unit
+//!    type `()`) is omitted from the published map instead of being written with a void value. Only
+//!    events pack this way; a `contracttype` struct still writes all of its fields. An event that
+//!    must keep publishing every field opts out with `#[contractevent(sparse = false)]`.
 //!
 //! [`Env::upload`]: crate::Env::upload
 //! [v28_contracttype_unpacking]: v28_contracttype_unpacking
+//! [v28_contractevent_packing]: v28_contractevent_packing
+//! [`ContractExecutable`]: crate::ContractExecutable
+//! [`ContractExecutable::Wasm`]: crate::ContractExecutable::Wasm
+//! [`ContractExecutable::ExternalRef`]: crate::ContractExecutable::ExternalRef
+//! [`ExecutableRefs`]: crate::executable_refs::ExecutableRefs
+//! [`DeployerWithAddress::deploy_contract`]: crate::deploy::DeployerWithAddress::deploy_contract
+//! [`Deployer::update_current_contract`]: crate::deploy::Deployer::update_current_contract
+//! [`Deployer::update_current_contract_wasm`]: crate::deploy::Deployer::update_current_contract_wasm
 //!
 //! # Migrating from v26 to v27
 //!
@@ -208,6 +262,7 @@
 //!    constructors, pass `()`.
 //!
 //!    ```
+//!    # #![allow(deprecated)]
 //!    use soroban_sdk::{contract, contractimpl, BytesN, Env};
 //!
 //!    #[contract]
@@ -380,6 +435,7 @@ pub mod v25_poseidon;
 pub mod v25_resource_limits;
 pub mod v27_bytes_literals;
 pub mod v27_export;
+pub mod v28_contractevent_packing;
 pub mod v28_contracttype_unpacking;
 pub mod v28_native_contract_code;
 pub mod v28_spec_shaking;
