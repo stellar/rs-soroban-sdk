@@ -24,6 +24,14 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: actions/configure-pages@v5
+    - name: Set the commit the docs are built from in the banner
+      env:
+        COMMIT: ${{ github.sha }}
+      run: |
+        sed -i \
+          -e "s|{{COMMIT}}|$COMMIT|g" \
+          -e "s|{{COMMIT_SHORT}}|${COMMIT:0:7}|g" \
+          .github/docs-banner.html
     - uses: stellar/actions/rust-cache@main
     - run: rustup install nightly
     - name: Build docs for all library crates
