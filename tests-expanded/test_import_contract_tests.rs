@@ -460,6 +460,7 @@ mod addcontract {
             }
         }
     }
+    #[doc(hidden)]
     pub static __SPEC_XDR_TYPE_CONTRACTEXECUTABLEREF: [u8; 80usize] =
         ContractExecutableRef::spec_xdr();
     impl ContractExecutableRef {
@@ -949,6 +950,7 @@ mod addcontract {
             }
         }
     }
+    #[doc(hidden)]
     pub static __SPEC_XDR_TYPE_CONTRACTCONTEXT: [u8; 96usize] = ContractContext::spec_xdr();
     impl ContractContext {
         pub const fn spec_xdr() -> [u8; 96usize] {
@@ -1492,6 +1494,7 @@ mod addcontract {
             }
         }
     }
+    #[doc(hidden)]
     pub static __SPEC_XDR_TYPE_SUBCONTRACTINVOCATION: [u8; 144usize] =
         SubContractInvocation::spec_xdr();
     impl SubContractInvocation {
@@ -1977,6 +1980,7 @@ mod addcontract {
             }
         }
     }
+    #[doc(hidden)]
     pub static __SPEC_XDR_TYPE_CREATECONTRACTHOSTFNCONTEXT: [u8; 116usize] =
         CreateContractHostFnContext::spec_xdr();
     impl CreateContractHostFnContext {
@@ -2481,6 +2485,7 @@ mod addcontract {
             }
         }
     }
+    #[doc(hidden)]
     pub static __SPEC_XDR_TYPE_CREATECONTRACTWITHCONSTRUCTORHOSTFNCONTEXT: [u8; 164usize] =
         CreateContractWithConstructorHostFnContext::spec_xdr();
     impl CreateContractWithConstructorHostFnContext {
@@ -3102,6 +3107,7 @@ mod addcontract {
             }
         }
     }
+    #[doc(hidden)]
     pub static __SPEC_XDR_TYPE_CONTRACTEXECUTABLE: [u8; 128usize] = ContractExecutable::spec_xdr();
     impl ContractExecutable {
         pub const fn spec_xdr() -> [u8; 128usize] {
@@ -3737,6 +3743,7 @@ mod addcontract {
             }
         }
     }
+    #[doc(hidden)]
     pub static __SPEC_XDR_TYPE_CONTEXT: [u8; 244usize] = Context::spec_xdr();
     impl Context {
         pub const fn spec_xdr() -> [u8; 244usize] {
@@ -4465,6 +4472,7 @@ mod addcontract {
             }
         }
     }
+    #[doc(hidden)]
     pub static __SPEC_XDR_TYPE_INVOKERCONTRACTAUTHENTRY: [u8; 268usize] =
         InvokerContractAuthEntry::spec_xdr();
     impl InvokerContractAuthEntry {
@@ -5170,6 +5178,7 @@ mod addcontract {
             }
         }
     }
+    #[doc(hidden)]
     pub static __SPEC_XDR_TYPE_EXECUTABLE: [u8; 104usize] = Executable::spec_xdr();
     impl Executable {
         pub const fn spec_xdr() -> [u8; 104usize] {
@@ -5703,6 +5712,7 @@ mod addcontract {
             ::core::option::Option::Some(::core::cmp::Ordering::Equal)
         }
     }
+    #[doc(hidden)]
     pub static __SPEC_XDR_TYPE_ERROR: [u8; 48usize] = Error::spec_xdr();
     impl Error {
         pub const fn spec_xdr() -> [u8; 48usize] {
@@ -5866,6 +5876,7 @@ mod addcontract {
             ::core::option::Option::Some(::core::cmp::Ordering::Equal)
         }
     }
+    #[doc(hidden)]
     pub static __SPEC_XDR_TYPE_MYERROR: [u8; 48usize] = MyError::spec_xdr();
     impl MyError {
         pub const fn spec_xdr() -> [u8; 48usize] {
@@ -6009,6 +6020,7 @@ impl ::core::cmp::PartialEq for Error {
         __self_discr == __arg1_discr
     }
 }
+#[doc(hidden)]
 pub static __SPEC_XDR_TYPE_ERROR: [u8; 68usize] = Error::spec_xdr();
 impl Error {
     pub const fn spec_xdr() -> [u8; 68usize] {
