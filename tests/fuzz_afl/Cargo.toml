@@ -8,10 +8,6 @@ publish = false
 rust-version.workspace = true
 
 [lib]
-# Adding rlib is required so that the test_fuzz_afl crate can be imported as a
-# library into the fuzzing crate. However, having multiple crate types is a
-# problem, it'll cause LTO optimizations to be disabled for the cdylib build.
-# TODO: Figure out what to do about this.
 crate-type = ["cdylib", "rlib"]
 doctest = false
 
