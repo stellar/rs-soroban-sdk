@@ -203,6 +203,15 @@ jobs:
         name: cargo-fuzz
         version: 0.13.1
     - run: cargo install cargo-afl --locked
+    # Replaces the cargo install above once stellar/binaries#111 lands in a
+    # release, in a tag after v45. The release carries only the cargo-afl
+    # binary, not the AFL++ toolchain it builds at install time, so that has to
+    # be built too.
+    # - uses: stellar/binaries@v45
+    #   with:
+    #     name: cargo-afl
+    #     version: 0.18.2
+    # - run: cargo afl config --build
     # cargo-afl builds with -C target-cpu=native, and appends any RUSTFLAGS
     # after its own, so this overrides it. Without it cached artifacts, proc
     # macros included, carry instructions that runners with an older CPU cannot
