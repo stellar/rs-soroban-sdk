@@ -7,13 +7,13 @@
 //! values: `cargo-fuzz` and `cargo-afl` consume it directly, and `proptest`
 //! through a bridge.
 //!
-//! For generating the same values in a `proptest` property test, see the
-//! [`proptest`] module.
+//! Everything below is common to all three. For what is specific to each,
+//! see the [`cargo_fuzz`], [`cargo_afl`], and [`proptest`] modules.
 //!
 //! [`cargo-fuzz`]: https://github.com/rust-fuzz/cargo-fuzz/
 //! [`cargo-afl`]: https://github.com/rust-fuzz/afl.rs/
 //! [`Arbitrary`]: ::arbitrary::Arbitrary
-//! [`proptest`]: crate::testutils::proptest
+//! [`proptest`]: self::proptest
 //!
 //! This module
 //!
@@ -190,132 +190,10 @@
 //! }
 //! ```
 //!
-//! ## Fuzzing with `cargo-fuzz`
-//!
-//! [`cargo-fuzz`] drives libFuzzer, and requires a nightly compiler:
-//!
-//! ```text
-//! cargo install cargo-fuzz --locked
-//! ```
-//!
-//! A libFuzzer fuzz target is its own crate, which `cargo fuzz init` creates in
-//! a `fuzz` directory, containing targets that call the [`fuzz_target!`] macro:
-//!
-//! ```toml
-//! [dependencies]
-//! libfuzzer-sys = "0.4"
-//! soroban-sdk = { version = "*", features = ["testutils"] }
-//! my-contract = { path = ".." }
-//! ```
-//!
-//! [`fuzz_target!`]: https://docs.rs/libfuzzer-sys/latest/libfuzzer_sys/macro.fuzz_target.html
-//!
-//! ```
-//! # macro_rules! fuzz_target {
-//! #     (|$data:ident: $dty: ty| $body:block) => { };
-//! # }
-//! use soroban_sdk::testutils::arbitrary::{Arbitrary, SorobanArbitrary};
-//! use soroban_sdk::{Address, Env, IntoVal};
-//!
-//! #[derive(Arbitrary, Debug)]
-//! struct TestInput {
-//!     deposit_amount: i128,
-//!     claim_address: <Address as SorobanArbitrary>::Prototype,
-//! }
-//!
-//! fuzz_target!(|input: TestInput| {
-//!     let env = Env::default();
-//!     let claim_address: Address = input.claim_address.into_val(&env);
-//!     // fuzz the contract based on the input
-//! });
-//! ```
-//!
-//! Build and fuzz the target, from the `fuzz` directory:
-//!
-//! ```text
-//! cargo +nightly fuzz run fuzz_target_1
-//! ```
-//!
-//! Crashing inputs are written to `artifacts/fuzz_target_1/`, and a crash is
-//! replayed by passing the file back to the same command:
-//!
-//! ```text
-//! RUST_BACKTRACE=1 cargo +nightly fuzz run fuzz_target_1 artifacts/fuzz_target_1/crash-*
-//! ```
-//!
-//! ## Fuzzing with `cargo-afl`
-//!
-//! [`cargo-afl`] drives [AFL++] instead of libFuzzer, and runs on stable Rust.
-//!
-//! [AFL++]: https://aflplus.plus
-//!
-//! Installing it builds AFL++ from source, so a C compiler and LLVM need to be
-//! available. `cargo afl system-config` then tunes the machine for fuzzing:
-//!
-//! ```text
-//! cargo install cargo-afl --locked
-//! cargo afl system-config
-//! ```
-//!
-//! An AFL++ fuzz target is a crate with a `main` that calls the [`afl::fuzz!`]
-//! macro, and it depends on the `arbitrary` crate directly, because that is
-//! where the `Arbitrary` derive comes from and where `fuzz!` looks up the trait:
-//!
-//! ```toml
-//! [dependencies]
-//! afl = "0.18"
-//! arbitrary = { version = "~1.3.0", features = ["derive"] }
-//! soroban-sdk = { version = "*", features = ["testutils"] }
-//! my-contract = { path = ".." }
-//! ```
-//!
-//! [`afl::fuzz!`]: https://docs.rs/afl/latest/afl/macro.fuzz.html
-//!
-//! ```
-//! # macro_rules! fuzz {
-//! #     (|$data:ident: $dty: ty| $body:block) => { };
-//! # }
-//! use arbitrary::Arbitrary;
-//! use soroban_sdk::testutils::arbitrary::SorobanArbitrary;
-//! use soroban_sdk::{Address, Env, IntoVal};
-//!
-//! #[derive(Arbitrary, Debug)]
-//! struct TestInput {
-//!     deposit_amount: i128,
-//!     claim_address: <Address as SorobanArbitrary>::Prototype,
-//! }
-//!
-//! fn main() {
-//!     fuzz!(|input: TestInput| {
-//!         // Create the `Env` inside the closure, not outside: AFL++ reuses the
-//!         // process for many inputs, and state created outside the closure
-//!         // would leak from one input into the next.
-//!         let env = Env::default();
-//!         let claim_address: Address = input.claim_address.into_val(&env);
-//!         // fuzz the contract based on the input
-//!     });
-//! }
-//! ```
-//!
-//! Build with `cargo afl build`, which is `cargo build` with the AFL++
-//! instrumentation added, and fuzz the resulting binary with an input directory
-//! containing at least one seed input:
-//!
-//! ```text
-//! cargo afl build
-//! cargo afl fuzz -i in -o out target/debug/fuzz_target_1
-//! ```
-//!
-//! Fuzz debug builds, at least at first: they keep integer overflow checks and
-//! `debug_assert!`s enabled, and those catch bugs a release build allows.
-//!
-//! Crashing inputs are written to `out/default/crashes/`. The target reads an
-//! input on stdin when it is not being driven by AFL++, so a crash is replayed
-//! by feeding the file back in:
-//!
-//! ```text
-//! RUST_BACKTRACE=1 ./target/debug/fuzz_target_1 < out/default/crashes/id:000000*
-//! ```
+
+pub mod cargo_afl;
+pub mod cargo_fuzz;
+pub mod proptest;
 
 /// A reexport of the `arbitrary` crate.
 ///

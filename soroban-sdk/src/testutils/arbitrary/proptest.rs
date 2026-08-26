@@ -7,8 +7,8 @@
 //! ordinary `#[test]` under `cargo test`, with no fuzzing toolchain.
 //!
 //! [`proptest`]: https://docs.rs/proptest
-//! [`arbitrary`]: crate::testutils::arbitrary
-//! [`SorobanArbitrary::Prototype`]: crate::testutils::arbitrary::SorobanArbitrary::Prototype
+//! [`arbitrary`]: super
+//! [`SorobanArbitrary::Prototype`]: super::SorobanArbitrary::Prototype
 //! [`Arbitrary`]: ::arbitrary::Arbitrary
 //!
 //!
@@ -86,7 +86,7 @@
 //! # fn main() { }
 //! ```
 //!
-//! [`ArbitraryAddressAccount`]: crate::testutils::arbitrary::ArbitraryAddressAccount
+//! [`ArbitraryAddressAccount`]: super::ArbitraryAddressAccount
 //!
 //!
 //! ## Example: generate a custom contract type in a property test
