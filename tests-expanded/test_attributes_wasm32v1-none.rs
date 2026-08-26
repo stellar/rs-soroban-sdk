@@ -47,6 +47,7 @@ impl ::core::cmp::PartialEq for AttributeType {
         self.value == other.value
     }
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ATTRIBUTETYPE: [u8; 56usize] = AttributeType::spec_xdr();
 impl AttributeType {
@@ -115,6 +116,7 @@ pub struct AttributeEvent {
     topic: u32,
     value: u32,
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_EVENT_ATTRIBUTEEVENT: [u8; 112usize] = AttributeEvent::spec_xdr();
 impl AttributeEvent {

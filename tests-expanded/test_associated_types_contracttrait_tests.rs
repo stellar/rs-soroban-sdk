@@ -1157,6 +1157,7 @@ mod test_with_wasm {
                 }
             }
         }
+        #[doc(hidden)]
         pub static __SPEC_XDR_TYPE_CONTRACTEXECUTABLEREF: [u8; 80usize] =
             ContractExecutableRef::spec_xdr();
         impl ContractExecutableRef {
@@ -1650,6 +1651,7 @@ mod test_with_wasm {
                 }
             }
         }
+        #[doc(hidden)]
         pub static __SPEC_XDR_TYPE_CONTRACTCONTEXT: [u8; 96usize] = ContractContext::spec_xdr();
         impl ContractContext {
             pub const fn spec_xdr() -> [u8; 96usize] {
@@ -2198,6 +2200,7 @@ mod test_with_wasm {
                 }
             }
         }
+        #[doc(hidden)]
         pub static __SPEC_XDR_TYPE_SUBCONTRACTINVOCATION: [u8; 144usize] =
             SubContractInvocation::spec_xdr();
         impl SubContractInvocation {
@@ -2684,6 +2687,7 @@ mod test_with_wasm {
                 }
             }
         }
+        #[doc(hidden)]
         pub static __SPEC_XDR_TYPE_CREATECONTRACTHOSTFNCONTEXT: [u8; 116usize] =
             CreateContractHostFnContext::spec_xdr();
         impl CreateContractHostFnContext {
@@ -3202,6 +3206,7 @@ mod test_with_wasm {
                 }
             }
         }
+        #[doc(hidden)]
         pub static __SPEC_XDR_TYPE_CREATECONTRACTWITHCONSTRUCTORHOSTFNCONTEXT: [u8; 164usize] =
             CreateContractWithConstructorHostFnContext::spec_xdr();
         impl CreateContractWithConstructorHostFnContext {
@@ -3825,6 +3830,7 @@ mod test_with_wasm {
                 }
             }
         }
+        #[doc(hidden)]
         pub static __SPEC_XDR_TYPE_CONTRACTEXECUTABLE: [u8; 128usize] =
             ContractExecutable::spec_xdr();
         impl ContractExecutable {
@@ -4465,6 +4471,7 @@ mod test_with_wasm {
                 }
             }
         }
+        #[doc(hidden)]
         pub static __SPEC_XDR_TYPE_CONTEXT: [u8; 244usize] = Context::spec_xdr();
         impl Context {
             pub const fn spec_xdr() -> [u8; 244usize] {
@@ -5204,6 +5211,7 @@ mod test_with_wasm {
                 }
             }
         }
+        #[doc(hidden)]
         pub static __SPEC_XDR_TYPE_INVOKERCONTRACTAUTHENTRY: [u8; 268usize] =
             InvokerContractAuthEntry::spec_xdr();
         impl InvokerContractAuthEntry {
@@ -5938,6 +5946,7 @@ mod test_with_wasm {
                 }
             }
         }
+        #[doc(hidden)]
         pub static __SPEC_XDR_TYPE_EXECUTABLE: [u8; 104usize] = Executable::spec_xdr();
         impl Executable {
             pub const fn spec_xdr() -> [u8; 104usize] {

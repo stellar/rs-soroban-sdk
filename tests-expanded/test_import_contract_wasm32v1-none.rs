@@ -242,6 +242,7 @@ mod addcontract {
             }
         }
     }
+    #[doc(hidden)]
     #[link_section = "contractspecv0"]
     pub static __SPEC_XDR_TYPE_CONTRACTEXECUTABLEREF: [u8; 80usize] =
         ContractExecutableRef::spec_xdr();
@@ -407,6 +408,7 @@ mod addcontract {
             }
         }
     }
+    #[doc(hidden)]
     #[link_section = "contractspecv0"]
     pub static __SPEC_XDR_TYPE_CONTRACTCONTEXT: [u8; 96usize] = ContractContext::spec_xdr();
     impl ContractContext {
@@ -566,6 +568,7 @@ mod addcontract {
             }
         }
     }
+    #[doc(hidden)]
     #[link_section = "contractspecv0"]
     pub static __SPEC_XDR_TYPE_SUBCONTRACTINVOCATION: [u8; 144usize] =
         SubContractInvocation::spec_xdr();
@@ -716,6 +719,7 @@ mod addcontract {
             }
         }
     }
+    #[doc(hidden)]
     #[link_section = "contractspecv0"]
     pub static __SPEC_XDR_TYPE_CREATECONTRACTHOSTFNCONTEXT: [u8; 116usize] =
         CreateContractHostFnContext::spec_xdr();
@@ -886,6 +890,7 @@ mod addcontract {
             }
         }
     }
+    #[doc(hidden)]
     #[link_section = "contractspecv0"]
     pub static __SPEC_XDR_TYPE_CREATECONTRACTWITHCONSTRUCTORHOSTFNCONTEXT: [u8; 164usize] =
         CreateContractWithConstructorHostFnContext::spec_xdr();
@@ -1081,6 +1086,7 @@ mod addcontract {
             }
         }
     }
+    #[doc(hidden)]
     #[link_section = "contractspecv0"]
     pub static __SPEC_XDR_TYPE_CONTRACTEXECUTABLE: [u8; 128usize] = ContractExecutable::spec_xdr();
     impl ContractExecutable {
@@ -1313,6 +1319,7 @@ mod addcontract {
             }
         }
     }
+    #[doc(hidden)]
     #[link_section = "contractspecv0"]
     pub static __SPEC_XDR_TYPE_CONTEXT: [u8; 244usize] = Context::spec_xdr();
     impl Context {
@@ -1576,6 +1583,7 @@ mod addcontract {
             }
         }
     }
+    #[doc(hidden)]
     #[link_section = "contractspecv0"]
     pub static __SPEC_XDR_TYPE_INVOKERCONTRACTAUTHENTRY: [u8; 268usize] =
         InvokerContractAuthEntry::spec_xdr();
@@ -1790,6 +1798,7 @@ mod addcontract {
             }
         }
     }
+    #[doc(hidden)]
     #[link_section = "contractspecv0"]
     pub static __SPEC_XDR_TYPE_EXECUTABLE: [u8; 104usize] = Executable::spec_xdr();
     impl Executable {
@@ -1943,6 +1952,7 @@ mod addcontract {
             ::core::option::Option::Some(::core::cmp::Ordering::Equal)
         }
     }
+    #[doc(hidden)]
     #[link_section = "contractspecv0"]
     pub static __SPEC_XDR_TYPE_ERROR: [u8; 48usize] = Error::spec_xdr();
     impl Error {
@@ -2112,6 +2122,7 @@ mod addcontract {
             ::core::option::Option::Some(::core::cmp::Ordering::Equal)
         }
     }
+    #[doc(hidden)]
     #[link_section = "contractspecv0"]
     pub static __SPEC_XDR_TYPE_MYERROR: [u8; 48usize] = MyError::spec_xdr();
     impl MyError {
@@ -2261,6 +2272,7 @@ impl ::core::cmp::PartialEq for Error {
         __self_discr == __arg1_discr
     }
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ERROR: [u8; 68usize] = Error::spec_xdr();
 impl Error {
