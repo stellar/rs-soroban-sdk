@@ -29,9 +29,9 @@ jobs:
     - run: rustup update
     - run: rustup install nightly
     - name: Update fuzz Cargo.lock
-      run: |
-        cargo +nightly update --manifest-path tests/fuzz/fuzz/Cargo.toml soroban-sdk
-        cargo +nightly update --manifest-path tests/fuzz_afl/fuzz/Cargo.toml soroban-sdk
+      run: cargo +nightly update --manifest-path tests/fuzz/fuzz/Cargo.toml soroban-sdk
+    - name: Update fuzz afl Cargo.lock
+      run: cargo +nightly update --manifest-path tests/fuzz_afl/fuzz/Cargo.toml soroban-sdk
     - name: Commit fuzz Cargo.lock
       run: |
         git config user.name 'github-actions[bot]'
