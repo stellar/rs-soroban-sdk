@@ -1,5 +1,4 @@
-//! Fuzzing a contract with [`cargo-afl`], which drives [AFL++] instead of
-//! libFuzzer and runs on stable Rust.
+//! Fuzzing with [`cargo-afl`], which drives [AFL++] and runs on stable Rust.
 //!
 //! The prototype pattern these examples generate their input with is covered by
 //! the [`arbitrary`] module.

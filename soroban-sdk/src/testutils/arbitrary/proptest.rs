@@ -1,4 +1,4 @@
-//! Support for property testing Soroban contracts with [`proptest`].
+//! Property testing with [`proptest`].
 //!
 //! Property tests generate Soroban contract types with the prototype pattern
 //! that the [`arbitrary`] module defines for fuzzing: because every

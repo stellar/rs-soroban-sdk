@@ -1,5 +1,5 @@
-//! Fuzzing a contract with [`cargo-fuzz`], which drives libFuzzer and requires
-//! a nightly compiler.
+//! Fuzzing with [`cargo-fuzz`], which drives libFuzzer and requires a nightly
+//! compiler.
 //!
 //! The prototype pattern these examples generate their input with is covered by
 //! the [`arbitrary`] module.

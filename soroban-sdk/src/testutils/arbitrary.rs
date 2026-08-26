@@ -7,8 +7,8 @@
 //! values: `cargo-fuzz` and `cargo-afl` consume it directly, and `proptest`
 //! through a bridge.
 //!
-//! Everything below is common to all three. For what is specific to each,
-//! see the [`cargo_fuzz`], [`cargo_afl`], and [`proptest`] modules.
+//! Everything below is common to all three; what is specific to each is
+//! covered in its own module, linked at the end.
 //!
 //! [`cargo-fuzz`]: https://github.com/rust-fuzz/cargo-fuzz/
 //! [`cargo-afl`]: https://github.com/rust-fuzz/afl.rs/
@@ -190,6 +190,15 @@
 //! }
 //! ```
 //!
+//!
+//! ## Fuzzing and property testing with these types
+//!
+//! How a fuzzer or property testing framework is pointed at a fuzz test written
+//! with these types is specific to each, and covered in its own module:
+//!
+//! - [`cargo_fuzz`], for fuzzing with `cargo-fuzz`.
+//! - [`cargo_afl`], for fuzzing with `cargo-afl`.
+//! - [`proptest`], for property testing with `proptest`.
 
 pub mod cargo_afl;
 pub mod cargo_fuzz;
