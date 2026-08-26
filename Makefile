@@ -43,11 +43,10 @@ build-test-wasms: fmt
 			ls -l "$$i"; \
 		done
 
+# Builds the fuzz tests. The afl fuzz test requires cargo-afl, see
+# tests/fuzz_afl/README.md.
 build-fuzz:
 	cd tests/fuzz/fuzz && cargo +nightly fuzz check
-
-# Builds the afl fuzz test. Requires cargo-afl, see tests/fuzz_afl/README.md.
-build-fuzz-afl:
 	cd tests/fuzz_afl/fuzz && cargo afl build
 
 readme:
