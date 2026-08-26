@@ -1,8 +1,10 @@
 # The journey of a Soroban contract
 
-A smart contract looks like a single artifact until you follow one from source to ledger. Between the Rust file a developer writes and the entry a Stellar validator stores sits a pipeline of tools — cargo, rustc, the linker, the stellar-cli, and finally the Soroban environment itself — and each one solves a problem that only becomes visible when you look closely. Why doesn't the build just run `cargo build`? Why does the compiler target a WebAssembly spec from 2019? How does a type know its own name? How does the network know a contract is safe to run?
+A smart contract looks like a simple artifact. But between the Rust file a developer writes and the entry a Stellar validator stores sits a pipeline of tools — cargo, rustc, llvm, soroban-sdk, stellar-cli, and finally the Soroban environment itself. You might have wondered, why doesn't the build just run `cargo build`? How does code sharing work in libraries like OpenZeppelin? Why does the compiler target a WebAssembly spec from 2019? How does a type know its own name? How does the network know a contract is safe to run?
 
-This post walks the whole journey: how a contract is compiled, how the compiler itself — not the macros — computes the description of its interface, how the build trims that description down to the contract's public surface, and what the network does with the result at deployment.
+Let's walk the path your code takes: how a contract gets compiled, how code in libraries gets shared via traits, how its interface gets described, how that description gets computed by the compiler rather than by macros, how the build trims it down to the contract's public surface, and what the network does with the result at deployment to ensure the contract is compatible and optimally executed.
+
+At the end we'll have a deeper understanding of how Soroban leverages Rust's strengths so that Soroban contracts get to stay focused on contract logic that look like any other Rust program.
 
 ## The source
 
@@ -112,6 +114,63 @@ Graydon Hoare, who created Rust and now works on Soroban at the Stellar Developm
 The target's definition is its promise. It pins LLVM's `target-cpu` to `mvp`, disabling every post-MVP proposal, and re-enables exactly one: mutable globals — the one proposal that was folded into the W3C WebAssembly Core 1.0 Recommendation adopted in December 2019. It also ships no standard library at all, only `core` and `alloc`, because a target that imports nothing from its host has no OS facilities for `std` to wrap. The `v1` in the name is the point: what this target emits is WebAssembly 1.0 today, and still WebAssembly 1.0 after the next ten LLVM upgrades. Anyone who needs stable ground for Wasm development — not just Soroban, but any embedder with a fixed feature set — now has a Rust target to stand on.
 
 `stellar contract build` selects it automatically: Rust 1.84 and later build for `wasm32v1-none`; the 1.82–1.83 window that can only produce rejected modules is refused outright.
+
+## Sharing code with traits
+
+Contracts have a lot in common with each other. Plenty of them want to be pausable, to have an owner, to be upgradeable, to behave like a token. On other chains that shared behavior arrives through inheritance or copy-paste. Rust already has the right tool for it — a trait with default method bodies — but there's a gap between a Rust trait and a contract: a contract's functions are Wasm *exports*, and a default method body sitting in a library crate isn't an export of your contract.
+
+`#[contracttrait]` closes that gap. A library defines an interface as an ordinary trait, with real working bodies as default methods:
+
+```rust
+#[contracttrait]
+pub trait Pausable: RequireAuthForPause {
+    fn is_paused(env: &Env) -> bool {
+        env.storage().instance().has(&"paused")
+    }
+
+    fn pause(env: &Env) {
+        Self::require_auth_for_pause(env);
+        env.storage().instance().set(&"paused", &true);
+    }
+
+    fn unpause(env: &Env) {
+        Self::require_auth_for_pause(env);
+        env.storage().instance().remove(&"paused");
+    }
+}
+```
+
+A contract then picks the whole interface up with an impl block that can be completely empty:
+
+```rust
+#[contractimpl(contracttrait)]
+impl Pausable for MyContract {}
+```
+
+That contract now exports `is_paused`, `pause`, and `unpause`, and a `PausableClient` exists for calling them on any contract that implements the trait. Overriding is just Rust: write the function in the impl block and it wins; the ones you leave out keep their defaults. The SDK ships its own interfaces this way — `TokenInterface` and `StellarAssetInterface` are both `#[contracttrait]`s — and it's how ecosystem libraries like OpenZeppelin's `stellar-contracts` hand contracts working implementations rather than just signatures to fill in.
+
+Making that work runs into the proc-macro problem again, from a new direction. The two pieces of knowledge needed to decide "export this default function" live in two different expansions. `#[contracttrait]` expands over the trait, which is where the default bodies are — but at that moment nobody has implemented the trait yet. `#[contractimpl]` expands over the impl block, which is where we learn which functions the contract overrode — but a proc macro is handed one item and cannot look anything else up, so it can't see the trait to know what defaults exist. The two halves never meet, and in the normal case they aren't even in the same crate.
+
+The SDK bridges them with a third macro whose only job is to carry data. When `#[contracttrait]` expands, one of the things it generates is a `macro_rules!` macro named after the trait itself, so that importing `Pausable` brings it along. Inside that generated macro are the signatures of every default function in the trait, captured at trait-definition time and stringified so they survive as macro arguments:
+
+```rust
+macro_rules! __contractimpl_for_pausable {
+    (/* ... */, $impl_fns:expr, /* ... */) => {
+        soroban_sdk::contractimpl_trait_default_fns_not_overridden!(
+            trait_default_fns = ["fn is_paused(_)", "fn pause(_)", "fn unpause(_)"],
+            impl_fns = $impl_fns,
+            // ...
+        );
+    };
+}
+pub use __contractimpl_for_pausable as Pausable;
+```
+
+Now `#[contractimpl(contracttrait)]`, expanding at the impl site, does the one thing it can: it emits a call to that macro, passing the list of functions the impl block actually defined — `Pausable!(MyContract, ["is_paused"], ...)`. The declarative macro holds the trait's half; the call supplies the impl's half; and it forwards both to a final proc macro that subtracts one list from the other. For every default the contract didn't override, that macro generates exactly what `#[contractimpl]` generates for a hand-written function: the exported Wasm function, its spec entry, a method on the client, a variant on the args enum, and the registration the test environment needs.
+
+Note where those exports come from. Not the library — a `#[contracttrait]` doesn't even emit spec entries where it's defined, because the crate defining it usually isn't a contract. The export and the spec entry for an inherited default are generated by an expansion inside the *implementing* crate, so a contract's Wasm describes precisely the interfaces that contract implements and nothing the library merely offered.
+
+Three macros — two procedural, one generated — arranged so that information captured during one expansion survives into another. None of it surfaces in the contract. The author writes `impl Pausable for MyContract {}` and gets three more contract functions.
 
 ## A spec computed by the compiler
 
@@ -230,10 +289,12 @@ That up-front work — the module validated once, its costs measured and stored 
 
 Creating the contract instance is then small: a ledger entry binding a freshly derived contract address to the code hash, and a call to the contract's constructor if it has one. Many instances can share one uploaded Wasm. The journey ends as two ledger entries — the measured, validated code keyed by its hash, and the instance that gives it an address — plus the small companion entries that track how long each lives.
 
-## Summary
+## Leaning on the language
 
-Every stage of this pipeline exists to move work to the place that can do it best, as early as it can be done. The CLI drives `cargo rustc` directly because only that invocation can isolate the cdylib and keep LTO alive. The build targets `wasm32v1-none` because a contract needs a compilation target anchored to a spec, not to a toolchain's momentum — a fix Stellar's own Graydon Hoare contributed upstream to Rust for every Wasm embedder. The spec is computed by const evaluation because the compiler is the only tool that knows what types *are*: macros see only tokens, but a const expression can ask a type for its fully qualified name.
+Every stage of this pipeline exists to move work to the tool that can do it best, as early as it can be done — and at nearly every stage, that tool is something Rust already had.
 
-Volatile reads let the linker's dead-code elimination decide which events and errors a contract can really emit. The CLI shakes the spec down to the public interface because everything downstream deserves a description of what the contract does, not of what it depends on. And the environment validates the version handshake and measures the module at upload, storing the results in the ledger, so that the network admits only what it can run deterministically — and runs it fast.
+The CLI drives `cargo rustc` directly because only that invocation can isolate the cdylib and keep LTO alive across the whole dependency graph. The build targets `wasm32v1-none` because a contract needs a compilation target anchored to a spec rather than to a toolchain's momentum — a fix Stellar's own Graydon Hoare contributed upstream to Rust for every Wasm embedder. Shared interfaces are traits with default methods, because that is how Rust shares behavior; the macros only carry the information across expansions so those defaults become real exports. The spec is computed by const evaluation because the compiler is the only tool that knows what types *are*: macros see only tokens, but a const expression can ask a type for its fully qualified name. And volatile reads let dead-code elimination — the pass already deciding what code ships — also decide which events and errors the contract can really emit.
 
-A contract built by this pipeline carries its own story with it: its interface, its toolchain, its environment version, its cost profile. That's what makes the rest of the ecosystem — verifiable builds, typed clients, indexers, wallets, and a network that can honor a years-old binary — possible.
+The last stretch belongs to the network. The CLI shakes the spec down to the public interface because everything downstream deserves a description of what the contract does, not of what it depends on. The environment validates the version handshake and measures the module at upload, storing the results in the ledger, so the network admits only what it can run deterministically — and then runs it fast.
+
+The payoff is what *isn't* in a contract. No manifest of exported entry points, no hand-written interface description, no versioning shim, no build script tuning the optimizer. A Soroban contract is a Rust library: structs, enums, traits, impls, functions. The pipeline's whole job is to take that ordinary Rust and hand the network something it can verify, price, and honor for years — while the code stays about the contract.
