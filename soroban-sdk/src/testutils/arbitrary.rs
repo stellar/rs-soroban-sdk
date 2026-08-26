@@ -1,5 +1,5 @@
-//! Support for randomized testing of Soroban contracts, with [`cargo-fuzz`],
-//! [`cargo-afl`], or [`proptest`].
+//! Randomized testing of contracts, with [`cargo-fuzz`], [`cargo-afl`], or
+//! [`proptest`].
 //!
 //! This module provides a pattern for generating Soroban contract types for the
 //! purpose of fuzzing and property testing Soroban contracts. It is focused on
