@@ -1,10 +1,10 @@
 # From `fn` to on-chain
 
-Every Rust developer knows what a `fn` is. Every Stellar developer knows what a deployed contract is — an address on the network with functions anyone can call. Far fewer could describe how the first becomes the second.
+Every Rust developer knows what a `fn` is. Every Stellar developer knows what a deployed contract is — an address on the network with functions anyone can call. But how a `fn` becomes a contract is a black box.
 
-The path between them is two commands: `stellar contract build`, then `stellar contract deploy`. Your function is now live on a global network.
+From the outside it's two commands. Run `stellar contract build`, then `stellar contract deploy`, and your function is live on a global network.
 
-In between, seven tools take a turn: cargo, rustc, LLVM, the linker, the SDK's macros, the stellar-cli, and the Soroban environment. Each one is solving a problem those two commands never mention:
+Inside, seven tools take a turn: cargo, rustc, LLVM, the linker, the SDK's macros, the stellar-cli, and the Soroban environment. Each one is solving a problem those two commands never mention:
 
 - Why doesn't the build just run `cargo build`?
 - How does code sharing work in libraries like OpenZeppelin?
