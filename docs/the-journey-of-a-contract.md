@@ -2,7 +2,7 @@
 
 Every Rust developer knows what a `fn` is. Every Stellar developer knows what a deployed contract is — an address on the network with functions anyone can call. But how a `fn` becomes a contract is mysterious.
 
-From the outside it looks mostly like regular Rust, with a couple of macros sprinkled in here and there. Run `stellar contract build`, then `stellar contract deploy`, and your function is live on a global network.
+From the outside it looks like regular Rust, with a couple of macros sprinkled in here and there. Run `stellar contract build`, then `stellar contract deploy`, and your function is live on a global network.
 
 Inside, seven tools take a turn: cargo, rustc, LLVM, the linker, the SDK's macros, the stellar-cli, and the Soroban environment. Each one is solving a problem those two commands never mention:
 
