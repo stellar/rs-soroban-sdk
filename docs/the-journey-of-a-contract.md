@@ -1,10 +1,10 @@
-# The journey of a Soroban contract
+# From `fn` to on-chain
 
-A smart contract looks like a simple artifact. But between the Rust file a developer writes and the entry a Stellar validator stores sits a pipeline of tools — cargo, rustc, llvm, soroban-sdk, stellar-cli, and finally the Soroban environment itself. You might have wondered, why doesn't the build just run `cargo build`? How does code sharing work in libraries like OpenZeppelin? Why does the compiler target a WebAssembly spec from 2019? How does a type know its own name? How does the network know a contract is safe to run?
+Every Rust developer knows what a `fn` is. Every Stellar developer knows what a deployed contract is — an address on the network, functions anyone can call, a wallet that can show you what they'll do.
 
-Let's walk the path your code takes: how a contract gets compiled, how code in libraries gets shared via traits, how its interface gets described, how that description gets computed by the compiler rather than by macros, how the build trims it down to the contract's public surface, and what the network does with the result at deployment to ensure the contract is compatible and optimally executed.
+The path between them is one command and a hash. Run `stellar contract build`, then `stellar contract deploy`, and your function is on a global network. What happens in the middle is invisible, and it's more interesting than it looks: cargo, rustc, LLVM, the linker, the soroban-sdk's macros, the stellar-cli, and finally the Soroban environment itself each take a turn, and each one is solving a problem you'd never guess was there. Why doesn't the build just run `cargo build`? How does code sharing work in libraries like OpenZeppelin? Why does the compiler target a WebAssembly spec from 2019? How does a type learn its own name? How does the network decide your contract is safe to run?
 
-At the end we'll have a deeper understanding of how Soroban leverages Rust's strengths so that Soroban contracts get to stay focused on contract logic that look like any other Rust program.
+Let's follow one contract the whole way. By the end, the interesting part won't be how much machinery sits in that gap — it'll be how much of it is machinery Rust already had, and how little of it leaks into the contract you write.
 
 ## The source
 
