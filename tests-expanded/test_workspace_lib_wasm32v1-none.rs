@@ -33,6 +33,7 @@ impl ::core::cmp::PartialEq for Value {
         self.value == other.value
     }
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_VALUE: [u8; 48usize] = Value::spec_xdr();
 impl Value {

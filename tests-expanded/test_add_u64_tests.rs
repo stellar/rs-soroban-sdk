@@ -155,6 +155,7 @@ impl ::core::cmp::PartialEq for Error {
         true
     }
 }
+#[doc(hidden)]
 pub static __SPEC_XDR_TYPE_ERROR: [u8; 48usize] = Error::spec_xdr();
 impl Error {
     pub const fn spec_xdr() -> [u8; 48usize] {
@@ -288,6 +289,7 @@ impl ::core::cmp::PartialEq for MyError {
         true
     }
 }
+#[doc(hidden)]
 pub static __SPEC_XDR_TYPE_MYERROR: [u8; 48usize] = MyError::spec_xdr();
 impl MyError {
     pub const fn spec_xdr() -> [u8; 48usize] {

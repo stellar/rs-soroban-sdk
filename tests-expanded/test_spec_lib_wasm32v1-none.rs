@@ -47,6 +47,7 @@ impl ::core::cmp::PartialEq for StructA {
         self.f1 == other.f1 && self.f2 == other.f2
     }
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_STRUCTA: [u8; 60usize] = StructA::spec_xdr();
 impl StructA {
@@ -158,6 +159,7 @@ impl ::core::cmp::PartialEq for StructB {
         self.f1 == other.f1 && self.f2 == other.f2
     }
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_STRUCTB: [u8; 60usize] = StructB::spec_xdr();
 impl StructB {
@@ -269,6 +271,7 @@ impl ::core::cmp::PartialEq for StructC {
         self.f1 == other.f1 && self.f2 == other.f2
     }
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_STRUCTC: [u8; 64usize] = StructC::spec_xdr();
 impl StructC {
@@ -374,6 +377,7 @@ impl ::core::cmp::PartialEq for StructTupleA {
         self.0 == other.0 && self.1 == other.1
     }
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_STRUCTTUPLEA: [u8; 64usize] = StructTupleA::spec_xdr();
 impl StructTupleA {
@@ -475,6 +479,7 @@ impl ::core::cmp::PartialEq for StructTupleB {
         self.0 == other.0 && self.1 == other.1
     }
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_STRUCTTUPLEB: [u8; 64usize] = StructTupleB::spec_xdr();
 impl StructTupleB {
@@ -577,6 +582,7 @@ impl ::core::cmp::PartialEq for StructTupleC {
         self.1 == other.1 && self.0 == other.0
     }
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_STRUCTTUPLEC: [u8; 64usize] = StructTupleC::spec_xdr();
 impl StructTupleC {
@@ -690,6 +696,7 @@ impl ::core::cmp::PartialEq for EnumA {
         __self_discr == __arg1_discr
     }
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ENUMA: [u8; 76usize] = EnumA::spec_xdr();
 impl EnumA {
@@ -847,6 +854,7 @@ impl ::core::cmp::PartialEq for EnumB {
             }
     }
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ENUMB: [u8; 96usize] = EnumB::spec_xdr();
 impl EnumB {
@@ -1017,6 +1025,7 @@ impl ::core::cmp::PartialEq for EnumC {
             }
     }
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ENUMC: [u8; 120usize] = EnumC::spec_xdr();
 impl EnumC {
@@ -1173,6 +1182,7 @@ impl ::core::cmp::PartialEq for EnumIntA {
         __self_discr == __arg1_discr
     }
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ENUMINTA: [u8; 76usize] = EnumIntA::spec_xdr();
 impl EnumIntA {
@@ -1277,6 +1287,7 @@ impl ::core::cmp::PartialEq for EnumIntB {
         __self_discr == __arg1_discr
     }
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ENUMINTB: [u8; 76usize] = EnumIntB::spec_xdr();
 impl EnumIntB {
@@ -1381,6 +1392,7 @@ impl ::core::cmp::PartialEq for EnumIntC {
         __self_discr == __arg1_discr
     }
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ENUMINTC: [u8; 76usize] = EnumIntC::spec_xdr();
 impl EnumIntC {
@@ -1485,6 +1497,7 @@ impl ::core::cmp::PartialEq for ErrorA {
         __self_discr == __arg1_discr
     }
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ERRORA: [u8; 76usize] = ErrorA::spec_xdr();
 impl ErrorA {
@@ -1659,6 +1672,7 @@ impl ::core::cmp::PartialEq for ErrorB {
         __self_discr == __arg1_discr
     }
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ERRORB: [u8; 76usize] = ErrorB::spec_xdr();
 impl ErrorB {
@@ -1833,6 +1847,7 @@ impl ::core::cmp::PartialEq for ErrorC {
         __self_discr == __arg1_discr
     }
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ERRORC: [u8; 76usize] = ErrorC::spec_xdr();
 impl ErrorC {
@@ -2003,6 +2018,7 @@ impl ::core::cmp::PartialEq for EventA {
         self.f1 == other.f1 && self.f2 == other.f2
     }
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_EVENT_EVENTA: [u8; 88usize] = EventA::spec_xdr();
 impl EventA {
@@ -2042,7 +2058,7 @@ impl soroban_sdk::Event for EventA {
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 1usize] = ["f2"];
         let vals: [soroban_sdk::Val; 1usize] = [self.f2.into_val(env)];
-        env.map_new_from_slices(&KEYS, &vals)
+        env.sparse_map_new_from_slices(&KEYS, &vals)
             .unwrap_infallible()
             .into()
     }
@@ -2097,6 +2113,7 @@ impl ::core::cmp::PartialEq for EventB {
         self.f3 == other.f3 && self.f1 == other.f1 && self.f2 == other.f2
     }
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_EVENT_EVENTB: [u8; 108usize] = EventB::spec_xdr();
 impl EventB {
@@ -2141,7 +2158,7 @@ impl soroban_sdk::Event for EventB {
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 1usize] = ["f3"];
         let vals: [soroban_sdk::Val; 1usize] = [self.f3.into_val(env)];
-        env.map_new_from_slices(&KEYS, &vals)
+        env.sparse_map_new_from_slices(&KEYS, &vals)
             .unwrap_infallible()
             .into()
     }
@@ -2196,6 +2213,7 @@ impl ::core::cmp::PartialEq for EventC {
         self.f2 == other.f2 && self.f3 == other.f3 && self.f1 == other.f1
     }
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_EVENT_EVENTC: [u8; 108usize] = EventC::spec_xdr();
 impl EventC {
@@ -2236,7 +2254,7 @@ impl soroban_sdk::Event for EventC {
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 2usize] = ["f2", "f3"];
         let vals: [soroban_sdk::Val; 2usize] = [self.f2.into_val(env), self.f3.into_val(env)];
-        env.map_new_from_slices(&KEYS, &vals)
+        env.sparse_map_new_from_slices(&KEYS, &vals)
             .unwrap_infallible()
             .into()
     }
@@ -2278,6 +2296,7 @@ impl ::core::cmp::PartialEq for EventD {
         true
     }
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_EVENT_EVENTD: [u8; 48usize] = EventD::spec_xdr();
 impl EventD {
@@ -2309,7 +2328,7 @@ impl soroban_sdk::Event for EventD {
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 0usize] = [];
         let vals: [soroban_sdk::Val; 0usize] = [];
-        env.map_new_from_slices(&KEYS, &vals)
+        env.sparse_map_new_from_slices(&KEYS, &vals)
             .unwrap_infallible()
             .into()
     }

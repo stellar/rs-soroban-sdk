@@ -816,7 +816,9 @@ pub use soroban_sdk_macros::contracttype;
 /// - u32 value from the `my_topic` field
 ///
 /// The event's data will be a [`Map`], containing a key-value pair for each field with the key
-/// being the name as a [`Symbol`]. In the example below, the data for the event will be:
+/// being the name as a [`Symbol`]. A field whose value is void (a `None` [`Option`], or the unit
+/// type `()`) is omitted from the map. Pass `sparse = false` to write every field to the map,
+/// including the fields whose value is void. In the example below, the data for the event will be:
 /// - key: my_event_data => val: u32
 /// - key: more_event_data => val: u64
 ///

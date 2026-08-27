@@ -142,6 +142,7 @@ pub struct Transfer<'a> {
     amount: &'a i128,
     to_muxed_id: Option<&'a u64>,
 }
+#[doc(hidden)]
 pub static __SPEC_XDR_EVENT_TRANSFER: [u8; 144usize] = Transfer::spec_xdr();
 impl<'a> Transfer<'a> {
     pub const fn spec_xdr() -> [u8; 144usize] {
@@ -183,7 +184,7 @@ impl<'a> soroban_sdk::Event for Transfer<'a> {
         const KEYS: [&'static str; 2usize] = ["amount", "to_muxed_id"];
         let vals: [soroban_sdk::Val; 2usize] =
             [self.amount.into_val(env), self.to_muxed_id.into_val(env)];
-        env.map_new_from_slices(&KEYS, &vals)
+        env.sparse_map_new_from_slices(&KEYS, &vals)
             .unwrap_infallible()
             .into()
     }
@@ -782,18 +783,15 @@ mod test {
                     (Symbol::new(&env, "transfer"), &from, &to).into_val(&env),
                     ::soroban_sdk::Map::from_array(
                         &env,
-                        [
-                            (
-                                {
-                                    #[allow(deprecated)]
-                                    const SYMBOL: soroban_sdk::Symbol =
-                                        soroban_sdk::Symbol::short("amount");
-                                    SYMBOL
-                                },
-                                <_ as IntoVal<Env, Val>>::into_val(&1i128, &env),
-                            ),
-                            (Symbol::new(&env, "to_muxed_id"), ().into_val(&env)),
-                        ],
+                        [(
+                            {
+                                #[allow(deprecated)]
+                                const SYMBOL: soroban_sdk::Symbol =
+                                    soroban_sdk::Symbol::short("amount");
+                                SYMBOL
+                            },
+                            <_ as IntoVal<Env, Val>>::into_val(&1i128, &env),
+                        )],
                     )
                     .to_val(),
                 )],

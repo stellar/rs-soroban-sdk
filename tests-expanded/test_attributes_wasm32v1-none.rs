@@ -47,6 +47,7 @@ impl ::core::cmp::PartialEq for AttributeType {
         self.value == other.value
     }
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ATTRIBUTETYPE: [u8; 56usize] = AttributeType::spec_xdr();
 impl AttributeType {
@@ -115,6 +116,7 @@ pub struct AttributeEvent {
     topic: u32,
     value: u32,
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_EVENT_ATTRIBUTEEVENT: [u8; 112usize] = AttributeEvent::spec_xdr();
 impl AttributeEvent {
@@ -147,7 +149,7 @@ impl soroban_sdk::Event for AttributeEvent {
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 1usize] = ["value"];
         let vals: [soroban_sdk::Val; 1usize] = [self.value.into_val(env)];
-        env.map_new_from_slices(&KEYS, &vals)
+        env.sparse_map_new_from_slices(&KEYS, &vals)
             .unwrap_infallible()
             .into()
     }

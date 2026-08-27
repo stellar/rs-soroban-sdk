@@ -30,6 +30,7 @@ pub struct Transfer<'a> {
     amount: &'a i128,
     to_muxed_id: Option<&'a u64>,
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_EVENT_TRANSFER: [u8; 144usize] = Transfer::spec_xdr();
 impl<'a> Transfer<'a> {
@@ -76,7 +77,7 @@ impl<'a> soroban_sdk::Event for Transfer<'a> {
         const KEYS: [&'static str; 2usize] = ["amount", "to_muxed_id"];
         let vals: [soroban_sdk::Val; 2usize] =
             [self.amount.into_val(env), self.to_muxed_id.into_val(env)];
-        env.map_new_from_slices(&KEYS, &vals)
+        env.sparse_map_new_from_slices(&KEYS, &vals)
             .unwrap_infallible()
             .into()
     }
