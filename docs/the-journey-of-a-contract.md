@@ -2,7 +2,15 @@
 
 Every Rust developer knows what a `fn` is. Every Stellar developer knows what a deployed contract is — an address on the network with functions anyone can call.
 
-The path between them is one command and a hash. Run `stellar contract build`, then `stellar contract deploy`, and your function is on a global network. What happens in the middle is invisible, and it's more interesting than it looks: cargo, rustc, LLVM, the linker, the soroban-sdk's macros, the stellar-cli, and finally the Soroban environment itself each take a turn, and each one is solving a problem you'd never guess was there. Why doesn't the build just run `cargo build`? How does code sharing work in libraries like OpenZeppelin? Why does the compiler target a WebAssembly spec from 2019? How does a type learn its own name? How does the network decide your contract is safe to run?
+The path between them is one command and a hash. Run `stellar contract build`, then `stellar contract deploy`, and your function is on a global network.
+
+What happens in between is invisible, and more interesting than it looks. cargo, rustc, LLVM, the linker, the SDK's macros, the stellar-cli, and the Soroban environment each take a turn, and each one is solving a problem you'd never guess was there:
+
+- Why doesn't the build just run `cargo build`?
+- How does code sharing work in libraries like OpenZeppelin?
+- Why does the compiler target a WebAssembly spec from 2019?
+- How does a type learn its own name?
+- How does the network decide your contract is safe to run?
 
 Let's follow one contract the whole way. By the end, the interesting part won't be how much machinery sits in that gap — it'll be how much of it is machinery Rust already had, and how little of it leaks into the contract you write.
 
