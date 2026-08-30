@@ -1,0 +1,27 @@
+soroban-sdk-nexus/
+├── README.md
+├── translations/
+│   └── id-ID.md
+├── examples/
+│   ├── defi-staking/
+│   ├── dao-governance/
+│   ├── escrow/
+│   └── nft-market/
+├── nexus-interop/
+│   ├── message-format.rs
+│   ├── signature-verify.rs
+│   └── stellar-bridge.rs
+├── secure-patterns/
+│   ├── access-control.rs
+│   ├── reentrancy-guard.rs
+│   └── pausable.rs
+├── tools/
+│   ├── gas-analyzer.rs
+│   └── contract-risk-score.rs
+├── docs/
+│   └── tutorials/
+│       ├── 01-hello-soroban.md
+│       ├── 02-token.md
+│       └── 03-dao.md
+└── .github/workflows/
+    └── ci.yml
