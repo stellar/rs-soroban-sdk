@@ -1,4 +1,6 @@
-# From `fn` to on-chain
+# How a Rust function becomes a Stellar contract
+
+*A walk through the tools, customizations, and tweaks that Rust code travels through to fulfill its purpose.*
 
 Every Rust developer knows what a `fn` is. Every Stellar developer knows what a deployed contract is — an address on the network with functions anyone can call. But how a `fn` becomes a contract is mysterious.
 
