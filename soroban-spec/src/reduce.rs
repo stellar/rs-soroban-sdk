@@ -85,8 +85,9 @@ fn last_segment(name: &[u8]) -> &[u8] {
 /// segment, without claiming a name.
 ///
 /// Names are treated as byte strings throughout and preserved exactly; the
-/// spec does not guarantee valid UTF-8. A type whose numbered name cannot fit
-/// the spec's name limit keeps its original name.
+/// spec does not guarantee valid UTF-8. When a numbered name would exceed the
+/// spec's name limit, the base is trimmed from its end to make room for the
+/// number.
 pub fn reduce(spec: &[ScSpecEntry]) -> Reduced {
     // The names the spec defines, in definition order, each with the most
     // bytes its entry's name field can hold. Events define a name too: the
@@ -119,12 +120,14 @@ pub fn reduce(spec: &[ScSpecEntry]) -> Reduced {
         let mut n = 1u32;
         let simple = loop {
             n += 1;
-            let mut simple = base.to_vec();
-            simple.extend_from_slice(n.to_string().as_bytes());
-            if simple.len() > *limit {
-                // No numbered name fits, so the type keeps its original name.
-                break name.clone();
-            }
+            let num = n.to_string();
+            // Keep as much of the base as leaves room for the number within
+            // the limit, trimming bytes off its end when the base is too long
+            // to hold the number too. The limit always exceeds the number's
+            // length, so a fitting name always exists.
+            let keep = limit.saturating_sub(num.len());
+            let mut simple = base[..base.len().min(keep)].to_vec();
+            simple.extend_from_slice(num.as_bytes());
             if taken.insert(simple.clone()) {
                 break simple;
             }
@@ -153,7 +156,7 @@ pub fn reduce(spec: &[ScSpecEntry]) -> Reduced {
     };
 
     // Every resolved name is a fragment of a name that fit the spec, or was
-    // length-checked when numbered, so conversion back cannot fail.
+    // sized to the limit when numbered, so conversion back cannot fail.
     let mut spec = spec.to_vec();
     for entry in spec.iter_mut() {
         match entry {
@@ -402,16 +405,20 @@ mod test {
     }
 
     #[test]
-    fn a_name_whose_numbered_form_cannot_fit_keeps_its_original_name() {
+    fn a_name_whose_numbered_form_would_overflow_is_trimmed_to_fit() {
         let long = "x".repeat(1024);
         let spec = [
             struct_entry(&long, &[]),
             struct_entry_bytes(long.as_bytes(), &[]),
         ];
         let reduced = reduce(&spec);
-        assert_eq!(
-            reduced.renames().nth(1).unwrap().to.as_slice(),
-            long.as_bytes()
-        );
+        // The first claims the full 1024-byte name; the second cannot fit a
+        // number after it, so the base is trimmed to make room: 1023 bytes of
+        // the name followed by "2", exactly at the limit.
+        let mut expected = "x".repeat(1023).into_bytes();
+        expected.push(b'2');
+        let to = reduced.renames().nth(1).unwrap().to.as_slice();
+        assert_eq!(to, expected.as_slice());
+        assert_eq!(to.len(), 1024);
     }
 }
