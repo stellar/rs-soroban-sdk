@@ -177,8 +177,8 @@ impl Contract {
                     name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"v"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                         soroban_sdk::xdr::ScSpecTypeUdtView {
-                            name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(
-                                b"MyStruct",
+                            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(
+                                <MyStruct>::spec_name(),
                             ),
                         },
                     ),
@@ -186,7 +186,9 @@ impl Contract {
             ]),
             outputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSpecTypeDefView::Udt(soroban_sdk::xdr::ScSpecTypeUdtView {
-                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"MyStruct"),
+                    name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(
+                        <MyStruct>::spec_name(),
+                    ),
                 }),
             ]),
         });
@@ -1641,8 +1643,8 @@ impl Contract {
                     name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"v"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                         soroban_sdk::xdr::ScSpecTypeUdtView {
-                            name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(
-                                b"MyEnumUnit",
+                            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(
+                                <MyEnumUnit>::spec_name(),
                             ),
                         },
                     ),
@@ -1650,7 +1652,9 @@ impl Contract {
             ]),
             outputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSpecTypeDefView::Udt(soroban_sdk::xdr::ScSpecTypeUdtView {
-                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"MyEnumUnit"),
+                    name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(
+                        <MyEnumUnit>::spec_name(),
+                    ),
                 }),
             ]),
         });
@@ -1688,8 +1692,8 @@ impl Contract {
                     name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"v"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                         soroban_sdk::xdr::ScSpecTypeUdtView {
-                            name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(
-                                b"MyEnumVariants",
+                            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(
+                                <MyEnumVariants>::spec_name(),
                             ),
                         },
                     ),
@@ -1697,7 +1701,9 @@ impl Contract {
             ]),
             outputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSpecTypeDefView::Udt(soroban_sdk::xdr::ScSpecTypeUdtView {
-                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"MyEnumVariants"),
+                    name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(
+                        <MyEnumVariants>::spec_name(),
+                    ),
                 }),
             ]),
         });

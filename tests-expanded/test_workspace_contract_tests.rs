@@ -162,7 +162,7 @@ impl Contract {
             inputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[]),
             outputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSpecTypeDefView::Udt(soroban_sdk::xdr::ScSpecTypeUdtView {
-                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"Value"),
+                    name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(<Value>::spec_name()),
                 }),
             ]),
         });

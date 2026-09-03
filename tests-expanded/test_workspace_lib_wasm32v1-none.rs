@@ -33,6 +33,12 @@ impl ::core::cmp::PartialEq for Value {
         self.value == other.value
     }
 }
+impl Value {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "test_workspace_lib::Value"
+    }
+}
 #[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_VALUE: [u8; Value::spec_xdr_len()] = Value::spec_xdr();
@@ -41,7 +47,7 @@ impl Value {
         soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
             doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"Value"),
+            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(Value::spec_name()),
             fields: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),

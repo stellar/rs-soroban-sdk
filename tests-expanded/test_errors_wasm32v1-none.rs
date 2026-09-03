@@ -45,6 +45,12 @@ impl ::core::cmp::PartialEq for Flag {
         __self_discr == __arg1_discr
     }
 }
+impl Flag {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "test_errors::Flag"
+    }
+}
 #[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_FLAG: [u8; Flag::spec_xdr_len()] = Flag::spec_xdr();
@@ -53,7 +59,7 @@ impl Flag {
         soroban_sdk::xdr::ScSpecEntryView::UdtEnumV0(soroban_sdk::xdr::ScSpecUdtEnumV0View {
             doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"Flag"),
+            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(Flag::spec_name()),
             cases: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
                     doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
@@ -173,6 +179,12 @@ impl ::core::cmp::PartialEq for Error {
         true
     }
 }
+impl Error {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "test_errors::Error"
+    }
+}
 #[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ERROR: [u8; Error::spec_xdr_len()] = Error::spec_xdr();
@@ -182,7 +194,7 @@ impl Error {
             soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
                 doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"Error"),
+                name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(Error::spec_name()),
                 cases: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
                         doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
@@ -374,7 +386,9 @@ impl Contract {
                     name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"flag"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                         soroban_sdk::xdr::ScSpecTypeUdtView {
-                            name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"Flag"),
+                            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(
+                                <Flag>::spec_name(),
+                            ),
                         },
                     ),
                 },

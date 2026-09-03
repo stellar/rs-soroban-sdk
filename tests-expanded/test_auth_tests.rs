@@ -1183,6 +1183,12 @@ mod test_a {
                 ::core::cmp::Ordering::Equal
             }
         }
+        impl Error {
+            #[doc(hidden)]
+            pub const fn spec_name() -> &'static str {
+                "test_auth::test_a::auth_decline::Error"
+            }
+        }
         #[doc(hidden)]
         pub static __SPEC_XDR_TYPE_ERROR: [u8; Error::spec_xdr_len()] = Error::spec_xdr();
         impl Error {
@@ -1191,7 +1197,9 @@ mod test_a {
                     soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
                         doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
                         lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"Error"),
+                        name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(
+                            Error::spec_name(),
+                        ),
                         cases: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                             soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
                                 doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
@@ -2805,6 +2813,12 @@ mod test_b {
                 ::core::cmp::Ordering::Equal
             }
         }
+        impl Error {
+            #[doc(hidden)]
+            pub const fn spec_name() -> &'static str {
+                "test_auth::test_b::auth_decline::Error"
+            }
+        }
         #[doc(hidden)]
         pub static __SPEC_XDR_TYPE_ERROR: [u8; Error::spec_xdr_len()] = Error::spec_xdr();
         impl Error {
@@ -2813,7 +2827,9 @@ mod test_b {
                     soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
                         doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
                         lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"Error"),
+                        name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(
+                            Error::spec_name(),
+                        ),
                         cases: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                             soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
                                 doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),

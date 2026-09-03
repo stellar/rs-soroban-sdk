@@ -12,8 +12,7 @@ use proc_macro2::Span;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use stellar_xdr::{
-    ScSpecEventDataFormat, ScSpecEventParamLocationV0, ScSpecEventParamV0, ScSpecEventV0, ScSymbol,
-    StringM,
+    ScSpecEventDataFormat, ScSpecEventParamLocationV0, ScSpecEventParamV0, ScSpecEventV0, StringM,
 };
 use syn::{
     ext::IdentExt as _, parse2, spanned::Spanned, Data, DeriveInput, Fields, LitStr, Meta, Path,
@@ -112,7 +111,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     let path = &args.crate_path;
 
     // Check event name length
-    const EVENT_NAME_LENGTH: u32 = 32;
+    const EVENT_NAME_LENGTH: u32 = 1024;
     let event_name = input.ident.unraw().to_string();
     let event_name_len = event_name.len();
     let event_name: StringM<EVENT_NAME_LENGTH> = errors
@@ -202,7 +201,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         doc: docs_from_attrs(&input.attrs),
         // set to empty string always because the field is no longer used
         lib: StringM::default(),
-        name: ScSymbol(event_name),
+        name: event_name,
         prefix_topics: prefix_topics
             .iter()
             .map(|t| t.try_into().unwrap())
@@ -227,23 +226,29 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     let spec_view = {
         let doc = const_view_string(path, &spec.doc);
         let lib = const_view_string(path, &spec.lib);
-        let name = const_view_symbol(path, &spec.name);
+        let name = quote!(#path::xdr::StringMView::try_from_str_or_panic(#ident::spec_name()));
         let prefix_topics = spec
             .prefix_topics
             .iter()
             .map(|t| const_view_symbol(path, t));
-        let params = spec.params.iter().map(|p| {
-            let doc = const_view_string(path, &p.doc);
-            let name = const_view_string(path, &p.name);
-            let type_ = const_view_type_def(path, &p.type_);
-            let location = format_ident!("{}", p.location.name());
-            quote!(#path::xdr::ScSpecEventParamV0View {
-                doc: #doc,
-                name: #name,
-                type_: #type_,
-                location: #path::xdr::ScSpecEventParamLocationV0::#location,
-            })
-        });
+        // Each param's Rust type, so a reference to a user-defined type in a
+        // param resolves to the name that type reports for itself.
+        let params = spec
+            .params
+            .iter()
+            .zip(field_types.iter().copied())
+            .map(|(p, rust)| {
+                let doc = const_view_string(path, &p.doc);
+                let name = const_view_string(path, &p.name);
+                let type_ = const_view_type_def(path, &p.type_, Some(rust));
+                let location = format_ident!("{}", p.location.name());
+                quote!(#path::xdr::ScSpecEventParamV0View {
+                    doc: #doc,
+                    name: #name,
+                    type_: #type_,
+                    location: #path::xdr::ScSpecEventParamLocationV0::#location,
+                })
+            });
         let data_format = format_ident!("{}", spec.data_format.name());
         quote! {
             #path::xdr::ScSpecEntryView::EventV0(#path::xdr::ScSpecEventV0View {
@@ -384,7 +389,20 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     };
 
     // Output.
+    // Unlike other user-defined types, an event struct can carry generics
+    // (e.g. a lifetime on borrowed fields), so the impl repeats them.
+    let spec_name_lit = input.ident.unraw().to_string();
+    let spec_name = quote! {
+        impl #gen_impl #ident #gen_types #gen_where {
+            #[doc(hidden)]
+            pub const fn spec_name() -> &'static str {
+                ::core::concat!(::core::module_path!(), "::", #spec_name_lit)
+            }
+        }
+    };
     let output = quote! {
+        #spec_name
+
         #spec_gen
 
         #spec_shaking_impl

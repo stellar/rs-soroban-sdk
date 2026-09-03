@@ -50,6 +50,12 @@ impl ::core::cmp::Ord for Error {
         ::core::cmp::Ordering::Equal
     }
 }
+impl Error {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "test_account::Error"
+    }
+}
 #[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ERROR: [u8; Error::spec_xdr_len()] = Error::spec_xdr();
@@ -59,7 +65,7 @@ impl Error {
             soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
                 doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"Error"),
+                name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(Error::spec_name()),
                 cases: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
                         doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
@@ -267,8 +273,8 @@ impl Contract {
                         &soroban_sdk::xdr::ScSpecTypeVecView {
                             element_type: &soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                                 soroban_sdk::xdr::ScSpecTypeUdtView {
-                                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(
-                                        b"Context",
+                                    name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(
+                                        <Context>::spec_name(),
                                     ),
                                 },
                             ),

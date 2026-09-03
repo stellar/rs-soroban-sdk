@@ -1668,6 +1668,7 @@ name = "stellar-asset-spec"
 version = "28.0.0-rc.1"
 dependencies = [
  "soroban-sdk",
+ "soroban-spec",
  "soroban-token-sdk",
  "soroban-token-spec",
 ]
@@ -1696,7 +1697,7 @@ dependencies = [
 [[package]]
 name = "stellar-xdr"
 version = "28.0.0"
-source = "git+https://github.com/stellar/rs-stellar-xdr?rev=e73df1f6793fe5916dce7a833e14c0718786ab04#e73df1f6793fe5916dce7a833e14c0718786ab04"
+source = "git+https://github.com/stellar/rs-stellar-xdr?rev=82677e1dfe49b6b94fc6440d9c58be74d2a33bff#82677e1dfe49b6b94fc6440d9c58be74d2a33bff"
 dependencies = [
  "arbitrary",
  "base64",

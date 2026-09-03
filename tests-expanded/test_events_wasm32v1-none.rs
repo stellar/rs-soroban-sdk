@@ -30,6 +30,12 @@ pub struct Transfer {
     amount: i128,
     to_muxed_id: Option<u64>,
 }
+impl Transfer {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "test_events::Transfer"
+    }
+}
 #[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_EVENT_TRANSFER: [u8; Transfer::spec_xdr_len()] = Transfer::spec_xdr();
@@ -38,9 +44,7 @@ impl Transfer {
         soroban_sdk::xdr::ScSpecEntryView::EventV0(soroban_sdk::xdr::ScSpecEventV0View {
             doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::ScSymbolView(
-                soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"Transfer"),
-            ),
+            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(Transfer::spec_name()),
             prefix_topics: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSymbolView(
                     soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"transfer"),

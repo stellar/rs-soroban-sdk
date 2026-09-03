@@ -6,7 +6,11 @@ use syn::{
     ext::IdentExt as _, spanned::Spanned, Attribute, DataEnum, Error, ExprLit, Ident, Lit, Path,
 };
 
-use crate::{doc::docs_from_attrs, map_type::const_view_string, shaking};
+use crate::{
+    doc::docs_from_attrs,
+    map_type::{const_view_string, spec_name_gen},
+    shaking,
+};
 
 pub fn derive_type_error_enum_int(
     path: &Path,
@@ -73,10 +77,14 @@ pub fn derive_type_error_enum_int(
 
     // Generated code spec. The spec entry is rendered as the equivalent const
     // ScSpecEntryView, which the contract crate encodes to XDR at compile time.
+    // The fully qualified name the spec knows this type by, emitted for every
+    // type so that a reference to it from anywhere can reach it.
+    let spec_name = spec_name_gen(enum_ident);
+
     let spec_gen = {
         let doc = const_view_string(path, &spec.doc);
         let lib = const_view_string(path, &spec.lib);
-        let name = const_view_string(path, &spec.name);
+        let name = quote!(#path::xdr::StringMView::try_from_str_or_panic(#enum_ident::spec_name()));
         let cases = spec.cases.iter().map(|c| {
             let doc = const_view_string(path, &c.doc);
             let name = const_view_string(path, &c.name);
@@ -127,6 +135,8 @@ pub fn derive_type_error_enum_int(
 
     // Output.
     quote! {
+        #spec_name
+
         #spec_gen
 
         #spec_shaking_impl
