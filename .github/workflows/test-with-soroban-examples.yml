@@ -21,7 +21,7 @@ jobs:
   collect-examples:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v7
       with:
         repository: stellar/soroban-examples
         ref: main
@@ -51,12 +51,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout rs-soroban-sdk
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         path: rs-soroban-sdk
 
     - name: Checkout soroban-examples
-      uses: actions/checkout@v5
+      uses: actions/checkout@v7
       with:
         repository: stellar/soroban-examples
         ref: main
@@ -74,11 +74,11 @@ jobs:
         rustup target add --toolchain ${{ matrix.rust }} wasm32v1-none
         echo RUSTUP_TOOLCHAIN='${{ matrix.rust }}' >> $GITHUB_ENV
 
-    - uses: denoland/setup-deno@909cc5acb0fdd60627fb858598759246509fa755 # v2.0.2
+    - uses: denoland/setup-deno@22d081ff2d3a40755e97629de92e3bcbfa7cf2ed # v2.0.5
       with:
         deno-version: v2.x
 
-    - uses: stellar/stellar-cli@v23.1.4
+    - uses: stellar/stellar-cli@v28.0.0
 
     - uses: stellar/actions/rust-cache@main
 
@@ -199,7 +199,7 @@ jobs:
       run: echo "name=wasm-${{ matrix.rust }}-$(echo ${{ matrix.working-directory }} | sed 's/\//-/g')" | tee -a $GITHUB_OUTPUT
 
     - name: Upload WASM artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ steps.artifact-name.outputs.name }}
         path: 'soroban-examples/${{ matrix.working-directory }}/**/*.wasm'
