@@ -13,6 +13,7 @@ pub struct MockProof {
     pub g1: Vec<Bn254G1Affine>,
     pub g2: Vec<Bn254G2Affine>,
 }
+#[doc(hidden)]
 pub static __SPEC_XDR_TYPE_MOCKPROOF: [u8; 80usize] = MockProof::spec_xdr();
 impl MockProof {
     pub const fn spec_xdr() -> [u8; 80usize] {

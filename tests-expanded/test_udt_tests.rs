@@ -49,6 +49,7 @@ impl ::core::cmp::PartialEq for UdtEnum2 {
         __self_discr == __arg1_discr
     }
 }
+#[doc(hidden)]
 pub static __SPEC_XDR_TYPE_UDTENUM2: [u8; 60usize] = UdtEnum2::spec_xdr();
 impl UdtEnum2 {
     pub const fn spec_xdr() -> [u8; 60usize] {
@@ -398,6 +399,7 @@ impl ::core::cmp::PartialEq for UdtEnum {
             }
     }
 }
+#[doc(hidden)]
 pub static __SPEC_XDR_TYPE_UDTENUM: [u8; 156usize] = UdtEnum::spec_xdr();
 impl UdtEnum {
     pub const fn spec_xdr() -> [u8; 156usize] {
@@ -1013,6 +1015,7 @@ impl ::core::cmp::PartialEq for UdtTuple {
         self.0 == other.0 && self.1 == other.1
     }
 }
+#[doc(hidden)]
 pub static __SPEC_XDR_TYPE_UDTTUPLE: [u8; 64usize] = UdtTuple::spec_xdr();
 impl UdtTuple {
     pub const fn spec_xdr() -> [u8; 64usize] {
@@ -1406,6 +1409,7 @@ impl ::core::cmp::PartialEq for UdtStruct {
         self.a == other.a && self.b == other.b && self.c == other.c
     }
 }
+#[doc(hidden)]
 pub static __SPEC_XDR_TYPE_UDTSTRUCT: [u8; 84usize] = UdtStruct::spec_xdr();
 impl UdtStruct {
     pub const fn spec_xdr() -> [u8; 84usize] {
@@ -1890,6 +1894,7 @@ impl ::core::cmp::PartialEq for UdtRecursive {
         self.a == other.a && self.b == other.b
     }
 }
+#[doc(hidden)]
 pub static __SPEC_XDR_TYPE_UDTRECURSIVE: [u8; 84usize] = UdtRecursive::spec_xdr();
 impl UdtRecursive {
     pub const fn spec_xdr() -> [u8; 84usize] {
@@ -2324,6 +2329,7 @@ impl ::core::cmp::PartialEq for RecursiveToEnum {
         self.a == other.a && self.b == other.b
     }
 }
+#[doc(hidden)]
 pub static __SPEC_XDR_TYPE_RECURSIVETOENUM: [u8; 96usize] = RecursiveToEnum::spec_xdr();
 impl RecursiveToEnum {
     pub const fn spec_xdr() -> [u8; 96usize] {
@@ -2772,6 +2778,7 @@ impl ::core::cmp::PartialEq for RecursiveEnum {
             }
     }
 }
+#[doc(hidden)]
 pub static __SPEC_XDR_TYPE_RECURSIVEENUM: [u8; 112usize] = RecursiveEnum::spec_xdr();
 impl RecursiveEnum {
     pub const fn spec_xdr() -> [u8; 112usize] {
@@ -4674,6 +4681,7 @@ mod test_with_wasm {
                 }
             }
         }
+        #[doc(hidden)]
         pub static __SPEC_XDR_TYPE_UDTTUPLE: [u8; 64usize] = UdtTuple::spec_xdr();
         impl UdtTuple {
             pub const fn spec_xdr() -> [u8; 64usize] {
@@ -5112,6 +5120,7 @@ mod test_with_wasm {
                 }
             }
         }
+        #[doc(hidden)]
         pub static __SPEC_XDR_TYPE_UDTSTRUCT: [u8; 84usize] = UdtStruct::spec_xdr();
         impl UdtStruct {
             pub const fn spec_xdr() -> [u8; 84usize] {
@@ -5633,6 +5642,7 @@ mod test_with_wasm {
                 }
             }
         }
+        #[doc(hidden)]
         pub static __SPEC_XDR_TYPE_UDTRECURSIVE: [u8; 84usize] = UdtRecursive::spec_xdr();
         impl UdtRecursive {
             pub const fn spec_xdr() -> [u8; 84usize] {
@@ -6102,6 +6112,7 @@ mod test_with_wasm {
                 }
             }
         }
+        #[doc(hidden)]
         pub static __SPEC_XDR_TYPE_RECURSIVETOENUM: [u8; 96usize] = RecursiveToEnum::spec_xdr();
         impl RecursiveToEnum {
             pub const fn spec_xdr() -> [u8; 96usize] {
@@ -6575,6 +6586,7 @@ mod test_with_wasm {
                 }
             }
         }
+        #[doc(hidden)]
         pub static __SPEC_XDR_TYPE_CONTRACTEXECUTABLEREF: [u8; 80usize] =
             ContractExecutableRef::spec_xdr();
         impl ContractExecutableRef {
@@ -7068,6 +7080,7 @@ mod test_with_wasm {
                 }
             }
         }
+        #[doc(hidden)]
         pub static __SPEC_XDR_TYPE_CONTRACTCONTEXT: [u8; 96usize] = ContractContext::spec_xdr();
         impl ContractContext {
             pub const fn spec_xdr() -> [u8; 96usize] {
@@ -7616,6 +7629,7 @@ mod test_with_wasm {
                 }
             }
         }
+        #[doc(hidden)]
         pub static __SPEC_XDR_TYPE_SUBCONTRACTINVOCATION: [u8; 144usize] =
             SubContractInvocation::spec_xdr();
         impl SubContractInvocation {
@@ -8102,6 +8116,7 @@ mod test_with_wasm {
                 }
             }
         }
+        #[doc(hidden)]
         pub static __SPEC_XDR_TYPE_CREATECONTRACTHOSTFNCONTEXT: [u8; 116usize] =
             CreateContractHostFnContext::spec_xdr();
         impl CreateContractHostFnContext {
@@ -8620,6 +8635,7 @@ mod test_with_wasm {
                 }
             }
         }
+        #[doc(hidden)]
         pub static __SPEC_XDR_TYPE_CREATECONTRACTWITHCONSTRUCTORHOSTFNCONTEXT: [u8; 164usize] =
             CreateContractWithConstructorHostFnContext::spec_xdr();
         impl CreateContractWithConstructorHostFnContext {
@@ -9242,6 +9258,7 @@ mod test_with_wasm {
                 }
             }
         }
+        #[doc(hidden)]
         pub static __SPEC_XDR_TYPE_UDTENUM: [u8; 156usize] = UdtEnum::spec_xdr();
         impl UdtEnum {
             pub const fn spec_xdr() -> [u8; 156usize] {
@@ -9932,6 +9949,7 @@ mod test_with_wasm {
                 }
             }
         }
+        #[doc(hidden)]
         pub static __SPEC_XDR_TYPE_RECURSIVEENUM: [u8; 112usize] = RecursiveEnum::spec_xdr();
         impl RecursiveEnum {
             pub const fn spec_xdr() -> [u8; 112usize] {
@@ -10496,6 +10514,7 @@ mod test_with_wasm {
                 }
             }
         }
+        #[doc(hidden)]
         pub static __SPEC_XDR_TYPE_CONTRACTEXECUTABLE: [u8; 128usize] =
             ContractExecutable::spec_xdr();
         impl ContractExecutable {
@@ -11136,6 +11155,7 @@ mod test_with_wasm {
                 }
             }
         }
+        #[doc(hidden)]
         pub static __SPEC_XDR_TYPE_CONTEXT: [u8; 244usize] = Context::spec_xdr();
         impl Context {
             pub const fn spec_xdr() -> [u8; 244usize] {
@@ -11875,6 +11895,7 @@ mod test_with_wasm {
                 }
             }
         }
+        #[doc(hidden)]
         pub static __SPEC_XDR_TYPE_INVOKERCONTRACTAUTHENTRY: [u8; 268usize] =
             InvokerContractAuthEntry::spec_xdr();
         impl InvokerContractAuthEntry {
@@ -12609,6 +12630,7 @@ mod test_with_wasm {
                 }
             }
         }
+        #[doc(hidden)]
         pub static __SPEC_XDR_TYPE_EXECUTABLE: [u8; 104usize] = Executable::spec_xdr();
         impl Executable {
             pub const fn spec_xdr() -> [u8; 104usize] {
@@ -13164,6 +13186,7 @@ mod test_with_wasm {
                 ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr)
             }
         }
+        #[doc(hidden)]
         pub static __SPEC_XDR_TYPE_UDTENUM2: [u8; 60usize] = UdtEnum2::spec_xdr();
         impl UdtEnum2 {
             pub const fn spec_xdr() -> [u8; 60usize] {

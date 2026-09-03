@@ -43,6 +43,7 @@ impl ::core::cmp::PartialEq for Error {
         true
     }
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ERROR: [u8; 48usize] = Error::spec_xdr();
 impl Error {
@@ -182,6 +183,7 @@ impl ::core::cmp::PartialEq for MyError {
         true
     }
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_MYERROR: [u8; 48usize] = MyError::spec_xdr();
 impl MyError {

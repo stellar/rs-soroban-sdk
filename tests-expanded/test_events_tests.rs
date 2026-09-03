@@ -142,6 +142,7 @@ pub struct Transfer {
     amount: i128,
     to_muxed_id: Option<u64>,
 }
+#[doc(hidden)]
 pub static __SPEC_XDR_EVENT_TRANSFER: [u8; 144usize] = Transfer::spec_xdr();
 impl Transfer {
     pub const fn spec_xdr() -> [u8; 144usize] {
