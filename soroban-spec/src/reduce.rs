@@ -7,18 +7,39 @@ const TYPE_NAME_LIMIT: usize = 1024;
 /// The most bytes an event name can hold (`SC_SPEC_TYPE_NAME_LIMIT`).
 const EVENT_NAME_LIMIT: usize = 1024;
 
-/// A spec with its user-defined type names reduced to simple names, along
-/// with how each type's name was resolved.
+/// A spec with its user-defined type names reduced to simple names. Each
+/// entry is paired with how its own name resolved.
 #[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Simplified {
-    /// The spec entries with every user-defined type name reduced.
-    pub spec: Vec<ScSpecEntry>,
-    /// How each type the spec defines resolved to its simple name, in the
-    /// order the types are defined.
-    pub renames: Vec<Rename>,
+pub struct Reduced(pub Vec<Entry>);
+
+/// A reduced spec entry alongside how its name resolved.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct Entry {
+    /// The spec entry with every user-defined type name reduced.
+    pub entry: ScSpecEntry,
+    /// How the entry's own name resolved, or `None` for an entry that defines
+    /// no user-defined type or event name (a function).
+    pub rename: Option<Rename>,
 }
 
-/// How one user-defined type's name resolved during simplification.
+impl Reduced {
+    /// The reduced spec entries, without their renames.
+    pub fn entries(&self) -> impl Iterator<Item = &ScSpecEntry> + '_ {
+        self.0.iter().map(|e| &e.entry)
+    }
+
+    /// Consumes into the reduced spec entries, without their renames.
+    pub fn into_entries(self) -> impl Iterator<Item = ScSpecEntry> {
+        self.0.into_iter().map(|e| e.entry)
+    }
+
+    /// How each entry that defines a name resolved it, in entry order.
+    pub fn renames(&self) -> impl Iterator<Item = &Rename> + '_ {
+        self.0.iter().filter_map(|e| e.rename.as_ref())
+    }
+}
+
+/// How one user-defined type's name resolved during reduction.
 ///
 /// Spec names are byte strings that are not guaranteed to be valid UTF-8, so
 /// the names are byte strings here too, preserved exactly as they appear in
@@ -27,7 +48,7 @@ pub struct Simplified {
 pub struct Rename {
     /// The name as it appears in the input spec.
     pub from: Vec<u8>,
-    /// The name the type has in the simplified spec.
+    /// The name the type has in the reduced spec.
     pub to: Vec<u8>,
 }
 
@@ -66,7 +87,7 @@ fn last_segment(name: &[u8]) -> &[u8] {
 /// Names are treated as byte strings throughout and preserved exactly; the
 /// spec does not guarantee valid UTF-8. A type whose numbered name cannot fit
 /// the spec's name limit keeps its original name.
-pub fn simplify(spec: &[ScSpecEntry]) -> Simplified {
+pub fn reduce(spec: &[ScSpecEntry]) -> Reduced {
     // The names the spec defines, in definition order, each with the most
     // bytes its entry's name field can hold. Events define a name too: the
     // generated bindings declare a type for each event, so an event and a
@@ -175,7 +196,25 @@ pub fn simplify(spec: &[ScSpecEntry]) -> Simplified {
         }
     }
 
-    Simplified { spec, renames }
+    // Pair each rewritten entry with how its name resolved. Renames were
+    // collected over the named entries in definition order, which is the order
+    // those entries appear here; a function defines no name and so has none.
+    let mut renames = renames.into_iter();
+    let entries = spec
+        .into_iter()
+        .map(|entry| {
+            let rename = match &entry {
+                ScSpecEntry::UdtStructV0(_)
+                | ScSpecEntry::UdtUnionV0(_)
+                | ScSpecEntry::UdtEnumV0(_)
+                | ScSpecEntry::UdtErrorEnumV0(_)
+                | ScSpecEntry::EventV0(_) => renames.next(),
+                ScSpecEntry::FunctionV0(_) => None,
+            };
+            Entry { entry, rename }
+        })
+        .collect();
+    Reduced(entries)
 }
 
 /// Rewrites the name of every user-defined type reference in the type.
@@ -205,7 +244,7 @@ fn rewrite_ty(t: &mut ScSpecTypeDef, resolve: &dyn Fn(&[u8]) -> Vec<u8>) {
 
 #[cfg(test)]
 mod test {
-    use super::{simplify, Rename};
+    use super::{reduce, Rename};
     use stellar_xdr::{
         ScSpecEntry, ScSpecTypeDef, ScSpecTypeUdt, ScSpecUdtStructFieldV0, ScSpecUdtStructV0,
     };
@@ -240,8 +279,8 @@ mod test {
         )
     }
 
-    fn names(spec: &[ScSpecEntry]) -> Vec<(Vec<u8>, Vec<Vec<u8>>)> {
-        spec.iter()
+    fn names<'a>(spec: impl IntoIterator<Item = &'a ScSpecEntry>) -> Vec<(Vec<u8>, Vec<Vec<u8>>)> {
+        spec.into_iter()
             .map(|e| match e {
                 ScSpecEntry::UdtStructV0(s) => (
                     s.name.to_vec(),
@@ -261,17 +300,18 @@ mod test {
     #[test]
     fn reduces_a_qualified_name_to_its_last_segment() {
         let spec = [struct_entry("mycrate::mymod::MyType", &[])];
-        let simplified = simplify(&spec);
-        assert_eq!(names(&simplified.spec), [(b"MyType".to_vec(), vec![])]);
+        let reduced = reduce(&spec);
+        assert_eq!(names(reduced.entries()), [(b"MyType".to_vec(), vec![])]);
         assert_eq!(
-            simplified.renames,
+            reduced.renames().cloned().collect::<Vec<_>>(),
             [Rename {
                 from: b"mycrate::mymod::MyType".to_vec(),
                 to: b"MyType".to_vec(),
             }]
         );
-        assert!(simplified.renames[0].renamed());
-        assert!(!simplified.renames[0].collision());
+        let rename = reduced.renames().next().unwrap();
+        assert!(rename.renamed());
+        assert!(!rename.collision());
     }
 
     #[test]
@@ -280,16 +320,17 @@ mod test {
             struct_entry("mycrate::mymod::MyType", &["mycrate::myothermod::MyType"]),
             struct_entry("mycrate::myothermod::MyType", &["mycrate::mymod::MyType"]),
         ];
-        let simplified = simplify(&spec);
+        let reduced = reduce(&spec);
         assert_eq!(
-            names(&simplified.spec),
+            names(reduced.entries()),
             [
                 (b"MyType".to_vec(), vec![b"MyType2".to_vec()]),
                 (b"MyType2".to_vec(), vec![b"MyType".to_vec()]),
             ]
         );
-        assert!(!simplified.renames[0].collision());
-        assert!(simplified.renames[1].collision());
+        let renames: Vec<_> = reduced.renames().collect();
+        assert!(!renames[0].collision());
+        assert!(renames[1].collision());
     }
 
     #[test]
@@ -301,11 +342,10 @@ mod test {
             struct_entry("b::MyType2", &[]),
             struct_entry("c::MyType", &[]),
         ];
-        let simplified = simplify(&spec);
+        let reduced = reduce(&spec);
         assert_eq!(
-            simplified
-                .renames
-                .iter()
+            reduced
+                .renames()
                 .map(|r| r.to.as_slice())
                 .collect::<Vec<_>>(),
             [b"MyType".as_slice(), b"MyType2", b"MyType3"],
@@ -318,19 +358,18 @@ mod test {
             struct_entry("MyType", &["MyOther"]),
             struct_entry("MyOther", &[]),
         ];
-        let simplified = simplify(&spec);
-        assert_eq!(simplified.spec, spec);
-        assert!(simplified.renames.iter().all(|r| !r.renamed()));
+        let reduced = reduce(&spec);
+        assert_eq!(reduced.entries().cloned().collect::<Vec<_>>(), spec);
+        assert!(reduced.renames().all(|r| !r.renamed()));
     }
 
     #[test]
     fn a_simple_name_keeps_its_claim_over_a_later_qualified_one() {
         let spec = [struct_entry("MyType", &[]), struct_entry("a::MyType", &[])];
-        let simplified = simplify(&spec);
+        let reduced = reduce(&spec);
         assert_eq!(
-            simplified
-                .renames
-                .iter()
+            reduced
+                .renames()
                 .map(|r| r.to.as_slice())
                 .collect::<Vec<_>>(),
             [b"MyType".as_slice(), b"MyType2"],
@@ -340,12 +379,12 @@ mod test {
     #[test]
     fn a_reference_to_an_undefined_type_reduces_without_claiming() {
         let spec = [struct_entry("a::MyType", &["elsewhere::Other"])];
-        let simplified = simplify(&spec);
+        let reduced = reduce(&spec);
         assert_eq!(
-            names(&simplified.spec),
+            names(reduced.entries()),
             [(b"MyType".to_vec(), vec![b"Other".to_vec()])]
         );
-        assert_eq!(simplified.renames.len(), 1);
+        assert_eq!(reduced.renames().count(), 1);
     }
 
     #[test]
@@ -355,9 +394,9 @@ mod test {
         // changing the name and potentially overflowing the name limit.
         let name = b"mycrate::\xff\xfeType";
         let spec = [struct_entry_bytes(name, &[name])];
-        let simplified = simplify(&spec);
+        let reduced = reduce(&spec);
         assert_eq!(
-            names(&simplified.spec),
+            names(reduced.entries()),
             [(b"\xff\xfeType".to_vec(), vec![b"\xff\xfeType".to_vec()])]
         );
     }
@@ -369,7 +408,10 @@ mod test {
             struct_entry(&long, &[]),
             struct_entry_bytes(long.as_bytes(), &[]),
         ];
-        let simplified = simplify(&spec);
-        assert_eq!(simplified.renames[1].to.as_slice(), long.as_bytes());
+        let reduced = reduce(&spec);
+        assert_eq!(
+            reduced.renames().nth(1).unwrap().to.as_slice(),
+            long.as_bytes()
+        );
     }
 }
