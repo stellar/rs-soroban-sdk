@@ -141,6 +141,12 @@ pub enum DataKey {
     Temp(u32),
     Instance(u32),
 }
+impl DataKey {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_constructor::DataKey"
+    }
+}
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_DATAKEY: [u8; DataKey::spec_xdr_len()] = DataKey::spec_xdr();
 impl DataKey {
@@ -148,7 +154,7 @@ impl DataKey {
         soroban_sdk::xdr::ScSpecEntryView::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0View {
             doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"DataKey"),
+            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(DataKey::spec_name()),
             cases: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::TupleV0(
                     soroban_sdk::xdr::ScSpecUdtUnionCaseTupleV0View {
@@ -811,8 +817,8 @@ impl Contract {
                     name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"key"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                         soroban_sdk::xdr::ScSpecTypeUdtView {
-                            name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(
-                                b"DataKey",
+                            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(
+                                <DataKey>::spec_name(),
                             ),
                         },
                     ),

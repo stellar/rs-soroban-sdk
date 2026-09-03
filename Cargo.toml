@@ -57,7 +57,7 @@ default-features = false
 # Pending https://github.com/stellar/rs-stellar-xdr/pull/562, which adds the
 # borrowing `*View` types and their const XDR serializers that the contract spec
 # generation in soroban-sdk-macros builds on.
-stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "e73df1f6793fe5916dce7a833e14c0718786ab04" }
+stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "82677e1dfe49b6b94fc6440d9c58be74d2a33bff" }
 #soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }
 #soroban-env-guest = { path = "../rs-soroban-env/soroban-env-guest" }
 #soroban-env-host = { path = "../rs-soroban-env/soroban-env-host" }

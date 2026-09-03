@@ -47,6 +47,12 @@ impl ::core::cmp::PartialEq for StructA {
         self.f1 == other.f1 && self.f2 == other.f2
     }
 }
+impl StructA {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::StructA"
+    }
+}
 #[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_STRUCTA: [u8; StructA::spec_xdr_len()] = StructA::spec_xdr();
@@ -55,7 +61,7 @@ impl StructA {
         soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
             doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"StructA"),
+            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(StructA::spec_name()),
             fields: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
@@ -183,6 +189,12 @@ impl ::core::cmp::PartialEq for StructB {
         self.f1 == other.f1 && self.f2 == other.f2
     }
 }
+impl StructB {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::StructB"
+    }
+}
 #[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_STRUCTB: [u8; StructB::spec_xdr_len()] = StructB::spec_xdr();
@@ -191,7 +203,7 @@ impl StructB {
         soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
             doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"StructB"),
+            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(StructB::spec_name()),
             fields: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
@@ -319,6 +331,12 @@ impl ::core::cmp::PartialEq for StructC {
         self.f1 == other.f1 && self.f2 == other.f2
     }
 }
+impl StructC {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::StructC"
+    }
+}
 #[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_STRUCTC: [u8; StructC::spec_xdr_len()] = StructC::spec_xdr();
@@ -327,7 +345,7 @@ impl StructC {
         soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
             doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"StructC"),
+            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(StructC::spec_name()),
             fields: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
@@ -453,6 +471,12 @@ impl ::core::cmp::PartialEq for StructTupleA {
         self.0 == other.0 && self.1 == other.1
     }
 }
+impl StructTupleA {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::StructTupleA"
+    }
+}
 #[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_STRUCTTUPLEA: [u8; StructTupleA::spec_xdr_len()] =
@@ -462,7 +486,7 @@ impl StructTupleA {
         soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
             doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"StructTupleA"),
+            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(StructTupleA::spec_name()),
             fields: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
@@ -580,6 +604,12 @@ impl ::core::cmp::PartialEq for StructTupleB {
         self.0 == other.0 && self.1 == other.1
     }
 }
+impl StructTupleB {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::StructTupleB"
+    }
+}
 #[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_STRUCTTUPLEB: [u8; StructTupleB::spec_xdr_len()] =
@@ -589,7 +619,7 @@ impl StructTupleB {
         soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
             doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"StructTupleB"),
+            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(StructTupleB::spec_name()),
             fields: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
@@ -708,6 +738,12 @@ impl ::core::cmp::PartialEq for StructTupleC {
         self.1 == other.1 && self.0 == other.0
     }
 }
+impl StructTupleC {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::StructTupleC"
+    }
+}
 #[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_STRUCTTUPLEC: [u8; StructTupleC::spec_xdr_len()] =
@@ -717,7 +753,7 @@ impl StructTupleC {
         soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
             doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"StructTupleC"),
+            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(StructTupleC::spec_name()),
             fields: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
@@ -847,6 +883,12 @@ impl ::core::cmp::PartialEq for EnumA {
         __self_discr == __arg1_discr
     }
 }
+impl EnumA {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::EnumA"
+    }
+}
 #[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ENUMA: [u8; EnumA::spec_xdr_len()] = EnumA::spec_xdr();
@@ -855,7 +897,7 @@ impl EnumA {
         soroban_sdk::xdr::ScSpecEntryView::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0View {
             doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"EnumA"),
+            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(EnumA::spec_name()),
             cases: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
                     soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
@@ -1037,6 +1079,12 @@ impl ::core::cmp::PartialEq for EnumB {
             }
     }
 }
+impl EnumB {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::EnumB"
+    }
+}
 #[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ENUMB: [u8; EnumB::spec_xdr_len()] = EnumB::spec_xdr();
@@ -1045,7 +1093,7 @@ impl EnumB {
         soroban_sdk::xdr::ScSpecEntryView::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0View {
             doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"EnumB"),
+            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(EnumB::spec_name()),
             cases: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
                     soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
@@ -1247,6 +1295,12 @@ impl ::core::cmp::PartialEq for EnumC {
             }
     }
 }
+impl EnumC {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::EnumC"
+    }
+}
 #[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ENUMC: [u8; EnumC::spec_xdr_len()] = EnumC::spec_xdr();
@@ -1255,7 +1309,7 @@ impl EnumC {
         soroban_sdk::xdr::ScSpecEntryView::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0View {
             doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"EnumC"),
+            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(EnumC::spec_name()),
             cases: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
                     soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
@@ -1270,8 +1324,8 @@ impl EnumC {
                         type_: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                             soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                                 soroban_sdk::xdr::ScSpecTypeUdtView {
-                                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(
-                                        b"StructA",
+                                    name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(
+                                        <StructA>::spec_name(),
                                     ),
                                 },
                             ),
@@ -1285,8 +1339,8 @@ impl EnumC {
                         type_: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                             soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                                 soroban_sdk::xdr::ScSpecTypeUdtView {
-                                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(
-                                        b"StructTupleA",
+                                    name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(
+                                        <StructTupleA>::spec_name(),
                                     ),
                                 },
                             ),
@@ -1454,6 +1508,12 @@ impl ::core::cmp::PartialEq for EnumIntA {
         __self_discr == __arg1_discr
     }
 }
+impl EnumIntA {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::EnumIntA"
+    }
+}
 #[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ENUMINTA: [u8; EnumIntA::spec_xdr_len()] = EnumIntA::spec_xdr();
@@ -1462,7 +1522,7 @@ impl EnumIntA {
         soroban_sdk::xdr::ScSpecEntryView::UdtEnumV0(soroban_sdk::xdr::ScSpecUdtEnumV0View {
             doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"EnumIntA"),
+            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(EnumIntA::spec_name()),
             cases: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
                     doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
@@ -1588,6 +1648,12 @@ impl ::core::cmp::PartialEq for EnumIntB {
         __self_discr == __arg1_discr
     }
 }
+impl EnumIntB {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::EnumIntB"
+    }
+}
 #[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ENUMINTB: [u8; EnumIntB::spec_xdr_len()] = EnumIntB::spec_xdr();
@@ -1596,7 +1662,7 @@ impl EnumIntB {
         soroban_sdk::xdr::ScSpecEntryView::UdtEnumV0(soroban_sdk::xdr::ScSpecUdtEnumV0View {
             doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"EnumIntB"),
+            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(EnumIntB::spec_name()),
             cases: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
                     doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
@@ -1722,6 +1788,12 @@ impl ::core::cmp::PartialEq for EnumIntC {
         __self_discr == __arg1_discr
     }
 }
+impl EnumIntC {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::EnumIntC"
+    }
+}
 #[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ENUMINTC: [u8; EnumIntC::spec_xdr_len()] = EnumIntC::spec_xdr();
@@ -1730,7 +1802,7 @@ impl EnumIntC {
         soroban_sdk::xdr::ScSpecEntryView::UdtEnumV0(soroban_sdk::xdr::ScSpecUdtEnumV0View {
             doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"EnumIntC"),
+            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(EnumIntC::spec_name()),
             cases: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
                     doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
@@ -1856,6 +1928,12 @@ impl ::core::cmp::PartialEq for ErrorA {
         __self_discr == __arg1_discr
     }
 }
+impl ErrorA {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::ErrorA"
+    }
+}
 #[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ERRORA: [u8; ErrorA::spec_xdr_len()] = ErrorA::spec_xdr();
@@ -1865,7 +1943,7 @@ impl ErrorA {
             soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
                 doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"ErrorA"),
+                name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(ErrorA::spec_name()),
                 cases: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
                         doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
@@ -2062,6 +2140,12 @@ impl ::core::cmp::PartialEq for ErrorB {
         __self_discr == __arg1_discr
     }
 }
+impl ErrorB {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::ErrorB"
+    }
+}
 #[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ERRORB: [u8; ErrorB::spec_xdr_len()] = ErrorB::spec_xdr();
@@ -2071,7 +2155,7 @@ impl ErrorB {
             soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
                 doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"ErrorB"),
+                name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(ErrorB::spec_name()),
                 cases: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
                         doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
@@ -2268,6 +2352,12 @@ impl ::core::cmp::PartialEq for ErrorC {
         __self_discr == __arg1_discr
     }
 }
+impl ErrorC {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::ErrorC"
+    }
+}
 #[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ERRORC: [u8; ErrorC::spec_xdr_len()] = ErrorC::spec_xdr();
@@ -2277,7 +2367,7 @@ impl ErrorC {
             soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
                 doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"ErrorC"),
+                name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(ErrorC::spec_name()),
                 cases: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
                         doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
@@ -2470,6 +2560,12 @@ impl ::core::cmp::PartialEq for EventA {
         self.f1 == other.f1 && self.f2 == other.f2
     }
 }
+impl EventA {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::EventA"
+    }
+}
 #[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_EVENT_EVENTA: [u8; EventA::spec_xdr_len()] = EventA::spec_xdr();
@@ -2478,9 +2574,7 @@ impl EventA {
         soroban_sdk::xdr::ScSpecEntryView::EventV0(soroban_sdk::xdr::ScSpecEventV0View {
             doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::ScSymbolView(
-                soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"EventA"),
-            ),
+            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(EventA::spec_name()),
             prefix_topics: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSymbolView(
                     soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"event_a"),
@@ -2599,6 +2693,12 @@ impl ::core::cmp::PartialEq for EventB {
         self.f3 == other.f3 && self.f1 == other.f1 && self.f2 == other.f2
     }
 }
+impl EventB {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::EventB"
+    }
+}
 #[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_EVENT_EVENTB: [u8; EventB::spec_xdr_len()] = EventB::spec_xdr();
@@ -2607,9 +2707,7 @@ impl EventB {
         soroban_sdk::xdr::ScSpecEntryView::EventV0(soroban_sdk::xdr::ScSpecEventV0View {
             doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::ScSymbolView(
-                soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"EventB"),
-            ),
+            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(EventB::spec_name()),
             prefix_topics: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSymbolView(
                     soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"event_b"),
@@ -2739,6 +2837,12 @@ impl ::core::cmp::PartialEq for EventC {
         self.f2 == other.f2 && self.f3 == other.f3 && self.f1 == other.f1
     }
 }
+impl EventC {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::EventC"
+    }
+}
 #[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_EVENT_EVENTC: [u8; EventC::spec_xdr_len()] = EventC::spec_xdr();
@@ -2747,9 +2851,7 @@ impl EventC {
         soroban_sdk::xdr::ScSpecEntryView::EventV0(soroban_sdk::xdr::ScSpecEventV0View {
             doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::ScSymbolView(
-                soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"EventC"),
-            ),
+            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(EventC::spec_name()),
             prefix_topics: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSymbolView(
                     soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"event_c"),
@@ -2862,6 +2964,12 @@ impl ::core::cmp::PartialEq for EventD {
         true
     }
 }
+impl EventD {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::EventD"
+    }
+}
 #[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_EVENT_EVENTD: [u8; EventD::spec_xdr_len()] = EventD::spec_xdr();
@@ -2870,9 +2978,7 @@ impl EventD {
         soroban_sdk::xdr::ScSpecEntryView::EventV0(soroban_sdk::xdr::ScSpecEventV0View {
             doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::ScSymbolView(
-                soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"EventD"),
-            ),
+            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(EventD::spec_name()),
             prefix_topics: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSymbolView(
                     soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"event_d"),

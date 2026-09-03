@@ -155,6 +155,12 @@ impl ::core::cmp::PartialEq for Error {
         true
     }
 }
+impl Error {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_add_u64::Error"
+    }
+}
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_ERROR: [u8; Error::spec_xdr_len()] = Error::spec_xdr();
 impl Error {
@@ -163,7 +169,7 @@ impl Error {
             soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
                 doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"Error"),
+                name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(Error::spec_name()),
                 cases: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
                         doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
@@ -307,6 +313,12 @@ impl ::core::cmp::PartialEq for MyError {
         true
     }
 }
+impl MyError {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_add_u64::MyError"
+    }
+}
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_MYERROR: [u8; MyError::spec_xdr_len()] = MyError::spec_xdr();
 impl MyError {
@@ -315,7 +327,7 @@ impl MyError {
             soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
                 doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"MyError"),
+                name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(MyError::spec_name()),
                 cases: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
                         doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
@@ -575,8 +587,8 @@ impl Contract {
                         ok_type: &soroban_sdk::xdr::ScSpecTypeDefView::U64,
                         error_type: &soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                             soroban_sdk::xdr::ScSpecTypeUdtView {
-                                name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(
-                                    b"MyError",
+                                name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(
+                                    <MyError>::spec_name(),
                                 ),
                             },
                         ),

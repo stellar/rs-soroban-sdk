@@ -16,6 +16,12 @@ pub struct DummyProof {
     pub g2: Bls12381G2Affine,
     pub fr: Bls12381Fr,
 }
+impl DummyProof {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_bls::DummyProof"
+    }
+}
 #[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_DUMMYPROOF: [u8; DummyProof::spec_xdr_len()] = DummyProof::spec_xdr();
@@ -24,7 +30,7 @@ impl DummyProof {
         soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
             doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"DummyProof"),
+            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(DummyProof::spec_name()),
             fields: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
@@ -332,8 +338,8 @@ impl Contract {
                     name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"proof"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                         soroban_sdk::xdr::ScSpecTypeUdtView {
-                            name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(
-                                b"DummyProof",
+                            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(
+                                <DummyProof>::spec_name(),
                             ),
                         },
                     ),

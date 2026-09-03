@@ -84,7 +84,9 @@ impl Contract {
             ]),
             outputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSpecTypeDefView::Udt(soroban_sdk::xdr::ScSpecTypeUdtView {
-                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"StructA"),
+                    name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(
+                        <StructA>::spec_name(),
+                    ),
                 }),
             ]),
         });
@@ -130,7 +132,9 @@ impl Contract {
             ]),
             outputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSpecTypeDefView::Udt(soroban_sdk::xdr::ScSpecTypeUdtView {
-                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"StructTupleA"),
+                    name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(
+                        <StructTupleA>::spec_name(),
+                    ),
                 }),
             ]),
         });
@@ -164,7 +168,7 @@ impl Contract {
             inputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[]),
             outputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSpecTypeDefView::Udt(soroban_sdk::xdr::ScSpecTypeUdtView {
-                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"EnumA"),
+                    name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(<EnumA>::spec_name()),
                 }),
             ]),
         });
@@ -198,7 +202,9 @@ impl Contract {
             inputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[]),
             outputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSpecTypeDefView::Udt(soroban_sdk::xdr::ScSpecTypeUdtView {
-                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"EnumIntA"),
+                    name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(
+                        <EnumIntA>::spec_name(),
+                    ),
                 }),
             ]),
         });
@@ -242,8 +248,8 @@ impl Contract {
                         ok_type: &soroban_sdk::xdr::ScSpecTypeDefView::U32,
                         error_type: &soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                             soroban_sdk::xdr::ScSpecTypeUdtView {
-                                name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(
-                                    b"ErrorA",
+                                name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(
+                                    <ErrorA>::spec_name(),
                                 ),
                             },
                         ),

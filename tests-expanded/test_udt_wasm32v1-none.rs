@@ -49,6 +49,12 @@ impl ::core::cmp::PartialEq for UdtEnum2 {
         __self_discr == __arg1_discr
     }
 }
+impl UdtEnum2 {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_udt::UdtEnum2"
+    }
+}
 #[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_UDTENUM2: [u8; UdtEnum2::spec_xdr_len()] = UdtEnum2::spec_xdr();
@@ -57,7 +63,7 @@ impl UdtEnum2 {
         soroban_sdk::xdr::ScSpecEntryView::UdtEnumV0(soroban_sdk::xdr::ScSpecUdtEnumV0View {
             doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"UdtEnum2"),
+            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(UdtEnum2::spec_name()),
             cases: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSpecUdtEnumCaseV0View {
                     doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
@@ -194,6 +200,12 @@ impl ::core::cmp::PartialEq for UdtEnum {
             }
     }
 }
+impl UdtEnum {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_udt::UdtEnum"
+    }
+}
 #[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_UDTENUM: [u8; UdtEnum::spec_xdr_len()] = UdtEnum::spec_xdr();
@@ -202,7 +214,7 @@ impl UdtEnum {
         soroban_sdk::xdr::ScSpecEntryView::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0View {
             doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"UdtEnum"),
+            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(UdtEnum::spec_name()),
             cases: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
                     soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
@@ -217,8 +229,8 @@ impl UdtEnum {
                         type_: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                             soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                                 soroban_sdk::xdr::ScSpecTypeUdtView {
-                                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(
-                                        b"UdtStruct",
+                                    name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(
+                                        <UdtStruct>::spec_name(),
                                     ),
                                 },
                             ),
@@ -232,8 +244,8 @@ impl UdtEnum {
                         type_: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                             soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                                 soroban_sdk::xdr::ScSpecTypeUdtView {
-                                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(
-                                        b"UdtEnum2",
+                                    name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(
+                                        <UdtEnum2>::spec_name(),
                                     ),
                                 },
                             ),
@@ -247,8 +259,8 @@ impl UdtEnum {
                         type_: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                             soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                                 soroban_sdk::xdr::ScSpecTypeUdtView {
-                                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(
-                                        b"UdtTuple",
+                                    name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(
+                                        <UdtTuple>::spec_name(),
                                     ),
                                 },
                             ),
@@ -425,6 +437,12 @@ impl ::core::cmp::PartialEq for UdtTuple {
         self.0 == other.0 && self.1 == other.1
     }
 }
+impl UdtTuple {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_udt::UdtTuple"
+    }
+}
 #[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_UDTTUPLE: [u8; UdtTuple::spec_xdr_len()] = UdtTuple::spec_xdr();
@@ -433,7 +451,7 @@ impl UdtTuple {
         soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
             doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"UdtTuple"),
+            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(UdtTuple::spec_name()),
             fields: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
@@ -570,6 +588,12 @@ impl ::core::cmp::PartialEq for UdtStruct {
         self.a == other.a && self.b == other.b && self.c == other.c
     }
 }
+impl UdtStruct {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_udt::UdtStruct"
+    }
+}
 #[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_UDTSTRUCT: [u8; UdtStruct::spec_xdr_len()] = UdtStruct::spec_xdr();
@@ -578,7 +602,7 @@ impl UdtStruct {
         soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
             doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"UdtStruct"),
+            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(UdtStruct::spec_name()),
             fields: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
@@ -725,6 +749,12 @@ impl ::core::cmp::PartialEq for UdtRecursive {
         self.a == other.a && self.b == other.b
     }
 }
+impl UdtRecursive {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_udt::UdtRecursive"
+    }
+}
 #[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_UDTRECURSIVE: [u8; UdtRecursive::spec_xdr_len()] =
@@ -734,7 +764,7 @@ impl UdtRecursive {
         soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
             doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"UdtRecursive"),
+            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(UdtRecursive::spec_name()),
             fields: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
@@ -748,8 +778,8 @@ impl UdtRecursive {
                         &soroban_sdk::xdr::ScSpecTypeVecView {
                             element_type: &soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                                 soroban_sdk::xdr::ScSpecTypeUdtView {
-                                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(
-                                        b"UdtRecursive",
+                                    name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(
+                                        <UdtRecursive>::spec_name(),
                                     ),
                                 },
                             ),
@@ -877,6 +907,12 @@ impl ::core::cmp::PartialEq for RecursiveToEnum {
         self.a == other.a && self.b == other.b
     }
 }
+impl RecursiveToEnum {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_udt::RecursiveToEnum"
+    }
+}
 #[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_RECURSIVETOENUM: [u8; RecursiveToEnum::spec_xdr_len()] =
@@ -886,7 +922,7 @@ impl RecursiveToEnum {
         soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
             doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"RecursiveToEnum"),
+            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(RecursiveToEnum::spec_name()),
             fields: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
@@ -901,8 +937,8 @@ impl RecursiveToEnum {
                             key_type: &soroban_sdk::xdr::ScSpecTypeDefView::U32,
                             value_type: &soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                                 soroban_sdk::xdr::ScSpecTypeUdtView {
-                                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(
-                                        b"RecursiveEnum",
+                                    name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(
+                                        <RecursiveEnum>::spec_name(),
                                     ),
                                 },
                             ),
@@ -1037,6 +1073,12 @@ impl ::core::cmp::PartialEq for RecursiveEnum {
             }
     }
 }
+impl RecursiveEnum {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_udt::RecursiveEnum"
+    }
+}
 #[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_RECURSIVEENUM: [u8; RecursiveEnum::spec_xdr_len()] =
@@ -1046,7 +1088,7 @@ impl RecursiveEnum {
         soroban_sdk::xdr::ScSpecEntryView::UdtUnionV0(soroban_sdk::xdr::ScSpecUdtUnionV0View {
             doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"RecursiveEnum"),
+            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(RecursiveEnum::spec_name()),
             cases: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSpecUdtUnionCaseV0View::VoidV0(
                     soroban_sdk::xdr::ScSpecUdtUnionCaseVoidV0View {
@@ -1063,8 +1105,8 @@ impl RecursiveEnum {
                         type_: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                             soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                                 soroban_sdk::xdr::ScSpecTypeUdtView {
-                                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(
-                                        b"RecursiveToEnum",
+                                    name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(
+                                        <RecursiveToEnum>::spec_name(),
                                     ),
                                 },
                             ),
@@ -1241,8 +1283,8 @@ impl Contract {
                     name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"a"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                         soroban_sdk::xdr::ScSpecTypeUdtView {
-                            name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(
-                                b"UdtEnum",
+                            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(
+                                <UdtEnum>::spec_name(),
                             ),
                         },
                     ),
@@ -1252,8 +1294,8 @@ impl Contract {
                     name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"b"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                         soroban_sdk::xdr::ScSpecTypeUdtView {
-                            name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(
-                                b"UdtEnum",
+                            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(
+                                <UdtEnum>::spec_name(),
                             ),
                         },
                     ),
@@ -1296,8 +1338,8 @@ impl Contract {
                     name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"a"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                         soroban_sdk::xdr::ScSpecTypeUdtView {
-                            name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(
-                                b"UdtRecursive",
+                            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(
+                                <UdtRecursive>::spec_name(),
                             ),
                         },
                     ),
@@ -1308,8 +1350,8 @@ impl Contract {
                     &soroban_sdk::xdr::ScSpecTypeOptionView {
                         value_type: &soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                             soroban_sdk::xdr::ScSpecTypeUdtView {
-                                name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(
-                                    b"UdtRecursive",
+                                name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(
+                                    <UdtRecursive>::spec_name(),
                                 ),
                             },
                         ),
@@ -1350,8 +1392,8 @@ impl Contract {
                     name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"a"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                         soroban_sdk::xdr::ScSpecTypeUdtView {
-                            name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(
-                                b"RecursiveEnum",
+                            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(
+                                <RecursiveEnum>::spec_name(),
                             ),
                         },
                     ),
@@ -1369,10 +1411,9 @@ impl Contract {
                             &soroban_sdk::xdr::ScSpecTypeOptionView {
                                 value_type: &soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                                     soroban_sdk::xdr::ScSpecTypeUdtView {
-                                        name:
-                                            soroban_sdk::xdr::StringMView::try_from_slice_or_panic(
-                                                b"RecursiveEnum",
-                                            ),
+                                        name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(
+                                            <RecursiveEnum>::spec_name(),
+                                        ),
                                     },
                                 ),
                             },

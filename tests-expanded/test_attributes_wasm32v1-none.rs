@@ -47,6 +47,12 @@ impl ::core::cmp::PartialEq for AttributeType {
         self.value == other.value
     }
 }
+impl AttributeType {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_attributes::AttributeType"
+    }
+}
 #[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ATTRIBUTETYPE: [u8; AttributeType::spec_xdr_len()] =
@@ -56,7 +62,7 @@ impl AttributeType {
         soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
             doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"AttributeType"),
+            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(AttributeType::spec_name()),
             fields: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
                     doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
@@ -136,6 +142,12 @@ pub struct AttributeEvent {
     topic: u32,
     value: u32,
 }
+impl AttributeEvent {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_attributes::AttributeEvent"
+    }
+}
 #[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_EVENT_ATTRIBUTEEVENT: [u8; AttributeEvent::spec_xdr_len()] =
@@ -145,9 +157,7 @@ impl AttributeEvent {
         soroban_sdk::xdr::ScSpecEntryView::EventV0(soroban_sdk::xdr::ScSpecEventV0View {
             doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::ScSymbolView(
-                soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"AttributeEvent"),
-            ),
+            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(AttributeEvent::spec_name()),
             prefix_topics: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::ScSymbolView(
                     soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"attribute_event"),
@@ -687,8 +697,8 @@ impl Contract {
                     name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"value"),
                     type_: soroban_sdk::xdr::ScSpecTypeDefView::Udt(
                         soroban_sdk::xdr::ScSpecTypeUdtView {
-                            name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(
-                                b"AttributeType",
+                            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(
+                                <AttributeType>::spec_name(),
                             ),
                         },
                     ),
