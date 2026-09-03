@@ -159,7 +159,6 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Scheduled runs also test against the upcoming rust versions.
         rust: ${{ (github.event_name == 'schedule') && fromJSON('["msrv", "latest", "beta", "nightly"]') || fromJSON('["msrv", "latest"]') }}
         sys: ${{ fromJSON(needs.setup.outputs.sys) }}
     runs-on: ${{ matrix.sys.os }}
