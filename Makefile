@@ -10,6 +10,10 @@ default: test
 
 doc: fmt
 	cargo test --doc $(foreach c,$(LIB_CRATES),--package $(c)) --features testutils,alloc,hazmat
+	$(MAKE) doc-only
+
+# Build the docs for all the library crates, without running the doc tests.
+doc-only:
 	cargo +nightly doc --no-deps $(foreach c,$(LIB_CRATES),--package $(c)) --all-features $(CARGO_DOC_ARGS)
 
 test: fmt build-test-wasms test-only

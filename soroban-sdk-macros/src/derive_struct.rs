@@ -96,6 +96,7 @@ pub fn derive_type_struct(
             ident.unraw().to_string().to_uppercase()
         );
         quote! {
+            #[doc(hidden)]
             #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
             pub static #spec_ident: [u8; #spec_xdr_len] = #ident::spec_xdr();
 
