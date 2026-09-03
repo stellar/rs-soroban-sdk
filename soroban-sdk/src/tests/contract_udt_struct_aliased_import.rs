@@ -98,7 +98,9 @@ fn test_spec() {
     let expect = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
         doc: "".try_into().unwrap(),
         lib: "".try_into().unwrap(),
-        name: "Outer".try_into().unwrap(),
+        name: "soroban_sdk::tests::contract_udt_struct_aliased_import::Outer"
+            .try_into()
+            .unwrap(),
         fields: vec![
             ScSpecUdtStructFieldV0 {
                 doc: "".try_into().unwrap(),
@@ -111,7 +113,9 @@ fn test_spec() {
                 type_: ScSpecTypeDef::Udt(ScSpecTypeUdt {
                     // See module doc comment: named after the aliased
                     // import, not the type's own spec'd name (below).
-                    name: "Renamed".try_into().unwrap(),
+                    name: "soroban_sdk::tests::contract_udt_struct_aliased_import::inner::Inner"
+                        .try_into()
+                        .unwrap(),
                 }),
             },
         ]
@@ -126,7 +130,9 @@ fn test_spec() {
     let expect = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
         doc: "".try_into().unwrap(),
         lib: "".try_into().unwrap(),
-        name: "Inner".try_into().unwrap(),
+        name: "soroban_sdk::tests::contract_udt_struct_aliased_import::inner::Inner"
+            .try_into()
+            .unwrap(),
         fields: vec![
             ScSpecUdtStructFieldV0 {
                 doc: "".try_into().unwrap(),

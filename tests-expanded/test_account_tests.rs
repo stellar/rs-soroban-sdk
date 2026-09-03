@@ -50,19 +50,25 @@ impl ::core::cmp::Ord for Error {
         ::core::cmp::Ordering::Equal
     }
 }
+impl Error {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "test_account::Error"
+    }
+}
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_ERROR: [u8; Error::spec_xdr_len()] = Error::spec_xdr();
 impl Error {
-    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::ScSpecEntryConst =
-        soroban_sdk::xdr::ScSpecEntryConst::UdtErrorEnumV0(
-            soroban_sdk::xdr::ScSpecUdtErrorEnumV0Const {
-                doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
-                lib: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"Error"),
-                cases: soroban_sdk::xdr::VecMConst::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0Const {
-                        doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"Fail"),
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::UdtErrorEnumV0(
+            soroban_sdk::xdr::ScSpecUdtErrorEnumV0View {
+                doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(Error::spec_name()),
+                cases: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::ScSpecUdtErrorEnumCaseV0View {
+                        doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"Fail"),
                         value: 1u32,
                     },
                 ]),
@@ -341,36 +347,36 @@ pub mod __Contract____check_auth__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     #[allow(non_snake_case)]
-    const __SPEC_XDR_ENTRY___check_auth: soroban_sdk::xdr::ScSpecEntryConst =
-        soroban_sdk::xdr::ScSpecEntryConst::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Const {
-            doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::ScSymbolConst(
-                soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"__check_auth"),
+    const __SPEC_XDR_ENTRY___check_auth: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::ScSymbolView(
+                soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"__check_auth"),
             ),
-            inputs: soroban_sdk::xdr::VecMConst::try_from_slice_or_panic(&[
-                soroban_sdk::xdr::ScSpecFunctionInputV0Const {
-                    doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
-                    name: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(
+            inputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(
                         b"signature_payload",
                     ),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefConst::BytesN(
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::BytesN(
                         soroban_sdk::xdr::ScSpecTypeBytesN { n: 32u32 },
                     ),
                 },
-                soroban_sdk::xdr::ScSpecFunctionInputV0Const {
-                    doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
-                    name: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"signatures"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefConst::Void,
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"signatures"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Void,
                 },
-                soroban_sdk::xdr::ScSpecFunctionInputV0Const {
-                    doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
-                    name: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"auth_contexts"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefConst::Vec(
-                        &soroban_sdk::xdr::ScSpecTypeVecConst {
-                            element_type: &soroban_sdk::xdr::ScSpecTypeDefConst::Udt(
-                                soroban_sdk::xdr::ScSpecTypeUdtConst {
-                                    name: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(
-                                        b"Context",
+                soroban_sdk::xdr::ScSpecFunctionInputV0View {
+                    doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"auth_contexts"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Vec(
+                        &soroban_sdk::xdr::ScSpecTypeVecView {
+                            element_type: &soroban_sdk::xdr::ScSpecTypeDefView::Udt(
+                                soroban_sdk::xdr::ScSpecTypeUdtView {
+                                    name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(
+                                        <Context>::spec_name(),
                                     ),
                                 },
                             ),
@@ -378,11 +384,11 @@ impl Contract {
                     ),
                 },
             ]),
-            outputs: soroban_sdk::xdr::VecMConst::try_from_slice_or_panic(&[
-                soroban_sdk::xdr::ScSpecTypeDefConst::Result(
-                    &soroban_sdk::xdr::ScSpecTypeResultConst {
-                        ok_type: &soroban_sdk::xdr::ScSpecTypeDefConst::Void,
-                        error_type: &soroban_sdk::xdr::ScSpecTypeDefConst::Error,
+            outputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::ScSpecTypeDefView::Result(
+                    &soroban_sdk::xdr::ScSpecTypeResultView {
+                        ok_type: &soroban_sdk::xdr::ScSpecTypeDefView::Void,
+                        error_type: &soroban_sdk::xdr::ScSpecTypeDefView::Error,
                     },
                 ),
             ]),

@@ -42,16 +42,16 @@ pub mod __Contract__value__spec {
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_value: soroban_sdk::xdr::ScSpecEntryConst =
-        soroban_sdk::xdr::ScSpecEntryConst::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Const {
-            doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::ScSymbolConst(
-                soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"value"),
+    const __SPEC_XDR_ENTRY_value: soroban_sdk::xdr::ScSpecEntryView<'static> =
+        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
+            doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::ScSymbolView(
+                soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"value"),
             ),
-            inputs: soroban_sdk::xdr::VecMConst::try_from_slice_or_panic(&[]),
-            outputs: soroban_sdk::xdr::VecMConst::try_from_slice_or_panic(&[
-                soroban_sdk::xdr::ScSpecTypeDefConst::Udt(soroban_sdk::xdr::ScSpecTypeUdtConst {
-                    name: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"Value"),
+            inputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[]),
+            outputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::ScSpecTypeDefView::Udt(soroban_sdk::xdr::ScSpecTypeUdtView {
+                    name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(<Value>::spec_name()),
                 }),
             ]),
         });
