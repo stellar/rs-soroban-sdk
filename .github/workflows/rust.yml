@@ -234,7 +234,7 @@ jobs:
       with:
         name: cargo-fuzz
         version: 0.13.1
-    - run: cargo install cargo-afl --locked
+    - run: cargo install cargo-afl --version 0.18.2 --locked
     - run: make build-fuzz
       env:
         # cargo-afl builds with -C target-cpu=native, and appends any RUSTFLAGS
