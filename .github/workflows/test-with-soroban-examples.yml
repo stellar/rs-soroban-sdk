@@ -44,7 +44,6 @@ jobs:
       fail-fast: false
       matrix:
         working-directory: ${{ fromJSON(needs.collect-examples.outputs.dirs) }}
-        # Scheduled runs also test against the upcoming rust versions.
         rust: ${{ (github.event_name == 'schedule') && fromJSON('["latest", "beta", "nightly"]') || fromJSON('["latest"]') }}
     defaults:
       run:
