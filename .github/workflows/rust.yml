@@ -185,15 +185,15 @@ jobs:
         rustup component add --toolchain ${{ matrix.rust }} clippy rustfmt
         rustup target add --toolchain ${{ matrix.rust }} ${{ matrix.sys.target }}
         rustup target add --toolchain ${{ matrix.rust }} wasm32v1-none
-    - name: Set beta or nightly toolchain
-      if: matrix.rust == 'beta' || matrix.rust == 'nightly'
-      run: echo RUSTUP_TOOLCHAIN='${{ matrix.rust }}' >> $GITHUB_ENV
     - name: Use the minimum supported rust version
       if: matrix.rust == 'msrv'
       run: echo RUSTUP_TOOLCHAIN="$(make msrv)" >> $GITHUB_ENV
     - name: Set latest toolchain
       if: matrix.rust == 'latest'
       run: echo RUSTUP_TOOLCHAIN="$(rustup show active-toolchain | cut -d' ' -f1)" >> $GITHUB_ENV
+    - name: Set beta or nightly toolchain
+      if: matrix.rust == 'beta' || matrix.rust == 'nightly'
+      run: echo RUSTUP_TOOLCHAIN='${{ matrix.rust }}' >> $GITHUB_ENV
     - uses: stellar/actions/rust-cache@main
     - name: Error on warnings only for msrv
       if: matrix.rust == 'msrv'
