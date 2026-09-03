@@ -105,7 +105,7 @@ jobs:
     steps:
       - name: Setup Scripts
         id: setup
-        uses: github/gh-aw-actions/setup@v0.83.4
+        uses: github/gh-aw-actions/setup@v0.87.10
         with:
           destination: ${{ runner.temp }}/gh-aw/actions
           job-name: ${{ github.job }}
@@ -447,7 +447,7 @@ jobs:
     steps:
       - name: Setup Scripts
         id: setup
-        uses: github/gh-aw-actions/setup@v0.83.4
+        uses: github/gh-aw-actions/setup@v0.87.10
         with:
           destination: ${{ runner.temp }}/gh-aw/actions
           job-name: ${{ github.job }}
@@ -534,7 +534,7 @@ jobs:
         env:
           GH_AW_SKILL_DIR: ".github/skills"
         run: bash "${RUNNER_TEMP}/gh-aw/actions/restore_inline_skills.sh"
-      - uses: stellar/binaries@v55
+      - uses: stellar/binaries@v86
         with:
           name: cargo-semver-checks
           version: 0.46.0
@@ -1084,7 +1084,7 @@ jobs:
     steps:
       - name: Setup Scripts
         id: setup
-        uses: github/gh-aw-actions/setup@v0.83.4
+        uses: github/gh-aw-actions/setup@v0.87.10
         with:
           destination: ${{ runner.temp }}/gh-aw/actions
           job-name: ${{ github.job }}
@@ -1335,7 +1335,7 @@ jobs:
     steps:
       - name: Setup Scripts
         id: setup
-        uses: github/gh-aw-actions/setup@v0.83.4
+        uses: github/gh-aw-actions/setup@v0.87.10
         with:
           destination: ${{ runner.temp }}/gh-aw/actions
           job-name: ${{ github.job }}
@@ -1577,7 +1577,7 @@ jobs:
     steps:
       - name: Setup Scripts
         id: setup
-        uses: github/gh-aw-actions/setup@v0.83.4
+        uses: github/gh-aw-actions/setup@v0.87.10
         with:
           destination: ${{ runner.temp }}/gh-aw/actions
           job-name: ${{ github.job }}
@@ -1640,7 +1640,7 @@ jobs:
     steps:
       - name: Setup Scripts
         id: setup
-        uses: github/gh-aw-actions/setup@v0.83.4
+        uses: github/gh-aw-actions/setup@v0.87.10
         with:
           destination: ${{ runner.temp }}/gh-aw/actions
           job-name: ${{ github.job }}
