@@ -22,7 +22,7 @@ rust-version = "1.91.0"
 soroban-sdk = { version = "28.0.0-rc.1", path = "soroban-sdk" }
 soroban-sdk-macros = { version = "28.0.0-rc.1", path = "soroban-sdk-macros" }
 soroban-meta = { version = "28.0.0-rc.1", path = "soroban-meta" }
-soroban-spec = { version = "28.0.0-rc.1", path = "soroban-spec" }
+soroban-spec = { version = "28.0.0-rc.1", path = "soroban-spec", default-features = false }
 soroban-spec-rust = { version = "28.0.0-rc.1", path = "soroban-spec-rust" }
 soroban-ledger-snapshot = { version = "28.0.0-rc.1", path = "soroban-ledger-snapshot" }
 soroban-token-sdk = { version = "28.0.0-rc.1", path = "soroban-token-sdk" }
@@ -53,7 +53,11 @@ version = "=28.0.0"
 #rev = "a749b69b3471aec0c20ec431b0297f3414d66421"
 default-features = false
 
-#[patch.crates-io]
+[patch.crates-io]
+# Pending https://github.com/stellar/rs-stellar-xdr/pull/562, which adds the
+# borrowing `*View` types and their const XDR serializers that the contract spec
+# generation in soroban-sdk-macros builds on.
+stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "e73df1f6793fe5916dce7a833e14c0718786ab04" }
 #soroban-env-common = { path = "../rs-soroban-env/soroban-env-common" }
 #soroban-env-guest = { path = "../rs-soroban-env/soroban-env-guest" }
 #soroban-env-host = { path = "../rs-soroban-env/soroban-env-host" }

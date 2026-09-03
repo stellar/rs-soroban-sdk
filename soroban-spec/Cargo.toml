@@ -10,12 +10,19 @@ version.workspace = true
 edition = "2021"
 rust-version.workspace = true
 
+[features]
+default = ["std"]
+# The marker functions are usable without std so that soroban-sdk can call
+# them from const contexts in contracts built for wasm. Everything that reads
+# or rewrites a wasm needs std.
+std = ["dep:stellar-xdr", "dep:base64", "dep:thiserror", "dep:wasmparser"]
+
 [dependencies]
-stellar-xdr = { workspace = true, features = ["std", "serde"] }
-base64 = "0.22.1"
-thiserror = "1.0.32"
-wasmparser = "0.116.1"
-sha2 = "0.10.7"
+stellar-xdr = { workspace = true, features = ["std", "serde"], optional = true }
+base64 = { version = "0.22.1", optional = true }
+thiserror = { version = "1.0.32", optional = true }
+wasmparser = { version = "0.116.1", optional = true }
 
 [dev-dependencies]
 pretty_assertions = "1.2.1"
+sha2 = "0.10.7"

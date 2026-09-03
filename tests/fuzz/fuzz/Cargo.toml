@@ -16,6 +16,14 @@ test_fuzz = { path = ".." }
 [workspace]
 members = ["."]
 
+# This is its own workspace root, so it does not inherit the repo root's patch
+# and needs its own copy. Remove both together.
+[patch.crates-io]
+# Pending https://github.com/stellar/rs-stellar-xdr/pull/562, which adds the
+# borrowing `*View` types and their const XDR serializers that the contract spec
+# generation in soroban-sdk-macros builds on.
+stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "e73df1f6793fe5916dce7a833e14c0718786ab04" }
+
 [profile.release]
 debug = 1
 
