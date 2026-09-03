@@ -111,9 +111,9 @@ pub fn generate_without_file_with_options(
     // (`mycrate::mymod::MyType`), while the generated code names it by a bare
     // identifier, so the names are reduced to simple names before generation,
     // rewriting references to keep them matched up with the types they refer
-    // to. Simplifying an already-simple spec changes nothing, so a caller that
-    // simplified first (to report on the renames) generates the same code.
-    let specs = soroban_spec::simplify::simplify(specs).spec;
+    // to. Reducing an already-simple spec changes nothing, so a caller that
+    // reduced first (to report on the renames) generates the same code.
+    let specs: Vec<ScSpecEntry> = soroban_spec::reduce::reduce(specs).into_entries().collect();
     let specs = apply_error_udt_override(&specs);
     let specs: &[ScSpecEntry] = &specs;
 
@@ -745,7 +745,7 @@ pub enum Error {
 
     /// Two user-defined error enums sharing the simple name `Error`
     /// (`a::Error`, `b::Error`), taken end-to-end through name
-    /// simplification, the error-udt override, and code generation.
+    /// reduction, the error-udt override, and code generation.
     #[test]
     fn test_two_error_enums_sharing_a_simple_name() {
         use stellar_xdr::{

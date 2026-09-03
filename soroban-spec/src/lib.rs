@@ -2,6 +2,6 @@
 
 #[cfg(feature = "std")]
 pub mod read;
-pub mod shaking;
 #[cfg(feature = "std")]
-pub mod simplify;
+pub mod reduce;
+pub mod shaking;

@@ -74,9 +74,8 @@ fn test_stellar_asset_spec_includes_token_spec() -> Result<(), Error> {
                 })
             })
             .collect::<Result<Vec<_>, _>>()?;
-    let token_entries: HashSet<ScSpecEntry> = soroban_spec::simplify::simplify(&token_entries)
-        .spec
-        .into_iter()
+    let token_entries: HashSet<ScSpecEntry> = soroban_spec::reduce::reduce(&token_entries)
+        .into_entries()
         .collect();
 
     // Read stellar asset spec entries and strip docs.
@@ -92,9 +91,8 @@ fn test_stellar_asset_spec_includes_token_spec() -> Result<(), Error> {
             })
             .collect::<Result<Vec<_>, _>>()?;
     let stellar_asset_entries: HashSet<ScSpecEntry> =
-        soroban_spec::simplify::simplify(&stellar_asset_entries)
-            .spec
-            .into_iter()
+        soroban_spec::reduce::reduce(&stellar_asset_entries)
+            .into_entries()
             .collect();
 
     // Check that all token entries (with sep0011_asset added to events) are
