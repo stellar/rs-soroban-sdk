@@ -49,22 +49,24 @@
 //!
 //! #[contractevent]
 //! pub struct Hello {
-//!     #[topic]
 //!     pub to: Address,
 //! }
 //!
 //! #[contractimpl]
 //! impl Contract {
-//!     pub fn __constructor(env: Env, admin: Address) {
-//!         env.storage().instance().set(&symbol_short!("admin"), &admin);
+//!     pub fn __constructor(env: &Env, owner: Address) {
+//!         env.storage().instance().set(&symbol_short!("owner"), &owner);
 //!     }
 //!
-//!     pub fn hello(env: Env, to: Address) {
-//!         let admin: Address = env.storage().instance()
-//!             .get(&symbol_short!("admin"))
-//!             .unwrap();
-//!         admin.require_auth();
-//!         Hello { to }.publish(&env);
+//!     pub fn owner(env: &Env) -> Address {
+//!         env.storage().instance()
+//!             .get(&symbol_short!("owner"))
+//!             .unwrap()
+//!     }
+//!
+//!     pub fn hello(env: &Env, to: Address) {
+//!         Self::owner(env).require_auth();
+//!         Hello { to }.publish(env);
 //!     }
 //! }
 //!
@@ -79,8 +81,8 @@
 //!     };
 //!
 //!     let env = Env::default();
-//!     let admin = Address::generate(&env);
-//!     let contract_id = env.register(Contract, (&admin,));
+//!     let owner = Address::generate(&env);
+//!     let contract_id = env.register(Contract, (&owner,));
 //!     let client = ContractClient::new(&env, &contract_id);
 //!
 //!     let to = Address::generate(&env);
@@ -90,7 +92,7 @@
 //!     assert_eq!(
 //!         env.auths(),
 //!         [
-//!             (admin, AuthorizedInvocation { function: AuthorizedFunction::Contract((contract_id.clone(), symbol_short!("hello"), (&to,).into_val(&env))), sub_invocations: [].into() }),
+//!             (owner, AuthorizedInvocation { function: AuthorizedFunction::Contract((contract_id.clone(), symbol_short!("hello"), (&to,).into_val(&env))), sub_invocations: [].into() }),
 //!         ],
 //!     );
 //!
