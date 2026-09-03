@@ -53,7 +53,7 @@ impl ::core::cmp::Ord for Error {
 impl Error {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "test_account::Error"
+        "::test_account::Error"
     }
 }
 #[doc(hidden)]

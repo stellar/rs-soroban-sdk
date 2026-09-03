@@ -57,7 +57,7 @@ mod struct_ {
         let entry = ScSpecEntry::from_xdr(__SPEC_XDR_TYPE_S, Limits::none()).unwrap();
         let expect = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
             doc: "S holds a and\nb.".try_into().unwrap(),
-            name: "soroban_sdk::tests::contract_docs::struct_::S"
+            name: "::soroban_sdk::tests::contract_docs::struct_::S"
                 .try_into()
                 .unwrap(),
             lib: "".try_into().unwrap(),
@@ -100,7 +100,7 @@ mod struct_tuple {
         let entry = ScSpecEntry::from_xdr(__SPEC_XDR_TYPE_S, Limits::none()).unwrap();
         let expect = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
             doc: "S holds two u64s.".try_into().unwrap(),
-            name: "soroban_sdk::tests::contract_docs::struct_tuple::S"
+            name: "::soroban_sdk::tests::contract_docs::struct_tuple::S"
                 .try_into()
                 .unwrap(),
             lib: "".try_into().unwrap(),
@@ -149,7 +149,7 @@ mod enum_ {
         let expect = ScSpecEntry::UdtUnionV0(ScSpecUdtUnionV0 {
             doc: "E has variants A and B.".try_into().unwrap(),
             lib: "".try_into().unwrap(),
-            name: "soroban_sdk::tests::contract_docs::enum_::E"
+            name: "::soroban_sdk::tests::contract_docs::enum_::E"
                 .try_into()
                 .unwrap(),
             cases: [
@@ -197,7 +197,7 @@ mod enum_int {
         let entry = ScSpecEntry::from_xdr(__SPEC_XDR_TYPE_E, Limits::none()).unwrap();
         let expect = ScSpecEntry::UdtEnumV0(ScSpecUdtEnumV0 {
             doc: "E has variants A and B.".try_into().unwrap(),
-            name: "soroban_sdk::tests::contract_docs::enum_int::E"
+            name: "::soroban_sdk::tests::contract_docs::enum_int::E"
                 .try_into()
                 .unwrap(),
             lib: "".try_into().unwrap(),
@@ -243,7 +243,7 @@ mod enum_error_int {
         let entry = ScSpecEntry::from_xdr(__SPEC_XDR_TYPE_E, Limits::none()).unwrap();
         let expect = ScSpecEntry::UdtErrorEnumV0(ScSpecUdtErrorEnumV0 {
             doc: "E has variants A and B.".try_into().unwrap(),
-            name: "soroban_sdk::tests::contract_docs::enum_error_int::E"
+            name: "::soroban_sdk::tests::contract_docs::enum_error_int::E"
                 .try_into()
                 .unwrap(),
             lib: "".try_into().unwrap(),

@@ -426,14 +426,28 @@ fn type_args(t: &Type) -> Vec<&Type> {
 ///
 /// The module path is only known where the type is defined, and a macro cannot
 /// see it, so `module_path!` is emitted for the compiler to expand in place
-/// rather than resolved here.
-pub fn spec_name_gen(ident: &Ident) -> TokenStream2 {
+/// rather than resolved here. It is rooted with a leading `::` so the name is
+/// an absolute crate path, distinguishing crates that would otherwise collide
+/// with a same-named module imported into each context.
+///
+/// The generics arguments carry the type's `split_for_impl` pieces so an event
+/// struct that borrows its fields can repeat its generics on the impl; a type
+/// without generics passes `None` for each.
+pub fn spec_name_gen(
+    ident: &Ident,
+    gen_impl: Option<TokenStream2>,
+    gen_types: Option<TokenStream2>,
+    gen_where: Option<TokenStream2>,
+) -> TokenStream2 {
     let name = Literal::string(&ident.unraw().to_string());
+    let gen_impl = gen_impl.unwrap_or_default();
+    let gen_types = gen_types.unwrap_or_default();
+    let gen_where = gen_where.unwrap_or_default();
     quote! {
-        impl #ident {
+        impl #gen_impl #ident #gen_types #gen_where {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                ::core::concat!(::core::module_path!(), "::", #name)
+                ::core::concat!("::", ::core::module_path!(), "::", #name)
             }
         }
     }

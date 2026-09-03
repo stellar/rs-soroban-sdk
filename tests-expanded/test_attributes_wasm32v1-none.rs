@@ -50,7 +50,7 @@ impl ::core::cmp::PartialEq for AttributeType {
 impl AttributeType {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "test_attributes::AttributeType"
+        "::test_attributes::AttributeType"
     }
 }
 #[doc(hidden)]
@@ -145,7 +145,7 @@ pub struct AttributeEvent {
 impl AttributeEvent {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "test_attributes::AttributeEvent"
+        "::test_attributes::AttributeEvent"
     }
 }
 #[doc(hidden)]

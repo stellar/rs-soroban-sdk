@@ -3,7 +3,9 @@ use crate::{
     default_crate_path,
     doc::docs_from_attrs,
     export_arg_error,
-    map_type::{const_view_string, const_view_symbol, const_view_type_def, map_type},
+    map_type::{
+        const_view_string, const_view_symbol, const_view_type_def, map_type, spec_name_gen,
+    },
     shaking, symbol,
 };
 use darling::{ast::NestedMeta, util::SpannedValue, Error, FromMeta};
@@ -391,15 +393,12 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     // Output.
     // Unlike other user-defined types, an event struct can carry generics
     // (e.g. a lifetime on borrowed fields), so the impl repeats them.
-    let spec_name_lit = input.ident.unraw().to_string();
-    let spec_name = quote! {
-        impl #gen_impl #ident #gen_types #gen_where {
-            #[doc(hidden)]
-            pub const fn spec_name() -> &'static str {
-                ::core::concat!(::core::module_path!(), "::", #spec_name_lit)
-            }
-        }
-    };
+    let spec_name = spec_name_gen(
+        ident,
+        Some(quote!(#gen_impl)),
+        Some(quote!(#gen_types)),
+        Some(quote!(#gen_where)),
+    );
     let output = quote! {
         #spec_name
 

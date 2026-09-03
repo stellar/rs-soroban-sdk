@@ -1186,7 +1186,7 @@ mod test_a {
         impl Error {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "test_auth::test_a::auth_decline::Error"
+                "::test_auth::test_a::auth_decline::Error"
             }
         }
         #[doc(hidden)]
@@ -2816,7 +2816,7 @@ mod test_b {
         impl Error {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "test_auth::test_b::auth_decline::Error"
+                "::test_auth::test_b::auth_decline::Error"
             }
         }
         #[doc(hidden)]

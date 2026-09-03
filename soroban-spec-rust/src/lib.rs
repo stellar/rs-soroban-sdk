@@ -584,7 +584,7 @@ pub enum MyError {
         };
         assert_eq!(
             u.name.to_utf8_string().unwrap(),
-            "test_add_u64::MyError",
+            "::test_add_u64::MyError",
             "error_type should be MyError UDT"
         );
     }

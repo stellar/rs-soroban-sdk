@@ -19,7 +19,7 @@ pub struct DummyProof {
 impl DummyProof {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "test_bls::DummyProof"
+        "::test_bls::DummyProof"
     }
 }
 #[doc(hidden)]

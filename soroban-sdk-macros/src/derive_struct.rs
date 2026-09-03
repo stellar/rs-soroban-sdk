@@ -90,7 +90,7 @@ pub fn derive_type_struct(
 
     // The fully qualified name the spec knows this type by, emitted for every
     // type so that a reference to it from anywhere can reach it.
-    let spec_name = spec_name_gen(ident);
+    let spec_name = spec_name_gen(ident, None, None, None);
 
     // Generated code spec. The spec entry is rendered as the equivalent const
     // ScSpecEntryView, which the contract crate encodes to XDR at compile time.

@@ -158,7 +158,7 @@ impl ::core::cmp::PartialEq for Error {
 impl Error {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "test_add_u64::Error"
+        "::test_add_u64::Error"
     }
 }
 #[doc(hidden)]
@@ -316,7 +316,7 @@ impl ::core::cmp::PartialEq for MyError {
 impl MyError {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "test_add_u64::MyError"
+        "::test_add_u64::MyError"
     }
 }
 #[doc(hidden)]

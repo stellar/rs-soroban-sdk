@@ -52,7 +52,7 @@ impl ::core::cmp::PartialEq for UdtEnum2 {
 impl UdtEnum2 {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "test_udt::UdtEnum2"
+        "::test_udt::UdtEnum2"
     }
 }
 #[doc(hidden)]
@@ -203,7 +203,7 @@ impl ::core::cmp::PartialEq for UdtEnum {
 impl UdtEnum {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "test_udt::UdtEnum"
+        "::test_udt::UdtEnum"
     }
 }
 #[doc(hidden)]
@@ -440,7 +440,7 @@ impl ::core::cmp::PartialEq for UdtTuple {
 impl UdtTuple {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "test_udt::UdtTuple"
+        "::test_udt::UdtTuple"
     }
 }
 #[doc(hidden)]
@@ -591,7 +591,7 @@ impl ::core::cmp::PartialEq for UdtStruct {
 impl UdtStruct {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "test_udt::UdtStruct"
+        "::test_udt::UdtStruct"
     }
 }
 #[doc(hidden)]
@@ -752,7 +752,7 @@ impl ::core::cmp::PartialEq for UdtRecursive {
 impl UdtRecursive {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "test_udt::UdtRecursive"
+        "::test_udt::UdtRecursive"
     }
 }
 #[doc(hidden)]
@@ -910,7 +910,7 @@ impl ::core::cmp::PartialEq for RecursiveToEnum {
 impl RecursiveToEnum {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "test_udt::RecursiveToEnum"
+        "::test_udt::RecursiveToEnum"
     }
 }
 #[doc(hidden)]
@@ -1076,7 +1076,7 @@ impl ::core::cmp::PartialEq for RecursiveEnum {
 impl RecursiveEnum {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "test_udt::RecursiveEnum"
+        "::test_udt::RecursiveEnum"
     }
 }
 #[doc(hidden)]

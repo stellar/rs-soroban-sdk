@@ -81,7 +81,7 @@ fn test_spec() {
                 doc: "".try_into().unwrap(),
                 name: "a".try_into().unwrap(),
                 type_: ScSpecTypeDef::Udt(ScSpecTypeUdt {
-                    name: "soroban_sdk::tests::contract_udt_struct_tuple::Udt"
+                    name: "::soroban_sdk::tests::contract_udt_struct_tuple::Udt"
                         .try_into()
                         .unwrap(),
                 }),
@@ -90,7 +90,7 @@ fn test_spec() {
                 doc: "".try_into().unwrap(),
                 name: "b".try_into().unwrap(),
                 type_: ScSpecTypeDef::Udt(ScSpecTypeUdt {
-                    name: "soroban_sdk::tests::contract_udt_struct_tuple::Udt"
+                    name: "::soroban_sdk::tests::contract_udt_struct_tuple::Udt"
                         .try_into()
                         .unwrap(),
                 }),
@@ -101,12 +101,12 @@ fn test_spec() {
         outputs: std::vec![ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
             value_types: std::vec![
                 ScSpecTypeDef::Udt(ScSpecTypeUdt {
-                    name: "soroban_sdk::tests::contract_udt_struct_tuple::Udt"
+                    name: "::soroban_sdk::tests::contract_udt_struct_tuple::Udt"
                         .try_into()
                         .unwrap(),
                 }),
                 ScSpecTypeDef::Udt(ScSpecTypeUdt {
-                    name: "soroban_sdk::tests::contract_udt_struct_tuple::Udt"
+                    name: "::soroban_sdk::tests::contract_udt_struct_tuple::Udt"
                         .try_into()
                         .unwrap(),
                 }),
