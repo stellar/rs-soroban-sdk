@@ -4,9 +4,12 @@ on:
   push:
     branches: [main, release/**]
   pull_request:
+  schedule:
+  # Daily, to catch breakages caused by upcoming rust versions (beta, nightly).
+  - cron: '0 6 * * *'
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref_protected == 'true' && github.sha || github.ref }}-{{ github.event_name }}
+  group: ${{ github.workflow }}-${{ github.ref_protected == 'true' && github.sha || github.ref }}-${{ github.event_name }}
   cancel-in-progress: true
 
 # No permissions. This workflow downloads code from outside this repository and
@@ -41,6 +44,7 @@ jobs:
       fail-fast: false
       matrix:
         working-directory: ${{ fromJSON(needs.collect-examples.outputs.dirs) }}
+        rust: ${{ (github.event_name == 'schedule') && fromJSON('["latest", "beta", "nightly"]') || fromJSON('["latest"]') }}
     defaults:
       run:
         working-directory: soroban-examples/${{ matrix.working-directory }}
@@ -62,6 +66,13 @@ jobs:
       run: |
         rustup update
         rustup target add wasm32v1-none
+
+    - name: Install and use beta or nightly rust version
+      if: matrix.rust != 'latest'
+      run: |
+        rustup install ${{ matrix.rust }}
+        rustup target add --toolchain ${{ matrix.rust }} wasm32v1-none
+        echo RUSTUP_TOOLCHAIN='${{ matrix.rust }}' >> $GITHUB_ENV
 
     - uses: denoland/setup-deno@909cc5acb0fdd60627fb858598759246509fa755 # v2.0.2
       with:
@@ -185,7 +196,7 @@ jobs:
 
     - name: Set artifact name
       id: artifact-name
-      run: echo "name=wasm-$(echo ${{ matrix.working-directory }} | sed 's/\//-/g')" | tee -a $GITHUB_OUTPUT
+      run: echo "name=wasm-${{ matrix.rust }}-$(echo ${{ matrix.working-directory }} | sed 's/\//-/g')" | tee -a $GITHUB_OUTPUT
 
     - name: Upload WASM artifacts
       uses: actions/upload-artifact@v4

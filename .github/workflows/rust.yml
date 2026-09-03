@@ -5,9 +5,12 @@ on:
     branches: [main, release/**]
   pull_request:
   merge_group:
+  schedule:
+  # Daily, to catch breakages caused by upcoming rust versions (beta, nightly).
+  - cron: '0 6 * * *'
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref_protected == 'true' && github.sha || github.ref }}-{{ github.event_name }}
+  group: ${{ github.workflow }}-${{ github.ref_protected == 'true' && github.sha || github.ref }}-${{ github.event_name }}
   cancel-in-progress: true
 
 env:
@@ -97,7 +100,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        rust: [msrv, latest]
+        rust: ${{ (github.event_name == 'schedule') && fromJSON('["msrv", "latest", "beta", "nightly"]') || fromJSON('["msrv", "latest"]') }}
         sys: ${{ fromJSON(needs.setup.outputs.sys) }}
     runs-on: ${{ matrix.sys.os }}
     steps:
@@ -116,12 +119,22 @@ jobs:
         rustup update
         rustup target add ${{ matrix.sys.target }}
         rustup target add wasm32v1-none
+    - name: Install beta or nightly rust version
+      if: matrix.rust == 'beta' || matrix.rust == 'nightly'
+      run: |
+        rustup install ${{ matrix.rust }}
+        rustup component add --toolchain ${{ matrix.rust }} clippy rustfmt
+        rustup target add --toolchain ${{ matrix.rust }} ${{ matrix.sys.target }}
+        rustup target add --toolchain ${{ matrix.rust }} wasm32v1-none
     - name: Use the minimum supported rust version
       if: matrix.rust == 'msrv'
       run: echo RUSTUP_TOOLCHAIN="$(make msrv)" >> $GITHUB_ENV
     - name: Set latest toolchain
       if: matrix.rust == 'latest'
       run: echo RUSTUP_TOOLCHAIN="$(rustup show active-toolchain | cut -d' ' -f1)" >> $GITHUB_ENV
+    - name: Set beta or nightly toolchain
+      if: matrix.rust == 'beta' || matrix.rust == 'nightly'
+      run: echo RUSTUP_TOOLCHAIN='${{ matrix.rust }}' >> $GITHUB_ENV
     - uses: stellar/actions/rust-cache@main
     - name: Error on warnings only for msrv
       if: matrix.rust == 'msrv'
@@ -146,7 +159,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        rust: [msrv, latest]
+        rust: ${{ (github.event_name == 'schedule') && fromJSON('["msrv", "latest", "beta", "nightly"]') || fromJSON('["msrv", "latest"]') }}
         sys: ${{ fromJSON(needs.setup.outputs.sys) }}
     runs-on: ${{ matrix.sys.os }}
     steps:
@@ -165,12 +178,22 @@ jobs:
         rustup update
         rustup target add ${{ matrix.sys.target }}
         rustup target add wasm32v1-none
+    - name: Install beta or nightly rust version
+      if: matrix.rust == 'beta' || matrix.rust == 'nightly'
+      run: |
+        rustup install ${{ matrix.rust }}
+        rustup component add --toolchain ${{ matrix.rust }} clippy rustfmt
+        rustup target add --toolchain ${{ matrix.rust }} ${{ matrix.sys.target }}
+        rustup target add --toolchain ${{ matrix.rust }} wasm32v1-none
     - name: Use the minimum supported rust version
       if: matrix.rust == 'msrv'
       run: echo RUSTUP_TOOLCHAIN="$(make msrv)" >> $GITHUB_ENV
     - name: Set latest toolchain
       if: matrix.rust == 'latest'
       run: echo RUSTUP_TOOLCHAIN="$(rustup show active-toolchain | cut -d' ' -f1)" >> $GITHUB_ENV
+    - name: Set beta or nightly toolchain
+      if: matrix.rust == 'beta' || matrix.rust == 'nightly'
+      run: echo RUSTUP_TOOLCHAIN='${{ matrix.rust }}' >> $GITHUB_ENV
     - uses: stellar/actions/rust-cache@main
     - name: Error on warnings only for msrv
       if: matrix.rust == 'msrv'
@@ -187,10 +210,19 @@ jobs:
         path: target/wasm32v1-none/release/
     - name: Clear test snapshots for checking no diffs exists after test run
       run: rm -fr **/test_snapshots
+    - name: Record rather than assert compile-fail output on beta and nightly
+      # Compiler diagnostics change between rust versions, so let trybuild
+      # rewrite its expectations and report them in the diff below. Whether the
+      # code still fails to compile at all is asserted either way.
+      if: matrix.rust == 'beta' || matrix.rust == 'nightly'
+      run: echo TRYBUILD=overwrite >> $GITHUB_ENV
     - run: cargo version
     - run: make test-only
     - name: Check no diffs exist
-      run: git add -N . && git diff HEAD --exit-code
+      # Beta and nightly print the diff without failing on it, because generated
+      # snapshots and compile-fail expectations vary between rust versions.
+      # Every other toolchain asserts, including on scheduled runs.
+      run: git add -N . && git diff HEAD ${{ !contains(fromJSON('["beta", "nightly"]'), matrix.rust) && '--exit-code' || '' }}
 
   build-fuzz:
     runs-on: ubuntu-latest
