@@ -16,7 +16,7 @@ pub struct MockProof {
 impl MockProof {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "test_bn254::MockProof"
+        "::test_bn254::MockProof"
     }
 }
 #[doc(hidden)]

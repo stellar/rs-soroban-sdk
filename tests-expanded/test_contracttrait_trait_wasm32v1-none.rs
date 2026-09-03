@@ -52,7 +52,7 @@ impl ::core::cmp::PartialEq for MyStruct {
 impl MyStruct {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "test_contracttrait_trait::MyStruct"
+        "::test_contracttrait_trait::MyStruct"
     }
 }
 #[doc(hidden)]
@@ -196,7 +196,7 @@ impl ::core::cmp::PartialEq for MyEnumUnit {
 impl MyEnumUnit {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "test_contracttrait_trait::MyEnumUnit"
+        "::test_contracttrait_trait::MyEnumUnit"
     }
 }
 #[doc(hidden)]
@@ -348,7 +348,7 @@ impl ::core::cmp::PartialEq for MyEnumVariants {
 impl MyEnumVariants {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "test_contracttrait_trait::MyEnumVariants"
+        "::test_contracttrait_trait::MyEnumVariants"
     }
 }
 #[doc(hidden)]

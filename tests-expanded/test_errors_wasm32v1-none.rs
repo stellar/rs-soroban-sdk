@@ -48,7 +48,7 @@ impl ::core::cmp::PartialEq for Flag {
 impl Flag {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "test_errors::Flag"
+        "::test_errors::Flag"
     }
 }
 #[doc(hidden)]
@@ -182,7 +182,7 @@ impl ::core::cmp::PartialEq for Error {
 impl Error {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "test_errors::Error"
+        "::test_errors::Error"
     }
 }
 #[doc(hidden)]

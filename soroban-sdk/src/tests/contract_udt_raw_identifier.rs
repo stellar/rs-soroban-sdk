@@ -126,7 +126,7 @@ fn test_spec_contract() {
                 doc: "".try_into().unwrap(),
                 name: "fn".try_into().unwrap(),
                 type_: ScSpecTypeDef::Udt(ScSpecTypeUdt {
-                    name: "soroban_sdk::tests::contract_udt_raw_identifier::TestEnum"
+                    name: "::soroban_sdk::tests::contract_udt_raw_identifier::TestEnum"
                         .try_into()
                         .unwrap(),
                 }),
@@ -135,12 +135,12 @@ fn test_spec_contract() {
             .unwrap(),
             outputs: [ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
                 ok_type: Box::new(ScSpecTypeDef::Udt(ScSpecTypeUdt {
-                    name: "soroban_sdk::tests::contract_udt_raw_identifier::TestType"
+                    name: "::soroban_sdk::tests::contract_udt_raw_identifier::TestType"
                         .try_into()
                         .unwrap(),
                 })),
                 error_type: Box::new(ScSpecTypeDef::Udt(ScSpecTypeUdt {
-                    name: "soroban_sdk::tests::contract_udt_raw_identifier::TestError"
+                    name: "::soroban_sdk::tests::contract_udt_raw_identifier::TestError"
                         .try_into()
                         .unwrap(),
                 })),
@@ -185,7 +185,7 @@ fn test_spec_struct() {
         ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
             doc: "".try_into().unwrap(),
             lib: "".try_into().unwrap(),
-            name: "soroban_sdk::tests::contract_udt_raw_identifier::TestType"
+            name: "::soroban_sdk::tests::contract_udt_raw_identifier::TestType"
                 .try_into()
                 .unwrap(),
             fields: [
@@ -216,7 +216,7 @@ fn test_spec_struct() {
         ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
             doc: "".try_into().unwrap(),
             lib: "".try_into().unwrap(),
-            name: "soroban_sdk::tests::contract_udt_raw_identifier::type"
+            name: "::soroban_sdk::tests::contract_udt_raw_identifier::type"
                 .try_into()
                 .unwrap(),
             fields: [ScSpecUdtStructFieldV0 {
@@ -236,7 +236,7 @@ fn test_spec_struct() {
         ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
             doc: "".try_into().unwrap(),
             lib: "".try_into().unwrap(),
-            name: "soroban_sdk::tests::contract_udt_raw_identifier::TupleStruct"
+            name: "::soroban_sdk::tests::contract_udt_raw_identifier::TupleStruct"
                 .try_into()
                 .unwrap(),
             fields: [
@@ -265,7 +265,7 @@ fn test_spec_enum() {
         ScSpecEntry::UdtEnumV0(ScSpecUdtEnumV0 {
             doc: "".try_into().unwrap(),
             lib: "".try_into().unwrap(),
-            name: "soroban_sdk::tests::contract_udt_raw_identifier::TestEnum"
+            name: "::soroban_sdk::tests::contract_udt_raw_identifier::TestEnum"
                 .try_into()
                 .unwrap(),
             cases: [
@@ -291,7 +291,7 @@ fn test_spec_enum() {
         ScSpecEntry::UdtErrorEnumV0(ScSpecUdtErrorEnumV0 {
             doc: "".try_into().unwrap(),
             lib: "".try_into().unwrap(),
-            name: "soroban_sdk::tests::contract_udt_raw_identifier::TestError"
+            name: "::soroban_sdk::tests::contract_udt_raw_identifier::TestError"
                 .try_into()
                 .unwrap(),
             cases: [ScSpecUdtErrorEnumCaseV0 {
@@ -311,7 +311,7 @@ fn test_spec_enum() {
         ScSpecEntry::UdtUnionV0(ScSpecUdtUnionV0 {
             doc: "".try_into().unwrap(),
             lib: "".try_into().unwrap(),
-            name: "soroban_sdk::tests::contract_udt_raw_identifier::TestTupleEnum"
+            name: "::soroban_sdk::tests::contract_udt_raw_identifier::TestTupleEnum"
                 .try_into()
                 .unwrap(),
             cases: [
@@ -343,7 +343,7 @@ fn test_spec_event() {
         ScSpecEntry::EventV0(ScSpecEventV0 {
             doc: "".try_into().unwrap(),
             lib: "".try_into().unwrap(),
-            name: "soroban_sdk::tests::contract_udt_raw_identifier::TestEvent"
+            name: "::soroban_sdk::tests::contract_udt_raw_identifier::TestEvent"
                 .try_into()
                 .unwrap(),
             prefix_topics: [ScSymbol("test_event".try_into().unwrap())]

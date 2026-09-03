@@ -231,7 +231,7 @@ fn test_spec() {
                 doc: "".try_into().unwrap(),
                 name: "a".try_into().unwrap(),
                 type_: ScSpecTypeDef::Udt(ScSpecTypeUdt {
-                    name: "soroban_sdk::tests::contract_udt_struct::Udt"
+                    name: "::soroban_sdk::tests::contract_udt_struct::Udt"
                         .try_into()
                         .unwrap(),
                 }),
@@ -240,7 +240,7 @@ fn test_spec() {
                 doc: "".try_into().unwrap(),
                 name: "b".try_into().unwrap(),
                 type_: ScSpecTypeDef::Udt(ScSpecTypeUdt {
-                    name: "soroban_sdk::tests::contract_udt_struct::Udt"
+                    name: "::soroban_sdk::tests::contract_udt_struct::Udt"
                         .try_into()
                         .unwrap(),
                 }),
@@ -251,12 +251,12 @@ fn test_spec() {
         outputs: vec![ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
             value_types: vec![
                 ScSpecTypeDef::Udt(ScSpecTypeUdt {
-                    name: "soroban_sdk::tests::contract_udt_struct::Udt"
+                    name: "::soroban_sdk::tests::contract_udt_struct::Udt"
                         .try_into()
                         .unwrap(),
                 }),
                 ScSpecTypeDef::Udt(ScSpecTypeUdt {
-                    name: "soroban_sdk::tests::contract_udt_struct::Udt"
+                    name: "::soroban_sdk::tests::contract_udt_struct::Udt"
                         .try_into()
                         .unwrap(),
                 }),
@@ -282,7 +282,7 @@ fn test_spec_with_long_names() {
                 doc: "".try_into().unwrap(),
                 name: "a".try_into().unwrap(),
                 type_: ScSpecTypeDef::Udt(ScSpecTypeUdt {
-                    name: "soroban_sdk::tests::contract_udt_struct::UdtWithLongName"
+                    name: "::soroban_sdk::tests::contract_udt_struct::UdtWithLongName"
                         .try_into()
                         .unwrap(),
                 }),
@@ -291,7 +291,7 @@ fn test_spec_with_long_names() {
                 doc: "".try_into().unwrap(),
                 name: "b".try_into().unwrap(),
                 type_: ScSpecTypeDef::Udt(ScSpecTypeUdt {
-                    name: "soroban_sdk::tests::contract_udt_struct::UdtWithLongName"
+                    name: "::soroban_sdk::tests::contract_udt_struct::UdtWithLongName"
                         .try_into()
                         .unwrap(),
                 }),

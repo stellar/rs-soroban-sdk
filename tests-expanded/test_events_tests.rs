@@ -145,7 +145,7 @@ pub struct Transfer {
 impl Transfer {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "test_events::Transfer"
+        "::test_events::Transfer"
     }
 }
 #[doc(hidden)]

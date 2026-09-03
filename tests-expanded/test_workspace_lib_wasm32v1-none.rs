@@ -36,7 +36,7 @@ impl ::core::cmp::PartialEq for Value {
 impl Value {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "test_workspace_lib::Value"
+        "::test_workspace_lib::Value"
     }
 }
 #[doc(hidden)]

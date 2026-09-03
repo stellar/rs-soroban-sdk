@@ -32,7 +32,7 @@ pub enum DataKey {
 impl DataKey {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "test_constructor::DataKey"
+        "::test_constructor::DataKey"
     }
 }
 #[doc(hidden)]
