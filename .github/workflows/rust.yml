@@ -234,7 +234,14 @@ jobs:
       with:
         name: cargo-fuzz
         version: 0.13.1
+    - run: cargo install cargo-afl --version 0.18.2 --locked
     - run: make build-fuzz
+      env:
+        # cargo-afl builds with -C target-cpu=native, and appends any RUSTFLAGS
+        # after its own, so this overrides it. Without it cached artifacts, proc
+        # macros included, carry instructions that runners with an older CPU
+        # cannot execute, and rustc dies with SIGILL when it loads them.
+        RUSTFLAGS: -C target-cpu=generic
     - name: Check no diffs exist
       run: git add -N . && git diff HEAD --exit-code
 
