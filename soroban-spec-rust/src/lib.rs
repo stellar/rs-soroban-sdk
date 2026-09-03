@@ -803,14 +803,32 @@ pub enum Error {
             .to_formatted_string()
             .unwrap();
 
-        // The first enum claims the simple name; the second is numbered.
-        assert!(code.contains("pub enum Error {"), "{code}");
-        assert!(code.contains("pub enum Error2 {"), "{code}");
-        // References follow their type: `use_a` resolves to `Error`, `use_b`
-        // to `Error2`, and the built-in error resolves through the error-udt
-        // override to the enum that claimed `Error`.
-        assert!(code.contains("Result<u32, Error>"), "{code}");
-        assert!(code.contains("Result<u32, Error2>"), "{code}");
-        assert_eq!(code.matches("Result<u32, Error>").count(), 2, "{code}");
+        // Each enum is generated in full, so it is clear which one kept the
+        // simple name (the first, `a::Error`) and which was numbered (the
+        // second, `b::Error` -> `Error2`); both carry the same `Failed` case.
+        assert!(
+            code.contains("pub enum Error {\n    Failed = 1,\n}"),
+            "{code}"
+        );
+        assert!(
+            code.contains("pub enum Error2 {\n    Failed = 1,\n}"),
+            "{code}"
+        );
+        // Each function is asserted by name so the reference is clearly tied to
+        // its own type: `use_a` follows `a::Error` to `Error`, `use_b` follows
+        // `b::Error` to `Error2`, and `use_builtin`'s built-in error resolves
+        // through the error-udt override to the enum that claimed `Error`.
+        assert!(
+            code.contains("fn use_a(env: soroban_sdk::Env) -> Result<u32, Error>;"),
+            "{code}"
+        );
+        assert!(
+            code.contains("fn use_b(env: soroban_sdk::Env) -> Result<u32, Error2>;"),
+            "{code}"
+        );
+        assert!(
+            code.contains("fn use_builtin(env: soroban_sdk::Env) -> Result<u32, Error>;"),
+            "{code}"
+        );
     }
 }
