@@ -5,10 +5,6 @@
 
 pub mod arbitrary;
 
-// The proptest docs live in the arbitrary module, alongside the docs for the
-// two fuzzers, but the module remains reachable at its original path.
-pub use arbitrary::proptest;
-
 mod sign;
 use std::{fmt::Debug, rc::Rc};
 
