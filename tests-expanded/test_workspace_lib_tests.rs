@@ -62,13 +62,6 @@ impl Value {
         const { Value::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecShakingMarker for Value {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <i32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-    }
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Value {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(

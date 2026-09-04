@@ -95,19 +95,6 @@ impl Flag {
         const { Flag::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecShakingMarker for Flag {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        {
-            static MARKER: [u8; 14] =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &Flag::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
-    }
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Flag {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]

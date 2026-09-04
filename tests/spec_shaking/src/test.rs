@@ -4,11 +4,10 @@ use soroban_sdk::xdr::ScSpecEntry;
 use std::collections::HashSet;
 use std::vec::Vec;
 
-const WASM: &[u8] =
-    include_bytes!("../../../target/wasm32v1-none/release/test_spec_shaking_v2.wasm");
+const WASM: &[u8] = include_bytes!("../../../target/wasm32v1-none/release/test_spec_shaking.wasm");
 
 #[test]
-fn test_spec_shaking_v2() {
+fn test_spec_shaking() {
     // Read all spec entries from the WASM.
     let entries = soroban_spec::read::from_wasm(WASM).unwrap();
 
@@ -147,14 +146,50 @@ fn test_spec_shaking_v2() {
             "used type/event {name} should be present in filtered entries, but was not found"
         );
     }
-    assert_eq!(markers.len(), used.len());
 
-    // Unused types/events should exist in unfiltered entries (they have spec entries, just no markers).
+    // Only the entries that nothing in a spec references by name carry a
+    // marker: the events the contract publishes, and the errors it panics
+    // with. Every other type is named by whatever references it and is kept by
+    // reachability, so the wasm carries no marker for it — including the error
+    // types a function returns in a `Result`.
+    let mut marked: Vec<std::string::String> = entries
+        .iter()
+        .filter(|e| markers.contains(&soroban_spec::shaking::generate_marker_for_entry(e)))
+        .filter_map(entry_name)
+        .collect();
+    marked.sort();
+    assert_eq!(
+        marked,
+        [
+            // An error used only via assert_with_error!.
+            "UsedAssertErrorEnum",
+            // Every published event.
+            "UsedEventSimple",
+            "UsedEventWithDataType",
+            "UsedEventWithNestedData",
+            "UsedEventWithNestedTopic",
+            "UsedEventWithRefs",
+            "UsedEventWithTopicType",
+            // An error used only via panic_with_error!.
+            "UsedPanicErrorEnum",
+        ]
+    );
+    assert_eq!(markers.len(), marked.len());
+
+    // Unused types/events should exist in unfiltered entries: they have spec
+    // entries, they are just not reachable and hold no markers.
     let unused = [
         "UnusedStruct",
         "UnusedEnum",
         "UnusedIntEnum",
         "UnusedEvent",
+        // Type referenced only by an event that is never published, and so is
+        // itself shaken out.
+        "UnusedEventDataType",
+        "UnusedEventWithDataType",
+        // Types that only reference each other, reached from nowhere.
+        "UnusedOuter",
+        "UnusedInner",
         "UnusedPubError",
         // Types used only in non-contractimpl fns (not at contract boundary)
         "UnusedNonContractFnParam",

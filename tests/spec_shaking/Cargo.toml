@@ -1,5 +1,5 @@
 [package]
-name = "test_spec_shaking_v2"
+name = "test_spec_shaking"
 version.workspace = true
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 license = "Apache-2.0"

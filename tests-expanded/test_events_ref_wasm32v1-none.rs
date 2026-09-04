@@ -93,10 +93,6 @@ impl<'a> soroban_sdk::SpecShakingMarker for Transfer<'a> {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <&'a Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <&'a Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <&'a i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Option<&'a u64> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
             static MARKER: [u8; 14] =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(

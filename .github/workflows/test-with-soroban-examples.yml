@@ -191,7 +191,7 @@ jobs:
     - name: Build soroban-examples
       env:
         CARGO_BUILD_RUSTFLAGS: "-A deprecated"
-        SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2: "true"
+        SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V3: "true"
       run: make build
 
     - name: Set artifact name
@@ -208,7 +208,7 @@ jobs:
     - name: Test soroban-examples
       env:
         CARGO_BUILD_RUSTFLAGS: "-A deprecated"
-        SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2: "true"
+        SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V3: "true"
       run: make test
         
     - name: Diff
