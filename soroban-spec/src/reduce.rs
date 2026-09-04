@@ -282,6 +282,32 @@ mod test {
         )
     }
 
+    fn event_entry(name: &str, param_type_names: &[&str]) -> ScSpecEntry {
+        use stellar_xdr::{
+            ScSpecEventDataFormat, ScSpecEventParamLocationV0, ScSpecEventParamV0, ScSpecEventV0,
+        };
+        ScSpecEntry::EventV0(ScSpecEventV0 {
+            doc: "".try_into().unwrap(),
+            lib: "".try_into().unwrap(),
+            name: name.try_into().unwrap(),
+            prefix_topics: [].try_into().unwrap(),
+            params: param_type_names
+                .iter()
+                .map(|n| ScSpecEventParamV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "p".try_into().unwrap(),
+                    type_: ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                        name: (*n).try_into().unwrap(),
+                    }),
+                    location: ScSpecEventParamLocationV0::Data,
+                })
+                .collect::<Vec<_>>()
+                .try_into()
+                .unwrap(),
+            data_format: ScSpecEventDataFormat::SingleValue,
+        })
+    }
+
     fn names<'a>(spec: impl IntoIterator<Item = &'a ScSpecEntry>) -> Vec<(Vec<u8>, Vec<Vec<u8>>)> {
         spec.into_iter()
             .map(|e| match e {
@@ -315,6 +341,43 @@ mod test {
         let rename = reduced.renames().next().unwrap();
         assert!(rename.renamed());
         assert!(!rename.collision());
+    }
+
+    #[test]
+    fn reduces_an_event_name_and_a_type_referenced_in_its_params() {
+        let spec = [
+            event_entry("mycrate::mymod::MyEvent", &["mycrate::mymod::MyType"]),
+            struct_entry("mycrate::mymod::MyType", &[]),
+        ];
+        let reduced = reduce(&spec);
+        let entries: Vec<_> = reduced.entries().collect();
+        let ScSpecEntry::EventV0(ev) = entries[0] else {
+            panic!("first entry should be the event, got {:?}", entries[0]);
+        };
+        assert_eq!(ev.name.to_vec(), b"MyEvent".to_vec());
+        let ScSpecTypeDef::Udt(u) = &ev.params[0].type_ else {
+            panic!("param should reference a udt, got {:?}", ev.params[0].type_);
+        };
+        assert_eq!(u.name.to_vec(), b"MyType".to_vec());
+    }
+
+    #[test]
+    fn an_event_and_a_type_sharing_a_simple_name_are_numbered() {
+        // An event defines a name, so an event and a type that reduce to the
+        // same simple name collide: the first to claim it keeps it, the later
+        // one is numbered.
+        let spec = [
+            struct_entry("a::Shared", &[]),
+            event_entry("b::Shared", &[]),
+        ];
+        let reduced = reduce(&spec);
+        assert_eq!(
+            reduced
+                .renames()
+                .map(|r| r.to.as_slice())
+                .collect::<Vec<_>>(),
+            [b"Shared".as_slice(), b"Shared2"],
+        );
     }
 
     #[test]
