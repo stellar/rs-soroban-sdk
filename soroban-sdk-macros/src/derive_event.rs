@@ -288,7 +288,6 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         path,
         quote!(#ident),
         quote!(#ident::spec_xdr()),
-        field_types.iter().cloned(),
         Some(quote!(#gen_impl)),
         Some(quote!(#gen_types)),
         Some(quote!(#gen_where)),

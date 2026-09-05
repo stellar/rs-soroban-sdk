@@ -84,21 +84,6 @@ impl MyStruct {
         const { MyStruct::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecShakingMarker for MyStruct {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: [u8; 14] =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &MyStruct::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
-    }
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MyStruct {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
@@ -226,19 +211,6 @@ impl MyEnumUnit {
     }
     pub const fn spec_xdr() -> [u8; MyEnumUnit::spec_xdr_len()] {
         const { MyEnumUnit::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for MyEnumUnit {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        {
-            static MARKER: [u8; 14] =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &MyEnumUnit::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MyEnumUnit {
@@ -405,21 +377,6 @@ impl MyEnumVariants {
     }
     pub const fn spec_xdr() -> [u8; MyEnumVariants::spec_xdr_len()] {
         const { MyEnumVariants::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for MyEnumVariants {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <MyStruct as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <MyEnumUnit as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: [u8; 14] =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &MyEnumVariants::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MyEnumVariants {

@@ -178,7 +178,7 @@ const _: () = {
     // needs to have its spec shaken. See soroban_spec::shaking for constants and version detection.
     // The contractmeta! macro requires string literals, so we assert the literals match the
     // constants defined in soroban_spec::shaking.
-    contractmeta!(key = "rssdk_spec_shaking", val = "2");
+    contractmeta!(key = "rssdk_spec_shaking", val = "3");
 };
 
 // Re-exports of dependencies used by macros.

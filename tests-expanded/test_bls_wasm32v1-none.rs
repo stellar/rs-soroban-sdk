@@ -74,24 +74,6 @@ impl DummyProof {
         const { DummyProof::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecShakingMarker for DummyProof {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <Bls12381Fp as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Bls12381Fp2 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Bls12381Fr as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Bls12381G1Affine as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Bls12381G2Affine as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: [u8; 14] =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &DummyProof::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
-    }
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for DummyProof {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(

@@ -8,7 +8,6 @@ use stellar_xdr::{ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, Stri
 use crate::{
     doc::docs_from_attrs,
     map_type::{const_view_string, const_view_type_def, map_type, spec_name_gen},
-    shaking,
 };
 
 // TODO: Add field attribute for including/excluding fields in types.
@@ -141,24 +140,11 @@ pub fn derive_type_struct(
         }
     };
 
-    // SpecShakingMarker impl.
-    let spec_shaking_impl = shaking::generate_marker_impl(
-        path,
-        quote!(#ident),
-        quote!(#ident::spec_xdr()),
-        field_types.iter().cloned(),
-        None,
-        None,
-        None,
-    );
-
     // Output.
     let mut output = quote! {
         #spec_name
 
         #spec_gen
-
-        #spec_shaking_impl
 
         impl #path::TryFromVal<#path::Env, #path::Val> for #ident {
             type Error = #path::ConversionError;
