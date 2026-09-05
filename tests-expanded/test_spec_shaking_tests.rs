@@ -35410,8 +35410,23 @@ mod test {
     fn test_spec_shaking() {
         let entries = soroban_spec::read::from_wasm(WASM).unwrap();
         let markers = soroban_spec::shaking::find_all(WASM);
+        let meta = soroban_meta::read::from_wasm(WASM).unwrap();
+        let version = soroban_spec::shaking::spec_shaking_version_for_meta(&meta);
+        match (&version, &soroban_spec::shaking::Version::V3) {
+            (left_val, right_val) => {
+                if !(*left_val == *right_val) {
+                    let kind = ::core::panicking::AssertKind::Eq;
+                    ::core::panicking::assert_failed(
+                        kind,
+                        &*left_val,
+                        &*right_val,
+                        ::core::option::Option::None,
+                    );
+                }
+            }
+        };
         let filtered: Vec<_> =
-            soroban_spec::shaking::filter(entries.iter().cloned(), &markers).collect();
+            soroban_spec::shaking::filter(entries.iter().cloned(), &markers, version).collect();
         let filtered_names: HashSet<std::string::String> =
             filtered.iter().filter_map(entry_name).collect();
         let fn_names: Vec<std::string::String> = filtered

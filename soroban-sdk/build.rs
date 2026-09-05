@@ -21,24 +21,25 @@ pub fn main() {
     }
 
     // On a wasm target, check for an env var from the build system (Stellar CLI) that indicates it
-    // supports spec optimization. Spec shaking is always on, and the contract's spec is only
-    // correct once the build system has shaken it, so a build system that does not do so is an
-    // error.
+    // supports spec optimization using markers. Spec shaking is always on, and the contract's spec
+    // is only correct once the build system has shaken it, so a build system that does not do so
+    // is an error.
     //
-    // The env var names version 3, because from that version most types carry no marker at all
-    // and the build system has to shake them out by following the references to them. A build
-    // system that only announces version 2 would keep every type it finds no marker for, so it is
-    // as much an error here as one that shakes nothing.
-    let env_name = "SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V3";
+    // The var asks only whether a build system shakes at all, and so keeps its name across
+    // versions. Which rules to shake by is a separate question, and the contract answers it for
+    // itself with the `rssdk_spec_shaking` meta entry it records. A build system that knows only
+    // an older version reads the newer one as unrecognised and leaves the spec unshaken, which
+    // costs size rather than correctness.
+    let env_name = "SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2";
     println!("cargo::rerun-if-env-changed={env_name}");
     if std::env::var(env_name).is_err()
         && std::env::var("CARGO_CFG_TARGET_FAMILY").unwrap_or_default() == "wasm"
     {
         eprintln!(
             "\
-\nerror: soroban-sdk requires stellar-cli v28.1.0+ to build a contract\
+\nerror: soroban-sdk requires stellar-cli v25.2.0+ to build a contract\
 \n\
-\nTo fix, build with `stellar contract build` using stellar-cli v28.1.0+.\
+\nTo fix, build with `stellar contract build` using stellar-cli v25.2.0+.\
 "
         );
         std::process::exit(1);

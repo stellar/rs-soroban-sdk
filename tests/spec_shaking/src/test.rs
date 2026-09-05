@@ -14,9 +14,17 @@ fn test_spec_shaking() {
     // Find markers embedded in the WASM data section.
     let markers = soroban_spec::shaking::find_all(WASM);
 
-    // Filter entries using markers.
+    // The version the contract records is what selects the shaking rules, so
+    // read it rather than assuming one. Built by the SDK in this repo, this
+    // contract records version 3: only its events and panicked-with errors
+    // carry markers, and every other type is settled by reachability.
+    let meta = soroban_meta::read::from_wasm(WASM).unwrap();
+    let version = soroban_spec::shaking::spec_shaking_version_for_meta(&meta);
+    assert_eq!(version, soroban_spec::shaking::Version::V3);
+
+    // Filter entries by that version's rules.
     let filtered: Vec<_> =
-        soroban_spec::shaking::filter(entries.iter().cloned(), &markers).collect();
+        soroban_spec::shaking::filter(entries.iter().cloned(), &markers, version).collect();
 
     // Collect names of filtered entries by kind for assertions.
     let filtered_names: HashSet<std::string::String> =

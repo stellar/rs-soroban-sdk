@@ -18,3 +18,4 @@ test_spec_lib = {path = "../spec_lib"}
 [dev-dependencies]
 soroban-sdk = {path = "../../soroban-sdk", features = ["testutils"]}
 soroban-spec = {path = "../../soroban-spec"}
+soroban-meta = {path = "../../soroban-meta"}
