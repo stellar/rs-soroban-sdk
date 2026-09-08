@@ -87,7 +87,8 @@ pub fn derive_type_enum_int(
     let spec_gen = {
         let doc = const_view_string(path, &spec.doc);
         let lib = const_view_string(path, &spec.lib);
-        let name = quote!(#path::xdr::StringMConst::try_from_str_or_panic(#enum_ident::spec_name()));
+        let name =
+            quote!(#path::xdr::StringMConst::try_from_str_or_panic(#enum_ident::spec_name()));
         let cases = spec.cases.iter().map(|c| {
             let doc = const_view_string(path, &c.doc);
             let name = const_view_string(path, &c.name);

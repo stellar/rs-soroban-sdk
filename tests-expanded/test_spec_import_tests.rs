@@ -63,27 +63,27 @@ pub mod __Contract__fn_struct_a__spec {
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_fn_struct_a: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::ScSymbolView(
-                soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"fn_struct_a"),
+    const __SPEC_XDR_ENTRY_fn_struct_a: soroban_sdk::xdr::ScSpecEntryConst =
+        soroban_sdk::xdr::ScSpecEntryConst::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Const {
+            doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::ScSymbolConst(
+                soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"fn_struct_a"),
             ),
-            inputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
-                    doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"f1"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+            inputs: soroban_sdk::xdr::VecMConst::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0Const {
+                    doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"f1"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefConst::U32,
                 },
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
-                    doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"f2"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Bool,
+                soroban_sdk::xdr::ScSpecFunctionInputV0Const {
+                    doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"f2"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefConst::Bool,
                 },
             ]),
-            outputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
-                soroban_sdk::xdr::ScSpecTypeDefView::Udt(soroban_sdk::xdr::ScSpecTypeUdtView {
-                    name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(
+            outputs: soroban_sdk::xdr::VecMConst::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::ScSpecTypeDefConst::Udt(soroban_sdk::xdr::ScSpecTypeUdtConst {
+                    name: soroban_sdk::xdr::StringMConst::try_from_str_or_panic(
                         <StructA>::spec_name(),
                     ),
                 }),
@@ -110,27 +110,27 @@ pub mod __Contract__fn_struct_tuple_a__spec {
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_fn_struct_tuple_a: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::ScSymbolView(
-                soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"fn_struct_tuple_a"),
+    const __SPEC_XDR_ENTRY_fn_struct_tuple_a: soroban_sdk::xdr::ScSpecEntryConst =
+        soroban_sdk::xdr::ScSpecEntryConst::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Const {
+            doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::ScSymbolConst(
+                soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"fn_struct_tuple_a"),
             ),
-            inputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
-                    doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"f1"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::I64,
+            inputs: soroban_sdk::xdr::VecMConst::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0Const {
+                    doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"f1"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefConst::I64,
                 },
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
-                    doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"f2"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::I64,
+                soroban_sdk::xdr::ScSpecFunctionInputV0Const {
+                    doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"f2"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefConst::I64,
                 },
             ]),
-            outputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
-                soroban_sdk::xdr::ScSpecTypeDefView::Udt(soroban_sdk::xdr::ScSpecTypeUdtView {
-                    name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(
+            outputs: soroban_sdk::xdr::VecMConst::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::ScSpecTypeDefConst::Udt(soroban_sdk::xdr::ScSpecTypeUdtConst {
+                    name: soroban_sdk::xdr::StringMConst::try_from_str_or_panic(
                         <StructTupleA>::spec_name(),
                     ),
                 }),
@@ -156,16 +156,18 @@ pub mod __Contract__fn_enum_a__spec {
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_fn_enum_a: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::ScSymbolView(
-                soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"fn_enum_a"),
+    const __SPEC_XDR_ENTRY_fn_enum_a: soroban_sdk::xdr::ScSpecEntryConst =
+        soroban_sdk::xdr::ScSpecEntryConst::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Const {
+            doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::ScSymbolConst(
+                soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"fn_enum_a"),
             ),
-            inputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[]),
-            outputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
-                soroban_sdk::xdr::ScSpecTypeDefView::Udt(soroban_sdk::xdr::ScSpecTypeUdtView {
-                    name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(<EnumA>::spec_name()),
+            inputs: soroban_sdk::xdr::VecMConst::try_from_slice_or_panic(&[]),
+            outputs: soroban_sdk::xdr::VecMConst::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::ScSpecTypeDefConst::Udt(soroban_sdk::xdr::ScSpecTypeUdtConst {
+                    name: soroban_sdk::xdr::StringMConst::try_from_str_or_panic(
+                        <EnumA>::spec_name(),
+                    ),
                 }),
             ]),
         });
@@ -189,16 +191,16 @@ pub mod __Contract__fn_enum_int_a__spec {
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_fn_enum_int_a: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::ScSymbolView(
-                soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"fn_enum_int_a"),
+    const __SPEC_XDR_ENTRY_fn_enum_int_a: soroban_sdk::xdr::ScSpecEntryConst =
+        soroban_sdk::xdr::ScSpecEntryConst::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Const {
+            doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::ScSymbolConst(
+                soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"fn_enum_int_a"),
             ),
-            inputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[]),
-            outputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
-                soroban_sdk::xdr::ScSpecTypeDefView::Udt(soroban_sdk::xdr::ScSpecTypeUdtView {
-                    name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(
+            inputs: soroban_sdk::xdr::VecMConst::try_from_slice_or_panic(&[]),
+            outputs: soroban_sdk::xdr::VecMConst::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::ScSpecTypeDefConst::Udt(soroban_sdk::xdr::ScSpecTypeUdtConst {
+                    name: soroban_sdk::xdr::StringMConst::try_from_str_or_panic(
                         <EnumIntA>::spec_name(),
                     ),
                 }),
@@ -224,26 +226,26 @@ pub mod __Contract__fn_error_a__spec {
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_fn_error_a: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::ScSymbolView(
-                soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"fn_error_a"),
+    const __SPEC_XDR_ENTRY_fn_error_a: soroban_sdk::xdr::ScSpecEntryConst =
+        soroban_sdk::xdr::ScSpecEntryConst::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Const {
+            doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::ScSymbolConst(
+                soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"fn_error_a"),
             ),
-            inputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
-                    doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"input"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::U32,
+            inputs: soroban_sdk::xdr::VecMConst::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0Const {
+                    doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"input"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefConst::U32,
                 },
             ]),
-            outputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
-                soroban_sdk::xdr::ScSpecTypeDefView::Result(
-                    &soroban_sdk::xdr::ScSpecTypeResultView {
-                        ok_type: &soroban_sdk::xdr::ScSpecTypeDefView::U32,
-                        error_type: &soroban_sdk::xdr::ScSpecTypeDefView::Udt(
-                            soroban_sdk::xdr::ScSpecTypeUdtView {
-                                name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(
+            outputs: soroban_sdk::xdr::VecMConst::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::ScSpecTypeDefConst::Result(
+                    &soroban_sdk::xdr::ScSpecTypeResultConst {
+                        ok_type: &soroban_sdk::xdr::ScSpecTypeDefConst::U32,
+                        error_type: &soroban_sdk::xdr::ScSpecTypeDefConst::Udt(
+                            soroban_sdk::xdr::ScSpecTypeUdtConst {
+                                name: soroban_sdk::xdr::StringMConst::try_from_str_or_panic(
                                     <ErrorA>::spec_name(),
                                 ),
                             },
@@ -272,25 +274,25 @@ pub mod __Contract__fn_event_a__spec {
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_fn_event_a: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::ScSymbolView(
-                soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"fn_event_a"),
+    const __SPEC_XDR_ENTRY_fn_event_a: soroban_sdk::xdr::ScSpecEntryConst =
+        soroban_sdk::xdr::ScSpecEntryConst::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Const {
+            doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::ScSymbolConst(
+                soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"fn_event_a"),
             ),
-            inputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
-                    doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"f1"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
+            inputs: soroban_sdk::xdr::VecMConst::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0Const {
+                    doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"f1"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefConst::Address,
                 },
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
-                    doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"f2"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::String,
+                soroban_sdk::xdr::ScSpecFunctionInputV0Const {
+                    doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"f2"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefConst::String,
                 },
             ]),
-            outputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[]),
+            outputs: soroban_sdk::xdr::VecMConst::try_from_slice_or_panic(&[]),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_len_fn_event_a() -> usize {
@@ -312,14 +314,14 @@ pub mod __Contract__fn_event_d__spec {
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_fn_event_d: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::ScSymbolView(
-                soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"fn_event_d"),
+    const __SPEC_XDR_ENTRY_fn_event_d: soroban_sdk::xdr::ScSpecEntryConst =
+        soroban_sdk::xdr::ScSpecEntryConst::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Const {
+            doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::ScSymbolConst(
+                soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"fn_event_d"),
             ),
-            inputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[]),
-            outputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[]),
+            inputs: soroban_sdk::xdr::VecMConst::try_from_slice_or_panic(&[]),
+            outputs: soroban_sdk::xdr::VecMConst::try_from_slice_or_panic(&[]),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_len_fn_event_d() -> usize {

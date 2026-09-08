@@ -43,16 +43,16 @@ impl Value {
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_VALUE: [u8; Value::spec_xdr_len()] = Value::spec_xdr();
 impl Value {
-    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0View {
-            doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(Value::spec_name()),
-            fields: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
-                soroban_sdk::xdr::ScSpecUdtStructFieldV0View {
-                    doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"value"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::I32,
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::ScSpecEntryConst =
+        soroban_sdk::xdr::ScSpecEntryConst::UdtStructV0(soroban_sdk::xdr::ScSpecUdtStructV0Const {
+            doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
+            lib: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::StringMConst::try_from_str_or_panic(Value::spec_name()),
+            fields: soroban_sdk::xdr::VecMConst::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::ScSpecUdtStructFieldV0Const {
+                    doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"value"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefConst::I32,
                 },
             ]),
         });

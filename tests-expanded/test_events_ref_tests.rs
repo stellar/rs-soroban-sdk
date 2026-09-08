@@ -151,41 +151,41 @@ impl<'a> Transfer<'a> {
 #[doc(hidden)]
 pub static __SPEC_XDR_EVENT_TRANSFER: [u8; Transfer::spec_xdr_len()] = Transfer::spec_xdr();
 impl<'a> Transfer<'a> {
-    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::EventV0(soroban_sdk::xdr::ScSpecEventV0View {
-            doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            lib: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::StringMView::try_from_str_or_panic(Transfer::spec_name()),
-            prefix_topics: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
-                soroban_sdk::xdr::ScSymbolView(
-                    soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"transfer"),
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::ScSpecEntryConst =
+        soroban_sdk::xdr::ScSpecEntryConst::EventV0(soroban_sdk::xdr::ScSpecEventV0Const {
+            doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
+            lib: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::StringMConst::try_from_str_or_panic(Transfer::spec_name()),
+            prefix_topics: soroban_sdk::xdr::VecMConst::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::ScSymbolConst(
+                    soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"transfer"),
                 ),
             ]),
-            params: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
-                soroban_sdk::xdr::ScSpecEventParamV0View {
-                    doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"from"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
+            params: soroban_sdk::xdr::VecMConst::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::ScSpecEventParamV0Const {
+                    doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"from"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefConst::Address,
                     location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
                 },
-                soroban_sdk::xdr::ScSpecEventParamV0View {
-                    doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"to"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
+                soroban_sdk::xdr::ScSpecEventParamV0Const {
+                    doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"to"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefConst::Address,
                     location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
                 },
-                soroban_sdk::xdr::ScSpecEventParamV0View {
-                    doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"amount"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::I128,
+                soroban_sdk::xdr::ScSpecEventParamV0Const {
+                    doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"amount"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefConst::I128,
                     location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
                 },
-                soroban_sdk::xdr::ScSpecEventParamV0View {
-                    doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"to_muxed_id"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Option(
-                        &soroban_sdk::xdr::ScSpecTypeOptionView {
-                            value_type: &soroban_sdk::xdr::ScSpecTypeDefView::U64,
+                soroban_sdk::xdr::ScSpecEventParamV0Const {
+                    doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"to_muxed_id"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefConst::Option(
+                        &soroban_sdk::xdr::ScSpecTypeOptionConst {
+                            value_type: &soroban_sdk::xdr::ScSpecTypeDefConst::U64,
                         },
                     ),
                     location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
@@ -280,30 +280,30 @@ pub mod __Contract__transfer__spec {
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_transfer: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::ScSymbolView(
-                soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"transfer"),
+    const __SPEC_XDR_ENTRY_transfer: soroban_sdk::xdr::ScSpecEntryConst =
+        soroban_sdk::xdr::ScSpecEntryConst::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Const {
+            doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::ScSymbolConst(
+                soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"transfer"),
             ),
-            inputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
-                    doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"from"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
+            inputs: soroban_sdk::xdr::VecMConst::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0Const {
+                    doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"from"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefConst::Address,
                 },
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
-                    doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"to"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::MuxedAddress,
+                soroban_sdk::xdr::ScSpecFunctionInputV0Const {
+                    doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"to"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefConst::MuxedAddress,
                 },
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
-                    doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"amount"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::I128,
+                soroban_sdk::xdr::ScSpecFunctionInputV0Const {
+                    doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"amount"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefConst::I128,
                 },
             ]),
-            outputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[]),
+            outputs: soroban_sdk::xdr::VecMConst::try_from_slice_or_panic(&[]),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_len_transfer() -> usize {
@@ -325,30 +325,30 @@ pub mod __Contract__failed_transfer__spec {
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_failed_transfer: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::ScSymbolView(
-                soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"failed_transfer"),
+    const __SPEC_XDR_ENTRY_failed_transfer: soroban_sdk::xdr::ScSpecEntryConst =
+        soroban_sdk::xdr::ScSpecEntryConst::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Const {
+            doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::ScSymbolConst(
+                soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"failed_transfer"),
             ),
-            inputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
-                    doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"from"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
+            inputs: soroban_sdk::xdr::VecMConst::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::ScSpecFunctionInputV0Const {
+                    doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"from"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefConst::Address,
                 },
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
-                    doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"to"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::Address,
+                soroban_sdk::xdr::ScSpecFunctionInputV0Const {
+                    doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"to"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefConst::Address,
                 },
-                soroban_sdk::xdr::ScSpecFunctionInputV0View {
-                    doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-                    name: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"amount"),
-                    type_: soroban_sdk::xdr::ScSpecTypeDefView::I128,
+                soroban_sdk::xdr::ScSpecFunctionInputV0Const {
+                    doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"amount"),
+                    type_: soroban_sdk::xdr::ScSpecTypeDefConst::I128,
                 },
             ]),
-            outputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[]),
+            outputs: soroban_sdk::xdr::VecMConst::try_from_slice_or_panic(&[]),
         });
     #[allow(non_snake_case)]
     pub const fn spec_xdr_len_failed_transfer() -> usize {
