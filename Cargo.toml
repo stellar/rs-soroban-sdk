@@ -54,10 +54,11 @@ version = "=28.0.0"
 default-features = false
 
 [patch.crates-io]
-# Pending https://github.com/stellar/rs-stellar-xdr/pull/580, which adds the
-# const-only `*Const` types and their const XDR serializers that the contract
-# spec generation in soroban-sdk-macros builds on.
-stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "e384b9b143bd7f11dd724f068f1a373f31aa69a4" }
+# Pending https://github.com/stellar/rs-stellar-xdr/pull/566, which widens the
+# contract spec type name limit so that fully qualified type names fit, on top
+# of the const-only `*Const` types and their const XDR serializers that the
+# contract spec generation in soroban-sdk-macros builds on.
+stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "9c6c2f8c09b678d1ebed87b3f41f621068badcf4" }
 # Pending https://github.com/stellar/rs-soroban-env/pull/1733, which adapts the
 # host to the XDR constants that rs-stellar-xdr#580 changes from u64 to u32.
 # Only the 29.x line carries that adaptation, so the test ledger's default

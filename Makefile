@@ -24,6 +24,7 @@ test: fmt build-test-wasms test-only
 # together with the umbrella hazmat feature.
 test-only:
 	SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2=1 \
+	SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_REDUCING_FULL_NAMES=1 \
 		cargo hack --feature-powerset --ignore-unknown-features --features testutils \
 			--exclude-features docs \
 			--exclude-features hazmat-crypto \
@@ -39,6 +40,7 @@ build-test-wasms: fmt
 	# Build the test wasms with MSRV by default, with some meta disabled for
 	# binary stability for tests.
 	SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2=1 \
+	SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_REDUCING_FULL_NAMES=1 \
 	RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
 	RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
 		cargo hack build --release --target wasm32v1-none $(foreach c,$(TEST_CRATES),--package $(c)) ; \
@@ -80,6 +82,7 @@ expand-tests: build-test-wasms
       cargo expand --package $$package --tests --target x86_64-unknown-linux-gnu | rustfmt > tests-expanded/$${package}_tests.rs; \
 		echo "Expanding $$package for wasm32v1-none target without tests"; \
     SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2=1 \
+    SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_REDUCING_FULL_NAMES=1 \
     RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
       RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
 			cargo expand --package $$package --release --target wasm32v1-none | rustfmt > tests-expanded/$${package}_wasm32v1-none.rs; \
