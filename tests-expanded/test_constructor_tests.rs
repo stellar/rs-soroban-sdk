@@ -141,6 +141,7 @@ pub enum DataKey {
     Temp(u32),
     Instance(u32),
 }
+#[doc(hidden)]
 pub static __SPEC_XDR_TYPE_DATAKEY: [u8; 112usize] = DataKey::spec_xdr();
 impl DataKey {
     pub const fn spec_xdr() -> [u8; 112usize] {

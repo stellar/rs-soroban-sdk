@@ -329,6 +329,12 @@ pub struct RecursiveToEnum {
 }
 #[soroban_sdk::contracttype]
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub struct ContractExecutableRef {
+    pub owner: soroban_sdk::Address,
+    pub tag: soroban_sdk::String,
+}
+#[soroban_sdk::contracttype]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub struct ContractContext {
     pub args: soroban_sdk::Vec<soroban_sdk::Val>,
     pub contract: soroban_sdk::Address,
@@ -369,15 +375,16 @@ pub enum RecursiveEnum {
 }
 #[soroban_sdk::contracttype]
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub enum ContractExecutable {
+    Wasm(soroban_sdk::BytesN<32>),
+    ExternalRef(ContractExecutableRef),
+}
+#[soroban_sdk::contracttype]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub enum Context {
     Contract(ContractContext),
     CreateContractHostFn(CreateContractHostFnContext),
     CreateContractWithCtorHostFn(CreateContractWithConstructorHostFnContext),
-}
-#[soroban_sdk::contracttype]
-#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
-pub enum ContractExecutable {
-    Wasm(soroban_sdk::BytesN<32>),
 }
 #[soroban_sdk::contracttype]
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
@@ -429,6 +436,12 @@ pub trait Contract {
 }
 #[soroban_sdk::contracttype]
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub struct ContractExecutableRef {
+    pub owner: soroban_sdk::Address,
+    pub tag: soroban_sdk::String,
+}
+#[soroban_sdk::contracttype]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub struct ContractContext {
     pub args: soroban_sdk::Vec<soroban_sdk::Val>,
     pub contract: soroban_sdk::Address,
@@ -455,15 +468,16 @@ pub struct CreateContractWithConstructorHostFnContext {
 }
 #[soroban_sdk::contracttype]
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub enum ContractExecutable {
+    Wasm(soroban_sdk::BytesN<32>),
+    ExternalRef(ContractExecutableRef),
+}
+#[soroban_sdk::contracttype]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
 pub enum Context {
     Contract(ContractContext),
     CreateContractHostFn(CreateContractHostFnContext),
     CreateContractWithCtorHostFn(CreateContractWithConstructorHostFnContext),
-}
-#[soroban_sdk::contracttype]
-#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
-pub enum ContractExecutable {
-    Wasm(soroban_sdk::BytesN<32>),
 }
 #[soroban_sdk::contracttype]
 #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]

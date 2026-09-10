@@ -1,8 +1,5 @@
-// Setting `lib` on `contracttype`, `contracterror`, or `contractevent` is
-// deprecated. With the `deprecated` lint denied, using it must fail to compile,
-// proving the deprecation warning is emitted.
-#![deny(deprecated)]
-
+// The `lib` argument on `contracttype`, `contracterror`, and `contractevent`
+// has been removed and must be rejected as an unknown argument.
 use soroban_sdk::{contracterror, contractevent, contracttype};
 
 #[contracttype(lib = "libname")]

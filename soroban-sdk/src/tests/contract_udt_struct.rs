@@ -4,8 +4,8 @@ use soroban_sdk::{
     TryFromVal, Val,
 };
 use stellar_xdr::{
-    Limits, ReadXdr, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef,
-    ScSpecTypeTuple, ScSpecTypeUdt,
+    Limits, ReadXdr, ScMap, ScMapEntry, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0,
+    ScSpecTypeDef, ScSpecTypeTuple, ScSpecTypeUdt, ScSymbol, ScVal,
 };
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
@@ -96,11 +96,8 @@ fn test_out_of_order_functional() {
     );
 }
 
-// TODO: at present UDT try_from_vals actually trap rather than returning
-// catchable errors. This is intentional to minimize code size. Can revisit.
 #[test]
-#[should_panic]
-fn test_error_on_partial_decode() {
+fn test_decode() {
     let env = Env::default();
 
     // Success case, a map will decode to a Udt if the symbol keys match the
@@ -108,11 +105,16 @@ fn test_error_on_partial_decode() {
     let map = map![&env, (symbol_short!("a"), 5), (symbol_short!("b"), 7)].to_val();
     let udt = Udt::try_from_val(&env, &map);
     assert_eq!(udt, Ok(Udt { a: 5, b: 7 }));
+}
+
+#[test]
+fn test_extra_fields_ignored_on_decode() {
+    let env = Env::default();
 
     // If a struct has fields a, b, and a map is decoded into it where the map
-    // has fields a, b, and c, it is an error. It is an error because decoding
-    // and encoding will not round trip the data, and therefore partial decoding
-    // is relatively difficult to use safely.
+    // has fields a, b, and c, the additional field c is ignored. This allows a
+    // contract to decode a value containing a field that is no longer used, and
+    // automatically ignore and discard it.
     let map = map![
         &env,
         (symbol_short!("a"), 5),
@@ -120,6 +122,100 @@ fn test_error_on_partial_decode() {
         (symbol_short!("c"), 9)
     ]
     .to_val();
+    let udt = Udt::try_from_val(&env, &map);
+    assert_eq!(udt, Ok(Udt { a: 5, b: 7 }));
+}
+
+#[test]
+fn test_extra_fields_ignored_on_decode_scval() {
+    let env = Env::default();
+
+    // Conversion from an ScVal behaves the same as conversion from a Val.
+    let scval = ScVal::Map(Some(
+        ScMap::sorted_from(vec![
+            ScMapEntry {
+                key: ScVal::Symbol(ScSymbol("a".try_into().unwrap())),
+                val: ScVal::I32(5),
+            },
+            ScMapEntry {
+                key: ScVal::Symbol(ScSymbol("b".try_into().unwrap())),
+                val: ScVal::I32(7),
+            },
+            ScMapEntry {
+                key: ScVal::Symbol(ScSymbol("c".try_into().unwrap())),
+                val: ScVal::I32(9),
+            },
+        ])
+        .unwrap(),
+    ));
+    let udt = Udt::try_from_val(&env, &scval);
+    assert_eq!(udt, Ok(Udt { a: 5, b: 7 }));
+}
+
+#[test]
+fn test_error_on_non_symbol_key_scmap() {
+    let env = Env::default();
+
+    // The host traps when unpacking a map with keys that are not symbols, and
+    // so a map containing them is an error rather than an ignored entry, which
+    // would let a test pass on a value that a contract would trap on.
+    let scval = ScVal::Map(Some(
+        ScMap::sorted_from(vec![
+            ScMapEntry {
+                key: ScVal::U32(99),
+                val: ScVal::I32(9),
+            },
+            ScMapEntry {
+                key: ScVal::Symbol(ScSymbol("a".try_into().unwrap())),
+                val: ScVal::I32(5),
+            },
+            ScMapEntry {
+                key: ScVal::Symbol(ScSymbol("b".try_into().unwrap())),
+                val: ScVal::I32(7),
+            },
+        ])
+        .unwrap(),
+    ));
+    let udt = Udt::try_from_val(&env, &scval);
+    assert_eq!(udt, Err(stellar_xdr::Error::Invalid));
+}
+
+#[test]
+fn test_error_on_duplicate_keys_scmap() {
+    let env = Env::default();
+
+    // Fields are found in the map by binary search, which finds only one of the
+    // entries for a duplicated key, and so a map containing duplicate keys is
+    // an error rather than an arbitrary choice between the values.
+    let scval = ScVal::Map(Some(ScMap(
+        vec![
+            ScMapEntry {
+                key: ScVal::Symbol(ScSymbol("a".try_into().unwrap())),
+                val: ScVal::I32(5),
+            },
+            ScMapEntry {
+                key: ScVal::Symbol(ScSymbol("a".try_into().unwrap())),
+                val: ScVal::I32(6),
+            },
+            ScMapEntry {
+                key: ScVal::Symbol(ScSymbol("b".try_into().unwrap())),
+                val: ScVal::I32(7),
+            },
+        ]
+        .try_into()
+        .unwrap(),
+    )));
+    let udt = Udt::try_from_val(&env, &scval);
+    assert_eq!(udt, Err(stellar_xdr::Error::Invalid));
+}
+
+#[test]
+fn test_error_on_missing_field() {
+    let env = Env::default();
+
+    // A missing field decodes as void, and so decoding into a field that is not
+    // an Option is an error.
+    let map = map![&env, (symbol_short!("a"), 5)].to_val();
     let udt = Udt::try_from_val(&env, &map);
     assert_eq!(udt, Err(ConversionError));
 }

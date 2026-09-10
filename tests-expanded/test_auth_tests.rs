@@ -1119,6 +1119,7 @@ mod test_a {
                 ::core::cmp::Ordering::Equal
             }
         }
+        #[doc(hidden)]
         pub static __SPEC_XDR_TYPE_ERROR: [u8; 48usize] = Error::spec_xdr();
         impl Error {
             pub const fn spec_xdr() -> [u8; 48usize] {
@@ -2603,6 +2604,7 @@ mod test_b {
                 ::core::cmp::Ordering::Equal
             }
         }
+        #[doc(hidden)]
         pub static __SPEC_XDR_TYPE_ERROR: [u8; 48usize] = Error::spec_xdr();
         impl Error {
             pub const fn spec_xdr() -> [u8; 48usize] {

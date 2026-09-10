@@ -49,6 +49,7 @@ impl ::core::cmp::PartialEq for UdtEnum2 {
         __self_discr == __arg1_discr
     }
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_UDTENUM2: [u8; 60usize] = UdtEnum2::spec_xdr();
 impl UdtEnum2 {
@@ -169,6 +170,7 @@ impl ::core::cmp::PartialEq for UdtEnum {
             }
     }
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_UDTENUM: [u8; 156usize] = UdtEnum::spec_xdr();
 impl UdtEnum {
@@ -334,6 +336,7 @@ impl ::core::cmp::PartialEq for UdtTuple {
         self.0 == other.0 && self.1 == other.1
     }
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_UDTTUPLE: [u8; 64usize] = UdtTuple::spec_xdr();
 impl UdtTuple {
@@ -450,6 +453,7 @@ impl ::core::cmp::PartialEq for UdtStruct {
         self.a == other.a && self.b == other.b && self.c == other.c
     }
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_UDTSTRUCT: [u8; 84usize] = UdtStruct::spec_xdr();
 impl UdtStruct {
@@ -480,7 +484,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtStruct {
         const KEYS: [&'static str; 3usize] = ["a", "b", "c"];
         let mut vals: [Val; 3usize] = [Val::VOID.to_val(); 3usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             a: vals[0]
@@ -571,6 +575,7 @@ impl ::core::cmp::PartialEq for UdtRecursive {
         self.a == other.a && self.b == other.b
     }
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_UDTRECURSIVE: [u8; 84usize] = UdtRecursive::spec_xdr();
 impl UdtRecursive {
@@ -600,7 +605,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtRecursiv
         const KEYS: [&'static str; 2usize] = ["a", "b"];
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             a: vals[0]
@@ -687,6 +692,7 @@ impl ::core::cmp::PartialEq for RecursiveToEnum {
         self.a == other.a && self.b == other.b
     }
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_RECURSIVETOENUM: [u8; 96usize] = RecursiveToEnum::spec_xdr();
 impl RecursiveToEnum {
@@ -716,7 +722,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for RecursiveTo
         const KEYS: [&'static str; 2usize] = ["a", "b"];
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             a: vals[0]
@@ -810,6 +816,7 @@ impl ::core::cmp::PartialEq for RecursiveEnum {
             }
     }
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_RECURSIVEENUM: [u8; 112usize] = RecursiveEnum::spec_xdr();
 impl RecursiveEnum {

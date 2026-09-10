@@ -1,0 +1,17 @@
+error: Unknown field: `lib`
+ --> tests/compile_fails/contracttype_lib_removed.rs:5:16
+  |
+5 | #[contracttype(lib = "libname")]
+  |                ^^^
+
+error: Unknown field: `lib`
+  --> tests/compile_fails/contracttype_lib_removed.rs:10:17
+   |
+10 | #[contracterror(lib = "libname")]
+   |                 ^^^
+
+error: Unknown field: `lib`
+  --> tests/compile_fails/contracttype_lib_removed.rs:17:17
+   |
+17 | #[contractevent(lib = "libname")]
+   |                 ^^^

@@ -136,6 +136,7 @@ fn test_spec_shaking_v2() {
         "CreateContractHostFnContext",
         "CreateContractWithConstructorHostFnContext",
         "ContractExecutable",
+        "ContractExecutableRef",
         "InvokerContractAuthEntry",
         "SubContractInvocation",
         "Executable",

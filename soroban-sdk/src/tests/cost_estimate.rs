@@ -21,8 +21,8 @@ fn test_cost_estimate_with_storage() {
     client.put(&symbol_short!("k1"), &symbol_short!("v1"));
     expect![[r#"
         InvocationResources {
-            instructions: 242833,
-            mem_bytes: 1126953,
+            instructions: 237131,
+            mem_bytes: 1126737,
             disk_read_entries: 0,
             memory_read_entries: 3,
             write_entries: 1,
@@ -37,8 +37,8 @@ fn test_cost_estimate_with_storage() {
     .assert_eq(format!("{:#?}", e.cost_estimate().resources()).as_str());
     expect![[r#"
         FeeEstimate {
-            total: 10004,
-            instructions: 170,
+            total: 10000,
+            instructions: 166,
             disk_read_entries: 1563,
             write_entries: 2500,
             disk_read_bytes: 0,
@@ -54,8 +54,8 @@ fn test_cost_estimate_with_storage() {
     assert_eq!(client.get(&symbol_short!("k1")), Some(symbol_short!("v1")));
     expect![[r#"
         InvocationResources {
-            instructions: 240977,
-            mem_bytes: 1126002,
+            instructions: 235125,
+            mem_bytes: 1125786,
             disk_read_entries: 0,
             memory_read_entries: 3,
             write_entries: 0,
@@ -70,8 +70,8 @@ fn test_cost_estimate_with_storage() {
     .assert_eq(format!("{:#?}", e.cost_estimate().resources()).as_str());
     expect![[r#"
         FeeEstimate {
-            total: 169,
-            instructions: 169,
+            total: 165,
+            instructions: 165,
             disk_read_entries: 0,
             write_entries: 0,
             disk_read_bytes: 0,
@@ -87,8 +87,8 @@ fn test_cost_estimate_with_storage() {
     client.del(&symbol_short!("k1"));
     expect![[r#"
         InvocationResources {
-            instructions: 238530,
-            mem_bytes: 1126190,
+            instructions: 232678,
+            mem_bytes: 1125974,
             disk_read_entries: 0,
             memory_read_entries: 3,
             write_entries: 1,
@@ -103,8 +103,8 @@ fn test_cost_estimate_with_storage() {
     .assert_eq(format!("{:#?}", e.cost_estimate().resources()).as_str());
     expect![[r#"
         FeeEstimate {
-            total: 4230,
-            instructions: 167,
+            total: 4226,
+            instructions: 163,
             disk_read_entries: 1563,
             write_entries: 2500,
             disk_read_bytes: 0,
@@ -120,8 +120,8 @@ fn test_cost_estimate_with_storage() {
     assert_eq!(client.get(&symbol_short!("k1")), None);
     expect![[r#"
         InvocationResources {
-            instructions: 238797,
-            mem_bytes: 1125834,
+            instructions: 232945,
+            mem_bytes: 1125618,
             disk_read_entries: 0,
             memory_read_entries: 3,
             write_entries: 0,
@@ -136,8 +136,8 @@ fn test_cost_estimate_with_storage() {
     .assert_eq(format!("{:#?}", e.cost_estimate().resources()).as_str());
     expect![[r#"
         FeeEstimate {
-            total: 168,
-            instructions: 168,
+            total: 164,
+            instructions: 164,
             disk_read_entries: 0,
             write_entries: 0,
             disk_read_bytes: 0,
@@ -161,19 +161,19 @@ fn test_cost_estimate_budget() {
     // Budget breakdown corresponds to the last invocation only.
     expect![[r#"
         ===============================================================================================================================================================================
-        Cpu limit: 100000000; used: 257282
-        Mem limit: 41943040; used: 1145459
+        Cpu limit: 400000000; used: 251580
+        Mem limit: 41943040; used: 1145243
         ===============================================================================================================================================================================
         CostType                           iterations     input          cpu_insns      mem_bytes      const_term_cpu      lin_term_cpu        const_term_mem      lin_term_mem        
         WasmInsnExec                       284            None           1136           0              4                   0                   0                   0                   
-        MemAlloc                           24             Some(1051569)  141860         1051953        434                 16                  16                  128                 
-        MemCpy                             104            Some(10693)    5688           0              42                  16                  0                   0                   
-        MemCmp                             67             Some(1996)     3184           0              44                  16                  0                   0                   
+        MemAlloc                           22             Some(1051385)  140969         1051737        434                 16                  16                  128                 
+        MemCpy                             91             Some(9407)     4983           0              42                  16                  0                   0                   
+        MemCmp                             57             Some(1736)     2714           0              44                  16                  0                   0                   
         DispatchHostFunction               1              None           295            0              295                 0                   0                   0                   
         VisitObject                        2              None           120            0              60                  0                   0                   0                   
         ValSer                             61             Some(1248)     13690          18506          221                 26                  242                 384                 
         ValDeser                           0              Some(0)        0              0              331                 4369                0                   384                 
-        ComputeSha256Hash                  1              Some(0)        3636           0              3636                7013                0                   0                   
+        ComputeSha256Hash                  0              Some(0)        0              0              3636                7013                0                   0                   
         ComputeEd25519PubKey               0              None           0              0              40256               0                   0                   0                   
         VerifyEd25519Sig                   0              Some(0)        0              0              377551              4059                0                   0                   
         VmInstantiation                    0              Some(0)        0              0              417482              45712               132773              4903                
@@ -253,8 +253,8 @@ fn test_cost_estimate_budget() {
         Bn254G1Msm                         0              Some(0)        0              0              1185193             41568084            73061               229779              
         ===============================================================================================================================================================================
         Internal details (diagnostics info, does not affect fees) 
-        Total # times meter was called: 273
-        Shadow cpu limit: 100000000; used: 31841
+        Total # times meter was called: 247
+        Shadow cpu limit: 400000000; used: 31841
         Shadow mem limit: 41943040; used: 27684
         ===============================================================================================================================================================================
 

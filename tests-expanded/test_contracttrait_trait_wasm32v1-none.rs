@@ -49,6 +49,7 @@ impl ::core::cmp::PartialEq for MyStruct {
         self.a == other.a && self.b == other.b
     }
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_MYSTRUCT: [u8; 60usize] = MyStruct::spec_xdr();
 impl MyStruct {
@@ -78,7 +79,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MyStruct {
         const KEYS: [&'static str; 2usize] = ["a", "b"];
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             a: vals[0]
@@ -162,6 +163,7 @@ impl ::core::cmp::PartialEq for MyEnumUnit {
         __self_discr == __arg1_discr
     }
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_MYENUMUNIT: [u8; 64usize] = MyEnumUnit::spec_xdr();
 impl MyEnumUnit {
@@ -283,6 +285,7 @@ impl ::core::cmp::PartialEq for MyEnumVariants {
             }
     }
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_MYENUMVARIANTS: [u8; 128usize] = MyEnumVariants::spec_xdr();
 impl MyEnumVariants {

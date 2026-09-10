@@ -42,15 +42,31 @@
 //! ### Examples
 //!
 //! ```rust
-//! use soroban_sdk::{contract, contractimpl, vec, symbol_short, BytesN, Env, Symbol, Vec};
+//! use soroban_sdk::{contract, contractevent, contractimpl, symbol_short, Address, Env};
 //!
 //! #[contract]
 //! pub struct Contract;
 //!
+//! #[contractevent]
+//! pub struct Hello {
+//!     pub to: Address,
+//! }
+//!
 //! #[contractimpl]
 //! impl Contract {
-//!     pub fn hello(env: Env, to: Symbol) -> Vec<Symbol> {
-//!         vec![&env, symbol_short!("Hello"), to]
+//!     pub fn __constructor(env: &Env, owner: Address) {
+//!         env.storage().instance().set(&symbol_short!("owner"), &owner);
+//!     }
+//!
+//!     pub fn owner(env: &Env) -> Address {
+//!         env.storage().instance()
+//!             .get(&symbol_short!("owner"))
+//!             .unwrap()
+//!     }
+//!
+//!     pub fn hello(env: &Env, to: Address) {
+//!         Self::owner(env).require_auth();
+//!         Hello { to }.publish(env);
 //!     }
 //! }
 //!
@@ -59,13 +75,33 @@
 //! # }
 //! # #[cfg(feature = "testutils")]
 //! # fn main() {
+//!     use soroban_sdk::{
+//!         testutils::{Address as _, AuthorizedFunction, AuthorizedInvocation, Events as _},
+//!         Event as _, IntoVal,
+//!     };
+//!
 //!     let env = Env::default();
-//!     let contract_id = env.register(Contract, ());
+//!     let owner = Address::generate(&env);
+//!     let contract_id = env.register(Contract, (&owner,));
 //!     let client = ContractClient::new(&env, &contract_id);
 //!
-//!     let words = client.hello(&symbol_short!("Dev"));
+//!     let to = Address::generate(&env);
 //!
-//!     assert_eq!(words, vec![&env, symbol_short!("Hello"), symbol_short!("Dev"),]);
+//!     client.mock_all_auths().hello(&to);
+//!
+//!     assert_eq!(
+//!         env.auths(),
+//!         [
+//!             (owner, AuthorizedInvocation { function: AuthorizedFunction::Contract((contract_id.clone(), symbol_short!("hello"), (&to,).into_val(&env))), sub_invocations: [].into() }),
+//!         ],
+//!     );
+//!
+//!     assert_eq!(
+//!         env.events().all(),
+//!         [
+//!             Hello { to }.to_xdr(&env, &contract_id),
+//!         ],
+//!     );
 //! }
 //! # #[cfg(not(feature = "testutils"))]
 //! # fn main() { }
@@ -782,7 +818,9 @@ pub use soroban_sdk_macros::contracttype;
 /// - u32 value from the `my_topic` field
 ///
 /// The event's data will be a [`Map`], containing a key-value pair for each field with the key
-/// being the name as a [`Symbol`]. In the example below, the data for the event will be:
+/// being the name as a [`Symbol`]. A field whose value is void (a `None` [`Option`], or the unit
+/// type `()`) is omitted from the map. Pass `sparse = false` to write every field to the map,
+/// including the fields whose value is void. In the example below, the data for the event will be:
 /// - key: my_event_data => val: u32
 /// - key: more_event_data => val: u64
 ///
@@ -1210,6 +1248,7 @@ mod error;
 pub use error::InvokeError;
 pub mod events;
 pub use events::{Event, Topics};
+pub mod executable_refs;
 pub mod iter;
 pub mod ledger;
 pub mod logs;
@@ -1232,6 +1271,28 @@ mod tuple;
 
 mod constructor_args;
 pub use constructor_args::ConstructorArgs;
+
+/// Contract executable used for creating a new contract and used in
+/// `CreateContractHostFnContext`.
+#[derive(Clone, Debug)]
+#[contracttype(crate_path = "crate")]
+pub enum ContractExecutable {
+    /// Executable specified by the contract instance as a specific Wasm contract code entry identified by its Wasm sha256 hash.
+    Wasm(BytesN<32>),
+    /// Executable reference via a persistent storage entry owned by this contract or another contract.
+    ExternalRef(ContractExecutableRef),
+}
+
+/// Executable referenced via a persistent storage entry owned by a contract,
+/// either this contract or another contract.
+///
+/// The persistent storage entry owned by the `owner` has the `tag` as its key.
+#[derive(Clone, Debug)]
+#[contracttype(crate_path = "crate")]
+pub struct ContractExecutableRef {
+    pub owner: Address,
+    pub tag: String,
+}
 
 pub mod xdr;
 

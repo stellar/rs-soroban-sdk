@@ -30,10 +30,12 @@ jobs:
     - run: rustup install nightly
     - name: Update fuzz Cargo.lock
       run: cargo +nightly update --manifest-path tests/fuzz/fuzz/Cargo.toml soroban-sdk
+    - name: Update fuzz afl Cargo.lock
+      run: cargo +nightly update --manifest-path tests/fuzz_afl/fuzz/Cargo.toml soroban-sdk
     - name: Commit fuzz Cargo.lock
       run: |
         git config user.name 'github-actions[bot]'
         git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-        git add tests/fuzz/fuzz/Cargo.lock
+        git add tests/fuzz/fuzz/Cargo.lock tests/fuzz_afl/fuzz/Cargo.lock
         git commit -m 'Update fuzz Cargo.lock for ${{ inputs.version }}' || echo 'No changes to commit'
         git push

@@ -1,0 +1,7 @@
+error: `contracttrait` is only supported on an impl block implementing a trait annotated with `#[contracttrait]`
+ --> tests/compile_fails/contracttrait_without_trait.rs:8:1
+  |
+8 | #[contractimpl(contracttrait)]
+  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = note: this error originates in the attribute macro `contractimpl` (in Nightly builds, run with -Z macro-backtrace for more info)

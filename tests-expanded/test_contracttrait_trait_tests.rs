@@ -49,6 +49,7 @@ impl ::core::cmp::PartialEq for MyStruct {
         self.a == other.a && self.b == other.b
     }
 }
+#[doc(hidden)]
 pub static __SPEC_XDR_TYPE_MYSTRUCT: [u8; 60usize] = MyStruct::spec_xdr();
 impl MyStruct {
     pub const fn spec_xdr() -> [u8; 60usize] {
@@ -73,7 +74,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MyStruct {
         const KEYS: [&'static str; 2usize] = ["a", "b"];
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             a: vals[0]
@@ -123,7 +124,14 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for MySt
         use soroban_sdk::xdr::Validate;
         use soroban_sdk::TryIntoVal;
         let map = val;
-        if map.len() != 2usize {
+        if map
+            .iter()
+            .any(|entry| !#[allow(non_exhaustive_omitted_patterns)]
+            match entry.key {
+                soroban_sdk::xdr::ScVal::Symbol(_) => true,
+                _ => false,
+            })
+        {
             return Err(soroban_sdk::xdr::Error::Invalid);
         }
         map.validate()?;
@@ -134,10 +142,11 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for MySt
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                 )
                 .into();
-                let idx = map
-                    .binary_search_by_key(&key, |entry| entry.key.clone())
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                    Ok(idx) => map[idx].val.clone(),
+                    Err(_) => soroban_sdk::xdr::ScVal::Void,
+                };
+                let rv: soroban_sdk::Val = (&val)
                     .try_into_val(env)
                     .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                 rv.try_into_val(env)
@@ -149,10 +158,11 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::xdr::ScMap> for MySt
                         .map_err(|_| soroban_sdk::xdr::Error::Invalid)?,
                 )
                 .into();
-                let idx = map
-                    .binary_search_by_key(&key, |entry| entry.key.clone())
-                    .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
-                let rv: soroban_sdk::Val = (&map[idx].val.clone())
+                let val = match map.binary_search_by_key(&key, |entry| entry.key.clone()) {
+                    Ok(idx) => map[idx].val.clone(),
+                    Err(_) => soroban_sdk::xdr::ScVal::Void,
+                };
+                let rv: soroban_sdk::Val = (&val)
                     .try_into_val(env)
                     .map_err(|_| soroban_sdk::xdr::Error::Invalid)?;
                 rv.try_into_val(env)
@@ -467,6 +477,7 @@ impl ::core::cmp::PartialEq for MyEnumUnit {
         __self_discr == __arg1_discr
     }
 }
+#[doc(hidden)]
 pub static __SPEC_XDR_TYPE_MYENUMUNIT: [u8; 64usize] = MyEnumUnit::spec_xdr();
 impl MyEnumUnit {
     pub const fn spec_xdr() -> [u8; 64usize] {
@@ -817,6 +828,7 @@ impl ::core::cmp::PartialEq for MyEnumVariants {
             }
     }
 }
+#[doc(hidden)]
 pub static __SPEC_XDR_TYPE_MYENUMVARIANTS: [u8; 128usize] = MyEnumVariants::spec_xdr();
 impl MyEnumVariants {
     pub const fn spec_xdr() -> [u8; 128usize] {

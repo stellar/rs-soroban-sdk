@@ -100,15 +100,20 @@ fn test_get_existing_contract_address_executable_wasm() {
 fn test_get_existing_contract_address_executable_native() {
     let env = Env::default();
 
+    // Natively registered contracts have a stub Wasm entry that is unique to
+    // every registered contract.
     let native_contract_address = env.register(TestContract, ());
     let native_contract_executable = native_contract_address.executable();
-    let empty_sha256: [u8; 32] = Sha256::digest([]).into();
-    let empty_wasm_hash = BytesN::from_array(&env, &empty_sha256);
-    assert_eq!(
+    assert!(matches!(
         native_contract_executable,
-        Some(Executable::Wasm(empty_wasm_hash))
-    );
+        Some(Executable::Wasm(_))
+    ));
     assert!(native_contract_address.exists());
+    let other_native_contract_address = env.register(TestContract, ());
+    assert_ne!(
+        native_contract_executable,
+        other_native_contract_address.executable()
+    );
 }
 
 #[test]

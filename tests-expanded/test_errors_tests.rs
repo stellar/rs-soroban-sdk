@@ -157,6 +157,7 @@ impl ::core::cmp::PartialEq for Flag {
         __self_discr == __arg1_discr
     }
 }
+#[doc(hidden)]
 pub static __SPEC_XDR_TYPE_FLAG: [u8; 104usize] = Flag::spec_xdr();
 impl Flag {
     pub const fn spec_xdr() -> [u8; 104usize] {
@@ -504,6 +505,7 @@ impl ::core::cmp::PartialEq for Error {
         true
     }
 }
+#[doc(hidden)]
 pub static __SPEC_XDR_TYPE_ERROR: [u8; 48usize] = Error::spec_xdr();
 impl Error {
     pub const fn spec_xdr() -> [u8; 48usize] {

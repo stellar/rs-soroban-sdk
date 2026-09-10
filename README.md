@@ -1,11 +1,12 @@
 # rs-soroban-sdk
-Rust SDK for writing contracts for [Soroban].
+Rust SDK for building contracts that can be deployed on the [Stellar] network and execute in the [Soroban] runtime.
 
-Soroban: https://soroban.stellar.org
+Rust Docs: https://docs.rs/soroban-sdk
 
-Docs: https://docs.rs/soroban-sdk
+Stellar Developer Docs: https://developers.stellar.org
 
-[Soroban]: https://soroban.stellar.org
+[Soroban]: https://developers.stellar.org/docs/build/smart-contracts/overview
+[Stellar]: https://stellar.org
 
 ## Support
 

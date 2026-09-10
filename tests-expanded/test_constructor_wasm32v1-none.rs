@@ -29,6 +29,7 @@ pub enum DataKey {
     Temp(u32),
     Instance(u32),
 }
+#[doc(hidden)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_DATAKEY: [u8; 112usize] = DataKey::spec_xdr();
 impl DataKey {

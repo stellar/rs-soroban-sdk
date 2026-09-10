@@ -76,24 +76,6 @@ pub(crate) fn export_arg_error(export: &Option<SpannedValue<bool>>) -> TokenStre
     }
 }
 
-/// Emit a deprecation warning when `lib` is set on a contract type, error, or
-/// event. The argument is a vestige of an earlier design that was never used
-/// and will be removed in a future release.
-pub(crate) fn lib_arg_deprecation(lib: &Option<String>, ident: &syn::Ident) -> TokenStream2 {
-    if lib.is_some() {
-        let marker = format_ident!("__SOROBAN_LIB_ARG_DEPRECATED_FOR_{}", ident);
-        quote! {
-            #[doc(hidden)]
-            #[allow(non_upper_case_globals)]
-            #[deprecated = "`lib` is deprecated and will be removed in a future release"]
-            const #marker: () = ();
-            const _: () = #marker;
-        }
-    } else {
-        TokenStream2::new()
-    }
-}
-
 #[proc_macro]
 pub fn internal_symbol_short(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as LitStr);
@@ -253,6 +235,19 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
 
     let imp = parse_macro_input!(input as ItemImpl);
     let trait_ident = imp.trait_.as_ref().map(|x| &x.1);
+
+    // The `contracttrait` argument only has meaning on a trait impl, where it
+    // hands off to the trait's generated macro. Emitting the impl alongside the
+    // error keeps downstream diagnostics quiet.
+    if args.contracttrait && trait_ident.is_none() {
+        let e = Error::new(
+            Span::call_site(),
+            "`contracttrait` is only supported on an impl block implementing a trait annotated with `#[contracttrait]`",
+        )
+        .into_compile_error();
+        return quote! { #imp #e }.into();
+    }
+
     let ty = &imp.self_ty;
     let ty_str = quote!(#ty).to_string();
 
@@ -444,7 +439,6 @@ pub fn contractevent(metadata: TokenStream, input: TokenStream) -> TokenStream {
 struct ContractTypeArgs {
     #[darling(default = "default_crate_path")]
     crate_path: Path,
-    lib: Option<String>,
     export: Option<SpannedValue<bool>>,
 }
 
@@ -471,15 +465,10 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
     // The spec is always emitted and reachability determines what is retained,
     // so the `export` argument is no longer accepted.
     let export_error = export_arg_error(&args.export);
-    let lib_deprecation = lib_arg_deprecation(&args.lib, ident);
     let derived = match &input.data {
         Data::Struct(s) => match s.fields {
-            Fields::Named(_) => {
-                derive_type_struct(&args.crate_path, vis, ident, attrs, s, &args.lib)
-            }
-            Fields::Unnamed(_) => {
-                derive_type_struct_tuple(&args.crate_path, vis, ident, attrs, s, &args.lib)
-            }
+            Fields::Named(_) => derive_type_struct(&args.crate_path, vis, ident, attrs, s),
+            Fields::Unnamed(_) => derive_type_struct_tuple(&args.crate_path, vis, ident, attrs, s),
             Fields::Unit => Error::new(
                 s.fields.span(),
                 "unit structs are not supported as contract types",
@@ -494,9 +483,9 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 .filter(|v| v.discriminant.is_some())
                 .count();
             if count_of_int_variants == 0 {
-                derive_type_enum(&args.crate_path, vis, ident, attrs, e, &args.lib)
+                derive_type_enum(&args.crate_path, vis, ident, attrs, e)
             } else if count_of_int_variants == count_of_variants {
-                derive_type_enum_int(&args.crate_path, vis, ident, attrs, e, &args.lib)
+                derive_type_enum_int(&args.crate_path, vis, ident, attrs, e)
             } else {
                 Error::new(input.span(), "enums are supported as contract types only when all variants have an explicit integer literal, or when all variants are unit or single field")
                     .to_compile_error()
@@ -511,7 +500,6 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
     quote! {
         #input
         #export_error
-        #lib_deprecation
         #derived
     }
     .into()
@@ -535,11 +523,10 @@ pub fn contracterror(metadata: TokenStream, input: TokenStream) -> TokenStream {
     // The spec is always emitted and reachability determines what is retained,
     // so the `export` argument is no longer accepted.
     let export_error = export_arg_error(&args.export);
-    let lib_deprecation = lib_arg_deprecation(&args.lib, ident);
     let derived = match &input.data {
         Data::Enum(e) => {
             if e.variants.iter().all(|v| v.discriminant.is_some()) {
-                derive_type_error_enum_int(&args.crate_path, ident, attrs, e, &args.lib)
+                derive_type_error_enum_int(&args.crate_path, ident, attrs, e)
             } else {
                 Error::new(input.span(), "enums are supported as contract errors only when all variants have an explicit integer literal")
                     .to_compile_error()
@@ -559,7 +546,6 @@ pub fn contracterror(metadata: TokenStream, input: TokenStream) -> TokenStream {
     quote! {
         #input
         #export_error
-        #lib_deprecation
         #derived
     }
     .into()

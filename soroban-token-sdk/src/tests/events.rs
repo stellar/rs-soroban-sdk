@@ -135,12 +135,10 @@ fn test_transfer_without_id() {
 
     // Verify the event publishes the expected topics and data.
     let topics = (symbol_short!("transfer"), from.clone(), to.address());
+    // The to_muxed_id field is None, and so is omitted from the map.
     let data = Map::<Symbol, Val>::from_array(
         &env,
-        [
-            (Symbol::new(&env, "to_muxed_id"), Val::VOID.to_val()),
-            (Symbol::new(&env, "amount"), amount.into_val(&env)),
-        ],
+        [(Symbol::new(&env, "amount"), amount.into_val(&env))],
     );
 
     let id = env.register(Contract, ());
@@ -360,12 +358,10 @@ fn test_mint_without_id() {
 
     // Verify the event publishes the expected topics and data.
     let topics = (symbol_short!("mint"), to.address());
+    // The to_muxed_id field is None, and so is omitted from the map.
     let data = Map::<Symbol, Val>::from_array(
         &env,
-        [
-            (Symbol::new(&env, "to_muxed_id"), Val::VOID.to_val()),
-            (Symbol::new(&env, "amount"), amount.into_val(&env)),
-        ],
+        [(Symbol::new(&env, "amount"), amount.into_val(&env))],
     );
 
     let id = env.register(Contract, ());
