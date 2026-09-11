@@ -4,6 +4,11 @@ mod fetch;
 use cache::cache;
 use cargo_metadata::MetadataCommand;
 use directories::ProjectDirs;
+#[cfg(feature = "hubble")]
+pub use fetch::from_hubble::{
+    AccessTokenSource, EnvAccessToken, HubbleConfig, HubbleSource, Lookup, ReqwestTransport,
+    StaticAccessToken, Transport,
+};
 use fetch::LedgerEntryFetcher;
 pub use fetch::Network;
 use sha2::{Digest, Sha256};
@@ -113,6 +118,23 @@ impl TxSnapshotSource {
             tx_hash,
             cache_path,
         }
+    }
+
+    /// Consult the Stellar Hubble BigQuery dataset for checkpoint state before
+    /// falling back to downloading history-archive buckets.
+    ///
+    /// Hubble supports random access by ledger key, so it replaces a
+    /// multi-gigabyte bucket download with a single point query for the entry
+    /// types it can represent faithfully — contract data and TTL entries. All
+    /// other key types, and any Hubble error, fall back to the history archive,
+    /// so enabling this can only change how fast an answer arrives, never
+    /// whether the answer is correct.
+    ///
+    /// See [`HubbleSource`] for the full list of limitations.
+    #[cfg(feature = "hubble")]
+    pub fn with_hubble(mut self, hubble: HubbleSource) -> Self {
+        self.fetcher.set_hubble(hubble);
+        self
     }
 
     /// Fetch a ledger entry, using workspace-level caching

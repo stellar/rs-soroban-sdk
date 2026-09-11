@@ -14,6 +14,8 @@ mod iter;
 pub use iter::LedgerEntryChangesIterator;
 
 pub(crate) mod from_history_archive;
+#[cfg(feature = "hubble")]
+pub(crate) mod from_hubble;
 pub(crate) mod from_meta_storage;
 pub(crate) mod from_rpc;
 
@@ -34,6 +36,9 @@ pub enum Error {
     Rpc(#[from] from_rpc::Error),
     #[error("history archive error: {0}")]
     HistoryArchive(#[from] from_history_archive::Error),
+    #[cfg(feature = "hubble")]
+    #[error("hubble error: {0}")]
+    Hubble(#[from] from_hubble::Error),
 }
 
 /// Network configuration for fetching ledger data
@@ -261,6 +266,9 @@ pub struct LedgerEntryFetcher {
     tx_hash: Option<[u8; 32]>,
     cache_path: PathBuf,
     prefetch_handle: Mutex<Option<JoinHandle<()>>>,
+    /// Optional Hubble source consulted before the history archive.
+    #[cfg(feature = "hubble")]
+    hubble: Option<from_hubble::HubbleSource>,
 }
 
 impl LedgerEntryFetcher {
@@ -283,7 +291,16 @@ impl LedgerEntryFetcher {
             tx_hash,
             cache_path,
             prefetch_handle: Mutex::new(None),
+            #[cfg(feature = "hubble")]
+            hubble: None,
         }
+    }
+
+    /// Consult `hubble` for checkpoint state before falling back to the
+    /// history archive.
+    #[cfg(feature = "hubble")]
+    pub fn set_hubble(&mut self, hubble: from_hubble::HubbleSource) {
+        self.hubble = Some(hubble);
     }
 
     /// Returns the ledger sequence number this fetcher is configured for.
@@ -413,8 +430,9 @@ impl LedgerEntryFetcher {
             }
         }
 
-        // Phase 3: Fetch from history archive at the previous checkpoint
-        self.fetch_from_archive(&cache_path, prev_checkpoint, key)
+        // Phase 3: Resolve from the state at the previous checkpoint, via
+        // Hubble when configured, otherwise the history archive.
+        self.fetch_from_checkpoint(&cache_path, prev_checkpoint, key)
     }
 
     fn start_meta_prefetch(
@@ -593,8 +611,7 @@ impl LedgerEntryFetcher {
     }
 
     /// Fetch (and cache) the history-archive result for `key` at the
-    /// checkpoint `ledger`.
-    ///
+    /// checkpoint `ledger`.    ///
     /// This is the entry point called after phases 1 and 2 (per-ledger meta
     /// search) have exhausted the range down to the previous checkpoint, so
     /// `ledger` here is always a checkpoint sequence, not an arbitrary target
@@ -610,15 +627,68 @@ impl LedgerEntryFetcher {
     /// interval to re-decode the full (potentially many-GB) bucket set from
     /// scratch. Both `Some(LedgerEntry)` and `None` are cached, since a miss
     /// is just as expensive to determine as a hit.
-    fn fetch_from_archive(
+    ///
+    /// When a Hubble source is configured it is consulted first, inside the
+    /// same cache entry. Both sources answer the identical question — the
+    /// value of `key` at the end of the checkpoint ledger — so a result is
+    /// interchangeable between them and the cache stays valid whether or not
+    /// Hubble is enabled.
+    fn fetch_from_checkpoint(
         &self,
         cache_path: &Path,
         checkpoint: u32,
         key: &LedgerKey,
     ) -> Result<Option<LedgerEntry>, Error> {
         fetch_from_archive_cached(cache_path, checkpoint, key, || {
+            if let Some(result) = self.fetch_from_hubble(checkpoint, key)? {
+                return Ok(result);
+            }
             self.fetch_from_archive_uncached(cache_path, checkpoint, key)
         })
+    }
+
+    /// Try to resolve `key` at `checkpoint` from Hubble.
+    ///
+    /// Returns `Ok(None)` when Hubble is not configured, or cannot answer
+    /// authoritatively for this key, so the caller falls back to the history
+    /// archive. A Hubble error is likewise downgraded to a fallback rather
+    /// than failing the fetch: Hubble is an optimization over an
+    /// authoritative source that is always available, so a misconfigured
+    /// billing project, an expired token, or an exceeded byte cap should slow
+    /// a run down rather than break it.
+    #[cfg(feature = "hubble")]
+    fn fetch_from_hubble(
+        &self,
+        checkpoint: u32,
+        key: &LedgerKey,
+    ) -> Result<Option<Option<LedgerEntry>>, Error> {
+        let Some(hubble) = &self.hubble else {
+            return Ok(None);
+        };
+        match hubble.get(key, checkpoint) {
+            Ok(from_hubble::Lookup::Found(entry)) => {
+                tracing::debug!(checkpoint, "found from hubble");
+                Ok(Some(Some(*entry)))
+            }
+            Ok(from_hubble::Lookup::Absent) => {
+                tracing::debug!(checkpoint, "absent per hubble");
+                Ok(Some(None))
+            }
+            Ok(from_hubble::Lookup::Unsupported) => Ok(None),
+            Err(e) => {
+                tracing::warn!(checkpoint, error = %e, "hubble lookup failed; falling back");
+                Ok(None)
+            }
+        }
+    }
+
+    #[cfg(not(feature = "hubble"))]
+    fn fetch_from_hubble(
+        &self,
+        _checkpoint: u32,
+        _key: &LedgerKey,
+    ) -> Result<Option<Option<LedgerEntry>>, Error> {
+        Ok(None)
     }
 
     fn fetch_from_archive_uncached(
@@ -701,6 +771,194 @@ impl Drop for LedgerEntryFetcher {
         if handle.is_some_and(|handle| handle.join().is_err()) {
             tracing::warn!("meta prefetch thread panicked");
         }
+    }
+}
+
+#[cfg(all(test, feature = "hubble"))]
+mod test_hubble_fallback {
+    use super::{from_hubble, LedgerEntryFetcher, Network};
+    use soroban_sdk::xdr::{
+        ContractDataDurability, ContractId, Hash, LedgerKey, LedgerKeyContractCode,
+        LedgerKeyContractData, ScAddress, ScVal,
+    };
+
+    /// A transport replaying canned responses in order, so no network is
+    /// touched. Panics if asked for more responses than it was given, so a
+    /// test cannot pass by accidentally issuing an unexpected request.
+    struct FixedTransport {
+        responses: std::sync::Mutex<std::collections::VecDeque<String>>,
+        requests: std::sync::atomic::AtomicUsize,
+    }
+
+    impl FixedTransport {
+        fn new<I: IntoIterator<Item = S>, S: Into<String>>(responses: I) -> std::sync::Arc<Self> {
+            std::sync::Arc::new(Self {
+                responses: std::sync::Mutex::new(responses.into_iter().map(Into::into).collect()),
+                requests: std::sync::atomic::AtomicUsize::new(0),
+            })
+        }
+
+        fn requests(&self) -> usize {
+            self.requests.load(std::sync::atomic::Ordering::Relaxed)
+        }
+    }
+
+    impl from_hubble::Transport for std::sync::Arc<FixedTransport> {
+        fn post(&self, _: &str, _: &str, _: &str) -> Result<String, from_hubble::Error> {
+            self.requests
+                .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+            Ok(self
+                .responses
+                .lock()
+                .unwrap()
+                .pop_front()
+                .expect("unexpected extra request"))
+        }
+    }
+
+    /// A coverage response reporting that Hubble has ingested everything.
+    fn covered() -> String {
+        format!(
+            r#"{{"jobComplete":true,"schema":{{"fields":[{{"name":"max_ledger"}}]}},
+                "rows":[{{"f":[{{"v":"{}"}}]}}]}}"#,
+            u32::MAX,
+        )
+    }
+
+    fn key() -> LedgerKey {
+        LedgerKey::ContractData(LedgerKeyContractData {
+            contract: ScAddress::Contract(ContractId(Hash([1u8; 32]))),
+            key: ScVal::I32(1),
+            durability: ContractDataDurability::Persistent,
+        })
+    }
+
+    fn fetcher_with<I: IntoIterator<Item = S>, S: Into<String>>(
+        responses: I,
+    ) -> (LedgerEntryFetcher, std::sync::Arc<FixedTransport>) {
+        let mut fetcher = LedgerEntryFetcher::new(
+            Network::mainnet(None),
+            100,
+            None,
+            std::env::temp_dir().join("hubble-fallback-test"),
+        );
+        let transport = FixedTransport::new(responses);
+        fetcher.set_hubble(
+            from_hubble::HubbleSource::with_token(
+                from_hubble::HubbleConfig::mainnet("billing-project"),
+                Box::new(from_hubble::StaticAccessToken::new("token")),
+            )
+            .with_transport(Box::new(transport.clone())),
+        );
+        (fetcher, transport)
+    }
+
+    fn fetcher(response: &str) -> LedgerEntryFetcher {
+        fetcher_with([covered(), response.to_string()]).0
+    }
+
+    #[test]
+    fn no_hubble_configured_falls_back() {
+        // Without a Hubble source the checkpoint phase must behave exactly as
+        // it did before, deferring to the history archive.
+        let fetcher = LedgerEntryFetcher::new(
+            Network::mainnet(None),
+            100,
+            None,
+            std::env::temp_dir().join("hubble-fallback-test"),
+        );
+        assert_eq!(fetcher.fetch_from_hubble(64, &key()).unwrap(), None);
+    }
+
+    #[test]
+    fn unsupported_key_type_falls_back() {
+        // contract_code has no Wasm bytes in Hubble, so the archive must still
+        // be consulted for it.
+        let key = LedgerKey::ContractCode(LedgerKeyContractCode {
+            hash: Hash([0u8; 32]),
+        });
+        let (fetcher, transport) = fetcher_with(Vec::<String>::new());
+        assert_eq!(fetcher.fetch_from_hubble(64, &key).unwrap(), None);
+        // Nothing is queried at all — not even the coverage check — so this
+        // would fail if `query_for_key` started producing a query for
+        // contract code.
+        assert_eq!(transport.requests(), 0);
+    }
+
+    #[test]
+    fn hubble_error_falls_back_rather_than_failing_the_fetch() {
+        // Hubble is an optimization over an always-available authoritative
+        // source, so an API error must degrade to a slower path, not an error.
+        let response = r#"{"error":{"message":"billing not enabled"}}"#;
+        assert_eq!(
+            fetcher(response).fetch_from_hubble(64, &key()).unwrap(),
+            None
+        );
+    }
+
+    #[test]
+    fn authoritative_absence_short_circuits_the_archive() {
+        let response = r#"{"jobComplete":true,"schema":{"fields":[]},"rows":[]}"#;
+        assert_eq!(
+            fetcher(response).fetch_from_hubble(64, &key()).unwrap(),
+            Some(None),
+        );
+    }
+
+    #[test]
+    fn hubble_lagging_behind_the_checkpoint_falls_back() {
+        // Hubble is loaded in intraday batches; a checkpoint it has not
+        // ingested must defer to the archive rather than report the entry as
+        // absent, which would be cached persistently.
+        let mut fetcher = LedgerEntryFetcher::new(
+            Network::mainnet(None),
+            100,
+            None,
+            std::env::temp_dir().join("hubble-fallback-test"),
+        );
+        let lagging = r#"{"jobComplete":true,
+            "schema":{"fields":[{"name":"max_ledger"}]},
+            "rows":[{"f":[{"v":"63"}]}]}"#;
+        let transport = FixedTransport::new([lagging]);
+        fetcher.set_hubble(
+            from_hubble::HubbleSource::with_token(
+                from_hubble::HubbleConfig::mainnet("billing-project"),
+                Box::new(from_hubble::StaticAccessToken::new("token")),
+            )
+            .with_transport(Box::new(transport.clone())),
+        );
+        assert_eq!(fetcher.fetch_from_hubble(64, &key()).unwrap(), None);
+        // Exactly the coverage query ran, and nothing else. Only one response
+        // was supplied, so removing the coverage gate would panic the mock on
+        // the follow-up key query rather than silently pass.
+        assert_eq!(transport.requests(), 1);
+    }
+
+    #[test]
+    fn found_entry_short_circuits_the_archive() {
+        use soroban_sdk::xdr::{ContractDataEntry, ExtensionPoint, Limits, WriteXdr};
+        let entry = ContractDataEntry {
+            ext: ExtensionPoint::V0,
+            contract: ScAddress::Contract(ContractId(Hash([1u8; 32]))),
+            key: ScVal::I32(1),
+            durability: ContractDataDurability::Persistent,
+            val: ScVal::U32(5),
+        };
+        let xdr = entry.to_xdr_base64(Limits::none()).unwrap();
+        let response = format!(
+            r#"{{"jobComplete":true,
+                "schema":{{"fields":[
+                  {{"name":"contract_data_xdr"}},
+                  {{"name":"last_modified_ledger"}},
+                  {{"name":"deleted"}}]}},
+                "rows":[{{"f":[{{"v":"{xdr}"}},{{"v":"60"}},{{"v":"false"}}]}}]}}"#
+        );
+        let got = fetcher(&response).fetch_from_hubble(64, &key()).unwrap();
+        let Some(Some(ledger_entry)) = got else {
+            panic!("expected a found entry, got {got:?}");
+        };
+        assert_eq!(ledger_entry.to_key(), key());
+        assert_eq!(ledger_entry.last_modified_ledger_seq, 60);
     }
 }
 
