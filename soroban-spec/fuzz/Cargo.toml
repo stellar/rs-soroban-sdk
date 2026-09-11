@@ -1,0 +1,29 @@
+[package]
+name = "soroban-spec-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2021"
+
+[package.metadata]
+cargo-fuzz = true
+
+# Deliberately does not depend on soroban-spec. The fuzz target includes the
+# const SHA-256 implementation directly by path, so that the implementation can
+# stay private to soroban-spec rather than being exposed as public API, and so
+# that `sha2` stays a dev-only concern.
+[dependencies]
+libfuzzer-sys = "0.4"
+sha2 = "0.10.7"
+
+# Prevent this from interfering with workspaces
+[workspace]
+members = ["."]
+
+[profile.release]
+debug = 1
+
+[[bin]]
+name = "sha256_matches_sha2"
+path = "fuzz_targets/sha256_matches_sha2.rs"
+test = false
+doc = false

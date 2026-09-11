@@ -161,12 +161,29 @@ pub mod __Contract__exec__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_EXEC: [u8; 28usize] = super::Contract::spec_xdr_exec();
+    pub static __SPEC_XDR_FN_EXEC: [u8; super::Contract::spec_xdr_len_exec()] =
+        super::Contract::spec_xdr_exec();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_exec: soroban_sdk::xdr::ScSpecEntryConst =
+        soroban_sdk::xdr::ScSpecEntryConst::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0Const {
+            doc: soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::ScSymbolConst(
+                soroban_sdk::xdr::StringMConst::try_from_slice_or_panic(b"exec"),
+            ),
+            inputs: soroban_sdk::xdr::VecMConst::try_from_slice_or_panic(&[]),
+            outputs: soroban_sdk::xdr::VecMConst::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::ScSpecTypeDefConst::String,
+            ]),
+        });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_exec() -> [u8; 28usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x04exec\0\0\0\0\0\0\0\x01\0\0\0\x10"
+    pub const fn spec_xdr_len_exec() -> usize {
+        const { Contract::__SPEC_XDR_ENTRY_exec.const_xdr_len() }
+    }
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_exec() -> [u8; Contract::spec_xdr_len_exec()] {
+        const { Contract::__SPEC_XDR_ENTRY_exec.const_to_xdr() }
     }
 }
 impl<'a> ContractClient<'a> {
