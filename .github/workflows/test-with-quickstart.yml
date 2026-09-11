@@ -1,0 +1,107 @@
+name: Test with quickstart
+
+on:
+  push:
+    branches: [main, release/**]
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref_protected == 'true' && github.sha || github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+# No permissions. This workflow runs a network from an image built outside this
+# repository. No permissions ensures that any exploit in that image does not
+# gain access to anything in this repo.
+permissions: {}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  # Fork a local network, reading the ledger meta store and history archive
+  # that quickstart runs alongside its core and rpc.
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      # Log which of the data sources every ledger entry is found in, so a run
+      # shows what was read from the ledger meta store and what from the
+      # history archive, rather than only that the balances came out right.
+      RUST_LOG: soroban_ledger_snapshot_source_tx=debug
+    steps:
+    - uses: actions/checkout@v5
+
+    # Set in an env file rather than in the job's env, because the runner
+    # context those paths come from is not available there.
+    - name: Set the fixture and cache paths
+      run: |
+        echo "TEST_FORK_QUICKSTART_FIXTURE=$RUNNER_TEMP/quickstart-fixture.json" >> "$GITHUB_ENV"
+        # Where the snapshot source writes its machine-local cache of
+        # downloaded files and found entries, set so the runs below can clear
+        # it.
+        echo "XDG_CACHE_HOME=$RUNNER_TEMP/cache" >> "$GITHUB_ENV"
+
+    - name: Install Rust
+      run: rustup update
+
+    - uses: stellar/actions/rust-cache@main
+
+    - uses: stellar/stellar-cli@v28.0.0
+
+    # Starts the network and waits for it to report healthy, so the
+    # transactions below are submitted to a network that is ready for them
+    # rather than to one that is still coming up. Names the container
+    # 'stellar', which the logs step at the end refers to.
+    - uses: stellar/quickstart@main
+      with:
+        tag: testing
+        enable: rpc,galexie
+
+    # Build ahead of the runs below so that they compile nothing and their
+    # durations are the time spent forking alone.
+    - name: Build the test
+      run: cargo test -p test_fork --lib --no-run
+
+    - name: Submit transactions to fork from
+      run: tests/fork/quickstart-setup.sh "$TEST_FORK_QUICKSTART_FIXTURE"
+
+    # Fork three times, once per layer of caching, so that a cache that stores
+    # or replays entries wrongly fails as loudly as collecting them wrongly
+    # does. Every run asserts the same balances.
+
+    - name: Fork the transactions, with no cache
+      run: |
+        rm -rf tests-snapshot-source/local "$XDG_CACHE_HOME/soroban-sdk"
+        cargo test -p test_fork --lib -- --ignored --nocapture quickstart
+
+    - name: Fork the transactions, with only the system cache
+      run: |
+        rm -rf tests-snapshot-source/local
+        cargo test -p test_fork --lib -- --ignored --nocapture quickstart
+
+    - name: Fork the transactions, with the system and workspace caches
+      run: cargo test -p test_fork --lib -- --ignored --nocapture quickstart
+
+    # What the runs collected, so the log shows which entries landed in each
+    # cache and how large they are, rather than only that the balances came
+    # out right. Runs after the last fork above, when both caches are full.
+    - name: Cache contents
+      if: always()
+      run: |
+        for dir in tests-snapshot-source/local "$XDG_CACHE_HOME/soroban-sdk"; do
+          echo "::group::$dir"
+          if [ -d "$dir" ]; then
+            # Lock files are empty and there is one beside every entry, so
+            # listing them only halves how much of this is readable.
+            find "$dir" -type f ! -name '*.lock' -printf '%10s  %P\n' | sort -k2
+            echo "$(find "$dir" -type f ! -name '*.lock' | wc -l) files, $(du -sh "$dir" | cut -f1) total"
+          else
+            echo "(does not exist)"
+          fi
+          echo "::endgroup::"
+        done
+
+    - name: Quickstart logs
+      if: always()
+      run: docker logs stellar
