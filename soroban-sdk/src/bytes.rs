@@ -1091,8 +1091,9 @@ impl<const N: usize> TryFrom<Bytes> for BytesN<N> {
     #[inline(always)]
     fn try_from(bin: Bytes) -> Result<Self, Self::Error> {
         let n = const {
-            if N <= u32::MAX as usize {
-                Some(N as u32)
+            let n = N as u32;
+            if n as usize == N {
+                Some(n)
             } else {
                 None
             }
