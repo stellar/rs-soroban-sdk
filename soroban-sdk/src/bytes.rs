@@ -1090,7 +1090,10 @@ impl<const N: usize> TryFrom<Bytes> for BytesN<N> {
 
     #[inline(always)]
     fn try_from(bin: Bytes) -> Result<Self, Self::Error> {
-        if bin.len() == { N as u32 } {
+        let Ok(n) = u32::try_from(N) else {
+            return Err(ConversionError {});
+        };
+        if bin.len() == n {
             Ok(Self(bin))
         } else {
             Err(ConversionError {})
@@ -1497,6 +1500,13 @@ mod test {
         assert!(bad_fixed.is_err());
         let fixed: BytesN<3> = bin_copy.try_into().unwrap();
         println!("{:?}", fixed);
+
+        #[cfg(target_pointer_width = "64")]
+        {
+            const OVERSIZED_N: usize = (u32::MAX as usize) + 1;
+            let oversized_res: Result<BytesN<OVERSIZED_N>, ConversionError> = bin.try_into();
+            assert!(oversized_res.is_err());
+        }
     }
 
     #[test]
