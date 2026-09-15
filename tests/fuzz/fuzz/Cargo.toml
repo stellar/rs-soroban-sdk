@@ -23,7 +23,7 @@ members = ["."]
 # contract spec type name limit so that fully qualified type names fit, on top
 # of the `const` module of const-only types and their const XDR serializers
 # that the contract spec generation in soroban-sdk-macros builds on.
-stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "43d99a398adaa815ee23b83e0ac60d22c15ed017" }
+stellar-xdr = { git = "https://github.com/stellar/rs-stellar-xdr", rev = "d5c3f39bf7bc52a6bbc4db0518c892ec22b2dd11" }
 # Pending https://github.com/stellar/rs-soroban-env/pull/1733, which adapts the
 # host to the XDR constants that rs-stellar-xdr#580 changes from u64 to u32.
 # Only the 29.x line carries that adaptation, so the test ledger's default
