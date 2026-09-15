@@ -77,9 +77,20 @@
 //!    events pack this way; a `contracttype` struct still writes all of its fields. An event that
 //!    must keep publishing every field opts out with `#[contractevent(sparse = false)]`.
 //!
+//! 6. [Custom accounts see a new `ContractExecutable::ExternalRef` variant when authorizing
+//!    deployments][v28_check_auth_executable]. The [`ContractExecutable`] passed to `__check_auth`
+//!    in [`Context::CreateContractHostFn`] and [`Context::CreateContractWithCtorHostFn`] gains the
+//!    [`ContractExecutable::ExternalRef`] variant. Custom accounts that match exhaustively on the
+//!    executable need a new match arm, and decide whether to authorize deployments from executable
+//!    references. Custom accounts built with an earlier SDK cannot decode the new variant and so do
+//!    not authorize such deployments.
+//!
 //! [`Env::upload`]: crate::Env::upload
 //! [v28_contracttype_unpacking]: v28_contracttype_unpacking
 //! [v28_contractevent_packing]: v28_contractevent_packing
+//! [v28_check_auth_executable]: v28_check_auth_executable
+//! [`Context::CreateContractHostFn`]: crate::auth::Context::CreateContractHostFn
+//! [`Context::CreateContractWithCtorHostFn`]: crate::auth::Context::CreateContractWithCtorHostFn
 //! [`ContractExecutable`]: crate::ContractExecutable
 //! [`ContractExecutable::Wasm`]: crate::ContractExecutable::Wasm
 //! [`ContractExecutable::ExternalRef`]: crate::ContractExecutable::ExternalRef
@@ -435,6 +446,7 @@ pub mod v25_poseidon;
 pub mod v25_resource_limits;
 pub mod v27_bytes_literals;
 pub mod v27_export;
+pub mod v28_check_auth_executable;
 pub mod v28_contractevent_packing;
 pub mod v28_contracttype_unpacking;
 pub mod v28_native_contract_code;
