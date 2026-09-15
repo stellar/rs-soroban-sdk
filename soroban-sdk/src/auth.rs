@@ -12,9 +12,11 @@
 //!
 //! #### Implement a custom account contract
 //!
-//! The account below stores an ed25519 public key at construction, verifies
-//! that the signature payload was signed by the corresponding private key, and
-//! only authorizes contract calls.
+//! The account below is an example implementation: it stores an ed25519 public
+//! key at construction, verifies that the signature payload was signed by the
+//! corresponding private key, and only authorizes contract calls. A real
+//! account decides for itself what a valid signature and an acceptable
+//! [`Context`] are.
 //!
 //! ```
 //! use soroban_sdk::{
@@ -72,13 +74,17 @@
 //!
 //!         // Check what is being authorized. There is one context for every
 //!         // `require_auth[_for_args]` call made on behalf of this account.
-//!         // A real account would inspect the contract, function, and
-//!         // arguments of each context, e.g. to enforce spend limits.
+//!         // This example only checks the kind of each context, but an
+//!         // account can inspect the contract, function, and arguments too,
+//!         // e.g. to enforce spend limits.
 //!         for context in auth_contexts.iter() {
 //!             match context {
 //!                 Context::Contract(_) => (),
 //!                 // This account does not authorize contract deployments.
-//!                 _ => return Err(Error::UnsupportedContext),
+//!                 Context::CreateContractHostFn(_)
+//!                 | Context::CreateContractWithCtorHostFn(_) => {
+//!                     return Err(Error::UnsupportedContext)
+//!                 }
 //!             }
 //!         }
 //!
