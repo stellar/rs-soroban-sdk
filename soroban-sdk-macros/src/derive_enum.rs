@@ -160,13 +160,13 @@ pub fn derive_type_enum(
     // type so that a reference to it from anywhere can reach it.
     let spec_name = spec_name_gen(enum_ident, None, None, None);
 
-    // Generated code spec. The spec entry is rendered as the equivalent const
-    // ScSpecEntryConst, which the contract crate encodes to XDR at compile time.
+    // Generated code spec. The spec entry is rendered as the equivalent
+    // const::ScSpecEntry, which the contract crate encodes to XDR at compile time.
     let spec_gen = {
         let doc = const_view_string(path, &spec.doc);
         let lib = const_view_string(path, &spec.lib);
         let name =
-            quote!(#path::xdr::StringMConst::try_from_str_or_panic(#enum_ident::spec_name()));
+            quote!(#path::xdr::r#const::StringM::try_from_str_or_panic(#enum_ident::spec_name()));
         // Each case's Rust field types, so a reference to a user-defined type in
         // a case resolves to the name that type reports for itself.
         let cases = spec
@@ -177,8 +177,8 @@ pub fn derive_type_enum(
                 ScSpecUdtUnionCaseV0::VoidV0(c) => {
                     let doc = const_view_string(path, &c.doc);
                     let name = const_view_string(path, &c.name);
-                    quote!(#path::xdr::ScSpecUdtUnionCaseV0Const::VoidV0(
-                        #path::xdr::ScSpecUdtUnionCaseVoidV0Const { doc: #doc, name: #name }
+                    quote!(#path::xdr::r#const::ScSpecUdtUnionCaseV0::VoidV0(
+                        #path::xdr::r#const::ScSpecUdtUnionCaseVoidV0 { doc: #doc, name: #name }
                     ))
                 }
                 ScSpecUdtUnionCaseV0::TupleV0(c) => {
@@ -189,21 +189,21 @@ pub fn derive_type_enum(
                         .iter()
                         .zip(field_types.iter().copied())
                         .map(|(t, rust)| const_view_type_def(path, t, Some(rust)));
-                    quote!(#path::xdr::ScSpecUdtUnionCaseV0Const::TupleV0(
-                        #path::xdr::ScSpecUdtUnionCaseTupleV0Const {
+                    quote!(#path::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(
+                        #path::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
                             doc: #doc,
                             name: #name,
-                            type_: #path::xdr::VecMConst::try_from_slice_or_panic(&[#(#type_),*]),
+                            type_: #path::xdr::r#const::VecM::try_from_slice_or_panic(&[#(#type_),*]),
                         }
                     ))
                 }
             });
         let spec_view = quote! {
-            #path::xdr::ScSpecEntryConst::UdtUnionV0(#path::xdr::ScSpecUdtUnionV0Const {
+            #path::xdr::r#const::ScSpecEntry::UdtUnionV0(#path::xdr::r#const::ScSpecUdtUnionV0 {
                 doc: #doc,
                 lib: #lib,
                 name: #name,
-                cases: #path::xdr::VecMConst::try_from_slice_or_panic(&[#(#cases),*]),
+                cases: #path::xdr::r#const::VecM::try_from_slice_or_panic(&[#(#cases),*]),
             })
         };
         let spec_ident = format_ident!(
@@ -216,7 +216,7 @@ pub fn derive_type_enum(
             pub static #spec_ident: [u8; #enum_ident::spec_xdr_len()] = #enum_ident::spec_xdr();
 
             impl #enum_ident {
-                const __SPEC_XDR_ENTRY: #path::xdr::ScSpecEntryConst = #spec_view;
+                const __SPEC_XDR_ENTRY: #path::xdr::r#const::ScSpecEntry = #spec_view;
 
                 pub const fn spec_xdr_len() -> usize {
                     const { #enum_ident::__SPEC_XDR_ENTRY.const_xdr_len() }

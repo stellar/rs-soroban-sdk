@@ -75,8 +75,8 @@ pub fn derive_type_error_enum_int(
         cases: spec_cases.try_into().unwrap(),
     };
 
-    // Generated code spec. The spec entry is rendered as the equivalent const
-    // ScSpecEntryConst, which the contract crate encodes to XDR at compile time.
+    // Generated code spec. The spec entry is rendered as the equivalent
+    // const::ScSpecEntry, which the contract crate encodes to XDR at compile time.
     // The fully qualified name the spec knows this type by, emitted for every
     // type so that a reference to it from anywhere can reach it.
     let spec_name = spec_name_gen(enum_ident, None, None, None);
@@ -85,19 +85,19 @@ pub fn derive_type_error_enum_int(
         let doc = const_view_string(path, &spec.doc);
         let lib = const_view_string(path, &spec.lib);
         let name =
-            quote!(#path::xdr::StringMConst::try_from_str_or_panic(#enum_ident::spec_name()));
+            quote!(#path::xdr::r#const::StringM::try_from_str_or_panic(#enum_ident::spec_name()));
         let cases = spec.cases.iter().map(|c| {
             let doc = const_view_string(path, &c.doc);
             let name = const_view_string(path, &c.name);
             let value = c.value;
-            quote!(#path::xdr::ScSpecUdtErrorEnumCaseV0Const { doc: #doc, name: #name, value: #value })
+            quote!(#path::xdr::r#const::ScSpecUdtErrorEnumCaseV0 { doc: #doc, name: #name, value: #value })
         });
         let spec_view = quote! {
-            #path::xdr::ScSpecEntryConst::UdtErrorEnumV0(#path::xdr::ScSpecUdtErrorEnumV0Const {
+            #path::xdr::r#const::ScSpecEntry::UdtErrorEnumV0(#path::xdr::r#const::ScSpecUdtErrorEnumV0 {
                 doc: #doc,
                 lib: #lib,
                 name: #name,
-                cases: #path::xdr::VecMConst::try_from_slice_or_panic(&[#(#cases),*]),
+                cases: #path::xdr::r#const::VecM::try_from_slice_or_panic(&[#(#cases),*]),
             })
         };
         let spec_ident = format_ident!(
@@ -110,7 +110,7 @@ pub fn derive_type_error_enum_int(
             pub static #spec_ident: [u8; #enum_ident::spec_xdr_len()] = #enum_ident::spec_xdr();
 
             impl #enum_ident {
-                const __SPEC_XDR_ENTRY: #path::xdr::ScSpecEntryConst = #spec_view;
+                const __SPEC_XDR_ENTRY: #path::xdr::r#const::ScSpecEntry = #spec_view;
 
                 pub const fn spec_xdr_len() -> usize {
                     const { #enum_ident::__SPEC_XDR_ENTRY.const_xdr_len() }

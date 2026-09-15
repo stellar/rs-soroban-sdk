@@ -306,7 +306,7 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
 }
 
 /// Renders a [ScSpecTypeDef] as a const expression of type
-/// `#path::xdr::ScSpecTypeDefConst`, so the containing spec entry can be encoded
+/// `#path::xdr::r#const::ScSpecTypeDef`, so the containing spec entry can be encoded
 /// to XDR at compile time by the contract crate.
 ///
 /// `rust` is the Rust type the spec type was mapped from. A reference to a
@@ -320,28 +320,28 @@ pub fn const_view_type_def(path: &Path, t: &ScSpecTypeDef, rust: Option<&Type>) 
     let args = rust.map(type_args).unwrap_or_default();
     let arg = |i: usize| args.get(i).copied();
     // Variants that hold a value. The recursive ones sit behind a reference in
-    // the Const type, matching the Box in the owned type.
+    // the const type, matching the Box in the owned type.
     let value = match t {
         ScSpecTypeDef::Option(o) => {
             let value_type = const_view_type_def(path, &o.value_type, arg(0));
-            Some(quote!((&#xdr::ScSpecTypeOptionConst { value_type: &#value_type })))
+            Some(quote!((&#xdr::r#const::ScSpecTypeOption { value_type: &#value_type })))
         }
         ScSpecTypeDef::Result(r) => {
             let ok_type = const_view_type_def(path, &r.ok_type, arg(0));
             let error_type = const_view_type_def(path, &r.error_type, arg(1));
             Some(
-                quote!((&#xdr::ScSpecTypeResultConst { ok_type: &#ok_type, error_type: &#error_type })),
+                quote!((&#xdr::r#const::ScSpecTypeResult { ok_type: &#ok_type, error_type: &#error_type })),
             )
         }
         ScSpecTypeDef::Vec(v) => {
             let element_type = const_view_type_def(path, &v.element_type, arg(0));
-            Some(quote!((&#xdr::ScSpecTypeVecConst { element_type: &#element_type })))
+            Some(quote!((&#xdr::r#const::ScSpecTypeVec { element_type: &#element_type })))
         }
         ScSpecTypeDef::Map(m) => {
             let key_type = const_view_type_def(path, &m.key_type, arg(0));
             let value_type = const_view_type_def(path, &m.value_type, arg(1));
             Some(
-                quote!((&#xdr::ScSpecTypeMapConst { key_type: &#key_type, value_type: &#value_type })),
+                quote!((&#xdr::r#const::ScSpecTypeMap { key_type: &#key_type, value_type: &#value_type })),
             )
         }
         ScSpecTypeDef::Tuple(t) => {
@@ -351,7 +351,7 @@ pub fn const_view_type_def(path: &Path, t: &ScSpecTypeDef, rust: Option<&Type>) 
                 .enumerate()
                 .map(|(i, t)| const_view_type_def(path, t, arg(i)));
             Some(
-                quote!((&#xdr::ScSpecTypeTupleConst { value_types: #xdr::VecMConst::try_from_slice_or_panic(&[#(#value_types),*]) })),
+                quote!((&#xdr::r#const::ScSpecTypeTuple { value_types: #xdr::r#const::VecM::try_from_slice_or_panic(&[#(#value_types),*]) })),
             )
         }
         ScSpecTypeDef::BytesN(b) => {
@@ -364,7 +364,7 @@ pub fn const_view_type_def(path: &Path, t: &ScSpecTypeDef, rust: Option<&Type>) 
         // the reference was mapped from is how that type is reached.
         ScSpecTypeDef::Udt(_) => Some(match rust.map(unref) {
             Some(ty) => {
-                quote!((#xdr::ScSpecTypeUdtConst { name: #xdr::StringMConst::try_from_str_or_panic(<#ty>::spec_name()) }))
+                quote!((#xdr::r#const::ScSpecTypeUdt { name: #xdr::r#const::StringM::try_from_str_or_panic(<#ty>::spec_name()) }))
             }
             None => quote!(
                 (compile_error!(
@@ -375,7 +375,7 @@ pub fn const_view_type_def(path: &Path, t: &ScSpecTypeDef, rust: Option<&Type>) 
         // All remaining variants are void.
         _ => None,
     };
-    quote!(#xdr::ScSpecTypeDefConst::#variant #value)
+    quote!(#xdr::r#const::ScSpecTypeDef::#variant #value)
 }
 
 /// The Rust type behind any number of references.
@@ -453,20 +453,20 @@ pub fn spec_name_gen(
     }
 }
 
-/// Renders a [StringM] as a const expression of type `#path::xdr::StringMConst`.
-/// The `MAX` of the `StringMConst` is inferred from the field it is assigned to.
+/// Renders a [StringM] as a const expression of type `#path::xdr::r#const::StringM`.
+/// The `MAX` of the `const::StringM` is inferred from the field it is assigned to.
 pub fn const_view_string<const MAX: u32>(path: &Path, s: &StringM<MAX>) -> TokenStream2 {
     let xdr = quote!(#path::xdr);
     let lit = Literal::byte_string(s.as_vec());
-    quote!(#xdr::StringMConst::try_from_slice_or_panic(#lit))
+    quote!(#xdr::r#const::StringM::try_from_slice_or_panic(#lit))
 }
 
 /// Renders a [ScSymbol] as a const expression of type
-/// `#path::xdr::ScSymbolConst`.
+/// `#path::xdr::r#const::ScSymbol`.
 pub fn const_view_symbol(path: &Path, s: &ScSymbol) -> TokenStream2 {
     let xdr = quote!(#path::xdr);
     let s = const_view_string(path, &s.0);
-    quote!(#xdr::ScSymbolConst(#s))
+    quote!(#xdr::r#const::ScSymbol(#s))
 }
 
 #[cfg(test)]
