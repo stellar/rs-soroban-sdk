@@ -147,9 +147,7 @@ impl AttributeEvent {
         soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::r#const::ScSymbol(
-                soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"AttributeEvent"),
-            ),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"AttributeEvent"),
             prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::r#const::ScSymbol(
                     soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"attribute_event"),

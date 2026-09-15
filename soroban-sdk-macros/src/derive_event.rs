@@ -12,8 +12,7 @@ use proc_macro2::Span;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use stellar_xdr::{
-    ScSpecEventDataFormat, ScSpecEventParamLocationV0, ScSpecEventParamV0, ScSpecEventV0, ScSymbol,
-    StringM,
+    ScSpecEventDataFormat, ScSpecEventParamLocationV0, ScSpecEventParamV0, ScSpecEventV0, StringM,
 };
 use syn::{
     ext::IdentExt as _, parse2, spanned::Spanned, Data, DeriveInput, Fields, LitStr, Meta, Path,
@@ -202,7 +201,9 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         doc: docs_from_attrs(&input.attrs),
         // set to empty string always because the field is no longer used
         lib: StringM::default(),
-        name: ScSymbol(event_name),
+        // the event name is limited to EVENT_NAME_LENGTH, which is always
+        // within the spec field's wider limit
+        name: event_name.into_vec().try_into().unwrap(),
         prefix_topics: prefix_topics
             .iter()
             .map(|t| t.try_into().unwrap())
@@ -227,7 +228,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     let spec_view = {
         let doc = const_view_string(path, &spec.doc);
         let lib = const_view_string(path, &spec.lib);
-        let name = const_view_symbol(path, &spec.name);
+        let name = const_view_string(path, &spec.name);
         let prefix_topics = spec
             .prefix_topics
             .iter()

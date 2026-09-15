@@ -1878,9 +1878,7 @@ impl UsedEventSimple {
         soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::r#const::ScSymbol(
-                soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"UsedEventSimple"),
-            ),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"UsedEventSimple"),
             prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::r#const::ScSymbol(
                     soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
@@ -2140,10 +2138,8 @@ impl UsedEventWithTopicType {
         soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::r#const::ScSymbol(
-                soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                    b"UsedEventWithTopicType",
-                ),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                b"UsedEventWithTopicType",
             ),
             prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::r#const::ScSymbol(
@@ -2424,10 +2420,8 @@ impl UsedEventWithDataType {
         soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::r#const::ScSymbol(
-                soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                    b"UsedEventWithDataType",
-                ),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                b"UsedEventWithDataType",
             ),
             prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::r#const::ScSymbol(
@@ -2833,10 +2827,8 @@ impl UsedEventWithNestedTopic {
         soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::r#const::ScSymbol(
-                soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                    b"UsedEventWithNestedTopic",
-                ),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                b"UsedEventWithNestedTopic",
             ),
             prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::r#const::ScSymbol(
@@ -3242,10 +3234,8 @@ impl UsedEventWithNestedData {
         soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::r#const::ScSymbol(
-                soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                    b"UsedEventWithNestedData",
-                ),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                b"UsedEventWithNestedData",
             ),
             prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::r#const::ScSymbol(
@@ -3774,9 +3764,7 @@ impl<'a> UsedEventWithRefs<'a> {
         soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::r#const::ScSymbol(
-                soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"UsedEventWithRefs"),
-            ),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"UsedEventWithRefs"),
             prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::r#const::ScSymbol(
                     soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
@@ -10898,9 +10886,7 @@ mod wasm_imported {
                 soroban_sdk::xdr::r#const::ScSpecEventV0 {
                     doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                    name: soroban_sdk::xdr::r#const::ScSymbol(
-                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"EventA"),
-                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"EventA"),
                     prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                         soroban_sdk::xdr::r#const::ScSymbol(
                             soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"event_a"),
@@ -11063,9 +11049,7 @@ mod wasm_imported {
                 soroban_sdk::xdr::r#const::ScSpecEventV0 {
                     doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                    name: soroban_sdk::xdr::r#const::ScSymbol(
-                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"EventB"),
-                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"EventB"),
                     prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                         soroban_sdk::xdr::r#const::ScSymbol(
                             soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"event_b"),
@@ -11240,9 +11224,7 @@ mod wasm_imported {
                 soroban_sdk::xdr::r#const::ScSpecEventV0 {
                     doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                    name: soroban_sdk::xdr::r#const::ScSymbol(
-                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"EventC"),
-                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"EventC"),
                     prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                         soroban_sdk::xdr::r#const::ScSymbol(
                             soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"event_c"),
@@ -11384,9 +11366,7 @@ mod wasm_imported {
                 soroban_sdk::xdr::r#const::ScSpecEventV0 {
                     doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                    name: soroban_sdk::xdr::r#const::ScSymbol(
-                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"EventD"),
-                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"EventD"),
                     prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                         soroban_sdk::xdr::r#const::ScSymbol(
                             soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"event_d"),
@@ -11921,9 +11901,7 @@ impl UnusedEvent {
         soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::r#const::ScSymbol(
-                soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"UnusedEvent"),
-            ),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"UnusedEvent"),
             prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::r#const::ScSymbol(
                     soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"unused_event"),
