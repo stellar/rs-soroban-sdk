@@ -117,7 +117,7 @@
 //!         &env,
 //!         Context::Contract(ContractContext {
 //!             contract: Address::generate(&env),
-//!             fn_name: Symbol::new(&env, "transfer"),
+//!             fn_name: Symbol::new(&env, "deposit"),
 //!             args: vec![&env, 100_i128.into_val(&env)],
 //!         }),
 //!     ];
