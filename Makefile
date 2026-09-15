@@ -52,10 +52,17 @@ build-fuzz:
 	cd tests/fuzz/fuzz && cargo +nightly fuzz check
 	cd tests/fuzz_afl/fuzz && cargo afl build
 
+# Generates each crate's README.md from that crate's crate-level Rust docs, so
+# the docs on docs.rs and the README on crates.io stay the same text.
 readme:
 	cd soroban-sdk \
 		&& cargo +nightly rustdoc --features testutils -- -Zunstable-options -wjson \
 		&& cat ../target/doc/soroban_sdk.json \
+		| jq -r '.index[.root|tostring].docs' \
+		> README.md
+	cd soroban-ledger-snapshot-source-tx \
+		&& cargo +nightly rustdoc -- -Zunstable-options -wjson \
+		&& cat ../target/doc/soroban_ledger_snapshot_source_tx.json \
 		| jq -r '.index[.root|tostring].docs' \
 		> README.md
 
