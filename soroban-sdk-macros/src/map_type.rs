@@ -306,40 +306,40 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
 }
 
 /// Renders a [ScSpecTypeDef] as a const expression of type
-/// `#path::xdr::ScSpecTypeDefConst`, so the containing spec entry can be encoded
+/// `#path::xdr::r#const::ScSpecTypeDef`, so the containing spec entry can be encoded
 /// to XDR at compile time by the contract crate.
 pub fn const_view_type_def(path: &Path, t: &ScSpecTypeDef) -> TokenStream2 {
     let xdr = quote!(#path::xdr);
     let variant = format_ident!("{}", t.name());
     // Variants that hold a value. The recursive ones sit behind a reference in
-    // the Const type, matching the Box in the owned type.
+    // the const type, matching the Box in the owned type.
     let value = match t {
         ScSpecTypeDef::Option(o) => {
             let value_type = const_view_type_def(path, &o.value_type);
-            Some(quote!((&#xdr::ScSpecTypeOptionConst { value_type: &#value_type })))
+            Some(quote!((&#xdr::r#const::ScSpecTypeOption { value_type: &#value_type })))
         }
         ScSpecTypeDef::Result(r) => {
             let ok_type = const_view_type_def(path, &r.ok_type);
             let error_type = const_view_type_def(path, &r.error_type);
             Some(
-                quote!((&#xdr::ScSpecTypeResultConst { ok_type: &#ok_type, error_type: &#error_type })),
+                quote!((&#xdr::r#const::ScSpecTypeResult { ok_type: &#ok_type, error_type: &#error_type })),
             )
         }
         ScSpecTypeDef::Vec(v) => {
             let element_type = const_view_type_def(path, &v.element_type);
-            Some(quote!((&#xdr::ScSpecTypeVecConst { element_type: &#element_type })))
+            Some(quote!((&#xdr::r#const::ScSpecTypeVec { element_type: &#element_type })))
         }
         ScSpecTypeDef::Map(m) => {
             let key_type = const_view_type_def(path, &m.key_type);
             let value_type = const_view_type_def(path, &m.value_type);
             Some(
-                quote!((&#xdr::ScSpecTypeMapConst { key_type: &#key_type, value_type: &#value_type })),
+                quote!((&#xdr::r#const::ScSpecTypeMap { key_type: &#key_type, value_type: &#value_type })),
             )
         }
         ScSpecTypeDef::Tuple(t) => {
             let value_types = t.value_types.iter().map(|t| const_view_type_def(path, t));
             Some(
-                quote!((&#xdr::ScSpecTypeTupleConst { value_types: #xdr::VecMConst::try_from_slice_or_panic(&[#(#value_types),*]) })),
+                quote!((&#xdr::r#const::ScSpecTypeTuple { value_types: #xdr::r#const::VecM::try_from_slice_or_panic(&[#(#value_types),*]) })),
             )
         }
         ScSpecTypeDef::BytesN(b) => {
@@ -348,28 +348,28 @@ pub fn const_view_type_def(path: &Path, t: &ScSpecTypeDef) -> TokenStream2 {
         }
         ScSpecTypeDef::Udt(u) => {
             let name = const_view_string(path, &u.name);
-            Some(quote!((#xdr::ScSpecTypeUdtConst { name: #name })))
+            Some(quote!((#xdr::r#const::ScSpecTypeUdt { name: #name })))
         }
         // All remaining variants are void.
         _ => None,
     };
-    quote!(#xdr::ScSpecTypeDefConst::#variant #value)
+    quote!(#xdr::r#const::ScSpecTypeDef::#variant #value)
 }
 
-/// Renders a [StringM] as a const expression of type `#path::xdr::StringMConst`.
-/// The `MAX` of the `StringMConst` is inferred from the field it is assigned to.
+/// Renders a [StringM] as a const expression of type `#path::xdr::r#const::StringM`.
+/// The `MAX` of the `const::StringM` is inferred from the field it is assigned to.
 pub fn const_view_string<const MAX: u32>(path: &Path, s: &StringM<MAX>) -> TokenStream2 {
     let xdr = quote!(#path::xdr);
     let lit = Literal::byte_string(s.as_vec());
-    quote!(#xdr::StringMConst::try_from_slice_or_panic(#lit))
+    quote!(#xdr::r#const::StringM::try_from_slice_or_panic(#lit))
 }
 
 /// Renders a [ScSymbol] as a const expression of type
-/// `#path::xdr::ScSymbolConst`.
+/// `#path::xdr::r#const::ScSymbol`.
 pub fn const_view_symbol(path: &Path, s: &ScSymbol) -> TokenStream2 {
     let xdr = quote!(#path::xdr);
     let s = const_view_string(path, &s.0);
-    quote!(#xdr::ScSymbolConst(#s))
+    quote!(#xdr::r#const::ScSymbol(#s))
 }
 
 #[cfg(test)]

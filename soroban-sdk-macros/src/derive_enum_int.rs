@@ -74,8 +74,8 @@ pub fn derive_type_enum_int(
         cases: spec_cases.try_into().unwrap(),
     };
 
-    // Generated code spec. The spec entry is rendered as the equivalent const
-    // ScSpecEntryConst, which the contract crate encodes to XDR at compile time.
+    // Generated code spec. The spec entry is rendered as the equivalent
+    // const::ScSpecEntry, which the contract crate encodes to XDR at compile time.
     let spec_gen = {
         let doc = const_view_string(path, &spec.doc);
         let lib = const_view_string(path, &spec.lib);
@@ -84,14 +84,14 @@ pub fn derive_type_enum_int(
             let doc = const_view_string(path, &c.doc);
             let name = const_view_string(path, &c.name);
             let value = c.value;
-            quote!(#path::xdr::ScSpecUdtEnumCaseV0Const { doc: #doc, name: #name, value: #value })
+            quote!(#path::xdr::r#const::ScSpecUdtEnumCaseV0 { doc: #doc, name: #name, value: #value })
         });
         let spec_view = quote! {
-            #path::xdr::ScSpecEntryConst::UdtEnumV0(#path::xdr::ScSpecUdtEnumV0Const {
+            #path::xdr::r#const::ScSpecEntry::UdtEnumV0(#path::xdr::r#const::ScSpecUdtEnumV0 {
                 doc: #doc,
                 lib: #lib,
                 name: #name,
-                cases: #path::xdr::VecMConst::try_from_slice_or_panic(&[#(#cases),*]),
+                cases: #path::xdr::r#const::VecM::try_from_slice_or_panic(&[#(#cases),*]),
             })
         };
         let spec_ident = format_ident!(
@@ -104,7 +104,7 @@ pub fn derive_type_enum_int(
             pub static #spec_ident: [u8; #enum_ident::spec_xdr_len()] = #enum_ident::spec_xdr();
 
             impl #enum_ident {
-                const __SPEC_XDR_ENTRY: #path::xdr::ScSpecEntryConst = #spec_view;
+                const __SPEC_XDR_ENTRY: #path::xdr::r#const::ScSpecEntry = #spec_view;
 
                 pub const fn spec_xdr_len() -> usize {
                     const { #enum_ident::__SPEC_XDR_ENTRY.const_xdr_len() }

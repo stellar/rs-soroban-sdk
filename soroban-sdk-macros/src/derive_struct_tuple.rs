@@ -72,8 +72,8 @@ pub fn derive_type_struct_tuple(
         fields: field_specs.try_into().unwrap(),
     };
 
-    // Generated code spec. The spec entry is rendered as the equivalent const
-    // ScSpecEntryConst, which the contract crate encodes to XDR at compile time.
+    // Generated code spec. The spec entry is rendered as the equivalent
+    // const::ScSpecEntry, which the contract crate encodes to XDR at compile time.
     let spec_gen = {
         let doc = const_view_string(path, &spec.doc);
         let lib = const_view_string(path, &spec.lib);
@@ -82,14 +82,14 @@ pub fn derive_type_struct_tuple(
             let doc = const_view_string(path, &f.doc);
             let name = const_view_string(path, &f.name);
             let type_ = const_view_type_def(path, &f.type_);
-            quote!(#path::xdr::ScSpecUdtStructFieldV0Const { doc: #doc, name: #name, type_: #type_ })
+            quote!(#path::xdr::r#const::ScSpecUdtStructFieldV0 { doc: #doc, name: #name, type_: #type_ })
         });
         let spec_view = quote! {
-            #path::xdr::ScSpecEntryConst::UdtStructV0(#path::xdr::ScSpecUdtStructV0Const {
+            #path::xdr::r#const::ScSpecEntry::UdtStructV0(#path::xdr::r#const::ScSpecUdtStructV0 {
                 doc: #doc,
                 lib: #lib,
                 name: #name,
-                fields: #path::xdr::VecMConst::try_from_slice_or_panic(&[#(#fields),*]),
+                fields: #path::xdr::r#const::VecM::try_from_slice_or_panic(&[#(#fields),*]),
             })
         };
         let spec_ident = format_ident!(
@@ -102,7 +102,7 @@ pub fn derive_type_struct_tuple(
             pub static #spec_ident: [u8; #ident::spec_xdr_len()] = #ident::spec_xdr();
 
             impl #ident {
-                const __SPEC_XDR_ENTRY: #path::xdr::ScSpecEntryConst = #spec_view;
+                const __SPEC_XDR_ENTRY: #path::xdr::r#const::ScSpecEntry = #spec_view;
 
                 pub const fn spec_xdr_len() -> usize {
                     const { #ident::__SPEC_XDR_ENTRY.const_xdr_len() }

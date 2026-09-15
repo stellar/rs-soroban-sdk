@@ -163,7 +163,7 @@ pub fn derive_fn_spec(
         outputs: spec_result.try_into().unwrap(),
     };
 
-    // The spec entry rendered as the equivalent const ScSpecEntryConst, which the
+    // The spec entry rendered as the equivalent const::ScSpecEntry, which the
     // contract crate encodes to XDR at compile time.
     let spec_view = {
         let doc = const_view_string(path, &spec_entry.doc);
@@ -172,18 +172,18 @@ pub fn derive_fn_spec(
             let doc = const_view_string(path, &i.doc);
             let name = const_view_string(path, &i.name);
             let type_ = const_view_type_def(path, &i.type_);
-            quote!(#path::xdr::ScSpecFunctionInputV0Const { doc: #doc, name: #name, type_: #type_ })
+            quote!(#path::xdr::r#const::ScSpecFunctionInputV0 { doc: #doc, name: #name, type_: #type_ })
         });
         let outputs = spec_entry
             .outputs
             .iter()
             .map(|o| const_view_type_def(path, o));
         quote! {
-            #path::xdr::ScSpecEntryConst::FunctionV0(#path::xdr::ScSpecFunctionV0Const {
+            #path::xdr::r#const::ScSpecEntry::FunctionV0(#path::xdr::r#const::ScSpecFunctionV0 {
                 doc: #doc,
                 name: #name,
-                inputs: #path::xdr::VecMConst::try_from_slice_or_panic(&[#(#inputs),*]),
-                outputs: #path::xdr::VecMConst::try_from_slice_or_panic(&[#(#outputs),*]),
+                inputs: #path::xdr::r#const::VecM::try_from_slice_or_panic(&[#(#inputs),*]),
+                outputs: #path::xdr::r#const::VecM::try_from_slice_or_panic(&[#(#outputs),*]),
             })
         }
     };
@@ -234,7 +234,7 @@ pub fn derive_fn_spec(
         impl #ty {
             #[allow(non_upper_case_globals)]
             #(#attrs)*
-            const #spec_entry_ident: #path::xdr::ScSpecEntryConst = #spec_view;
+            const #spec_entry_ident: #path::xdr::r#const::ScSpecEntry = #spec_view;
 
             #[allow(non_snake_case)]
             #(#attrs)*

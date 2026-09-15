@@ -222,7 +222,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     );
     let spec_shaking_call = quote! { <Self as #path::SpecShakingMarker>::spec_shaking_marker(); };
 
-    // The spec entry rendered as the equivalent const ScSpecEntryConst, which the
+    // The spec entry rendered as the equivalent const::ScSpecEntry, which the
     // contract crate encodes to XDR at compile time.
     let spec_view = {
         let doc = const_view_string(path, &spec.doc);
@@ -237,7 +237,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
             let name = const_view_string(path, &p.name);
             let type_ = const_view_type_def(path, &p.type_);
             let location = format_ident!("{}", p.location.name());
-            quote!(#path::xdr::ScSpecEventParamV0Const {
+            quote!(#path::xdr::r#const::ScSpecEventParamV0 {
                 doc: #doc,
                 name: #name,
                 type_: #type_,
@@ -246,12 +246,12 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         });
         let data_format = format_ident!("{}", spec.data_format.name());
         quote! {
-            #path::xdr::ScSpecEntryConst::EventV0(#path::xdr::ScSpecEventV0Const {
+            #path::xdr::r#const::ScSpecEntry::EventV0(#path::xdr::r#const::ScSpecEventV0 {
                 doc: #doc,
                 lib: #lib,
                 name: #name,
-                prefix_topics: #path::xdr::VecMConst::try_from_slice_or_panic(&[#(#prefix_topics),*]),
-                params: #path::xdr::VecMConst::try_from_slice_or_panic(&[#(#params),*]),
+                prefix_topics: #path::xdr::r#const::VecM::try_from_slice_or_panic(&[#(#prefix_topics),*]),
+                params: #path::xdr::r#const::VecM::try_from_slice_or_panic(&[#(#params),*]),
                 data_format: #path::xdr::ScSpecEventDataFormat::#data_format,
             })
         }
@@ -264,7 +264,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         pub static #spec_ident: [u8; #ident::spec_xdr_len()] = #ident::spec_xdr();
 
         impl #gen_impl #ident #gen_types #gen_where {
-            const __SPEC_XDR_ENTRY: #path::xdr::ScSpecEntryConst = #spec_view;
+            const __SPEC_XDR_ENTRY: #path::xdr::r#const::ScSpecEntry = #spec_view;
 
             pub const fn spec_xdr_len() -> usize {
                 const { #ident::__SPEC_XDR_ENTRY.const_xdr_len() }
