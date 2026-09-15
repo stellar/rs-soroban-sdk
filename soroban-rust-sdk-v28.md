@@ -1,16 +1,18 @@
 # Soroban Rust SDK v28
 
-Version 28 of the Soroban Rust SDK is not released yet. Three of the changes it
-carries are worth knowing about ahead of time, because two of them change how a
-contract's data and events are encoded, and the third changes how contracts are
-built.
+Version 28 of the Soroban Rust SDK is not released yet. Several of the changes
+it carries are worth knowing about ahead of time, because they change how
+contracts are built, how their data and events are encoded, and what a
+contract's executable can be.
 
 Spec shaking, previously an experimental feature, is now the only behaviour.
 `#[contracttype]` structs tolerate missing and additional fields when unpacking,
-built on the sparse host functions added in
+and `#[contractevent]` events with a map data format omit fields that hold no
+value when publishing, both built on the sparse host functions added in
 [CAP-86](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0086.md).
-And `#[contractevent]` events with a map data format omit fields that hold no
-value when publishing.
+Deploying and upgrading take a `ContractExecutable`, which can now be a
+reference to an entry rather than a Wasm hash. And natively defined contracts
+can be uploaded in tests.
 
 ## Spec shaking is always on
 
@@ -199,6 +201,70 @@ The opt out is for the edge cases where an absent field and a `None` field need
 to be visibly different to a consumer. Prefer the default. `sparse` applies only
 to the map data format, and is a compile error on `single-value` and `vec`.
 
+## Executables, not Wasm hashes
+
+[CAP-85](https://github.com/stellar/stellar-protocol/blob/master/core/cap-0085.md)
+lets a contract's executable be a reference to an entry rather than a Wasm hash
+directly. An executable reference entry is a persistent entry owned by a
+contract and keyed by a tag, holding a Wasm hash; contracts deployed against it
+load their code from whatever hash it currently holds. Updating the entry
+switches every contract using it at its next invocation, which makes upgrading a
+fleet of contracts one write instead of one write per contract. Contracts manage
+their own entries with `env.executable_refs()`. An entry can never be removed
+once created.
+
+To carry that, deploying and upgrading now take a `ContractExecutable` —
+`Wasm(hash)` or `ExternalRef(ContractExecutableRef { owner, tag })` — rather than
+a bare hash. `deploy_contract` replaces `deploy_v2` and `update_current_contract`
+replaces `update_current_contract_wasm`; the old functions are deprecated and
+otherwise unchanged, and migrating is wrapping the hash in
+`ContractExecutable::Wasm(...)`.
+
+`ContractExecutable` is the type a custom account already sees in `__check_auth`.
+It appears as the `executable` field of `CreateContractHostFnContext` and
+`CreateContractWithConstructorHostFnContext`, the contexts passed when an address
+authorizes a contract creation. In v28 it moves from `soroban_sdk::auth` to the
+crate root, and is re-exported from `auth` so existing imports keep compiling.
+What changes is that it now has a second variant. A `__check_auth` that inspects
+the executable before approving a deployment has to handle `ExternalRef`, and the
+two variants do not authorize the same thing: approving `Wasm(hash)` approves
+specific code, while approving `ExternalRef` approves whatever the owner has the
+tag pointing at — now, and after the owner next changes it.
+
+## Native contracts can be uploaded in tests
+
+Before v28 every natively registered contract pointed at the same contract code
+entry, keyed by the hash of empty bytes. Two native contracts in a test shared
+one entry, so anything done to it — extending its TTL, for example — applied to
+every native contract at once. In v28 each registration uploads its own entry
+under its own hash, so native contracts behave like Wasm contracts. Tests that
+relied on the sharing need updating, and test snapshot JSON containing natively
+registered contracts changes and needs regenerating.
+
+Sharing one code entry deliberately is now something a test asks for. `Env::upload`
+uploads a natively defined contract as if it were a Wasm, returning a hash that
+can be deployed from as many times as needed — enough to test a factory, or any
+contract that deploys from an already-uploaded code entry, without compiling to
+Wasm first.
+
+```rust
+// Upload once, getting a Wasm hash for the native contract.
+let wasm_hash = env.upload(Contract);
+
+// Deploy it as many times as required, all sharing the one code entry.
+let contract_a = env
+    .deployer()
+    .with_address(deployer.clone(), [0u8; 32])
+    .deploy_contract(ContractExecutable::Wasm(wasm_hash.clone()), ());
+let contract_b = env
+    .deployer()
+    .with_address(deployer, [1u8; 32])
+    .deploy_contract(ContractExecutable::Wasm(wasm_hash), ());
+```
+
+`Env::upload_at` does the same but uploads to a specified hash rather than a
+generated one.
+
 ## Upgrading
 
 Publishing events needs no code changes. Nor does most unpacking. What does need
@@ -210,6 +276,12 @@ attention:
 - Review consumers that read an event's data map, because a field they expect
   present with a void value is now absent.
 - Review code that relied on unpacking failing to detect a mismatch.
+- Wrap Wasm hashes in `ContractExecutable::Wasm(...)` at the deprecated
+  `deploy_v2` and `update_current_contract_wasm` call sites, and move them to
+  `deploy_contract` and `update_current_contract`.
+- Handle `ContractExecutable::ExternalRef` in any `__check_auth` that inspects
+  the executable of a contract creation.
+- Regenerate test snapshots containing natively registered contracts.
 - Update tests asserting on the data map of an event with a void field. Rather
   than asserting field by field, compare against the event's `to_xdr` form,
   which is built the same way as the published event and stays correct as the
@@ -220,13 +292,16 @@ attention:
   ```
 
 The full set of breaking changes, with runnable examples, is in the SDK's
-`_migrating` module.
+`_migrating` module, and summarised in the
+[v28.0.0-rc.1 release notes](https://github.com/stellar/rs-soroban-sdk/releases/tag/v28.0.0-rc.1).
 
 ## Taken together
 
-The three changes pull in the same direction: the contract's boundary decides
-what leaves the contract, and nothing else does. Spec shaking means the spec
-describes the interface rather than the source layout. Sparse unpacking means
-stored data can gain and lose fields while the contract keeps reading it. Sparse
-publishing means an event describes what happened rather than the shape of the
-struct that recorded it.
+Most of these changes pull in the same direction: the contract's boundary
+decides what leaves the contract, and nothing else does. Spec shaking means the
+spec describes the interface rather than the source layout. Sparse unpacking
+means stored data can gain and lose fields while the contract keeps reading it.
+Sparse publishing means an event describes what happened rather than the shape
+of the struct that recorded it. Executable references extend the same idea to
+the code itself: what a contract runs becomes a thing that can be pointed
+somewhere else, without redeploying the contracts that run it.
