@@ -126,12 +126,14 @@ pub extern "C" fn __ContractRelativePath__relative_path_method__invoke_raw_exter
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __ContractRelativePath__relative_path_method__spec {
+#[allow(dead_code)]
+mod __ContractRelativePath__relative_path_method__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_RELATIVE_PATH_METHOD: [u8; 44usize] =
+    static __SPEC_XDR_FN_RELATIVE_PATH_METHOD: [u8; 44usize] =
         super::ContractRelativePath::spec_xdr_relative_path_method();
 }
 impl ContractRelativePath {

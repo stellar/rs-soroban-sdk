@@ -44,8 +44,9 @@ impl ::core::cmp::PartialEq for Error {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_ERROR: [u8; 48usize] = Error::spec_xdr();
+static __SPEC_XDR_TYPE_ERROR: [u8; 48usize] = Error::spec_xdr();
 impl Error {
     pub const fn spec_xdr() -> [u8; 48usize] {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x05Error\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x08Overflow\0\0\0\x01"
@@ -184,8 +185,9 @@ impl ::core::cmp::PartialEq for MyError {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_MYERROR: [u8; 48usize] = MyError::spec_xdr();
+static __SPEC_XDR_TYPE_MYERROR: [u8; 48usize] = MyError::spec_xdr();
 impl MyError {
     pub const fn spec_xdr() -> [u8; 48usize] {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x07MyError\0\0\0\0\x01\0\0\0\0\0\0\0\x08Overflow\0\0\0\x01"
@@ -317,12 +319,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__add__spec {
+#[allow(dead_code)]
+mod __Contract__add__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_ADD: [u8; 60usize] = super::Contract::spec_xdr_add();
+    static __SPEC_XDR_FN_ADD: [u8; 60usize] = super::Contract::spec_xdr_add();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -332,12 +336,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__safe_add__spec {
+#[allow(dead_code)]
+mod __Contract__safe_add__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_SAFE_ADD: [u8; 72usize] = super::Contract::spec_xdr_safe_add();
+    static __SPEC_XDR_FN_SAFE_ADD: [u8; 72usize] = super::Contract::spec_xdr_safe_add();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -347,12 +353,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__safe_add_two__spec {
+#[allow(dead_code)]
+mod __Contract__safe_add_two__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_SAFE_ADD_TWO: [u8; 88usize] = super::Contract::spec_xdr_safe_add_two();
+    static __SPEC_XDR_FN_SAFE_ADD_TWO: [u8; 88usize] = super::Contract::spec_xdr_safe_add_two();
 }
 impl Contract {
     #[allow(non_snake_case)]
