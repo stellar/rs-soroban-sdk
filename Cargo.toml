@@ -29,24 +29,24 @@ soroban-token-sdk = { version = "28.0.0-rc.1", path = "soroban-token-sdk" }
 soroban-token-spec = { version = "28.0.0-rc.1", path = "soroban-token-spec" }
 stellar-asset-spec = { version = "28.0.0-rc.1", path = "stellar-asset-spec" }
 
-# Pinned to a rev of rs-soroban-env that adapts the host to the XDR constants
-# that rs-stellar-xdr changed from u64 to u32.
+# Pinned to a rev of rs-soroban-env main, pending a release of the host adapted
+# to the XDR constants that rs-stellar-xdr changed from u64 to u32.
 # Only the 29.x line carries that adaptation, so the test ledger's default
 # protocol is 29 until it is released.
 [workspace.dependencies.soroban-env-common]
 version = "=29.0.0"
 git = "https://github.com/stellar/rs-soroban-env"
-rev = "6af048cb88bfebec767d9345828ae5aeb98dd8b6"
+rev = "cb32250d926bd7188f3a6f9075bd48c44550dcac"
 
 [workspace.dependencies.soroban-env-guest]
 version = "=29.0.0"
 git = "https://github.com/stellar/rs-soroban-env"
-rev = "6af048cb88bfebec767d9345828ae5aeb98dd8b6"
+rev = "cb32250d926bd7188f3a6f9075bd48c44550dcac"
 
 [workspace.dependencies.soroban-env-host]
 version = "=29.0.0"
 git = "https://github.com/stellar/rs-soroban-env"
-rev = "6af048cb88bfebec767d9345828ae5aeb98dd8b6"
+rev = "cb32250d926bd7188f3a6f9075bd48c44550dcac"
 
 [workspace.dependencies.stellar-strkey]
 version = "=0.0.16"
