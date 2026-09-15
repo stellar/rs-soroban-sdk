@@ -455,15 +455,14 @@ mod test {
 
     #[test]
     fn test_is_mapped_type_udt_unique_xdr_error() {
-        let input: DeriveInput = parse_quote!(
-            struct MyTypeIsOverSixtyCharactersLongAndShouldFailToCompileDueToThat {
-                pub key: [u8; 32],
-            }
-        );
-        let err = is_mapped_type_udt(&input.ident, &input.generics).unwrap_err();
+        // The XDR spec name limit is 1024 (SC_SPEC_TYPE_NAME_LIMIT), so build
+        // an identifier one character over that to hit the length error.
+        let name = format!("T{}", "x".repeat(1024));
+        let ident = Ident::new(&name, proc_macro2::Span::call_site());
+        let err = is_mapped_type_udt(&ident, &Generics::default()).unwrap_err();
         assert_eq!(
             err.to_string(),
-            "type `MyTypeIsOverSixtyCharactersLongAndShouldFailToCompileDueToThat` cannot be used in XDR spec: xdr value max length exceeded"
+            format!("type `{name}` cannot be used in XDR spec: xdr value max length exceeded")
         );
     }
 
