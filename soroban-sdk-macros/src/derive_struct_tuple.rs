@@ -75,12 +75,12 @@ pub fn derive_type_struct_tuple(
     // type so that a reference to it from anywhere can reach it.
     let spec_name = spec_name_gen(ident, None, None, None);
 
-    // Generated code spec. The spec entry is rendered as the equivalent const
-    // ScSpecEntryView, which the contract crate encodes to XDR at compile time.
+    // Generated code spec. The spec entry is rendered as the equivalent
+    // const::ScSpecEntry, which the contract crate encodes to XDR at compile time.
     let spec_gen = {
         let doc = const_view_string(path, &spec.doc);
         let lib = const_view_string(path, &spec.lib);
-        let name = quote!(#path::xdr::StringMView::try_from_str_or_panic(#ident::spec_name()));
+        let name = quote!(#path::xdr::r#const::StringM::try_from_str_or_panic(#ident::spec_name()));
         // Each field's Rust type, so a reference to a user-defined type in a
         // field resolves to the name that type reports for itself.
         let fields = spec
@@ -91,14 +91,14 @@ pub fn derive_type_struct_tuple(
                 let doc = const_view_string(path, &f.doc);
                 let name = const_view_string(path, &f.name);
                 let type_ = const_view_type_def(path, &f.type_, Some(rust));
-                quote!(#path::xdr::ScSpecUdtStructFieldV0View { doc: #doc, name: #name, type_: #type_ })
+                quote!(#path::xdr::r#const::ScSpecUdtStructFieldV0 { doc: #doc, name: #name, type_: #type_ })
             });
         let spec_view = quote! {
-            #path::xdr::ScSpecEntryView::UdtStructV0(#path::xdr::ScSpecUdtStructV0View {
+            #path::xdr::r#const::ScSpecEntry::UdtStructV0(#path::xdr::r#const::ScSpecUdtStructV0 {
                 doc: #doc,
                 lib: #lib,
                 name: #name,
-                fields: #path::xdr::VecMView::try_from_slice_or_panic(&[#(#fields),*]),
+                fields: #path::xdr::r#const::VecM::try_from_slice_or_panic(&[#(#fields),*]),
             })
         };
         let spec_ident = format_ident!(
@@ -111,7 +111,7 @@ pub fn derive_type_struct_tuple(
             pub static #spec_ident: [u8; #ident::spec_xdr_len()] = #ident::spec_xdr();
 
             impl #ident {
-                const __SPEC_XDR_ENTRY: #path::xdr::ScSpecEntryView<'static> = #spec_view;
+                const __SPEC_XDR_ENTRY: #path::xdr::r#const::ScSpecEntry = #spec_view;
 
                 pub const fn spec_xdr_len() -> usize {
                     const { #ident::__SPEC_XDR_ENTRY.const_xdr_len() }

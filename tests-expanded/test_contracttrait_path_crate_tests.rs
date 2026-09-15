@@ -196,17 +196,21 @@ pub mod traits {
     }
     impl CratePathTraitSpec {
         #[allow(non_upper_case_globals)]
-        const __SPEC_XDR_ENTRY_crate_path_method: soroban_sdk::xdr::ScSpecEntryView<'static> =
-            soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-                doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::ScSymbolView(
-                    soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"crate_path_method"),
-                ),
-                inputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[]),
-                outputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::ScSpecTypeDefView::U32,
-                ]),
-            });
+        const __SPEC_XDR_ENTRY_crate_path_method: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"crate_path_method",
+                        ),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
         pub const fn spec_xdr_len_crate_path_method() -> usize {
             const { CratePathTraitSpec::__SPEC_XDR_ENTRY_crate_path_method.const_xdr_len() }
@@ -408,17 +412,21 @@ pub mod __ContractCratePath__crate_path_method__spec {
 }
 impl ContractCratePath {
     #[allow(non_upper_case_globals)]
-    const __SPEC_XDR_ENTRY_crate_path_method: soroban_sdk::xdr::ScSpecEntryView<'static> =
-        soroban_sdk::xdr::ScSpecEntryView::FunctionV0(soroban_sdk::xdr::ScSpecFunctionV0View {
-            doc: soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::ScSymbolView(
-                soroban_sdk::xdr::StringMView::try_from_slice_or_panic(b"crate_path_method"),
-            ),
-            inputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[]),
-            outputs: soroban_sdk::xdr::VecMView::try_from_slice_or_panic(&[
-                soroban_sdk::xdr::ScSpecTypeDefView::U32,
-            ]),
-        });
+    const __SPEC_XDR_ENTRY_crate_path_method: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"crate_path_method",
+                    ),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
     pub const fn spec_xdr_len_crate_path_method() -> usize {
         const { ContractCratePath::__SPEC_XDR_ENTRY_crate_path_method.const_xdr_len() }
