@@ -189,6 +189,7 @@ impl ::core::cmp::PartialEq for UsedParamStruct {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_USEDPARAMSTRUCT: [u8; 96usize] = UsedParamStruct::spec_xdr();
 impl UsedParamStruct {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 96usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0fUsedParamStruct\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x04\0\0\0\0\0\0\0\x06nested\0\0\0\0\x07\xd0\0\0\0\x12UsedNestedInStruct\0\0"
     }
@@ -634,6 +635,7 @@ impl ::core::cmp::PartialEq for UsedReturnEnum {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_USEDRETURNENUM: [u8; 84usize] = UsedReturnEnum::spec_xdr();
 impl UsedReturnEnum {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 84usize] {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x0eUsedReturnEnum\0\0\0\0\0\x02\0\0\0\x01\0\0\0\0\0\0\0\x01A\0\0\0\0\0\0\x01\0\0\0\x04\0\0\0\x01\0\0\0\0\0\0\0\x01B\0\0\0\0\0\0\x01\0\0\0\x07"
     }
@@ -1151,6 +1153,7 @@ impl ::core::cmp::PartialEq for UsedParamIntEnum {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_USEDPARAMINTENUM: [u8; 68usize] = UsedParamIntEnum::spec_xdr();
 impl UsedParamIntEnum {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 68usize] {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x10UsedParamIntEnum\0\0\0\x02\0\0\0\0\0\0\0\x01X\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01Y\0\0\0\0\0\0\x02"
     }
@@ -1483,6 +1486,7 @@ impl ::core::cmp::PartialEq for UsedErrorEnum {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_USEDERRORENUM: [u8; 76usize] = UsedErrorEnum::spec_xdr();
 impl UsedErrorEnum {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 76usize] {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\rUsedErrorEnum\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x08NotFound\0\0\0\x01\0\0\0\0\0\0\0\x07Invalid\0\0\0\0\x02"
     }
@@ -1637,6 +1641,7 @@ impl ::core::cmp::PartialEq for UsedPanicErrorEnum {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_USEDPANICERRORENUM: [u8; 56usize] = UsedPanicErrorEnum::spec_xdr();
 impl UsedPanicErrorEnum {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 56usize] {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x12UsedPanicErrorEnum\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04Boom\0\0\0\x01"
     }
@@ -1789,6 +1794,7 @@ impl ::core::cmp::PartialEq for UsedAssertErrorEnum {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_USEDASSERTERRORENUM: [u8; 56usize] = UsedAssertErrorEnum::spec_xdr();
 impl UsedAssertErrorEnum {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 56usize] {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x13UsedAssertErrorEnum\0\0\0\0\x01\0\0\0\0\0\0\0\x03Bad\0\0\0\0\x01"
     }
@@ -1948,6 +1954,7 @@ impl ::core::cmp::PartialEq for UsedNestedInStruct {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_USEDNESTEDINSTRUCT: [u8; 56usize] = UsedNestedInStruct::spec_xdr();
 impl UsedNestedInStruct {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 56usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x12UsedNestedInStruct\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x07"
     }
@@ -2321,6 +2328,7 @@ impl ::core::cmp::PartialEq for UsedVecElement {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_USEDVECELEMENT: [u8; 52usize] = UsedVecElement::spec_xdr();
 impl UsedVecElement {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 52usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0eUsedVecElement\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04data\0\0\0\x04"
     }
@@ -2699,6 +2707,7 @@ impl ::core::cmp::PartialEq for UsedMapKey {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_USEDMAPKEY: [u8; 64usize] = UsedMapKey::spec_xdr();
 impl UsedMapKey {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 64usize] {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\nUsedMapKey\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02K1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02K2\0\0\0\0\0\x02"
     }
@@ -3022,6 +3031,7 @@ impl ::core::cmp::PartialEq for UsedMapVal {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_USEDMAPVAL: [u8; 48usize] = UsedMapVal::spec_xdr();
 impl UsedMapVal {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 48usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\nUsedMapVal\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x04"
     }
@@ -3394,6 +3404,7 @@ impl ::core::cmp::PartialEq for UsedOptionElement {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_USEDOPTIONELEMENT: [u8; 56usize] = UsedOptionElement::spec_xdr();
 impl UsedOptionElement {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 56usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x11UsedOptionElement\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04data\0\0\0\x04"
     }
@@ -3765,6 +3776,7 @@ impl ::core::cmp::PartialEq for UsedResultOk {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_USEDRESULTOK: [u8; 48usize] = UsedResultOk::spec_xdr();
 impl UsedResultOk {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 48usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cUsedResultOk\0\0\0\x01\0\0\0\0\0\0\0\x04data\0\0\0\x04"
     }
@@ -4144,6 +4156,7 @@ impl ::core::cmp::PartialEq for UsedEventSimple {
 #[doc(hidden)]
 pub static __SPEC_XDR_EVENT_USEDEVENTSIMPLE: [u8; 112usize] = UsedEventSimple::spec_xdr();
 impl UsedEventSimple {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 112usize] {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x0fUsedEventSimple\0\0\0\0\x01\0\0\0\x11used_event_simple\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x04kind\0\0\0\x11\0\0\0\x01\0\0\0\0\0\0\0\x06amount\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02"
     }
@@ -4227,6 +4240,7 @@ impl ::core::cmp::PartialEq for UsedEventTopicType {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_USEDEVENTTOPICTYPE: [u8; 76usize] = UsedEventTopicType::spec_xdr();
 impl UsedEventTopicType {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 76usize] {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x12UsedEventTopicType\0\0\0\0\0\x02\0\0\0\0\0\0\0\x08Transfer\0\0\0\x01\0\0\0\0\0\0\0\x04Mint\0\0\0\x02"
     }
@@ -4565,6 +4579,7 @@ impl ::core::cmp::PartialEq for UsedEventWithTopicType {
 pub static __SPEC_XDR_EVENT_USEDEVENTWITHTOPICTYPE: [u8; 152usize] =
     UsedEventWithTopicType::spec_xdr();
 impl UsedEventWithTopicType {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 152usize] {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x16UsedEventWithTopicType\0\0\0\0\0\x01\0\0\0\x1aused_event_with_topic_type\0\0\0\0\0\x02\0\0\0\0\0\0\0\x04kind\0\0\x07\xd0\0\0\0\x12UsedEventTopicType\0\0\0\0\0\x01\0\0\0\0\0\0\0\x06amount\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02"
     }
@@ -4653,6 +4668,7 @@ impl ::core::cmp::PartialEq for UsedEventDataType {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_USEDEVENTDATATYPE: [u8; 72usize] = UsedEventDataType::spec_xdr();
 impl UsedEventDataType {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 72usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x11UsedEventDataType\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01x\0\0\0\0\0\0\x04\0\0\0\0\0\0\0\x01y\0\0\0\0\0\0\x04"
     }
@@ -5087,6 +5103,7 @@ impl ::core::cmp::PartialEq for UsedEventWithDataType {
 pub static __SPEC_XDR_EVENT_USEDEVENTWITHDATATYPE: [u8; 152usize] =
     UsedEventWithDataType::spec_xdr();
 impl UsedEventWithDataType {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 152usize] {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x15UsedEventWithDataType\0\0\0\0\0\0\x01\0\0\0\x19used_event_with_data_type\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x04kind\0\0\0\x11\0\0\0\x01\0\0\0\0\0\0\0\x07payload\0\0\0\x07\xd0\0\0\0\x11UsedEventDataType\0\0\0\0\0\0\0\0\0\0\x02"
     }
@@ -5171,6 +5188,7 @@ impl ::core::cmp::PartialEq for UsedEventTopicOuter {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_USEDEVENTTOPICOUTER: [u8; 84usize] = UsedEventTopicOuter::spec_xdr();
 impl UsedEventTopicOuter {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 84usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x13UsedEventTopicOuter\0\0\0\0\x01\0\0\0\0\0\0\0\x05inner\0\0\0\0\0\x07\xd0\0\0\0\x13UsedEventTopicInner\0"
     }
@@ -5554,6 +5572,7 @@ impl ::core::cmp::PartialEq for UsedEventTopicInner {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_USEDEVENTTOPICINNER: [u8; 56usize] = UsedEventTopicInner::spec_xdr();
 impl UsedEventTopicInner {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 56usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x13UsedEventTopicInner\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
     }
@@ -5940,6 +5959,7 @@ impl ::core::cmp::PartialEq for UsedEventWithNestedTopic {
 pub static __SPEC_XDR_EVENT_USEDEVENTWITHNESTEDTOPIC: [u8; 152usize] =
     UsedEventWithNestedTopic::spec_xdr();
 impl UsedEventWithNestedTopic {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 152usize] {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x18UsedEventWithNestedTopic\0\0\0\x01\0\0\0\x1cused_event_with_nested_topic\0\0\0\x02\0\0\0\0\0\0\0\x04info\0\0\x07\xd0\0\0\0\x13UsedEventTopicOuter\0\0\0\0\x01\0\0\0\0\0\0\0\x06amount\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02"
     }
@@ -6024,6 +6044,7 @@ impl ::core::cmp::PartialEq for UsedEventDataOuter {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_USEDEVENTDATAOUTER: [u8; 84usize] = UsedEventDataOuter::spec_xdr();
 impl UsedEventDataOuter {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 84usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x12UsedEventDataOuter\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05inner\0\0\0\0\0\x07\xd0\0\0\0\x12UsedEventDataInner\0\0"
     }
@@ -6405,6 +6426,7 @@ impl ::core::cmp::PartialEq for UsedEventDataInner {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_USEDEVENTDATAINNER: [u8; 56usize] = UsedEventDataInner::spec_xdr();
 impl UsedEventDataInner {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 56usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x12UsedEventDataInner\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
     }
@@ -6789,6 +6811,7 @@ impl ::core::cmp::PartialEq for UsedEventWithNestedData {
 pub static __SPEC_XDR_EVENT_USEDEVENTWITHNESTEDDATA: [u8; 152usize] =
     UsedEventWithNestedData::spec_xdr();
 impl UsedEventWithNestedData {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 152usize] {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x17UsedEventWithNestedData\0\0\0\0\x01\0\0\0\x1bused_event_with_nested_data\0\0\0\0\x02\0\0\0\0\0\0\0\x04kind\0\0\0\x11\0\0\0\x01\0\0\0\0\0\0\0\x07payload\0\0\0\x07\xd0\0\0\0\x12UsedEventDataOuter\0\0\0\0\0\0\0\0\0\x02"
     }
@@ -6875,6 +6898,7 @@ impl ::core::cmp::PartialEq for UsedRefTopicType {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_USEDREFTOPICTYPE: [u8; 68usize] = UsedRefTopicType::spec_xdr();
 impl UsedRefTopicType {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 68usize] {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x10UsedRefTopicType\0\0\0\x02\0\0\0\0\0\0\0\x04Send\0\0\0\x01\0\0\0\0\0\0\0\x04Recv\0\0\0\x02"
     }
@@ -7205,6 +7229,7 @@ impl ::core::cmp::PartialEq for UsedRefDataType {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_USEDREFDATATYPE: [u8; 76usize] = UsedRefDataType::spec_xdr();
 impl UsedRefDataType {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 76usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0fUsedRefDataType\0\0\0\0\x01\0\0\0\0\0\0\0\x06nested\0\0\0\0\x07\xd0\0\0\0\x10UsedRefDataInner"
     }
@@ -7579,6 +7604,7 @@ impl ::core::cmp::PartialEq for UsedRefDataInner {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_USEDREFDATAINNER: [u8; 52usize] = UsedRefDataInner::spec_xdr();
 impl UsedRefDataInner {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 52usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x10UsedRefDataInner\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
     }
@@ -7960,6 +7986,7 @@ impl<'a> ::core::cmp::PartialEq for UsedEventWithRefs<'a> {
 #[doc(hidden)]
 pub static __SPEC_XDR_EVENT_USEDEVENTWITHREFS: [u8; 156usize] = UsedEventWithRefs::spec_xdr();
 impl<'a> UsedEventWithRefs<'a> {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 156usize] {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x11UsedEventWithRefs\0\0\0\0\0\0\x01\0\0\0\x14used_event_with_refs\0\0\0\x02\0\0\0\0\0\0\0\x04kind\0\0\x07\xd0\0\0\0\x10UsedRefTopicType\0\0\0\x01\0\0\0\0\0\0\0\x07payload\0\0\0\x07\xd0\0\0\0\x0fUsedRefDataType\0\0\0\0\0\0\0\0\x02"
     }
@@ -8039,6 +8066,7 @@ impl ::core::cmp::PartialEq for UsedTupleElement {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_USEDTUPLEELEMENT: [u8; 52usize] = UsedTupleElement::spec_xdr();
 impl UsedTupleElement {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 52usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x10UsedTupleElement\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
     }
@@ -8416,6 +8444,7 @@ impl ::core::cmp::PartialEq for UsedTupleReturnElement {
 pub static __SPEC_XDR_TYPE_USEDTUPLERETURNELEMENT: [u8; 60usize] =
     UsedTupleReturnElement::spec_xdr();
 impl UsedTupleReturnElement {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 60usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x16UsedTupleReturnElement\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
     }
@@ -8797,6 +8826,7 @@ impl ::core::cmp::PartialEq for UsedVecInnerVecElement {
 pub static __SPEC_XDR_TYPE_USEDVECINNERVECELEMENT: [u8; 60usize] =
     UsedVecInnerVecElement::spec_xdr();
 impl UsedVecInnerVecElement {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 60usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x16UsedVecInnerVecElement\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
     }
@@ -9177,6 +9207,7 @@ impl ::core::cmp::PartialEq for UsedVecInnerElement {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_USEDVECINNERELEMENT: [u8; 56usize] = UsedVecInnerElement::spec_xdr();
 impl UsedVecInnerElement {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 56usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x13UsedVecInnerElement\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
     }
@@ -9567,6 +9598,7 @@ impl ::core::cmp::PartialEq for UsedVecElementNested {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_USEDVECELEMENTNESTED: [u8; 156usize] = UsedVecElementNested::spec_xdr();
 impl UsedVecElementNested {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 156usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x14UsedVecElementNested\0\0\0\x03\0\0\0\0\0\0\0\x05inner\0\0\0\0\0\x07\xd0\0\0\0\x13UsedVecInnerElement\0\0\0\0\0\0\0\0\x03val\0\0\0\0\x04\0\0\0\0\0\0\0\tvec_inner\0\0\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x16UsedVecInnerVecElement\0\0"
     }
@@ -10066,6 +10098,7 @@ impl ::core::cmp::PartialEq for UsedNonPubStruct {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_USEDNONPUBSTRUCT: [u8; 52usize] = UsedNonPubStruct::spec_xdr();
 impl UsedNonPubStruct {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 52usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x10UsedNonPubStruct\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
     }
@@ -10435,6 +10468,7 @@ impl ::core::cmp::PartialEq for UsedNonPubError {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_USEDNONPUBERROR: [u8; 52usize] = UsedNonPubError::spec_xdr();
 impl UsedNonPubError {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 52usize] {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x0fUsedNonPubError\0\0\0\0\x01\0\0\0\0\0\0\0\x04Fail\0\0\0\x01"
     }
@@ -10592,6 +10626,7 @@ impl ::core::cmp::PartialEq for UsedRecursiveRoot {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_USEDRECURSIVEROOT: [u8; 80usize] = UsedRecursiveRoot::spec_xdr();
 impl UsedRecursiveRoot {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 80usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x11UsedRecursiveRoot\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\x07\xd0\0\0\0\x11UsedRecursiveNode\0\0\0"
     }
@@ -10990,6 +11025,7 @@ impl ::core::cmp::PartialEq for UsedRecursiveNode {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_USEDRECURSIVENODE: [u8; 140usize] = UsedRecursiveNode::spec_xdr();
 impl UsedRecursiveNode {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 140usize] {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x11UsedRecursiveNode\0\0\0\0\0\0\x02\0\0\0\x01\0\0\0\0\0\0\0\x0cNotRecursive\0\0\0\x01\0\0\x07\xd0\0\0\0\x08UsedLeaf\0\0\0\x01\0\0\0\0\0\0\0\tRecursive\0\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x11UsedRecursiveLeaf\0\0\0"
     }
@@ -11515,6 +11551,7 @@ impl ::core::cmp::PartialEq for UsedRecursiveLeaf {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_USEDRECURSIVELEAF: [u8; 84usize] = UsedRecursiveLeaf::spec_xdr();
 impl UsedRecursiveLeaf {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 84usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x11UsedRecursiveLeaf\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x11UsedRecursiveRoot\0\0\0"
     }
@@ -11892,6 +11929,7 @@ impl ::core::cmp::PartialEq for UsedLeaf {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_USEDLEAF: [u8; 44usize] = UsedLeaf::spec_xdr();
 impl UsedLeaf {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 44usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x08UsedLeaf\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
     }
@@ -12993,6 +13031,7 @@ mod wasm_imported {
     pub static __SPEC_XDR_TYPE_CONTRACTEXECUTABLEREF: [u8; 80usize] =
         ContractExecutableRef::spec_xdr();
     impl ContractExecutableRef {
+        #[doc(hidden)]
         pub const fn spec_xdr() -> [u8; 80usize] {
             *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x15ContractExecutableRef\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x05owner\0\0\0\0\0\0\x13\0\0\0\0\0\0\0\x03tag\0\0\0\0\x10"
         }
@@ -13482,6 +13521,7 @@ mod wasm_imported {
     #[doc(hidden)]
     pub static __SPEC_XDR_TYPE_CONTRACTCONTEXT: [u8; 96usize] = ContractContext::spec_xdr();
     impl ContractContext {
+        #[doc(hidden)]
         pub const fn spec_xdr() -> [u8; 96usize] {
             *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0fContractContext\0\0\0\0\x03\0\0\0\0\0\0\0\x04args\0\0\x03\xea\0\0\0\0\0\0\0\0\0\0\0\x08contract\0\0\0\x13\0\0\0\0\0\0\0\x07fn_name\0\0\0\0\x11"
         }
@@ -14027,6 +14067,7 @@ mod wasm_imported {
     pub static __SPEC_XDR_TYPE_SUBCONTRACTINVOCATION: [u8; 144usize] =
         SubContractInvocation::spec_xdr();
     impl SubContractInvocation {
+        #[doc(hidden)]
         pub const fn spec_xdr() -> [u8; 144usize] {
             *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x15SubContractInvocation\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x07context\0\0\0\x07\xd0\0\0\0\x0fContractContext\0\0\0\0\0\0\0\0\x0fsub_invocations\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x18InvokerContractAuthEntry"
         }
@@ -14513,6 +14554,7 @@ mod wasm_imported {
     pub static __SPEC_XDR_TYPE_CREATECONTRACTHOSTFNCONTEXT: [u8; 116usize] =
         CreateContractHostFnContext::spec_xdr();
     impl CreateContractHostFnContext {
+        #[doc(hidden)]
         pub const fn spec_xdr() -> [u8; 116usize] {
             *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x1bCreateContractHostFnContext\0\0\0\0\x02\0\0\0\0\0\0\0\nexecutable\0\0\0\0\x07\xd0\0\0\0\x12ContractExecutable\0\0\0\0\0\0\0\0\0\x04salt\0\0\x03\xee\0\0\0 "
         }
@@ -15018,6 +15060,7 @@ mod wasm_imported {
     pub static __SPEC_XDR_TYPE_CREATECONTRACTWITHCONSTRUCTORHOSTFNCONTEXT: [u8; 164usize] =
         CreateContractWithConstructorHostFnContext::spec_xdr();
     impl CreateContractWithConstructorHostFnContext {
+        #[doc(hidden)]
         pub const fn spec_xdr() -> [u8; 164usize] {
             *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0*CreateContractWithConstructorHostFnContext\0\0\0\0\0\x03\0\0\0\0\0\0\0\x10constructor_args\0\0\x03\xea\0\0\0\0\0\0\0\0\0\0\0\nexecutable\0\0\0\0\x07\xd0\0\0\0\x12ContractExecutable\0\0\0\0\0\0\0\0\0\x04salt\0\0\x03\xee\0\0\0 "
         }
@@ -15598,6 +15641,7 @@ mod wasm_imported {
     #[doc(hidden)]
     pub static __SPEC_XDR_TYPE_STRUCTA: [u8; 60usize] = StructA::spec_xdr();
     impl StructA {
+        #[doc(hidden)]
         pub const fn spec_xdr() -> [u8; 60usize] {
             *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07StructA\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x04\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x01"
         }
@@ -16048,6 +16092,7 @@ mod wasm_imported {
     #[doc(hidden)]
     pub static __SPEC_XDR_TYPE_STRUCTB: [u8; 60usize] = StructB::spec_xdr();
     impl StructB {
+        #[doc(hidden)]
         pub const fn spec_xdr() -> [u8; 60usize] {
             *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07StructB\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x07\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x10"
         }
@@ -16498,6 +16543,7 @@ mod wasm_imported {
     #[doc(hidden)]
     pub static __SPEC_XDR_TYPE_STRUCTC: [u8; 64usize] = StructC::spec_xdr();
     impl StructC {
+        #[doc(hidden)]
         pub const fn spec_xdr() -> [u8; 64usize] {
             *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07StructC\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\x03\xea\0\0\0\x04\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x13"
         }
@@ -16951,6 +16997,7 @@ mod wasm_imported {
     #[doc(hidden)]
     pub static __SPEC_XDR_TYPE_STRUCTTUPLEA: [u8; 64usize] = StructTupleA::spec_xdr();
     impl StructTupleA {
+        #[doc(hidden)]
         pub const fn spec_xdr() -> [u8; 64usize] {
             *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleA\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x011\0\0\0\0\0\0\x07"
         }
@@ -17357,6 +17404,7 @@ mod wasm_imported {
     #[doc(hidden)]
     pub static __SPEC_XDR_TYPE_STRUCTTUPLEB: [u8; 64usize] = StructTupleB::spec_xdr();
     impl StructTupleB {
+        #[doc(hidden)]
         pub const fn spec_xdr() -> [u8; 64usize] {
             *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleB\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\n\0\0\0\0\0\0\0\x011\0\0\0\0\0\0\n"
         }
@@ -17764,6 +17812,7 @@ mod wasm_imported {
     #[doc(hidden)]
     pub static __SPEC_XDR_TYPE_STRUCTTUPLEC: [u8; 64usize] = StructTupleC::spec_xdr();
     impl StructTupleC {
+        #[doc(hidden)]
         pub const fn spec_xdr() -> [u8; 64usize] {
             *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleC\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\x13\0\0\0\0\0\0\0\x011\0\0\0\0\0\0\x0b"
         }
@@ -18214,6 +18263,7 @@ mod wasm_imported {
     #[doc(hidden)]
     pub static __SPEC_XDR_TYPE_CONTRACTEXECUTABLE: [u8; 128usize] = ContractExecutable::spec_xdr();
     impl ContractExecutable {
+        #[doc(hidden)]
         pub const fn spec_xdr() -> [u8; 128usize] {
             *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x12ContractExecutable\0\0\0\0\0\x02\0\0\0\x01\0\0\0\0\0\0\0\x04Wasm\0\0\0\x01\0\0\x03\xee\0\0\0 \0\0\0\x01\0\0\0\0\0\0\0\x0bExternalRef\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x15ContractExecutableRef\0\0\0"
         }
@@ -18850,6 +18900,7 @@ mod wasm_imported {
     #[doc(hidden)]
     pub static __SPEC_XDR_TYPE_CONTEXT: [u8; 244usize] = Context::spec_xdr();
     impl Context {
+        #[doc(hidden)]
         pub const fn spec_xdr() -> [u8; 244usize] {
             *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x07Context\0\0\0\0\x03\0\0\0\x01\0\0\0\0\0\0\0\x08Contract\0\0\0\x01\0\0\x07\xd0\0\0\0\x0fContractContext\0\0\0\0\x01\0\0\0\0\0\0\0\x14CreateContractHostFn\0\0\0\x01\0\0\x07\xd0\0\0\0\x1bCreateContractHostFnContext\0\0\0\0\x01\0\0\0\0\0\0\0\x1cCreateContractWithCtorHostFn\0\0\0\x01\0\0\x07\xd0\0\0\0*CreateContractWithConstructorHostFnContext\0\0"
         }
@@ -19580,6 +19631,7 @@ mod wasm_imported {
     pub static __SPEC_XDR_TYPE_INVOKERCONTRACTAUTHENTRY: [u8; 268usize] =
         InvokerContractAuthEntry::spec_xdr();
     impl InvokerContractAuthEntry {
+        #[doc(hidden)]
         pub const fn spec_xdr() -> [u8; 268usize] {
             *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x18InvokerContractAuthEntry\0\0\0\x03\0\0\0\x01\0\0\0\0\0\0\0\x08Contract\0\0\0\x01\0\0\x07\xd0\0\0\0\x15SubContractInvocation\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x14CreateContractHostFn\0\0\0\x01\0\0\x07\xd0\0\0\0\x1bCreateContractHostFnContext\0\0\0\0\x01\0\0\0\0\0\0\0\x1cCreateContractWithCtorHostFn\0\0\0\x01\0\0\x07\xd0\0\0\0*CreateContractWithConstructorHostFnContext\0\0"
         }
@@ -20285,6 +20337,7 @@ mod wasm_imported {
     #[doc(hidden)]
     pub static __SPEC_XDR_TYPE_EXECUTABLE: [u8; 104usize] = Executable::spec_xdr();
     impl Executable {
+        #[doc(hidden)]
         pub const fn spec_xdr() -> [u8; 104usize] {
             *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\nExecutable\0\0\0\0\0\x03\0\0\0\x01\0\0\0\0\0\0\0\x04Wasm\0\0\0\x01\0\0\x03\xee\0\0\0 \0\0\0\0\0\0\0\0\0\0\0\x0cStellarAsset\0\0\0\0\0\0\0\0\0\0\0\x07Account\0"
         }
@@ -20836,6 +20889,7 @@ mod wasm_imported {
     #[doc(hidden)]
     pub static __SPEC_XDR_TYPE_ENUMA: [u8; 76usize] = EnumA::spec_xdr();
     impl EnumA {
+        #[doc(hidden)]
         pub const fn spec_xdr() -> [u8; 76usize] {
             *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumA\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\0\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\0\0\0\0\0\0\0\0\x02V3\0\0"
         }
@@ -21359,6 +21413,7 @@ mod wasm_imported {
     #[doc(hidden)]
     pub static __SPEC_XDR_TYPE_ENUMB: [u8; 96usize] = EnumB::spec_xdr();
     impl EnumB {
+        #[doc(hidden)]
         pub const fn spec_xdr() -> [u8; 96usize] {
             *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumB\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x01\0\0\0\x07\0\0\0\x01\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x02\0\0\0\x07\0\0\0\x07"
         }
@@ -22000,6 +22055,7 @@ mod wasm_imported {
     #[doc(hidden)]
     pub static __SPEC_XDR_TYPE_ENUMC: [u8; 120usize] = EnumC::spec_xdr();
     impl EnumC {
+        #[doc(hidden)]
         pub const fn spec_xdr() -> [u8; 120usize] {
             *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumC\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x07StructA\0\0\0\0\x01\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x0cStructTupleA"
         }
@@ -22570,6 +22626,7 @@ mod wasm_imported {
     #[doc(hidden)]
     pub static __SPEC_XDR_TYPE_ENUMINTA: [u8; 76usize] = EnumIntA::spec_xdr();
     impl EnumIntA {
+        #[doc(hidden)]
         pub const fn spec_xdr() -> [u8; 76usize] {
             *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08EnumIntA\0\0\0\x03\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x03"
         }
@@ -22936,6 +22993,7 @@ mod wasm_imported {
     #[doc(hidden)]
     pub static __SPEC_XDR_TYPE_ENUMINTB: [u8; 76usize] = EnumIntB::spec_xdr();
     impl EnumIntB {
+        #[doc(hidden)]
         pub const fn spec_xdr() -> [u8; 76usize] {
             *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08EnumIntB\0\0\0\x03\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\n\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x14\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x1e"
         }
@@ -23302,6 +23360,7 @@ mod wasm_imported {
     #[doc(hidden)]
     pub static __SPEC_XDR_TYPE_ENUMINTC: [u8; 76usize] = EnumIntC::spec_xdr();
     impl EnumIntC {
+        #[doc(hidden)]
         pub const fn spec_xdr() -> [u8; 76usize] {
             *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08EnumIntC\0\0\0\x03\0\0\0\0\0\0\0\x02V1\0\0\0\0\0d\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\xc8\0\0\0\0\0\0\0\x02V3\0\0\0\0\x01,"
         }
@@ -23668,6 +23727,7 @@ mod wasm_imported {
     #[doc(hidden)]
     pub static __SPEC_XDR_TYPE_ERRORA: [u8; 76usize] = ErrorA::spec_xdr();
     impl ErrorA {
+        #[doc(hidden)]
         pub const fn spec_xdr() -> [u8; 76usize] {
             *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x06ErrorA\0\0\0\0\0\x03\0\0\0\0\0\0\0\x02E1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02E2\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02E3\0\0\0\0\0\x03"
         }
@@ -23855,6 +23915,7 @@ mod wasm_imported {
     #[doc(hidden)]
     pub static __SPEC_XDR_TYPE_ERRORB: [u8; 76usize] = ErrorB::spec_xdr();
     impl ErrorB {
+        #[doc(hidden)]
         pub const fn spec_xdr() -> [u8; 76usize] {
             *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x06ErrorB\0\0\0\0\0\x03\0\0\0\0\0\0\0\x02E1\0\0\0\0\0\n\0\0\0\0\0\0\0\x02E2\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02E3\0\0\0\0\0\x0c"
         }
@@ -24042,6 +24103,7 @@ mod wasm_imported {
     #[doc(hidden)]
     pub static __SPEC_XDR_TYPE_ERRORC: [u8; 76usize] = ErrorC::spec_xdr();
     impl ErrorC {
+        #[doc(hidden)]
         pub const fn spec_xdr() -> [u8; 76usize] {
             *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x06ErrorC\0\0\0\0\0\x03\0\0\0\0\0\0\0\x02E1\0\0\0\0\0d\0\0\0\0\0\0\0\x02E2\0\0\0\0\0e\0\0\0\0\0\0\0\x02E3\0\0\0\0\0f"
         }
@@ -24229,6 +24291,7 @@ mod wasm_imported {
     #[doc(hidden)]
     pub static __SPEC_XDR_EVENT_EVENTA: [u8; 88usize] = EventA::spec_xdr();
     impl EventA {
+        #[doc(hidden)]
         pub const fn spec_xdr() -> [u8; 88usize] {
             *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventA\0\0\0\0\0\x01\0\0\0\x07event_a\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x10\0\0\0\0\0\0\0\x02"
         }
@@ -24350,6 +24413,7 @@ mod wasm_imported {
     #[doc(hidden)]
     pub static __SPEC_XDR_EVENT_EVENTB: [u8; 108usize] = EventB::spec_xdr();
     impl EventB {
+        #[doc(hidden)]
         pub const fn spec_xdr() -> [u8; 108usize] {
             *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventB\0\0\0\0\0\x01\0\0\0\x07event_b\0\0\0\0\x03\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02f3\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02"
         }
@@ -24475,6 +24539,7 @@ mod wasm_imported {
     #[doc(hidden)]
     pub static __SPEC_XDR_EVENT_EVENTC: [u8; 108usize] = EventC::spec_xdr();
     impl EventC {
+        #[doc(hidden)]
         pub const fn spec_xdr() -> [u8; 108usize] {
             *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventC\0\0\0\0\0\x01\0\0\0\x07event_c\0\0\0\0\x03\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x11\0\0\0\x01\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x07\0\0\0\0\0\0\0\0\0\0\0\x02f3\0\0\0\0\0\x07\0\0\0\0\0\0\0\x02"
         }
@@ -24567,6 +24632,7 @@ mod wasm_imported {
     #[doc(hidden)]
     pub static __SPEC_XDR_EVENT_EVENTD: [u8; 48usize] = EventD::spec_xdr();
     impl EventD {
+        #[doc(hidden)]
         pub const fn spec_xdr() -> [u8; 48usize] {
             *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventD\0\0\0\0\0\x01\0\0\0\x07event_d\0\0\0\0\0\0\0\0\x02"
         }
@@ -24642,6 +24708,7 @@ impl ::core::cmp::PartialEq for UnusedStruct {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_UNUSEDSTRUCT: [u8; 48usize] = UnusedStruct::spec_xdr();
 impl UnusedStruct {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 48usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cUnusedStruct\0\0\0\x01\0\0\0\0\0\0\0\x01x\0\0\0\0\0\0\x04"
     }
@@ -25022,6 +25089,7 @@ impl ::core::cmp::PartialEq for UnusedEnum {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_UNUSEDENUM: [u8; 72usize] = UnusedEnum::spec_xdr();
 impl UnusedEnum {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 72usize] {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\nUnusedEnum\0\0\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x01A\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01B\0\0\0\0\0\0\x01\0\0\0\x07"
     }
@@ -25493,6 +25561,7 @@ impl ::core::cmp::PartialEq for UnusedIntEnum {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_UNUSEDINTENUM: [u8; 68usize] = UnusedIntEnum::spec_xdr();
 impl UnusedIntEnum {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 68usize] {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\rUnusedIntEnum\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02U1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02U2\0\0\0\0\0\x02"
     }
@@ -25828,6 +25897,7 @@ impl ::core::cmp::PartialEq for UnusedEvent {
 #[doc(hidden)]
 pub static __SPEC_XDR_EVENT_UNUSEDEVENT: [u8; 96usize] = UnusedEvent::spec_xdr();
 impl UnusedEvent {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 96usize] {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x0bUnusedEvent\0\0\0\0\x01\0\0\0\x0cunused_event\0\0\0\x02\0\0\0\0\0\0\0\x04kind\0\0\0\x11\0\0\0\x01\0\0\0\0\0\0\0\x04data\0\0\0\x04\0\0\0\0\0\0\0\x02"
     }
@@ -25902,6 +25972,7 @@ impl ::core::cmp::PartialEq for UnusedPubError {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_UNUSEDPUBERROR: [u8; 52usize] = UnusedPubError::spec_xdr();
 impl UnusedPubError {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 52usize] {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x0eUnusedPubError\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04Nope\0\0\0\x01"
     }
@@ -26060,6 +26131,7 @@ impl ::core::cmp::PartialEq for UnusedNonContractFnParam {
 pub static __SPEC_XDR_TYPE_UNUSEDNONCONTRACTFNPARAM: [u8; 60usize] =
     UnusedNonContractFnParam::spec_xdr();
 impl UnusedNonContractFnParam {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 60usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x18UnusedNonContractFnParam\0\0\0\x01\0\0\0\0\0\0\0\x01x\0\0\0\0\0\0\x04"
     }
@@ -26443,6 +26515,7 @@ impl ::core::cmp::PartialEq for UnusedNonContractFnReturn {
 pub static __SPEC_XDR_TYPE_UNUSEDNONCONTRACTFNRETURN: [u8; 64usize] =
     UnusedNonContractFnReturn::spec_xdr();
 impl UnusedNonContractFnReturn {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 64usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x19UnusedNonContractFnReturn\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01x\0\0\0\0\0\0\x04"
     }
@@ -26820,6 +26893,7 @@ impl ::core::cmp::PartialEq for UnusedNonPubStruct {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_UNUSEDNONPUBSTRUCT: [u8; 56usize] = UnusedNonPubStruct::spec_xdr();
 impl UnusedNonPubStruct {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 56usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x12UnusedNonPubStruct\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01x\0\0\0\0\0\0\x04"
     }
@@ -27189,6 +27263,7 @@ impl ::core::cmp::PartialEq for UnusedNonPubError {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_UNUSEDNONPUBERROR: [u8; 56usize] = UnusedNonPubError::spec_xdr();
 impl UnusedNonPubError {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 56usize] {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x11UnusedNonPubError\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03Bad\0\0\0\0\x01"
     }
@@ -27414,6 +27489,7 @@ pub mod __Contract__with_param__spec {
     pub static __SPEC_XDR_FN_WITH_PARAM: [u8; 104usize] = super::Contract::spec_xdr_with_param();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_param() -> [u8; 104usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\nwith_param\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01s\0\0\0\0\0\x07\xd0\0\0\0\x0fUsedParamStruct\0\0\0\0\0\0\0\0\x02ie\0\0\0\0\x07\xd0\0\0\0\x10UsedParamIntEnum\0\0\0\0"
@@ -27428,6 +27504,7 @@ pub mod __Contract__with_return__spec {
     pub static __SPEC_XDR_FN_WITH_RETURN: [u8; 56usize] = super::Contract::spec_xdr_with_return();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_return() -> [u8; 56usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0bwith_return\0\0\0\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x0eUsedReturnEnum\0\0"
@@ -27442,6 +27519,7 @@ pub mod __Contract__with_error__spec {
     pub static __SPEC_XDR_FN_WITH_ERROR: [u8; 64usize] = super::Contract::spec_xdr_with_error();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_error() -> [u8; 64usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\nwith_error\0\0\0\0\0\0\0\0\0\x01\0\0\x03\xe9\0\0\0\x04\0\0\x07\xd0\0\0\0\rUsedErrorEnum\0\0\0"
@@ -27457,6 +27535,7 @@ pub mod __Contract__with_panic_error__spec {
         super::Contract::spec_xdr_with_panic_error();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_panic_error() -> [u8; 52usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x10with_panic_error\0\0\0\x01\0\0\0\0\0\0\0\x04fail\0\0\0\x01\0\0\0\0"
@@ -27472,6 +27551,7 @@ pub mod __Contract__with_assert_error__spec {
         super::Contract::spec_xdr_with_assert_error();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_assert_error() -> [u8; 56usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x11with_assert_error\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02ok\0\0\0\0\0\x01\0\0\0\0"
@@ -27487,6 +27567,7 @@ pub mod __Contract__with_panic_raw_error__spec {
         super::Contract::spec_xdr_with_panic_raw_error();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_panic_raw_error() -> [u8; 56usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x14with_panic_raw_error\0\0\0\x01\0\0\0\0\0\0\0\x04fail\0\0\0\x01\0\0\0\0"
@@ -27501,6 +27582,7 @@ pub mod __Contract__with_vec__spec {
     pub static __SPEC_XDR_FN_WITH_VEC: [u8; 68usize] = super::Contract::spec_xdr_with_vec();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_vec() -> [u8; 68usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x08with_vec\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x0eUsedVecElement\0\0\0\0\0\0"
@@ -27516,6 +27598,7 @@ pub mod __Contract__with_vec_nested__spec {
         super::Contract::spec_xdr_with_vec_nested();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_vec_nested() -> [u8; 80usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0fwith_vec_nested\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x14UsedVecElementNested\0\0\0\0"
@@ -27530,6 +27613,7 @@ pub mod __Contract__with_map__spec {
     pub static __SPEC_XDR_FN_WITH_MAP: [u8; 84usize] = super::Contract::spec_xdr_with_map();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_map() -> [u8; 84usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x08with_map\0\0\0\x01\0\0\0\0\0\0\0\x01m\0\0\0\0\0\x03\xec\0\0\x07\xd0\0\0\0\nUsedMapKey\0\0\0\0\x07\xd0\0\0\0\nUsedMapVal\0\0\0\0\0\0"
@@ -27544,6 +27628,7 @@ pub mod __Contract__with_option__spec {
     pub static __SPEC_XDR_FN_WITH_OPTION: [u8; 76usize] = super::Contract::spec_xdr_with_option();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_option() -> [u8; 76usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0bwith_option\0\0\0\0\x01\0\0\0\0\0\0\0\x01o\0\0\0\0\0\x03\xe8\0\0\x07\xd0\0\0\0\x11UsedOptionElement\0\0\0\0\0\0\0"
@@ -27558,6 +27643,7 @@ pub mod __Contract__with_result__spec {
     pub static __SPEC_XDR_FN_WITH_RESULT: [u8; 80usize] = super::Contract::spec_xdr_with_result();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_result() -> [u8; 80usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0bwith_result\0\0\0\0\0\0\0\0\x01\0\0\x03\xe9\0\0\x07\xd0\0\0\0\x0cUsedResultOk\0\0\x07\xd0\0\0\0\rUsedErrorEnum\0\0\0"
@@ -27573,6 +27659,7 @@ pub mod __Contract__with_recursion__spec {
         super::Contract::spec_xdr_with_recursion();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_recursion() -> [u8; 76usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0ewith_recursion\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01r\0\0\0\0\0\x07\xd0\0\0\0\x11UsedRecursiveRoot\0\0\0\0\0\0\0"
@@ -27588,6 +27675,7 @@ pub mod __Contract__with_auth_contexts__spec {
         super::Contract::spec_xdr_with_auth_contexts();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_auth_contexts() -> [u8; 72usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x12with_auth_contexts\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01c\0\0\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x07Context\0\0\0\0\0"
@@ -27603,6 +27691,7 @@ pub mod __Contract__with_invoker_auth__spec {
         super::Contract::spec_xdr_with_invoker_auth();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_invoker_auth() -> [u8; 84usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x11with_invoker_auth\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01i\0\0\0\0\0\x07\xd0\0\0\0\x18InvokerContractAuthEntry\0\0\0\0"
@@ -27618,6 +27707,7 @@ pub mod __Contract__with_executable__spec {
         super::Contract::spec_xdr_with_executable();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_executable() -> [u8; 68usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0fwith_executable\0\0\0\0\x01\0\0\0\0\0\0\0\x01e\0\0\0\0\0\x07\xd0\0\0\0\nExecutable\0\0\0\0\0\0"
@@ -27633,6 +27723,7 @@ pub mod __Contract__publish_simple__spec {
         super::Contract::spec_xdr_publish_simple();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_publish_simple() -> [u8; 36usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0epublish_simple\0\0\0\0\0\0\0\0\0\0"
@@ -27648,6 +27739,7 @@ pub mod __Contract__publish_topic_type__spec {
         super::Contract::spec_xdr_publish_topic_type();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_publish_topic_type() -> [u8; 40usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x12publish_topic_type\0\0\0\0\0\0\0\0\0\0"
@@ -27663,6 +27755,7 @@ pub mod __Contract__publish_data_type__spec {
         super::Contract::spec_xdr_publish_data_type();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_publish_data_type() -> [u8; 40usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x11publish_data_type\0\0\0\0\0\0\0\0\0\0\0"
@@ -27678,6 +27771,7 @@ pub mod __Contract__publish_nested_topic__spec {
         super::Contract::spec_xdr_publish_nested_topic();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_publish_nested_topic() -> [u8; 40usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x14publish_nested_topic\0\0\0\0\0\0\0\0"
@@ -27693,6 +27787,7 @@ pub mod __Contract__publish_nested_data__spec {
         super::Contract::spec_xdr_publish_nested_data();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_publish_nested_data() -> [u8; 40usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x13publish_nested_data\0\0\0\0\0\0\0\0\0"
@@ -27708,6 +27803,7 @@ pub mod __Contract__with_lib_struct__spec {
         super::Contract::spec_xdr_with_lib_struct();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_lib_struct() -> [u8; 64usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0fwith_lib_struct\0\0\0\0\x01\0\0\0\0\0\0\0\x01s\0\0\0\0\0\x07\xd0\0\0\0\x07StructC\0\0\0\0\0"
@@ -27723,6 +27819,7 @@ pub mod __Contract__with_wasm_imported__spec {
         super::Contract::spec_xdr_with_wasm_imported();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_wasm_imported() -> [u8; 68usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x12with_wasm_imported\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01s\0\0\0\0\0\x07\xd0\0\0\0\x07StructA\0\0\0\0\0"
@@ -27737,6 +27834,7 @@ pub mod __Contract__with_non_pub__spec {
     pub static __SPEC_XDR_FN_WITH_NON_PUB: [u8; 68usize] = super::Contract::spec_xdr_with_non_pub();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_non_pub() -> [u8; 68usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0cwith_non_pub\0\0\0\x01\0\0\0\0\0\0\0\x01s\0\0\0\0\0\x07\xd0\0\0\0\x10UsedNonPubStruct\0\0\0\0"
@@ -27752,6 +27850,7 @@ pub mod __Contract__with_non_pub_error__spec {
         super::Contract::spec_xdr_with_non_pub_error();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_non_pub_error() -> [u8; 72usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x12with_non_pub_error\0\0\0\0\0\0\0\0\0\x01\0\0\x03\xe9\0\0\0\x04\0\0\x07\xd0\0\0\0\x0fUsedNonPubError\0"
@@ -27766,6 +27865,7 @@ pub mod __Contract__with_tuple__spec {
     pub static __SPEC_XDR_FN_WITH_TUPLE: [u8; 80usize] = super::Contract::spec_xdr_with_tuple();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_tuple() -> [u8; 80usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\nwith_tuple\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01t\0\0\0\0\0\x03\xed\0\0\0\x02\0\0\x07\xd0\0\0\0\x10UsedTupleElement\0\0\0\x04\0\0\0\0"
@@ -27781,6 +27881,7 @@ pub mod __Contract__with_tuple_return__spec {
         super::Contract::spec_xdr_with_tuple_return();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_with_tuple_return() -> [u8; 84usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x11with_tuple_return\0\0\0\0\0\0\0\0\0\0\x01\0\0\x03\xed\0\0\0\x02\0\0\x07\xd0\0\0\0\x16UsedTupleReturnElement\0\0\0\0\0\x04"
@@ -27796,6 +27897,7 @@ pub mod __Contract__publish_ref_event__spec {
         super::Contract::spec_xdr_publish_ref_event();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_publish_ref_event() -> [u8; 40usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x11publish_ref_event\0\0\0\0\0\0\0\0\0\0\0"

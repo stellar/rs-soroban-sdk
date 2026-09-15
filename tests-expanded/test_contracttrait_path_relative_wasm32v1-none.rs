@@ -71,6 +71,7 @@ pub mod traits {
         }
     }
     impl RelativePathTraitSpec {
+        #[doc(hidden)]
         #[allow(non_snake_case)]
         pub const fn spec_xdr_relative_path_method() -> [u8; 44usize] {
             *b"\0\0\0\0\0\0\0\0\0\0\0\x14relative_path_method\0\0\0\0\0\0\0\x01\0\0\0\x04"
@@ -135,6 +136,7 @@ pub mod __ContractRelativePath__relative_path_method__spec {
         super::ContractRelativePath::spec_xdr_relative_path_method();
 }
 impl ContractRelativePath {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_relative_path_method() -> [u8; 44usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x14relative_path_method\0\0\0\0\0\0\0\x01\0\0\0\x04"

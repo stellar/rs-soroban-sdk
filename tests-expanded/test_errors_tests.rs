@@ -160,6 +160,7 @@ impl ::core::cmp::PartialEq for Flag {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_FLAG: [u8; 104usize] = Flag::spec_xdr();
 impl Flag {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 104usize] {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x04Flag\0\0\0\x05\0\0\0\0\0\0\0\x01A\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x01B\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01C\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01D\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\x01E\0\0\0\0\0\0\x04"
     }
@@ -508,6 +509,7 @@ impl ::core::cmp::PartialEq for Error {
 #[doc(hidden)]
 pub static __SPEC_XDR_TYPE_ERROR: [u8; 48usize] = Error::spec_xdr();
 impl Error {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 48usize] {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x05Error\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x07AnError\0\0\0\0\x01"
     }
@@ -674,6 +676,7 @@ pub mod __Contract__hello__spec {
     pub static __SPEC_XDR_FN_HELLO: [u8; 64usize] = super::Contract::spec_xdr_hello();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_hello() -> [u8; 64usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x05hello\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04flag\0\0\x07\xd0\0\0\0\x04Flag\0\0\0\x01\0\0\x03\xe9\0\0\0\x11\0\0\0\x03"
@@ -688,6 +691,7 @@ pub mod __Contract__persisted__spec {
     pub static __SPEC_XDR_FN_PERSISTED: [u8; 36usize] = super::Contract::spec_xdr_persisted();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_persisted() -> [u8; 36usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\tpersisted\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\x01"

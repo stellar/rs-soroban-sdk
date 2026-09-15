@@ -195,6 +195,7 @@ pub mod traits {
         }
     }
     impl CratePathTraitSpec {
+        #[doc(hidden)]
         #[allow(non_snake_case)]
         pub const fn spec_xdr_crate_path_method() -> [u8; 44usize] {
             *b"\0\0\0\0\0\0\0\0\0\0\0\x11crate_path_method\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
@@ -389,6 +390,7 @@ pub mod __ContractCratePath__crate_path_method__spec {
         super::ContractCratePath::spec_xdr_crate_path_method();
 }
 impl ContractCratePath {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_crate_path_method() -> [u8; 44usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x11crate_path_method\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"

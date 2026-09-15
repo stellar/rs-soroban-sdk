@@ -62,6 +62,7 @@ pub mod __Contract__fn_struct_a__spec {
     pub static __SPEC_XDR_FN_FN_STRUCT_A: [u8; 80usize] = super::Contract::spec_xdr_fn_struct_a();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_fn_struct_a() -> [u8; 80usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0bfn_struct_a\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x04\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x01\0\0\0\x01\0\0\x07\xd0\0\0\0\x07StructA\0"
@@ -78,6 +79,7 @@ pub mod __Contract__fn_struct_tuple_a__spec {
         super::Contract::spec_xdr_fn_struct_tuple_a();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_fn_struct_tuple_a() -> [u8; 92usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x11fn_struct_tuple_a\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x07\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x07\0\0\0\x01\0\0\x07\xd0\0\0\0\x0cStructTupleA"
@@ -93,6 +95,7 @@ pub mod __Contract__fn_enum_a__spec {
     pub static __SPEC_XDR_FN_FN_ENUM_A: [u8; 48usize] = super::Contract::spec_xdr_fn_enum_a();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_fn_enum_a() -> [u8; 48usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\tfn_enum_a\0\0\0\0\0\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x05EnumA\0\0\0"
@@ -109,6 +112,7 @@ pub mod __Contract__fn_enum_int_a__spec {
         super::Contract::spec_xdr_fn_enum_int_a();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_fn_enum_int_a() -> [u8; 52usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\rfn_enum_int_a\0\0\0\0\0\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x08EnumIntA"
@@ -124,6 +128,7 @@ pub mod __Contract__fn_error_a__spec {
     pub static __SPEC_XDR_FN_FN_ERROR_A: [u8; 76usize] = super::Contract::spec_xdr_fn_error_a();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_fn_error_a() -> [u8; 76usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\nfn_error_a\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05input\0\0\0\0\0\0\x04\0\0\0\x01\0\0\x03\xe9\0\0\0\x04\0\0\x07\xd0\0\0\0\x06ErrorA\0\0"
@@ -139,6 +144,7 @@ pub mod __Contract__fn_event_a__spec {
     pub static __SPEC_XDR_FN_FN_EVENT_A: [u8; 64usize] = super::Contract::spec_xdr_fn_event_a();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_fn_event_a() -> [u8; 64usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\nfn_event_a\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x13\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x10\0\0\0\0"
@@ -154,6 +160,7 @@ pub mod __Contract__fn_event_d__spec {
     pub static __SPEC_XDR_FN_FN_EVENT_D: [u8; 32usize] = super::Contract::spec_xdr_fn_event_d();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_fn_event_d() -> [u8; 32usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\nfn_event_d\0\0\0\0\0\0\0\0\0\0"

@@ -89,6 +89,7 @@ pub fn derive_type_enum_int(
             pub static #spec_ident: [u8; #spec_xdr_len] = #enum_ident::spec_xdr();
 
             impl #enum_ident {
+                #[doc(hidden)]
                 pub const fn spec_xdr() -> [u8; #spec_xdr_len] {
                     *#spec_xdr_lit
                 }

@@ -54,6 +54,7 @@ impl ::core::cmp::Ord for Error {
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ERROR: [u8; 44usize] = Error::spec_xdr();
 impl Error {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 44usize] {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x05Error\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04Fail\0\0\0\x01"
     }
@@ -216,6 +217,7 @@ pub mod __Contract____check_auth__spec {
         super::Contract::spec_xdr___check_auth();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr___check_auth() -> [u8; 148usize] {

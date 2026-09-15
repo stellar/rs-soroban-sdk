@@ -154,6 +154,7 @@ pub mod __Contract__void_fn__spec {
     pub static __SPEC_XDR_FN_VOID_FN: [u8; 52usize] = super::Contract::spec_xdr_void_fn();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_void_fn() -> [u8; 52usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x07void_fn\0\0\0\0\x01\0\0\0\0\0\0\0\x08void_arg\0\0\0\x02\0\0\0\x01\0\0\0\x02"
@@ -168,6 +169,7 @@ pub mod __Contract__tuple1__spec {
     pub static __SPEC_XDR_FN_TUPLE1: [u8; 64usize] = super::Contract::spec_xdr_tuple1();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_tuple1() -> [u8; 64usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x06tuple1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03arg\0\0\0\x03\xed\0\0\0\x01\0\0\0\x04\0\0\0\x01\0\0\x03\xed\0\0\0\x01\0\0\0\x04"
@@ -182,6 +184,7 @@ pub mod __Contract__tuple2__spec {
     pub static __SPEC_XDR_FN_TUPLE2: [u8; 72usize] = super::Contract::spec_xdr_tuple2();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_tuple2() -> [u8; 72usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x06tuple2\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03arg\0\0\0\x03\xed\0\0\0\x02\0\0\0\x04\0\0\0\x07\0\0\0\x01\0\0\x03\xed\0\0\0\x02\0\0\0\x04\0\0\0\x07"
@@ -1097,6 +1100,7 @@ mod test {
         pub static __SPEC_XDR_TYPE_CONTRACTEXECUTABLEREF: [u8; 80usize] =
             ContractExecutableRef::spec_xdr();
         impl ContractExecutableRef {
+            #[doc(hidden)]
             pub const fn spec_xdr() -> [u8; 80usize] {
                 *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x15ContractExecutableRef\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x05owner\0\0\0\0\0\0\x13\0\0\0\0\0\0\0\x03tag\0\0\0\0\x10"
             }
@@ -1590,6 +1594,7 @@ mod test {
         #[doc(hidden)]
         pub static __SPEC_XDR_TYPE_CONTRACTCONTEXT: [u8; 96usize] = ContractContext::spec_xdr();
         impl ContractContext {
+            #[doc(hidden)]
             pub const fn spec_xdr() -> [u8; 96usize] {
                 *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0fContractContext\0\0\0\0\x03\0\0\0\0\0\0\0\x04args\0\0\x03\xea\0\0\0\0\0\0\0\0\0\0\0\x08contract\0\0\0\x13\0\0\0\0\0\0\0\x07fn_name\0\0\0\0\x11"
             }
@@ -2140,6 +2145,7 @@ mod test {
         pub static __SPEC_XDR_TYPE_SUBCONTRACTINVOCATION: [u8; 144usize] =
             SubContractInvocation::spec_xdr();
         impl SubContractInvocation {
+            #[doc(hidden)]
             pub const fn spec_xdr() -> [u8; 144usize] {
                 *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x15SubContractInvocation\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x07context\0\0\0\x07\xd0\0\0\0\x0fContractContext\0\0\0\0\0\0\0\0\x0fsub_invocations\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x18InvokerContractAuthEntry"
             }
@@ -2627,6 +2633,7 @@ mod test {
         pub static __SPEC_XDR_TYPE_CREATECONTRACTHOSTFNCONTEXT: [u8; 116usize] =
             CreateContractHostFnContext::spec_xdr();
         impl CreateContractHostFnContext {
+            #[doc(hidden)]
             pub const fn spec_xdr() -> [u8; 116usize] {
                 *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x1bCreateContractHostFnContext\0\0\0\0\x02\0\0\0\0\0\0\0\nexecutable\0\0\0\0\x07\xd0\0\0\0\x12ContractExecutable\0\0\0\0\0\0\0\0\0\x04salt\0\0\x03\xee\0\0\0 "
             }
@@ -3146,6 +3153,7 @@ mod test {
         pub static __SPEC_XDR_TYPE_CREATECONTRACTWITHCONSTRUCTORHOSTFNCONTEXT: [u8; 164usize] =
             CreateContractWithConstructorHostFnContext::spec_xdr();
         impl CreateContractWithConstructorHostFnContext {
+            #[doc(hidden)]
             pub const fn spec_xdr() -> [u8; 164usize] {
                 *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0*CreateContractWithConstructorHostFnContext\0\0\0\0\0\x03\0\0\0\0\0\0\0\x10constructor_args\0\0\x03\xea\0\0\0\0\0\0\0\0\0\0\0\nexecutable\0\0\0\0\x07\xd0\0\0\0\x12ContractExecutable\0\0\0\0\0\0\0\0\0\x04salt\0\0\x03\xee\0\0\0 "
             }
@@ -3770,6 +3778,7 @@ mod test {
         pub static __SPEC_XDR_TYPE_CONTRACTEXECUTABLE: [u8; 128usize] =
             ContractExecutable::spec_xdr();
         impl ContractExecutable {
+            #[doc(hidden)]
             pub const fn spec_xdr() -> [u8; 128usize] {
                 *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x12ContractExecutable\0\0\0\0\0\x02\0\0\0\x01\0\0\0\0\0\0\0\x04Wasm\0\0\0\x01\0\0\x03\xee\0\0\0 \0\0\0\x01\0\0\0\0\0\0\0\x0bExternalRef\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x15ContractExecutableRef\0\0\0"
             }
@@ -4410,6 +4419,7 @@ mod test {
         #[doc(hidden)]
         pub static __SPEC_XDR_TYPE_CONTEXT: [u8; 244usize] = Context::spec_xdr();
         impl Context {
+            #[doc(hidden)]
             pub const fn spec_xdr() -> [u8; 244usize] {
                 *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x07Context\0\0\0\0\x03\0\0\0\x01\0\0\0\0\0\0\0\x08Contract\0\0\0\x01\0\0\x07\xd0\0\0\0\x0fContractContext\0\0\0\0\x01\0\0\0\0\0\0\0\x14CreateContractHostFn\0\0\0\x01\0\0\x07\xd0\0\0\0\x1bCreateContractHostFnContext\0\0\0\0\x01\0\0\0\0\0\0\0\x1cCreateContractWithCtorHostFn\0\0\0\x01\0\0\x07\xd0\0\0\0*CreateContractWithConstructorHostFnContext\0\0"
             }
@@ -5151,6 +5161,7 @@ mod test {
         pub static __SPEC_XDR_TYPE_INVOKERCONTRACTAUTHENTRY: [u8; 268usize] =
             InvokerContractAuthEntry::spec_xdr();
         impl InvokerContractAuthEntry {
+            #[doc(hidden)]
             pub const fn spec_xdr() -> [u8; 268usize] {
                 *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x18InvokerContractAuthEntry\0\0\0\x03\0\0\0\x01\0\0\0\0\0\0\0\x08Contract\0\0\0\x01\0\0\x07\xd0\0\0\0\x15SubContractInvocation\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x14CreateContractHostFn\0\0\0\x01\0\0\x07\xd0\0\0\0\x1bCreateContractHostFnContext\0\0\0\0\x01\0\0\0\0\0\0\0\x1cCreateContractWithCtorHostFn\0\0\0\x01\0\0\x07\xd0\0\0\0*CreateContractWithConstructorHostFnContext\0\0"
             }
@@ -5885,6 +5896,7 @@ mod test {
         #[doc(hidden)]
         pub static __SPEC_XDR_TYPE_EXECUTABLE: [u8; 104usize] = Executable::spec_xdr();
         impl Executable {
+            #[doc(hidden)]
             pub const fn spec_xdr() -> [u8; 104usize] {
                 *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\nExecutable\0\0\0\0\0\x03\0\0\0\x01\0\0\0\0\0\0\0\x04Wasm\0\0\0\x01\0\0\x03\xee\0\0\0 \0\0\0\0\0\0\0\0\0\0\0\x0cStellarAsset\0\0\0\0\0\0\0\0\0\0\0\x07Account\0"
             }

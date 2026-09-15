@@ -66,6 +66,7 @@ impl SelfPathTraitArgs {
     }
 }
 impl SelfPathTraitSpec {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_self_path_method() -> [u8; 40usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x10self_path_method\0\0\0\0\0\0\0\x01\0\0\0\x04"
@@ -126,6 +127,7 @@ pub mod __ContractSelfPath__self_path_method__spec {
         super::ContractSelfPath::spec_xdr_self_path_method();
 }
 impl ContractSelfPath {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_self_path_method() -> [u8; 40usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x10self_path_method\0\0\0\0\0\0\0\x01\0\0\0\x04"

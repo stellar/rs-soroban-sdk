@@ -42,6 +42,7 @@ pub mod __Contract__exec__spec {
     pub static __SPEC_XDR_FN_EXEC: [u8; 76usize] = super::Contract::spec_xdr_exec();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_exec() -> [u8; 76usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x04exec\0\0\0\x03\0\0\0\0\0\0\0\x02i1\0\0\0\0\0\x04\0\0\0\0\0\0\0\x02i2\0\0\0\0\0\x04\0\0\0\0\0\0\0\x02i3\0\0\0\0\0\x04\0\0\0\x01\0\0\0\x04"

@@ -152,6 +152,7 @@ pub mod __Contract__empty__spec {
     pub static __SPEC_XDR_FN_EMPTY: [u8; 28usize] = super::Contract::spec_xdr_empty();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_empty() -> [u8; 28usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x05empty\0\0\0\0\0\0\0\0\0\0\0"
@@ -166,6 +167,7 @@ pub mod __Contract__empty2__spec {
     pub static __SPEC_XDR_FN_EMPTY2: [u8; 28usize] = super::Contract::spec_xdr_empty2();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_empty2() -> [u8; 28usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x06empty2\0\0\0\0\0\0\0\0\0\0"

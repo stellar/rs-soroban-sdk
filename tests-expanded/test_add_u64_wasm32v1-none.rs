@@ -47,6 +47,7 @@ impl ::core::cmp::PartialEq for Error {
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ERROR: [u8; 48usize] = Error::spec_xdr();
 impl Error {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 48usize] {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x05Error\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x08Overflow\0\0\0\x01"
     }
@@ -187,6 +188,7 @@ impl ::core::cmp::PartialEq for MyError {
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_MYERROR: [u8; 48usize] = MyError::spec_xdr();
 impl MyError {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 48usize] {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x07MyError\0\0\0\0\x01\0\0\0\0\0\0\0\x08Overflow\0\0\0\x01"
     }
@@ -325,6 +327,7 @@ pub mod __Contract__add__spec {
     pub static __SPEC_XDR_FN_ADD: [u8; 60usize] = super::Contract::spec_xdr_add();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_add() -> [u8; 60usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x03add\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x06\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x06\0\0\0\x01\0\0\0\x06"
@@ -340,6 +343,7 @@ pub mod __Contract__safe_add__spec {
     pub static __SPEC_XDR_FN_SAFE_ADD: [u8; 72usize] = super::Contract::spec_xdr_safe_add();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_safe_add() -> [u8; 72usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x08safe_add\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x06\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x06\0\0\0\x01\0\0\x03\xe9\0\0\0\x06\0\0\0\x03"
@@ -355,6 +359,7 @@ pub mod __Contract__safe_add_two__spec {
     pub static __SPEC_XDR_FN_SAFE_ADD_TWO: [u8; 88usize] = super::Contract::spec_xdr_safe_add_two();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_safe_add_two() -> [u8; 88usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0csafe_add_two\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x06\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x06\0\0\0\x01\0\0\x03\xe9\0\0\0\x06\0\0\x07\xd0\0\0\0\x07MyError\0"

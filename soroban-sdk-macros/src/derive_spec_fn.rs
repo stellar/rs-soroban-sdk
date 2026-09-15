@@ -201,6 +201,7 @@ pub fn derive_fn_spec(
         #exported
 
         impl #ty {
+            #[doc(hidden)]
             #[allow(non_snake_case)]
             #(#attrs)*
             pub const fn #spec_fn_ident() -> [u8; #spec_xdr_len] {

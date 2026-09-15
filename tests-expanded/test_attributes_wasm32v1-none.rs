@@ -51,6 +51,7 @@ impl ::core::cmp::PartialEq for AttributeType {
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_ATTRIBUTETYPE: [u8; 56usize] = AttributeType::spec_xdr();
 impl AttributeType {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 56usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\rAttributeType\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05value\0\0\0\0\0\0\x04"
     }
@@ -120,6 +121,7 @@ pub struct AttributeEvent {
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_EVENT_ATTRIBUTEEVENT: [u8; 112usize] = AttributeEvent::spec_xdr();
 impl AttributeEvent {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 112usize] {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x0eAttributeEvent\0\0\0\0\0\x01\0\0\0\x0fattribute_event\0\0\0\0\x02\0\0\0\0\0\0\0\x05topic\0\0\0\0\0\0\x04\0\0\0\x01\0\0\0\0\0\0\0\x05value\0\0\0\0\0\0\x04\0\0\0\0\0\0\0\x02"
     }
@@ -431,42 +433,49 @@ impl AttributeTraitArgs {
     }
 }
 impl AttributeTraitSpec {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_override() -> [u8; 40usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0etrait_override\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
     }
 }
 impl AttributeTraitSpec {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_default() -> [u8; 40usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\rtrait_default\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
     }
 }
 impl AttributeTraitSpec {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_default_stacked_cfg() -> [u8; 52usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x19trait_default_stacked_cfg\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
     }
 }
 impl AttributeTraitSpec {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_override_stacked_cfg() -> [u8; 52usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x1atrait_override_stacked_cfg\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
     }
 }
 impl AttributeTraitSpec {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_override_negated_cfg() -> [u8; 52usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x1atrait_override_negated_cfg\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
     }
 }
 impl AttributeTraitSpec {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_override_dual_cfg() -> [u8; 48usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x17trait_override_dual_cfg\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
     }
 }
 impl AttributeTraitSpec {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_default_dual_cfg() -> [u8; 48usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x16trait_default_dual_cfg\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
@@ -493,6 +502,7 @@ pub mod __Contract__always__spec {
     pub static __SPEC_XDR_FN_ALWAYS: [u8; 72usize] = super::Contract::spec_xdr_always();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_always() -> [u8; 72usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x06always\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05value\0\0\0\0\0\x07\xd0\0\0\0\rAttributeType\0\0\0\0\0\0\x01\0\0\0\x04"
@@ -508,6 +518,7 @@ pub mod __Contract__cfg_included__spec {
     pub static __SPEC_XDR_FN_CFG_INCLUDED: [u8; 56usize] = super::Contract::spec_xdr_cfg_included();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_cfg_included() -> [u8; 56usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0ccfg_included\0\0\0\x01\0\0\0\0\0\0\0\x05value\0\0\0\0\0\0\x04\0\0\0\x01\0\0\0\x04"
@@ -524,6 +535,7 @@ pub mod __Contract__publish__spec {
     pub static __SPEC_XDR_FN_PUBLISH: [u8; 68usize] = super::Contract::spec_xdr_publish();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_publish() -> [u8; 68usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x07publish\0\0\0\0\x02\0\0\0\0\0\0\0\x05topic\0\0\0\0\0\0\x04\0\0\0\0\0\0\0\x05value\0\0\0\0\0\0\x04\0\0\0\0"
@@ -770,6 +782,7 @@ pub mod __Contract__trait_override__spec {
         super::Contract::spec_xdr_trait_override();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_override() -> [u8; 40usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0etrait_override\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
@@ -788,6 +801,7 @@ pub mod __Contract__trait_override_stacked_cfg__spec {
         super::Contract::spec_xdr_trait_override_stacked_cfg();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_override_stacked_cfg() -> [u8; 52usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x1atrait_override_stacked_cfg\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
@@ -804,6 +818,7 @@ pub mod __Contract__trait_override_negated_cfg__spec {
         super::Contract::spec_xdr_trait_override_negated_cfg();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_override_negated_cfg() -> [u8; 52usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x1atrait_override_negated_cfg\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
@@ -820,6 +835,7 @@ pub mod __Contract__trait_override_dual_cfg__spec {
         super::Contract::spec_xdr_trait_override_dual_cfg();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_override_dual_cfg() -> [u8; 48usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x17trait_override_dual_cfg\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
@@ -1108,6 +1124,7 @@ pub mod __Contract__trait_default__spec {
         super::Contract::spec_xdr_trait_default();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_default() -> [u8; 40usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\rtrait_default\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
@@ -1124,6 +1141,7 @@ pub mod __Contract__trait_default_stacked_cfg__spec {
         super::Contract::spec_xdr_trait_default_stacked_cfg();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_default_stacked_cfg() -> [u8; 52usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x19trait_default_stacked_cfg\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
@@ -1143,6 +1161,7 @@ pub mod __Contract__trait_default_dual_cfg__spec {
         super::Contract::spec_xdr_trait_default_dual_cfg();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_default_dual_cfg() -> [u8; 48usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x16trait_default_dual_cfg\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"

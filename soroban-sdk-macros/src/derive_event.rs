@@ -228,6 +228,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         pub static #spec_ident: [u8; #spec_xdr_len] = #ident::spec_xdr();
 
         impl #gen_impl #ident #gen_types #gen_where {
+            #[doc(hidden)]
             pub const fn spec_xdr() -> [u8; #spec_xdr_len] {
                 *#spec_xdr_lit
             }

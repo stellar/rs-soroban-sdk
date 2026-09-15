@@ -39,6 +39,7 @@ pub mod __Contract__add__spec {
     pub static __SPEC_XDR_FN_ADD: [u8; 60usize] = super::Contract::spec_xdr_add();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_add() -> [u8; 60usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x03add\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\n\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\n\0\0\0\x01\0\0\0\n"

@@ -40,6 +40,7 @@ pub mod __Contract__calc__spec {
     pub static __SPEC_XDR_FN_CALC: [u8; 60usize] = super::Contract::spec_xdr_calc();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_calc() -> [u8; 60usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x04calc\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x04\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x04\0\0\0\x01\0\0\0\x04"

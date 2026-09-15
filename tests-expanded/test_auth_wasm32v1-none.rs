@@ -40,6 +40,7 @@ pub mod __ContractA__fn1__spec {
     pub static __SPEC_XDR_FN_FN1: [u8; 44usize] = super::ContractA::spec_xdr_fn1();
 }
 impl ContractA {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_fn1() -> [u8; 44usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x03fn1\0\0\0\0\x01\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x13\0\0\0\x01\0\0\0\x06"
@@ -151,6 +152,7 @@ pub mod __ContractB__fn2__spec {
     pub static __SPEC_XDR_FN_FN2: [u8; 60usize] = super::ContractB::spec_xdr_fn2();
 }
 impl ContractB {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_fn2() -> [u8; 60usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x03fn2\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x13\0\0\0\0\0\0\0\x03sub\0\0\0\0\x13\0\0\0\x01\0\0\0\x06"

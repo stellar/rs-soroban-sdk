@@ -154,6 +154,7 @@ pub mod __Contract__run__spec {
     pub static __SPEC_XDR_FN_RUN: [u8; 56usize] = super::Contract::spec_xdr_run();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_run() -> [u8; 56usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x03run\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x0c\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x0c\0\0\0\0"

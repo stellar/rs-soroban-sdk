@@ -53,6 +53,7 @@ impl ::core::cmp::PartialEq for MyStruct {
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_MYSTRUCT: [u8; 60usize] = MyStruct::spec_xdr();
 impl MyStruct {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 60usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x08MyStruct\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x07"
     }
@@ -167,6 +168,7 @@ impl ::core::cmp::PartialEq for MyEnumUnit {
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_MYENUMUNIT: [u8; 64usize] = MyEnumUnit::spec_xdr();
 impl MyEnumUnit {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 64usize] {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\nMyEnumUnit\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01A\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01B\0\0\0\0\0\0\x02"
     }
@@ -289,6 +291,7 @@ impl ::core::cmp::PartialEq for MyEnumVariants {
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_MYENUMVARIANTS: [u8; 128usize] = MyEnumVariants::spec_xdr();
 impl MyEnumVariants {
+    #[doc(hidden)]
     pub const fn spec_xdr() -> [u8; 128usize] {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x0eMyEnumVariants\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x04VarA\0\0\0\x01\0\0\0\0\0\0\0\x04VarB\0\0\0\x01\0\0\x07\xd0\0\0\0\x08MyStruct\0\0\0\x01\0\0\0\0\0\0\0\x04VarC\0\0\0\x01\0\0\x07\xd0\0\0\0\nMyEnumUnit\0\0"
     }
@@ -1286,6 +1289,7 @@ impl AllTypesArgs {
     }
 }
 impl AllTypesSpec {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     /// Test u32 values.
     /// Returns the input unchanged.
@@ -1294,6 +1298,7 @@ impl AllTypesSpec {
     }
 }
 impl AllTypesSpec {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     /// Test i32 values.
     pub const fn spec_xdr_test_i32() -> [u8; 64usize] {
@@ -1301,120 +1306,140 @@ impl AllTypesSpec {
     }
 }
 impl AllTypesSpec {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_u64() -> [u8; 48usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_u64\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x06\0\0\0\x01\0\0\0\x06"
     }
 }
 impl AllTypesSpec {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_i64() -> [u8; 48usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_i64\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x07\0\0\0\x01\0\0\0\x07"
     }
 }
 impl AllTypesSpec {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_u128() -> [u8; 52usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_u128\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\n\0\0\0\x01\0\0\0\n"
     }
 }
 impl AllTypesSpec {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_i128() -> [u8; 52usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_i128\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x0b\0\0\0\x01\0\0\0\x0b"
     }
 }
 impl AllTypesSpec {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_bool() -> [u8; 52usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_bool\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x01\0\0\0\x01\0\0\0\x01"
     }
 }
 impl AllTypesSpec {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_address() -> [u8; 52usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0ctest_address\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x13\0\0\0\x01\0\0\0\x13"
     }
 }
 impl AllTypesSpec {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_bytes() -> [u8; 52usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\ntest_bytes\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x0e\0\0\0\x01\0\0\0\x0e"
     }
 }
 impl AllTypesSpec {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_bytes_n() -> [u8; 60usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0ctest_bytes_n\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x03\xee\0\0\0 \0\0\0\x01\0\0\x03\xee\0\0\0 "
     }
 }
 impl AllTypesSpec {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_string() -> [u8; 52usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0btest_string\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x10\0\0\0\x01\0\0\0\x10"
     }
 }
 impl AllTypesSpec {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_symbol() -> [u8; 52usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0btest_symbol\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x11\0\0\0\x01\0\0\0\x11"
     }
 }
 impl AllTypesSpec {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_vec() -> [u8; 56usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_vec\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x03\xea\0\0\0\x04\0\0\0\x01\0\0\x03\xea\0\0\0\x04"
     }
 }
 impl AllTypesSpec {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_map() -> [u8; 64usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_map\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x03\xec\0\0\0\x04\0\0\0\x04\0\0\0\x01\0\0\x03\xec\0\0\0\x04\0\0\0\x04"
     }
 }
 impl AllTypesSpec {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_duration() -> [u8; 56usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\rtest_duration\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\t\0\0\0\x01\0\0\0\t"
     }
 }
 impl AllTypesSpec {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_timepoint() -> [u8; 56usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0etest_timepoint\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x08\0\0\0\x01\0\0\0\x08"
     }
 }
 impl AllTypesSpec {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_i256() -> [u8; 52usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_i256\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\r\0\0\0\x01\0\0\0\r"
     }
 }
 impl AllTypesSpec {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_u256() -> [u8; 52usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_u256\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x0c\0\0\0\x01\0\0\0\x0c"
     }
 }
 impl AllTypesSpec {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_env_param() -> [u8; 40usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0etest_env_param\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
     }
 }
 impl AllTypesSpec {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_struct() -> [u8; 76usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0btest_struct\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd0\0\0\0\x08MyStruct\0\0\0\x01\0\0\x07\xd0\0\0\0\x08MyStruct"
     }
 }
 impl AllTypesSpec {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_enum_unit() -> [u8; 88usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0etest_enum_unit\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd0\0\0\0\nMyEnumUnit\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\nMyEnumUnit\0\0"
     }
 }
 impl AllTypesSpec {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_test_enum_variants() -> [u8; 100usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x12test_enum_variants\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd0\0\0\0\x0eMyEnumVariants\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x0eMyEnumVariants\0\0"

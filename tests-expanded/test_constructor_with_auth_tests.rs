@@ -152,6 +152,7 @@ pub mod __Contract____constructor__spec {
         super::Contract::spec_xdr___constructor();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr___constructor() -> [u8; 56usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\r__constructor\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05admin\0\0\0\0\0\0\x13\0\0\0\0"

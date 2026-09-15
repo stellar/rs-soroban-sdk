@@ -40,6 +40,7 @@ pub mod __Contract__value__spec {
     pub static __SPEC_XDR_FN_VALUE: [u8; 44usize] = super::Contract::spec_xdr_value();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_value() -> [u8; 44usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x05value\0\0\0\0\0\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x05Value\0\0\0"

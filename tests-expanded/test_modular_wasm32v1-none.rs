@@ -25,6 +25,7 @@ mod feat1 {
         pub static __SPEC_XDR_FN_ONE: [u8; 28usize] = super::Contract::spec_xdr_one();
     }
     impl Contract {
+        #[doc(hidden)]
         #[allow(non_snake_case)]
         pub const fn spec_xdr_one() -> [u8; 28usize] {
             *b"\0\0\0\0\0\0\0\0\0\0\0\x03one\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
@@ -109,6 +110,7 @@ mod feat2 {
         pub static __SPEC_XDR_FN_TWO: [u8; 28usize] = super::super::Contract::spec_xdr_two();
     }
     impl super::Contract {
+        #[doc(hidden)]
         #[allow(non_snake_case)]
         pub const fn spec_xdr_two() -> [u8; 28usize] {
             *b"\0\0\0\0\0\0\0\0\0\0\0\x03two\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
@@ -208,6 +210,7 @@ pub mod __Contract__zero__spec {
     pub static __SPEC_XDR_FN_ZERO: [u8; 28usize] = super::Contract::spec_xdr_zero();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_zero() -> [u8; 28usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x04zero\0\0\0\0\0\0\0\x01\0\0\0\x04"

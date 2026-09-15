@@ -97,6 +97,7 @@ impl TraitArgs {
     }
 }
 impl TraitSpec {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_exec() -> [u8; 28usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x04exec\0\0\0\0\0\0\0\x01\0\0\0\x10"
@@ -141,6 +142,7 @@ pub mod __Contract__exec__spec {
     pub static __SPEC_XDR_FN_EXEC: [u8; 28usize] = super::Contract::spec_xdr_exec();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_exec() -> [u8; 28usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x04exec\0\0\0\0\0\0\0\x01\0\0\0\x10"
@@ -218,6 +220,7 @@ pub mod __Contract__exec2__spec {
     pub static __SPEC_XDR_FN_EXEC2: [u8; 32usize] = super::Contract::spec_xdr_exec2();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_exec2() -> [u8; 32usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x05exec2\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\x10"

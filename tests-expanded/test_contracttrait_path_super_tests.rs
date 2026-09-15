@@ -190,6 +190,7 @@ impl SuperPathTraitArgs {
     }
 }
 impl SuperPathTraitSpec {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_super_path_method() -> [u8; 44usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x11super_path_method\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
@@ -386,6 +387,7 @@ pub mod submodule {
             super::ContractSuperPath::spec_xdr_super_path_method();
     }
     impl ContractSuperPath {
+        #[doc(hidden)]
         #[allow(non_snake_case)]
         pub const fn spec_xdr_super_path_method() -> [u8; 44usize] {
             *b"\0\0\0\0\0\0\0\0\0\0\0\x11super_path_method\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"

@@ -99,6 +99,7 @@ pub mod __Contract__set_val__spec {
     pub static __SPEC_XDR_FN_SET_VAL: [u8; 48usize] = super::Contract::spec_xdr_set_val();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_set_val() -> [u8; 48usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x07set_val\0\0\0\0\x01\0\0\0\0\0\0\0\x05input\0\0\0\0\0\0\x06\0\0\0\0"
@@ -114,6 +115,7 @@ pub mod __Contract__get_val__spec {
     pub static __SPEC_XDR_FN_GET_VAL: [u8; 32usize] = super::Contract::spec_xdr_get_val();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_get_val() -> [u8; 32usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x07get_val\0\0\0\0\0\0\0\0\x01\0\0\0\x06"
@@ -129,6 +131,7 @@ pub mod __Contract__both__spec {
     pub static __SPEC_XDR_FN_BOTH: [u8; 48usize] = super::Contract::spec_xdr_both();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_both() -> [u8; 48usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x04both\0\0\0\x01\0\0\0\0\0\0\0\x05input\0\0\0\0\0\0\x06\0\0\0\x01\0\0\0\x06"
@@ -144,6 +147,7 @@ pub mod __Contract__wrapped__spec {
     pub static __SPEC_XDR_FN_WRAPPED: [u8; 64usize] = super::Contract::spec_xdr_wrapped();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_wrapped() -> [u8; 64usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x07wrapped\0\0\0\0\x01\0\0\0\0\0\0\0\x05input\0\0\0\0\0\x03\xea\0\0\0\x06\0\0\0\x01\0\0\x03\xe9\0\0\0\x06\0\0\0\x03"
@@ -160,6 +164,7 @@ pub mod __Contract__double_wrapped__spec {
         super::Contract::spec_xdr_double_wrapped();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_double_wrapped() -> [u8; 80usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0edouble_wrapped\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05input\0\0\0\0\0\x03\xe8\0\0\x03\xea\0\0\0\x06\0\0\0\x01\0\0\x03\xe9\0\0\x03\xea\0\0\0\x06\0\0\0\x03"
@@ -175,6 +180,7 @@ pub mod __Contract__valval__spec {
     pub static __SPEC_XDR_FN_VALVAL: [u8; 56usize] = super::Contract::spec_xdr_valval();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_valval() -> [u8; 56usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x06valval\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05input\0\0\0\0\0\0\x06\0\0\0\x01\0\0\x03\xe8\0\0\0\x06"
@@ -190,6 +196,7 @@ pub mod __Contract__tuple__spec {
     pub static __SPEC_XDR_FN_TUPLE: [u8; 64usize] = super::Contract::spec_xdr_tuple();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_tuple() -> [u8; 64usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x05tuple\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05input\0\0\0\0\0\0\x06\0\0\0\x01\0\0\x03\xed\0\0\0\x02\0\0\0\x06\0\0\0\x06"
@@ -205,6 +212,7 @@ pub mod __Contract__valref__spec {
     pub static __SPEC_XDR_FN_VALREF: [u8; 52usize] = super::Contract::spec_xdr_valref();
 }
 impl Contract {
+    #[doc(hidden)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr_valref() -> [u8; 52usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x06valref\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05input\0\0\0\0\0\0\x06\0\0\0\x01\0\0\0\x06"
