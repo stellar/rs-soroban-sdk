@@ -37,12 +37,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__put__spec {
+mod __Contract__put__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_PUT: [u8; 56usize] = super::Contract::spec_xdr_put();
+    static __SPEC_XDR_FN_PUT: [u8; 56usize] = super::Contract::spec_xdr_put();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -52,12 +52,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__get__spec {
+mod __Contract__get__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_GET: [u8; 48usize] = super::Contract::spec_xdr_get();
+    static __SPEC_XDR_FN_GET: [u8; 48usize] = super::Contract::spec_xdr_get();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -67,12 +67,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__del__spec {
+mod __Contract__del__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_DEL: [u8; 40usize] = super::Contract::spec_xdr_del();
+    static __SPEC_XDR_FN_DEL: [u8; 40usize] = super::Contract::spec_xdr_del();
 }
 impl Contract {
     #[allow(non_snake_case)]

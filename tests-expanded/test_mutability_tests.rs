@@ -144,11 +144,11 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__calc__spec {
+mod __Contract__calc__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_CALC: [u8; 60usize] = super::Contract::spec_xdr_calc();
+    static __SPEC_XDR_FN_CALC: [u8; 60usize] = super::Contract::spec_xdr_calc();
 }
 impl Contract {
     #[allow(non_snake_case)]

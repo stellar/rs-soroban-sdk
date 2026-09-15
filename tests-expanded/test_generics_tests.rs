@@ -146,11 +146,11 @@ where
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__exec__spec {
+mod __Contract__exec__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_EXEC: [u8; 76usize] = super::Contract::spec_xdr_exec();
+    static __SPEC_XDR_FN_EXEC: [u8; 76usize] = super::Contract::spec_xdr_exec();
 }
 impl Contract {
     #[allow(non_snake_case)]

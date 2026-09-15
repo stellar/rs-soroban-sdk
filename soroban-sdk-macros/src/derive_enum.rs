@@ -164,7 +164,7 @@ pub fn derive_type_enum(
         quote! {
             #[doc(hidden)]
             #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
-            pub static #spec_ident: [u8; #spec_xdr_len] = #enum_ident::spec_xdr();
+            static #spec_ident: [u8; #spec_xdr_len] = #enum_ident::spec_xdr();
 
             impl #enum_ident {
                 pub const fn spec_xdr() -> [u8; #spec_xdr_len] {

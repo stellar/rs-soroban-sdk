@@ -34,7 +34,7 @@ impl ::core::cmp::PartialEq for Value {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_XDR_TYPE_VALUE: [u8; 48usize] = Value::spec_xdr();
+static __SPEC_XDR_TYPE_VALUE: [u8; 48usize] = Value::spec_xdr();
 impl Value {
     pub const fn spec_xdr() -> [u8; 48usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x05Value\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05value\0\0\0\0\0\0\x05"

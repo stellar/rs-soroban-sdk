@@ -54,11 +54,11 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__fn_struct_a__spec {
+mod __Contract__fn_struct_a__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_FN_STRUCT_A: [u8; 80usize] = super::Contract::spec_xdr_fn_struct_a();
+    static __SPEC_XDR_FN_FN_STRUCT_A: [u8; 80usize] = super::Contract::spec_xdr_fn_struct_a();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -68,11 +68,11 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__fn_struct_tuple_a__spec {
+mod __Contract__fn_struct_tuple_a__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_FN_STRUCT_TUPLE_A: [u8; 92usize] =
+    static __SPEC_XDR_FN_FN_STRUCT_TUPLE_A: [u8; 92usize] =
         super::Contract::spec_xdr_fn_struct_tuple_a();
 }
 impl Contract {
@@ -83,11 +83,11 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__fn_enum_a__spec {
+mod __Contract__fn_enum_a__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_FN_ENUM_A: [u8; 48usize] = super::Contract::spec_xdr_fn_enum_a();
+    static __SPEC_XDR_FN_FN_ENUM_A: [u8; 48usize] = super::Contract::spec_xdr_fn_enum_a();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -97,12 +97,11 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__fn_enum_int_a__spec {
+mod __Contract__fn_enum_int_a__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_FN_ENUM_INT_A: [u8; 52usize] =
-        super::Contract::spec_xdr_fn_enum_int_a();
+    static __SPEC_XDR_FN_FN_ENUM_INT_A: [u8; 52usize] = super::Contract::spec_xdr_fn_enum_int_a();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -112,11 +111,11 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__fn_error_a__spec {
+mod __Contract__fn_error_a__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_FN_ERROR_A: [u8; 76usize] = super::Contract::spec_xdr_fn_error_a();
+    static __SPEC_XDR_FN_FN_ERROR_A: [u8; 76usize] = super::Contract::spec_xdr_fn_error_a();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -126,11 +125,11 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__fn_event_a__spec {
+mod __Contract__fn_event_a__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_FN_EVENT_A: [u8; 64usize] = super::Contract::spec_xdr_fn_event_a();
+    static __SPEC_XDR_FN_FN_EVENT_A: [u8; 64usize] = super::Contract::spec_xdr_fn_event_a();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -140,11 +139,11 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__fn_event_d__spec {
+mod __Contract__fn_event_d__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_FN_EVENT_D: [u8; 32usize] = super::Contract::spec_xdr_fn_event_d();
+    static __SPEC_XDR_FN_FN_EVENT_D: [u8; 32usize] = super::Contract::spec_xdr_fn_event_d();
 }
 impl Contract {
     #[allow(non_snake_case)]

@@ -387,11 +387,11 @@ pub extern "C" fn __Contract__exec__invoke_raw_extern() -> soroban_sdk::Val {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__exec__spec {
+mod __Contract__exec__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_EXEC: [u8; 28usize] = super::Contract::spec_xdr_exec();
+    static __SPEC_XDR_FN_EXEC: [u8; 28usize] = super::Contract::spec_xdr_exec();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -564,11 +564,11 @@ impl TraitWithoutContractTrait for Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__exec2__spec {
+mod __Contract__exec2__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_EXEC2: [u8; 32usize] = super::Contract::spec_xdr_exec2();
+    static __SPEC_XDR_FN_EXEC2: [u8; 32usize] = super::Contract::spec_xdr_exec2();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -1158,7 +1158,7 @@ mod test_with_wasm {
             }
         }
         #[doc(hidden)]
-        pub static __SPEC_XDR_TYPE_CONTRACTEXECUTABLEREF: [u8; 80usize] =
+        static __SPEC_XDR_TYPE_CONTRACTEXECUTABLEREF: [u8; 80usize] =
             ContractExecutableRef::spec_xdr();
         impl ContractExecutableRef {
             pub const fn spec_xdr() -> [u8; 80usize] {
@@ -1652,7 +1652,7 @@ mod test_with_wasm {
             }
         }
         #[doc(hidden)]
-        pub static __SPEC_XDR_TYPE_CONTRACTCONTEXT: [u8; 96usize] = ContractContext::spec_xdr();
+        static __SPEC_XDR_TYPE_CONTRACTCONTEXT: [u8; 96usize] = ContractContext::spec_xdr();
         impl ContractContext {
             pub const fn spec_xdr() -> [u8; 96usize] {
                 *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0fContractContext\0\0\0\0\x03\0\0\0\0\0\0\0\x04args\0\0\x03\xea\0\0\0\0\0\0\0\0\0\0\0\x08contract\0\0\0\x13\0\0\0\0\0\0\0\x07fn_name\0\0\0\0\x11"
@@ -2201,7 +2201,7 @@ mod test_with_wasm {
             }
         }
         #[doc(hidden)]
-        pub static __SPEC_XDR_TYPE_SUBCONTRACTINVOCATION: [u8; 144usize] =
+        static __SPEC_XDR_TYPE_SUBCONTRACTINVOCATION: [u8; 144usize] =
             SubContractInvocation::spec_xdr();
         impl SubContractInvocation {
             pub const fn spec_xdr() -> [u8; 144usize] {
@@ -2688,7 +2688,7 @@ mod test_with_wasm {
             }
         }
         #[doc(hidden)]
-        pub static __SPEC_XDR_TYPE_CREATECONTRACTHOSTFNCONTEXT: [u8; 116usize] =
+        static __SPEC_XDR_TYPE_CREATECONTRACTHOSTFNCONTEXT: [u8; 116usize] =
             CreateContractHostFnContext::spec_xdr();
         impl CreateContractHostFnContext {
             pub const fn spec_xdr() -> [u8; 116usize] {
@@ -3207,7 +3207,7 @@ mod test_with_wasm {
             }
         }
         #[doc(hidden)]
-        pub static __SPEC_XDR_TYPE_CREATECONTRACTWITHCONSTRUCTORHOSTFNCONTEXT: [u8; 164usize] =
+        static __SPEC_XDR_TYPE_CREATECONTRACTWITHCONSTRUCTORHOSTFNCONTEXT: [u8; 164usize] =
             CreateContractWithConstructorHostFnContext::spec_xdr();
         impl CreateContractWithConstructorHostFnContext {
             pub const fn spec_xdr() -> [u8; 164usize] {
@@ -3831,8 +3831,7 @@ mod test_with_wasm {
             }
         }
         #[doc(hidden)]
-        pub static __SPEC_XDR_TYPE_CONTRACTEXECUTABLE: [u8; 128usize] =
-            ContractExecutable::spec_xdr();
+        static __SPEC_XDR_TYPE_CONTRACTEXECUTABLE: [u8; 128usize] = ContractExecutable::spec_xdr();
         impl ContractExecutable {
             pub const fn spec_xdr() -> [u8; 128usize] {
                 *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x12ContractExecutable\0\0\0\0\0\x02\0\0\0\x01\0\0\0\0\0\0\0\x04Wasm\0\0\0\x01\0\0\x03\xee\0\0\0 \0\0\0\x01\0\0\0\0\0\0\0\x0bExternalRef\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x15ContractExecutableRef\0\0\0"
@@ -4472,7 +4471,7 @@ mod test_with_wasm {
             }
         }
         #[doc(hidden)]
-        pub static __SPEC_XDR_TYPE_CONTEXT: [u8; 244usize] = Context::spec_xdr();
+        static __SPEC_XDR_TYPE_CONTEXT: [u8; 244usize] = Context::spec_xdr();
         impl Context {
             pub const fn spec_xdr() -> [u8; 244usize] {
                 *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x07Context\0\0\0\0\x03\0\0\0\x01\0\0\0\0\0\0\0\x08Contract\0\0\0\x01\0\0\x07\xd0\0\0\0\x0fContractContext\0\0\0\0\x01\0\0\0\0\0\0\0\x14CreateContractHostFn\0\0\0\x01\0\0\x07\xd0\0\0\0\x1bCreateContractHostFnContext\0\0\0\0\x01\0\0\0\0\0\0\0\x1cCreateContractWithCtorHostFn\0\0\0\x01\0\0\x07\xd0\0\0\0*CreateContractWithConstructorHostFnContext\0\0"
@@ -5212,7 +5211,7 @@ mod test_with_wasm {
             }
         }
         #[doc(hidden)]
-        pub static __SPEC_XDR_TYPE_INVOKERCONTRACTAUTHENTRY: [u8; 268usize] =
+        static __SPEC_XDR_TYPE_INVOKERCONTRACTAUTHENTRY: [u8; 268usize] =
             InvokerContractAuthEntry::spec_xdr();
         impl InvokerContractAuthEntry {
             pub const fn spec_xdr() -> [u8; 268usize] {
@@ -5947,7 +5946,7 @@ mod test_with_wasm {
             }
         }
         #[doc(hidden)]
-        pub static __SPEC_XDR_TYPE_EXECUTABLE: [u8; 104usize] = Executable::spec_xdr();
+        static __SPEC_XDR_TYPE_EXECUTABLE: [u8; 104usize] = Executable::spec_xdr();
         impl Executable {
             pub const fn spec_xdr() -> [u8; 104usize] {
                 *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\nExecutable\0\0\0\0\0\x03\0\0\0\x01\0\0\0\0\0\0\0\x04Wasm\0\0\0\x01\0\0\x03\xee\0\0\0 \0\0\0\0\0\0\0\0\0\0\0\x0cStellarAsset\0\0\0\0\0\0\0\0\0\0\0\x07Account\0"

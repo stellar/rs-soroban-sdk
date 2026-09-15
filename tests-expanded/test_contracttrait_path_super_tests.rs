@@ -378,11 +378,11 @@ pub mod submodule {
     }
     #[doc(hidden)]
     #[allow(non_snake_case)]
-    pub mod __ContractSuperPath__super_path_method__spec {
+    mod __ContractSuperPath__super_path_method__spec {
         #[doc(hidden)]
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
-        pub static __SPEC_XDR_FN_SUPER_PATH_METHOD: [u8; 44usize] =
+        static __SPEC_XDR_FN_SUPER_PATH_METHOD: [u8; 44usize] =
             super::ContractSuperPath::spec_xdr_super_path_method();
     }
     impl ContractSuperPath {
