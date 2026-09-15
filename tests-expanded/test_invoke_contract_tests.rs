@@ -151,10 +151,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
+#[allow(dead_code)]
 mod __Contract__add_with__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     static __SPEC_XDR_FN_ADD_WITH: [u8; 88usize] = super::Contract::spec_xdr_add_with();
 }
 impl Contract {
@@ -505,10 +507,12 @@ impl AddContract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
+#[allow(dead_code)]
 mod __AddContract__add__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     static __SPEC_XDR_FN_ADD: [u8; 60usize] = super::AddContract::spec_xdr_add();
 }
 impl AddContract {

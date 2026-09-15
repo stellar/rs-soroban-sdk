@@ -17,6 +17,7 @@ pub struct DummyProof {
     pub fr: Bls12381Fr,
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 static __SPEC_XDR_TYPE_DUMMYPROOF: [u8; 128usize] = DummyProof::spec_xdr();
 impl DummyProof {
     pub const fn spec_xdr() -> [u8; 128usize] {
@@ -753,10 +754,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
+#[allow(dead_code)]
 mod __Contract__g1_mul__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     static __SPEC_XDR_FN_G1_MUL: [u8; 72usize] = super::Contract::spec_xdr_g1_mul();
 }
 impl Contract {
@@ -767,10 +770,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
+#[allow(dead_code)]
 mod __Contract__g2_mul__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     static __SPEC_XDR_FN_G2_MUL: [u8; 72usize] = super::Contract::spec_xdr_g2_mul();
 }
 impl Contract {
@@ -781,10 +786,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
+#[allow(dead_code)]
 mod __Contract__dummy_verify__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     static __SPEC_XDR_FN_DUMMY_VERIFY: [u8; 72usize] = super::Contract::spec_xdr_dummy_verify();
 }
 impl Contract {
@@ -795,10 +802,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
+#[allow(dead_code)]
 mod __Contract__fr_vec_get__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     static __SPEC_XDR_FN_FR_VEC_GET: [u8; 80usize] = super::Contract::spec_xdr_fr_vec_get();
 }
 impl Contract {

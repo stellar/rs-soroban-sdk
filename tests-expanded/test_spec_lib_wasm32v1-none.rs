@@ -48,6 +48,7 @@ impl ::core::cmp::PartialEq for StructA {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_STRUCTA: [u8; 60usize] = StructA::spec_xdr();
 impl StructA {
@@ -160,6 +161,7 @@ impl ::core::cmp::PartialEq for StructB {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_STRUCTB: [u8; 60usize] = StructB::spec_xdr();
 impl StructB {
@@ -272,6 +274,7 @@ impl ::core::cmp::PartialEq for StructC {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_STRUCTC: [u8; 64usize] = StructC::spec_xdr();
 impl StructC {
@@ -378,6 +381,7 @@ impl ::core::cmp::PartialEq for StructTupleA {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_STRUCTTUPLEA: [u8; 64usize] = StructTupleA::spec_xdr();
 impl StructTupleA {
@@ -480,6 +484,7 @@ impl ::core::cmp::PartialEq for StructTupleB {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_STRUCTTUPLEB: [u8; 64usize] = StructTupleB::spec_xdr();
 impl StructTupleB {
@@ -583,6 +588,7 @@ impl ::core::cmp::PartialEq for StructTupleC {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_STRUCTTUPLEC: [u8; 64usize] = StructTupleC::spec_xdr();
 impl StructTupleC {
@@ -697,6 +703,7 @@ impl ::core::cmp::PartialEq for EnumA {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_ENUMA: [u8; 76usize] = EnumA::spec_xdr();
 impl EnumA {
@@ -855,6 +862,7 @@ impl ::core::cmp::PartialEq for EnumB {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_ENUMB: [u8; 96usize] = EnumB::spec_xdr();
 impl EnumB {
@@ -1026,6 +1034,7 @@ impl ::core::cmp::PartialEq for EnumC {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_ENUMC: [u8; 120usize] = EnumC::spec_xdr();
 impl EnumC {
@@ -1183,6 +1192,7 @@ impl ::core::cmp::PartialEq for EnumIntA {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_ENUMINTA: [u8; 76usize] = EnumIntA::spec_xdr();
 impl EnumIntA {
@@ -1288,6 +1298,7 @@ impl ::core::cmp::PartialEq for EnumIntB {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_ENUMINTB: [u8; 76usize] = EnumIntB::spec_xdr();
 impl EnumIntB {
@@ -1393,6 +1404,7 @@ impl ::core::cmp::PartialEq for EnumIntC {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_ENUMINTC: [u8; 76usize] = EnumIntC::spec_xdr();
 impl EnumIntC {
@@ -1498,6 +1510,7 @@ impl ::core::cmp::PartialEq for ErrorA {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_ERRORA: [u8; 76usize] = ErrorA::spec_xdr();
 impl ErrorA {
@@ -1673,6 +1686,7 @@ impl ::core::cmp::PartialEq for ErrorB {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_ERRORB: [u8; 76usize] = ErrorB::spec_xdr();
 impl ErrorB {
@@ -1848,6 +1862,7 @@ impl ::core::cmp::PartialEq for ErrorC {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_ERRORC: [u8; 76usize] = ErrorC::spec_xdr();
 impl ErrorC {
@@ -2019,6 +2034,7 @@ impl ::core::cmp::PartialEq for EventA {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_EVENT_EVENTA: [u8; 88usize] = EventA::spec_xdr();
 impl EventA {
@@ -2114,6 +2130,7 @@ impl ::core::cmp::PartialEq for EventB {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_EVENT_EVENTB: [u8; 108usize] = EventB::spec_xdr();
 impl EventB {
@@ -2214,6 +2231,7 @@ impl ::core::cmp::PartialEq for EventC {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_EVENT_EVENTC: [u8; 108usize] = EventC::spec_xdr();
 impl EventC {
@@ -2297,6 +2315,7 @@ impl ::core::cmp::PartialEq for EventD {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_EVENT_EVENTD: [u8; 48usize] = EventD::spec_xdr();
 impl EventD {

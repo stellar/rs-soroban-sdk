@@ -142,6 +142,7 @@ pub enum DataKey {
     Instance(u32),
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 static __SPEC_XDR_TYPE_DATAKEY: [u8; 112usize] = DataKey::spec_xdr();
 impl DataKey {
     pub const fn spec_xdr() -> [u8; 112usize] {
@@ -712,10 +713,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
+#[allow(dead_code)]
 mod __Contract____constructor__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     static __SPEC_XDR_FN___CONSTRUCTOR: [u8; 80usize] = super::Contract::spec_xdr___constructor();
 }
 impl Contract {
@@ -726,10 +729,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
+#[allow(dead_code)]
 mod __Contract__get_data__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     static __SPEC_XDR_FN_GET_DATA: [u8; 64usize] = super::Contract::spec_xdr_get_data();
 }
 impl Contract {

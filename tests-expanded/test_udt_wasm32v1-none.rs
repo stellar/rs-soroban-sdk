@@ -50,6 +50,7 @@ impl ::core::cmp::PartialEq for UdtEnum2 {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_UDTENUM2: [u8; 60usize] = UdtEnum2::spec_xdr();
 impl UdtEnum2 {
@@ -171,6 +172,7 @@ impl ::core::cmp::PartialEq for UdtEnum {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_UDTENUM: [u8; 156usize] = UdtEnum::spec_xdr();
 impl UdtEnum {
@@ -337,6 +339,7 @@ impl ::core::cmp::PartialEq for UdtTuple {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_UDTTUPLE: [u8; 64usize] = UdtTuple::spec_xdr();
 impl UdtTuple {
@@ -454,6 +457,7 @@ impl ::core::cmp::PartialEq for UdtStruct {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_UDTSTRUCT: [u8; 84usize] = UdtStruct::spec_xdr();
 impl UdtStruct {
@@ -576,6 +580,7 @@ impl ::core::cmp::PartialEq for UdtRecursive {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_UDTRECURSIVE: [u8; 84usize] = UdtRecursive::spec_xdr();
 impl UdtRecursive {
@@ -693,6 +698,7 @@ impl ::core::cmp::PartialEq for RecursiveToEnum {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_RECURSIVETOENUM: [u8; 96usize] = RecursiveToEnum::spec_xdr();
 impl RecursiveToEnum {
@@ -817,6 +823,7 @@ impl ::core::cmp::PartialEq for RecursiveEnum {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_RECURSIVEENUM: [u8; 112usize] = RecursiveEnum::spec_xdr();
 impl RecursiveEnum {
@@ -960,10 +967,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
+#[allow(dead_code)]
 mod __Contract__add__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_FN_ADD: [u8; 84usize] = super::Contract::spec_xdr_add();
 }
@@ -975,10 +984,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
+#[allow(dead_code)]
 mod __Contract__recursive__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_FN_RECURSIVE: [u8; 88usize] = super::Contract::spec_xdr_recursive();
 }
@@ -990,10 +1001,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
+#[allow(dead_code)]
 mod __Contract__recursive_enum__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_FN_RECURSIVE_ENUM: [u8; 124usize] =
         super::Contract::spec_xdr_recursive_enum();

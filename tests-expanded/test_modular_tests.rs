@@ -17,10 +17,12 @@ mod feat1 {
     }
     #[doc(hidden)]
     #[allow(non_snake_case)]
+    #[allow(dead_code)]
     mod __Contract__one__spec {
         #[doc(hidden)]
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
+        #[allow(dead_code)]
         static __SPEC_XDR_FN_ONE: [u8; 28usize] = super::Contract::spec_xdr_one();
     }
     impl Contract {
@@ -195,10 +197,12 @@ mod feat2 {
     }
     #[doc(hidden)]
     #[allow(non_snake_case)]
+    #[allow(dead_code)]
     mod __super__Contract__two__spec {
         #[doc(hidden)]
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
+        #[allow(dead_code)]
         static __SPEC_XDR_FN_TWO: [u8; 28usize] = super::super::Contract::spec_xdr_two();
     }
     impl super::Contract {
@@ -572,10 +576,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
+#[allow(dead_code)]
 mod __Contract__zero__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     static __SPEC_XDR_FN_ZERO: [u8; 28usize] = super::Contract::spec_xdr_zero();
 }
 impl Contract {

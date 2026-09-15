@@ -183,10 +183,12 @@ pub fn derive_fn_spec(
             #[doc(hidden)]
             #(#attrs)*
             #[allow(non_snake_case)]
+            #[allow(dead_code)]
             mod #hidden_mod_ident {
                 #[doc(hidden)]
                 #[allow(non_snake_case)]
                 #[allow(non_upper_case_globals)]
+                #[allow(dead_code)]
                 #(#attrs)*
                 #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
                 static #spec_ident: [u8; #spec_xdr_len] = super::#ty::#spec_fn_ident();

@@ -243,6 +243,7 @@ mod addcontract {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_TYPE_CONTRACTEXECUTABLEREF: [u8; 80usize] = ContractExecutableRef::spec_xdr();
     impl ContractExecutableRef {
@@ -408,6 +409,7 @@ mod addcontract {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_TYPE_CONTRACTCONTEXT: [u8; 96usize] = ContractContext::spec_xdr();
     impl ContractContext {
@@ -568,6 +570,7 @@ mod addcontract {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_TYPE_SUBCONTRACTINVOCATION: [u8; 144usize] =
         SubContractInvocation::spec_xdr();
@@ -719,6 +722,7 @@ mod addcontract {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_TYPE_CREATECONTRACTHOSTFNCONTEXT: [u8; 116usize] =
         CreateContractHostFnContext::spec_xdr();
@@ -890,6 +894,7 @@ mod addcontract {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_TYPE_CREATECONTRACTWITHCONSTRUCTORHOSTFNCONTEXT: [u8; 164usize] =
         CreateContractWithConstructorHostFnContext::spec_xdr();
@@ -1086,6 +1091,7 @@ mod addcontract {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_TYPE_CONTRACTEXECUTABLE: [u8; 128usize] = ContractExecutable::spec_xdr();
     impl ContractExecutable {
@@ -1319,6 +1325,7 @@ mod addcontract {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_TYPE_CONTEXT: [u8; 244usize] = Context::spec_xdr();
     impl Context {
@@ -1583,6 +1590,7 @@ mod addcontract {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_TYPE_INVOKERCONTRACTAUTHENTRY: [u8; 268usize] =
         InvokerContractAuthEntry::spec_xdr();
@@ -1798,6 +1806,7 @@ mod addcontract {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_TYPE_EXECUTABLE: [u8; 104usize] = Executable::spec_xdr();
     impl Executable {
@@ -1952,6 +1961,7 @@ mod addcontract {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_TYPE_ERROR: [u8; 48usize] = Error::spec_xdr();
     impl Error {
@@ -2122,6 +2132,7 @@ mod addcontract {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_TYPE_MYERROR: [u8; 48usize] = MyError::spec_xdr();
     impl MyError {
@@ -2272,6 +2283,7 @@ impl ::core::cmp::PartialEq for Error {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_ERROR: [u8; 68usize] = Error::spec_xdr();
 impl Error {
@@ -2436,10 +2448,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
+#[allow(dead_code)]
 mod __Contract__add_with__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_FN_ADD_WITH: [u8; 88usize] = super::Contract::spec_xdr_add_with();
 }
@@ -2451,10 +2465,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
+#[allow(dead_code)]
 mod __Contract__safe_add_with__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_FN_SAFE_ADD_WITH: [u8; 104usize] = super::Contract::spec_xdr_safe_add_with();
 }
@@ -2466,10 +2482,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
+#[allow(dead_code)]
 mod __Contract__safe_add_with_two__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_FN_SAFE_ADD_WITH_TWO: [u8; 108usize] =
         super::Contract::spec_xdr_safe_add_with_two();

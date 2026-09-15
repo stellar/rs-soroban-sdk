@@ -224,6 +224,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     // Generated code spec.
     let spec_gen = quote! {
         #[doc(hidden)]
+        #[allow(dead_code)]
         #export_gen
         static #spec_ident: [u8; #spec_xdr_len] = #ident::spec_xdr();
 

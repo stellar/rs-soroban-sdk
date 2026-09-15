@@ -31,6 +31,7 @@ pub struct Transfer<'a> {
     to_muxed_id: Option<&'a u64>,
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_EVENT_TRANSFER: [u8; 144usize] = Transfer::spec_xdr();
 impl<'a> Transfer<'a> {
@@ -113,10 +114,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
+#[allow(dead_code)]
 mod __Contract__transfer__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_FN_TRANSFER: [u8; 80usize] = super::Contract::spec_xdr_transfer();
 }
@@ -128,10 +131,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
+#[allow(dead_code)]
 mod __Contract__failed_transfer__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_FN_FAILED_TRANSFER: [u8; 88usize] =
         super::Contract::spec_xdr_failed_transfer();

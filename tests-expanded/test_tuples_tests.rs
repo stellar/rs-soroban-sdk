@@ -147,10 +147,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
+#[allow(dead_code)]
 mod __Contract__void_fn__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     static __SPEC_XDR_FN_VOID_FN: [u8; 52usize] = super::Contract::spec_xdr_void_fn();
 }
 impl Contract {
@@ -161,10 +163,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
+#[allow(dead_code)]
 mod __Contract__tuple1__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     static __SPEC_XDR_FN_TUPLE1: [u8; 64usize] = super::Contract::spec_xdr_tuple1();
 }
 impl Contract {
@@ -175,10 +179,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
+#[allow(dead_code)]
 mod __Contract__tuple2__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     static __SPEC_XDR_FN_TUPLE2: [u8; 72usize] = super::Contract::spec_xdr_tuple2();
 }
 impl Contract {
@@ -1094,6 +1100,7 @@ mod test {
             }
         }
         #[doc(hidden)]
+        #[allow(dead_code)]
         static __SPEC_XDR_TYPE_CONTRACTEXECUTABLEREF: [u8; 80usize] =
             ContractExecutableRef::spec_xdr();
         impl ContractExecutableRef {
@@ -1588,6 +1595,7 @@ mod test {
             }
         }
         #[doc(hidden)]
+        #[allow(dead_code)]
         static __SPEC_XDR_TYPE_CONTRACTCONTEXT: [u8; 96usize] = ContractContext::spec_xdr();
         impl ContractContext {
             pub const fn spec_xdr() -> [u8; 96usize] {
@@ -2137,6 +2145,7 @@ mod test {
             }
         }
         #[doc(hidden)]
+        #[allow(dead_code)]
         static __SPEC_XDR_TYPE_SUBCONTRACTINVOCATION: [u8; 144usize] =
             SubContractInvocation::spec_xdr();
         impl SubContractInvocation {
@@ -2624,6 +2633,7 @@ mod test {
             }
         }
         #[doc(hidden)]
+        #[allow(dead_code)]
         static __SPEC_XDR_TYPE_CREATECONTRACTHOSTFNCONTEXT: [u8; 116usize] =
             CreateContractHostFnContext::spec_xdr();
         impl CreateContractHostFnContext {
@@ -3143,6 +3153,7 @@ mod test {
             }
         }
         #[doc(hidden)]
+        #[allow(dead_code)]
         static __SPEC_XDR_TYPE_CREATECONTRACTWITHCONSTRUCTORHOSTFNCONTEXT: [u8; 164usize] =
             CreateContractWithConstructorHostFnContext::spec_xdr();
         impl CreateContractWithConstructorHostFnContext {
@@ -3767,6 +3778,7 @@ mod test {
             }
         }
         #[doc(hidden)]
+        #[allow(dead_code)]
         static __SPEC_XDR_TYPE_CONTRACTEXECUTABLE: [u8; 128usize] = ContractExecutable::spec_xdr();
         impl ContractExecutable {
             pub const fn spec_xdr() -> [u8; 128usize] {
@@ -4407,6 +4419,7 @@ mod test {
             }
         }
         #[doc(hidden)]
+        #[allow(dead_code)]
         static __SPEC_XDR_TYPE_CONTEXT: [u8; 244usize] = Context::spec_xdr();
         impl Context {
             pub const fn spec_xdr() -> [u8; 244usize] {
@@ -5147,6 +5160,7 @@ mod test {
             }
         }
         #[doc(hidden)]
+        #[allow(dead_code)]
         static __SPEC_XDR_TYPE_INVOKERCONTRACTAUTHENTRY: [u8; 268usize] =
             InvokerContractAuthEntry::spec_xdr();
         impl InvokerContractAuthEntry {
@@ -5882,6 +5896,7 @@ mod test {
             }
         }
         #[doc(hidden)]
+        #[allow(dead_code)]
         static __SPEC_XDR_TYPE_EXECUTABLE: [u8; 104usize] = Executable::spec_xdr();
         impl Executable {
             pub const fn spec_xdr() -> [u8; 104usize] {

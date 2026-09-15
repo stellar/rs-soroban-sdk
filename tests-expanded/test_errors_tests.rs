@@ -158,6 +158,7 @@ impl ::core::cmp::PartialEq for Flag {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 static __SPEC_XDR_TYPE_FLAG: [u8; 104usize] = Flag::spec_xdr();
 impl Flag {
     pub const fn spec_xdr() -> [u8; 104usize] {
@@ -506,6 +507,7 @@ impl ::core::cmp::PartialEq for Error {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 static __SPEC_XDR_TYPE_ERROR: [u8; 48usize] = Error::spec_xdr();
 impl Error {
     pub const fn spec_xdr() -> [u8; 48usize] {
@@ -667,10 +669,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
+#[allow(dead_code)]
 mod __Contract__hello__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     static __SPEC_XDR_FN_HELLO: [u8; 64usize] = super::Contract::spec_xdr_hello();
 }
 impl Contract {
@@ -681,10 +685,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
+#[allow(dead_code)]
 mod __Contract__persisted__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     static __SPEC_XDR_FN_PERSISTED: [u8; 36usize] = super::Contract::spec_xdr_persisted();
 }
 impl Contract {

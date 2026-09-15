@@ -50,6 +50,7 @@ impl ::core::cmp::PartialEq for MyStruct {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_MYSTRUCT: [u8; 60usize] = MyStruct::spec_xdr();
 impl MyStruct {
@@ -164,6 +165,7 @@ impl ::core::cmp::PartialEq for MyEnumUnit {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_MYENUMUNIT: [u8; 64usize] = MyEnumUnit::spec_xdr();
 impl MyEnumUnit {
@@ -286,6 +288,7 @@ impl ::core::cmp::PartialEq for MyEnumVariants {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_MYENUMVARIANTS: [u8; 128usize] = MyEnumVariants::spec_xdr();
 impl MyEnumVariants {

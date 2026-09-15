@@ -34,6 +34,7 @@ impl ::core::cmp::PartialEq for Value {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_VALUE: [u8; 48usize] = Value::spec_xdr();
 impl Value {

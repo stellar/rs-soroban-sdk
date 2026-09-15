@@ -46,6 +46,7 @@ impl ::core::cmp::PartialEq for Flag {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_FLAG: [u8; 104usize] = Flag::spec_xdr();
 impl Flag {
@@ -135,6 +136,7 @@ impl ::core::cmp::PartialEq for Error {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_ERROR: [u8; 48usize] = Error::spec_xdr();
 impl Error {
@@ -292,10 +294,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
+#[allow(dead_code)]
 mod __Contract__hello__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_FN_HELLO: [u8; 64usize] = super::Contract::spec_xdr_hello();
 }

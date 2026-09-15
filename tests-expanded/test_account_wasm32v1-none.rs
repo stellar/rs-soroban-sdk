@@ -51,6 +51,7 @@ impl ::core::cmp::Ord for Error {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_ERROR: [u8; 44usize] = Error::spec_xdr();
 impl Error {
@@ -206,10 +207,12 @@ impl CustomAccountInterface for Contract {
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(non_snake_case)]
+#[allow(dead_code)]
 mod __Contract____check_auth__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[allow(non_snake_case)]
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_FN___CHECK_AUTH: [u8; 148usize] = super::Contract::spec_xdr___check_auth();

@@ -32,10 +32,12 @@ impl ContractA {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
+#[allow(dead_code)]
 mod __ContractA__fn1__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_FN_FN1: [u8; 44usize] = super::ContractA::spec_xdr_fn1();
 }
@@ -143,10 +145,12 @@ impl ContractB {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
+#[allow(dead_code)]
 mod __ContractB__fn2__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_FN_FN2: [u8; 60usize] = super::ContractB::spec_xdr_fn2();
 }
