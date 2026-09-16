@@ -10,15 +10,14 @@
 //!
 //! ## Changed Behaviour
 //!
-//! Custom accounts that were built with an earlier SDK cannot decode a context whose executable
-//! is an `ExternalRef`. When asked to authorize such a deployment, their `__check_auth` fails
-//! and the deployment is not authorized.
+//! Custom accounts that were built with an earlier SDK cannot unpack a context whose executable
+//! is an `ExternalRef`. When asked to unpack the `ContractExecutable` the unpack will panic.
 //!
 //! ## Migrating
 //!
 //! Add a match arm for [`ContractExecutable::ExternalRef`] and decide whether the account
 //! authorizes it. An account that only ever authorized Wasm deployments can keep doing so by
-//! rejecting the new variant.
+//! panicking or returning an error when encountering the new variant.
 //!
 //! ```
 //! use soroban_sdk::{

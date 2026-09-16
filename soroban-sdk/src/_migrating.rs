@@ -82,8 +82,8 @@
 //!    in [`Context::CreateContractHostFn`] and [`Context::CreateContractWithCtorHostFn`] gains the
 //!    [`ContractExecutable::ExternalRef`] variant. Custom accounts that match exhaustively on the
 //!    executable need a new match arm, and decide whether to authorize deployments from executable
-//!    references. Custom accounts built with an earlier SDK cannot decode the new variant and so do
-//!    not authorize such deployments.
+//!    references. Custom accounts built with an earlier SDK cannot unpack the new variant and will
+//!    panic when attempting to unpack when the executable is an external ref.
 //!
 //! [`Env::upload`]: crate::Env::upload
 //! [v28_contracttype_unpacking]: v28_contracttype_unpacking
