@@ -137,10 +137,12 @@ macro_rules! impl_bytesn_repr {
                 self.0.to_val()
             }
 
+            #[doc(hidden)]
             pub fn as_object(&self) -> &BytesObject {
                 self.0.as_object()
             }
 
+            #[doc(hidden)]
             pub fn to_object(&self) -> BytesObject {
                 self.0.to_object()
             }
@@ -453,10 +455,12 @@ impl Bytes {
         self.obj.to_val()
     }
 
+    #[doc(hidden)]
     pub fn as_object(&self) -> &BytesObject {
         &self.obj
     }
 
+    #[doc(hidden)]
     pub fn to_object(&self) -> BytesObject {
         self.obj
     }
@@ -1086,7 +1090,15 @@ impl<const N: usize> TryFrom<Bytes> for BytesN<N> {
 
     #[inline(always)]
     fn try_from(bin: Bytes) -> Result<Self, Self::Error> {
-        if bin.len() == { N as u32 } {
+        let n = const {
+            let n = N as u32;
+            if n as usize == N {
+                Some(n)
+            } else {
+                None
+            }
+        };
+        if n == Some(bin.len()) {
             Ok(Self(bin))
         } else {
             Err(ConversionError {})
@@ -1181,10 +1193,12 @@ impl<const N: usize> BytesN<N> {
         self.0.to_val()
     }
 
+    #[doc(hidden)]
     pub fn as_object(&self) -> &BytesObject {
         self.0.as_object()
     }
 
+    #[doc(hidden)]
     pub fn to_object(&self) -> BytesObject {
         self.0.to_object()
     }

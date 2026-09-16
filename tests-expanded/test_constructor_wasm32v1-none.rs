@@ -29,8 +29,10 @@ pub enum DataKey {
     Temp(u32),
     Instance(u32),
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_DATAKEY: [u8; 112usize] = DataKey::spec_xdr();
+static __SPEC_XDR_TYPE_DATAKEY: [u8; 112usize] = DataKey::spec_xdr();
 impl DataKey {
     pub const fn spec_xdr() -> [u8; 112usize] {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x07DataKey\0\0\0\0\x03\0\0\0\x01\0\0\0\0\0\0\0\nPersistent\0\0\0\0\0\x01\0\0\0\x04\0\0\0\x01\0\0\0\0\0\0\0\x04Temp\0\0\0\x01\0\0\0\x04\0\0\0\x01\0\0\0\0\0\0\0\x08Instance\0\0\0\x01\0\0\0\x04"
@@ -166,13 +168,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract____constructor__spec {
+#[allow(dead_code)]
+mod __Contract____constructor__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN___CONSTRUCTOR: [u8; 80usize] =
-        super::Contract::spec_xdr___constructor();
+    static __SPEC_XDR_FN___CONSTRUCTOR: [u8; 80usize] = super::Contract::spec_xdr___constructor();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -182,12 +185,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__get_data__spec {
+#[allow(dead_code)]
+mod __Contract__get_data__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_GET_DATA: [u8; 64usize] = super::Contract::spec_xdr_get_data();
+    static __SPEC_XDR_FN_GET_DATA: [u8; 64usize] = super::Contract::spec_xdr_get_data();
 }
 impl Contract {
     #[allow(non_snake_case)]

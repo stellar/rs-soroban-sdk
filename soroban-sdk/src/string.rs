@@ -233,10 +233,12 @@ impl String {
         self.obj.to_val()
     }
 
+    #[doc(hidden)]
     pub fn as_object(&self) -> &StringObject {
         &self.obj
     }
 
+    #[doc(hidden)]
     pub fn to_object(&self) -> StringObject {
         self.obj
     }

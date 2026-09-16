@@ -13,7 +13,9 @@ pub struct MockProof {
     pub g1: Vec<Bn254G1Affine>,
     pub g2: Vec<Bn254G2Affine>,
 }
-pub static __SPEC_XDR_TYPE_MOCKPROOF: [u8; 80usize] = MockProof::spec_xdr();
+#[doc(hidden)]
+#[allow(dead_code)]
+static __SPEC_XDR_TYPE_MOCKPROOF: [u8; 80usize] = MockProof::spec_xdr();
 impl MockProof {
     pub const fn spec_xdr() -> [u8; 80usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\tMockProof\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02g1\0\0\0\0\x03\xea\0\0\x03\xee\0\0\0@\0\0\0\0\0\0\0\x02g2\0\0\0\0\x03\xea\0\0\x03\xee\0\0\0\x80"
@@ -561,12 +563,13 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__verify_pairing__spec {
+#[allow(dead_code)]
+mod __Contract__verify_pairing__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_VERIFY_PAIRING: [u8; 76usize] =
-        super::Contract::spec_xdr_verify_pairing();
+    #[allow(dead_code)]
+    static __SPEC_XDR_FN_VERIFY_PAIRING: [u8; 76usize] = super::Contract::spec_xdr_verify_pairing();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -576,11 +579,13 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__g1_add__spec {
+#[allow(dead_code)]
+mod __Contract__g1_add__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_G1_ADD: [u8; 76usize] = super::Contract::spec_xdr_g1_add();
+    #[allow(dead_code)]
+    static __SPEC_XDR_FN_G1_ADD: [u8; 76usize] = super::Contract::spec_xdr_g1_add();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -590,11 +595,13 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__g1_mul__spec {
+#[allow(dead_code)]
+mod __Contract__g1_mul__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_G1_MUL: [u8; 72usize] = super::Contract::spec_xdr_g1_mul();
+    #[allow(dead_code)]
+    static __SPEC_XDR_FN_G1_MUL: [u8; 72usize] = super::Contract::spec_xdr_g1_mul();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -604,11 +611,13 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__fr_vec_get__spec {
+#[allow(dead_code)]
+mod __Contract__fr_vec_get__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_FR_VEC_GET: [u8; 80usize] = super::Contract::spec_xdr_fr_vec_get();
+    #[allow(dead_code)]
+    static __SPEC_XDR_FN_FR_VEC_GET: [u8; 80usize] = super::Contract::spec_xdr_fr_vec_get();
 }
 impl Contract {
     #[allow(non_snake_case)]

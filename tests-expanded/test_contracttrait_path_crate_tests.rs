@@ -381,11 +381,13 @@ pub extern "C" fn __ContractCratePath__crate_path_method__invoke_raw_extern() ->
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __ContractCratePath__crate_path_method__spec {
+#[allow(dead_code)]
+mod __ContractCratePath__crate_path_method__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_CRATE_PATH_METHOD: [u8; 44usize] =
+    #[allow(dead_code)]
+    static __SPEC_XDR_FN_CRATE_PATH_METHOD: [u8; 44usize] =
         super::ContractCratePath::spec_xdr_crate_path_method();
 }
 impl ContractCratePath {

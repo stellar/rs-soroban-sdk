@@ -460,8 +460,9 @@ mod addcontract {
             }
         }
     }
-    pub static __SPEC_XDR_TYPE_CONTRACTEXECUTABLEREF: [u8; 80usize] =
-        ContractExecutableRef::spec_xdr();
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    static __SPEC_XDR_TYPE_CONTRACTEXECUTABLEREF: [u8; 80usize] = ContractExecutableRef::spec_xdr();
     impl ContractExecutableRef {
         pub const fn spec_xdr() -> [u8; 80usize] {
             *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x15ContractExecutableRef\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x05owner\0\0\0\0\0\0\x13\0\0\0\0\0\0\0\x03tag\0\0\0\0\x10"
@@ -949,7 +950,9 @@ mod addcontract {
             }
         }
     }
-    pub static __SPEC_XDR_TYPE_CONTRACTCONTEXT: [u8; 96usize] = ContractContext::spec_xdr();
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    static __SPEC_XDR_TYPE_CONTRACTCONTEXT: [u8; 96usize] = ContractContext::spec_xdr();
     impl ContractContext {
         pub const fn spec_xdr() -> [u8; 96usize] {
             *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0fContractContext\0\0\0\0\x03\0\0\0\0\0\0\0\x04args\0\0\x03\xea\0\0\0\0\0\0\0\0\0\0\0\x08contract\0\0\0\x13\0\0\0\0\0\0\0\x07fn_name\0\0\0\0\x11"
@@ -1492,7 +1495,9 @@ mod addcontract {
             }
         }
     }
-    pub static __SPEC_XDR_TYPE_SUBCONTRACTINVOCATION: [u8; 144usize] =
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    static __SPEC_XDR_TYPE_SUBCONTRACTINVOCATION: [u8; 144usize] =
         SubContractInvocation::spec_xdr();
     impl SubContractInvocation {
         pub const fn spec_xdr() -> [u8; 144usize] {
@@ -1977,7 +1982,9 @@ mod addcontract {
             }
         }
     }
-    pub static __SPEC_XDR_TYPE_CREATECONTRACTHOSTFNCONTEXT: [u8; 116usize] =
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    static __SPEC_XDR_TYPE_CREATECONTRACTHOSTFNCONTEXT: [u8; 116usize] =
         CreateContractHostFnContext::spec_xdr();
     impl CreateContractHostFnContext {
         pub const fn spec_xdr() -> [u8; 116usize] {
@@ -2481,7 +2488,9 @@ mod addcontract {
             }
         }
     }
-    pub static __SPEC_XDR_TYPE_CREATECONTRACTWITHCONSTRUCTORHOSTFNCONTEXT: [u8; 164usize] =
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    static __SPEC_XDR_TYPE_CREATECONTRACTWITHCONSTRUCTORHOSTFNCONTEXT: [u8; 164usize] =
         CreateContractWithConstructorHostFnContext::spec_xdr();
     impl CreateContractWithConstructorHostFnContext {
         pub const fn spec_xdr() -> [u8; 164usize] {
@@ -3102,7 +3111,9 @@ mod addcontract {
             }
         }
     }
-    pub static __SPEC_XDR_TYPE_CONTRACTEXECUTABLE: [u8; 128usize] = ContractExecutable::spec_xdr();
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    static __SPEC_XDR_TYPE_CONTRACTEXECUTABLE: [u8; 128usize] = ContractExecutable::spec_xdr();
     impl ContractExecutable {
         pub const fn spec_xdr() -> [u8; 128usize] {
             *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x12ContractExecutable\0\0\0\0\0\x02\0\0\0\x01\0\0\0\0\0\0\0\x04Wasm\0\0\0\x01\0\0\x03\xee\0\0\0 \0\0\0\x01\0\0\0\0\0\0\0\x0bExternalRef\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x15ContractExecutableRef\0\0\0"
@@ -3737,7 +3748,9 @@ mod addcontract {
             }
         }
     }
-    pub static __SPEC_XDR_TYPE_CONTEXT: [u8; 244usize] = Context::spec_xdr();
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    static __SPEC_XDR_TYPE_CONTEXT: [u8; 244usize] = Context::spec_xdr();
     impl Context {
         pub const fn spec_xdr() -> [u8; 244usize] {
             *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x07Context\0\0\0\0\x03\0\0\0\x01\0\0\0\0\0\0\0\x08Contract\0\0\0\x01\0\0\x07\xd0\0\0\0\x0fContractContext\0\0\0\0\x01\0\0\0\0\0\0\0\x14CreateContractHostFn\0\0\0\x01\0\0\x07\xd0\0\0\0\x1bCreateContractHostFnContext\0\0\0\0\x01\0\0\0\0\0\0\0\x1cCreateContractWithCtorHostFn\0\0\0\x01\0\0\x07\xd0\0\0\0*CreateContractWithConstructorHostFnContext\0\0"
@@ -4465,7 +4478,9 @@ mod addcontract {
             }
         }
     }
-    pub static __SPEC_XDR_TYPE_INVOKERCONTRACTAUTHENTRY: [u8; 268usize] =
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    static __SPEC_XDR_TYPE_INVOKERCONTRACTAUTHENTRY: [u8; 268usize] =
         InvokerContractAuthEntry::spec_xdr();
     impl InvokerContractAuthEntry {
         pub const fn spec_xdr() -> [u8; 268usize] {
@@ -5170,7 +5185,9 @@ mod addcontract {
             }
         }
     }
-    pub static __SPEC_XDR_TYPE_EXECUTABLE: [u8; 104usize] = Executable::spec_xdr();
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    static __SPEC_XDR_TYPE_EXECUTABLE: [u8; 104usize] = Executable::spec_xdr();
     impl Executable {
         pub const fn spec_xdr() -> [u8; 104usize] {
             *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\nExecutable\0\0\0\0\0\x03\0\0\0\x01\0\0\0\0\0\0\0\x04Wasm\0\0\0\x01\0\0\x03\xee\0\0\0 \0\0\0\0\0\0\0\0\0\0\0\x0cStellarAsset\0\0\0\0\0\0\0\0\0\0\0\x07Account\0"
@@ -5703,7 +5720,9 @@ mod addcontract {
             ::core::option::Option::Some(::core::cmp::Ordering::Equal)
         }
     }
-    pub static __SPEC_XDR_TYPE_ERROR: [u8; 48usize] = Error::spec_xdr();
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    static __SPEC_XDR_TYPE_ERROR: [u8; 48usize] = Error::spec_xdr();
     impl Error {
         pub const fn spec_xdr() -> [u8; 48usize] {
             *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x05Error\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x08Overflow\0\0\0\x01"
@@ -5866,7 +5885,9 @@ mod addcontract {
             ::core::option::Option::Some(::core::cmp::Ordering::Equal)
         }
     }
-    pub static __SPEC_XDR_TYPE_MYERROR: [u8; 48usize] = MyError::spec_xdr();
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    static __SPEC_XDR_TYPE_MYERROR: [u8; 48usize] = MyError::spec_xdr();
     impl MyError {
         pub const fn spec_xdr() -> [u8; 48usize] {
             *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x07MyError\0\0\0\0\x01\0\0\0\0\0\0\0\x08Overflow\0\0\0\x01"
@@ -6009,7 +6030,9 @@ impl ::core::cmp::PartialEq for Error {
         __self_discr == __arg1_discr
     }
 }
-pub static __SPEC_XDR_TYPE_ERROR: [u8; 68usize] = Error::spec_xdr();
+#[doc(hidden)]
+#[allow(dead_code)]
+static __SPEC_XDR_TYPE_ERROR: [u8; 68usize] = Error::spec_xdr();
 impl Error {
     pub const fn spec_xdr() -> [u8; 68usize] {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x05Error\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x05Abort\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x08Overflow\0\0\0\x01"
@@ -6279,11 +6302,13 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__add_with__spec {
+#[allow(dead_code)]
+mod __Contract__add_with__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_ADD_WITH: [u8; 88usize] = super::Contract::spec_xdr_add_with();
+    #[allow(dead_code)]
+    static __SPEC_XDR_FN_ADD_WITH: [u8; 88usize] = super::Contract::spec_xdr_add_with();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -6293,12 +6318,13 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__safe_add_with__spec {
+#[allow(dead_code)]
+mod __Contract__safe_add_with__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_SAFE_ADD_WITH: [u8; 104usize] =
-        super::Contract::spec_xdr_safe_add_with();
+    #[allow(dead_code)]
+    static __SPEC_XDR_FN_SAFE_ADD_WITH: [u8; 104usize] = super::Contract::spec_xdr_safe_add_with();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -6308,11 +6334,13 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__safe_add_with_two__spec {
+#[allow(dead_code)]
+mod __Contract__safe_add_with_two__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_SAFE_ADD_WITH_TWO: [u8; 108usize] =
+    #[allow(dead_code)]
+    static __SPEC_XDR_FN_SAFE_ADD_WITH_TWO: [u8; 108usize] =
         super::Contract::spec_xdr_safe_add_with_two();
 }
 impl Contract {

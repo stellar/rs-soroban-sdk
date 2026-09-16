@@ -5,8 +5,6 @@
 
 pub mod arbitrary;
 
-pub mod proptest;
-
 mod sign;
 use std::{fmt::Debug, rc::Rc};
 

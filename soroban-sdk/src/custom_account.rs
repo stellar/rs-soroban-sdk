@@ -21,7 +21,8 @@
 //! #[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
 //! #[repr(u32)]
 //! pub enum Error {
-//!     UnknownDelegate = 1,
+//!     NoDelegates = 1,
+//!     UnknownDelegate = 2,
 //! }
 //!
 //! #[contracttype]
@@ -62,6 +63,12 @@
 //!         // The signers the user attached to the auth entry for this
 //!         // account's authorization.
 //!         let delegates = env.custom_account().get_delegated_signers();
+//!
+//!         // The account authenticates only by delegation, so an auth entry
+//!         // that attaches no delegated signers must not be approved.
+//!         if delegates.is_empty() {
+//!             return Err(Error::NoDelegates);
+//!         }
 //!
 //!         // Check if the delegates are accepted by the modular account.
 //!         for delegate in delegates.iter() {

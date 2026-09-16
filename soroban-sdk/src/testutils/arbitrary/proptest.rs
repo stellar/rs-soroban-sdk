@@ -1,4 +1,4 @@
-//! Support for property testing Soroban contracts with [`proptest`].
+//! Property testing with [`proptest`].
 //!
 //! Property tests generate Soroban contract types with the prototype pattern
 //! that the [`arbitrary`] module defines for fuzzing: because every
@@ -7,8 +7,8 @@
 //! ordinary `#[test]` under `cargo test`, with no fuzzing toolchain.
 //!
 //! [`proptest`]: https://docs.rs/proptest
-//! [`arbitrary`]: crate::testutils::arbitrary
-//! [`SorobanArbitrary::Prototype`]: crate::testutils::arbitrary::SorobanArbitrary::Prototype
+//! [`arbitrary`]: super
+//! [`SorobanArbitrary::Prototype`]: super::SorobanArbitrary::Prototype
 //! [`Arbitrary`]: ::arbitrary::Arbitrary
 //!
 //!
@@ -66,9 +66,27 @@
 //! ```
 //!
 //! Note that generated `Address` prototypes always convert to contract
-//! addresses, never to account (`G...`) addresses. A property test that also
-//! needs account addresses must construct them itself with
-//! `Address::from_str`.
+//! (`C...`) addresses. To generate account (`G...`) addresses, use the
+//! [`ArbitraryAddressAccount`] prototype in place of the default:
+//!
+//! ```
+//! use proptest::prelude::*;
+//! use proptest_arbitrary_interop::arb;
+//! use soroban_sdk::testutils::arbitrary::ArbitraryAddressAccount;
+//! use soroban_sdk::{Address, Env, IntoVal};
+//!
+//! proptest! {
+//!     #[test]
+//!     fn test_deposit(address_proto in arb::<ArbitraryAddressAccount>()) {
+//!         let env = Env::default();
+//!         let address: Address = address_proto.into_val(&env);
+//!         // call the contract with `address`
+//!     }
+//! }
+//! # fn main() { }
+//! ```
+//!
+//! [`ArbitraryAddressAccount`]: super::ArbitraryAddressAccount
 //!
 //!
 //! ## Example: generate a custom contract type in a property test

@@ -373,11 +373,13 @@ pub extern "C" fn __ContractSelfPath__self_path_method__invoke_raw_extern() -> s
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __ContractSelfPath__self_path_method__spec {
+#[allow(dead_code)]
+mod __ContractSelfPath__self_path_method__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_SELF_PATH_METHOD: [u8; 40usize] =
+    #[allow(dead_code)]
+    static __SPEC_XDR_FN_SELF_PATH_METHOD: [u8; 40usize] =
         super::ContractSelfPath::spec_xdr_self_path_method();
 }
 impl ContractSelfPath {

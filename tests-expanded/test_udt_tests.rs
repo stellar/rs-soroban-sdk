@@ -49,7 +49,9 @@ impl ::core::cmp::PartialEq for UdtEnum2 {
         __self_discr == __arg1_discr
     }
 }
-pub static __SPEC_XDR_TYPE_UDTENUM2: [u8; 60usize] = UdtEnum2::spec_xdr();
+#[doc(hidden)]
+#[allow(dead_code)]
+static __SPEC_XDR_TYPE_UDTENUM2: [u8; 60usize] = UdtEnum2::spec_xdr();
 impl UdtEnum2 {
     pub const fn spec_xdr() -> [u8; 60usize] {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08UdtEnum2\0\0\0\x02\0\0\0\0\0\0\0\x01A\0\0\0\0\0\0\n\0\0\0\0\0\0\0\x01B\0\0\0\0\0\0\x0f"
@@ -398,7 +400,9 @@ impl ::core::cmp::PartialEq for UdtEnum {
             }
     }
 }
-pub static __SPEC_XDR_TYPE_UDTENUM: [u8; 156usize] = UdtEnum::spec_xdr();
+#[doc(hidden)]
+#[allow(dead_code)]
+static __SPEC_XDR_TYPE_UDTENUM: [u8; 156usize] = UdtEnum::spec_xdr();
 impl UdtEnum {
     pub const fn spec_xdr() -> [u8; 156usize] {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x07UdtEnum\0\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x04UdtA\0\0\0\x01\0\0\0\0\0\0\0\x04UdtB\0\0\0\x01\0\0\x07\xd0\0\0\0\tUdtStruct\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04UdtC\0\0\0\x01\0\0\x07\xd0\0\0\0\x08UdtEnum2\0\0\0\x01\0\0\0\0\0\0\0\x04UdtD\0\0\0\x01\0\0\x07\xd0\0\0\0\x08UdtTuple"
@@ -1013,7 +1017,9 @@ impl ::core::cmp::PartialEq for UdtTuple {
         self.0 == other.0 && self.1 == other.1
     }
 }
-pub static __SPEC_XDR_TYPE_UDTTUPLE: [u8; 64usize] = UdtTuple::spec_xdr();
+#[doc(hidden)]
+#[allow(dead_code)]
+static __SPEC_XDR_TYPE_UDTTUPLE: [u8; 64usize] = UdtTuple::spec_xdr();
 impl UdtTuple {
     pub const fn spec_xdr() -> [u8; 64usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x08UdtTuple\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x011\0\0\0\0\0\x03\xea\0\0\0\x07"
@@ -1406,7 +1412,9 @@ impl ::core::cmp::PartialEq for UdtStruct {
         self.a == other.a && self.b == other.b && self.c == other.c
     }
 }
-pub static __SPEC_XDR_TYPE_UDTSTRUCT: [u8; 84usize] = UdtStruct::spec_xdr();
+#[doc(hidden)]
+#[allow(dead_code)]
+static __SPEC_XDR_TYPE_UDTSTRUCT: [u8; 84usize] = UdtStruct::spec_xdr();
 impl UdtStruct {
     pub const fn spec_xdr() -> [u8; 84usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\tUdtStruct\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x01c\0\0\0\0\0\x03\xea\0\0\0\x07"
@@ -1890,7 +1898,9 @@ impl ::core::cmp::PartialEq for UdtRecursive {
         self.a == other.a && self.b == other.b
     }
 }
-pub static __SPEC_XDR_TYPE_UDTRECURSIVE: [u8; 84usize] = UdtRecursive::spec_xdr();
+#[doc(hidden)]
+#[allow(dead_code)]
+static __SPEC_XDR_TYPE_UDTRECURSIVE: [u8; 84usize] = UdtRecursive::spec_xdr();
 impl UdtRecursive {
     pub const fn spec_xdr() -> [u8; 84usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cUdtRecursive\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x11\0\0\0\0\0\0\0\x01b\0\0\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x0cUdtRecursive"
@@ -2324,7 +2334,9 @@ impl ::core::cmp::PartialEq for RecursiveToEnum {
         self.a == other.a && self.b == other.b
     }
 }
-pub static __SPEC_XDR_TYPE_RECURSIVETOENUM: [u8; 96usize] = RecursiveToEnum::spec_xdr();
+#[doc(hidden)]
+#[allow(dead_code)]
+static __SPEC_XDR_TYPE_RECURSIVETOENUM: [u8; 96usize] = RecursiveToEnum::spec_xdr();
 impl RecursiveToEnum {
     pub const fn spec_xdr() -> [u8; 96usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0fRecursiveToEnum\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x11\0\0\0\0\0\0\0\x01b\0\0\0\0\0\x03\xec\0\0\0\x04\0\0\x07\xd0\0\0\0\rRecursiveEnum\0\0\0"
@@ -2772,7 +2784,9 @@ impl ::core::cmp::PartialEq for RecursiveEnum {
             }
     }
 }
-pub static __SPEC_XDR_TYPE_RECURSIVEENUM: [u8; 112usize] = RecursiveEnum::spec_xdr();
+#[doc(hidden)]
+#[allow(dead_code)]
+static __SPEC_XDR_TYPE_RECURSIVEENUM: [u8; 112usize] = RecursiveEnum::spec_xdr();
 impl RecursiveEnum {
     pub const fn spec_xdr() -> [u8; 112usize] {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\rRecursiveEnum\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x0cNotRecursive\0\0\0\x01\0\0\0\0\0\0\0\tRecursive\0\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x0fRecursiveToEnum\0"
@@ -3374,11 +3388,13 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__add__spec {
+#[allow(dead_code)]
+mod __Contract__add__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_ADD: [u8; 84usize] = super::Contract::spec_xdr_add();
+    #[allow(dead_code)]
+    static __SPEC_XDR_FN_ADD: [u8; 84usize] = super::Contract::spec_xdr_add();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -3388,11 +3404,13 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__recursive__spec {
+#[allow(dead_code)]
+mod __Contract__recursive__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_RECURSIVE: [u8; 88usize] = super::Contract::spec_xdr_recursive();
+    #[allow(dead_code)]
+    static __SPEC_XDR_FN_RECURSIVE: [u8; 88usize] = super::Contract::spec_xdr_recursive();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -3402,11 +3420,13 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__recursive_enum__spec {
+#[allow(dead_code)]
+mod __Contract__recursive_enum__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_RECURSIVE_ENUM: [u8; 124usize] =
+    #[allow(dead_code)]
+    static __SPEC_XDR_FN_RECURSIVE_ENUM: [u8; 124usize] =
         super::Contract::spec_xdr_recursive_enum();
 }
 impl Contract {
@@ -4674,7 +4694,9 @@ mod test_with_wasm {
                 }
             }
         }
-        pub static __SPEC_XDR_TYPE_UDTTUPLE: [u8; 64usize] = UdtTuple::spec_xdr();
+        #[doc(hidden)]
+        #[allow(dead_code)]
+        static __SPEC_XDR_TYPE_UDTTUPLE: [u8; 64usize] = UdtTuple::spec_xdr();
         impl UdtTuple {
             pub const fn spec_xdr() -> [u8; 64usize] {
                 *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x08UdtTuple\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x011\0\0\0\0\0\x03\xea\0\0\0\x07"
@@ -5112,7 +5134,9 @@ mod test_with_wasm {
                 }
             }
         }
-        pub static __SPEC_XDR_TYPE_UDTSTRUCT: [u8; 84usize] = UdtStruct::spec_xdr();
+        #[doc(hidden)]
+        #[allow(dead_code)]
+        static __SPEC_XDR_TYPE_UDTSTRUCT: [u8; 84usize] = UdtStruct::spec_xdr();
         impl UdtStruct {
             pub const fn spec_xdr() -> [u8; 84usize] {
                 *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\tUdtStruct\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x01c\0\0\0\0\0\x03\xea\0\0\0\x07"
@@ -5633,7 +5657,9 @@ mod test_with_wasm {
                 }
             }
         }
-        pub static __SPEC_XDR_TYPE_UDTRECURSIVE: [u8; 84usize] = UdtRecursive::spec_xdr();
+        #[doc(hidden)]
+        #[allow(dead_code)]
+        static __SPEC_XDR_TYPE_UDTRECURSIVE: [u8; 84usize] = UdtRecursive::spec_xdr();
         impl UdtRecursive {
             pub const fn spec_xdr() -> [u8; 84usize] {
                 *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cUdtRecursive\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x11\0\0\0\0\0\0\0\x01b\0\0\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x0cUdtRecursive"
@@ -6102,7 +6128,9 @@ mod test_with_wasm {
                 }
             }
         }
-        pub static __SPEC_XDR_TYPE_RECURSIVETOENUM: [u8; 96usize] = RecursiveToEnum::spec_xdr();
+        #[doc(hidden)]
+        #[allow(dead_code)]
+        static __SPEC_XDR_TYPE_RECURSIVETOENUM: [u8; 96usize] = RecursiveToEnum::spec_xdr();
         impl RecursiveToEnum {
             pub const fn spec_xdr() -> [u8; 96usize] {
                 *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0fRecursiveToEnum\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x11\0\0\0\0\0\0\0\x01b\0\0\0\0\0\x03\xec\0\0\0\x04\0\0\x07\xd0\0\0\0\rRecursiveEnum\0\0\0"
@@ -6575,7 +6603,9 @@ mod test_with_wasm {
                 }
             }
         }
-        pub static __SPEC_XDR_TYPE_CONTRACTEXECUTABLEREF: [u8; 80usize] =
+        #[doc(hidden)]
+        #[allow(dead_code)]
+        static __SPEC_XDR_TYPE_CONTRACTEXECUTABLEREF: [u8; 80usize] =
             ContractExecutableRef::spec_xdr();
         impl ContractExecutableRef {
             pub const fn spec_xdr() -> [u8; 80usize] {
@@ -7068,7 +7098,9 @@ mod test_with_wasm {
                 }
             }
         }
-        pub static __SPEC_XDR_TYPE_CONTRACTCONTEXT: [u8; 96usize] = ContractContext::spec_xdr();
+        #[doc(hidden)]
+        #[allow(dead_code)]
+        static __SPEC_XDR_TYPE_CONTRACTCONTEXT: [u8; 96usize] = ContractContext::spec_xdr();
         impl ContractContext {
             pub const fn spec_xdr() -> [u8; 96usize] {
                 *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0fContractContext\0\0\0\0\x03\0\0\0\0\0\0\0\x04args\0\0\x03\xea\0\0\0\0\0\0\0\0\0\0\0\x08contract\0\0\0\x13\0\0\0\0\0\0\0\x07fn_name\0\0\0\0\x11"
@@ -7616,7 +7648,9 @@ mod test_with_wasm {
                 }
             }
         }
-        pub static __SPEC_XDR_TYPE_SUBCONTRACTINVOCATION: [u8; 144usize] =
+        #[doc(hidden)]
+        #[allow(dead_code)]
+        static __SPEC_XDR_TYPE_SUBCONTRACTINVOCATION: [u8; 144usize] =
             SubContractInvocation::spec_xdr();
         impl SubContractInvocation {
             pub const fn spec_xdr() -> [u8; 144usize] {
@@ -8102,7 +8136,9 @@ mod test_with_wasm {
                 }
             }
         }
-        pub static __SPEC_XDR_TYPE_CREATECONTRACTHOSTFNCONTEXT: [u8; 116usize] =
+        #[doc(hidden)]
+        #[allow(dead_code)]
+        static __SPEC_XDR_TYPE_CREATECONTRACTHOSTFNCONTEXT: [u8; 116usize] =
             CreateContractHostFnContext::spec_xdr();
         impl CreateContractHostFnContext {
             pub const fn spec_xdr() -> [u8; 116usize] {
@@ -8620,7 +8656,9 @@ mod test_with_wasm {
                 }
             }
         }
-        pub static __SPEC_XDR_TYPE_CREATECONTRACTWITHCONSTRUCTORHOSTFNCONTEXT: [u8; 164usize] =
+        #[doc(hidden)]
+        #[allow(dead_code)]
+        static __SPEC_XDR_TYPE_CREATECONTRACTWITHCONSTRUCTORHOSTFNCONTEXT: [u8; 164usize] =
             CreateContractWithConstructorHostFnContext::spec_xdr();
         impl CreateContractWithConstructorHostFnContext {
             pub const fn spec_xdr() -> [u8; 164usize] {
@@ -9242,7 +9280,9 @@ mod test_with_wasm {
                 }
             }
         }
-        pub static __SPEC_XDR_TYPE_UDTENUM: [u8; 156usize] = UdtEnum::spec_xdr();
+        #[doc(hidden)]
+        #[allow(dead_code)]
+        static __SPEC_XDR_TYPE_UDTENUM: [u8; 156usize] = UdtEnum::spec_xdr();
         impl UdtEnum {
             pub const fn spec_xdr() -> [u8; 156usize] {
                 *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x07UdtEnum\0\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x04UdtA\0\0\0\x01\0\0\0\0\0\0\0\x04UdtB\0\0\0\x01\0\0\x07\xd0\0\0\0\tUdtStruct\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04UdtC\0\0\0\x01\0\0\x07\xd0\0\0\0\x08UdtEnum2\0\0\0\x01\0\0\0\0\0\0\0\x04UdtD\0\0\0\x01\0\0\x07\xd0\0\0\0\x08UdtTuple"
@@ -9932,7 +9972,9 @@ mod test_with_wasm {
                 }
             }
         }
-        pub static __SPEC_XDR_TYPE_RECURSIVEENUM: [u8; 112usize] = RecursiveEnum::spec_xdr();
+        #[doc(hidden)]
+        #[allow(dead_code)]
+        static __SPEC_XDR_TYPE_RECURSIVEENUM: [u8; 112usize] = RecursiveEnum::spec_xdr();
         impl RecursiveEnum {
             pub const fn spec_xdr() -> [u8; 112usize] {
                 *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\rRecursiveEnum\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x0cNotRecursive\0\0\0\x01\0\0\0\0\0\0\0\tRecursive\0\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x0fRecursiveToEnum\0"
@@ -10496,8 +10538,9 @@ mod test_with_wasm {
                 }
             }
         }
-        pub static __SPEC_XDR_TYPE_CONTRACTEXECUTABLE: [u8; 128usize] =
-            ContractExecutable::spec_xdr();
+        #[doc(hidden)]
+        #[allow(dead_code)]
+        static __SPEC_XDR_TYPE_CONTRACTEXECUTABLE: [u8; 128usize] = ContractExecutable::spec_xdr();
         impl ContractExecutable {
             pub const fn spec_xdr() -> [u8; 128usize] {
                 *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x12ContractExecutable\0\0\0\0\0\x02\0\0\0\x01\0\0\0\0\0\0\0\x04Wasm\0\0\0\x01\0\0\x03\xee\0\0\0 \0\0\0\x01\0\0\0\0\0\0\0\x0bExternalRef\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x15ContractExecutableRef\0\0\0"
@@ -11136,7 +11179,9 @@ mod test_with_wasm {
                 }
             }
         }
-        pub static __SPEC_XDR_TYPE_CONTEXT: [u8; 244usize] = Context::spec_xdr();
+        #[doc(hidden)]
+        #[allow(dead_code)]
+        static __SPEC_XDR_TYPE_CONTEXT: [u8; 244usize] = Context::spec_xdr();
         impl Context {
             pub const fn spec_xdr() -> [u8; 244usize] {
                 *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x07Context\0\0\0\0\x03\0\0\0\x01\0\0\0\0\0\0\0\x08Contract\0\0\0\x01\0\0\x07\xd0\0\0\0\x0fContractContext\0\0\0\0\x01\0\0\0\0\0\0\0\x14CreateContractHostFn\0\0\0\x01\0\0\x07\xd0\0\0\0\x1bCreateContractHostFnContext\0\0\0\0\x01\0\0\0\0\0\0\0\x1cCreateContractWithCtorHostFn\0\0\0\x01\0\0\x07\xd0\0\0\0*CreateContractWithConstructorHostFnContext\0\0"
@@ -11875,7 +11920,9 @@ mod test_with_wasm {
                 }
             }
         }
-        pub static __SPEC_XDR_TYPE_INVOKERCONTRACTAUTHENTRY: [u8; 268usize] =
+        #[doc(hidden)]
+        #[allow(dead_code)]
+        static __SPEC_XDR_TYPE_INVOKERCONTRACTAUTHENTRY: [u8; 268usize] =
             InvokerContractAuthEntry::spec_xdr();
         impl InvokerContractAuthEntry {
             pub const fn spec_xdr() -> [u8; 268usize] {
@@ -12609,7 +12656,9 @@ mod test_with_wasm {
                 }
             }
         }
-        pub static __SPEC_XDR_TYPE_EXECUTABLE: [u8; 104usize] = Executable::spec_xdr();
+        #[doc(hidden)]
+        #[allow(dead_code)]
+        static __SPEC_XDR_TYPE_EXECUTABLE: [u8; 104usize] = Executable::spec_xdr();
         impl Executable {
             pub const fn spec_xdr() -> [u8; 104usize] {
                 *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\nExecutable\0\0\0\0\0\x03\0\0\0\x01\0\0\0\0\0\0\0\x04Wasm\0\0\0\x01\0\0\x03\xee\0\0\0 \0\0\0\0\0\0\0\0\0\0\0\x0cStellarAsset\0\0\0\0\0\0\0\0\0\0\0\x07Account\0"
@@ -13164,7 +13213,9 @@ mod test_with_wasm {
                 ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr)
             }
         }
-        pub static __SPEC_XDR_TYPE_UDTENUM2: [u8; 60usize] = UdtEnum2::spec_xdr();
+        #[doc(hidden)]
+        #[allow(dead_code)]
+        static __SPEC_XDR_TYPE_UDTENUM2: [u8; 60usize] = UdtEnum2::spec_xdr();
         impl UdtEnum2 {
             pub const fn spec_xdr() -> [u8; 60usize] {
                 *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08UdtEnum2\0\0\0\x02\0\0\0\0\0\0\0\x01A\0\0\0\0\0\0\n\0\0\0\0\0\0\0\x01B\0\0\0\0\0\0\x0f"

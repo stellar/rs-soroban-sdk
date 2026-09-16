@@ -1,5 +1,5 @@
 use crate::{self as soroban_sdk};
-use soroban_sdk::{vec, Address, Bytes, BytesN, Env, Map, String, Vec};
+use soroban_sdk::{vec, Address, Bytes, BytesN, Env, Map, MuxedAddress, String, Vec};
 
 #[test]
 fn test_address() {
@@ -29,6 +29,44 @@ fn test_address() {
         "CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE",
     );
     assert_eq!(a1, a2);
+}
+
+#[test]
+fn test_muxed_address() {
+    #[rustfmt::skip]
+    fn assert_muxed_address_comparisons(e1: &Env, e2: &Env) {
+        // Two muxed addresses with the same value should be comparable and equal.
+        let a1 = MuxedAddress::from_str(e1, "MA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAAAAAAAAAPCICBKU");
+        let a2 = MuxedAddress::from_str(e2, "MA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAAAAAAAAAPCICBKU");
+        assert_eq!(a1, a2);
+
+        // Two muxed addresses with the same base address but different IDs should be comparable
+        // and not equal.
+        let a1 = MuxedAddress::from_str(e1, "MA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAAAAAAAAAPCICBKU");
+        let a2 = MuxedAddress::from_str(e2, "MA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAAAAAAAAAPCIGR3U");
+        assert_ne!(a1, a2);
+
+        // Two muxed addresses with different base addresses but the same IDs should be comparable
+        // and not equal.
+        let a1 = MuxedAddress::from_str(e1, "MA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAAAAAAAAAPCICBKU");
+        let a2 = MuxedAddress::from_str(e2, "MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAPCIC3UC");
+        assert_ne!(a1, a2);
+
+        // Two muxed addresses with different base addresses and IDs should be comparable and
+        // not equal.
+        let a1 = MuxedAddress::from_str(e1, "MA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAAAAAAAAAPCICBKU");
+        let a2 = MuxedAddress::from_str(e2, "MA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUAAAAAAAAAAAACJUQ");
+        assert_ne!(a1, a2);
+    }
+
+    // Muxed addresses should compare within the same environment.
+    let env = Env::default();
+    assert_muxed_address_comparisons(&env, &env);
+
+    // Muxed addresses should compare across environment in tests.
+    let e1 = Env::default();
+    let e2 = Env::default();
+    assert_muxed_address_comparisons(&e1, &e2);
 }
 
 #[test]
