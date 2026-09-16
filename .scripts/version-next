@@ -1,0 +1,65 @@
+#!/usr/bin/env python3
+
+# Accepts as an argument a release tag, with or without a leading 'v', and
+# outputs the versions that could follow it.
+#
+# Outputs 'key=value' lines, one per line, for sourcing or grepping:
+#
+#   current       the tag's version, without the leading 'v'
+#   prerelease    'true' when the tag is a release candidate, 'false' otherwise
+#   next_rc       the next release candidate, only when the tag is one itself
+#   next_patch    the next patch version
+#   next_minor    the next minor version
+#
+# A tag that isn't a version this script understands is not an error. It
+# outputs a single 'unparsed=<tag>' line instead, leaving the caller to decide
+# what to do about it.
+#
+# Usage:
+#   ./.scripts/version-next v28.0.1
+#   ./.scripts/version-next 28.0.0-rc.2
+
+import re
+import sys
+
+# A release version, optionally a release candidate of one. Versions published
+# from this repository take no other form.
+VERSION = re.compile(r"(\d+)\.(\d+)\.(\d+)(?:-rc\.(\d+))?")
+
+def main():
+    """Print the versions that could follow the tag given as the first argument."""
+    if len(sys.argv) != 2:
+        print(f"Usage: {sys.argv[0]} <tag>", file=sys.stderr)
+        sys.exit(2)
+
+    tag = sys.argv[1].removeprefix("v")
+    for key, value in next_versions(tag).items():
+        print(f"{key}={value}")
+
+def next_versions(version):
+    """Return the versions that could follow the given version, keyed by name.
+
+    Returns a single 'unparsed' entry if the version isn't one this script
+    understands.
+    """
+    m = VERSION.fullmatch(version)
+    if not m:
+        return {"unparsed": version}
+
+    major, minor, patch = (int(p) for p in m.group(1, 2, 3))
+    rc = m.group(4)
+
+    versions = {
+        "current": version,
+        "prerelease": "true" if rc else "false",
+    }
+    # A release candidate series is continued rather than graduated, so the
+    # version it graduates to is not offered as a next version here.
+    if rc:
+        versions["next_rc"] = f"{major}.{minor}.{patch}-rc.{int(rc) + 1}"
+    versions["next_patch"] = f"{major}.{minor}.{patch + 1}"
+    versions["next_minor"] = f"{major}.{minor + 1}.0"
+    return versions
+
+if __name__ == "__main__":
+    main()

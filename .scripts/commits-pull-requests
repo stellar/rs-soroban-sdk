@@ -1,0 +1,66 @@
+#!/usr/bin/env python3
+
+# Accepts as an argument a git revision range, and outputs the commits in it
+# alongside the pull request each was merged from.
+#
+# Outputs one tab separated line per commit, oldest first, with the fields:
+#
+#   sha       the commit's full hash
+#   subject   the commit's subject line
+#   number    the pull request's number
+#   url       the pull request's url
+#   labels    the pull request's 'semver:' labels, space separated
+#
+# The last three fields are empty for a commit that no pull request is
+# associated with, as are the labels for a pull request carrying none. Only the
+# first pull request associated with a commit is reported, since a commit
+# merged from more than one is not something this repository produces.
+#
+# Pull requests are looked up with 'gh', which resolves the repository from the
+# working directory, so run this from within a checkout.
+#
+# Usage:
+#   ./.scripts/commits-pull-requests v28.0.1..origin/main
+
+import json
+import subprocess
+import sys
+
+# The labels that classify a pull request's semver impact. Every other label a
+# pull request carries is noise for this purpose.
+LABEL_PREFIX = "semver:"
+
+def main():
+    """Print the commits in the revision range given as the first argument."""
+    if len(sys.argv) != 2:
+        print(f"Usage: {sys.argv[0]} <revision-range>", file=sys.stderr)
+        sys.exit(2)
+
+    for sha, subject in commits(sys.argv[1]):
+        number, url, labels = pull_request(sha)
+        print("\t".join([sha, subject, number, url, labels]))
+
+def commits(revision_range):
+    """Return the (sha, subject) of every commit in the range, oldest first."""
+    out = run(["git", "log", "--first-parent", "--reverse", "--format=%H%x09%s", revision_range])
+    return [line.split("\t", 1) for line in out.splitlines() if line]
+
+def pull_request(sha):
+    """Return the (number, url, labels) of the pull request a commit came from.
+
+    All three are empty strings if the commit has no associated pull request.
+    """
+    prs = json.loads(run(["gh", "api", f"repos/{{owner}}/{{repo}}/commits/{sha}/pulls"]))
+    if not prs:
+        return "", "", ""
+
+    pr = prs[0]
+    labels = [l["name"] for l in pr["labels"] if l["name"].startswith(LABEL_PREFIX)]
+    return str(pr["number"]), pr["html_url"], " ".join(labels)
+
+def run(args):
+    """Run a command and return its stdout, exiting if it fails."""
+    return subprocess.run(args, capture_output=True, text=True, check=True).stdout
+
+if __name__ == "__main__":
+    main()

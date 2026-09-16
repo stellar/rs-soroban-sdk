@@ -47,7 +47,7 @@ pre-agent-steps:
       # The most recent release from main is the most recently published
       # non-draft release whose tag is an ancestor of main. The ancestry check
       # is what excludes releases cut from branches other than main.
-      gh api "repos/$GITHUB_REPOSITORY/releases?per_page=100" \
+      gh api "repos/{owner}/{repo}/releases?per_page=100" \
         --jq '[.[] | select(.draft | not)] | sort_by(.published_at) | reverse | .[].tag_name' \
         > .release/releases.txt
       last_tag=
@@ -70,47 +70,20 @@ pre-agent-steps:
 
       # The next patch, minor, and release candidate versions, precomputed so
       # that the agent picks one rather than doing the arithmetic itself.
-      python3 - "$last_tag" > .release/versions.txt <<'PY'
-      import re, sys
-
-      tag = sys.argv[1].removeprefix("v")
-      m = re.fullmatch(r"(\d+)\.(\d+)\.(\d+)(?:-rc\.(\d+))?", tag)
-      if not m:
-          print(f"unparsed={tag}")
-          raise SystemExit(0)
-      major, minor, patch = (int(p) for p in m.group(1, 2, 3))
-      rc = m.group(4)
-      print(f"current={tag}")
-      print(f"prerelease={'true' if rc else 'false'}")
-      if rc:
-          print(f"next_rc={major}.{minor}.{patch}-rc.{int(rc) + 1}")
-      print(f"next_patch={major}.{minor}.{patch + 1}")
-      print(f"next_minor={major}.{minor + 1}.0")
-      PY
+      ./.scripts/version-next "$last_tag" > .release/versions.txt
       cat .release/versions.txt
 
       # Every commit on main since that release, with the pull request it was
       # merged from and that pull request's labels.
+      ./.scripts/commits-pull-requests "refs/tags/$last_tag..origin/main" \
+        > .release/commits.tsv
+      awk -F'\t' '$5 == ""' .release/commits.tsv > .release/unlabeled.tsv
       {
-        printf '| Commit | Subject | Pull request | Labels |\n'
-        printf '| --- | --- | --- | --- |\n'
+        echo '| Commit | Subject | Pull request | Labels |'
+        echo '| --- | --- | --- | --- |'
+        awk -F'\t' '{ printf "| `%s` | %s | %s | %s |\n", substr($1, 1, 7), $2, ($3 == "" ? "" : "[#" $3 "](" $4 ")"), ($5 == "" ? "none" : $5) }' \
+          .release/commits.tsv
       } > .release/commits.md
-      git log --first-parent --reverse --format='%H%x09%s' "refs/tags/$last_tag..origin/main" \
-        > .release/log.tsv
-      while IFS=$'\t' read -r sha subject; do
-        [ -n "$sha" ] || continue
-        pr=$(gh api "repos/$GITHUB_REPOSITORY/commits/$sha/pulls" \
-          --jq '[.[] | "\(.number)\t\(.html_url)\t\([.labels[].name | select(startswith("semver:"))] | join(" "))"] | first // "\t\t"' || true)
-        IFS=$'\t' read -r number url labels <<<"$pr"
-        printf '%s\t%s\t%s\t%s\t%s\n' "$sha" "$subject" "$number" "$url" "$labels" \
-          >> .release/commits.tsv
-        if [ -z "$labels" ]; then
-          printf '%s\t%s\t%s\t%s\n' "$sha" "$subject" "$number" "$url" >> .release/unlabeled.tsv
-        fi
-        printf '| `%s` | %s | %s | %s |\n' \
-          "${sha:0:7}" "$subject" \
-          "${number:+[#$number]($url)}" "${labels:-none}" >> .release/commits.md
-      done < .release/log.tsv
       cat .release/commits.md
 ---
 
@@ -134,8 +107,8 @@ or run the crates.
   pull request link and that pull request's `semver:` labels, as a table.
 - `.release/commits.tsv` — the same commits as
   `sha`, `subject`, `pull request number`, `pull request url`, `labels`.
-- `.release/unlabeled.tsv` — the subset of those commits whose pull request
-  carries no `semver:` label, as `sha`, `subject`, `number`, `url`.
+- `.release/unlabeled.tsv` — the lines of `.release/commits.tsv` whose pull
+  request carries no `semver:` label.
 
 ## How to decide
 
