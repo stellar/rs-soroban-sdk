@@ -370,22 +370,22 @@ pub use soroban_sdk_macros::contracterror;
 /// if it does not match the provided value. The `sha256` argument must
 /// be a hex-encoded SHA-256 digest (64 hex chars, no 0x prefix).
 ///
-/// ```ignore
+/// ```
 /// mod contract_a {
 ///     soroban_sdk::contractimport!(
-///         file = "contract_a.wasm",
-///         sha256 = "d5bc0a5b4...",
+///         file = "doctest_fixtures/contract.wasm",
+///         sha256 = "33d12fec8f6f3ddf2eb0ec76ee9a75a9e37d1fa20af35908d90d278af8264311",
 ///     );
 /// }
 /// ```
 ///
 /// ### Examples
 ///
-/// ```ignore
+/// ```
 /// use soroban_sdk::{contract, contractimpl, Address, Env};
 ///
 /// mod contract_a {
-///     soroban_sdk::contractimport!(file = "contract_a.wasm");
+///     soroban_sdk::contractimport!(file = "doctest_fixtures/contract.wasm");
 /// }
 ///
 /// #[contract]
@@ -393,7 +393,7 @@ pub use soroban_sdk_macros::contracterror;
 ///
 /// #[contractimpl]
 /// impl ContractB {
-///     pub fn add_with(env: Env, contract_id: Address, x: u32, y: u32) -> u32 {
+///     pub fn add_with(env: Env, contract_id: Address, x: u64, y: u64) -> u64 {
 ///         let client = contract_a::Client::new(&env, &contract_id);
 ///         client.add(&x, &y)
 ///     }
@@ -401,6 +401,8 @@ pub use soroban_sdk_macros::contracterror;
 ///
 /// #[test]
 /// fn test() {
+/// # }
+/// # fn main() {
 ///     let env = Env::default();
 ///
 ///     // Register contract A using the imported WASM.
