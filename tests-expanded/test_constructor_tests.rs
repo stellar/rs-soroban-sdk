@@ -148,6 +148,7 @@ impl DataKey {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_DATAKEY: [u8; DataKey::spec_xdr_len()] = DataKey::spec_xdr();
 impl DataKey {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -766,10 +767,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract____constructor__spec {
+#[allow(dead_code)]
+mod __Contract____constructor__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN___CONSTRUCTOR: [u8; super::Contract::spec_xdr_len___constructor()] =
         super::Contract::spec_xdr___constructor();
 }
@@ -812,10 +815,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__get_data__spec {
+#[allow(dead_code)]
+mod __Contract__get_data__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_GET_DATA: [u8; super::Contract::spec_xdr_len_get_data()] =
         super::Contract::spec_xdr_get_data();
 }

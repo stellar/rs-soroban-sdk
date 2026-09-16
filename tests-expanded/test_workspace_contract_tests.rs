@@ -144,10 +144,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__value__spec {
+#[allow(dead_code)]
+mod __Contract__value__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_VALUE: [u8; super::Contract::spec_xdr_len_value()] =
         super::Contract::spec_xdr_value();
 }

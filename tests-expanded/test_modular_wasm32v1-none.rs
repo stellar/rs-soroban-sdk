@@ -17,10 +17,12 @@ mod feat1 {
     }
     #[doc(hidden)]
     #[allow(non_snake_case)]
-    pub mod __Contract__one__spec {
+    #[allow(dead_code)]
+    mod __Contract__one__spec {
         #[doc(hidden)]
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
+        #[allow(dead_code)]
         #[link_section = "contractspecv0"]
         pub static __SPEC_XDR_FN_ONE: [u8; super::Contract::spec_xdr_len_one()] =
             super::Contract::spec_xdr_one();
@@ -120,10 +122,12 @@ mod feat2 {
     }
     #[doc(hidden)]
     #[allow(non_snake_case)]
-    pub mod __super__Contract__two__spec {
+    #[allow(dead_code)]
+    mod __super__Contract__two__spec {
         #[doc(hidden)]
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
+        #[allow(dead_code)]
         #[link_section = "contractspecv0"]
         pub static __SPEC_XDR_FN_TWO: [u8; super::super::Contract::spec_xdr_len_two()] =
             super::super::Contract::spec_xdr_two();
@@ -238,10 +242,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__zero__spec {
+#[allow(dead_code)]
+mod __Contract__zero__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     pub static __SPEC_XDR_FN_ZERO: [u8; super::Contract::spec_xdr_len_zero()] =
         super::Contract::spec_xdr_zero();

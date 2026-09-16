@@ -141,10 +141,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__empty__spec {
+#[allow(dead_code)]
+mod __Contract__empty__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_EMPTY: [u8; super::Contract::spec_xdr_len_empty()] =
         super::Contract::spec_xdr_empty();
 }
@@ -326,10 +328,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__empty2__spec {
+#[allow(dead_code)]
+mod __Contract__empty2__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_EMPTY2: [u8; super::Contract::spec_xdr_len_empty2()] =
         super::Contract::spec_xdr_empty2();
 }
@@ -514,10 +518,12 @@ impl Trait for Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__empty3__spec {
+#[allow(dead_code)]
+mod __Contract__empty3__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_EMPTY3: [u8; super::Contract::spec_xdr_len_empty3()] =
         super::Contract::spec_xdr_empty3();
 }
