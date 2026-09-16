@@ -49,6 +49,12 @@ impl ::core::cmp::PartialEq for UdtEnum2 {
         __self_discr == __arg1_discr
     }
 }
+impl UdtEnum2 {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_udt::UdtEnum2"
+    }
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -59,7 +65,9 @@ impl UdtEnum2 {
             soroban_sdk::xdr::r#const::ScSpecUdtEnumV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"UdtEnum2"),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    UdtEnum2::spec_name(),
+                ),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtEnumCaseV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -197,6 +205,12 @@ impl ::core::cmp::PartialEq for UdtEnum {
             }
     }
 }
+impl UdtEnum {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_udt::UdtEnum"
+    }
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -205,7 +219,9 @@ impl UdtEnum {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
         lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"UdtEnum"),
+        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+            UdtEnum::spec_name(),
+        ),
         cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
                 soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::VoidV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseVoidV0 {
@@ -226,8 +242,8 @@ impl UdtEnum {
                     type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
                         &[
                             soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                    b"UdtStruct",
+                                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                                    <UdtStruct>::spec_name(),
                                 ),
                             }),
                         ],
@@ -243,8 +259,8 @@ impl UdtEnum {
                     type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
                         &[
                             soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                    b"UdtEnum2",
+                                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                                    <UdtEnum2>::spec_name(),
                                 ),
                             }),
                         ],
@@ -260,8 +276,8 @@ impl UdtEnum {
                     type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
                         &[
                             soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                    b"UdtTuple",
+                                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                                    <UdtTuple>::spec_name(),
                                 ),
                             }),
                         ],
@@ -438,6 +454,12 @@ impl ::core::cmp::PartialEq for UdtTuple {
         self.0 == other.0 && self.1 == other.1
     }
 }
+impl UdtTuple {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_udt::UdtTuple"
+    }
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -448,7 +470,9 @@ impl UdtTuple {
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"UdtTuple"),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    UdtTuple::spec_name(),
+                ),
                 fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -586,6 +610,12 @@ impl ::core::cmp::PartialEq for UdtStruct {
         self.a == other.a && self.b == other.b && self.c == other.c
     }
 }
+impl UdtStruct {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_udt::UdtStruct"
+    }
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -596,7 +626,9 @@ impl UdtStruct {
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"UdtStruct"),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    UdtStruct::spec_name(),
+                ),
                 fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -744,6 +776,12 @@ impl ::core::cmp::PartialEq for UdtRecursive {
         self.a == other.a && self.b == other.b
     }
 }
+impl UdtRecursive {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_udt::UdtRecursive"
+    }
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -753,8 +791,8 @@ impl UdtRecursive {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
         lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-            b"UdtRecursive",
+        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+            UdtRecursive::spec_name(),
         ),
         fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
@@ -777,8 +815,8 @@ impl UdtRecursive {
                     type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Vec(
                         &soroban_sdk::xdr::r#const::ScSpecTypeVec {
                             element_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                    b"UdtRecursive",
+                                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                                    <UdtRecursive>::spec_name(),
                                 ),
                             }),
                         },
@@ -906,6 +944,12 @@ impl ::core::cmp::PartialEq for RecursiveToEnum {
         self.a == other.a && self.b == other.b
     }
 }
+impl RecursiveToEnum {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_udt::RecursiveToEnum"
+    }
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -915,8 +959,8 @@ impl RecursiveToEnum {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
         lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-            b"RecursiveToEnum",
+        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+            RecursiveToEnum::spec_name(),
         ),
         fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
@@ -940,8 +984,8 @@ impl RecursiveToEnum {
                         &soroban_sdk::xdr::r#const::ScSpecTypeMap {
                             key_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
                             value_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                    b"RecursiveEnum",
+                                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                                    <RecursiveEnum>::spec_name(),
                                 ),
                             }),
                         },
@@ -1076,6 +1120,12 @@ impl ::core::cmp::PartialEq for RecursiveEnum {
             }
     }
 }
+impl RecursiveEnum {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_udt::RecursiveEnum"
+    }
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -1085,8 +1135,8 @@ impl RecursiveEnum {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
         lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-            b"RecursiveEnum",
+        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+            RecursiveEnum::spec_name(),
         ),
         cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
@@ -1108,8 +1158,8 @@ impl RecursiveEnum {
                     type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
                         &[
                             soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                    b"RecursiveToEnum",
+                                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                                    <RecursiveToEnum>::spec_name(),
                                 ),
                             }),
                         ],
@@ -1289,8 +1339,8 @@ impl Contract {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"a"),
                         type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                             soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                    b"UdtEnum",
+                                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                                    <UdtEnum>::spec_name(),
                                 ),
                             },
                         ),
@@ -1300,8 +1350,8 @@ impl Contract {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"b"),
                         type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                             soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                    b"UdtEnum",
+                                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                                    <UdtEnum>::spec_name(),
                                 ),
                             },
                         ),
@@ -1348,8 +1398,8 @@ impl Contract {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"a"),
                         type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                             soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                    b"UdtRecursive",
+                                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                                    <UdtRecursive>::spec_name(),
                                 ),
                             },
                         ),
@@ -1360,10 +1410,9 @@ impl Contract {
                         &soroban_sdk::xdr::r#const::ScSpecTypeOption {
                             value_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                                 soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                                    name:
-                                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                            b"UdtRecursive",
-                                        ),
+                                    name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                                        <UdtRecursive>::spec_name(),
+                                    ),
                                 },
                             ),
                         },
@@ -1411,8 +1460,8 @@ impl Contract {
                         b"a",
                     ),
                     type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                            b"RecursiveEnum",
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                            <RecursiveEnum>::spec_name(),
                         ),
                     }),
                 },
@@ -1434,8 +1483,8 @@ impl Contract {
                         ok_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Option(
                             &soroban_sdk::xdr::r#const::ScSpecTypeOption {
                                 value_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                        b"RecursiveEnum",
+                                    name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                                        <RecursiveEnum>::spec_name(),
                                     ),
                                 }),
                             },

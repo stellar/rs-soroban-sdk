@@ -33,6 +33,12 @@ impl ::core::cmp::PartialEq for Value {
         self.value == other.value
     }
 }
+impl Value {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_workspace_lib::Value"
+    }
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -43,7 +49,7 @@ impl Value {
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"Value"),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Value::spec_name()),
                 fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),

@@ -1576,8 +1576,8 @@ impl ContractGlobalPath {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
                         type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                             soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                    b"MyStruct",
+                                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                                    <MyStruct>::spec_name(),
                                 ),
                             },
                         ),
@@ -1586,8 +1586,8 @@ impl ContractGlobalPath {
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                         soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                b"MyStruct",
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                                <MyStruct>::spec_name(),
                             ),
                         },
                     ),
@@ -1631,8 +1631,8 @@ impl ContractGlobalPath {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
                         type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                             soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                    b"MyEnumUnit",
+                                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                                    <MyEnumUnit>::spec_name(),
                                 ),
                             },
                         ),
@@ -1641,8 +1641,8 @@ impl ContractGlobalPath {
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                         soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                b"MyEnumUnit",
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                                <MyEnumUnit>::spec_name(),
                             ),
                         },
                     ),
@@ -1689,8 +1689,8 @@ impl ContractGlobalPath {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
                         type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                             soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                    b"MyEnumVariants",
+                                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                                    <MyEnumVariants>::spec_name(),
                                 ),
                             },
                         ),
@@ -1699,8 +1699,8 @@ impl ContractGlobalPath {
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                         soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                b"MyEnumVariants",
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                                <MyEnumVariants>::spec_name(),
                             ),
                         },
                     ),

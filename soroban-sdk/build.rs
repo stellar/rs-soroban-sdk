@@ -39,5 +39,24 @@ pub fn main() {
         std::process::exit(1);
     }
 
+    // On a wasm target, check for an env var from the build system (Stellar CLI) that indicates it
+    // reduces user-defined type names in the spec from their fully-qualified path to their simple
+    // name. The SDK emits fully-qualified names, and the contract's spec is only correct once the
+    // build system has reduced them, so a build system that does not do so is an error.
+    let env_name = "SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_REDUCING_FULL_NAMES";
+    println!("cargo::rerun-if-env-changed={env_name}");
+    if std::env::var(env_name).is_err()
+        && std::env::var("CARGO_CFG_TARGET_FAMILY").unwrap_or_default() == "wasm"
+    {
+        eprintln!(
+            "\
+\nerror: soroban-sdk requires stellar-cli v30.0.0+ to build a contract\
+\n\
+\nTo fix, build with `stellar contract build` using stellar-cli v30.0.0+.\
+"
+        );
+        std::process::exit(1);
+    }
+
     crate_git_revision::init();
 }

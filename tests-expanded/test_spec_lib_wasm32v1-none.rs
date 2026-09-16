@@ -47,6 +47,12 @@ impl ::core::cmp::PartialEq for StructA {
         self.f1 == other.f1 && self.f2 == other.f2
     }
 }
+impl StructA {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::StructA"
+    }
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -57,7 +63,9 @@ impl StructA {
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"StructA"),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    StructA::spec_name(),
+                ),
                 fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -186,6 +194,12 @@ impl ::core::cmp::PartialEq for StructB {
         self.f1 == other.f1 && self.f2 == other.f2
     }
 }
+impl StructB {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::StructB"
+    }
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -196,7 +210,9 @@ impl StructB {
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"StructB"),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    StructB::spec_name(),
+                ),
                 fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -325,6 +341,12 @@ impl ::core::cmp::PartialEq for StructC {
         self.f1 == other.f1 && self.f2 == other.f2
     }
 }
+impl StructC {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::StructC"
+    }
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -335,7 +357,9 @@ impl StructC {
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"StructC"),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    StructC::spec_name(),
+                ),
                 fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -462,6 +486,12 @@ impl ::core::cmp::PartialEq for StructTupleA {
         self.0 == other.0 && self.1 == other.1
     }
 }
+impl StructTupleA {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::StructTupleA"
+    }
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -473,7 +503,9 @@ impl StructTupleA {
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"StructTupleA"),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    StructTupleA::spec_name(),
+                ),
                 fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -592,6 +624,12 @@ impl ::core::cmp::PartialEq for StructTupleB {
         self.0 == other.0 && self.1 == other.1
     }
 }
+impl StructTupleB {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::StructTupleB"
+    }
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -603,7 +641,9 @@ impl StructTupleB {
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"StructTupleB"),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    StructTupleB::spec_name(),
+                ),
                 fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -723,6 +763,12 @@ impl ::core::cmp::PartialEq for StructTupleC {
         self.1 == other.1 && self.0 == other.0
     }
 }
+impl StructTupleC {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::StructTupleC"
+    }
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -734,7 +780,9 @@ impl StructTupleC {
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"StructTupleC"),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    StructTupleC::spec_name(),
+                ),
                 fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -865,6 +913,12 @@ impl ::core::cmp::PartialEq for EnumA {
         __self_discr == __arg1_discr
     }
 }
+impl EnumA {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::EnumA"
+    }
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -875,7 +929,7 @@ impl EnumA {
             soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"EnumA"),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(EnumA::spec_name()),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::VoidV0(
                         soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseVoidV0 {
@@ -1064,6 +1118,12 @@ impl ::core::cmp::PartialEq for EnumB {
             }
     }
 }
+impl EnumB {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::EnumB"
+    }
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -1074,7 +1134,7 @@ impl EnumB {
             soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"EnumB"),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(EnumB::spec_name()),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::VoidV0(
                         soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseVoidV0 {
@@ -1283,6 +1343,12 @@ impl ::core::cmp::PartialEq for EnumC {
             }
     }
 }
+impl EnumC {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::EnumC"
+    }
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -1291,7 +1357,9 @@ impl EnumC {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
         lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"EnumC"),
+        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+            EnumC::spec_name(),
+        ),
         cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
                 soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::VoidV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseVoidV0 {
@@ -1312,8 +1380,8 @@ impl EnumC {
                     type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
                         &[
                             soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                    b"StructA",
+                                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                                    <StructA>::spec_name(),
                                 ),
                             }),
                         ],
@@ -1329,8 +1397,8 @@ impl EnumC {
                     type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
                         &[
                             soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                    b"StructTupleA",
+                                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                                    <StructTupleA>::spec_name(),
                                 ),
                             }),
                         ],
@@ -1498,6 +1566,12 @@ impl ::core::cmp::PartialEq for EnumIntA {
         __self_discr == __arg1_discr
     }
 }
+impl EnumIntA {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::EnumIntA"
+    }
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -1508,7 +1582,9 @@ impl EnumIntA {
             soroban_sdk::xdr::r#const::ScSpecUdtEnumV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"EnumIntA"),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    EnumIntA::spec_name(),
+                ),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtEnumCaseV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -1635,6 +1711,12 @@ impl ::core::cmp::PartialEq for EnumIntB {
         __self_discr == __arg1_discr
     }
 }
+impl EnumIntB {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::EnumIntB"
+    }
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -1645,7 +1727,9 @@ impl EnumIntB {
             soroban_sdk::xdr::r#const::ScSpecUdtEnumV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"EnumIntB"),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    EnumIntB::spec_name(),
+                ),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtEnumCaseV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -1772,6 +1856,12 @@ impl ::core::cmp::PartialEq for EnumIntC {
         __self_discr == __arg1_discr
     }
 }
+impl EnumIntC {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::EnumIntC"
+    }
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -1782,7 +1872,9 @@ impl EnumIntC {
             soroban_sdk::xdr::r#const::ScSpecUdtEnumV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"EnumIntC"),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    EnumIntC::spec_name(),
+                ),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtEnumCaseV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -1909,6 +2001,12 @@ impl ::core::cmp::PartialEq for ErrorA {
         __self_discr == __arg1_discr
     }
 }
+impl ErrorA {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::ErrorA"
+    }
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -1919,7 +2017,7 @@ impl ErrorA {
             soroban_sdk::xdr::r#const::ScSpecUdtErrorEnumV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"ErrorA"),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(ErrorA::spec_name()),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtErrorEnumCaseV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -2116,6 +2214,12 @@ impl ::core::cmp::PartialEq for ErrorB {
         __self_discr == __arg1_discr
     }
 }
+impl ErrorB {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::ErrorB"
+    }
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -2126,7 +2230,7 @@ impl ErrorB {
             soroban_sdk::xdr::r#const::ScSpecUdtErrorEnumV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"ErrorB"),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(ErrorB::spec_name()),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtErrorEnumCaseV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -2323,6 +2427,12 @@ impl ::core::cmp::PartialEq for ErrorC {
         __self_discr == __arg1_discr
     }
 }
+impl ErrorC {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::ErrorC"
+    }
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -2333,7 +2443,7 @@ impl ErrorC {
             soroban_sdk::xdr::r#const::ScSpecUdtErrorEnumV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"ErrorC"),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(ErrorC::spec_name()),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtErrorEnumCaseV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -2526,6 +2636,12 @@ impl ::core::cmp::PartialEq for EventA {
         self.f1 == other.f1 && self.f2 == other.f2
     }
 }
+impl EventA {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::EventA"
+    }
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -2535,7 +2651,7 @@ impl EventA {
         soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"EventA"),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(EventA::spec_name()),
             prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::r#const::ScSymbol(
                     soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"event_a"),
@@ -2654,6 +2770,12 @@ impl ::core::cmp::PartialEq for EventB {
         self.f3 == other.f3 && self.f1 == other.f1 && self.f2 == other.f2
     }
 }
+impl EventB {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::EventB"
+    }
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -2663,7 +2785,7 @@ impl EventB {
         soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"EventB"),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(EventB::spec_name()),
             prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::r#const::ScSymbol(
                     soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"event_b"),
@@ -2793,6 +2915,12 @@ impl ::core::cmp::PartialEq for EventC {
         self.f2 == other.f2 && self.f3 == other.f3 && self.f1 == other.f1
     }
 }
+impl EventC {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::EventC"
+    }
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -2802,7 +2930,7 @@ impl EventC {
         soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"EventC"),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(EventC::spec_name()),
             prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::r#const::ScSymbol(
                     soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"event_c"),
@@ -2915,6 +3043,12 @@ impl ::core::cmp::PartialEq for EventD {
         true
     }
 }
+impl EventD {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_lib::EventD"
+    }
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -2924,7 +3058,7 @@ impl EventD {
         soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"EventD"),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(EventD::spec_name()),
             prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::r#const::ScSymbol(
                     soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"event_d"),

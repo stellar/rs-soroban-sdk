@@ -13,6 +13,12 @@ pub struct MockProof {
     pub g1: Vec<Bn254G1Affine>,
     pub g2: Vec<Bn254G2Affine>,
 }
+impl MockProof {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_bn254::MockProof"
+    }
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_MOCKPROOF: [u8; MockProof::spec_xdr_len()] = MockProof::spec_xdr();
@@ -22,7 +28,9 @@ impl MockProof {
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"MockProof"),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    MockProof::spec_name(),
+                ),
                 fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -622,8 +630,8 @@ impl Contract {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"proof"),
                         type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                             soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                    b"MockProof",
+                                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                                    <MockProof>::spec_name(),
                                 ),
                             },
                         ),
