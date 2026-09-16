@@ -54,6 +54,7 @@ impl StructA {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_STRUCTA: [u8; StructA::spec_xdr_len()] = StructA::spec_xdr();
 impl StructA {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -503,6 +504,7 @@ impl StructB {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_STRUCTB: [u8; StructB::spec_xdr_len()] = StructB::spec_xdr();
 impl StructB {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -952,6 +954,7 @@ impl StructC {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_STRUCTC: [u8; StructC::spec_xdr_len()] = StructC::spec_xdr();
 impl StructC {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -1401,6 +1404,7 @@ impl StructTupleA {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_STRUCTTUPLEA: [u8; StructTupleA::spec_xdr_len()] =
     StructTupleA::spec_xdr();
 impl StructTupleA {
@@ -1802,6 +1806,7 @@ impl StructTupleB {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_STRUCTTUPLEB: [u8; StructTupleB::spec_xdr_len()] =
     StructTupleB::spec_xdr();
 impl StructTupleB {
@@ -2204,6 +2209,7 @@ impl StructTupleC {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_STRUCTTUPLEC: [u8; StructTupleC::spec_xdr_len()] =
     StructTupleC::spec_xdr();
 impl StructTupleC {
@@ -2617,6 +2623,7 @@ impl EnumA {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_ENUMA: [u8; EnumA::spec_xdr_len()] = EnumA::spec_xdr();
 impl EnumA {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -3126,6 +3133,7 @@ impl EnumB {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_ENUMB: [u8; EnumB::spec_xdr_len()] = EnumB::spec_xdr();
 impl EnumB {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -3764,6 +3772,7 @@ impl EnumC {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_ENUMC: [u8; EnumC::spec_xdr_len()] = EnumC::spec_xdr();
 impl EnumC {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
@@ -4365,6 +4374,7 @@ impl EnumIntA {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_ENUMINTA: [u8; EnumIntA::spec_xdr_len()] = EnumIntA::spec_xdr();
 impl EnumIntA {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -4740,6 +4750,7 @@ impl EnumIntB {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_ENUMINTB: [u8; EnumIntB::spec_xdr_len()] = EnumIntB::spec_xdr();
 impl EnumIntB {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -5115,6 +5126,7 @@ impl EnumIntC {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_ENUMINTC: [u8; EnumIntC::spec_xdr_len()] = EnumIntC::spec_xdr();
 impl EnumIntC {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -5490,6 +5502,7 @@ impl ErrorA {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_ERRORA: [u8; ErrorA::spec_xdr_len()] = ErrorA::spec_xdr();
 impl ErrorA {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -5693,6 +5706,7 @@ impl ErrorB {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_ERRORB: [u8; ErrorB::spec_xdr_len()] = ErrorB::spec_xdr();
 impl ErrorB {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -5896,6 +5910,7 @@ impl ErrorC {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_ERRORC: [u8; ErrorC::spec_xdr_len()] = ErrorC::spec_xdr();
 impl ErrorC {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -6095,6 +6110,7 @@ impl EventA {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_EVENT_EVENTA: [u8; EventA::spec_xdr_len()] = EventA::spec_xdr();
 impl EventA {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -6217,6 +6233,7 @@ impl EventB {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_EVENT_EVENTB: [u8; EventB::spec_xdr_len()] = EventB::spec_xdr();
 impl EventB {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -6349,6 +6366,7 @@ impl EventC {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_EVENT_EVENTC: [u8; EventC::spec_xdr_len()] = EventC::spec_xdr();
 impl EventC {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -6464,6 +6482,7 @@ impl EventD {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_EVENT_EVENTD: [u8; EventD::spec_xdr_len()] = EventD::spec_xdr();
 impl EventD {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =

@@ -56,6 +56,7 @@ impl UdtEnum2 {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_UDTENUM2: [u8; UdtEnum2::spec_xdr_len()] = UdtEnum2::spec_xdr();
 impl UdtEnum2 {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -432,6 +433,7 @@ impl UdtEnum {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_UDTENUM: [u8; UdtEnum::spec_xdr_len()] = UdtEnum::spec_xdr();
 impl UdtEnum {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
@@ -1118,6 +1120,7 @@ impl UdtTuple {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_UDTTUPLE: [u8; UdtTuple::spec_xdr_len()] = UdtTuple::spec_xdr();
 impl UdtTuple {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -1539,6 +1542,7 @@ impl UdtStruct {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_UDTSTRUCT: [u8; UdtStruct::spec_xdr_len()] = UdtStruct::spec_xdr();
 impl UdtStruct {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -2055,6 +2059,7 @@ impl UdtRecursive {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_UDTRECURSIVE: [u8; UdtRecursive::spec_xdr_len()] =
     UdtRecursive::spec_xdr();
 impl UdtRecursive {
@@ -2529,6 +2534,7 @@ impl RecursiveToEnum {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_RECURSIVETOENUM: [u8; RecursiveToEnum::spec_xdr_len()] =
     RecursiveToEnum::spec_xdr();
 impl RecursiveToEnum {
@@ -3018,6 +3024,7 @@ impl RecursiveEnum {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_RECURSIVEENUM: [u8; RecursiveEnum::spec_xdr_len()] =
     RecursiveEnum::spec_xdr();
 impl RecursiveEnum {
@@ -3653,10 +3660,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__add__spec {
+#[allow(dead_code)]
+mod __Contract__add__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_ADD: [u8; super::Contract::spec_xdr_len_add()] =
         super::Contract::spec_xdr_add();
 }
@@ -3709,10 +3718,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__recursive__spec {
+#[allow(dead_code)]
+mod __Contract__recursive__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_RECURSIVE: [u8; super::Contract::spec_xdr_len_recursive()] =
         super::Contract::spec_xdr_recursive();
 }
@@ -3764,10 +3775,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__recursive_enum__spec {
+#[allow(dead_code)]
+mod __Contract__recursive_enum__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_RECURSIVE_ENUM: [u8; super::Contract::spec_xdr_len_recursive_enum()] =
         super::Contract::spec_xdr_recursive_enum();
 }
@@ -5100,6 +5113,7 @@ mod test_with_wasm {
             }
         }
         #[doc(hidden)]
+        #[allow(dead_code)]
         pub static __SPEC_XDR_TYPE_UDTTUPLE: [u8; UdtTuple::spec_xdr_len()] = UdtTuple::spec_xdr();
         impl UdtTuple {
             const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -5575,6 +5589,7 @@ mod test_with_wasm {
             }
         }
         #[doc(hidden)]
+        #[allow(dead_code)]
         pub static __SPEC_XDR_TYPE_UDTSTRUCT: [u8; UdtStruct::spec_xdr_len()] =
             UdtStruct::spec_xdr();
         impl UdtStruct {
@@ -6142,6 +6157,7 @@ mod test_with_wasm {
             }
         }
         #[doc(hidden)]
+        #[allow(dead_code)]
         pub static __SPEC_XDR_TYPE_UDTRECURSIVE: [u8; UdtRecursive::spec_xdr_len()] =
             UdtRecursive::spec_xdr();
         impl UdtRecursive {
@@ -6649,6 +6665,7 @@ mod test_with_wasm {
             }
         }
         #[doc(hidden)]
+        #[allow(dead_code)]
         pub static __SPEC_XDR_TYPE_RECURSIVETOENUM: [u8; RecursiveToEnum::spec_xdr_len()] =
             RecursiveToEnum::spec_xdr();
         impl RecursiveToEnum {
@@ -7160,6 +7177,7 @@ mod test_with_wasm {
             }
         }
         #[doc(hidden)]
+        #[allow(dead_code)]
         pub static __SPEC_XDR_TYPE_CONTRACTEXECUTABLEREF: [u8;
             ContractExecutableRef::spec_xdr_len()] = ContractExecutableRef::spec_xdr();
         impl ContractExecutableRef {
@@ -7685,6 +7703,7 @@ mod test_with_wasm {
             }
         }
         #[doc(hidden)]
+        #[allow(dead_code)]
         pub static __SPEC_XDR_TYPE_CONTRACTCONTEXT: [u8; ContractContext::spec_xdr_len()] =
             ContractContext::spec_xdr();
         impl ContractContext {
@@ -8277,6 +8296,7 @@ mod test_with_wasm {
             }
         }
         #[doc(hidden)]
+        #[allow(dead_code)]
         pub static __SPEC_XDR_TYPE_SUBCONTRACTINVOCATION: [u8;
             SubContractInvocation::spec_xdr_len()] = SubContractInvocation::spec_xdr();
         impl SubContractInvocation {
@@ -8804,6 +8824,7 @@ mod test_with_wasm {
             }
         }
         #[doc(hidden)]
+        #[allow(dead_code)]
         pub static __SPEC_XDR_TYPE_CREATECONTRACTHOSTFNCONTEXT: [u8;
             CreateContractHostFnContext::spec_xdr_len()] = CreateContractHostFnContext::spec_xdr();
         impl CreateContractHostFnContext {
@@ -9359,6 +9380,7 @@ mod test_with_wasm {
             }
         }
         #[doc(hidden)]
+        #[allow(dead_code)]
         pub static __SPEC_XDR_TYPE_CREATECONTRACTWITHCONSTRUCTORHOSTFNCONTEXT: [u8;
             CreateContractWithConstructorHostFnContext::spec_xdr_len()] =
             CreateContractWithConstructorHostFnContext::spec_xdr();
@@ -10030,6 +10052,7 @@ mod test_with_wasm {
             }
         }
         #[doc(hidden)]
+        #[allow(dead_code)]
         pub static __SPEC_XDR_TYPE_UDTENUM: [u8; UdtEnum::spec_xdr_len()] = UdtEnum::spec_xdr();
         impl UdtEnum {
             const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
@@ -10791,6 +10814,7 @@ mod test_with_wasm {
             }
         }
         #[doc(hidden)]
+        #[allow(dead_code)]
         pub static __SPEC_XDR_TYPE_RECURSIVEENUM: [u8; RecursiveEnum::spec_xdr_len()] =
             RecursiveEnum::spec_xdr();
         impl RecursiveEnum {
@@ -11395,6 +11419,7 @@ mod test_with_wasm {
             }
         }
         #[doc(hidden)]
+        #[allow(dead_code)]
         pub static __SPEC_XDR_TYPE_CONTRACTEXECUTABLE: [u8; ContractExecutable::spec_xdr_len()] =
             ContractExecutable::spec_xdr();
         impl ContractExecutable {
@@ -12080,6 +12105,7 @@ mod test_with_wasm {
             }
         }
         #[doc(hidden)]
+        #[allow(dead_code)]
         pub static __SPEC_XDR_TYPE_CONTEXT: [u8; Context::spec_xdr_len()] = Context::spec_xdr();
         impl Context {
             const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
@@ -12882,6 +12908,7 @@ mod test_with_wasm {
             }
         }
         #[doc(hidden)]
+        #[allow(dead_code)]
         pub static __SPEC_XDR_TYPE_INVOKERCONTRACTAUTHENTRY: [u8;
             InvokerContractAuthEntry::spec_xdr_len()] = InvokerContractAuthEntry::spec_xdr();
         impl InvokerContractAuthEntry {
@@ -13679,6 +13706,7 @@ mod test_with_wasm {
             }
         }
         #[doc(hidden)]
+        #[allow(dead_code)]
         pub static __SPEC_XDR_TYPE_EXECUTABLE: [u8; Executable::spec_xdr_len()] =
             Executable::spec_xdr();
         impl Executable {
@@ -14291,6 +14319,7 @@ mod test_with_wasm {
             }
         }
         #[doc(hidden)]
+        #[allow(dead_code)]
         pub static __SPEC_XDR_TYPE_UDTENUM2: [u8; UdtEnum2::spec_xdr_len()] = UdtEnum2::spec_xdr();
         impl UdtEnum2 {
             const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =

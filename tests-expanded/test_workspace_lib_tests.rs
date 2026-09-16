@@ -40,6 +40,7 @@ impl Value {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_VALUE: [u8; Value::spec_xdr_len()] = Value::spec_xdr();
 impl Value {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =

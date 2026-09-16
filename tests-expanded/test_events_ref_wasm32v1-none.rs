@@ -37,6 +37,7 @@ impl<'a> Transfer<'a> {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_EVENT_TRANSFER: [u8; Transfer::spec_xdr_len()] = Transfer::spec_xdr();
 impl<'a> Transfer<'a> {
@@ -165,10 +166,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__transfer__spec {
+#[allow(dead_code)]
+mod __Contract__transfer__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     pub static __SPEC_XDR_FN_TRANSFER: [u8; super::Contract::spec_xdr_len_transfer()] =
         super::Contract::spec_xdr_transfer();
@@ -215,10 +218,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__failed_transfer__spec {
+#[allow(dead_code)]
+mod __Contract__failed_transfer__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     pub static __SPEC_XDR_FN_FAILED_TRANSFER: [u8; super::Contract::spec_xdr_len_failed_transfer(
     )] = super::Contract::spec_xdr_failed_transfer();

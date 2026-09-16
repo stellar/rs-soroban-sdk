@@ -193,6 +193,7 @@ impl UsedParamStruct {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_USEDPARAMSTRUCT: [u8; UsedParamStruct::spec_xdr_len()] =
     UsedParamStruct::spec_xdr();
 impl UsedParamStruct {
@@ -670,6 +671,7 @@ impl UsedReturnEnum {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_USEDRETURNENUM: [u8; UsedReturnEnum::spec_xdr_len()] =
     UsedReturnEnum::spec_xdr();
 impl UsedReturnEnum {
@@ -1219,6 +1221,7 @@ impl UsedParamIntEnum {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_USEDPARAMINTENUM: [u8; UsedParamIntEnum::spec_xdr_len()] =
     UsedParamIntEnum::spec_xdr();
 impl UsedParamIntEnum {
@@ -1578,6 +1581,7 @@ impl UsedErrorEnum {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_USEDERRORENUM: [u8; UsedErrorEnum::spec_xdr_len()] =
     UsedErrorEnum::spec_xdr();
 impl UsedErrorEnum {
@@ -1768,6 +1772,7 @@ impl UsedPanicErrorEnum {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_USEDPANICERRORENUM: [u8; UsedPanicErrorEnum::spec_xdr_len()] =
     UsedPanicErrorEnum::spec_xdr();
 impl UsedPanicErrorEnum {
@@ -1947,6 +1952,7 @@ impl UsedAssertErrorEnum {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_USEDASSERTERRORENUM: [u8; UsedAssertErrorEnum::spec_xdr_len()] =
     UsedAssertErrorEnum::spec_xdr();
 impl UsedAssertErrorEnum {
@@ -2133,6 +2139,7 @@ impl UsedNestedInStruct {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_USEDNESTEDINSTRUCT: [u8; UsedNestedInStruct::spec_xdr_len()] =
     UsedNestedInStruct::spec_xdr();
 impl UsedNestedInStruct {
@@ -2526,6 +2533,7 @@ impl UsedVecElement {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_USEDVECELEMENT: [u8; UsedVecElement::spec_xdr_len()] =
     UsedVecElement::spec_xdr();
 impl UsedVecElement {
@@ -2924,6 +2932,7 @@ impl UsedMapKey {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_USEDMAPKEY: [u8; UsedMapKey::spec_xdr_len()] = UsedMapKey::spec_xdr();
 impl UsedMapKey {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -3273,6 +3282,7 @@ impl UsedMapVal {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_USEDMAPVAL: [u8; UsedMapVal::spec_xdr_len()] = UsedMapVal::spec_xdr();
 impl UsedMapVal {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -3664,6 +3674,7 @@ impl UsedOptionElement {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_USEDOPTIONELEMENT: [u8; UsedOptionElement::spec_xdr_len()] =
     UsedOptionElement::spec_xdr();
 impl UsedOptionElement {
@@ -4055,6 +4066,7 @@ impl UsedResultOk {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_USEDRESULTOK: [u8; UsedResultOk::spec_xdr_len()] =
     UsedResultOk::spec_xdr();
 impl UsedResultOk {
@@ -4454,6 +4466,7 @@ impl UsedEventSimple {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_EVENT_USEDEVENTSIMPLE: [u8; UsedEventSimple::spec_xdr_len()] =
     UsedEventSimple::spec_xdr();
 impl UsedEventSimple {
@@ -4574,6 +4587,7 @@ impl UsedEventTopicType {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_USEDEVENTTOPICTYPE: [u8; UsedEventTopicType::spec_xdr_len()] =
     UsedEventTopicType::spec_xdr();
 impl UsedEventTopicType {
@@ -4940,6 +4954,7 @@ impl UsedEventWithTopicType {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_EVENT_USEDEVENTWITHTOPICTYPE: [u8; UsedEventWithTopicType::spec_xdr_len()] =
     UsedEventWithTopicType::spec_xdr();
 impl UsedEventWithTopicType {
@@ -5071,6 +5086,7 @@ impl UsedEventDataType {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_USEDEVENTDATATYPE: [u8; UsedEventDataType::spec_xdr_len()] =
     UsedEventDataType::spec_xdr();
 impl UsedEventDataType {
@@ -5528,6 +5544,7 @@ impl UsedEventWithDataType {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_EVENT_USEDEVENTWITHDATATYPE: [u8; UsedEventWithDataType::spec_xdr_len()] =
     UsedEventWithDataType::spec_xdr();
 impl UsedEventWithDataType {
@@ -5655,6 +5672,7 @@ impl UsedEventTopicOuter {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_USEDEVENTTOPICOUTER: [u8; UsedEventTopicOuter::spec_xdr_len()] =
     UsedEventTopicOuter::spec_xdr();
 impl UsedEventTopicOuter {
@@ -6064,6 +6082,7 @@ impl UsedEventTopicInner {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_USEDEVENTTOPICINNER: [u8; UsedEventTopicInner::spec_xdr_len()] =
     UsedEventTopicInner::spec_xdr();
 impl UsedEventTopicInner {
@@ -6469,6 +6488,7 @@ impl UsedEventWithNestedTopic {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_EVENT_USEDEVENTWITHNESTEDTOPIC: [u8;
     UsedEventWithNestedTopic::spec_xdr_len()] = UsedEventWithNestedTopic::spec_xdr();
 impl UsedEventWithNestedTopic {
@@ -6596,6 +6616,7 @@ impl UsedEventDataOuter {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_USEDEVENTDATAOUTER: [u8; UsedEventDataOuter::spec_xdr_len()] =
     UsedEventDataOuter::spec_xdr();
 impl UsedEventDataOuter {
@@ -7003,6 +7024,7 @@ impl UsedEventDataInner {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_USEDEVENTDATAINNER: [u8; UsedEventDataInner::spec_xdr_len()] =
     UsedEventDataInner::spec_xdr();
 impl UsedEventDataInner {
@@ -7406,6 +7428,7 @@ impl UsedEventWithNestedData {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_EVENT_USEDEVENTWITHNESTEDDATA: [u8; UsedEventWithNestedData::spec_xdr_len()] =
     UsedEventWithNestedData::spec_xdr();
 impl UsedEventWithNestedData {
@@ -7535,6 +7558,7 @@ impl UsedRefTopicType {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_USEDREFTOPICTYPE: [u8; UsedRefTopicType::spec_xdr_len()] =
     UsedRefTopicType::spec_xdr();
 impl UsedRefTopicType {
@@ -7892,6 +7916,7 @@ impl UsedRefDataType {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_USEDREFDATATYPE: [u8; UsedRefDataType::spec_xdr_len()] =
     UsedRefDataType::spec_xdr();
 impl UsedRefDataType {
@@ -8294,6 +8319,7 @@ impl UsedRefDataInner {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_USEDREFDATAINNER: [u8; UsedRefDataInner::spec_xdr_len()] =
     UsedRefDataInner::spec_xdr();
 impl UsedRefDataInner {
@@ -8695,6 +8721,7 @@ impl<'a> UsedEventWithRefs<'a> {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_EVENT_USEDEVENTWITHREFS: [u8; UsedEventWithRefs::spec_xdr_len()] =
     UsedEventWithRefs::spec_xdr();
 impl<'a> UsedEventWithRefs<'a> {
@@ -8823,6 +8850,7 @@ impl UsedTupleElement {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_USEDTUPLEELEMENT: [u8; UsedTupleElement::spec_xdr_len()] =
     UsedTupleElement::spec_xdr();
 impl UsedTupleElement {
@@ -9219,6 +9247,7 @@ impl UsedTupleReturnElement {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_USEDTUPLERETURNELEMENT: [u8; UsedTupleReturnElement::spec_xdr_len()] =
     UsedTupleReturnElement::spec_xdr();
 impl UsedTupleReturnElement {
@@ -9619,6 +9648,7 @@ impl UsedVecInnerVecElement {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_USEDVECINNERVECELEMENT: [u8; UsedVecInnerVecElement::spec_xdr_len()] =
     UsedVecInnerVecElement::spec_xdr();
 impl UsedVecInnerVecElement {
@@ -10019,6 +10049,7 @@ impl UsedVecInnerElement {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_USEDVECINNERELEMENT: [u8; UsedVecInnerElement::spec_xdr_len()] =
     UsedVecInnerElement::spec_xdr();
 impl UsedVecInnerElement {
@@ -10429,6 +10460,7 @@ impl UsedVecElementNested {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_USEDVECELEMENTNESTED: [u8; UsedVecElementNested::spec_xdr_len()] =
     UsedVecElementNested::spec_xdr();
 impl UsedVecElementNested {
@@ -10979,6 +11011,7 @@ impl UsedNonPubStruct {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_USEDNONPUBSTRUCT: [u8; UsedNonPubStruct::spec_xdr_len()] =
     UsedNonPubStruct::spec_xdr();
 impl UsedNonPubStruct {
@@ -11368,6 +11401,7 @@ impl UsedNonPubError {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_USEDNONPUBERROR: [u8; UsedNonPubError::spec_xdr_len()] =
     UsedNonPubError::spec_xdr();
 impl UsedNonPubError {
@@ -11552,6 +11586,7 @@ impl UsedRecursiveRoot {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_USEDRECURSIVEROOT: [u8; UsedRecursiveRoot::spec_xdr_len()] =
     UsedRecursiveRoot::spec_xdr();
 impl UsedRecursiveRoot {
@@ -11976,6 +12011,7 @@ impl UsedRecursiveNode {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_USEDRECURSIVENODE: [u8; UsedRecursiveNode::spec_xdr_len()] =
     UsedRecursiveNode::spec_xdr();
 impl UsedRecursiveNode {
@@ -12548,6 +12584,7 @@ impl UsedRecursiveLeaf {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_USEDRECURSIVELEAF: [u8; UsedRecursiveLeaf::spec_xdr_len()] =
     UsedRecursiveLeaf::spec_xdr();
 impl UsedRecursiveLeaf {
@@ -12956,6 +12993,7 @@ impl UsedLeaf {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_USEDLEAF: [u8; UsedLeaf::spec_xdr_len()] = UsedLeaf::spec_xdr();
 impl UsedLeaf {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -14075,6 +14113,7 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_TYPE_CONTRACTEXECUTABLEREF: [u8; ContractExecutableRef::spec_xdr_len()] =
         ContractExecutableRef::spec_xdr();
     impl ContractExecutableRef {
@@ -14592,6 +14631,7 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_TYPE_CONTRACTCONTEXT: [u8; ContractContext::spec_xdr_len()] =
         ContractContext::spec_xdr();
     impl ContractContext {
@@ -15172,6 +15212,7 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_TYPE_SUBCONTRACTINVOCATION: [u8; SubContractInvocation::spec_xdr_len()] =
         SubContractInvocation::spec_xdr();
     impl SubContractInvocation {
@@ -15698,6 +15739,7 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_TYPE_CREATECONTRACTHOSTFNCONTEXT: [u8;
         CreateContractHostFnContext::spec_xdr_len()] = CreateContractHostFnContext::spec_xdr();
     impl CreateContractHostFnContext {
@@ -16238,6 +16280,7 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_TYPE_CREATECONTRACTWITHCONSTRUCTORHOSTFNCONTEXT: [u8;
         CreateContractWithConstructorHostFnContext::spec_xdr_len()] =
         CreateContractWithConstructorHostFnContext::spec_xdr();
@@ -16864,6 +16907,7 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_TYPE_STRUCTA: [u8; StructA::spec_xdr_len()] = StructA::spec_xdr();
     impl StructA {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -17341,6 +17385,7 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_TYPE_STRUCTB: [u8; StructB::spec_xdr_len()] = StructB::spec_xdr();
     impl StructB {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -17818,6 +17863,7 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_TYPE_STRUCTC: [u8; StructC::spec_xdr_len()] = StructC::spec_xdr();
     impl StructC {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -18302,6 +18348,7 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_TYPE_STRUCTTUPLEA: [u8; StructTupleA::spec_xdr_len()] =
         StructTupleA::spec_xdr();
     impl StructTupleA {
@@ -18732,6 +18779,7 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_TYPE_STRUCTTUPLEB: [u8; StructTupleB::spec_xdr_len()] =
         StructTupleB::spec_xdr();
     impl StructTupleB {
@@ -19163,6 +19211,7 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_TYPE_STRUCTTUPLEC: [u8; StructTupleC::spec_xdr_len()] =
         StructTupleC::spec_xdr();
     impl StructTupleC {
@@ -19637,6 +19686,7 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_TYPE_CONTRACTEXECUTABLE: [u8; ContractExecutable::spec_xdr_len()] =
         ContractExecutable::spec_xdr();
     impl ContractExecutable {
@@ -20318,6 +20368,7 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_TYPE_CONTEXT: [u8; Context::spec_xdr_len()] = Context::spec_xdr();
     impl Context {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
@@ -21109,6 +21160,7 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_TYPE_INVOKERCONTRACTAUTHENTRY: [u8;
         InvokerContractAuthEntry::spec_xdr_len()] = InvokerContractAuthEntry::spec_xdr();
     impl InvokerContractAuthEntry {
@@ -21877,6 +21929,7 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_TYPE_EXECUTABLE: [u8; Executable::spec_xdr_len()] =
         Executable::spec_xdr();
     impl Executable {
@@ -22478,6 +22531,7 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_TYPE_ENUMA: [u8; EnumA::spec_xdr_len()] = EnumA::spec_xdr();
     impl EnumA {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -23047,6 +23101,7 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_TYPE_ENUMB: [u8; EnumB::spec_xdr_len()] = EnumB::spec_xdr();
     impl EnumB {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -23739,6 +23794,7 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_TYPE_ENUMC: [u8; EnumC::spec_xdr_len()] = EnumC::spec_xdr();
     impl EnumC {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
@@ -24363,6 +24419,7 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_TYPE_ENUMINTA: [u8; EnumIntA::spec_xdr_len()] = EnumIntA::spec_xdr();
     impl EnumIntA {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -24766,6 +24823,7 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_TYPE_ENUMINTB: [u8; EnumIntB::spec_xdr_len()] = EnumIntB::spec_xdr();
     impl EnumIntB {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -25169,6 +25227,7 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_TYPE_ENUMINTC: [u8; EnumIntC::spec_xdr_len()] = EnumIntC::spec_xdr();
     impl EnumIntC {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -25572,6 +25631,7 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_TYPE_ERRORA: [u8; ErrorA::spec_xdr_len()] = ErrorA::spec_xdr();
     impl ErrorA {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -25801,6 +25861,7 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_TYPE_ERRORB: [u8; ErrorB::spec_xdr_len()] = ErrorB::spec_xdr();
     impl ErrorB {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -26030,6 +26091,7 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_TYPE_ERRORC: [u8; ErrorC::spec_xdr_len()] = ErrorC::spec_xdr();
     impl ErrorC {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -26259,6 +26321,7 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_EVENT_EVENTA: [u8; EventA::spec_xdr_len()] = EventA::spec_xdr();
     impl EventA {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -26420,6 +26483,7 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_EVENT_EVENTB: [u8; EventB::spec_xdr_len()] = EventB::spec_xdr();
     impl EventB {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -26592,6 +26656,7 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_EVENT_EVENTC: [u8; EventC::spec_xdr_len()] = EventC::spec_xdr();
     impl EventC {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -26731,6 +26796,7 @@ mod wasm_imported {
         }
     }
     #[doc(hidden)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_EVENT_EVENTD: [u8; EventD::spec_xdr_len()] = EventD::spec_xdr();
     impl EventD {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -26832,6 +26898,7 @@ impl UnusedStruct {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_UNUSEDSTRUCT: [u8; UnusedStruct::spec_xdr_len()] =
     UnusedStruct::spec_xdr();
 impl UnusedStruct {
@@ -27232,6 +27299,7 @@ impl UnusedEnum {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_UNUSEDENUM: [u8; UnusedEnum::spec_xdr_len()] = UnusedEnum::spec_xdr();
 impl UnusedEnum {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -27732,6 +27800,7 @@ impl UnusedIntEnum {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_UNUSEDINTENUM: [u8; UnusedIntEnum::spec_xdr_len()] =
     UnusedIntEnum::spec_xdr();
 impl UnusedIntEnum {
@@ -28094,6 +28163,7 @@ impl UnusedEvent {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_EVENT_UNUSEDEVENT: [u8; UnusedEvent::spec_xdr_len()] =
     UnusedEvent::spec_xdr();
 impl UnusedEvent {
@@ -28205,6 +28275,7 @@ impl UnusedEventDataType {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_UNUSEDEVENTDATATYPE: [u8; UnusedEventDataType::spec_xdr_len()] =
     UnusedEventDataType::spec_xdr();
 impl UnusedEventDataType {
@@ -28608,6 +28679,7 @@ impl UnusedEventWithDataType {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_EVENT_UNUSEDEVENTWITHDATATYPE: [u8; UnusedEventWithDataType::spec_xdr_len()] =
     UnusedEventWithDataType::spec_xdr();
 impl UnusedEventWithDataType {
@@ -28730,6 +28802,7 @@ impl UnusedOuter {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_UNUSEDOUTER: [u8; UnusedOuter::spec_xdr_len()] = UnusedOuter::spec_xdr();
 impl UnusedOuter {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -29126,6 +29199,7 @@ impl UnusedInner {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_UNUSEDINNER: [u8; UnusedInner::spec_xdr_len()] = UnusedInner::spec_xdr();
 impl UnusedInner {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -29510,6 +29584,7 @@ impl UnusedPubError {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_UNUSEDPUBERROR: [u8; UnusedPubError::spec_xdr_len()] =
     UnusedPubError::spec_xdr();
 impl UnusedPubError {
@@ -29694,6 +29769,7 @@ impl UnusedNonContractFnParam {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_UNUSEDNONCONTRACTFNPARAM: [u8; UnusedNonContractFnParam::spec_xdr_len(
 )] = UnusedNonContractFnParam::spec_xdr();
 impl UnusedNonContractFnParam {
@@ -30096,6 +30172,7 @@ impl UnusedNonContractFnReturn {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_UNUSEDNONCONTRACTFNRETURN: [u8;
     UnusedNonContractFnReturn::spec_xdr_len()] = UnusedNonContractFnReturn::spec_xdr();
 impl UnusedNonContractFnReturn {
@@ -30493,6 +30570,7 @@ impl UnusedNonPubStruct {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_UNUSEDNONPUBSTRUCT: [u8; UnusedNonPubStruct::spec_xdr_len()] =
     UnusedNonPubStruct::spec_xdr();
 impl UnusedNonPubStruct {
@@ -30882,6 +30960,7 @@ impl UnusedNonPubError {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_UNUSEDNONPUBERROR: [u8; UnusedNonPubError::spec_xdr_len()] =
     UnusedNonPubError::spec_xdr();
 impl UnusedNonPubError {
@@ -31123,10 +31202,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_param__spec {
+#[allow(dead_code)]
+mod __Contract__with_param__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_WITH_PARAM: [u8; super::Contract::spec_xdr_len_with_param()] =
         super::Contract::spec_xdr_with_param();
 }
@@ -31177,10 +31258,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_return__spec {
+#[allow(dead_code)]
+mod __Contract__with_return__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_WITH_RETURN: [u8; super::Contract::spec_xdr_len_with_return()] =
         super::Contract::spec_xdr_with_return();
 }
@@ -31216,10 +31299,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_error__spec {
+#[allow(dead_code)]
+mod __Contract__with_error__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_WITH_ERROR: [u8; super::Contract::spec_xdr_len_with_error()] =
         super::Contract::spec_xdr_with_error();
 }
@@ -31260,10 +31345,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_panic_error__spec {
+#[allow(dead_code)]
+mod __Contract__with_panic_error__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_WITH_PANIC_ERROR: [u8;
         super::Contract::spec_xdr_len_with_panic_error()] =
         super::Contract::spec_xdr_with_panic_error();
@@ -31300,10 +31387,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_assert_error__spec {
+#[allow(dead_code)]
+mod __Contract__with_assert_error__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_WITH_ASSERT_ERROR: [u8;
         super::Contract::spec_xdr_len_with_assert_error()] =
         super::Contract::spec_xdr_with_assert_error();
@@ -31340,10 +31429,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_panic_raw_error__spec {
+#[allow(dead_code)]
+mod __Contract__with_panic_raw_error__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_WITH_PANIC_RAW_ERROR: [u8;
         super::Contract::spec_xdr_len_with_panic_raw_error()] =
         super::Contract::spec_xdr_with_panic_raw_error();
@@ -31381,10 +31472,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_vec__spec {
+#[allow(dead_code)]
+mod __Contract__with_vec__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_WITH_VEC: [u8; super::Contract::spec_xdr_len_with_vec()] =
         super::Contract::spec_xdr_with_vec();
 }
@@ -31429,10 +31522,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_vec_nested__spec {
+#[allow(dead_code)]
+mod __Contract__with_vec_nested__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_WITH_VEC_NESTED: [u8; super::Contract::spec_xdr_len_with_vec_nested(
     )] = super::Contract::spec_xdr_with_vec_nested();
 }
@@ -31479,10 +31574,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_map__spec {
+#[allow(dead_code)]
+mod __Contract__with_map__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_WITH_MAP: [u8; super::Contract::spec_xdr_len_with_map()] =
         super::Contract::spec_xdr_with_map();
 }
@@ -31532,10 +31629,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_option__spec {
+#[allow(dead_code)]
+mod __Contract__with_option__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_WITH_OPTION: [u8; super::Contract::spec_xdr_len_with_option()] =
         super::Contract::spec_xdr_with_option();
 }
@@ -31580,10 +31679,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_result__spec {
+#[allow(dead_code)]
+mod __Contract__with_result__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_WITH_RESULT: [u8; super::Contract::spec_xdr_len_with_result()] =
         super::Contract::spec_xdr_with_result();
 }
@@ -31630,10 +31731,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_recursion__spec {
+#[allow(dead_code)]
+mod __Contract__with_recursion__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_WITH_RECURSION: [u8; super::Contract::spec_xdr_len_with_recursion()] =
         super::Contract::spec_xdr_with_recursion();
 }
@@ -31673,10 +31776,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_auth_contexts__spec {
+#[allow(dead_code)]
+mod __Contract__with_auth_contexts__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_WITH_AUTH_CONTEXTS: [u8;
         super::Contract::spec_xdr_len_with_auth_contexts()] =
         super::Contract::spec_xdr_with_auth_contexts();
@@ -31725,10 +31830,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_invoker_auth__spec {
+#[allow(dead_code)]
+mod __Contract__with_invoker_auth__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_WITH_INVOKER_AUTH: [u8;
         super::Contract::spec_xdr_len_with_invoker_auth()] =
         super::Contract::spec_xdr_with_invoker_auth();
@@ -31771,10 +31878,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_executable__spec {
+#[allow(dead_code)]
+mod __Contract__with_executable__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_WITH_EXECUTABLE: [u8; super::Contract::spec_xdr_len_with_executable(
     )] = super::Contract::spec_xdr_with_executable();
 }
@@ -31814,10 +31923,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__publish_simple__spec {
+#[allow(dead_code)]
+mod __Contract__publish_simple__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_PUBLISH_SIMPLE: [u8; super::Contract::spec_xdr_len_publish_simple()] =
         super::Contract::spec_xdr_publish_simple();
 }
@@ -31845,10 +31956,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__publish_topic_type__spec {
+#[allow(dead_code)]
+mod __Contract__publish_topic_type__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_PUBLISH_TOPIC_TYPE: [u8;
         super::Contract::spec_xdr_len_publish_topic_type()] =
         super::Contract::spec_xdr_publish_topic_type();
@@ -31880,10 +31993,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__publish_data_type__spec {
+#[allow(dead_code)]
+mod __Contract__publish_data_type__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_PUBLISH_DATA_TYPE: [u8;
         super::Contract::spec_xdr_len_publish_data_type()] =
         super::Contract::spec_xdr_publish_data_type();
@@ -31914,10 +32029,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__publish_nested_topic__spec {
+#[allow(dead_code)]
+mod __Contract__publish_nested_topic__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_PUBLISH_NESTED_TOPIC: [u8;
         super::Contract::spec_xdr_len_publish_nested_topic()] =
         super::Contract::spec_xdr_publish_nested_topic();
@@ -31949,10 +32066,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__publish_nested_data__spec {
+#[allow(dead_code)]
+mod __Contract__publish_nested_data__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_PUBLISH_NESTED_DATA: [u8;
         super::Contract::spec_xdr_len_publish_nested_data()] =
         super::Contract::spec_xdr_publish_nested_data();
@@ -31984,10 +32103,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_lib_struct__spec {
+#[allow(dead_code)]
+mod __Contract__with_lib_struct__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_WITH_LIB_STRUCT: [u8; super::Contract::spec_xdr_len_with_lib_struct(
     )] = super::Contract::spec_xdr_with_lib_struct();
 }
@@ -32027,10 +32148,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_wasm_imported__spec {
+#[allow(dead_code)]
+mod __Contract__with_wasm_imported__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_WITH_WASM_IMPORTED: [u8;
         super::Contract::spec_xdr_len_with_wasm_imported()] =
         super::Contract::spec_xdr_with_wasm_imported();
@@ -32074,10 +32197,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_non_pub__spec {
+#[allow(dead_code)]
+mod __Contract__with_non_pub__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_WITH_NON_PUB: [u8; super::Contract::spec_xdr_len_with_non_pub()] =
         super::Contract::spec_xdr_with_non_pub();
 }
@@ -32117,10 +32242,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_non_pub_error__spec {
+#[allow(dead_code)]
+mod __Contract__with_non_pub_error__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_WITH_NON_PUB_ERROR: [u8;
         super::Contract::spec_xdr_len_with_non_pub_error()] =
         super::Contract::spec_xdr_with_non_pub_error();
@@ -32165,10 +32292,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_tuple__spec {
+#[allow(dead_code)]
+mod __Contract__with_tuple__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_WITH_TUPLE: [u8; super::Contract::spec_xdr_len_with_tuple()] =
         super::Contract::spec_xdr_with_tuple();
 }
@@ -32218,10 +32347,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_tuple_return__spec {
+#[allow(dead_code)]
+mod __Contract__with_tuple_return__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_WITH_TUPLE_RETURN: [u8;
         super::Contract::spec_xdr_len_with_tuple_return()] =
         super::Contract::spec_xdr_with_tuple_return();
@@ -32266,10 +32397,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__publish_ref_event__spec {
+#[allow(dead_code)]
+mod __Contract__publish_ref_event__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_PUBLISH_REF_EVENT: [u8;
         super::Contract::spec_xdr_len_publish_ref_event()] =
         super::Contract::spec_xdr_publish_ref_event();

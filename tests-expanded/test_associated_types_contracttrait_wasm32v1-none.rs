@@ -151,10 +151,12 @@ pub extern "C" fn __Contract__exec__invoke_raw_extern() -> soroban_sdk::Val {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__exec__spec {
+#[allow(dead_code)]
+mod __Contract__exec__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     pub static __SPEC_XDR_FN_EXEC: [u8; super::Contract::spec_xdr_len_exec()] =
         super::Contract::spec_xdr_exec();
@@ -247,10 +249,12 @@ impl TraitWithoutContractTrait for Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__exec2__spec {
+#[allow(dead_code)]
+mod __Contract__exec2__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     pub static __SPEC_XDR_FN_EXEC2: [u8; super::Contract::spec_xdr_len_exec2()] =
         super::Contract::spec_xdr_exec2();

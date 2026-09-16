@@ -57,6 +57,7 @@ impl Error {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 pub static __SPEC_XDR_TYPE_ERROR: [u8; Error::spec_xdr_len()] = Error::spec_xdr();
 impl Error {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -336,10 +337,12 @@ impl CustomAccountInterface for Contract {
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[allow(non_snake_case)]
-pub mod __Contract____check_auth__spec {
+#[allow(dead_code)]
+mod __Contract____check_auth__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[allow(non_snake_case)]
     pub static __SPEC_XDR_FN___CHECK_AUTH: [u8; super::Contract::spec_xdr_len___check_auth()] =
         super::Contract::spec_xdr___check_auth();
