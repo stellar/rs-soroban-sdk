@@ -2534,7 +2534,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-ledger-snapshot-source-tx"
-version = "28.0.0-rc.1"
+version = "28.0.0-rc.2"
 dependencies = [
  "cargo_metadata",
  "directories",
@@ -3053,7 +3053,7 @@ dependencies = [
 
 [[package]]
 name = "test_fork"
-version = "28.0.0-rc.1"
+version = "28.0.0-rc.2"
 dependencies = [
  "bytes-lit 0.0.5",
  "ed25519-dalek",
