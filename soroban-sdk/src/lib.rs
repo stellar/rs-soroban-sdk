@@ -393,8 +393,8 @@ pub use soroban_sdk_macros::contracterror;
 ///
 /// #[contractimpl]
 /// impl ContractB {
-///     pub fn add_with(env: Env, contract_id: Address, x: u64, y: u64) -> u64 {
-///         let client = contract_a::Client::new(&env, &contract_id);
+///     pub fn add_with(env: &Env, contract_id: Address, x: u64, y: u64) -> u64 {
+///         let client = contract_a::Client::new(env, &contract_id);
 ///         client.add(&x, &y)
 ///     }
 /// }
