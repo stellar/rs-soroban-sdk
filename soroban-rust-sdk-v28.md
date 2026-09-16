@@ -39,11 +39,10 @@ marker functions of its field types, so nesting propagates, and so do `Vec<T>`,
 elimination removes the markers for types nothing reaches. Post-build tooling
 scans for the markers that survived and strips every spec entry without one.
 
-This was the `experimental_spec_shaking_v2` feature in v27. It has been enabled
-automatically for every contract built with OpenZeppelin's `stellar-contracts`
-v0.7.0 or newer since April 2026, so a large share of contracts already build
-with the v28 behaviour. In v28 the feature flag is gone and the behaviour is
-unconditional.
+This was the `experimental_spec_shaking_v2` feature in v27. A contract already
+built with OpenZeppelin's `stellar-contracts` v0.7.0 or newer has it enabled
+automatically, and so already builds with the v28 behaviour. In v28 the
+feature flag is gone and the behaviour is unconditional.
 
 Two consequences follow.
 
@@ -225,11 +224,33 @@ It appears as the `executable` field of `CreateContractHostFnContext` and
 `CreateContractWithConstructorHostFnContext`, the contexts passed when an address
 authorizes a contract creation. In v28 it moves from `soroban_sdk::auth` to the
 crate root, and is re-exported from `auth` so existing imports keep compiling.
-What changes is that it now has a second variant. A `__check_auth` that inspects
-the executable before approving a deployment has to handle `ExternalRef`, and the
-two variants do not authorize the same thing: approving `Wasm(hash)` approves
-specific code, while approving `ExternalRef` approves whatever the owner has the
-tag pointing at — now, and after the owner next changes it.
+What changes is that it now has a second variant. A custom account built with
+an earlier SDK cannot unpack a context whose executable is an `ExternalRef`,
+and panics trying. One that matches exhaustively needs a new arm, and gets to
+decide whether it authorizes deployments from executable references at all;
+the two variants do not authorize the same thing, since approving `Wasm(hash)`
+approves specific code, while approving `ExternalRef` approves whatever the
+owner has the tag pointing at — now, and after the owner next changes it. An
+account that only ever authorized Wasm deployments can keep doing so by
+rejecting the new variant:
+
+```rust
+for context in auth_contexts.iter() {
+    let executable = match context {
+        Context::Contract(_) => continue,
+        Context::CreateContractHostFn(c) => c.executable,
+        Context::CreateContractWithCtorHostFn(c) => c.executable,
+    };
+    match executable {
+        ContractExecutable::Wasm(_wasm_hash) => (),
+        // 👇 New in v28. This account does not authorize deployments
+        // from executable references.
+        ContractExecutable::ExternalRef(_) => {
+            return Err(Error::UnsupportedExecutable)
+        }
+    }
+}
+```
 
 ## Native contracts can be uploaded in tests
 
@@ -293,7 +314,7 @@ attention:
 
 The full set of breaking changes, with runnable examples, is in the SDK's
 `_migrating` module, and summarised in the
-[v28.0.0-rc.1 release notes](https://github.com/stellar/rs-soroban-sdk/releases/tag/v28.0.0-rc.1).
+[v28.0.0-rc.2 release notes](https://github.com/stellar/rs-soroban-sdk/releases/tag/v28.0.0-rc.2).
 
 ## Taken together
 
