@@ -32,13 +32,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract____constructor__spec {
+#[allow(dead_code)]
+mod __Contract____constructor__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN___CONSTRUCTOR: [u8; 56usize] =
-        super::Contract::spec_xdr___constructor();
+    static __SPEC_XDR_FN___CONSTRUCTOR: [u8; 56usize] = super::Contract::spec_xdr___constructor();
 }
 impl Contract {
     #[allow(non_snake_case)]
