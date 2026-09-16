@@ -405,10 +405,12 @@ pub extern "C" fn __Contract__exec__invoke_raw_extern() -> soroban_sdk::Val {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__exec__spec {
+#[allow(dead_code)]
+mod __Contract__exec__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_EXEC: [u8; super::Contract::spec_xdr_len_exec()] =
         super::Contract::spec_xdr_exec();
 }
@@ -601,10 +603,12 @@ impl TraitWithoutContractTrait for Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__exec2__spec {
+#[allow(dead_code)]
+mod __Contract__exec2__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_EXEC2: [u8; super::Contract::spec_xdr_len_exec2()] =
         super::Contract::spec_xdr_exec2();
 }
@@ -1214,6 +1218,7 @@ mod test_with_wasm {
             }
         }
         #[doc(hidden)]
+        #[allow(dead_code)]
         pub static __SPEC_XDR_TYPE_CONTRACTEXECUTABLEREF: [u8;
             ContractExecutableRef::spec_xdr_len()] = ContractExecutableRef::spec_xdr();
         impl ContractExecutableRef {
@@ -1741,6 +1746,7 @@ mod test_with_wasm {
             }
         }
         #[doc(hidden)]
+        #[allow(dead_code)]
         pub static __SPEC_XDR_TYPE_CONTRACTCONTEXT: [u8; ContractContext::spec_xdr_len()] =
             ContractContext::spec_xdr();
         impl ContractContext {
@@ -2338,6 +2344,7 @@ mod test_with_wasm {
             }
         }
         #[doc(hidden)]
+        #[allow(dead_code)]
         pub static __SPEC_XDR_TYPE_SUBCONTRACTINVOCATION: [u8;
             SubContractInvocation::spec_xdr_len()] = SubContractInvocation::spec_xdr();
         impl SubContractInvocation {
@@ -2869,6 +2876,7 @@ mod test_with_wasm {
             }
         }
         #[doc(hidden)]
+        #[allow(dead_code)]
         pub static __SPEC_XDR_TYPE_CREATECONTRACTHOSTFNCONTEXT: [u8;
             CreateContractHostFnContext::spec_xdr_len()] = CreateContractHostFnContext::spec_xdr();
         impl CreateContractHostFnContext {
@@ -3426,6 +3434,7 @@ mod test_with_wasm {
             }
         }
         #[doc(hidden)]
+        #[allow(dead_code)]
         pub static __SPEC_XDR_TYPE_CREATECONTRACTWITHCONSTRUCTORHOSTFNCONTEXT: [u8;
             CreateContractWithConstructorHostFnContext::spec_xdr_len()] =
             CreateContractWithConstructorHostFnContext::spec_xdr();
@@ -4103,6 +4112,7 @@ mod test_with_wasm {
             }
         }
         #[doc(hidden)]
+        #[allow(dead_code)]
         pub static __SPEC_XDR_TYPE_CONTRACTEXECUTABLE: [u8; ContractExecutable::spec_xdr_len()] =
             ContractExecutable::spec_xdr();
         impl ContractExecutable {
@@ -4790,6 +4800,7 @@ mod test_with_wasm {
             }
         }
         #[doc(hidden)]
+        #[allow(dead_code)]
         pub static __SPEC_XDR_TYPE_CONTEXT: [u8; Context::spec_xdr_len()] = Context::spec_xdr();
         impl Context {
             const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
@@ -5595,6 +5606,7 @@ mod test_with_wasm {
             }
         }
         #[doc(hidden)]
+        #[allow(dead_code)]
         pub static __SPEC_XDR_TYPE_INVOKERCONTRACTAUTHENTRY: [u8;
             InvokerContractAuthEntry::spec_xdr_len()] = InvokerContractAuthEntry::spec_xdr();
         impl InvokerContractAuthEntry {
@@ -6395,6 +6407,7 @@ mod test_with_wasm {
             }
         }
         #[doc(hidden)]
+        #[allow(dead_code)]
         pub static __SPEC_XDR_TYPE_EXECUTABLE: [u8; Executable::spec_xdr_len()] =
             Executable::spec_xdr();
         impl Executable {

@@ -144,10 +144,12 @@ impl ContractA {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __ContractA__fn1__spec {
+#[allow(dead_code)]
+mod __ContractA__fn1__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_FN1: [u8; super::ContractA::spec_xdr_len_fn1()] =
         super::ContractA::spec_xdr_fn1();
 }
@@ -829,10 +831,12 @@ mod test_a {
         #[doc(hidden)]
         #[allow(non_snake_case)]
         #[allow(non_snake_case)]
-        pub mod __Contract____check_auth__spec {
+        #[allow(dead_code)]
+        mod __Contract____check_auth__spec {
             #[doc(hidden)]
             #[allow(non_snake_case)]
             #[allow(non_upper_case_globals)]
+            #[allow(dead_code)]
             #[allow(non_snake_case)]
             pub static __SPEC_XDR_FN___CHECK_AUTH: [u8;
                 super::Contract::spec_xdr_len___check_auth()] =
@@ -1194,6 +1198,7 @@ mod test_a {
             }
         }
         #[doc(hidden)]
+        #[allow(dead_code)]
         pub static __SPEC_XDR_TYPE_ERROR: [u8; Error::spec_xdr_len()] = Error::spec_xdr();
         impl Error {
             const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -1345,10 +1350,12 @@ mod test_a {
         #[doc(hidden)]
         #[allow(non_snake_case)]
         #[allow(non_snake_case)]
-        pub mod __Contract____check_auth__spec {
+        #[allow(dead_code)]
+        mod __Contract____check_auth__spec {
             #[doc(hidden)]
             #[allow(non_snake_case)]
             #[allow(non_upper_case_globals)]
+            #[allow(dead_code)]
             #[allow(non_snake_case)]
             pub static __SPEC_XDR_FN___CHECK_AUTH: [u8;
                 super::Contract::spec_xdr_len___check_auth()] =
@@ -1668,10 +1675,12 @@ impl ContractB {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __ContractB__fn2__spec {
+#[allow(dead_code)]
+mod __ContractB__fn2__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     pub static __SPEC_XDR_FN_FN2: [u8; super::ContractB::spec_xdr_len_fn2()] =
         super::ContractB::spec_xdr_fn2();
 }
@@ -2471,10 +2480,12 @@ mod test_b {
         #[doc(hidden)]
         #[allow(non_snake_case)]
         #[allow(non_snake_case)]
-        pub mod __Contract____check_auth__spec {
+        #[allow(dead_code)]
+        mod __Contract____check_auth__spec {
             #[doc(hidden)]
             #[allow(non_snake_case)]
             #[allow(non_upper_case_globals)]
+            #[allow(dead_code)]
             #[allow(non_snake_case)]
             pub static __SPEC_XDR_FN___CHECK_AUTH: [u8;
                 super::Contract::spec_xdr_len___check_auth()] =
@@ -2836,6 +2847,7 @@ mod test_b {
             }
         }
         #[doc(hidden)]
+        #[allow(dead_code)]
         pub static __SPEC_XDR_TYPE_ERROR: [u8; Error::spec_xdr_len()] = Error::spec_xdr();
         impl Error {
             const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -2987,10 +2999,12 @@ mod test_b {
         #[doc(hidden)]
         #[allow(non_snake_case)]
         #[allow(non_snake_case)]
-        pub mod __Contract____check_auth__spec {
+        #[allow(dead_code)]
+        mod __Contract____check_auth__spec {
             #[doc(hidden)]
             #[allow(non_snake_case)]
             #[allow(non_upper_case_globals)]
+            #[allow(dead_code)]
             #[allow(non_snake_case)]
             pub static __SPEC_XDR_FN___CHECK_AUTH: [u8;
                 super::Contract::spec_xdr_len___check_auth()] =

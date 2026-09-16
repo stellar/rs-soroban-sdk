@@ -201,8 +201,8 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         doc: docs_from_attrs(&input.attrs),
         // set to empty string always because the field is no longer used
         lib: StringM::default(),
-        // the event name is limited to EVENT_NAME_LENGTH, which is always
-        // within the spec field's wider limit
+        // Event names are limited by the SDK to EVENT_NAME_LENGTH, which is
+        // shorter than the spec's name limit, so the conversion cannot fail.
         name: event_name.into_vec().try_into().unwrap(),
         prefix_topics: prefix_topics
             .iter()
@@ -261,6 +261,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     // Generated code spec.
     let spec_gen = quote! {
         #[doc(hidden)]
+        #[allow(dead_code)]
         #export_gen
         pub static #spec_ident: [u8; #ident::spec_xdr_len()] = #ident::spec_xdr();
 

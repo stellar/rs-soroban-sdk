@@ -15,24 +15,20 @@ members = [
 ]
 
 [workspace.package]
-version = "28.0.0-rc.1"
+version = "28.0.0-rc.2"
 rust-version = "1.91.0"
 
 [workspace.dependencies]
-soroban-sdk = { version = "28.0.0-rc.1", path = "soroban-sdk" }
-soroban-sdk-macros = { version = "28.0.0-rc.1", path = "soroban-sdk-macros" }
-soroban-meta = { version = "28.0.0-rc.1", path = "soroban-meta" }
-soroban-spec = { version = "28.0.0-rc.1", path = "soroban-spec", default-features = false }
-soroban-spec-rust = { version = "28.0.0-rc.1", path = "soroban-spec-rust" }
-soroban-ledger-snapshot = { version = "28.0.0-rc.1", path = "soroban-ledger-snapshot" }
-soroban-token-sdk = { version = "28.0.0-rc.1", path = "soroban-token-sdk" }
-soroban-token-spec = { version = "28.0.0-rc.1", path = "soroban-token-spec" }
-stellar-asset-spec = { version = "28.0.0-rc.1", path = "stellar-asset-spec" }
+soroban-sdk = { version = "28.0.0-rc.2", path = "soroban-sdk" }
+soroban-sdk-macros = { version = "28.0.0-rc.2", path = "soroban-sdk-macros" }
+soroban-meta = { version = "28.0.0-rc.2", path = "soroban-meta" }
+soroban-spec = { version = "28.0.0-rc.2", path = "soroban-spec", default-features = false }
+soroban-spec-rust = { version = "28.0.0-rc.2", path = "soroban-spec-rust" }
+soroban-ledger-snapshot = { version = "28.0.0-rc.2", path = "soroban-ledger-snapshot" }
+soroban-token-sdk = { version = "28.0.0-rc.2", path = "soroban-token-sdk" }
+soroban-token-spec = { version = "28.0.0-rc.2", path = "soroban-token-spec" }
+stellar-asset-spec = { version = "28.0.0-rc.2", path = "stellar-asset-spec" }
 
-# Pinned to a rev of rs-soroban-env main, pending a release of the host adapted
-# to the XDR constants that rs-stellar-xdr changed from u64 to u32.
-# Only the 29.x line carries that adaptation, so the test ledger's default
-# protocol is 29 until it is released.
 [workspace.dependencies.soroban-env-common]
 version = "=29.0.0"
 git = "https://github.com/stellar/rs-soroban-env"
@@ -51,9 +47,6 @@ rev = "cb32250d926bd7188f3a6f9075bd48c44550dcac"
 [workspace.dependencies.stellar-strkey]
 version = "=0.0.16"
 
-# Pinned to a rev of rs-stellar-xdr main, pending a release containing the
-# `const` module of const-only types and their const XDR serializers that the
-# contract spec generation in soroban-sdk-macros builds on.
 [workspace.dependencies.stellar-xdr]
 version = "=28.0.0"
 git = "https://github.com/stellar/rs-stellar-xdr"

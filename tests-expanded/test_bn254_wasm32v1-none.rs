@@ -14,6 +14,7 @@ pub struct MockProof {
     pub g2: Vec<Bn254G2Affine>,
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
 pub static __SPEC_XDR_TYPE_MOCKPROOF: [u8; MockProof::spec_xdr_len()] = MockProof::spec_xdr();
 impl MockProof {
@@ -166,10 +167,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__verify_pairing__spec {
+#[allow(dead_code)]
+mod __Contract__verify_pairing__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     pub static __SPEC_XDR_FN_VERIFY_PAIRING: [u8; super::Contract::spec_xdr_len_verify_pairing()] =
         super::Contract::spec_xdr_verify_pairing();
@@ -212,10 +215,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__g1_add__spec {
+#[allow(dead_code)]
+mod __Contract__g1_add__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     pub static __SPEC_XDR_FN_G1_ADD: [u8; super::Contract::spec_xdr_len_g1_add()] =
         super::Contract::spec_xdr_g1_add();
@@ -263,10 +268,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__g1_mul__spec {
+#[allow(dead_code)]
+mod __Contract__g1_mul__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     pub static __SPEC_XDR_FN_G1_MUL: [u8; super::Contract::spec_xdr_len_g1_mul()] =
         super::Contract::spec_xdr_g1_mul();
@@ -312,10 +319,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__fr_vec_get__spec {
+#[allow(dead_code)]
+mod __Contract__fr_vec_get__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     pub static __SPEC_XDR_FN_FR_VEC_GET: [u8; super::Contract::spec_xdr_len_fr_vec_get()] =
         super::Contract::spec_xdr_fr_vec_get();

@@ -91,10 +91,12 @@ impl AssociatedType for Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__set_val__spec {
+#[allow(dead_code)]
+mod __Contract__set_val__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     pub static __SPEC_XDR_FN_SET_VAL: [u8; super::Contract::spec_xdr_len_set_val()] =
         super::Contract::spec_xdr_set_val();
@@ -129,10 +131,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__get_val__spec {
+#[allow(dead_code)]
+mod __Contract__get_val__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     pub static __SPEC_XDR_FN_GET_VAL: [u8; super::Contract::spec_xdr_len_get_val()] =
         super::Contract::spec_xdr_get_val();
@@ -163,10 +167,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__both__spec {
+#[allow(dead_code)]
+mod __Contract__both__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     pub static __SPEC_XDR_FN_BOTH: [u8; super::Contract::spec_xdr_len_both()] =
         super::Contract::spec_xdr_both();
@@ -203,10 +209,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__wrapped__spec {
+#[allow(dead_code)]
+mod __Contract__wrapped__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     pub static __SPEC_XDR_FN_WRAPPED: [u8; super::Contract::spec_xdr_len_wrapped()] =
         super::Contract::spec_xdr_wrapped();
@@ -252,10 +260,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__double_wrapped__spec {
+#[allow(dead_code)]
+mod __Contract__double_wrapped__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     pub static __SPEC_XDR_FN_DOUBLE_WRAPPED: [u8; super::Contract::spec_xdr_len_double_wrapped()] =
         super::Contract::spec_xdr_double_wrapped();
@@ -310,10 +320,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__valval__spec {
+#[allow(dead_code)]
+mod __Contract__valval__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     pub static __SPEC_XDR_FN_VALVAL: [u8; super::Contract::spec_xdr_len_valval()] =
         super::Contract::spec_xdr_valval();
@@ -354,10 +366,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__tuple__spec {
+#[allow(dead_code)]
+mod __Contract__tuple__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     pub static __SPEC_XDR_FN_TUPLE: [u8; super::Contract::spec_xdr_len_tuple()] =
         super::Contract::spec_xdr_tuple();
@@ -403,10 +417,12 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__valref__spec {
+#[allow(dead_code)]
+mod __Contract__valref__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     pub static __SPEC_XDR_FN_VALREF: [u8; super::Contract::spec_xdr_len_valref()] =
         super::Contract::spec_xdr_valref();
