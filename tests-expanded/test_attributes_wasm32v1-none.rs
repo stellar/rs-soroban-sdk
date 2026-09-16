@@ -48,8 +48,9 @@ impl ::core::cmp::PartialEq for AttributeType {
     }
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_ATTRIBUTETYPE: [u8; 56usize] = AttributeType::spec_xdr();
+static __SPEC_XDR_TYPE_ATTRIBUTETYPE: [u8; 56usize] = AttributeType::spec_xdr();
 impl AttributeType {
     pub const fn spec_xdr() -> [u8; 56usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\rAttributeType\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05value\0\0\0\0\0\0\x04"
@@ -117,8 +118,9 @@ pub struct AttributeEvent {
     value: u32,
 }
 #[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_EVENT_ATTRIBUTEEVENT: [u8; 112usize] = AttributeEvent::spec_xdr();
+static __SPEC_XDR_EVENT_ATTRIBUTEEVENT: [u8; 112usize] = AttributeEvent::spec_xdr();
 impl AttributeEvent {
     pub const fn spec_xdr() -> [u8; 112usize] {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x0eAttributeEvent\0\0\0\0\0\x01\0\0\0\x0fattribute_event\0\0\0\0\x02\0\0\0\0\0\0\0\x05topic\0\0\0\0\0\0\x04\0\0\0\x01\0\0\0\0\0\0\0\x05value\0\0\0\0\0\0\x04\0\0\0\0\0\0\0\x02"
@@ -485,12 +487,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__always__spec {
+#[allow(dead_code)]
+mod __Contract__always__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_ALWAYS: [u8; 72usize] = super::Contract::spec_xdr_always();
+    static __SPEC_XDR_FN_ALWAYS: [u8; 72usize] = super::Contract::spec_xdr_always();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -500,12 +504,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__cfg_included__spec {
+#[allow(dead_code)]
+mod __Contract__cfg_included__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_CFG_INCLUDED: [u8; 56usize] = super::Contract::spec_xdr_cfg_included();
+    static __SPEC_XDR_FN_CFG_INCLUDED: [u8; 56usize] = super::Contract::spec_xdr_cfg_included();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -516,12 +522,14 @@ impl Contract {
 impl Contract {}
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__publish__spec {
+#[allow(dead_code)]
+mod __Contract__publish__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_PUBLISH: [u8; 68usize] = super::Contract::spec_xdr_publish();
+    static __SPEC_XDR_FN_PUBLISH: [u8; 68usize] = super::Contract::spec_xdr_publish();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -761,13 +769,14 @@ impl AttributeTrait for Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__trait_override__spec {
+#[allow(dead_code)]
+mod __Contract__trait_override__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_TRAIT_OVERRIDE: [u8; 40usize] =
-        super::Contract::spec_xdr_trait_override();
+    static __SPEC_XDR_FN_TRAIT_OVERRIDE: [u8; 40usize] = super::Contract::spec_xdr_trait_override();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -779,12 +788,14 @@ impl Contract {}
 impl Contract {}
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__trait_override_stacked_cfg__spec {
+#[allow(dead_code)]
+mod __Contract__trait_override_stacked_cfg__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_TRAIT_OVERRIDE_STACKED_CFG: [u8; 52usize] =
+    static __SPEC_XDR_FN_TRAIT_OVERRIDE_STACKED_CFG: [u8; 52usize] =
         super::Contract::spec_xdr_trait_override_stacked_cfg();
 }
 impl Contract {
@@ -795,12 +806,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__trait_override_negated_cfg__spec {
+#[allow(dead_code)]
+mod __Contract__trait_override_negated_cfg__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_TRAIT_OVERRIDE_NEGATED_CFG: [u8; 52usize] =
+    static __SPEC_XDR_FN_TRAIT_OVERRIDE_NEGATED_CFG: [u8; 52usize] =
         super::Contract::spec_xdr_trait_override_negated_cfg();
 }
 impl Contract {
@@ -811,12 +824,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__trait_override_dual_cfg__spec {
+#[allow(dead_code)]
+mod __Contract__trait_override_dual_cfg__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_TRAIT_OVERRIDE_DUAL_CFG: [u8; 48usize] =
+    static __SPEC_XDR_FN_TRAIT_OVERRIDE_DUAL_CFG: [u8; 48usize] =
         super::Contract::spec_xdr_trait_override_dual_cfg();
 }
 impl Contract {
@@ -1099,13 +1114,14 @@ pub extern "C" fn __Contract__trait_default_dual_cfg__invoke_raw_extern() -> sor
 impl Contract {}
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__trait_default__spec {
+#[allow(dead_code)]
+mod __Contract__trait_default__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_TRAIT_DEFAULT: [u8; 40usize] =
-        super::Contract::spec_xdr_trait_default();
+    static __SPEC_XDR_FN_TRAIT_DEFAULT: [u8; 40usize] = super::Contract::spec_xdr_trait_default();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -1115,12 +1131,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__trait_default_stacked_cfg__spec {
+#[allow(dead_code)]
+mod __Contract__trait_default_stacked_cfg__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_TRAIT_DEFAULT_STACKED_CFG: [u8; 52usize] =
+    static __SPEC_XDR_FN_TRAIT_DEFAULT_STACKED_CFG: [u8; 52usize] =
         super::Contract::spec_xdr_trait_default_stacked_cfg();
 }
 impl Contract {
@@ -1134,12 +1152,14 @@ impl Contract {}
 impl Contract {}
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__trait_default_dual_cfg__spec {
+#[allow(dead_code)]
+mod __Contract__trait_default_dual_cfg__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_TRAIT_DEFAULT_DUAL_CFG: [u8; 48usize] =
+    static __SPEC_XDR_FN_TRAIT_DEFAULT_DUAL_CFG: [u8; 48usize] =
         super::Contract::spec_xdr_trait_default_dual_cfg();
 }
 impl Contract {

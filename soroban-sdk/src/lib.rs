@@ -358,7 +358,7 @@ pub use soroban_sdk_macros::contracterror;
 ///
 /// Generates in the current module:
 /// - A `Contract` trait that matches the contracts interface.
-/// - A `ContractClient` struct that has functions for each function in the
+/// - A `Client` struct that has functions for each function in the
 /// contract.
 /// - Types for all contract types defined in the contract.
 ///
@@ -370,40 +370,43 @@ pub use soroban_sdk_macros::contracterror;
 /// if it does not match the provided value. The `sha256` argument must
 /// be a hex-encoded SHA-256 digest (64 hex chars, no 0x prefix).
 ///
-/// ```ignore
+/// ```
 /// mod contract_a {
 ///     soroban_sdk::contractimport!(
-///         file = "contract_a.wasm",
-///         sha256 = "d5bc0a5b4...",
+///         file = "doctest_fixtures/contract.wasm",
+///         sha256 = "33d12fec8f6f3ddf2eb0ec76ee9a75a9e37d1fa20af35908d90d278af8264311",
 ///     );
 /// }
 /// ```
 ///
 /// ### Examples
 ///
-/// ```ignore
-/// use soroban_sdk::{contractimpl, BytesN, Env, Symbol};
+/// ```
+/// use soroban_sdk::{contract, contractimpl, Address, Env};
 ///
 /// mod contract_a {
-///     soroban_sdk::contractimport!(file = "contract_a.wasm");
+///     soroban_sdk::contractimport!(file = "doctest_fixtures/contract.wasm");
 /// }
 ///
+/// #[contract]
 /// pub struct ContractB;
 ///
 /// #[contractimpl]
 /// impl ContractB {
-///     pub fn add_with(env: Env, contract_id: BytesN<32>, x: u32, y: u32) -> u32 {
-///         let client = contract_a::ContractClient::new(&env, contract_id);
+///     pub fn add_with(env: &Env, contract_id: Address, x: u64, y: u64) -> u64 {
+///         let client = contract_a::Client::new(env, &contract_id);
 ///         client.add(&x, &y)
 ///     }
 /// }
 ///
 /// #[test]
 /// fn test() {
+/// # }
+/// # fn main() {
 ///     let env = Env::default();
 ///
 ///     // Register contract A using the imported WASM.
-///     let contract_a_id = env.register_contract_wasm(None, contract_a::WASM);
+///     let contract_a_id = env.register(contract_a::WASM, ());
 ///
 ///     // Register contract B defined in this crate.
 ///     let contract_b_id = env.register(ContractB, ());

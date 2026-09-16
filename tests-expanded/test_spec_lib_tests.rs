@@ -48,7 +48,8 @@ impl ::core::cmp::PartialEq for StructA {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_XDR_TYPE_STRUCTA: [u8; 60usize] = StructA::spec_xdr();
+#[allow(dead_code)]
+static __SPEC_XDR_TYPE_STRUCTA: [u8; 60usize] = StructA::spec_xdr();
 impl StructA {
     pub const fn spec_xdr() -> [u8; 60usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07StructA\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x04\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x01"
@@ -474,7 +475,8 @@ impl ::core::cmp::PartialEq for StructB {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_XDR_TYPE_STRUCTB: [u8; 60usize] = StructB::spec_xdr();
+#[allow(dead_code)]
+static __SPEC_XDR_TYPE_STRUCTB: [u8; 60usize] = StructB::spec_xdr();
 impl StructB {
     pub const fn spec_xdr() -> [u8; 60usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07StructB\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x07\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x10"
@@ -900,7 +902,8 @@ impl ::core::cmp::PartialEq for StructC {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_XDR_TYPE_STRUCTC: [u8; 64usize] = StructC::spec_xdr();
+#[allow(dead_code)]
+static __SPEC_XDR_TYPE_STRUCTC: [u8; 64usize] = StructC::spec_xdr();
 impl StructC {
     pub const fn spec_xdr() -> [u8; 64usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07StructC\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\x03\xea\0\0\0\x04\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x13"
@@ -1322,7 +1325,8 @@ impl ::core::cmp::PartialEq for StructTupleA {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_XDR_TYPE_STRUCTTUPLEA: [u8; 64usize] = StructTupleA::spec_xdr();
+#[allow(dead_code)]
+static __SPEC_XDR_TYPE_STRUCTTUPLEA: [u8; 64usize] = StructTupleA::spec_xdr();
 impl StructTupleA {
     pub const fn spec_xdr() -> [u8; 64usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleA\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x011\0\0\0\0\0\0\x07"
@@ -1699,7 +1703,8 @@ impl ::core::cmp::PartialEq for StructTupleB {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_XDR_TYPE_STRUCTTUPLEB: [u8; 64usize] = StructTupleB::spec_xdr();
+#[allow(dead_code)]
+static __SPEC_XDR_TYPE_STRUCTTUPLEB: [u8; 64usize] = StructTupleB::spec_xdr();
 impl StructTupleB {
     pub const fn spec_xdr() -> [u8; 64usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleB\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\n\0\0\0\0\0\0\0\x011\0\0\0\0\0\0\n"
@@ -2077,7 +2082,8 @@ impl ::core::cmp::PartialEq for StructTupleC {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_XDR_TYPE_STRUCTTUPLEC: [u8; 64usize] = StructTupleC::spec_xdr();
+#[allow(dead_code)]
+static __SPEC_XDR_TYPE_STRUCTTUPLEC: [u8; 64usize] = StructTupleC::spec_xdr();
 impl StructTupleC {
     pub const fn spec_xdr() -> [u8; 64usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleC\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\x13\0\0\0\0\0\0\0\x011\0\0\0\0\0\0\x0b"
@@ -2466,7 +2472,8 @@ impl ::core::cmp::PartialEq for EnumA {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_XDR_TYPE_ENUMA: [u8; 76usize] = EnumA::spec_xdr();
+#[allow(dead_code)]
+static __SPEC_XDR_TYPE_ENUMA: [u8; 76usize] = EnumA::spec_xdr();
 impl EnumA {
     pub const fn spec_xdr() -> [u8; 76usize] {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumA\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\0\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\0\0\0\0\0\0\0\0\x02V3\0\0"
@@ -2937,7 +2944,8 @@ impl ::core::cmp::PartialEq for EnumB {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_XDR_TYPE_ENUMB: [u8; 96usize] = EnumB::spec_xdr();
+#[allow(dead_code)]
+static __SPEC_XDR_TYPE_ENUMB: [u8; 96usize] = EnumB::spec_xdr();
 impl EnumB {
     pub const fn spec_xdr() -> [u8; 96usize] {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumB\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x01\0\0\0\x07\0\0\0\x01\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x02\0\0\0\x07\0\0\0\x07"
@@ -3532,7 +3540,8 @@ impl ::core::cmp::PartialEq for EnumC {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_XDR_TYPE_ENUMC: [u8; 120usize] = EnumC::spec_xdr();
+#[allow(dead_code)]
+static __SPEC_XDR_TYPE_ENUMC: [u8; 120usize] = EnumC::spec_xdr();
 impl EnumC {
     pub const fn spec_xdr() -> [u8; 120usize] {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumC\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x07StructA\0\0\0\0\x01\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x0cStructTupleA"
@@ -4079,7 +4088,8 @@ impl ::core::cmp::PartialEq for EnumIntA {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_XDR_TYPE_ENUMINTA: [u8; 76usize] = EnumIntA::spec_xdr();
+#[allow(dead_code)]
+static __SPEC_XDR_TYPE_ENUMINTA: [u8; 76usize] = EnumIntA::spec_xdr();
 impl EnumIntA {
     pub const fn spec_xdr() -> [u8; 76usize] {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08EnumIntA\0\0\0\x03\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x03"
@@ -4423,7 +4433,8 @@ impl ::core::cmp::PartialEq for EnumIntB {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_XDR_TYPE_ENUMINTB: [u8; 76usize] = EnumIntB::spec_xdr();
+#[allow(dead_code)]
+static __SPEC_XDR_TYPE_ENUMINTB: [u8; 76usize] = EnumIntB::spec_xdr();
 impl EnumIntB {
     pub const fn spec_xdr() -> [u8; 76usize] {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08EnumIntB\0\0\0\x03\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\n\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x14\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x1e"
@@ -4767,7 +4778,8 @@ impl ::core::cmp::PartialEq for EnumIntC {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_XDR_TYPE_ENUMINTC: [u8; 76usize] = EnumIntC::spec_xdr();
+#[allow(dead_code)]
+static __SPEC_XDR_TYPE_ENUMINTC: [u8; 76usize] = EnumIntC::spec_xdr();
 impl EnumIntC {
     pub const fn spec_xdr() -> [u8; 76usize] {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08EnumIntC\0\0\0\x03\0\0\0\0\0\0\0\x02V1\0\0\0\0\0d\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\xc8\0\0\0\0\0\0\0\x02V3\0\0\0\0\x01,"
@@ -5111,7 +5123,8 @@ impl ::core::cmp::PartialEq for ErrorA {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_XDR_TYPE_ERRORA: [u8; 76usize] = ErrorA::spec_xdr();
+#[allow(dead_code)]
+static __SPEC_XDR_TYPE_ERRORA: [u8; 76usize] = ErrorA::spec_xdr();
 impl ErrorA {
     pub const fn spec_xdr() -> [u8; 76usize] {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x06ErrorA\0\0\0\0\0\x03\0\0\0\0\0\0\0\x02E1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02E2\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02E3\0\0\0\0\0\x03"
@@ -5280,7 +5293,8 @@ impl ::core::cmp::PartialEq for ErrorB {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_XDR_TYPE_ERRORB: [u8; 76usize] = ErrorB::spec_xdr();
+#[allow(dead_code)]
+static __SPEC_XDR_TYPE_ERRORB: [u8; 76usize] = ErrorB::spec_xdr();
 impl ErrorB {
     pub const fn spec_xdr() -> [u8; 76usize] {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x06ErrorB\0\0\0\0\0\x03\0\0\0\0\0\0\0\x02E1\0\0\0\0\0\n\0\0\0\0\0\0\0\x02E2\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02E3\0\0\0\0\0\x0c"
@@ -5449,7 +5463,8 @@ impl ::core::cmp::PartialEq for ErrorC {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_XDR_TYPE_ERRORC: [u8; 76usize] = ErrorC::spec_xdr();
+#[allow(dead_code)]
+static __SPEC_XDR_TYPE_ERRORC: [u8; 76usize] = ErrorC::spec_xdr();
 impl ErrorC {
     pub const fn spec_xdr() -> [u8; 76usize] {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x06ErrorC\0\0\0\0\0\x03\0\0\0\0\0\0\0\x02E1\0\0\0\0\0d\0\0\0\0\0\0\0\x02E2\0\0\0\0\0e\0\0\0\0\0\0\0\x02E3\0\0\0\0\0f"
@@ -5614,7 +5629,8 @@ impl ::core::cmp::PartialEq for EventA {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_XDR_EVENT_EVENTA: [u8; 88usize] = EventA::spec_xdr();
+#[allow(dead_code)]
+static __SPEC_XDR_EVENT_EVENTA: [u8; 88usize] = EventA::spec_xdr();
 impl EventA {
     pub const fn spec_xdr() -> [u8; 88usize] {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventA\0\0\0\0\0\x01\0\0\0\x07event_a\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x10\0\0\0\0\0\0\0\x02"
@@ -5704,7 +5720,8 @@ impl ::core::cmp::PartialEq for EventB {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_XDR_EVENT_EVENTB: [u8; 108usize] = EventB::spec_xdr();
+#[allow(dead_code)]
+static __SPEC_XDR_EVENT_EVENTB: [u8; 108usize] = EventB::spec_xdr();
 impl EventB {
     pub const fn spec_xdr() -> [u8; 108usize] {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventB\0\0\0\0\0\x01\0\0\0\x07event_b\0\0\0\0\x03\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02f3\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02"
@@ -5799,7 +5816,8 @@ impl ::core::cmp::PartialEq for EventC {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_XDR_EVENT_EVENTC: [u8; 108usize] = EventC::spec_xdr();
+#[allow(dead_code)]
+static __SPEC_XDR_EVENT_EVENTC: [u8; 108usize] = EventC::spec_xdr();
 impl EventC {
     pub const fn spec_xdr() -> [u8; 108usize] {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventC\0\0\0\0\0\x01\0\0\0\x07event_c\0\0\0\0\x03\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x11\0\0\0\x01\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x07\0\0\0\0\0\0\0\0\0\0\0\x02f3\0\0\0\0\0\x07\0\0\0\0\0\0\0\x02"
@@ -5877,7 +5895,8 @@ impl ::core::cmp::PartialEq for EventD {
     }
 }
 #[doc(hidden)]
-pub static __SPEC_XDR_EVENT_EVENTD: [u8; 48usize] = EventD::spec_xdr();
+#[allow(dead_code)]
+static __SPEC_XDR_EVENT_EVENTD: [u8; 48usize] = EventD::spec_xdr();
 impl EventD {
     pub const fn spec_xdr() -> [u8; 48usize] {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventD\0\0\0\0\0\x01\0\0\0\x07event_d\0\0\0\0\0\0\0\0\x02"
