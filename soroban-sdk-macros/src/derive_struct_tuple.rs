@@ -3,11 +3,13 @@ use proc_macro2::{Literal, TokenStream as TokenStream2};
 use quote::{format_ident, quote};
 use syn::{ext::IdentExt as _, Attribute, DataStruct, Error, Ident, Path, Visibility};
 
-use stellar_xdr::{
-    ScSpecEntry, ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, StringM, WriteXdr,
-};
+use stellar_xdr::{ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, StringM};
 
-use crate::{doc::docs_from_attrs, map_type::map_type, shaking, DEFAULT_XDR_RW_LIMITS};
+use crate::{
+    doc::docs_from_attrs,
+    map_type::{const_view_string, const_view_type_def, map_type},
+    shaking,
+};
 
 pub fn derive_type_struct_tuple(
     path: &Path,
@@ -61,20 +63,35 @@ pub fn derive_type_struct_tuple(
         return quote! { #(#compile_errors)* };
     }
 
-    // Compute spec XDR once.
-    let spec_entry = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
+    // Build the spec entry once.
+    let spec = ScSpecUdtStructV0 {
         doc: docs_from_attrs(attrs),
         // set to empty string always because the field is no longer used
         lib: StringM::default(),
         name: ident.unraw().to_string().try_into().unwrap(),
         fields: field_specs.try_into().unwrap(),
-    });
-    let spec_xdr = spec_entry.to_xdr(DEFAULT_XDR_RW_LIMITS).unwrap();
+    };
 
-    // Generated code spec.
+    // Generated code spec. The spec entry is rendered as the equivalent
+    // const::ScSpecEntry, which the contract crate encodes to XDR at compile time.
     let spec_gen = {
-        let spec_xdr_lit = proc_macro2::Literal::byte_string(spec_xdr.as_slice());
-        let spec_xdr_len = spec_xdr.len();
+        let doc = const_view_string(path, &spec.doc);
+        let lib = const_view_string(path, &spec.lib);
+        let name = const_view_string(path, &spec.name);
+        let fields = spec.fields.iter().map(|f| {
+            let doc = const_view_string(path, &f.doc);
+            let name = const_view_string(path, &f.name);
+            let type_ = const_view_type_def(path, &f.type_);
+            quote!(#path::xdr::r#const::ScSpecUdtStructFieldV0 { doc: #doc, name: #name, type_: #type_ })
+        });
+        let spec_view = quote! {
+            #path::xdr::r#const::ScSpecEntry::UdtStructV0(#path::xdr::r#const::ScSpecUdtStructV0 {
+                doc: #doc,
+                lib: #lib,
+                name: #name,
+                fields: #path::xdr::r#const::VecM::try_from_slice_or_panic(&[#(#fields),*]),
+            })
+        };
         let spec_ident = format_ident!(
             "__SPEC_XDR_TYPE_{}",
             ident.unraw().to_string().to_uppercase()
@@ -83,11 +100,17 @@ pub fn derive_type_struct_tuple(
             #[doc(hidden)]
             #[allow(dead_code)]
             #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
-            static #spec_ident: [u8; #spec_xdr_len] = #ident::spec_xdr();
+            pub static #spec_ident: [u8; #ident::spec_xdr_len()] = #ident::spec_xdr();
 
             impl #ident {
-                pub const fn spec_xdr() -> [u8; #spec_xdr_len] {
-                    *#spec_xdr_lit
+                const __SPEC_XDR_ENTRY: #path::xdr::r#const::ScSpecEntry = #spec_view;
+
+                pub const fn spec_xdr_len() -> usize {
+                    const { #ident::__SPEC_XDR_ENTRY.const_xdr_len() }
+                }
+
+                pub const fn spec_xdr() -> [u8; #ident::spec_xdr_len()] {
+                    const { #ident::__SPEC_XDR_ENTRY.const_to_xdr() }
                 }
             }
         }
@@ -97,7 +120,7 @@ pub fn derive_type_struct_tuple(
     let spec_shaking_impl = shaking::generate_marker_impl(
         path,
         quote!(#ident),
-        &spec_xdr,
+        quote!(#ident::spec_xdr()),
         field_types.iter().cloned(),
         None,
         None,

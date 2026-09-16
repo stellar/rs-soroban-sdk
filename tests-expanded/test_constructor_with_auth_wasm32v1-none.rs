@@ -39,12 +39,35 @@ mod __Contract____constructor__spec {
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    static __SPEC_XDR_FN___CONSTRUCTOR: [u8; 56usize] = super::Contract::spec_xdr___constructor();
+    pub static __SPEC_XDR_FN___CONSTRUCTOR: [u8; super::Contract::spec_xdr_len___constructor()] =
+        super::Contract::spec_xdr___constructor();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY___constructor: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"__constructor"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"admin"),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Address,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr___constructor() -> [u8; 56usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\r__constructor\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05admin\0\0\0\0\0\0\x13\0\0\0\0"
+    pub const fn spec_xdr_len___constructor() -> usize {
+        const { Contract::__SPEC_XDR_ENTRY___constructor.const_xdr_len() }
+    }
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr___constructor() -> [u8; Contract::spec_xdr_len___constructor()] {
+        const { Contract::__SPEC_XDR_ENTRY___constructor.const_to_xdr() }
     }
 }
 impl<'a> ContractClient<'a> {}

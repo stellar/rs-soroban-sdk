@@ -51,10 +51,33 @@ impl ::core::cmp::PartialEq for MyStruct {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_MYSTRUCT: [u8; 60usize] = MyStruct::spec_xdr();
+pub static __SPEC_XDR_TYPE_MYSTRUCT: [u8; MyStruct::spec_xdr_len()] = MyStruct::spec_xdr();
 impl MyStruct {
-    pub const fn spec_xdr() -> [u8; 60usize] {
-        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x08MyStruct\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x07"
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
+            soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"MyStruct"),
+                fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"a"),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::I64,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"b"),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::I64,
+                    },
+                ]),
+            },
+        );
+    pub const fn spec_xdr_len() -> usize {
+        const { MyStruct::__SPEC_XDR_ENTRY.const_xdr_len() }
+    }
+    pub const fn spec_xdr() -> [u8; MyStruct::spec_xdr_len()] {
+        const { MyStruct::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
 impl soroban_sdk::SpecShakingMarker for MyStruct {
@@ -480,10 +503,33 @@ impl ::core::cmp::PartialEq for MyEnumUnit {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_MYENUMUNIT: [u8; 64usize] = MyEnumUnit::spec_xdr();
+pub static __SPEC_XDR_TYPE_MYENUMUNIT: [u8; MyEnumUnit::spec_xdr_len()] = MyEnumUnit::spec_xdr();
 impl MyEnumUnit {
-    pub const fn spec_xdr() -> [u8; 64usize] {
-        *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\nMyEnumUnit\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01A\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01B\0\0\0\0\0\0\x02"
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::UdtEnumV0(
+            soroban_sdk::xdr::r#const::ScSpecUdtEnumV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"MyEnumUnit"),
+                cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecUdtEnumCaseV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"A"),
+                        value: 1u32,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecUdtEnumCaseV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"B"),
+                        value: 2u32,
+                    },
+                ]),
+            },
+        );
+    pub const fn spec_xdr_len() -> usize {
+        const { MyEnumUnit::__SPEC_XDR_ENTRY.const_xdr_len() }
+    }
+    pub const fn spec_xdr() -> [u8; MyEnumUnit::spec_xdr_len()] {
+        const { MyEnumUnit::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
 impl soroban_sdk::SpecShakingMarker for MyEnumUnit {
@@ -832,10 +878,67 @@ impl ::core::cmp::PartialEq for MyEnumVariants {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_MYENUMVARIANTS: [u8; 128usize] = MyEnumVariants::spec_xdr();
+pub static __SPEC_XDR_TYPE_MYENUMVARIANTS: [u8; MyEnumVariants::spec_xdr_len()] =
+    MyEnumVariants::spec_xdr();
 impl MyEnumVariants {
-    pub const fn spec_xdr() -> [u8; 128usize] {
-        *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x0eMyEnumVariants\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x04VarA\0\0\0\x01\0\0\0\0\0\0\0\x04VarB\0\0\0\x01\0\0\x07\xd0\0\0\0\x08MyStruct\0\0\0\x01\0\0\0\0\0\0\0\x04VarC\0\0\0\x01\0\0\x07\xd0\0\0\0\nMyEnumUnit\0\0"
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+            b"MyEnumVariants",
+        ),
+        cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::VoidV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseVoidV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"VarA",
+                    ),
+                }),
+                soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"VarB",
+                    ),
+                    type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                        &[
+                            soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                    b"MyStruct",
+                                ),
+                            }),
+                        ],
+                    ),
+                }),
+                soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"VarC",
+                    ),
+                    type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                        &[
+                            soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                    b"MyEnumUnit",
+                                ),
+                            }),
+                        ],
+                    ),
+                }),
+            ],
+        ),
+    });
+    pub const fn spec_xdr_len() -> usize {
+        const { MyEnumVariants::__SPEC_XDR_ENTRY.const_xdr_len() }
+    }
+    pub const fn spec_xdr() -> [u8; MyEnumVariants::spec_xdr_len()] {
+        const { MyEnumVariants::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
 impl soroban_sdk::SpecShakingMarker for MyEnumVariants {
@@ -3348,138 +3451,731 @@ impl AllTypesArgs {
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    /// Test u32 values.
+    /// Returns the input unchanged.
+    const __SPEC_XDR_ENTRY_test_u32: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                    b"Test u32 values.\nReturns the input unchanged.",
+                ),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_u32"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
     /// Test u32 values.
     /// Returns the input unchanged.
-    pub const fn spec_xdr_test_u32() -> [u8; 96usize] {
-        *b"\0\0\0\0\0\0\0-Test u32 values.\nReturns the input unchanged.\0\0\0\0\0\0\x08test_u32\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x04\0\0\0\x01\0\0\0\x04"
+    pub const fn spec_xdr_len_test_u32() -> usize {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_u32.const_xdr_len() }
+    }
+    #[allow(non_snake_case)]
+    /// Test u32 values.
+    /// Returns the input unchanged.
+    pub const fn spec_xdr_test_u32() -> [u8; AllTypesSpec::spec_xdr_len_test_u32()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_u32.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    /// Test i32 values.
+    const __SPEC_XDR_ENTRY_test_i32: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                    b"Test i32 values.",
+                ),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_i32"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::I32,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecTypeDef::I32,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
     /// Test i32 values.
-    pub const fn spec_xdr_test_i32() -> [u8; 64usize] {
-        *b"\0\0\0\0\0\0\0\x10Test i32 values.\0\0\0\x08test_i32\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x05\0\0\0\x01\0\0\0\x05"
+    pub const fn spec_xdr_len_test_i32() -> usize {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_i32.const_xdr_len() }
+    }
+    #[allow(non_snake_case)]
+    /// Test i32 values.
+    pub const fn spec_xdr_test_i32() -> [u8; AllTypesSpec::spec_xdr_len_test_i32()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_i32.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_u64: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_u64"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U64,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecTypeDef::U64,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_u64() -> [u8; 48usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_u64\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x06\0\0\0\x01\0\0\0\x06"
+    pub const fn spec_xdr_len_test_u64() -> usize {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_u64.const_xdr_len() }
+    }
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_u64() -> [u8; AllTypesSpec::spec_xdr_len_test_u64()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_u64.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_i64: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_i64"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::I64,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecTypeDef::I64,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_i64() -> [u8; 48usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_i64\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x07\0\0\0\x01\0\0\0\x07"
+    pub const fn spec_xdr_len_test_i64() -> usize {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_i64.const_xdr_len() }
+    }
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_i64() -> [u8; AllTypesSpec::spec_xdr_len_test_i64()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_i64.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_u128: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_u128"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U128,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecTypeDef::U128,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_u128() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_u128\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\n\0\0\0\x01\0\0\0\n"
+    pub const fn spec_xdr_len_test_u128() -> usize {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_u128.const_xdr_len() }
+    }
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_u128() -> [u8; AllTypesSpec::spec_xdr_len_test_u128()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_u128.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_i128: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_i128"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::I128,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecTypeDef::I128,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_i128() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_i128\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x0b\0\0\0\x01\0\0\0\x0b"
+    pub const fn spec_xdr_len_test_i128() -> usize {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_i128.const_xdr_len() }
+    }
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_i128() -> [u8; AllTypesSpec::spec_xdr_len_test_i128()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_i128.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_bool: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_bool"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Bool,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecTypeDef::Bool,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_bool() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_bool\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x01\0\0\0\x01\0\0\0\x01"
+    pub const fn spec_xdr_len_test_bool() -> usize {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_bool.const_xdr_len() }
+    }
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_bool() -> [u8; AllTypesSpec::spec_xdr_len_test_bool()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_bool.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_address: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_address"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Address,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecTypeDef::Address,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_address() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0ctest_address\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x13\0\0\0\x01\0\0\0\x13"
+    pub const fn spec_xdr_len_test_address() -> usize {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_address.const_xdr_len() }
+    }
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_address() -> [u8; AllTypesSpec::spec_xdr_len_test_address()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_address.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_bytes: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_bytes"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Bytes,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecTypeDef::Bytes,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_bytes() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\ntest_bytes\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x0e\0\0\0\x01\0\0\0\x0e"
+    pub const fn spec_xdr_len_test_bytes() -> usize {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_bytes.const_xdr_len() }
+    }
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_bytes() -> [u8; AllTypesSpec::spec_xdr_len_test_bytes()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_bytes.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_bytes_n: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_bytes_n"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
+                            soroban_sdk::xdr::ScSpecTypeBytesN { n: 32u32 },
+                        ),
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
+                        soroban_sdk::xdr::ScSpecTypeBytesN { n: 32u32 },
+                    ),
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_bytes_n() -> [u8; 60usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0ctest_bytes_n\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x03\xee\0\0\0 \0\0\0\x01\0\0\x03\xee\0\0\0 "
+    pub const fn spec_xdr_len_test_bytes_n() -> usize {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_bytes_n.const_xdr_len() }
+    }
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_bytes_n() -> [u8; AllTypesSpec::spec_xdr_len_test_bytes_n()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_bytes_n.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_string: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_string"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::String,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecTypeDef::String,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_string() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0btest_string\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x10\0\0\0\x01\0\0\0\x10"
+    pub const fn spec_xdr_len_test_string() -> usize {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_string.const_xdr_len() }
+    }
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_string() -> [u8; AllTypesSpec::spec_xdr_len_test_string()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_string.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_symbol: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_symbol"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Symbol,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecTypeDef::Symbol,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_symbol() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0btest_symbol\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x11\0\0\0\x01\0\0\0\x11"
+    pub const fn spec_xdr_len_test_symbol() -> usize {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_symbol.const_xdr_len() }
+    }
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_symbol() -> [u8; AllTypesSpec::spec_xdr_len_test_symbol()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_symbol.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_vec: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_vec"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Vec(
+                            &soroban_sdk::xdr::r#const::ScSpecTypeVec {
+                                element_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                            },
+                        ),
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecTypeDef::Vec(
+                        &soroban_sdk::xdr::r#const::ScSpecTypeVec {
+                            element_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                        },
+                    ),
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_vec() -> [u8; 56usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_vec\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x03\xea\0\0\0\x04\0\0\0\x01\0\0\x03\xea\0\0\0\x04"
+    pub const fn spec_xdr_len_test_vec() -> usize {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_vec.const_xdr_len() }
+    }
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_vec() -> [u8; AllTypesSpec::spec_xdr_len_test_vec()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_vec.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_map: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_map"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Map(
+                            &soroban_sdk::xdr::r#const::ScSpecTypeMap {
+                                key_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                                value_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                            },
+                        ),
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecTypeDef::Map(
+                        &soroban_sdk::xdr::r#const::ScSpecTypeMap {
+                            key_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                            value_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                        },
+                    ),
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_map() -> [u8; 64usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_map\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x03\xec\0\0\0\x04\0\0\0\x04\0\0\0\x01\0\0\x03\xec\0\0\0\x04\0\0\0\x04"
+    pub const fn spec_xdr_len_test_map() -> usize {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_map.const_xdr_len() }
+    }
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_map() -> [u8; AllTypesSpec::spec_xdr_len_test_map()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_map.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_duration: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_duration"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Duration,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecTypeDef::Duration,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_duration() -> [u8; 56usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\rtest_duration\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\t\0\0\0\x01\0\0\0\t"
+    pub const fn spec_xdr_len_test_duration() -> usize {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_duration.const_xdr_len() }
+    }
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_duration() -> [u8; AllTypesSpec::spec_xdr_len_test_duration()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_duration.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_timepoint: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_timepoint"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Timepoint,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecTypeDef::Timepoint,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_timepoint() -> [u8; 56usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0etest_timepoint\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x08\0\0\0\x01\0\0\0\x08"
+    pub const fn spec_xdr_len_test_timepoint() -> usize {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_timepoint.const_xdr_len() }
+    }
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_timepoint() -> [u8; AllTypesSpec::spec_xdr_len_test_timepoint()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_timepoint.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_i256: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_i256"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::I256,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecTypeDef::I256,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_i256() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_i256\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\r\0\0\0\x01\0\0\0\r"
+    pub const fn spec_xdr_len_test_i256() -> usize {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_i256.const_xdr_len() }
+    }
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_i256() -> [u8; AllTypesSpec::spec_xdr_len_test_i256()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_i256.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_u256: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_u256"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U256,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecTypeDef::U256,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_u256() -> [u8; 52usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_u256\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x0c\0\0\0\x01\0\0\0\x0c"
+    pub const fn spec_xdr_len_test_u256() -> usize {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_u256.const_xdr_len() }
+    }
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_u256() -> [u8; AllTypesSpec::spec_xdr_len_test_u256()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_u256.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_env_param: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_env_param"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_env_param() -> [u8; 40usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0etest_env_param\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
+    pub const fn spec_xdr_len_test_env_param() -> usize {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_env_param.const_xdr_len() }
+    }
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_env_param() -> [u8; AllTypesSpec::spec_xdr_len_test_env_param()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_env_param.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_struct: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_struct"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                            soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                    b"MyStruct",
+                                ),
+                            },
+                        ),
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                        soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"MyStruct",
+                            ),
+                        },
+                    ),
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_struct() -> [u8; 76usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0btest_struct\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd0\0\0\0\x08MyStruct\0\0\0\x01\0\0\x07\xd0\0\0\0\x08MyStruct"
+    pub const fn spec_xdr_len_test_struct() -> usize {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_struct.const_xdr_len() }
+    }
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_struct() -> [u8; AllTypesSpec::spec_xdr_len_test_struct()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_struct.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_enum_unit: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_enum_unit"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                            soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                    b"MyEnumUnit",
+                                ),
+                            },
+                        ),
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                        soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"MyEnumUnit",
+                            ),
+                        },
+                    ),
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_enum_unit() -> [u8; 88usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0etest_enum_unit\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd0\0\0\0\nMyEnumUnit\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\nMyEnumUnit\0\0"
+    pub const fn spec_xdr_len_test_enum_unit() -> usize {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_enum_unit.const_xdr_len() }
+    }
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_enum_unit() -> [u8; AllTypesSpec::spec_xdr_len_test_enum_unit()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_enum_unit.const_to_xdr() }
     }
 }
 impl AllTypesSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_test_enum_variants: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"test_enum_variants",
+                    ),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                            soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                    b"MyEnumVariants",
+                                ),
+                            },
+                        ),
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                        soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                b"MyEnumVariants",
+                            ),
+                        },
+                    ),
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_enum_variants() -> [u8; 100usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x12test_enum_variants\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd0\0\0\0\x0eMyEnumVariants\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x0eMyEnumVariants\0\0"
+    pub const fn spec_xdr_len_test_enum_variants() -> usize {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_enum_variants.const_xdr_len() }
+    }
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_test_enum_variants(
+    ) -> [u8; AllTypesSpec::spec_xdr_len_test_enum_variants()] {
+        const { AllTypesSpec::__SPEC_XDR_ENTRY_test_enum_variants.const_to_xdr() }
     }
 }
 mod test {
@@ -4686,14 +5382,45 @@ mod test {
         #[allow(dead_code)]
         /// Test u32 values.
         /// Returns the input unchanged.
-        static __SPEC_XDR_FN_TEST_U32: [u8; 96usize] = super::Contract::spec_xdr_test_u32();
+        pub static __SPEC_XDR_FN_TEST_U32: [u8; super::Contract::spec_xdr_len_test_u32()] =
+            super::Contract::spec_xdr_test_u32();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        /// Test u32 values.
+        /// Returns the input unchanged.
+        const __SPEC_XDR_ENTRY_test_u32: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"Test u32 values.\nReturns the input unchanged.",
+                    ),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_u32"),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
         /// Test u32 values.
         /// Returns the input unchanged.
-        pub const fn spec_xdr_test_u32() -> [u8; 96usize] {
-            *b"\0\0\0\0\0\0\0-Test u32 values.\nReturns the input unchanged.\0\0\0\0\0\0\x08test_u32\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x04\0\0\0\x01\0\0\0\x04"
+        pub const fn spec_xdr_len_test_u32() -> usize {
+            const { Contract::__SPEC_XDR_ENTRY_test_u32.const_xdr_len() }
+        }
+        #[allow(non_snake_case)]
+        /// Test u32 values.
+        /// Returns the input unchanged.
+        pub const fn spec_xdr_test_u32() -> [u8; Contract::spec_xdr_len_test_u32()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_u32.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4706,13 +5433,42 @@ mod test {
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
         /// Test i32 values.
-        static __SPEC_XDR_FN_TEST_I32: [u8; 64usize] = super::Contract::spec_xdr_test_i32();
+        pub static __SPEC_XDR_FN_TEST_I32: [u8; super::Contract::spec_xdr_len_test_i32()] =
+            super::Contract::spec_xdr_test_i32();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        /// Test i32 values.
+        const __SPEC_XDR_ENTRY_test_i32: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"Test i32 values.",
+                    ),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_i32"),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::I32,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecTypeDef::I32,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
         /// Test i32 values.
-        pub const fn spec_xdr_test_i32() -> [u8; 64usize] {
-            *b"\0\0\0\0\0\0\0\x10Test i32 values.\0\0\0\x08test_i32\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x05\0\0\0\x01\0\0\0\x05"
+        pub const fn spec_xdr_len_test_i32() -> usize {
+            const { Contract::__SPEC_XDR_ENTRY_test_i32.const_xdr_len() }
+        }
+        #[allow(non_snake_case)]
+        /// Test i32 values.
+        pub const fn spec_xdr_test_i32() -> [u8; Contract::spec_xdr_len_test_i32()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_i32.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4723,12 +5479,37 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_U64: [u8; 48usize] = super::Contract::spec_xdr_test_u64();
+        pub static __SPEC_XDR_FN_TEST_U64: [u8; super::Contract::spec_xdr_len_test_u64()] =
+            super::Contract::spec_xdr_test_u64();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_u64: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_u64"),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U64,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecTypeDef::U64,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_u64() -> [u8; 48usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_u64\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x06\0\0\0\x01\0\0\0\x06"
+        pub const fn spec_xdr_len_test_u64() -> usize {
+            const { Contract::__SPEC_XDR_ENTRY_test_u64.const_xdr_len() }
+        }
+        #[allow(non_snake_case)]
+        pub const fn spec_xdr_test_u64() -> [u8; Contract::spec_xdr_len_test_u64()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_u64.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4739,12 +5520,37 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_I64: [u8; 48usize] = super::Contract::spec_xdr_test_i64();
+        pub static __SPEC_XDR_FN_TEST_I64: [u8; super::Contract::spec_xdr_len_test_i64()] =
+            super::Contract::spec_xdr_test_i64();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_i64: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_i64"),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::I64,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecTypeDef::I64,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_i64() -> [u8; 48usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_i64\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x07\0\0\0\x01\0\0\0\x07"
+        pub const fn spec_xdr_len_test_i64() -> usize {
+            const { Contract::__SPEC_XDR_ENTRY_test_i64.const_xdr_len() }
+        }
+        #[allow(non_snake_case)]
+        pub const fn spec_xdr_test_i64() -> [u8; Contract::spec_xdr_len_test_i64()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_i64.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4755,12 +5561,37 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_U128: [u8; 52usize] = super::Contract::spec_xdr_test_u128();
+        pub static __SPEC_XDR_FN_TEST_U128: [u8; super::Contract::spec_xdr_len_test_u128()] =
+            super::Contract::spec_xdr_test_u128();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_u128: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_u128"),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U128,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecTypeDef::U128,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_u128() -> [u8; 52usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_u128\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\n\0\0\0\x01\0\0\0\n"
+        pub const fn spec_xdr_len_test_u128() -> usize {
+            const { Contract::__SPEC_XDR_ENTRY_test_u128.const_xdr_len() }
+        }
+        #[allow(non_snake_case)]
+        pub const fn spec_xdr_test_u128() -> [u8; Contract::spec_xdr_len_test_u128()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_u128.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4771,12 +5602,37 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_I128: [u8; 52usize] = super::Contract::spec_xdr_test_i128();
+        pub static __SPEC_XDR_FN_TEST_I128: [u8; super::Contract::spec_xdr_len_test_i128()] =
+            super::Contract::spec_xdr_test_i128();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_i128: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_i128"),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::I128,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecTypeDef::I128,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_i128() -> [u8; 52usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_i128\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x0b\0\0\0\x01\0\0\0\x0b"
+        pub const fn spec_xdr_len_test_i128() -> usize {
+            const { Contract::__SPEC_XDR_ENTRY_test_i128.const_xdr_len() }
+        }
+        #[allow(non_snake_case)]
+        pub const fn spec_xdr_test_i128() -> [u8; Contract::spec_xdr_len_test_i128()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_i128.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4787,12 +5643,37 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_BOOL: [u8; 52usize] = super::Contract::spec_xdr_test_bool();
+        pub static __SPEC_XDR_FN_TEST_BOOL: [u8; super::Contract::spec_xdr_len_test_bool()] =
+            super::Contract::spec_xdr_test_bool();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_bool: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_bool"),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Bool,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecTypeDef::Bool,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_bool() -> [u8; 52usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_bool\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x01\0\0\0\x01\0\0\0\x01"
+        pub const fn spec_xdr_len_test_bool() -> usize {
+            const { Contract::__SPEC_XDR_ENTRY_test_bool.const_xdr_len() }
+        }
+        #[allow(non_snake_case)]
+        pub const fn spec_xdr_test_bool() -> [u8; Contract::spec_xdr_len_test_bool()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_bool.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4803,12 +5684,39 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_ADDRESS: [u8; 52usize] = super::Contract::spec_xdr_test_address();
+        pub static __SPEC_XDR_FN_TEST_ADDRESS: [u8; super::Contract::spec_xdr_len_test_address()] =
+            super::Contract::spec_xdr_test_address();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_address: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"test_address",
+                        ),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Address,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecTypeDef::Address,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_address() -> [u8; 52usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\x0ctest_address\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x13\0\0\0\x01\0\0\0\x13"
+        pub const fn spec_xdr_len_test_address() -> usize {
+            const { Contract::__SPEC_XDR_ENTRY_test_address.const_xdr_len() }
+        }
+        #[allow(non_snake_case)]
+        pub const fn spec_xdr_test_address() -> [u8; Contract::spec_xdr_len_test_address()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_address.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4819,12 +5727,37 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_BYTES: [u8; 52usize] = super::Contract::spec_xdr_test_bytes();
+        pub static __SPEC_XDR_FN_TEST_BYTES: [u8; super::Contract::spec_xdr_len_test_bytes()] =
+            super::Contract::spec_xdr_test_bytes();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_bytes: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_bytes"),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Bytes,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecTypeDef::Bytes,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_bytes() -> [u8; 52usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\ntest_bytes\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x0e\0\0\0\x01\0\0\0\x0e"
+        pub const fn spec_xdr_len_test_bytes() -> usize {
+            const { Contract::__SPEC_XDR_ENTRY_test_bytes.const_xdr_len() }
+        }
+        #[allow(non_snake_case)]
+        pub const fn spec_xdr_test_bytes() -> [u8; Contract::spec_xdr_len_test_bytes()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_bytes.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4835,12 +5768,43 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_BYTES_N: [u8; 60usize] = super::Contract::spec_xdr_test_bytes_n();
+        pub static __SPEC_XDR_FN_TEST_BYTES_N: [u8; super::Contract::spec_xdr_len_test_bytes_n()] =
+            super::Contract::spec_xdr_test_bytes_n();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_bytes_n: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"test_bytes_n",
+                        ),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
+                                soroban_sdk::xdr::ScSpecTypeBytesN { n: 32u32 },
+                            ),
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
+                            soroban_sdk::xdr::ScSpecTypeBytesN { n: 32u32 },
+                        ),
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_bytes_n() -> [u8; 60usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\x0ctest_bytes_n\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x03\xee\0\0\0 \0\0\0\x01\0\0\x03\xee\0\0\0 "
+        pub const fn spec_xdr_len_test_bytes_n() -> usize {
+            const { Contract::__SPEC_XDR_ENTRY_test_bytes_n.const_xdr_len() }
+        }
+        #[allow(non_snake_case)]
+        pub const fn spec_xdr_test_bytes_n() -> [u8; Contract::spec_xdr_len_test_bytes_n()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_bytes_n.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4851,12 +5815,37 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_STRING: [u8; 52usize] = super::Contract::spec_xdr_test_string();
+        pub static __SPEC_XDR_FN_TEST_STRING: [u8; super::Contract::spec_xdr_len_test_string()] =
+            super::Contract::spec_xdr_test_string();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_string: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_string"),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::String,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecTypeDef::String,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_string() -> [u8; 52usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\x0btest_string\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x10\0\0\0\x01\0\0\0\x10"
+        pub const fn spec_xdr_len_test_string() -> usize {
+            const { Contract::__SPEC_XDR_ENTRY_test_string.const_xdr_len() }
+        }
+        #[allow(non_snake_case)]
+        pub const fn spec_xdr_test_string() -> [u8; Contract::spec_xdr_len_test_string()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_string.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4867,12 +5856,37 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_SYMBOL: [u8; 52usize] = super::Contract::spec_xdr_test_symbol();
+        pub static __SPEC_XDR_FN_TEST_SYMBOL: [u8; super::Contract::spec_xdr_len_test_symbol()] =
+            super::Contract::spec_xdr_test_symbol();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_symbol: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_symbol"),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Symbol,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecTypeDef::Symbol,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_symbol() -> [u8; 52usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\x0btest_symbol\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x11\0\0\0\x01\0\0\0\x11"
+        pub const fn spec_xdr_len_test_symbol() -> usize {
+            const { Contract::__SPEC_XDR_ENTRY_test_symbol.const_xdr_len() }
+        }
+        #[allow(non_snake_case)]
+        pub const fn spec_xdr_test_symbol() -> [u8; Contract::spec_xdr_len_test_symbol()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_symbol.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4883,12 +5897,45 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_VEC: [u8; 56usize] = super::Contract::spec_xdr_test_vec();
+        pub static __SPEC_XDR_FN_TEST_VEC: [u8; super::Contract::spec_xdr_len_test_vec()] =
+            super::Contract::spec_xdr_test_vec();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_vec: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_vec"),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Vec(
+                                &soroban_sdk::xdr::r#const::ScSpecTypeVec {
+                                    element_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                                },
+                            ),
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecTypeDef::Vec(
+                            &soroban_sdk::xdr::r#const::ScSpecTypeVec {
+                                element_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                            },
+                        ),
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_vec() -> [u8; 56usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_vec\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x03\xea\0\0\0\x04\0\0\0\x01\0\0\x03\xea\0\0\0\x04"
+        pub const fn spec_xdr_len_test_vec() -> usize {
+            const { Contract::__SPEC_XDR_ENTRY_test_vec.const_xdr_len() }
+        }
+        #[allow(non_snake_case)]
+        pub const fn spec_xdr_test_vec() -> [u8; Contract::spec_xdr_len_test_vec()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_vec.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4899,12 +5946,47 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_MAP: [u8; 64usize] = super::Contract::spec_xdr_test_map();
+        pub static __SPEC_XDR_FN_TEST_MAP: [u8; super::Contract::spec_xdr_len_test_map()] =
+            super::Contract::spec_xdr_test_map();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_map: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_map"),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Map(
+                                &soroban_sdk::xdr::r#const::ScSpecTypeMap {
+                                    key_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                                    value_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                                },
+                            ),
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecTypeDef::Map(
+                            &soroban_sdk::xdr::r#const::ScSpecTypeMap {
+                                key_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                                value_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                            },
+                        ),
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_map() -> [u8; 64usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\x08test_map\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x03\xec\0\0\0\x04\0\0\0\x04\0\0\0\x01\0\0\x03\xec\0\0\0\x04\0\0\0\x04"
+        pub const fn spec_xdr_len_test_map() -> usize {
+            const { Contract::__SPEC_XDR_ENTRY_test_map.const_xdr_len() }
+        }
+        #[allow(non_snake_case)]
+        pub const fn spec_xdr_test_map() -> [u8; Contract::spec_xdr_len_test_map()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_map.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4915,13 +5997,39 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_DURATION: [u8; 56usize] =
-            super::Contract::spec_xdr_test_duration();
+        pub static __SPEC_XDR_FN_TEST_DURATION: [u8; super::Contract::spec_xdr_len_test_duration(
+        )] = super::Contract::spec_xdr_test_duration();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_duration: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"test_duration",
+                        ),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Duration,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecTypeDef::Duration,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_duration() -> [u8; 56usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\rtest_duration\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\t\0\0\0\x01\0\0\0\t"
+        pub const fn spec_xdr_len_test_duration() -> usize {
+            const { Contract::__SPEC_XDR_ENTRY_test_duration.const_xdr_len() }
+        }
+        #[allow(non_snake_case)]
+        pub const fn spec_xdr_test_duration() -> [u8; Contract::spec_xdr_len_test_duration()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_duration.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4932,13 +6040,40 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_TIMEPOINT: [u8; 56usize] =
+        pub static __SPEC_XDR_FN_TEST_TIMEPOINT: [u8;
+            super::Contract::spec_xdr_len_test_timepoint()] =
             super::Contract::spec_xdr_test_timepoint();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_timepoint: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"test_timepoint",
+                        ),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Timepoint,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecTypeDef::Timepoint,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_timepoint() -> [u8; 56usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\x0etest_timepoint\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x08\0\0\0\x01\0\0\0\x08"
+        pub const fn spec_xdr_len_test_timepoint() -> usize {
+            const { Contract::__SPEC_XDR_ENTRY_test_timepoint.const_xdr_len() }
+        }
+        #[allow(non_snake_case)]
+        pub const fn spec_xdr_test_timepoint() -> [u8; Contract::spec_xdr_len_test_timepoint()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_timepoint.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4949,12 +6084,37 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_I256: [u8; 52usize] = super::Contract::spec_xdr_test_i256();
+        pub static __SPEC_XDR_FN_TEST_I256: [u8; super::Contract::spec_xdr_len_test_i256()] =
+            super::Contract::spec_xdr_test_i256();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_i256: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_i256"),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::I256,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecTypeDef::I256,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_i256() -> [u8; 52usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_i256\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\r\0\0\0\x01\0\0\0\r"
+        pub const fn spec_xdr_len_test_i256() -> usize {
+            const { Contract::__SPEC_XDR_ENTRY_test_i256.const_xdr_len() }
+        }
+        #[allow(non_snake_case)]
+        pub const fn spec_xdr_test_i256() -> [u8; Contract::spec_xdr_len_test_i256()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_i256.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4965,12 +6125,37 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_U256: [u8; 52usize] = super::Contract::spec_xdr_test_u256();
+        pub static __SPEC_XDR_FN_TEST_U256: [u8; super::Contract::spec_xdr_len_test_u256()] =
+            super::Contract::spec_xdr_test_u256();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_u256: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_u256"),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U256,
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecTypeDef::U256,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_u256() -> [u8; 52usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\ttest_u256\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x0c\0\0\0\x01\0\0\0\x0c"
+        pub const fn spec_xdr_len_test_u256() -> usize {
+            const { Contract::__SPEC_XDR_ENTRY_test_u256.const_xdr_len() }
+        }
+        #[allow(non_snake_case)]
+        pub const fn spec_xdr_test_u256() -> [u8; Contract::spec_xdr_len_test_u256()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_u256.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4981,13 +6166,34 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_ENV_PARAM: [u8; 40usize] =
+        pub static __SPEC_XDR_FN_TEST_ENV_PARAM: [u8;
+            super::Contract::spec_xdr_len_test_env_param()] =
             super::Contract::spec_xdr_test_env_param();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_env_param: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"test_env_param",
+                        ),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_env_param() -> [u8; 40usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\x0etest_env_param\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
+        pub const fn spec_xdr_len_test_env_param() -> usize {
+            const { Contract::__SPEC_XDR_ENTRY_test_env_param.const_xdr_len() }
+        }
+        #[allow(non_snake_case)]
+        pub const fn spec_xdr_test_env_param() -> [u8; Contract::spec_xdr_len_test_env_param()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_env_param.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -4998,12 +6204,50 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_STRUCT: [u8; 76usize] = super::Contract::spec_xdr_test_struct();
+        pub static __SPEC_XDR_FN_TEST_STRUCT: [u8; super::Contract::spec_xdr_len_test_struct()] =
+            super::Contract::spec_xdr_test_struct();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_struct: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"test_struct"),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                                soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                                    name:
+                                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                            b"MyStruct",
+                                        ),
+                                },
+                            ),
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                            soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                    b"MyStruct",
+                                ),
+                            },
+                        ),
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_struct() -> [u8; 76usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\x0btest_struct\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd0\0\0\0\x08MyStruct\0\0\0\x01\0\0\x07\xd0\0\0\0\x08MyStruct"
+        pub const fn spec_xdr_len_test_struct() -> usize {
+            const { Contract::__SPEC_XDR_ENTRY_test_struct.const_xdr_len() }
+        }
+        #[allow(non_snake_case)]
+        pub const fn spec_xdr_test_struct() -> [u8; Contract::spec_xdr_len_test_struct()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_struct.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -5014,13 +6258,53 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_ENUM_UNIT: [u8; 88usize] =
+        pub static __SPEC_XDR_FN_TEST_ENUM_UNIT: [u8;
+            super::Contract::spec_xdr_len_test_enum_unit()] =
             super::Contract::spec_xdr_test_enum_unit();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_enum_unit: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"test_enum_unit",
+                        ),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                                soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                                    name:
+                                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                            b"MyEnumUnit",
+                                        ),
+                                },
+                            ),
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                            soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                    b"MyEnumUnit",
+                                ),
+                            },
+                        ),
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_enum_unit() -> [u8; 88usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\x0etest_enum_unit\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd0\0\0\0\nMyEnumUnit\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\nMyEnumUnit\0\0"
+        pub const fn spec_xdr_len_test_enum_unit() -> usize {
+            const { Contract::__SPEC_XDR_ENTRY_test_enum_unit.const_xdr_len() }
+        }
+        #[allow(non_snake_case)]
+        pub const fn spec_xdr_test_enum_unit() -> [u8; Contract::spec_xdr_len_test_enum_unit()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_enum_unit.const_to_xdr() }
         }
     }
     #[doc(hidden)]
@@ -5031,13 +6315,54 @@ mod test {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_TEST_ENUM_VARIANTS: [u8; 100usize] =
+        pub static __SPEC_XDR_FN_TEST_ENUM_VARIANTS: [u8;
+            super::Contract::spec_xdr_len_test_enum_variants()] =
             super::Contract::spec_xdr_test_enum_variants();
     }
     impl Contract {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_test_enum_variants: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"test_enum_variants",
+                        ),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                                soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                                    name:
+                                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                            b"MyEnumVariants",
+                                        ),
+                                },
+                            ),
+                        },
+                    ]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                            soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                    b"MyEnumVariants",
+                                ),
+                            },
+                        ),
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_test_enum_variants() -> [u8; 100usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\x12test_enum_variants\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\x07\xd0\0\0\0\x0eMyEnumVariants\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x0eMyEnumVariants\0\0"
+        pub const fn spec_xdr_len_test_enum_variants() -> usize {
+            const { Contract::__SPEC_XDR_ENTRY_test_enum_variants.const_xdr_len() }
+        }
+        #[allow(non_snake_case)]
+        pub const fn spec_xdr_test_enum_variants(
+        ) -> [u8; Contract::spec_xdr_len_test_enum_variants()] {
+            const { Contract::__SPEC_XDR_ENTRY_test_enum_variants.const_to_xdr() }
         }
     }
     impl<'a> ContractClient<'a> {
