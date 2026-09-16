@@ -329,6 +329,37 @@ pub struct UnusedEvent {
     pub data: u32,
 }
 
+// A type referenced only by an event the contract never publishes. The event
+// is shaken out for want of a marker, and takes the type with it: nothing that
+// survives names it.
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UnusedEventDataType {
+    pub v: u32,
+}
+
+#[contractevent]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UnusedEventWithDataType {
+    #[topic]
+    pub kind: Symbol,
+    pub payload: UnusedEventDataType,
+}
+
+// A chain of types that only reference each other. No function, event, or
+// other reachable type names the outer one, so the whole chain is shaken out.
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UnusedOuter {
+    pub inner: UnusedInner,
+}
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UnusedInner {
+    pub v: u32,
+}
+
 // A pub #[contracterror] enum that is never referenced anywhere — neither in a
 // Result return type, nor in panic_with_error! / assert_with_error!. Confirms
 // that an error enum that is not actually used is shaken out of the spec.

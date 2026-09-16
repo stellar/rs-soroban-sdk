@@ -87,21 +87,6 @@ impl StructA {
         const { StructA::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecShakingMarker for StructA {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <bool as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: [u8; 14] =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &StructA::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
-    }
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructA {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
@@ -232,21 +217,6 @@ impl StructB {
     }
     pub const fn spec_xdr() -> [u8; StructB::spec_xdr_len()] {
         const { StructB::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for StructB {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <soroban_sdk::String as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: [u8; 14] =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &StructB::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructB {
@@ -385,21 +355,6 @@ impl StructC {
         const { StructC::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecShakingMarker for StructC {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <Vec<u32> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: [u8; 14] =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &StructC::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
-    }
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructC {
     type Error = soroban_sdk::ConversionError;
     fn try_from_val(
@@ -527,21 +482,6 @@ impl StructTupleA {
         const { StructTupleA::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecShakingMarker for StructTupleA {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: [u8; 14] =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &StructTupleA::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
-    }
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleA {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -663,21 +603,6 @@ impl StructTupleB {
     }
     pub const fn spec_xdr() -> [u8; StructTupleB::spec_xdr_len()] {
         const { StructTupleB::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for StructTupleB {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <u128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <u128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: [u8; 14] =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &StructTupleB::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleB {
@@ -802,21 +727,6 @@ impl StructTupleC {
     }
     pub const fn spec_xdr() -> [u8; StructTupleC::spec_xdr_len()] {
         const { StructTupleC::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for StructTupleC {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: [u8; 14] =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &StructTupleC::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleC {
@@ -963,19 +873,6 @@ impl EnumA {
     }
     pub const fn spec_xdr() -> [u8; EnumA::spec_xdr_len()] {
         const { EnumA::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for EnumA {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        {
-            static MARKER: [u8; 14] =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &EnumA::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumA {
@@ -1175,20 +1072,6 @@ impl EnumB {
     }
     pub const fn spec_xdr() -> [u8; EnumB::spec_xdr_len()] {
         const { EnumB::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for EnumB {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: [u8; 14] =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &EnumB::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumB {
@@ -1414,21 +1297,6 @@ impl EnumC {
         const { EnumC::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecShakingMarker for EnumC {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <StructA as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <StructTupleA as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: [u8; 14] =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &EnumC::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
-    }
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumC {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -1611,19 +1479,6 @@ impl EnumIntA {
         const { EnumIntA::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecShakingMarker for EnumIntA {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        {
-            static MARKER: [u8; 14] =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &EnumIntA::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
-    }
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntA {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -1756,19 +1611,6 @@ impl EnumIntB {
         const { EnumIntB::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
-impl soroban_sdk::SpecShakingMarker for EnumIntB {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        {
-            static MARKER: [u8; 14] =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &EnumIntB::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
-    }
-}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntB {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -1899,19 +1741,6 @@ impl EnumIntC {
     }
     pub const fn spec_xdr() -> [u8; EnumIntC::spec_xdr_len()] {
         const { EnumIntC::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for EnumIntC {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        {
-            static MARKER: [u8; 14] =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &EnumIntC::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntC {
@@ -2684,8 +2513,6 @@ impl soroban_sdk::SpecShakingMarker for EventA {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <soroban_sdk::String as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
             static MARKER: [u8; 14] =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
@@ -2824,9 +2651,6 @@ impl soroban_sdk::SpecShakingMarker for EventB {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
             static MARKER: [u8; 14] =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
@@ -2969,9 +2793,6 @@ impl soroban_sdk::SpecShakingMarker for EventC {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <soroban_sdk::Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
             static MARKER: [u8; 14] =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(

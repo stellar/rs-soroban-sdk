@@ -2057,9 +2057,10 @@ dependencies = [
 ]
 
 [[package]]
-name = "test_spec_shaking_v2"
+name = "test_spec_shaking"
 version = "28.0.0-rc.2"
 dependencies = [
+ "soroban-meta",
  "soroban-sdk",
  "soroban-spec",
  "test_spec_lib",
