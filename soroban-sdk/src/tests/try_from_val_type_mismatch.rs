@@ -185,6 +185,13 @@ pub struct UdtStruct {
     pub b: i32,
 }
 
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UdtStructOption {
+    pub a: i32,
+    pub b: Option<i32>,
+}
+
 #[test]
 fn test_udt_struct() {
     let env = Env::default();
@@ -204,20 +211,28 @@ fn test_udt_struct() {
         Err(ConversionError)
     );
 
+    // Unless the missing field is an Option, which converts from that void as
+    // None.
+    assert_eq!(
+        UdtStructOption::try_from_val(&env, &partial),
+        Ok(UdtStructOption { a: 1, b: None })
+    );
+
     // No val of another type converts. The map vals are skipped because their
     // keys are not symbols, which traps, and is tested in
-    // test_udt_struct_from_map_with_i32_keys_panics.
+    // test_udt_struct_from_map_with_non_string_keys_panics.
     assert_compatible_with_skipping::<UdtStruct>(&env, &[], &["map_i32_i32", "map_string_string"]);
 }
 
 #[test]
 #[should_panic(expected = "UnexpectedType")]
-fn test_udt_struct_from_map_with_i32_keys_panics() {
+fn test_udt_struct_from_map_with_non_string_keys_panics() {
     let env = Env::default();
+
+    let map = map![&env, (1i32, 2i32)].to_val();
 
     // The host traps when unpacking a map that has keys that are not symbols,
     // and so the conversion panics rather than returning an error.
-    let map = map![&env, (1i32, 2i32)].to_val();
     let _ = UdtStruct::try_from_val(&env, &map);
 }
 
@@ -226,22 +241,16 @@ fn test_udt_struct_from_map_with_i32_keys_panics() {
 fn test_udt_struct_from_map_with_string_keys_panics() {
     let env = Env::default();
 
-    // Strings are not symbols either, even though they hold the same field
-    // names, and so a map keyed by them traps in the same way.
     let map = map![
         &env,
         (String::from_str(&env, "a"), 1i32),
         (String::from_str(&env, "b"), 2i32)
     ]
     .to_val();
-    let _ = UdtStruct::try_from_val(&env, &map);
-}
 
-#[contracttype]
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub struct UdtStructOption {
-    pub a: i32,
-    pub b: Option<i32>,
+    // Strings are not symbols either, even though they hold the same field
+    // names, and so a map keyed by them traps in the same way.
+    let _ = UdtStruct::try_from_val(&env, &map);
 }
 
 #[test]
@@ -255,17 +264,9 @@ fn test_udt_struct_option() {
         Ok(UdtStructOption { a: 1, b: Some(2) })
     );
 
-    // A field that is an Option also converts from a map that is missing it,
-    // because a missing field decodes as void, which is None.
-    let partial = map![&env, (symbol_short!("a"), 1i32)].to_val();
-    assert_eq!(
-        UdtStructOption::try_from_val(&env, &partial),
-        Ok(UdtStructOption { a: 1, b: None })
-    );
-
     // No val of another type converts. The map vals are skipped because their
     // keys are not symbols, which traps, and is tested in
-    // test_udt_struct_from_map_with_i32_keys_panics.
+    // test_udt_struct_from_map_with_non_string_keys_panics.
     assert_compatible_with_skipping::<UdtStructOption>(
         &env,
         &[],
@@ -299,9 +300,10 @@ fn test_udt_struct_tuple() {
 fn test_udt_struct_tuple_from_vec_of_other_len_panics() {
     let env = Env::default();
 
+    let vec = vec![&env, 1i32].to_val();
+
     // The host traps when unpacking a vec into a slice of a different length,
     // and so the conversion panics rather than returning an error.
-    let vec = vec![&env, 1i32].to_val();
     let _ = UdtStructTuple::try_from_val(&env, &vec);
 }
 
@@ -345,11 +347,12 @@ pub enum UdtEnumInt {
 fn test_udt_enum_from_vec_with_unknown_variant_name_panics() {
     let env = Env::default();
 
+    let vec: Val = vec![&env, symbol_short!("Nope").to_val()].to_val();
+
     // The host traps when looking up a symbol that is not one of the variant
     // names, and so the conversion panics rather than returning an error. A vec
     // whose first element is not a symbol at all errors, as does a vec with a
     // known variant name and the wrong payload.
-    let vec: Val = vec![&env, symbol_short!("Nope").to_val()].to_val();
     let _ = UdtEnum::try_from_val(&env, &vec);
 }
 
