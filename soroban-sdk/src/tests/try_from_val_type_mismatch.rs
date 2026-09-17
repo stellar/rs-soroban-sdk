@@ -329,10 +329,7 @@ fn vals(env: &Env) -> [(&'static str, Val); 21] {
         ("vec_i32", vec![env, 1i32].into_val(env)),
         ("map_i32_i32", map![env, (1i32, 2i32)].into_val(env)),
         ("address", Address::generate(env).into_val(env)),
-        (
-            "muxed_address",
-            MuxedAddress::new(MuxedAddress::generate(env), 1).into_val(env),
-        ),
+        ("muxed_address", MuxedAddress::generate(env).into_val(env)),
         ("error", Error::from_contract_error(1).into_val(env)),
     ]
 }
