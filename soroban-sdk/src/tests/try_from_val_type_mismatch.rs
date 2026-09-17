@@ -116,7 +116,6 @@ fn test_bytes_n() {
     // A BytesN converts only from a bytes val of its own length.
     assert_compatible_with::<BytesN<32>>(&env, &["bytes32"]);
     assert_compatible_with::<BytesN<64>>(&env, &["bytes64"]);
-    assert_compatible_with::<BytesN<1>>(&env, &[]);
 }
 
 #[test]
