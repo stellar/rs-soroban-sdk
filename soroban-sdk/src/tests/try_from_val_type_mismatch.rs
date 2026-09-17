@@ -176,31 +176,6 @@ pub struct UdtStruct {
     pub b: i32,
 }
 
-#[contracttype]
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub struct UdtStructTuple(pub i32, pub i32);
-
-#[contracttype]
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub enum UdtEnum {
-    Unit,
-    Tuple(i32),
-}
-
-#[contracttype]
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub enum UdtEnumInt {
-    A = 0,
-    B = 1,
-}
-
-#[contracterror]
-#[derive(Copy, Clone, Debug, Eq, PartialEq)]
-#[repr(u32)]
-pub enum UdtError {
-    AnError = 1,
-}
-
 #[test]
 fn test_udt_struct() {
     let env = Env::default();
@@ -228,6 +203,10 @@ fn test_udt_struct_from_map_with_non_symbol_keys_panics() {
     let map = map![&env, (1i32, 2i32)].to_val();
     let _ = UdtStruct::try_from_val(&env, &map);
 }
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UdtStructTuple(pub i32, pub i32);
 
 #[test]
 fn test_udt_struct_tuple() {
@@ -257,6 +236,13 @@ fn test_udt_struct_tuple_from_vec_of_other_len_panics() {
     let _ = UdtStructTuple::try_from_val(&env, &vec);
 }
 
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum UdtEnum {
+    Unit,
+    Tuple(i32),
+}
+
 #[test]
 fn test_udt_enum() {
     let env = Env::default();
@@ -278,6 +264,13 @@ fn test_udt_enum() {
     assert_compatible_with::<UdtEnum>(&env, &[]);
 }
 
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum UdtEnumInt {
+    A = 0,
+    B = 1,
+}
+
 #[test]
 fn test_udt_enum_int() {
     let env = Env::default();
@@ -290,6 +283,13 @@ fn test_udt_enum_int() {
     assert!(UdtEnumInt::try_from_val(&env, &unknown).is_err());
 
     assert_compatible_with::<UdtEnumInt>(&env, &["u32"]);
+}
+
+#[contracterror]
+#[derive(Copy, Clone, Debug, Eq, PartialEq)]
+#[repr(u32)]
+pub enum UdtError {
+    AnError = 1,
 }
 
 #[test]
