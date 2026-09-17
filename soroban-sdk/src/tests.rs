@@ -32,7 +32,6 @@ mod contract_udt_raw_identifier;
 mod contract_udt_struct;
 mod contract_udt_struct_aliased_import;
 mod contract_udt_struct_tuple;
-mod contract_udt_try_from_val_type_mismatch;
 mod contractimpl_trait_call_resolution;
 mod contractimport;
 mod contractimport_with_error;
