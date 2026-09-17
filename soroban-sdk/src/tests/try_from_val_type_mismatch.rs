@@ -107,14 +107,14 @@ fn test_string() {
 #[test]
 fn test_bytes() {
     let env = Env::default();
-    // Bytes converts from a bytes val of any length. 🟢
+    // Bytes converts from a bytes val of any length.
     assert_with::<Bytes>(&env, &["bytes32", "bytes64"]); // 🟢🟡
 }
 
 #[test]
 fn test_bytes_n() {
     let env = Env::default();
-    // A BytesN converts only from a bytes val of its own length. 🟢
+    // A BytesN converts only from a bytes val of its own length.
     assert_with::<BytesN<32>>(&env, &["bytes32"]); // 🟢🟡
     assert_with::<BytesN<64>>(&env, &["bytes64"]); // 🟢🟡
 }
@@ -162,7 +162,7 @@ fn test_error() {
 fn test_option() {
     let env = Env::default();
     // A void val is the absent option, and so both void and the option's own
-    // type convert. 🟢
+    // type convert.
     assert_with::<Option<u32>>(&env, &["void", "u32"]); // 🟢🟡
 }
 
@@ -197,35 +197,35 @@ pub struct UdtStructOption {
 fn test_udt_struct() {
     let env = Env::default();
 
-    // A struct converts from a map keyed by the field names. 🟢
+    // A struct converts from a map keyed by the field names.
     let map = map![&env, (symbol_short!("a"), 1i32), (symbol_short!("b"), 2i32)].to_val();
     assert_eq!(
-        UdtStruct::try_from_val(&env, &map),
+        UdtStruct::try_from_val(&env, &map), // 🟢
         Ok(UdtStruct { a: 1, b: 2 })
     );
     assert_eq!(
-        UdtStructOption::try_from_val(&env, &map),
+        UdtStructOption::try_from_val(&env, &map), // 🟢
         Ok(UdtStructOption { a: 1, b: Some(2) })
     );
 
     // A map that is missing a field does not partially convert, because a
-    // missing field decodes as void. 🟡
+    // missing field decodes as void.
     let partial = map![&env, (symbol_short!("a"), 1i32)].to_val();
     assert_eq!(
-        UdtStruct::try_from_val(&env, &partial),
+        UdtStruct::try_from_val(&env, &partial), // 🟡
         Err(ConversionError)
     );
 
     // Unless the missing field is an Option, which converts from that void as
-    // None. 🟢
+    // None.
     assert_eq!(
-        UdtStructOption::try_from_val(&env, &partial),
+        UdtStructOption::try_from_val(&env, &partial), // 🟢
         Ok(UdtStructOption { a: 1, b: None })
     );
 
     // No val of another type converts. The map vals are skipped because their
     // keys are not symbols, which traps, and is tested in
-    // test_udt_struct_from_map_with_non_string_keys_panics. 🟡
+    // test_udt_struct_from_map_with_non_string_keys_panics.
     let maps = &["map_i32_i32", "map_string_string"];
     assert_with_skipping::<UdtStruct>(&env, &[], maps); // 🟡
     assert_with_skipping::<UdtStructOption>(&env, &[], maps); // 🟡
@@ -239,8 +239,8 @@ fn test_udt_struct_from_map_with_non_string_keys_panics() {
     let map = map![&env, (1i32, 2i32)].to_val();
 
     // The host traps when unpacking a map that has keys that are not symbols,
-    // and so the conversion panics rather than returning an error. 🔴
-    let _ = UdtStruct::try_from_val(&env, &map);
+    // and so the conversion panics rather than returning an error.
+    let _ = UdtStruct::try_from_val(&env, &map); // 🔴
 }
 
 #[test]
@@ -256,8 +256,8 @@ fn test_udt_struct_from_map_with_string_keys_panics() {
     .to_val();
 
     // Strings are not symbols either, even though they hold the same field
-    // names, and so a map keyed by them traps in the same way. 🔴
-    let _ = UdtStruct::try_from_val(&env, &map);
+    // names, and so a map keyed by them traps in the same way.
+    let _ = UdtStruct::try_from_val(&env, &map); // 🔴
 }
 
 #[contracttype]
@@ -268,16 +268,16 @@ pub struct UdtStructTuple(pub i32, pub i32);
 fn test_udt_struct_tuple() {
     let env = Env::default();
 
-    // A tuple struct converts from a vec with an element per field. 🟢
+    // A tuple struct converts from a vec with an element per field.
     let vec = vec![&env, 1i32, 2i32].to_val();
     assert_eq!(
-        UdtStructTuple::try_from_val(&env, &vec),
+        UdtStructTuple::try_from_val(&env, &vec), // 🟢
         Ok(UdtStructTuple(1, 2))
     );
 
     // No val of another type converts. The vec vals are skipped because they
     // have one element and not two, which traps, and is tested in
-    // test_udt_struct_tuple_from_vec_of_other_len_panics. 🟡
+    // test_udt_struct_tuple_from_vec_of_other_len_panics.
     let vecs = &["vec_i32", "vec_string"];
     assert_with_skipping::<UdtStructTuple>(&env, &[], vecs); // 🟡
 }
@@ -290,8 +290,8 @@ fn test_udt_struct_tuple_from_vec_of_other_len_panics() {
     let vec = vec![&env, 1i32].to_val();
 
     // The host traps when unpacking a vec into a slice of a different length,
-    // and so the conversion panics rather than returning an error. 🔴
-    let _ = UdtStructTuple::try_from_val(&env, &vec);
+    // and so the conversion panics rather than returning an error.
+    let _ = UdtStructTuple::try_from_val(&env, &vec); // 🔴
 }
 
 #[contracttype]
@@ -305,20 +305,20 @@ pub enum UdtEnum {
 fn test_udt_enum() {
     let env = Env::default();
 
-    // An enum converts from a vec with the variant name as its first element. 🟢
+    // An enum converts from a vec with the variant name as its first element.
     let unit: Val = vec![&env, symbol_short!("Unit").to_val()].to_val();
-    assert_eq!(UdtEnum::try_from_val(&env, &unit), Ok(UdtEnum::Unit));
+    assert_eq!(UdtEnum::try_from_val(&env, &unit), Ok(UdtEnum::Unit)); // 🟢
     let tuple: Val = vec![
         &env,
         symbol_short!("Tuple").to_val(),
         <_ as IntoVal<Env, Val>>::into_val(&1i32, &env),
     ]
     .to_val();
-    assert_eq!(UdtEnum::try_from_val(&env, &tuple), Ok(UdtEnum::Tuple(1)));
+    assert_eq!(UdtEnum::try_from_val(&env, &tuple), Ok(UdtEnum::Tuple(1))); // 🟢
 
     // No val of another type converts. Unlike the struct types above, an enum
     // errors rather than traps on a vec of the wrong shape, because it checks
-    // the variant name is a symbol before unpacking the rest of the vec. 🟡
+    // the variant name is a symbol before unpacking the rest of the vec.
     assert_with::<UdtEnum>(&env, &[]); // 🟡
 }
 
@@ -332,8 +332,8 @@ fn test_udt_enum_from_vec_with_unknown_variant_name_panics() {
     // The host traps when looking up a symbol that is not one of the variant
     // names, and so the conversion panics rather than returning an error. A vec
     // whose first element is not a symbol at all errors, as does a vec with a
-    // known variant name and the wrong payload. 🔴
-    let _ = UdtEnum::try_from_val(&env, &vec);
+    // known variant name and the wrong payload.
+    let _ = UdtEnum::try_from_val(&env, &vec); // 🔴
 }
 
 #[contracttype]
@@ -348,11 +348,11 @@ fn test_udt_enum_int() {
     let env = Env::default();
 
     // An enum with integer values converts from a u32 val, and so the u32 val
-    // in the list of vals converts because it holds the value of a variant. 🟢
+    // in the list of vals converts because it holds the value of a variant.
     let a: Val = <_ as IntoVal<Env, Val>>::into_val(&0u32, &env);
-    assert_eq!(UdtEnumInt::try_from_val(&env, &a), Ok(UdtEnumInt::A));
+    assert_eq!(UdtEnumInt::try_from_val(&env, &a), Ok(UdtEnumInt::A)); // 🟢
     let unknown: Val = <_ as IntoVal<Env, Val>>::into_val(&2u32, &env);
-    assert!(UdtEnumInt::try_from_val(&env, &unknown).is_err());
+    assert!(UdtEnumInt::try_from_val(&env, &unknown).is_err()); // 🟡
 
     assert_with::<UdtEnumInt>(&env, &["u32"]); // 🟢🟡
 }
@@ -369,9 +369,9 @@ fn test_udt_error_enum() {
     let env = Env::default();
 
     // An error enum converts from an error val, and so the error val in the
-    // list of vals converts because it holds the value of a variant. 🟢
+    // list of vals converts because it holds the value of a variant.
     let e: Val = Error::from_contract_error(1).into_val(&env);
-    assert_eq!(UdtError::try_from_val(&env, &e), Ok(UdtError::AnError));
+    assert_eq!(UdtError::try_from_val(&env, &e), Ok(UdtError::AnError)); // 🟢
 
     assert_with::<UdtError>(&env, &["error"]); // 🟢🟡
 }
