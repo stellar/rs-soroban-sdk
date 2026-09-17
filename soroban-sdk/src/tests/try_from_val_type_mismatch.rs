@@ -106,15 +106,16 @@ fn test_string() {
 #[test]
 fn test_bytes() {
     let env = Env::default();
-    assert_compatible_with::<Bytes>(&env, &["bytes"]);
+    // Bytes converts from a bytes val of any length.
+    assert_compatible_with::<Bytes>(&env, &["bytes32", "bytes64"]);
 }
 
 #[test]
 fn test_bytes_n() {
     let env = Env::default();
-    // The bytes val is 32 bytes long, so it converts into a BytesN of that
-    // length, and not into one of any other length.
-    assert_compatible_with::<BytesN<32>>(&env, &["bytes"]);
+    // A BytesN converts only from a bytes val of its own length.
+    assert_compatible_with::<BytesN<32>>(&env, &["bytes32"]);
+    assert_compatible_with::<BytesN<64>>(&env, &["bytes64"]);
     assert_compatible_with::<BytesN<1>>(&env, &[]);
 }
 
@@ -307,7 +308,7 @@ fn test_udt_error_enum() {
 /// A [Val] of every type the host supports, each labelled with a name used by
 /// the tests to say which types are compatible with the type being converted
 /// into.
-fn vals(env: &Env) -> [(&'static str, Val); 20] {
+fn vals(env: &Env) -> [(&'static str, Val); 21] {
     [
         ("void", ().into_val(env)),
         ("bool", true.into_val(env)),
@@ -322,7 +323,8 @@ fn vals(env: &Env) -> [(&'static str, Val); 20] {
         ("u256", U256::from_u32(env, 1).into_val(env)),
         ("i256", I256::from_i32(env, 1).into_val(env)),
         ("symbol", symbol_short!("a").into_val(env)),
-        ("bytes", Bytes::from_array(env, &[0u8; 32]).into_val(env)),
+        ("bytes32", Bytes::from_array(env, &[0u8; 32]).into_val(env)),
+        ("bytes64", Bytes::from_array(env, &[0u8; 64]).into_val(env)),
         ("string", String::from_str(env, "a").into_val(env)),
         ("vec", vec![env, 1i32].into_val(env)),
         ("map", map![env, (1i32, 2i32)].into_val(env)),
