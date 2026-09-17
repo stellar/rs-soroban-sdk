@@ -206,18 +206,34 @@ fn test_udt_struct() {
 
     // No val of another type converts. The map vals are skipped because their
     // keys are not symbols, which traps, and is tested in
-    // test_udt_struct_from_map_with_non_symbol_keys_panics.
+    // test_udt_struct_from_map_with_i32_keys_panics.
     assert_compatible_with_skipping::<UdtStruct>(&env, &[], &["map_i32_i32", "map_string_string"]);
 }
 
 #[test]
 #[should_panic(expected = "UnexpectedType")]
-fn test_udt_struct_from_map_with_non_symbol_keys_panics() {
+fn test_udt_struct_from_map_with_i32_keys_panics() {
     let env = Env::default();
 
     // The host traps when unpacking a map that has keys that are not symbols,
     // and so the conversion panics rather than returning an error.
     let map = map![&env, (1i32, 2i32)].to_val();
+    let _ = UdtStruct::try_from_val(&env, &map);
+}
+
+#[test]
+#[should_panic(expected = "UnexpectedType")]
+fn test_udt_struct_from_map_with_string_keys_panics() {
+    let env = Env::default();
+
+    // Strings are not symbols either, even though they hold the same field
+    // names, and so a map keyed by them traps in the same way.
+    let map = map![
+        &env,
+        (String::from_str(&env, "a"), 1i32),
+        (String::from_str(&env, "b"), 2i32)
+    ]
+    .to_val();
     let _ = UdtStruct::try_from_val(&env, &map);
 }
 
@@ -249,7 +265,7 @@ fn test_udt_struct_option() {
 
     // No val of another type converts. The map vals are skipped because their
     // keys are not symbols, which traps, and is tested in
-    // test_udt_struct_from_map_with_non_symbol_keys_panics.
+    // test_udt_struct_from_map_with_i32_keys_panics.
     assert_compatible_with_skipping::<UdtStructOption>(
         &env,
         &[],
