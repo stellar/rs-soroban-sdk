@@ -202,6 +202,10 @@ fn test_udt_struct() {
         UdtStruct::try_from_val(&env, &map),
         Ok(UdtStruct { a: 1, b: 2 })
     );
+    assert_eq!(
+        UdtStructOption::try_from_val(&env, &map),
+        Ok(UdtStructOption { a: 1, b: Some(2) })
+    );
 
     // A map that is missing a field does not partially convert, because a
     // missing field decodes as void.
@@ -222,6 +226,11 @@ fn test_udt_struct() {
     // keys are not symbols, which traps, and is tested in
     // test_udt_struct_from_map_with_non_string_keys_panics.
     assert_compatible_with_skipping::<UdtStruct>(&env, &[], &["map_i32_i32", "map_string_string"]);
+    assert_compatible_with_skipping::<UdtStructOption>(
+        &env,
+        &[],
+        &["map_i32_i32", "map_string_string"],
+    );
 }
 
 #[test]
@@ -251,27 +260,6 @@ fn test_udt_struct_from_map_with_string_keys_panics() {
     // Strings are not symbols either, even though they hold the same field
     // names, and so a map keyed by them traps in the same way.
     let _ = UdtStruct::try_from_val(&env, &map);
-}
-
-#[test]
-fn test_udt_struct_option() {
-    let env = Env::default();
-
-    // A field that is an Option converts from a map that contains it.
-    let map = map![&env, (symbol_short!("a"), 1i32), (symbol_short!("b"), 2i32)].to_val();
-    assert_eq!(
-        UdtStructOption::try_from_val(&env, &map),
-        Ok(UdtStructOption { a: 1, b: Some(2) })
-    );
-
-    // No val of another type converts. The map vals are skipped because their
-    // keys are not symbols, which traps, and is tested in
-    // test_udt_struct_from_map_with_non_string_keys_panics.
-    assert_compatible_with_skipping::<UdtStructOption>(
-        &env,
-        &[],
-        &["map_i32_i32", "map_string_string"],
-    );
 }
 
 #[contracttype]
