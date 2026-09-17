@@ -23,100 +23,100 @@ use soroban_sdk::{
 #[test]
 fn test_void() {
     let env = Env::default();
-    assert_compatible_with::<()>(&env, &["void"]);
+    assert_compatible_with::<()>(&env, &["void"]); // 🟢🟡
 }
 
 #[test]
 fn test_bool() {
     let env = Env::default();
-    assert_compatible_with::<bool>(&env, &["bool"]);
+    assert_compatible_with::<bool>(&env, &["bool"]); // 🟢🟡
 }
 
 #[test]
 fn test_u32() {
     let env = Env::default();
-    assert_compatible_with::<u32>(&env, &["u32"]);
+    assert_compatible_with::<u32>(&env, &["u32"]); // 🟢🟡
 }
 
 #[test]
 fn test_i32() {
     let env = Env::default();
-    assert_compatible_with::<i32>(&env, &["i32"]);
+    assert_compatible_with::<i32>(&env, &["i32"]); // 🟢🟡
 }
 
 #[test]
 fn test_u64() {
     let env = Env::default();
-    assert_compatible_with::<u64>(&env, &["u64"]);
+    assert_compatible_with::<u64>(&env, &["u64"]); // 🟢🟡
 }
 
 #[test]
 fn test_i64() {
     let env = Env::default();
-    assert_compatible_with::<i64>(&env, &["i64"]);
+    assert_compatible_with::<i64>(&env, &["i64"]); // 🟢🟡
 }
 
 #[test]
 fn test_u128() {
     let env = Env::default();
-    assert_compatible_with::<u128>(&env, &["u128"]);
+    assert_compatible_with::<u128>(&env, &["u128"]); // 🟢🟡
 }
 
 #[test]
 fn test_i128() {
     let env = Env::default();
-    assert_compatible_with::<i128>(&env, &["i128"]);
+    assert_compatible_with::<i128>(&env, &["i128"]); // 🟢🟡
 }
 
 #[test]
 fn test_u256() {
     let env = Env::default();
-    assert_compatible_with::<U256>(&env, &["u256"]);
+    assert_compatible_with::<U256>(&env, &["u256"]); // 🟢🟡
 }
 
 #[test]
 fn test_i256() {
     let env = Env::default();
-    assert_compatible_with::<I256>(&env, &["i256"]);
+    assert_compatible_with::<I256>(&env, &["i256"]); // 🟢🟡
 }
 
 #[test]
 fn test_timepoint() {
     let env = Env::default();
-    assert_compatible_with::<Timepoint>(&env, &["timepoint"]);
+    assert_compatible_with::<Timepoint>(&env, &["timepoint"]); // 🟢🟡
 }
 
 #[test]
 fn test_duration() {
     let env = Env::default();
-    assert_compatible_with::<Duration>(&env, &["duration"]);
+    assert_compatible_with::<Duration>(&env, &["duration"]); // 🟢🟡
 }
 
 #[test]
 fn test_symbol() {
     let env = Env::default();
-    assert_compatible_with::<Symbol>(&env, &["symbol"]);
+    assert_compatible_with::<Symbol>(&env, &["symbol"]); // 🟢🟡
 }
 
 #[test]
 fn test_string() {
     let env = Env::default();
-    assert_compatible_with::<String>(&env, &["string"]);
+    assert_compatible_with::<String>(&env, &["string"]); // 🟢🟡
 }
 
 #[test]
 fn test_bytes() {
     let env = Env::default();
-    // Bytes converts from a bytes val of any length.
-    assert_compatible_with::<Bytes>(&env, &["bytes32", "bytes64"]);
+    // Bytes converts from a bytes val of any length. 🟢
+    assert_compatible_with::<Bytes>(&env, &["bytes32", "bytes64"]); // 🟢🟡
 }
 
 #[test]
 fn test_bytes_n() {
     let env = Env::default();
-    // A BytesN converts only from a bytes val of its own length.
-    assert_compatible_with::<BytesN<32>>(&env, &["bytes32"]);
-    assert_compatible_with::<BytesN<64>>(&env, &["bytes64"]);
+    // A BytesN converts only from a bytes val of its own length. 🟢
+    assert_compatible_with::<BytesN<32>>(&env, &["bytes32"]); // 🟢🟡
+    assert_compatible_with::<BytesN<64>>(&env, &["bytes64"]); // 🟢🟡
 }
 
 #[test]
@@ -124,9 +124,9 @@ fn test_vec() {
     let env = Env::default();
     // The element type of a vec is not checked when converting, and so a vec
     // of any element type converts into a Vec of any element type. Conversion
-    // of the elements happens when they are accessed.
-    assert_compatible_with::<Vec<i32>>(&env, &["vec_i32", "vec_string"]);
-    assert_compatible_with::<Vec<String>>(&env, &["vec_i32", "vec_string"]);
+    // of the elements happens when they are accessed. 🟢
+    assert_compatible_with::<Vec<i32>>(&env, &["vec_i32", "vec_string"]); // 🟢🟡
+    assert_compatible_with::<Vec<String>>(&env, &["vec_i32", "vec_string"]); // 🟢🟡
 }
 
 #[test]
@@ -134,41 +134,43 @@ fn test_map() {
     let env = Env::default();
     // The key and value types of a map are not checked when converting, and so
     // a map of any key and value types converts into a Map of any key and value
-    // types. Conversion of the keys and values happens when they are accessed.
-    assert_compatible_with::<Map<i32, i32>>(&env, &["map_i32_i32", "map_string_string"]);
+    // types. Conversion of the keys and values happens when they are accessed. 🟢
+    assert_compatible_with::<Map<i32, i32>>(&env, &["map_i32_i32", "map_string_string"]); // 🟢🟡
     assert_compatible_with::<Map<String, String>>(&env, &["map_i32_i32", "map_string_string"]);
+    // 🟢🟡
 }
 
 #[test]
 fn test_address() {
     let env = Env::default();
-    assert_compatible_with::<Address>(&env, &["address"]);
+    assert_compatible_with::<Address>(&env, &["address"]); // 🟢🟡
 }
 
 #[test]
 fn test_muxed_address() {
     let env = Env::default();
     assert_compatible_with::<MuxedAddress>(&env, &["address", "muxed_address"]);
+    // 🟢🟡
 }
 
 #[test]
 fn test_error() {
     let env = Env::default();
-    assert_compatible_with::<Error>(&env, &["error"]);
+    assert_compatible_with::<Error>(&env, &["error"]); // 🟢🟡
 }
 
 #[test]
 fn test_option() {
     let env = Env::default();
     // A void val is the absent option, and so both void and the option's own
-    // type convert.
-    assert_compatible_with::<Option<u32>>(&env, &["void", "u32"]);
+    // type convert. 🟢
+    assert_compatible_with::<Option<u32>>(&env, &["void", "u32"]); // 🟢🟡
 }
 
 #[test]
 fn test_val() {
     let env = Env::default();
-    // Val holds a value of any type, and so every val converts.
+    // Val holds a value of any type, and so every val converts. 🟢
     for (name, val) in vals(&env) {
         assert!(
             Val::try_from_val(&env, &val).is_ok(),
@@ -196,7 +198,7 @@ pub struct UdtStructOption {
 fn test_udt_struct() {
     let env = Env::default();
 
-    // A struct converts from a map keyed by the field names.
+    // A struct converts from a map keyed by the field names. 🟢
     let map = map![&env, (symbol_short!("a"), 1i32), (symbol_short!("b"), 2i32)].to_val();
     assert_eq!(
         UdtStruct::try_from_val(&env, &map),
@@ -208,7 +210,7 @@ fn test_udt_struct() {
     );
 
     // A map that is missing a field does not partially convert, because a
-    // missing field decodes as void.
+    // missing field decodes as void. 🟡
     let partial = map![&env, (symbol_short!("a"), 1i32)].to_val();
     assert_eq!(
         UdtStruct::try_from_val(&env, &partial),
@@ -216,7 +218,7 @@ fn test_udt_struct() {
     );
 
     // Unless the missing field is an Option, which converts from that void as
-    // None.
+    // None. 🟢
     assert_eq!(
         UdtStructOption::try_from_val(&env, &partial),
         Ok(UdtStructOption { a: 1, b: None })
@@ -224,13 +226,13 @@ fn test_udt_struct() {
 
     // No val of another type converts. The map vals are skipped because their
     // keys are not symbols, which traps, and is tested in
-    // test_udt_struct_from_map_with_non_string_keys_panics.
-    assert_compatible_with_skipping::<UdtStruct>(&env, &[], &["map_i32_i32", "map_string_string"]);
+    // test_udt_struct_from_map_with_non_string_keys_panics. 🟡
+    assert_compatible_with_skipping::<UdtStruct>(&env, &[], &["map_i32_i32", "map_string_string"]); // 🟡
     assert_compatible_with_skipping::<UdtStructOption>(
         &env,
         &[],
         &["map_i32_i32", "map_string_string"],
-    );
+    ); // 🟡
 }
 
 #[test]
@@ -241,7 +243,7 @@ fn test_udt_struct_from_map_with_non_string_keys_panics() {
     let map = map![&env, (1i32, 2i32)].to_val();
 
     // The host traps when unpacking a map that has keys that are not symbols,
-    // and so the conversion panics rather than returning an error.
+    // and so the conversion panics rather than returning an error. 🔴
     let _ = UdtStruct::try_from_val(&env, &map);
 }
 
@@ -258,7 +260,7 @@ fn test_udt_struct_from_map_with_string_keys_panics() {
     .to_val();
 
     // Strings are not symbols either, even though they hold the same field
-    // names, and so a map keyed by them traps in the same way.
+    // names, and so a map keyed by them traps in the same way. 🔴
     let _ = UdtStruct::try_from_val(&env, &map);
 }
 
@@ -270,7 +272,7 @@ pub struct UdtStructTuple(pub i32, pub i32);
 fn test_udt_struct_tuple() {
     let env = Env::default();
 
-    // A tuple struct converts from a vec with an element per field.
+    // A tuple struct converts from a vec with an element per field. 🟢
     let vec = vec![&env, 1i32, 2i32].to_val();
     assert_eq!(
         UdtStructTuple::try_from_val(&env, &vec),
@@ -279,8 +281,9 @@ fn test_udt_struct_tuple() {
 
     // No val of another type converts. The vec vals are skipped because they
     // have one element and not two, which traps, and is tested in
-    // test_udt_struct_tuple_from_vec_of_other_len_panics.
+    // test_udt_struct_tuple_from_vec_of_other_len_panics. 🟡
     assert_compatible_with_skipping::<UdtStructTuple>(&env, &[], &["vec_i32", "vec_string"]);
+    // 🟡
 }
 
 #[test]
@@ -291,7 +294,7 @@ fn test_udt_struct_tuple_from_vec_of_other_len_panics() {
     let vec = vec![&env, 1i32].to_val();
 
     // The host traps when unpacking a vec into a slice of a different length,
-    // and so the conversion panics rather than returning an error.
+    // and so the conversion panics rather than returning an error. 🔴
     let _ = UdtStructTuple::try_from_val(&env, &vec);
 }
 
@@ -306,7 +309,7 @@ pub enum UdtEnum {
 fn test_udt_enum() {
     let env = Env::default();
 
-    // An enum converts from a vec with the variant name as its first element.
+    // An enum converts from a vec with the variant name as its first element. 🟢
     let unit: Val = vec![&env, symbol_short!("Unit").to_val()].to_val();
     assert_eq!(UdtEnum::try_from_val(&env, &unit), Ok(UdtEnum::Unit));
     let tuple: Val = vec![
@@ -319,8 +322,8 @@ fn test_udt_enum() {
 
     // No val of another type converts. Unlike the struct types above, an enum
     // errors rather than traps on a vec of the wrong shape, because it checks
-    // the variant name is a symbol before unpacking the rest of the vec.
-    assert_compatible_with::<UdtEnum>(&env, &[]);
+    // the variant name is a symbol before unpacking the rest of the vec. 🟡
+    assert_compatible_with::<UdtEnum>(&env, &[]); // 🟡
 }
 
 #[test]
@@ -333,7 +336,7 @@ fn test_udt_enum_from_vec_with_unknown_variant_name_panics() {
     // The host traps when looking up a symbol that is not one of the variant
     // names, and so the conversion panics rather than returning an error. A vec
     // whose first element is not a symbol at all errors, as does a vec with a
-    // known variant name and the wrong payload.
+    // known variant name and the wrong payload. 🔴
     let _ = UdtEnum::try_from_val(&env, &vec);
 }
 
@@ -349,13 +352,13 @@ fn test_udt_enum_int() {
     let env = Env::default();
 
     // An enum with integer values converts from a u32 val, and so the u32 val
-    // in the list of vals converts because it holds the value of a variant.
+    // in the list of vals converts because it holds the value of a variant. 🟢
     let a: Val = <_ as IntoVal<Env, Val>>::into_val(&0u32, &env);
     assert_eq!(UdtEnumInt::try_from_val(&env, &a), Ok(UdtEnumInt::A));
     let unknown: Val = <_ as IntoVal<Env, Val>>::into_val(&2u32, &env);
     assert!(UdtEnumInt::try_from_val(&env, &unknown).is_err());
 
-    assert_compatible_with::<UdtEnumInt>(&env, &["u32"]);
+    assert_compatible_with::<UdtEnumInt>(&env, &["u32"]); // 🟢🟡
 }
 
 #[contracterror]
@@ -370,11 +373,11 @@ fn test_udt_error_enum() {
     let env = Env::default();
 
     // An error enum converts from an error val, and so the error val in the
-    // list of vals converts because it holds the value of a variant.
+    // list of vals converts because it holds the value of a variant. 🟢
     let e: Val = Error::from_contract_error(1).into_val(&env);
     assert_eq!(UdtError::try_from_val(&env, &e), Ok(UdtError::AnError));
 
-    assert_compatible_with::<UdtError>(&env, &["error"]);
+    assert_compatible_with::<UdtError>(&env, &["error"]); // 🟢🟡
 }
 
 /// A [Val] of every type the host supports, each labelled with a name used by
