@@ -11,6 +11,10 @@
 //! that are not symbols, a contract type tuple struct converting from a vec of
 //! a different length, and a contract type enum converting from a vec whose
 //! first element is a symbol that is not one of the variant names.
+//!
+//! Each line that converts is marked with the result it has, so that the
+//! results are visible when scanning the tests: 🟢 converts, 🟡 returns a
+//! conversion error, 🔴 panics.
 
 use crate::{self as soroban_sdk};
 use soroban_sdk::{
