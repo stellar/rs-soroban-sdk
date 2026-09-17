@@ -14,70 +14,6 @@ use soroban_sdk::{
     Timepoint, TryFromVal, Val, Vec, I256, U256,
 };
 
-/// A [Val] of every type the host supports, each labelled with a name used by
-/// the tests to say which types are compatible with the type being converted
-/// into.
-pub(crate) fn vals(env: &Env) -> std::vec::Vec<(&'static str, Val)> {
-    std::vec![
-        ("void", ().into_val(env)),
-        ("bool", true.into_val(env)),
-        ("u32", 1u32.into_val(env)),
-        ("i32", 1i32.into_val(env)),
-        ("u64", 1u64.into_val(env)),
-        ("i64", 1i64.into_val(env)),
-        ("timepoint", Timepoint::from_unix(env, 1).into_val(env)),
-        ("duration", Duration::from_seconds(env, 1).into_val(env)),
-        ("u128", 1u128.into_val(env)),
-        ("i128", 1i128.into_val(env)),
-        ("u256", U256::from_u32(env, 1).into_val(env)),
-        ("i256", I256::from_i32(env, 1).into_val(env)),
-        ("symbol", symbol_short!("a").into_val(env)),
-        ("bytes", Bytes::from_array(env, &[0u8; 32]).into_val(env)),
-        ("string", String::from_str(env, "a").into_val(env)),
-        ("vec", vec![env, 1i32].into_val(env)),
-        ("map", map![env, (1i32, 2i32)].into_val(env)),
-        ("address", Address::generate(env).into_val(env)),
-        (
-            "muxed_address",
-            MuxedAddress::new(MuxedAddress::generate(env), 1).into_val(env),
-        ),
-        ("error", Error::from_contract_error(1).into_val(env)),
-    ]
-}
-
-/// Asserts that `T` converts from the [Val]s named in `compatible`, and that
-/// converting from a [Val] of any other type is an error rather than a panic.
-pub(crate) fn assert_compatible_with<T>(env: &Env, compatible: &[&str])
-where
-    T: TryFromVal<Env, Val>,
-{
-    assert_compatible_with_skipping::<T>(env, compatible, &[]);
-}
-
-/// Same as [assert_compatible_with], but not converting from the [Val]s named
-/// in `skip`, for types where converting from those [Val]s traps in the host
-/// instead of erroring, which the caller tests separately.
-pub(crate) fn assert_compatible_with_skipping<T>(env: &Env, compatible: &[&str], skip: &[&str])
-where
-    T: TryFromVal<Env, Val>,
-{
-    for (name, val) in vals(env) {
-        if skip.contains(&name) {
-            continue;
-        }
-        let converted = T::try_from_val(env, &val).is_ok();
-        assert_eq!(
-            converted,
-            compatible.contains(&name),
-            "converting a {} val into {} {} but should {}",
-            name,
-            core::any::type_name::<T>(),
-            if converted { "succeeded" } else { "errored" },
-            if converted { "error" } else { "succeed" },
-        );
-    }
-}
-
 #[test]
 fn test_void() {
     let env = Env::default();
@@ -224,6 +160,70 @@ fn test_val() {
             Val::try_from_val(&env, &val).is_ok(),
             "converting a {} val into Val errored but should succeed",
             name,
+        );
+    }
+}
+
+/// A [Val] of every type the host supports, each labelled with a name used by
+/// the tests to say which types are compatible with the type being converted
+/// into.
+pub(crate) fn vals(env: &Env) -> [(&'static str, Val); 20] {
+    [
+        ("void", ().into_val(env)),
+        ("bool", true.into_val(env)),
+        ("u32", 1u32.into_val(env)),
+        ("i32", 1i32.into_val(env)),
+        ("u64", 1u64.into_val(env)),
+        ("i64", 1i64.into_val(env)),
+        ("timepoint", Timepoint::from_unix(env, 1).into_val(env)),
+        ("duration", Duration::from_seconds(env, 1).into_val(env)),
+        ("u128", 1u128.into_val(env)),
+        ("i128", 1i128.into_val(env)),
+        ("u256", U256::from_u32(env, 1).into_val(env)),
+        ("i256", I256::from_i32(env, 1).into_val(env)),
+        ("symbol", symbol_short!("a").into_val(env)),
+        ("bytes", Bytes::from_array(env, &[0u8; 32]).into_val(env)),
+        ("string", String::from_str(env, "a").into_val(env)),
+        ("vec", vec![env, 1i32].into_val(env)),
+        ("map", map![env, (1i32, 2i32)].into_val(env)),
+        ("address", Address::generate(env).into_val(env)),
+        (
+            "muxed_address",
+            MuxedAddress::new(MuxedAddress::generate(env), 1).into_val(env),
+        ),
+        ("error", Error::from_contract_error(1).into_val(env)),
+    ]
+}
+
+/// Asserts that `T` converts from the [Val]s named in `compatible`, and that
+/// converting from a [Val] of any other type is an error rather than a panic.
+pub(crate) fn assert_compatible_with<T>(env: &Env, compatible: &[&str])
+where
+    T: TryFromVal<Env, Val>,
+{
+    assert_compatible_with_skipping::<T>(env, compatible, &[]);
+}
+
+/// Same as [assert_compatible_with], but not converting from the [Val]s named
+/// in `skip`, for types where converting from those [Val]s traps in the host
+/// instead of erroring, which the caller tests separately.
+pub(crate) fn assert_compatible_with_skipping<T>(env: &Env, compatible: &[&str], skip: &[&str])
+where
+    T: TryFromVal<Env, Val>,
+{
+    for (name, val) in vals(env) {
+        if skip.contains(&name) {
+            continue;
+        }
+        let converted = T::try_from_val(env, &val).is_ok();
+        assert_eq!(
+            converted,
+            compatible.contains(&name),
+            "converting a {} val into {} {} but should {}",
+            name,
+            core::any::type_name::<T>(),
+            if converted { "succeeded" } else { "errored" },
+            if converted { "error" } else { "succeed" },
         );
     }
 }
