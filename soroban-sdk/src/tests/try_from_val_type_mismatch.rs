@@ -169,10 +169,10 @@ fn test_option() {
 #[test]
 fn test_val() {
     let env = Env::default();
-    // Val holds a value of any type, and so every val converts. 🟢
+    // Val holds a value of any type, and so every val converts.
     for (name, val) in vals(&env) {
         assert!(
-            Val::try_from_val(&env, &val).is_ok(),
+            Val::try_from_val(&env, &val).is_ok(), // 🟢
             "converting a {} val into Val errored but should succeed",
             name,
         );
