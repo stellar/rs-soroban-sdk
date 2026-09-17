@@ -6,17 +6,18 @@
 //! else must be a conversion error, because contracts receive [Val]s from
 //! callers that are free to send a value of any type.
 //!
-//! Converting is an error in every case except two: a contract type struct
-//! converting from a map that has keys that are not symbols, and a contract
-//! type tuple struct converting from a vec of a different length, both of which
-//! trap in the host and so panic.
+//! Converting is an error in every case except three, which trap in the host
+//! and so panic: a contract type struct converting from a map that has keys
+//! that are not symbols, a contract type tuple struct converting from a vec of
+//! a different length, and a contract type enum converting from a vec whose
+//! first element is a symbol that is not one of the variant names.
 
 use crate::{self as soroban_sdk};
 use soroban_sdk::{
     contracterror, contracttype, map, symbol_short,
     testutils::{Address as _, MuxedAddress as _},
-    vec, Address, Bytes, BytesN, Duration, Env, Error, IntoVal, Map, MuxedAddress, String, Symbol,
-    Timepoint, TryFromVal, Val, Vec, I256, U256,
+    vec, Address, Bytes, BytesN, ConversionError, Duration, Env, Error, IntoVal, Map, MuxedAddress,
+    String, Symbol, Timepoint, TryFromVal, Val, Vec, I256, U256,
 };
 
 #[test]
@@ -195,6 +196,14 @@ fn test_udt_struct() {
         Ok(UdtStruct { a: 1, b: 2 })
     );
 
+    // A map that is missing a field does not partially convert, because a
+    // missing field decodes as void.
+    let partial = map![&env, (symbol_short!("a"), 1i32)].to_val();
+    assert_eq!(
+        UdtStruct::try_from_val(&env, &partial),
+        Err(ConversionError)
+    );
+
     // No val of another type converts. The map vals are skipped because their
     // keys are not symbols, which traps, and is tested in
     // test_udt_struct_from_map_with_non_symbol_keys_panics.
@@ -210,6 +219,42 @@ fn test_udt_struct_from_map_with_non_symbol_keys_panics() {
     // and so the conversion panics rather than returning an error.
     let map = map![&env, (1i32, 2i32)].to_val();
     let _ = UdtStruct::try_from_val(&env, &map);
+}
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UdtStructOption {
+    pub a: i32,
+    pub b: Option<i32>,
+}
+
+#[test]
+fn test_udt_struct_option() {
+    let env = Env::default();
+
+    // A field that is an Option converts from a map that contains it.
+    let map = map![&env, (symbol_short!("a"), 1i32), (symbol_short!("b"), 2i32)].to_val();
+    assert_eq!(
+        UdtStructOption::try_from_val(&env, &map),
+        Ok(UdtStructOption { a: 1, b: Some(2) })
+    );
+
+    // A field that is an Option also converts from a map that is missing it,
+    // because a missing field decodes as void, which is None.
+    let partial = map![&env, (symbol_short!("a"), 1i32)].to_val();
+    assert_eq!(
+        UdtStructOption::try_from_val(&env, &partial),
+        Ok(UdtStructOption { a: 1, b: None })
+    );
+
+    // No val of another type converts. The map vals are skipped because their
+    // keys are not symbols, which traps, and is tested in
+    // test_udt_struct_from_map_with_non_symbol_keys_panics.
+    assert_compatible_with_skipping::<UdtStructOption>(
+        &env,
+        &[],
+        &["map_i32_i32", "map_string_string"],
+    );
 }
 
 #[contracttype]
@@ -277,6 +322,19 @@ fn test_udt_enum() {
 pub enum UdtEnumInt {
     A = 0,
     B = 1,
+}
+
+#[test]
+#[should_panic(expected = "InvalidInput")]
+fn test_udt_enum_from_vec_with_unknown_variant_name_panics() {
+    let env = Env::default();
+
+    // The host traps when looking up a symbol that is not one of the variant
+    // names, and so the conversion panics rather than returning an error. A vec
+    // whose first element is not a symbol at all errors, as does a vec with a
+    // known variant name and the wrong payload.
+    let vec: Val = vec![&env, symbol_short!("Nope").to_val()].to_val();
+    let _ = UdtEnum::try_from_val(&env, &vec);
 }
 
 #[test]
