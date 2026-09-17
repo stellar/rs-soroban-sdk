@@ -121,13 +121,21 @@ fn test_bytes_n() {
 #[test]
 fn test_vec() {
     let env = Env::default();
-    assert_compatible_with::<Vec<i32>>(&env, &["vec_i32"]);
+    // The element type of a vec is not checked when converting, and so a vec
+    // of any element type converts into a Vec of any element type. Conversion
+    // of the elements happens when they are accessed.
+    assert_compatible_with::<Vec<i32>>(&env, &["vec_i32", "vec_string"]);
+    assert_compatible_with::<Vec<String>>(&env, &["vec_i32", "vec_string"]);
 }
 
 #[test]
 fn test_map() {
     let env = Env::default();
-    assert_compatible_with::<Map<i32, i32>>(&env, &["map_i32_i32"]);
+    // The key and value types of a map are not checked when converting, and so
+    // a map of any key and value types converts into a Map of any key and value
+    // types. Conversion of the keys and values happens when they are accessed.
+    assert_compatible_with::<Map<i32, i32>>(&env, &["map_i32_i32", "map_string_string"]);
+    assert_compatible_with::<Map<String, String>>(&env, &["map_i32_i32", "map_string_string"]);
 }
 
 #[test]
@@ -187,10 +195,10 @@ fn test_udt_struct() {
         Ok(UdtStruct { a: 1, b: 2 })
     );
 
-    // No val of another type converts. The map val is skipped because it is
-    // keyed by integers, which traps, and is tested in
+    // No val of another type converts. The map vals are skipped because their
+    // keys are not symbols, which traps, and is tested in
     // test_udt_struct_from_map_with_non_symbol_keys_panics.
-    assert_compatible_with_skipping::<UdtStruct>(&env, &[], &["map_i32_i32"]);
+    assert_compatible_with_skipping::<UdtStruct>(&env, &[], &["map_i32_i32", "map_string_string"]);
 }
 
 #[test]
@@ -219,10 +227,10 @@ fn test_udt_struct_tuple() {
         Ok(UdtStructTuple(1, 2))
     );
 
-    // No val of another type converts. The vec val is skipped because it has
-    // one element and not two, which traps, and is tested in
+    // No val of another type converts. The vec vals are skipped because they
+    // have one element and not two, which traps, and is tested in
     // test_udt_struct_tuple_from_vec_of_other_len_panics.
-    assert_compatible_with_skipping::<UdtStructTuple>(&env, &[], &["vec_i32"]);
+    assert_compatible_with_skipping::<UdtStructTuple>(&env, &[], &["vec_i32", "vec_string"]);
 }
 
 #[test]
@@ -307,7 +315,7 @@ fn test_udt_error_enum() {
 /// A [Val] of every type the host supports, each labelled with a name used by
 /// the tests to say which types are compatible with the type being converted
 /// into.
-fn vals(env: &Env) -> [(&'static str, Val); 21] {
+fn vals(env: &Env) -> [(&'static str, Val); 23] {
     [
         ("void", ().into_val(env)),
         ("bool", true.into_val(env)),
@@ -326,7 +334,19 @@ fn vals(env: &Env) -> [(&'static str, Val); 21] {
         ("bytes64", Bytes::from_array(env, &[0u8; 64]).into_val(env)),
         ("string", String::from_str(env, "a").into_val(env)),
         ("vec_i32", vec![env, 1i32].into_val(env)),
+        (
+            "vec_string",
+            vec![env, String::from_str(env, "a")].into_val(env),
+        ),
         ("map_i32_i32", map![env, (1i32, 2i32)].into_val(env)),
+        (
+            "map_string_string",
+            map![
+                env,
+                (String::from_str(env, "a"), String::from_str(env, "b"))
+            ]
+            .into_val(env),
+        ),
         ("address", Address::generate(env).into_val(env)),
         ("muxed_address", MuxedAddress::generate(env).into_val(env)),
         ("error", Error::from_contract_error(1).into_val(env)),
