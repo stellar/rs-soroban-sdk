@@ -323,13 +323,6 @@ fn test_udt_enum() {
     assert_compatible_with::<UdtEnum>(&env, &[]);
 }
 
-#[contracttype]
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub enum UdtEnumInt {
-    A = 0,
-    B = 1,
-}
-
 #[test]
 #[should_panic(expected = "InvalidInput")]
 fn test_udt_enum_from_vec_with_unknown_variant_name_panics() {
@@ -342,6 +335,13 @@ fn test_udt_enum_from_vec_with_unknown_variant_name_panics() {
     // whose first element is not a symbol at all errors, as does a vec with a
     // known variant name and the wrong payload.
     let _ = UdtEnum::try_from_val(&env, &vec);
+}
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub enum UdtEnumInt {
+    A = 0,
+    B = 1,
 }
 
 #[test]
