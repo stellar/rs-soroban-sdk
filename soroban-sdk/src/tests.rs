@@ -59,4 +59,5 @@ mod register_at_stellar_asset_contract;
 mod snapshot_source_native_wasm_hash;
 mod storage_testutils;
 mod token_client;
+mod try_from_val_type_mismatch;
 mod vec_slice;
