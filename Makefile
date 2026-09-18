@@ -36,18 +36,34 @@ build-libs: fmt
 	cargo hack build --release $(foreach c,$(LIB_CRATES),--package $(c))
 
 # Cargo derives rustc's `-C metadata` from each package's version, and that
-# seeds every symbol hash. Fat LTO merges modules in an order taken from those
-# names, so bumping the workspace version reshuffles functions in the built
-# wasms, and so in tests-expanded, with no code change. This wrapper keeps the
-# metadata of workspace crates free of the version. See the script for detail.
-STABLE_METADATA = RUSTC_WRAPPER=$(CURDIR)/scripts/rustc-stable-metadata.sh \
-	WORKSPACE_ROOT=$(CURDIR)
+# value seeds every symbol hash. Fat LTO merges the upstream modules in an
+# order taken from those names, so bumping the workspace version reshuffles
+# functions in the built wasms, and so in tests-expanded, without any code
+# change. Pin the version for these builds so their output depends on the code
+# alone. Registry dependencies keep their real versions, so a dependency bump
+# still changes the output, as it should.
+#
+# Prefix a recipe with this. It restores Cargo.toml and Cargo.lock on exit,
+# including when the build fails. The backups live under target/ so that a
+# hard kill cannot leave an untracked file in the working tree.
+PINNED_VERSION = 0.0.0
+# Absolute paths throughout: a recipe may cd elsewhere before the trap runs.
+PIN_WORKSPACE_VERSION = \
+	mkdir -p $(CURDIR)/target && \
+	cp $(CURDIR)/Cargo.toml $(CURDIR)/target/.Cargo.toml.unpinned && \
+	cp $(CURDIR)/Cargo.lock $(CURDIR)/target/.Cargo.lock.unpinned && \
+	trap 'mv -f $(CURDIR)/target/.Cargo.toml.unpinned $(CURDIR)/Cargo.toml; \
+	      mv -f $(CURDIR)/target/.Cargo.lock.unpinned $(CURDIR)/Cargo.lock' EXIT && \
+	perl -0pi -e 'my ($$v) = /^\[workspace\.package\]\s*\nversion = "([^"]+)"/m; \
+	              s/^version = "\Q$$v\E"$$/version = "$(PINNED_VERSION)"/mg; \
+	              s/\{ version = "\Q$$v\E",/{ version = "$(PINNED_VERSION)",/g' \
+		$(CURDIR)/Cargo.toml
 
 build-test-wasms: fmt
 	# Build the test wasms with MSRV by default, with some meta disabled for
 	# binary stability for tests.
+	$(PIN_WORKSPACE_VERSION) && \
 	SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2=1 \
-	$(STABLE_METADATA) \
 	RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
 	RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
 		cargo hack build --release --target wasm32v1-none $(foreach c,$(TEST_CRATES),--package $(c)) ; \
@@ -74,18 +90,17 @@ readme:
 expand-tests: build-test-wasms
 	rm -fr tests-expanded
 	mkdir -p tests-expanded
+	$(PIN_WORKSPACE_VERSION) && \
 	for package in $(TEST_CRATES); do \
 		if [ "$$package" = "test_alloc" ]; then \
 			continue; \
 		fi; \
 		echo "Expanding $$package for linux target including tests"; \
-    $(STABLE_METADATA) \
     RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
       RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
       cargo expand --package $$package --tests --target x86_64-unknown-linux-gnu | rustfmt > tests-expanded/$${package}_tests.rs; \
 		echo "Expanding $$package for wasm32v1-none target without tests"; \
     SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2=1 \
-    $(STABLE_METADATA) \
     RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
       RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
 			cargo expand --package $$package --release --target wasm32v1-none | rustfmt > tests-expanded/$${package}_wasm32v1-none.rs; \
