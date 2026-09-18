@@ -6,13 +6,19 @@
 //! else must be a conversion error, because contracts receive [Val]s from
 //! callers that are free to send a value of any type.
 //!
-//! Converting is an error in every case except three, which trap in the host
+//! Converting is an error in every case except four, which trap in the host
 //! and so panic: a contract type struct converting from a map that has keys
-//! that are not symbols, a contract type tuple struct converting from a vec of
-//! a different length, and a contract type enum converting from a vec whose
-//! first element is a symbol that is not one of the variant names.
+//! that are not symbols, a tuple or a contract type tuple struct converting
+//! from a vec of a different length, and a contract type enum converting from
+//! a vec whose first element is a symbol that is not one of the variant names.
 
-use crate::{self as soroban_sdk};
+use crate::{
+    self as soroban_sdk,
+    crypto::{
+        bls12_381::{Bls12381Fp, Bls12381Fp2, Bls12381Fr, Bls12381G1Affine, Bls12381G2Affine},
+        bn254::{Bn254Fp, Bn254Fr, Bn254G1Affine, Bn254G2Affine},
+    },
+};
 use soroban_sdk::{
     contracterror, contracttype, map, symbol_short,
     testutils::{Address as _, MuxedAddress as _},
@@ -108,7 +114,7 @@ fn test_string() {
 fn test_bytes() {
     let env = Env::default();
     // Bytes converts from a bytes val of any length.
-    assert_with::<Bytes>(&env, &["bytes32", "bytes64"]);
+    assert_with::<Bytes>(&env, BYTES);
 }
 
 #[test]
@@ -117,6 +123,58 @@ fn test_bytes_n() {
     // A BytesN converts only from a bytes val of its own length.
     assert_with::<BytesN<32>>(&env, &["bytes32"]);
     assert_with::<BytesN<64>>(&env, &["bytes64"]);
+}
+
+#[test]
+fn test_tuple() {
+    let env = Env::default();
+
+    // A tuple converts from a vec with an element per field.
+    let vec = vec![&env, 1i32, 2i32].to_val();
+    assert_eq!(<(i32, i32)>::try_from_val(&env, &vec), Ok((1, 2)));
+
+    // No val of another type converts. The vec vals are skipped because they
+    // have one element and not two, which traps, and is tested in
+    // test_tuple_from_vec_of_other_len_panics.
+    let vecs = &["vec_i32", "vec_string"];
+    assert_with_skipping::<(i32, i32)>(&env, &[], vecs);
+}
+
+#[test]
+#[should_panic(expected = "UnexpectedSize")]
+fn test_tuple_from_vec_of_other_len_panics() {
+    let env = Env::default();
+
+    let vec = vec![&env, 1i32].to_val();
+
+    // A tuple unpacks the same way a contract type tuple struct does, and so
+    // the host traps on a vec of a different length.
+    let _ = <(i32, i32)>::try_from_val(&env, &vec);
+}
+
+#[test]
+fn test_crypto_bls12_381() {
+    let env = Env::default();
+
+    // The BLS12-381 types wrap a BytesN of their own size, or a U256, and so
+    // convert only from a bytes val of that size, or from a u256 val.
+    assert_with::<Bls12381Fp>(&env, &["bytes48"]);
+    assert_with::<Bls12381Fp2>(&env, &["bytes96"]);
+    assert_with::<Bls12381G1Affine>(&env, &["bytes96"]);
+    assert_with::<Bls12381G2Affine>(&env, &["bytes192"]);
+    assert_with::<Bls12381Fr>(&env, &["u256"]);
+}
+
+#[test]
+fn test_crypto_bn254() {
+    let env = Env::default();
+
+    // The BN254 types wrap a BytesN of their own size, or a U256, in the same
+    // way as the BLS12-381 types.
+    assert_with::<Bn254Fp>(&env, &["bytes32"]);
+    assert_with::<Bn254G1Affine>(&env, &["bytes64"]);
+    assert_with::<Bn254G2Affine>(&env, &["bytes128"]);
+    assert_with::<Bn254Fr>(&env, &["u256"]);
 }
 
 #[test]
@@ -387,10 +445,16 @@ fn test_udt_error_enum() {
     assert_with::<UdtError>(&env, &["error"]);
 }
 
+/// The names of the [Val]s holding bytes, which are of the lengths that the
+/// SDK's fixed length types use.
+const BYTES: &[&str] = &[
+    "bytes32", "bytes48", "bytes64", "bytes96", "bytes128", "bytes192",
+];
+
 /// A [Val] of every type the host supports, each labelled with a name used by
 /// the tests to say which types are compatible with the type being converted
 /// into.
-fn vals(env: &Env) -> [(&'static str, Val); 23] {
+fn vals(env: &Env) -> [(&'static str, Val); 27] {
     [
         ("void", ().into_val(env)),
         ("bool", true.into_val(env)),
@@ -406,7 +470,17 @@ fn vals(env: &Env) -> [(&'static str, Val); 23] {
         ("i256", I256::from_i32(env, 1).into_val(env)),
         ("symbol", symbol_short!("a").into_val(env)),
         ("bytes32", Bytes::from_array(env, &[0u8; 32]).into_val(env)),
+        ("bytes48", Bytes::from_array(env, &[0u8; 48]).into_val(env)),
         ("bytes64", Bytes::from_array(env, &[0u8; 64]).into_val(env)),
+        ("bytes96", Bytes::from_array(env, &[0u8; 96]).into_val(env)),
+        (
+            "bytes128",
+            Bytes::from_array(env, &[0u8; 128]).into_val(env),
+        ),
+        (
+            "bytes192",
+            Bytes::from_array(env, &[0u8; 192]).into_val(env),
+        ),
         ("string", String::from_str(env, "a").into_val(env)),
         ("vec_i32", vec![env, 1i32].into_val(env)),
         (
