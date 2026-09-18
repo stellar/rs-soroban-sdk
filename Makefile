@@ -59,6 +59,14 @@ readme:
 		| jq -r '.index[.root|tostring].docs' \
 		> README.md
 
+# Replaces the compiled wasm byte strings that contractimport! and
+# include_bytes! embed in the expanded output with a placeholder. The bytes are
+# a build artifact rather than generated code, and they change whenever
+# anything perturbs codegen, such as a version bump, a dependency bump, or a
+# compiler upgrade. Leaving them in makes the expanded files churn on changes
+# that generate no new code.
+ELIDE_WASM = perl -pe 's/b"\\x00asm(?:\\.|[^"\\])*"/b"<wasm>"/g'
+
 # Expands the generated code within each test vector contract that lives in the
 # tests/ directory. Serves to surface visible changes in generated code that
 # may not be obvious when making changes to sdk macros.
@@ -72,12 +80,16 @@ expand-tests: build-test-wasms
 		echo "Expanding $$package for linux target including tests"; \
     RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
       RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
-      cargo expand --package $$package --tests --target x86_64-unknown-linux-gnu | rustfmt > tests-expanded/$${package}_tests.rs; \
+      cargo expand --package $$package --tests --target x86_64-unknown-linux-gnu \
+        | $(ELIDE_WASM) \
+        | RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) rustfmt > tests-expanded/$${package}_tests.rs; \
 		echo "Expanding $$package for wasm32v1-none target without tests"; \
     SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2=1 \
     RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
       RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
-			cargo expand --package $$package --release --target wasm32v1-none | rustfmt > tests-expanded/$${package}_wasm32v1-none.rs; \
+			cargo expand --package $$package --release --target wasm32v1-none \
+        | $(ELIDE_WASM) \
+        | RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) rustfmt > tests-expanded/$${package}_wasm32v1-none.rs; \
 	done
 
 miri:
