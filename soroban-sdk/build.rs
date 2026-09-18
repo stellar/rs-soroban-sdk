@@ -31,9 +31,21 @@ pub fn main() {
     {
         eprintln!(
             "\
-\nerror: soroban-sdk requires stellar-cli v25.2.0+ to build a contract\
+\nerror: soroban-sdk requires a build system that shakes the contract spec\
 \n\
-\nTo fix, build with `stellar contract build` using stellar-cli v25.2.0+.\
+\nThe spec soroban-sdk emits names every type and event in the build, including\
+\nthose the contract does not use. Which ones those are is only known once\
+\neverything has been linked, so the build system has to remove them.\
+\n\
+\nTo fix, either build with `stellar contract build` using stellar-cli v25.2.0+,\
+\nor link with soroban-lld. To use soroban-lld, install it with\
+\n`cargo install soroban-lld` and add to .cargo/config.toml:\
+\n\
+\n    [env]\
+\n    SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2 = \"1\"\
+\n\
+\n    [target.wasm32v1-none]\
+\n    linker = \"soroban-lld\"\
 "
         );
         std::process::exit(1);
