@@ -320,6 +320,17 @@ fn test_udt_enum() {
     .to_val();
     assert_eq!(UdtEnum::try_from_val(&env, &tuple), Ok(UdtEnum::Tuple(1))); // 🟢
 
+    let wrong_payload: Val = vec![
+        &env,
+        symbol_short!("Tuple").to_val(),
+        String::from_str(&env, "not an i32").to_val(),
+    ]
+    .to_val();
+    assert_eq!(
+        UdtEnum::try_from_val(&env, &wrong_payload), // 🟡
+        Err(ConversionError)
+    );
+
     // No val of another type converts. Unlike the struct types above, an enum
     // errors rather than traps on a vec of the wrong shape, because it checks
     // the variant name is a symbol before unpacking the rest of the vec.
