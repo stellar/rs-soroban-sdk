@@ -24,8 +24,13 @@ use soroban_sdk::{
     contracterror, contracttype, map, symbol_short,
     testutils::{Address as _, MuxedAddress as _},
     vec, Address, Bytes, BytesN, ConversionError, Duration, Env, Error, IntoVal, Map, MuxedAddress,
-    String, Symbol, Timepoint, TryFromVal, TryFromValForContractFn, Val, Vec, I256, U256,
+    String, Symbol, Timepoint, TryFromVal, Val, Vec, I256, U256,
 };
+// TryFromValForContractFn is deprecated for use outside the SDK, but it is the
+// conversion a contract function performs, and so is what these tests convert
+// with where a type has no TryFromVal.
+#[allow(deprecated)]
+use soroban_sdk::TryFromValForContractFn;
 
 #[test]
 fn test_void() {
@@ -54,55 +59,55 @@ fn test_i32() {
 #[test]
 fn test_u64() {
     let env = Env::default();
-    assert_with::<u64>(&env, &["u64"]);
+    assert_with::<u64>(&env, &["u64", "u64_large"]);
 }
 
 #[test]
 fn test_i64() {
     let env = Env::default();
-    assert_with::<i64>(&env, &["i64"]);
+    assert_with::<i64>(&env, &["i64", "i64_large"]);
 }
 
 #[test]
 fn test_u128() {
     let env = Env::default();
-    assert_with::<u128>(&env, &["u128"]);
+    assert_with::<u128>(&env, &["u128", "u128_large"]);
 }
 
 #[test]
 fn test_i128() {
     let env = Env::default();
-    assert_with::<i128>(&env, &["i128"]);
+    assert_with::<i128>(&env, &["i128", "i128_large"]);
 }
 
 #[test]
 fn test_u256() {
     let env = Env::default();
-    assert_with::<U256>(&env, &["u256"]);
+    assert_with::<U256>(&env, &["u256", "u256_large"]);
 }
 
 #[test]
 fn test_i256() {
     let env = Env::default();
-    assert_with::<I256>(&env, &["i256"]);
+    assert_with::<I256>(&env, &["i256", "i256_large"]);
 }
 
 #[test]
 fn test_timepoint() {
     let env = Env::default();
-    assert_with::<Timepoint>(&env, &["timepoint"]);
+    assert_with::<Timepoint>(&env, &["timepoint", "timepoint_large"]);
 }
 
 #[test]
 fn test_duration() {
     let env = Env::default();
-    assert_with::<Duration>(&env, &["duration"]);
+    assert_with::<Duration>(&env, &["duration", "duration_large"]);
 }
 
 #[test]
 fn test_symbol() {
     let env = Env::default();
-    assert_with::<Symbol>(&env, &["symbol"]);
+    assert_with::<Symbol>(&env, &["symbol", "symbol_long"]);
 }
 
 #[test]
@@ -159,6 +164,7 @@ fn test_tuple_from_vec_of_other_len_panics() {
 }
 
 #[test]
+#[allow(deprecated)]
 fn test_crypto_hash() {
     let env = Env::default();
 
@@ -192,7 +198,7 @@ fn test_crypto_bls12_381() {
     assert_with::<Bls12381Fp2>(&env, &["bytes96"]);
     assert_with::<Bls12381G1Affine>(&env, &["bytes96"]);
     assert_with::<Bls12381G2Affine>(&env, &["bytes192"]);
-    assert_with::<Bls12381Fr>(&env, &["u256"]);
+    assert_with::<Bls12381Fr>(&env, &["u256", "u256_large"]);
 }
 
 #[test]
@@ -204,7 +210,7 @@ fn test_crypto_bn254() {
     assert_with::<Bn254Fp>(&env, &["bytes32"]);
     assert_with::<Bn254G1Affine>(&env, &["bytes64"]);
     assert_with::<Bn254G2Affine>(&env, &["bytes128"]);
-    assert_with::<Bn254Fr>(&env, &["u256"]);
+    assert_with::<Bn254Fr>(&env, &["u256", "u256_large"]);
 }
 
 #[test]
@@ -478,21 +484,43 @@ fn test_udt_error_enum() {
 /// A [Val] of every type the host supports, each labelled with a name used by
 /// the tests to say which types are compatible with the type being converted
 /// into.
-fn vals(env: &Env) -> [(&'static str, Val); 27] {
+///
+/// The types that the host stores as a small value when they fit and as an
+/// object when they do not have a val of each form, because the conversions
+/// take different paths for the two.
+fn vals(env: &Env) -> [(&'static str, Val); 36] {
     [
         ("void", ().into_val(env)),
         ("bool", true.into_val(env)),
         ("u32", 1u32.into_val(env)),
         ("i32", 1i32.into_val(env)),
         ("u64", 1u64.into_val(env)),
+        ("u64_large", u64::MAX.into_val(env)),
         ("i64", 1i64.into_val(env)),
+        ("i64_large", i64::MIN.into_val(env)),
         ("timepoint", Timepoint::from_unix(env, 1).into_val(env)),
+        (
+            "timepoint_large",
+            Timepoint::from_unix(env, u64::MAX).into_val(env),
+        ),
         ("duration", Duration::from_seconds(env, 1).into_val(env)),
+        (
+            "duration_large",
+            Duration::from_seconds(env, u64::MAX).into_val(env),
+        ),
         ("u128", 1u128.into_val(env)),
+        ("u128_large", u128::MAX.into_val(env)),
         ("i128", 1i128.into_val(env)),
+        ("i128_large", i128::MIN.into_val(env)),
         ("u256", U256::from_u32(env, 1).into_val(env)),
+        ("u256_large", U256::max_value(env).into_val(env)),
         ("i256", I256::from_i32(env, 1).into_val(env)),
+        ("i256_large", I256::min_value(env).into_val(env)),
         ("symbol", symbol_short!("a").into_val(env)),
+        (
+            "symbol_long",
+            Symbol::new(env, "a_symbol_too_long_to_be_small").into_val(env),
+        ),
         ("bytes32", Bytes::from_array(env, &[0u8; 32]).into_val(env)),
         ("bytes48", Bytes::from_array(env, &[0u8; 48]).into_val(env)),
         ("bytes64", Bytes::from_array(env, &[0u8; 64]).into_val(env)),
