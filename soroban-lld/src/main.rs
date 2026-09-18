@@ -15,18 +15,17 @@
 //! Configure it in the contract's `.cargo/config.toml`:
 //!
 //! ```toml
-//! [env]
-//! SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2 = "1"
-//!
 //! [target.wasm32v1-none]
-//! linker = "soroban-lld"
+//! rustflags = ["-Clinker=soroban-lld"]
 //! ```
 //!
-//! The `[env]` entry tells the SDK that the build system shakes the spec, which
-//! it requires before it will build a contract at all. The `linker` entry is
-//! what makes that true.
+//! The SDK refuses to build a contract unless the build system shakes the spec,
+//! and recognises this configuration by reading `CARGO_ENCODED_RUSTFLAGS`, which
+//! cargo reports to build scripts. Nothing else needs to be set.
 
 mod shake;
+#[cfg(test)]
+mod tests;
 mod wasm;
 
 use std::path::{Path, PathBuf};
@@ -125,31 +124,4 @@ fn output_path(args: &[String]) -> Option<PathBuf> {
 fn fail(message: String) -> ExitCode {
     eprintln!("soroban-lld: error: {message}");
     ExitCode::FAILURE
-}
-
-#[cfg(test)]
-mod tests {
-    use super::output_path;
-    use std::path::PathBuf;
-
-    #[test]
-    fn output_path_spellings() {
-        let p = |s: &str| Some(PathBuf::from(s));
-        let args = |s: &str| {
-            s.split(' ')
-                .map(ToString::to_string)
-                .collect::<Vec<String>>()
-        };
-        assert_eq!(
-            output_path(&args("-flavor wasm -o out.wasm")),
-            p("out.wasm")
-        );
-        assert_eq!(output_path(&args("-oout.wasm")), p("out.wasm"));
-        assert_eq!(output_path(&args("--output out.wasm")), p("out.wasm"));
-        assert_eq!(output_path(&args("--output=out.wasm")), p("out.wasm"));
-        // The first spelling wins, matching lld, and a flag that merely starts
-        // the same way is not mistaken for it.
-        assert_eq!(output_path(&args("-o a.wasm -o b.wasm")), p("a.wasm"));
-        assert_eq!(output_path(&args("--no-entry --gc-sections")), None);
-    }
 }

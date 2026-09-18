@@ -36,18 +36,21 @@ cargo install soroban-lld
 Then in the contract's `.cargo/config.toml`:
 
 ```toml
-[env]
-SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2 = "1"
-
 [target.wasm32v1-none]
-linker = "soroban-lld"
+rustflags = ["-Clinker=soroban-lld"]
 ```
 
-The `[env]` entry tells the SDK that the build system shakes the spec, which it
-requires before it will build a contract at all. The `linker` entry is what makes
-that true.
+That is the whole setup. The SDK refuses to build a contract unless the build
+system shakes the spec, and it recognises this configuration by reading
+`CARGO_ENCODED_RUSTFLAGS`, which cargo reports to build scripts. So the
+requirement is satisfied by the configuration that carries it out, and there is
+nothing to keep in sync alongside it.
 
-With both in place, `cargo build --release --target wasm32v1-none` produces a
+Configuring the linker with `[target.<triple>] linker` instead also works, but
+cargo does not report a config file's `linker` key to build scripts, so the SDK
+cannot see it and the build fails the check. Use rustflags.
+
+With that in place, `cargo build --release --target wasm32v1-none` produces a
 contract whose spec names only what the contract uses — as does anything else
 that drives cargo, including `cargo test --target wasm32v1-none`, a container
 build, or another build system.

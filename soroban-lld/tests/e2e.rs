@@ -28,13 +28,17 @@ fn build(with_shim: bool) -> Vec<u8> {
     cmd.current_dir(fixture())
         .args(["build", "--release", "--target", TARGET])
         .env("CARGO_TARGET_DIR", &target_dir)
-        // The SDK refuses to build a contract unless the build system shakes
-        // the spec. Without the shim this is a lie, which is the point of the
-        // comparison: it shows what the SDK emits before anything shakes it.
-        .env(SHAKING_ENV, "1")
+        .env_remove(SHAKING_ENV)
         .env_remove(LINKER_ENV);
     if with_shim {
+        // Only the linker is configured. The SDK has to work out for itself
+        // that the spec will be shaken, so this asserts that detection too.
         cmd.env(LINKER_ENV, env!("CARGO_BIN_EXE_soroban-lld"));
+    } else {
+        // No shim, so claim the shaking the SDK demands without doing it. That
+        // is the point of the comparison: it shows what the SDK emits before
+        // anything has shaken it.
+        cmd.env(SHAKING_ENV, "1");
     }
 
     let out = cmd.output().expect("running cargo");
