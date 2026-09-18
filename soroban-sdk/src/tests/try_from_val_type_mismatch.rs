@@ -114,7 +114,12 @@ fn test_string() {
 fn test_bytes() {
     let env = Env::default();
     // Bytes converts from a bytes val of any length.
-    assert_with::<Bytes>(&env, BYTES);
+    assert_with::<Bytes>(
+        &env,
+        &[
+            "bytes32", "bytes48", "bytes64", "bytes96", "bytes128", "bytes192",
+        ],
+    );
 }
 
 #[test]
@@ -444,12 +449,6 @@ fn test_udt_error_enum() {
 
     assert_with::<UdtError>(&env, &["error"]);
 }
-
-/// The names of the [Val]s holding bytes, which are of the lengths that the
-/// SDK's fixed length types use.
-const BYTES: &[&str] = &[
-    "bytes32", "bytes48", "bytes64", "bytes96", "bytes128", "bytes192",
-];
 
 /// A [Val] of every type the host supports, each labelled with a name used by
 /// the tests to say which types are compatible with the type being converted
