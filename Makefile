@@ -35,10 +35,19 @@ build: build-libs build-test-wasms
 build-libs: fmt
 	cargo hack build --release $(foreach c,$(LIB_CRATES),--package $(c))
 
+# Cargo derives rustc's `-C metadata` from each package's version, and that
+# seeds every symbol hash. Fat LTO merges modules in an order taken from those
+# names, so bumping the workspace version reshuffles functions in the built
+# wasms, and so in tests-expanded, with no code change. This wrapper keeps the
+# metadata of workspace crates free of the version. See the script for detail.
+STABLE_METADATA = RUSTC_WRAPPER=$(CURDIR)/scripts/rustc-stable-metadata.sh \
+	WORKSPACE_ROOT=$(CURDIR)
+
 build-test-wasms: fmt
 	# Build the test wasms with MSRV by default, with some meta disabled for
 	# binary stability for tests.
 	SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2=1 \
+	$(STABLE_METADATA) \
 	RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
 	RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
 		cargo hack build --release --target wasm32v1-none $(foreach c,$(TEST_CRATES),--package $(c)) ; \
@@ -70,11 +79,13 @@ expand-tests: build-test-wasms
 			continue; \
 		fi; \
 		echo "Expanding $$package for linux target including tests"; \
+    $(STABLE_METADATA) \
     RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
       RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
       cargo expand --package $$package --tests --target x86_64-unknown-linux-gnu | rustfmt > tests-expanded/$${package}_tests.rs; \
 		echo "Expanding $$package for wasm32v1-none target without tests"; \
     SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2=1 \
+    $(STABLE_METADATA) \
     RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
       RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
 			cargo expand --package $$package --release --target wasm32v1-none | rustfmt > tests-expanded/$${package}_wasm32v1-none.rs; \
