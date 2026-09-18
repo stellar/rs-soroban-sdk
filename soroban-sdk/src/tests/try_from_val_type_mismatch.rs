@@ -17,13 +17,14 @@ use crate::{
     crypto::{
         bls12_381::{Bls12381Fp, Bls12381Fp2, Bls12381Fr, Bls12381G1Affine, Bls12381G2Affine},
         bn254::{Bn254Fp, Bn254Fr, Bn254G1Affine, Bn254G2Affine},
+        Hash,
     },
 };
 use soroban_sdk::{
     contracterror, contracttype, map, symbol_short,
     testutils::{Address as _, MuxedAddress as _},
     vec, Address, Bytes, BytesN, ConversionError, Duration, Env, Error, IntoVal, Map, MuxedAddress,
-    String, Symbol, Timepoint, TryFromVal, Val, Vec, I256, U256,
+    String, Symbol, Timepoint, TryFromVal, TryFromValForContractFn, Val, Vec, I256, U256,
 };
 
 #[test]
@@ -155,6 +156,30 @@ fn test_tuple_from_vec_of_other_len_panics() {
     // A tuple unpacks the same way a contract type tuple struct does, and so
     // the host traps on a vec of a different length.
     let _ = <(i32, i32)>::try_from_val(&env, &vec);
+}
+
+#[test]
+fn test_crypto_hash() {
+    let env = Env::default();
+
+    // Hash has no public TryFromVal, but a contract function converts the vals
+    // its caller supplies into it through TryFromValForContractFn, so that
+    // conversion is tested in the same way.
+    for (name, val) in vals(&env) {
+        let converted =
+            <Hash<32> as TryFromValForContractFn<Env, Val>>::try_from_val_for_contract_fn(
+                &env, &val,
+            )
+            .is_ok();
+        assert_eq!(
+            converted,
+            name == "bytes32",
+            "converting a {} val into Hash<32> {} but should {}",
+            name,
+            if converted { "succeeded" } else { "errored" },
+            if converted { "error" } else { "succeed" },
+        );
+    }
 }
 
 #[test]
