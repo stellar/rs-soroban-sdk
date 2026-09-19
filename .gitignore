@@ -12,3 +12,6 @@ soroban-sdk/test_snapshots/tests/contractimport_with_error/
 soroban-sdk/test_snapshots/tests/contract_executable_ref/
 soroban-sdk/test_snapshots/tests/proptest_scval_cmp
 tests/import_contract/test_snapshots/
+
+# Lockfile for the test fixture contract, which is its own workspace.
+soroban-lld/tests/fixtures/contract/Cargo.lock
