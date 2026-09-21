@@ -77,7 +77,7 @@ impl ::core::cmp::PartialEq for UsedParamStruct {
 impl UsedParamStruct {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedParamStruct"
+        "::test_spec_shaking::UsedParamStruct"
     }
 }
 #[doc(hidden)]
@@ -118,21 +118,6 @@ impl UsedParamStruct {
         );
     pub const fn spec_xdr() -> [u8; UsedParamStruct::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedParamStruct::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for UsedParamStruct {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <UsedNestedInStruct as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &UsedParamStruct::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedParamStruct {
@@ -244,7 +229,7 @@ impl ::core::cmp::PartialEq for UsedReturnEnum {
 impl UsedReturnEnum {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedReturnEnum"
+        "::test_spec_shaking::UsedReturnEnum"
     }
 }
 #[doc(hidden)]
@@ -285,21 +270,6 @@ impl UsedReturnEnum {
         );
     pub const fn spec_xdr() -> [u8; UsedReturnEnum::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedReturnEnum::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for UsedReturnEnum {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &UsedReturnEnum::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedReturnEnum {
@@ -429,7 +399,7 @@ impl ::core::cmp::PartialEq for UsedParamIntEnum {
 impl UsedParamIntEnum {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedParamIntEnum"
+        "::test_spec_shaking::UsedParamIntEnum"
     }
 }
 #[doc(hidden)]
@@ -462,19 +432,6 @@ impl UsedParamIntEnum {
         );
     pub const fn spec_xdr() -> [u8; UsedParamIntEnum::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedParamIntEnum::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for UsedParamIntEnum {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        {
-            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &UsedParamIntEnum::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedParamIntEnum {
@@ -563,7 +520,7 @@ impl ::core::cmp::PartialEq for UsedErrorEnum {
 impl UsedErrorEnum {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedErrorEnum"
+        "::test_spec_shaking::UsedErrorEnum"
     }
 }
 #[doc(hidden)]
@@ -760,7 +717,7 @@ impl ::core::cmp::PartialEq for UsedPanicErrorEnum {
 impl UsedPanicErrorEnum {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedPanicErrorEnum"
+        "::test_spec_shaking::UsedPanicErrorEnum"
     }
 }
 #[doc(hidden)]
@@ -946,7 +903,7 @@ impl ::core::cmp::PartialEq for UsedAssertErrorEnum {
 impl UsedAssertErrorEnum {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedAssertErrorEnum"
+        "::test_spec_shaking::UsedAssertErrorEnum"
     }
 }
 #[doc(hidden)]
@@ -1139,7 +1096,7 @@ impl ::core::cmp::PartialEq for UsedNestedInStruct {
 impl UsedNestedInStruct {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedNestedInStruct"
+        "::test_spec_shaking::UsedNestedInStruct"
     }
 }
 #[doc(hidden)]
@@ -1167,20 +1124,6 @@ impl UsedNestedInStruct {
         );
     pub const fn spec_xdr() -> [u8; UsedNestedInStruct::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedNestedInStruct::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for UsedNestedInStruct {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &UsedNestedInStruct::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedNestedInStruct {
@@ -1269,7 +1212,7 @@ impl ::core::cmp::PartialEq for UsedVecElement {
 impl UsedVecElement {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedVecElement"
+        "::test_spec_shaking::UsedVecElement"
     }
 }
 #[doc(hidden)]
@@ -1297,20 +1240,6 @@ impl UsedVecElement {
         );
     pub const fn spec_xdr() -> [u8; UsedVecElement::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedVecElement::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for UsedVecElement {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &UsedVecElement::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedVecElement {
@@ -1404,7 +1333,7 @@ impl ::core::cmp::PartialEq for UsedMapKey {
 impl UsedMapKey {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedMapKey"
+        "::test_spec_shaking::UsedMapKey"
     }
 }
 #[doc(hidden)]
@@ -1436,19 +1365,6 @@ impl UsedMapKey {
         );
     pub const fn spec_xdr() -> [u8; UsedMapKey::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedMapKey::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for UsedMapKey {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        {
-            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &UsedMapKey::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedMapKey {
@@ -1530,7 +1446,7 @@ impl ::core::cmp::PartialEq for UsedMapVal {
 impl UsedMapVal {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedMapVal"
+        "::test_spec_shaking::UsedMapVal"
     }
 }
 #[doc(hidden)]
@@ -1557,20 +1473,6 @@ impl UsedMapVal {
         );
     pub const fn spec_xdr() -> [u8; UsedMapVal::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedMapVal::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for UsedMapVal {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &UsedMapVal::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedMapVal {
@@ -1662,7 +1564,7 @@ impl ::core::cmp::PartialEq for UsedOptionElement {
 impl UsedOptionElement {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedOptionElement"
+        "::test_spec_shaking::UsedOptionElement"
     }
 }
 #[doc(hidden)]
@@ -1690,20 +1592,6 @@ impl UsedOptionElement {
         );
     pub const fn spec_xdr() -> [u8; UsedOptionElement::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedOptionElement::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for UsedOptionElement {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &UsedOptionElement::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedOptionElement {
@@ -1790,7 +1678,7 @@ impl ::core::cmp::PartialEq for UsedResultOk {
 impl UsedResultOk {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedResultOk"
+        "::test_spec_shaking::UsedResultOk"
     }
 }
 #[doc(hidden)]
@@ -1818,20 +1706,6 @@ impl UsedResultOk {
         );
     pub const fn spec_xdr() -> [u8; UsedResultOk::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedResultOk::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for UsedResultOk {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &UsedResultOk::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedResultOk {
@@ -1928,7 +1802,7 @@ impl ::core::cmp::PartialEq for UsedEventSimple {
 impl UsedEventSimple {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedEventSimple"
+        "::test_spec_shaking::UsedEventSimple"
     }
 }
 #[doc(hidden)]
@@ -1975,8 +1849,6 @@ impl soroban_sdk::SpecShakingMarker for UsedEventSimple {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
             static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
@@ -2057,7 +1929,7 @@ impl ::core::cmp::PartialEq for UsedEventTopicType {
 impl UsedEventTopicType {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedEventTopicType"
+        "::test_spec_shaking::UsedEventTopicType"
     }
 }
 #[doc(hidden)]
@@ -2092,19 +1964,6 @@ impl UsedEventTopicType {
         );
     pub const fn spec_xdr() -> [u8; UsedEventTopicType::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedEventTopicType::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for UsedEventTopicType {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        {
-            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &UsedEventTopicType::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventTopicType {
@@ -2198,7 +2057,7 @@ impl ::core::cmp::PartialEq for UsedEventWithTopicType {
 impl UsedEventWithTopicType {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedEventWithTopicType"
+        "::test_spec_shaking::UsedEventWithTopicType"
     }
 }
 #[doc(hidden)]
@@ -2251,8 +2110,6 @@ impl soroban_sdk::SpecShakingMarker for UsedEventWithTopicType {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <UsedEventTopicType as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
             static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
@@ -2338,7 +2195,7 @@ impl ::core::cmp::PartialEq for UsedEventDataType {
 impl UsedEventDataType {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedEventDataType"
+        "::test_spec_shaking::UsedEventDataType"
     }
 }
 #[doc(hidden)]
@@ -2371,21 +2228,6 @@ impl UsedEventDataType {
         );
     pub const fn spec_xdr() -> [u8; UsedEventDataType::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedEventDataType::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for UsedEventDataType {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &UsedEventDataType::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventDataType {
@@ -2488,7 +2330,7 @@ impl ::core::cmp::PartialEq for UsedEventWithDataType {
 impl UsedEventWithDataType {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedEventWithDataType"
+        "::test_spec_shaking::UsedEventWithDataType"
     }
 }
 #[doc(hidden)]
@@ -2541,8 +2383,6 @@ impl soroban_sdk::SpecShakingMarker for UsedEventWithDataType {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <UsedEventDataType as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
             static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
@@ -2624,7 +2464,7 @@ impl ::core::cmp::PartialEq for UsedEventTopicOuter {
 impl UsedEventTopicOuter {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedEventTopicOuter"
+        "::test_spec_shaking::UsedEventTopicOuter"
     }
 }
 #[doc(hidden)]
@@ -2658,20 +2498,6 @@ impl UsedEventTopicOuter {
         );
     pub const fn spec_xdr() -> [u8; UsedEventTopicOuter::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedEventTopicOuter::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for UsedEventTopicOuter {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <UsedEventTopicInner as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &UsedEventTopicOuter::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventTopicOuter {
@@ -2767,7 +2593,7 @@ impl ::core::cmp::PartialEq for UsedEventTopicInner {
 impl UsedEventTopicInner {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedEventTopicInner"
+        "::test_spec_shaking::UsedEventTopicInner"
     }
 }
 #[doc(hidden)]
@@ -2795,20 +2621,6 @@ impl UsedEventTopicInner {
         );
     pub const fn spec_xdr() -> [u8; UsedEventTopicInner::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedEventTopicInner::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for UsedEventTopicInner {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &UsedEventTopicInner::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventTopicInner {
@@ -2907,7 +2719,7 @@ impl ::core::cmp::PartialEq for UsedEventWithNestedTopic {
 impl UsedEventWithNestedTopic {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedEventWithNestedTopic"
+        "::test_spec_shaking::UsedEventWithNestedTopic"
     }
 }
 #[doc(hidden)]
@@ -2960,8 +2772,6 @@ impl soroban_sdk::SpecShakingMarker for UsedEventWithNestedTopic {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <UsedEventTopicOuter as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
             static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
@@ -3043,7 +2853,7 @@ impl ::core::cmp::PartialEq for UsedEventDataOuter {
 impl UsedEventDataOuter {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedEventDataOuter"
+        "::test_spec_shaking::UsedEventDataOuter"
     }
 }
 #[doc(hidden)]
@@ -3077,20 +2887,6 @@ impl UsedEventDataOuter {
         );
     pub const fn spec_xdr() -> [u8; UsedEventDataOuter::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedEventDataOuter::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for UsedEventDataOuter {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <UsedEventDataInner as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &UsedEventDataOuter::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventDataOuter {
@@ -3186,7 +2982,7 @@ impl ::core::cmp::PartialEq for UsedEventDataInner {
 impl UsedEventDataInner {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedEventDataInner"
+        "::test_spec_shaking::UsedEventDataInner"
     }
 }
 #[doc(hidden)]
@@ -3214,20 +3010,6 @@ impl UsedEventDataInner {
         );
     pub const fn spec_xdr() -> [u8; UsedEventDataInner::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedEventDataInner::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for UsedEventDataInner {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &UsedEventDataInner::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventDataInner {
@@ -3326,7 +3108,7 @@ impl ::core::cmp::PartialEq for UsedEventWithNestedData {
 impl UsedEventWithNestedData {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedEventWithNestedData"
+        "::test_spec_shaking::UsedEventWithNestedData"
     }
 }
 #[doc(hidden)]
@@ -3379,8 +3161,6 @@ impl soroban_sdk::SpecShakingMarker for UsedEventWithNestedData {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <UsedEventDataOuter as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
             static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
@@ -3464,7 +3244,7 @@ impl ::core::cmp::PartialEq for UsedRefTopicType {
 impl UsedRefTopicType {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedRefTopicType"
+        "::test_spec_shaking::UsedRefTopicType"
     }
 }
 #[doc(hidden)]
@@ -3497,19 +3277,6 @@ impl UsedRefTopicType {
         );
     pub const fn spec_xdr() -> [u8; UsedRefTopicType::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedRefTopicType::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for UsedRefTopicType {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        {
-            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &UsedRefTopicType::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRefTopicType {
@@ -3596,7 +3363,7 @@ impl ::core::cmp::PartialEq for UsedRefDataType {
 impl UsedRefDataType {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedRefDataType"
+        "::test_spec_shaking::UsedRefDataType"
     }
 }
 #[doc(hidden)]
@@ -3632,20 +3399,6 @@ impl UsedRefDataType {
         );
     pub const fn spec_xdr() -> [u8; UsedRefDataType::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedRefDataType::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for UsedRefDataType {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <UsedRefDataInner as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &UsedRefDataType::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRefDataType {
@@ -3734,7 +3487,7 @@ impl ::core::cmp::PartialEq for UsedRefDataInner {
 impl UsedRefDataInner {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedRefDataInner"
+        "::test_spec_shaking::UsedRefDataInner"
     }
 }
 #[doc(hidden)]
@@ -3762,20 +3515,6 @@ impl UsedRefDataInner {
         );
     pub const fn spec_xdr() -> [u8; UsedRefDataInner::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedRefDataInner::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for UsedRefDataInner {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &UsedRefDataInner::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRefDataInner {
@@ -3872,7 +3611,7 @@ impl<'a> ::core::cmp::PartialEq for UsedEventWithRefs<'a> {
 impl<'a> UsedEventWithRefs<'a> {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedEventWithRefs"
+        "::test_spec_shaking::UsedEventWithRefs"
     }
 }
 #[doc(hidden)]
@@ -3931,8 +3670,6 @@ impl<'a> soroban_sdk::SpecShakingMarker for UsedEventWithRefs<'a> {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <&'a UsedRefTopicType as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <&'a UsedRefDataType as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
             static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
@@ -4009,7 +3746,7 @@ impl ::core::cmp::PartialEq for UsedTupleElement {
 impl UsedTupleElement {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedTupleElement"
+        "::test_spec_shaking::UsedTupleElement"
     }
 }
 #[doc(hidden)]
@@ -4037,20 +3774,6 @@ impl UsedTupleElement {
         );
     pub const fn spec_xdr() -> [u8; UsedTupleElement::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedTupleElement::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for UsedTupleElement {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &UsedTupleElement::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedTupleElement {
@@ -4142,7 +3865,7 @@ impl ::core::cmp::PartialEq for UsedTupleReturnElement {
 impl UsedTupleReturnElement {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedTupleReturnElement"
+        "::test_spec_shaking::UsedTupleReturnElement"
     }
 }
 #[doc(hidden)]
@@ -4170,20 +3893,6 @@ impl UsedTupleReturnElement {
         );
     pub const fn spec_xdr() -> [u8; UsedTupleReturnElement::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedTupleReturnElement::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for UsedTupleReturnElement {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &UsedTupleReturnElement::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedTupleReturnElement {
@@ -4277,7 +3986,7 @@ impl ::core::cmp::PartialEq for UsedVecInnerVecElement {
 impl UsedVecInnerVecElement {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedVecInnerVecElement"
+        "::test_spec_shaking::UsedVecInnerVecElement"
     }
 }
 #[doc(hidden)]
@@ -4305,20 +4014,6 @@ impl UsedVecInnerVecElement {
         );
     pub const fn spec_xdr() -> [u8; UsedVecInnerVecElement::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedVecInnerVecElement::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for UsedVecInnerVecElement {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &UsedVecInnerVecElement::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedVecInnerVecElement {
@@ -4412,7 +4107,7 @@ impl ::core::cmp::PartialEq for UsedVecInnerElement {
 impl UsedVecInnerElement {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedVecInnerElement"
+        "::test_spec_shaking::UsedVecInnerElement"
     }
 }
 #[doc(hidden)]
@@ -4440,20 +4135,6 @@ impl UsedVecInnerElement {
         );
     pub const fn spec_xdr() -> [u8; UsedVecInnerElement::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedVecInnerElement::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for UsedVecInnerElement {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &UsedVecInnerElement::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedVecInnerElement {
@@ -4557,7 +4238,7 @@ impl ::core::cmp::PartialEq for UsedVecElementNested {
 impl UsedVecElementNested {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedVecElementNested"
+        "::test_spec_shaking::UsedVecElementNested"
     }
 }
 #[doc(hidden)]
@@ -4618,22 +4299,6 @@ impl UsedVecElementNested {
     });
     pub const fn spec_xdr() -> [u8; UsedVecElementNested::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedVecElementNested::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for UsedVecElementNested {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <UsedVecInnerElement as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Vec<UsedVecInnerVecElement> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &UsedVecElementNested::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedVecElementNested {
@@ -4736,7 +4401,7 @@ impl ::core::cmp::PartialEq for UsedNonPubStruct {
 impl UsedNonPubStruct {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedNonPubStruct"
+        "::test_spec_shaking::UsedNonPubStruct"
     }
 }
 #[doc(hidden)]
@@ -4764,20 +4429,6 @@ impl UsedNonPubStruct {
         );
     pub const fn spec_xdr() -> [u8; UsedNonPubStruct::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedNonPubStruct::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for UsedNonPubStruct {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &UsedNonPubStruct::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedNonPubStruct {
@@ -4862,7 +4513,7 @@ impl ::core::cmp::PartialEq for UsedNonPubError {
 impl UsedNonPubError {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedNonPubError"
+        "::test_spec_shaking::UsedNonPubError"
     }
 }
 #[doc(hidden)]
@@ -5053,7 +4704,7 @@ impl ::core::cmp::PartialEq for UsedRecursiveRoot {
 impl UsedRecursiveRoot {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedRecursiveRoot"
+        "::test_spec_shaking::UsedRecursiveRoot"
     }
 }
 #[doc(hidden)]
@@ -5087,20 +4738,6 @@ impl UsedRecursiveRoot {
         );
     pub const fn spec_xdr() -> [u8; UsedRecursiveRoot::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedRecursiveRoot::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for UsedRecursiveRoot {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <UsedRecursiveNode as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &UsedRecursiveRoot::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRecursiveRoot {
@@ -5214,7 +4851,7 @@ impl ::core::cmp::PartialEq for UsedRecursiveNode {
 impl UsedRecursiveNode {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedRecursiveNode"
+        "::test_spec_shaking::UsedRecursiveNode"
     }
 }
 #[doc(hidden)]
@@ -5270,21 +4907,6 @@ impl UsedRecursiveNode {
     });
     pub const fn spec_xdr() -> [u8; UsedRecursiveNode::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedRecursiveNode::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for UsedRecursiveNode {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <UsedLeaf as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <UsedRecursiveLeaf as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &UsedRecursiveNode::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRecursiveNode {
@@ -5412,7 +5034,7 @@ impl ::core::cmp::PartialEq for UsedRecursiveLeaf {
 impl UsedRecursiveLeaf {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedRecursiveLeaf"
+        "::test_spec_shaking::UsedRecursiveLeaf"
     }
 }
 #[doc(hidden)]
@@ -5451,20 +5073,6 @@ impl UsedRecursiveLeaf {
     });
     pub const fn spec_xdr() -> [u8; UsedRecursiveLeaf::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedRecursiveLeaf::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for UsedRecursiveLeaf {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <Vec<UsedRecursiveRoot> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &UsedRecursiveLeaf::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRecursiveLeaf {
@@ -5551,7 +5159,7 @@ impl ::core::cmp::PartialEq for UsedLeaf {
 impl UsedLeaf {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UsedLeaf"
+        "::test_spec_shaking::UsedLeaf"
     }
 }
 #[doc(hidden)]
@@ -5578,20 +5186,6 @@ impl UsedLeaf {
         );
     pub const fn spec_xdr() -> [u8; UsedLeaf::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedLeaf::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for UsedLeaf {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &UsedLeaf::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedLeaf {
@@ -5639,7 +5233,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedLeaf> for soroban_sdk::Val {
     }
 }
 mod wasm_imported {
-    pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01*\x07`\x02~~\x01~`\x03~~~\x01~`\x01~\x01~`\x00\x01~`\x02\x7f\x7f\x01~`\x04\x7f\x7f\x7f\x7f\x01~`\x02\x7f~\x00\x02+\x07\x01b\x01j\x00\x00\x01x\x011\x00\x00\x01m\x019\x00\x01\x01v\x01g\x00\x00\x01m\x01b\x00\x01\x01i\x012\x00\x02\x01i\x011\x00\x02\x03\x0c\x0b\x03\x04\x03\x02\x00\x05\x03\x00\x00\x06\x06\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x82\x80\xc0\x00\x0b\x7f\x00A\x80\x81\xc0\x00\x0b\x7f\x00A\x80\x81\xc0\x00\x0b\x07\x8e\x01\x0b\x06memory\x02\x00\tfn_enum_a\x00\x07\rfn_enum_int_a\x00\t\nfn_error_a\x00\n\nfn_event_a\x00\x0b\nfn_event_d\x00\r\x0bfn_struct_a\x00\x0e\x11fn_struct_tuple_a\x00\x0f\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\x9d\n\x0b\x95\x02\x03\x01\x7f\x01~\x03\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\x00-\x00\x82\x80\xc0\x80\x00\x1aB\x00!\x01A~!\x02\x03~\x02@\x02@\x02@\x02@\x02@ \x02E\r\x00A\x01!\x03 \x02A\x82\x80\xc0\x80\x00j-\x00\x00\"\x04A\xdf\x00F\r\x04 \x04APjA\xff\x01qA\nI\r\x02 \x04A\xbf\x7fjA\xff\x01qA\x1aI\r\x03\x02@ \x04A\x9f\x7fjA\xff\x01qA\x1aO\r\x00 \x04AEj!\x03\x0c\x05\x0b \x00 \x04\xadB\x08\x86B\x01\x847\x03\x00A\x80\x80\xc0\x80\x00\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x80\x80\x80\x80\x00!\x01\x0c\x01\x0b \x00 \x01B\x08\x86B\x0e\x84\"\x017\x02\x04\x0b \x00 \x017\x03\x00 \x00A\x01\x10\x88\x80\x80\x80\x00!\x01 \x00A\x10j$\x80\x80\x80\x80\x00 \x01\x0f\x0b \x04ARj!\x03\x0c\x01\x0b \x04AKj!\x03\x0b \x01B\x06\x86 \x03\xadB\xff\x01\x83\x84!\x01 \x02A\x01j!\x02\x0c\x00\x0b\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x83\x80\x80\x80\x00\x0b\x12\x00A\x00-\x00\xc8\x80\xc0\x80\x00\x1aB\x84\x80\x80\x800\x0b4\x00\x02@ \x00B\xff\x01\x83B\x04Q\r\x00\x00\x0bA\x00-\x00\x90\x80\xc0\x80\x00\x1aB\x83\x80\x80\x80  \x00B\x84\x80\x80\x80p\x83 \x00B\x80\x80\x80\x80\x10T\x1b\x0b\xe6\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcd\x00R\r\x00 \x01B\xff\x01\x83B\xc9\x00R\r\x00A\x00!\x03A\x00-\x00\x9e\x80\xc0\x80\x00\x1a \x02 \x007\x03\x08 \x02B\x8e\xcc\xc1\xfc\xac\xdd\xab\x017\x03\x00\x03@\x02@ \x03A\x10G\r\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02A\x10j \x03j \x02 \x03j)\x03\x007\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x02A\x10jA\x02\x10\x88\x80\x80\x80\x00!\x00 \x02 \x017\x03\x10 \x00A\xf8\x80\xc0\x80\x00A\x01 \x02A\x10jA\x01\x10\x8c\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x02A j$\x80\x80\x80\x80\x00B\x02\x0f\x0b \x02A\x10j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b\x00\x0b.\x00\x02@ \x01 \x03F\r\x00\x00\x0b \x00\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x84\x80\x80\x80\x00\x0b\x91\x01\x03\x01\x7f\x01~\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\x00-\x00\xac\x80\xc0\x80\x00\x1a \x00B\x8e\xd2\xc1\xfc\xac\xdd\xab\x017\x03\x00B\x02!\x01A\x01!\x02\x02@\x03@ \x02E\r\x01 \x02A\x7fj!\x02B\x8e\xd2\xc1\xfc\xac\xdd\xab\x01!\x01\x0c\x00\x0b\x0b \x00 \x017\x03\x08 \x00A\x08jA\x01\x10\x88\x80\x80\x80\x00A\x04A\x00 \x00A\x08jA\x00\x10\x8c\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\x93\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\x04R\r\x00A\x01A\x02A\x00 \x01\xa7A\xff\x01q\"\x03\x1b \x03A\x01F\x1b\"\x03A\x02F\r\x00A\x00-\x00\xba\x80\xc0\x80\x00\x1a \x02 \x03\xad7\x03\x08 \x02 \x00B\x84\x80\x80\x80p\x837\x03\x00A\xe8\x80\xc0\x80\x00\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x82\x80\x80\x80\x00!\x00 \x02A\x10j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b\xbc\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00 \x02A\x10j \x00\x10\x90\x80\x80\x80\x00\x02@ \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x90\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x01A\x00-\x00\xd6\x80\xc0\x80\x00\x1a \x02A\x10j \x00\x10\x91\x80\x80\x80\x00 \x02(\x02\x10\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x91\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02 \x02)\x03\x187\x03\x08 \x02 \x007\x03\x00 \x02A\x02\x10\x88\x80\x80\x80\x00!\x00 \x02A j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b]\x02\x01\x7f\x01~\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc1\x00F\r\x00\x02@ \x02A\x07F\r\x00B\x01!\x03B\x83\x90\x80\x80\x80\x01!\x01\x0c\x02\x0b \x01B\x08\x87!\x01B\x00!\x03\x0c\x01\x0bB\x00!\x03 \x01\x10\x85\x80\x80\x80\x00!\x01\x0b \x00 \x037\x03\x00 \x00 \x017\x03\x08\x0bF\x00\x02@\x02@ \x01B\x80\x80\x80\x80\x80\x80\x80\xc0\x00|B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x01B\x08\x86B\x07\x84!\x01\x0c\x01\x0b \x01\x10\x86\x80\x80\x80\x00!\x01\x0b \x00B\x007\x03\x00 \x00 \x017\x03\x08\x0b\x0b\x8a\x01\x01\x00A\x80\x80\xc0\x00\x0b\x80\x01V2SpEcV1\xd0\xb8\x01]\x84y\xb6dSpEcV1\x85\x7f\xb6\xb9\x91\x10\x9c\xffSpEcV1\xac\xa8\x19va(\xc2\x9fSpEcV1o\xca\xe6c\x7fC\x9a{SpEcV1\x19l\xe8\xa9\x81`\xe0\xa7SpEcV1W%d\x90-\x90\x96\xbdSpEcV1z\x0f\x15\xf0W\x04\xf5\xe8f1f2d\x00\x10\x00\x02\x00\x00\x00f\x00\x10\x00\x02\x00\x00\x00f\x00\x10\x00\x02\x00\x00\x00\x00\x8b/\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\tfn_enum_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x16::test_spec_lib::EnumA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_error_a\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05input\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd0\x00\x00\x00\x17::test_spec_lib::ErrorA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_event_a\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_event_d\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bfn_struct_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x18::test_spec_lib::StructA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rfn_enum_int_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x19::test_spec_lib::EnumIntA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11fn_struct_tuple_a\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x1d::test_spec_lib::StructTupleA\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00_Contract executable used for creating a new contract and used in\n`CreateContractHostFnContext`.\x00\x00\x00\x00\x00\x00\x00\x00!::soroban_sdk::ContractExecutable\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00xExecutable specified by the contract instance as a specific Wasm contract code entry identified by its Wasm sha256 hash.\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00_Executable reference via a persistent storage entry owned by this contract or another contract.\x00\x00\x00\x00\x0bExternalRef\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00$::soroban_sdk::ContractExecutableRef\x00\x00\x00\x01\x00\x00\x00\xc0Executable referenced via a persistent storage entry owned by a contract,\neither this contract or another contract.\n\nThe persistent storage entry owned by the `owner` has the `tag` as its key.\x00\x00\x00\x00\x00\x00\x00$::soroban_sdk::ContractExecutableRef\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x05owner\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x03tag\x00\x00\x00\x00\x10\x00\x00\x00\x02\x00\x00\x00\xe3Context of a single authorized call performed by an address.\n\nCustom account contracts that implement `__check_auth` special function\nreceive a list of `Context` values corresponding to all the calls that\nneed to be authorized.\x00\x00\x00\x00\x00\x00\x00\x00\x1c::soroban_sdk::auth::Context\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x14Contract invocation.\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00$::soroban_sdk::auth::ContractContext\x00\x00\x00\x01\x00\x00\x00=Contract that has a constructor with no arguments is created.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x000::soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x01\x00\x00\x00DContract that has a constructor with 1 or more arguments is created.\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00?::soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00\xbdAuthorization context of a single contract call.\n\nThis struct corresponds to a `require_auth_for_args` call for an address\nfrom `contract` function with `fn_name` name and `args` arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00$::soroban_sdk::auth::ContractContext\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08contract\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x07fn_name\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x008Value of contract node in InvokerContractAuthEntry tree.\x00\x00\x00\x00\x00\x00\x00*::soroban_sdk::auth::SubContractInvocation\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x07\xd0\x00\x00\x00$::soroban_sdk::auth::ContractContext\x00\x00\x00\x00\x00\x00\x00\x0fsub_invocations\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00-::soroban_sdk::auth::InvokerContractAuthEntry\x00\x00\x00\x00\x00\x00\x02\x00\x00\x01/A node in the tree of authorizations performed on behalf of the current\ncontract as invoker of the contracts deeper in the call stack.\n\nThis is used as an argument of `authorize_as_current_contract` host function.\n\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\ncurrent contract.\x00\x00\x00\x00\x00\x00\x00\x00-::soroban_sdk::auth::InvokerContractAuthEntry\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x12Invoke a contract.\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00*::soroban_sdk::auth::SubContractInvocation\x00\x00\x00\x00\x00\x01\x00\x00\x005Create a contract passing 0 arguments to constructor.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x000::soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x01\x00\x00\x00=Create a contract passing 0 or more arguments to constructor.\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00?::soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00vAuthorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\x00\x00\x00\x00\x00\x00\x00\x00\x000::soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00!::soroban_sdk::ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\xd6Authorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\nThis is the same as `CreateContractHostFnContext`, but also has\ncontract constructor arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00?::soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x10constructor_args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00!::soroban_sdk::ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\"::soroban_sdk::address::Executable\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStellarAsset\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Account\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x16::test_spec_lib::EnumA\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x16::test_spec_lib::EnumB\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x07\x00\x00\x00\x07\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x16::test_spec_lib::EnumC\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x18::test_spec_lib::StructA\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x1d::test_spec_lib::StructTupleA\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x17::test_spec_lib::ErrorA\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x17::test_spec_lib::ErrorB\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x0c\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x17::test_spec_lib::ErrorC\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00e\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00f\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x17::test_spec_lib::EventA\x00\x00\x00\x00\x01\x00\x00\x00\x07event_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x17::test_spec_lib::EventB\x00\x00\x00\x00\x01\x00\x00\x00\x07event_b\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x17::test_spec_lib::EventC\x00\x00\x00\x00\x01\x00\x00\x00\x07event_c\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x17::test_spec_lib::EventD\x00\x00\x00\x00\x01\x00\x00\x00\x07event_d\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x18::test_spec_lib::StructA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x18::test_spec_lib::StructB\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x18::test_spec_lib::StructC\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x03\xea\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x19::test_spec_lib::EnumIntA\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x19::test_spec_lib::EnumIntB\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x19::test_spec_lib::EnumIntC\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\xc8\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x01,\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1d::test_spec_lib::StructTupleA\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1d::test_spec_lib::StructTupleB\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1d::test_spec_lib::StructTupleC\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x0b\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1d\x00\x00\x00\x00\x00O\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12rssdk_spec_shaking\x00\x00\x00\x00\x00\x012\x00\x00\x00";
+    pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01*\x07`\x02~~\x01~`\x03~~~\x01~`\x01~\x01~`\x00\x01~`\x02\x7f\x7f\x01~`\x04\x7f\x7f\x7f\x7f\x01~`\x02\x7f~\x00\x02+\x07\x01b\x01j\x00\x00\x01x\x011\x00\x00\x01m\x019\x00\x01\x01v\x01g\x00\x00\x01m\x01b\x00\x01\x01i\x012\x00\x02\x01i\x011\x00\x02\x03\x0c\x0b\x03\x04\x03\x02\x00\x05\x03\x00\x00\x06\x06\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x82\x80\xc0\x00\x0b\x7f\x00A\xbc\x80\xc0\x00\x0b\x7f\x00A\xc0\x80\xc0\x00\x0b\x07\x8e\x01\x0b\x06memory\x02\x00\tfn_enum_a\x00\x07\rfn_enum_int_a\x00\t\nfn_error_a\x00\n\nfn_event_a\x00\x0b\nfn_event_d\x00\r\x0bfn_struct_a\x00\x0e\x11fn_struct_tuple_a\x00\x0f\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\xeb\t\x0b\x8b\x02\x03\x01\x7f\x01~\x03\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00B\x00!\x01A~!\x02\x03~\x02@\x02@\x02@\x02@\x02@ \x02E\r\x00A\x01!\x03 \x02A\x82\x80\xc0\x80\x00j-\x00\x00\"\x04A\xdf\x00F\r\x04 \x04APjA\xff\x01qA\nI\r\x02 \x04A\xbf\x7fjA\xff\x01qA\x1aI\r\x03\x02@ \x04A\x9f\x7fjA\xff\x01qA\x1aO\r\x00 \x04AEj!\x03\x0c\x05\x0b \x00 \x04\xadB\x08\x86B\x01\x847\x03\x00A\x80\x80\xc0\x80\x00\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x80\x80\x80\x80\x00!\x01\x0c\x01\x0b \x00 \x01B\x08\x86B\x0e\x84\"\x017\x02\x04\x0b \x00 \x017\x03\x00 \x00A\x01\x10\x88\x80\x80\x80\x00!\x01 \x00A\x10j$\x80\x80\x80\x80\x00 \x01\x0f\x0b \x04ARj!\x03\x0c\x01\x0b \x04AKj!\x03\x0b \x01B\x06\x86 \x03\xadB\xff\x01\x83\x84!\x01 \x02A\x01j!\x02\x0c\x00\x0b\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x83\x80\x80\x80\x00\x0b\x08\x00B\x84\x80\x80\x800\x0b*\x00\x02@ \x00B\xff\x01\x83B\x04Q\r\x00\x00\x0bB\x83\x80\x80\x80  \x00B\x84\x80\x80\x80p\x83 \x00B\x80\x80\x80\x80\x10T\x1b\x0b\xe6\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcd\x00R\r\x00 \x01B\xff\x01\x83B\xc9\x00R\r\x00A\x00!\x03A\x00-\x00\x82\x80\xc0\x80\x00\x1a \x02 \x007\x03\x08 \x02B\x8e\xcc\xc1\xfc\xac\xdd\xab\x017\x03\x00\x03@\x02@ \x03A\x10G\r\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02A\x10j \x03j \x02 \x03j)\x03\x007\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x02A\x10jA\x02\x10\x88\x80\x80\x80\x00!\x00 \x02 \x017\x03\x10 \x00A\xb4\x80\xc0\x80\x00A\x01 \x02A\x10jA\x01\x10\x8c\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x02A j$\x80\x80\x80\x80\x00B\x02\x0f\x0b \x02A\x10j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b\x00\x0b.\x00\x02@ \x01 \x03F\r\x00\x00\x0b \x00\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x84\x80\x80\x80\x00\x0b\x91\x01\x03\x01\x7f\x01~\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\x00-\x00\x90\x80\xc0\x80\x00\x1a \x00B\x8e\xd2\xc1\xfc\xac\xdd\xab\x017\x03\x00B\x02!\x01A\x01!\x02\x02@\x03@ \x02E\r\x01 \x02A\x7fj!\x02B\x8e\xd2\xc1\xfc\xac\xdd\xab\x01!\x01\x0c\x00\x0b\x0b \x00 \x017\x03\x08 \x00A\x08jA\x01\x10\x88\x80\x80\x80\x00A\x04A\x00 \x00A\x08jA\x00\x10\x8c\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\x89\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\x04R\r\x00A\x01A\x02A\x00 \x01\xa7A\xff\x01q\"\x03\x1b \x03A\x01F\x1b\"\x03A\x02F\r\x00 \x02 \x03\xad7\x03\x08 \x02 \x00B\x84\x80\x80\x80p\x837\x03\x00A\xa4\x80\xc0\x80\x00\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x82\x80\x80\x80\x00!\x00 \x02A\x10j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b\xb2\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00 \x02A\x10j \x00\x10\x90\x80\x80\x80\x00\x02@ \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x90\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x01 \x02A\x10j \x00\x10\x91\x80\x80\x80\x00 \x02(\x02\x10\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x91\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02 \x02)\x03\x187\x03\x08 \x02 \x007\x03\x00 \x02A\x02\x10\x88\x80\x80\x80\x00!\x00 \x02A j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b]\x02\x01\x7f\x01~\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc1\x00F\r\x00\x02@ \x02A\x07F\r\x00B\x01!\x03B\x83\x90\x80\x80\x80\x01!\x01\x0c\x02\x0b \x01B\x08\x87!\x01B\x00!\x03\x0c\x01\x0bB\x00!\x03 \x01\x10\x85\x80\x80\x80\x00!\x01\x0b \x00 \x037\x03\x00 \x00 \x017\x03\x08\x0bF\x00\x02@\x02@ \x01B\x80\x80\x80\x80\x80\x80\x80\xc0\x00|B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x01B\x08\x86B\x07\x84!\x01\x0c\x01\x0b \x01\x10\x86\x80\x80\x80\x00!\x01\x0b \x00B\x007\x03\x00 \x00 \x017\x03\x08\x0b\x0bE\x01\x00A\x80\x80\xc0\x00\x0b<V2SpEcV1\xac\xa8\x19va(\xc2\x9fSpEcV1o\xca\xe6c\x7fC\x9a{f1f2\x00\x00\x1e\x00\x10\x00\x02\x00\x00\x00 \x00\x10\x00\x02\x00\x00\x00 \x00\x10\x00\x02\x00\x00\x00\x00\x8b/\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\tfn_enum_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x16::test_spec_lib::EnumA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_error_a\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05input\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd0\x00\x00\x00\x17::test_spec_lib::ErrorA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_event_a\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_event_d\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bfn_struct_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x18::test_spec_lib::StructA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rfn_enum_int_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x19::test_spec_lib::EnumIntA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11fn_struct_tuple_a\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x1d::test_spec_lib::StructTupleA\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00_Contract executable used for creating a new contract and used in\n`CreateContractHostFnContext`.\x00\x00\x00\x00\x00\x00\x00\x00!::soroban_sdk::ContractExecutable\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00xExecutable specified by the contract instance as a specific Wasm contract code entry identified by its Wasm sha256 hash.\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00_Executable reference via a persistent storage entry owned by this contract or another contract.\x00\x00\x00\x00\x0bExternalRef\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00$::soroban_sdk::ContractExecutableRef\x00\x00\x00\x01\x00\x00\x00\xc0Executable referenced via a persistent storage entry owned by a contract,\neither this contract or another contract.\n\nThe persistent storage entry owned by the `owner` has the `tag` as its key.\x00\x00\x00\x00\x00\x00\x00$::soroban_sdk::ContractExecutableRef\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x05owner\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x03tag\x00\x00\x00\x00\x10\x00\x00\x00\x02\x00\x00\x00\xe3Context of a single authorized call performed by an address.\n\nCustom account contracts that implement `__check_auth` special function\nreceive a list of `Context` values corresponding to all the calls that\nneed to be authorized.\x00\x00\x00\x00\x00\x00\x00\x00\x1c::soroban_sdk::auth::Context\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x14Contract invocation.\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00$::soroban_sdk::auth::ContractContext\x00\x00\x00\x01\x00\x00\x00=Contract that has a constructor with no arguments is created.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x000::soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x01\x00\x00\x00DContract that has a constructor with 1 or more arguments is created.\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00?::soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00\xbdAuthorization context of a single contract call.\n\nThis struct corresponds to a `require_auth_for_args` call for an address\nfrom `contract` function with `fn_name` name and `args` arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00$::soroban_sdk::auth::ContractContext\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08contract\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x07fn_name\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x008Value of contract node in InvokerContractAuthEntry tree.\x00\x00\x00\x00\x00\x00\x00*::soroban_sdk::auth::SubContractInvocation\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x07\xd0\x00\x00\x00$::soroban_sdk::auth::ContractContext\x00\x00\x00\x00\x00\x00\x00\x0fsub_invocations\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00-::soroban_sdk::auth::InvokerContractAuthEntry\x00\x00\x00\x00\x00\x00\x02\x00\x00\x01/A node in the tree of authorizations performed on behalf of the current\ncontract as invoker of the contracts deeper in the call stack.\n\nThis is used as an argument of `authorize_as_current_contract` host function.\n\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\ncurrent contract.\x00\x00\x00\x00\x00\x00\x00\x00-::soroban_sdk::auth::InvokerContractAuthEntry\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x12Invoke a contract.\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00*::soroban_sdk::auth::SubContractInvocation\x00\x00\x00\x00\x00\x01\x00\x00\x005Create a contract passing 0 arguments to constructor.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x000::soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x01\x00\x00\x00=Create a contract passing 0 or more arguments to constructor.\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00?::soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00vAuthorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\x00\x00\x00\x00\x00\x00\x00\x00\x000::soroban_sdk::auth::CreateContractHostFnContext\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00!::soroban_sdk::ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\xd6Authorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\nThis is the same as `CreateContractHostFnContext`, but also has\ncontract constructor arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00?::soroban_sdk::auth::CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x10constructor_args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00!::soroban_sdk::ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\"::soroban_sdk::address::Executable\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStellarAsset\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Account\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x16::test_spec_lib::EnumA\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x16::test_spec_lib::EnumB\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x07\x00\x00\x00\x07\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x16::test_spec_lib::EnumC\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x18::test_spec_lib::StructA\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x1d::test_spec_lib::StructTupleA\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x17::test_spec_lib::ErrorA\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x17::test_spec_lib::ErrorB\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x0c\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x17::test_spec_lib::ErrorC\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00e\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00f\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x17::test_spec_lib::EventA\x00\x00\x00\x00\x01\x00\x00\x00\x07event_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x17::test_spec_lib::EventB\x00\x00\x00\x00\x01\x00\x00\x00\x07event_b\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x17::test_spec_lib::EventC\x00\x00\x00\x00\x01\x00\x00\x00\x07event_c\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x17::test_spec_lib::EventD\x00\x00\x00\x00\x01\x00\x00\x00\x07event_d\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x18::test_spec_lib::StructA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x18::test_spec_lib::StructB\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x18::test_spec_lib::StructC\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x03\xea\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x19::test_spec_lib::EnumIntA\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x19::test_spec_lib::EnumIntB\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x19::test_spec_lib::EnumIntC\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\xc8\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x01,\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1d::test_spec_lib::StructTupleA\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1d::test_spec_lib::StructTupleB\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1d::test_spec_lib::StructTupleC\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x0b\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1d\x00\x00\x00\x00\x00O\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12rssdk_spec_shaking\x00\x00\x00\x00\x00\x013\x00\x00\x00";
     pub trait Contract {
         fn fn_enum_a(env: soroban_sdk::Env) -> EnumA;
         fn fn_error_a(env: soroban_sdk::Env, input: u32) -> Result<u32, ErrorA>;
@@ -6003,7 +5597,7 @@ mod wasm_imported {
     impl ContractExecutableRef {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v2::wasm_imported::ContractExecutableRef"
+            "::test_spec_shaking::wasm_imported::ContractExecutableRef"
         }
     }
     #[doc(hidden)]
@@ -6040,20 +5634,6 @@ mod wasm_imported {
             );
         pub const fn spec_xdr() -> [u8; ContractExecutableRef::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { ContractExecutableRef::__SPEC_XDR_ENTRY.const_to_xdr() }
-        }
-    }
-    impl soroban_sdk::SpecShakingMarker for ContractExecutableRef {
-        #[doc(hidden)]
-        #[inline(always)]
-        fn spec_shaking_marker() {
-            <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <soroban_sdk::String as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            {
-                static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &ContractExecutableRef::spec_xdr(),
-                );
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-            }
         }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ContractExecutableRef {
@@ -6204,7 +5784,7 @@ mod wasm_imported {
     impl ContractContext {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v2::wasm_imported::ContractContext"
+            "::test_spec_shaking::wasm_imported::ContractContext"
         }
     }
     #[doc(hidden)]
@@ -6252,23 +5832,6 @@ mod wasm_imported {
             );
         pub const fn spec_xdr() -> [u8; ContractContext::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { ContractContext::__SPEC_XDR_ENTRY.const_to_xdr() }
-        }
-    }
-    impl soroban_sdk::SpecShakingMarker for ContractContext {
-        #[doc(hidden)]
-        #[inline(always)]
-        fn spec_shaking_marker() {
-            <soroban_sdk::Vec<
-                soroban_sdk::Val,
-            > as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <soroban_sdk::Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            {
-                static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &ContractContext::spec_xdr(),
-                );
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-            }
         }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ContractContext {
@@ -6411,7 +5974,7 @@ mod wasm_imported {
     impl SubContractInvocation {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v2::wasm_imported::SubContractInvocation"
+            "::test_spec_shaking::wasm_imported::SubContractInvocation"
         }
     }
     #[doc(hidden)]
@@ -6463,22 +6026,6 @@ mod wasm_imported {
         });
         pub const fn spec_xdr() -> [u8; SubContractInvocation::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { SubContractInvocation::__SPEC_XDR_ENTRY.const_to_xdr() }
-        }
-    }
-    impl soroban_sdk::SpecShakingMarker for SubContractInvocation {
-        #[doc(hidden)]
-        #[inline(always)]
-        fn spec_shaking_marker() {
-            <ContractContext as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <soroban_sdk::Vec<
-                InvokerContractAuthEntry,
-            > as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            {
-                static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &SubContractInvocation::spec_xdr(),
-                );
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-            }
         }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for SubContractInvocation {
@@ -6612,7 +6159,7 @@ mod wasm_imported {
     impl CreateContractHostFnContext {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v2::wasm_imported::CreateContractHostFnContext"
+            "::test_spec_shaking::wasm_imported::CreateContractHostFnContext"
         }
     }
     #[doc(hidden)]
@@ -6658,20 +6205,6 @@ mod wasm_imported {
         pub const fn spec_xdr(
         ) -> [u8; CreateContractHostFnContext::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { CreateContractHostFnContext::__SPEC_XDR_ENTRY.const_to_xdr() }
-        }
-    }
-    impl soroban_sdk::SpecShakingMarker for CreateContractHostFnContext {
-        #[doc(hidden)]
-        #[inline(always)]
-        fn spec_shaking_marker() {
-            <ContractExecutable as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <soroban_sdk::BytesN<32> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            {
-                static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &CreateContractHostFnContext::spec_xdr(),
-                );
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-            }
         }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for CreateContractHostFnContext {
@@ -6827,7 +6360,7 @@ mod wasm_imported {
     impl CreateContractWithConstructorHostFnContext {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v2::wasm_imported::CreateContractWithConstructorHostFnContext"
+            "::test_spec_shaking::wasm_imported::CreateContractWithConstructorHostFnContext"
         }
     }
     #[doc(hidden)]
@@ -6886,23 +6419,6 @@ mod wasm_imported {
         ) -> [u8; CreateContractWithConstructorHostFnContext::__SPEC_XDR_ENTRY.const_xdr_len()]
         {
             const { CreateContractWithConstructorHostFnContext::__SPEC_XDR_ENTRY.const_to_xdr() }
-        }
-    }
-    impl soroban_sdk::SpecShakingMarker for CreateContractWithConstructorHostFnContext {
-        #[doc(hidden)]
-        #[inline(always)]
-        fn spec_shaking_marker() {
-            <soroban_sdk::Vec<
-                soroban_sdk::Val,
-            > as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <ContractExecutable as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <soroban_sdk::BytesN<32> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            {
-                static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &CreateContractWithConstructorHostFnContext::spec_xdr(),
-                );
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-            }
         }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>
@@ -7039,7 +6555,7 @@ mod wasm_imported {
     impl StructA {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v2::wasm_imported::StructA"
+            "::test_spec_shaking::wasm_imported::StructA"
         }
     }
     #[doc(hidden)]
@@ -7075,20 +6591,6 @@ mod wasm_imported {
             );
         pub const fn spec_xdr() -> [u8; StructA::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { StructA::__SPEC_XDR_ENTRY.const_to_xdr() }
-        }
-    }
-    impl soroban_sdk::SpecShakingMarker for StructA {
-        #[doc(hidden)]
-        #[inline(always)]
-        fn spec_shaking_marker() {
-            <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <bool as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            {
-                static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &StructA::spec_xdr(),
-                );
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-            }
         }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructA {
@@ -7208,7 +6710,7 @@ mod wasm_imported {
     impl StructB {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v2::wasm_imported::StructB"
+            "::test_spec_shaking::wasm_imported::StructB"
         }
     }
     #[doc(hidden)]
@@ -7244,20 +6746,6 @@ mod wasm_imported {
             );
         pub const fn spec_xdr() -> [u8; StructB::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { StructB::__SPEC_XDR_ENTRY.const_to_xdr() }
-        }
-    }
-    impl soroban_sdk::SpecShakingMarker for StructB {
-        #[doc(hidden)]
-        #[inline(always)]
-        fn spec_shaking_marker() {
-            <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <soroban_sdk::String as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            {
-                static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &StructB::spec_xdr(),
-                );
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-            }
         }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructB {
@@ -7377,7 +6865,7 @@ mod wasm_imported {
     impl StructC {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v2::wasm_imported::StructC"
+            "::test_spec_shaking::wasm_imported::StructC"
         }
     }
     #[doc(hidden)]
@@ -7417,20 +6905,6 @@ mod wasm_imported {
             );
         pub const fn spec_xdr() -> [u8; StructC::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { StructC::__SPEC_XDR_ENTRY.const_to_xdr() }
-        }
-    }
-    impl soroban_sdk::SpecShakingMarker for StructC {
-        #[doc(hidden)]
-        #[inline(always)]
-        fn spec_shaking_marker() {
-            <soroban_sdk::Vec<u32> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            {
-                static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &StructC::spec_xdr(),
-                );
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-            }
         }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructC {
@@ -7547,7 +7021,7 @@ mod wasm_imported {
     impl StructTupleA {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v2::wasm_imported::StructTupleA"
+            "::test_spec_shaking::wasm_imported::StructTupleA"
         }
     }
     #[doc(hidden)]
@@ -7580,20 +7054,6 @@ mod wasm_imported {
             );
         pub const fn spec_xdr() -> [u8; StructTupleA::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { StructTupleA::__SPEC_XDR_ENTRY.const_to_xdr() }
-        }
-    }
-    impl soroban_sdk::SpecShakingMarker for StructTupleA {
-        #[doc(hidden)]
-        #[inline(always)]
-        fn spec_shaking_marker() {
-            <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            {
-                static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &StructTupleA::spec_xdr(),
-                );
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-            }
         }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleA {
@@ -7706,7 +7166,7 @@ mod wasm_imported {
     impl StructTupleB {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v2::wasm_imported::StructTupleB"
+            "::test_spec_shaking::wasm_imported::StructTupleB"
         }
     }
     #[doc(hidden)]
@@ -7739,20 +7199,6 @@ mod wasm_imported {
             );
         pub const fn spec_xdr() -> [u8; StructTupleB::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { StructTupleB::__SPEC_XDR_ENTRY.const_to_xdr() }
-        }
-    }
-    impl soroban_sdk::SpecShakingMarker for StructTupleB {
-        #[doc(hidden)]
-        #[inline(always)]
-        fn spec_shaking_marker() {
-            <u128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <u128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            {
-                static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &StructTupleB::spec_xdr(),
-                );
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-            }
         }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleB {
@@ -7866,7 +7312,7 @@ mod wasm_imported {
     impl StructTupleC {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v2::wasm_imported::StructTupleC"
+            "::test_spec_shaking::wasm_imported::StructTupleC"
         }
     }
     #[doc(hidden)]
@@ -7899,20 +7345,6 @@ mod wasm_imported {
             );
         pub const fn spec_xdr() -> [u8; StructTupleC::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { StructTupleC::__SPEC_XDR_ENTRY.const_to_xdr() }
-        }
-    }
-    impl soroban_sdk::SpecShakingMarker for StructTupleC {
-        #[doc(hidden)]
-        #[inline(always)]
-        fn spec_shaking_marker() {
-            <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            {
-                static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &StructTupleC::spec_xdr(),
-                );
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-            }
         }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleC {
@@ -8069,7 +7501,7 @@ mod wasm_imported {
     impl ContractExecutable {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v2::wasm_imported::ContractExecutable"
+            "::test_spec_shaking::wasm_imported::ContractExecutable"
         }
     }
     #[doc(hidden)]
@@ -8123,20 +7555,6 @@ mod wasm_imported {
         });
         pub const fn spec_xdr() -> [u8; ContractExecutable::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { ContractExecutable::__SPEC_XDR_ENTRY.const_to_xdr() }
-        }
-    }
-    impl soroban_sdk::SpecShakingMarker for ContractExecutable {
-        #[doc(hidden)]
-        #[inline(always)]
-        fn spec_shaking_marker() {
-            <soroban_sdk::BytesN<32> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <ContractExecutableRef as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            {
-                static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &ContractExecutable::spec_xdr(),
-                );
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-            }
         }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ContractExecutable {
@@ -8355,7 +7773,7 @@ mod wasm_imported {
     impl Context {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v2::wasm_imported::Context"
+            "::test_spec_shaking::wasm_imported::Context"
         }
     }
     #[doc(hidden)]
@@ -8427,21 +7845,6 @@ mod wasm_imported {
         });
         pub const fn spec_xdr() -> [u8; Context::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { Context::__SPEC_XDR_ENTRY.const_to_xdr() }
-        }
-    }
-    impl soroban_sdk::SpecShakingMarker for Context {
-        #[doc(hidden)]
-        #[inline(always)]
-        fn spec_shaking_marker() {
-            <ContractContext as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <CreateContractHostFnContext as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            {
-                static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &Context::spec_xdr(),
-                );
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-            }
         }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Context {
@@ -8690,7 +8093,7 @@ mod wasm_imported {
     impl InvokerContractAuthEntry {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v2::wasm_imported::InvokerContractAuthEntry"
+            "::test_spec_shaking::wasm_imported::InvokerContractAuthEntry"
         }
     }
     #[doc(hidden)]
@@ -8764,21 +8167,6 @@ mod wasm_imported {
         pub const fn spec_xdr() -> [u8; InvokerContractAuthEntry::__SPEC_XDR_ENTRY.const_xdr_len()]
         {
             const { InvokerContractAuthEntry::__SPEC_XDR_ENTRY.const_to_xdr() }
-        }
-    }
-    impl soroban_sdk::SpecShakingMarker for InvokerContractAuthEntry {
-        #[doc(hidden)]
-        #[inline(always)]
-        fn spec_shaking_marker() {
-            <SubContractInvocation as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <CreateContractHostFnContext as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            {
-                static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &InvokerContractAuthEntry::spec_xdr(),
-                );
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-            }
         }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for InvokerContractAuthEntry {
@@ -8977,7 +8365,7 @@ mod wasm_imported {
     impl Executable {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v2::wasm_imported::Executable"
+            "::test_spec_shaking::wasm_imported::Executable"
         }
     }
     #[doc(hidden)]
@@ -9034,19 +8422,6 @@ mod wasm_imported {
             );
         pub const fn spec_xdr() -> [u8; Executable::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { Executable::__SPEC_XDR_ENTRY.const_to_xdr() }
-        }
-    }
-    impl soroban_sdk::SpecShakingMarker for Executable {
-        #[doc(hidden)]
-        #[inline(always)]
-        fn spec_shaking_marker() {
-            <soroban_sdk::BytesN<32> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            {
-                static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &Executable::spec_xdr(),
-                );
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-            }
         }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Executable {
@@ -9204,7 +8579,7 @@ mod wasm_imported {
     impl EnumA {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v2::wasm_imported::EnumA"
+            "::test_spec_shaking::wasm_imported::EnumA"
         }
     }
     #[doc(hidden)]
@@ -9256,18 +8631,6 @@ mod wasm_imported {
             );
         pub const fn spec_xdr() -> [u8; EnumA::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { EnumA::__SPEC_XDR_ENTRY.const_to_xdr() }
-        }
-    }
-    impl soroban_sdk::SpecShakingMarker for EnumA {
-        #[doc(hidden)]
-        #[inline(always)]
-        fn spec_shaking_marker() {
-            {
-                static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &EnumA::spec_xdr(),
-                );
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-            }
         }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumA {
@@ -9461,7 +8824,7 @@ mod wasm_imported {
     impl EnumB {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v2::wasm_imported::EnumB"
+            "::test_spec_shaking::wasm_imported::EnumB"
         }
     }
     #[doc(hidden)]
@@ -9520,19 +8883,6 @@ mod wasm_imported {
             );
         pub const fn spec_xdr() -> [u8; EnumB::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { EnumB::__SPEC_XDR_ENTRY.const_to_xdr() }
-        }
-    }
-    impl soroban_sdk::SpecShakingMarker for EnumB {
-        #[doc(hidden)]
-        #[inline(always)]
-        fn spec_shaking_marker() {
-            <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            {
-                static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &EnumB::spec_xdr(),
-                );
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-            }
         }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumB {
@@ -9728,7 +9078,7 @@ mod wasm_imported {
     impl EnumC {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v2::wasm_imported::EnumC"
+            "::test_spec_shaking::wasm_imported::EnumC"
         }
     }
     #[doc(hidden)]
@@ -9791,20 +9141,6 @@ mod wasm_imported {
         });
         pub const fn spec_xdr() -> [u8; EnumC::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { EnumC::__SPEC_XDR_ENTRY.const_to_xdr() }
-        }
-    }
-    impl soroban_sdk::SpecShakingMarker for EnumC {
-        #[doc(hidden)]
-        #[inline(always)]
-        fn spec_shaking_marker() {
-            <StructA as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <StructTupleA as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            {
-                static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &EnumC::spec_xdr(),
-                );
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-            }
         }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumC {
@@ -9966,7 +9302,7 @@ mod wasm_imported {
     impl EnumIntA {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v2::wasm_imported::EnumIntA"
+            "::test_spec_shaking::wasm_imported::EnumIntA"
         }
     }
     #[doc(hidden)]
@@ -10009,18 +9345,6 @@ mod wasm_imported {
             );
         pub const fn spec_xdr() -> [u8; EnumIntA::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { EnumIntA::__SPEC_XDR_ENTRY.const_to_xdr() }
-        }
-    }
-    impl soroban_sdk::SpecShakingMarker for EnumIntA {
-        #[doc(hidden)]
-        #[inline(always)]
-        fn spec_shaking_marker() {
-            {
-                static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &EnumIntA::spec_xdr(),
-                );
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-            }
         }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntA {
@@ -10131,7 +9455,7 @@ mod wasm_imported {
     impl EnumIntB {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v2::wasm_imported::EnumIntB"
+            "::test_spec_shaking::wasm_imported::EnumIntB"
         }
     }
     #[doc(hidden)]
@@ -10174,18 +9498,6 @@ mod wasm_imported {
             );
         pub const fn spec_xdr() -> [u8; EnumIntB::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { EnumIntB::__SPEC_XDR_ENTRY.const_to_xdr() }
-        }
-    }
-    impl soroban_sdk::SpecShakingMarker for EnumIntB {
-        #[doc(hidden)]
-        #[inline(always)]
-        fn spec_shaking_marker() {
-            {
-                static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &EnumIntB::spec_xdr(),
-                );
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-            }
         }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntB {
@@ -10296,7 +9608,7 @@ mod wasm_imported {
     impl EnumIntC {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v2::wasm_imported::EnumIntC"
+            "::test_spec_shaking::wasm_imported::EnumIntC"
         }
     }
     #[doc(hidden)]
@@ -10339,18 +9651,6 @@ mod wasm_imported {
             );
         pub const fn spec_xdr() -> [u8; EnumIntC::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { EnumIntC::__SPEC_XDR_ENTRY.const_to_xdr() }
-        }
-    }
-    impl soroban_sdk::SpecShakingMarker for EnumIntC {
-        #[doc(hidden)]
-        #[inline(always)]
-        fn spec_shaking_marker() {
-            {
-                static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &EnumIntC::spec_xdr(),
-                );
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-            }
         }
     }
     impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntC {
@@ -10461,7 +9761,7 @@ mod wasm_imported {
     impl ErrorA {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v2::wasm_imported::ErrorA"
+            "::test_spec_shaking::wasm_imported::ErrorA"
         }
     }
     #[doc(hidden)]
@@ -10696,7 +9996,7 @@ mod wasm_imported {
     impl ErrorB {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v2::wasm_imported::ErrorB"
+            "::test_spec_shaking::wasm_imported::ErrorB"
         }
     }
     #[doc(hidden)]
@@ -10931,7 +10231,7 @@ mod wasm_imported {
     impl ErrorC {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v2::wasm_imported::ErrorC"
+            "::test_spec_shaking::wasm_imported::ErrorC"
         }
     }
     #[doc(hidden)]
@@ -11166,7 +10466,7 @@ mod wasm_imported {
     impl EventA {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v2::wasm_imported::EventA"
+            "::test_spec_shaking::wasm_imported::EventA"
         }
     }
     #[doc(hidden)]
@@ -11216,8 +10516,6 @@ mod wasm_imported {
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
-            <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <soroban_sdk::String as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
                 static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &EventA::spec_xdr(),
@@ -11335,7 +10633,7 @@ mod wasm_imported {
     impl EventB {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v2::wasm_imported::EventB"
+            "::test_spec_shaking::wasm_imported::EventB"
         }
     }
     #[doc(hidden)]
@@ -11393,9 +10691,6 @@ mod wasm_imported {
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
-            <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
                 static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &EventB::spec_xdr(),
@@ -11516,7 +10811,7 @@ mod wasm_imported {
     impl EventC {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v2::wasm_imported::EventC"
+            "::test_spec_shaking::wasm_imported::EventC"
         }
     }
     #[doc(hidden)]
@@ -11574,9 +10869,6 @@ mod wasm_imported {
         #[doc(hidden)]
         #[inline(always)]
         fn spec_shaking_marker() {
-            <soroban_sdk::Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
                 static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &EventC::spec_xdr(),
@@ -11664,7 +10956,7 @@ mod wasm_imported {
     impl EventD {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v2::wasm_imported::EventD"
+            "::test_spec_shaking::wasm_imported::EventD"
         }
     }
     #[doc(hidden)]
@@ -11771,7 +11063,7 @@ impl ::core::cmp::PartialEq for UnusedStruct {
 impl UnusedStruct {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UnusedStruct"
+        "::test_spec_shaking::UnusedStruct"
     }
 }
 #[doc(hidden)]
@@ -11799,20 +11091,6 @@ impl UnusedStruct {
         );
     pub const fn spec_xdr() -> [u8; UnusedStruct::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UnusedStruct::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for UnusedStruct {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &UnusedStruct::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedStruct {
@@ -11912,7 +11190,7 @@ impl ::core::cmp::PartialEq for UnusedEnum {
 impl UnusedEnum {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UnusedEnum"
+        "::test_spec_shaking::UnusedEnum"
     }
 }
 #[doc(hidden)]
@@ -11949,20 +11227,6 @@ impl UnusedEnum {
         );
     pub const fn spec_xdr() -> [u8; UnusedEnum::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UnusedEnum::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for UnusedEnum {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &UnusedEnum::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedEnum {
@@ -12086,7 +11350,7 @@ impl ::core::cmp::PartialEq for UnusedIntEnum {
 impl UnusedIntEnum {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UnusedIntEnum"
+        "::test_spec_shaking::UnusedIntEnum"
     }
 }
 #[doc(hidden)]
@@ -12119,19 +11383,6 @@ impl UnusedIntEnum {
         );
     pub const fn spec_xdr() -> [u8; UnusedIntEnum::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UnusedIntEnum::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for UnusedIntEnum {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        {
-            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &UnusedIntEnum::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedIntEnum {
@@ -12223,7 +11474,7 @@ impl ::core::cmp::PartialEq for UnusedEvent {
 impl UnusedEvent {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UnusedEvent"
+        "::test_spec_shaking::UnusedEvent"
     }
 }
 #[doc(hidden)]
@@ -12267,8 +11518,6 @@ impl soroban_sdk::SpecShakingMarker for UnusedEvent {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
             static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
@@ -12300,6 +11549,495 @@ impl UnusedEvent {
     pub fn publish(&self, env: &soroban_sdk::Env) {
         <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
+    }
+}
+pub struct UnusedEventDataType {
+    pub v: u32,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UnusedEventDataType {
+    #[inline]
+    fn clone(&self) -> UnusedEventDataType {
+        UnusedEventDataType {
+            v: ::core::clone::Clone::clone(&self.v),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UnusedEventDataType {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field1_finish(f, "UnusedEventDataType", "v", &&self.v)
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UnusedEventDataType {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<u32>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UnusedEventDataType {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UnusedEventDataType {
+    #[inline]
+    fn eq(&self, other: &UnusedEventDataType) -> bool {
+        self.v == other.v
+    }
+}
+impl UnusedEventDataType {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_shaking::UnusedEventDataType"
+    }
+}
+#[doc(hidden)]
+#[allow(dead_code)]
+#[link_section = "contractspecv0"]
+static __SPEC_XDR_TYPE_UNUSEDEVENTDATATYPE: [u8; UnusedEventDataType::spec_xdr().len()] =
+    UnusedEventDataType::spec_xdr();
+impl UnusedEventDataType {
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
+            soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    UnusedEventDataType::spec_name(),
+                ),
+                fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                    },
+                ]),
+            },
+        );
+    pub const fn spec_xdr() -> [u8; UnusedEventDataType::__SPEC_XDR_ENTRY.const_xdr_len()] {
+        const { UnusedEventDataType::__SPEC_XDR_ENTRY.const_to_xdr() }
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedEventDataType {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["v"];
+        let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
+        let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
+            .map_err(|_| ConversionError)?;
+        Ok(Self {
+            v: vals[0]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UnusedEventDataType> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UnusedEventDataType,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["v"];
+        let vals: [Val; 1usize] = [(&val.v).try_into_val(env).map_err(|_| ConversionError)?];
+        Ok(env
+            .map_new_from_slices(&KEYS, &vals)
+            .map_err(|_| ConversionError)?
+            .into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UnusedEventDataType> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UnusedEventDataType,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UnusedEventDataType>>::try_from_val(
+            env, *val,
+        )
+    }
+}
+pub struct UnusedEventWithDataType {
+    pub kind: Symbol,
+    pub payload: UnusedEventDataType,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UnusedEventWithDataType {
+    #[inline]
+    fn clone(&self) -> UnusedEventWithDataType {
+        UnusedEventWithDataType {
+            kind: ::core::clone::Clone::clone(&self.kind),
+            payload: ::core::clone::Clone::clone(&self.payload),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UnusedEventWithDataType {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field2_finish(
+            f,
+            "UnusedEventWithDataType",
+            "kind",
+            &self.kind,
+            "payload",
+            &&self.payload,
+        )
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UnusedEventWithDataType {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<Symbol>;
+        let _: ::core::cmp::AssertParamIsEq<UnusedEventDataType>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UnusedEventWithDataType {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UnusedEventWithDataType {
+    #[inline]
+    fn eq(&self, other: &UnusedEventWithDataType) -> bool {
+        self.kind == other.kind && self.payload == other.payload
+    }
+}
+impl UnusedEventWithDataType {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_shaking::UnusedEventWithDataType"
+    }
+}
+#[doc(hidden)]
+#[allow(dead_code)]
+#[link_section = "contractspecv0"]
+static __SPEC_XDR_EVENT_UNUSEDEVENTWITHDATATYPE: [u8; UnusedEventWithDataType::spec_xdr().len()] =
+    UnusedEventWithDataType::spec_xdr();
+impl UnusedEventWithDataType {
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
+            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+            lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                UnusedEventWithDataType::spec_name(),
+            ),
+            prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"unused_event_with_data_type",
+                    ),
+                ),
+            ]),
+            params: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"kind"),
+                    type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Symbol,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
+                },
+                soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"payload"),
+                    type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                        soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                                <UnusedEventDataType>::spec_name(),
+                            ),
+                        },
+                    ),
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                },
+            ]),
+            data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
+        });
+    pub const fn spec_xdr() -> [u8; UnusedEventWithDataType::__SPEC_XDR_ENTRY.const_xdr_len()] {
+        const { UnusedEventWithDataType::__SPEC_XDR_ENTRY.const_to_xdr() }
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UnusedEventWithDataType {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        {
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
+                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
+                    &UnusedEventWithDataType::spec_xdr(),
+                );
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
+impl soroban_sdk::Event for UnusedEventWithDataType {
+    fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+        use soroban_sdk::IntoVal;
+        (
+            &{ soroban_sdk::Symbol::new(env, "unused_event_with_data_type") },
+            {
+                let v: soroban_sdk::Val = self.kind.into_val(env);
+                v
+            },
+        )
+            .into_val(env)
+    }
+    fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
+        use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
+        const KEYS: [&'static str; 1usize] = ["payload"];
+        let vals: [soroban_sdk::Val; 1usize] = [self.payload.into_val(env)];
+        env.sparse_map_new_from_slices(&KEYS, &vals)
+            .unwrap_infallible()
+            .into()
+    }
+}
+impl UnusedEventWithDataType {
+    pub fn publish(&self, env: &soroban_sdk::Env) {
+        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <_ as soroban_sdk::Event>::publish(self, env);
+    }
+}
+pub struct UnusedOuter {
+    pub inner: UnusedInner,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UnusedOuter {
+    #[inline]
+    fn clone(&self) -> UnusedOuter {
+        UnusedOuter {
+            inner: ::core::clone::Clone::clone(&self.inner),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UnusedOuter {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field1_finish(f, "UnusedOuter", "inner", &&self.inner)
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UnusedOuter {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<UnusedInner>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UnusedOuter {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UnusedOuter {
+    #[inline]
+    fn eq(&self, other: &UnusedOuter) -> bool {
+        self.inner == other.inner
+    }
+}
+impl UnusedOuter {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_shaking::UnusedOuter"
+    }
+}
+#[doc(hidden)]
+#[allow(dead_code)]
+#[link_section = "contractspecv0"]
+static __SPEC_XDR_TYPE_UNUSEDOUTER: [u8; UnusedOuter::spec_xdr().len()] = UnusedOuter::spec_xdr();
+impl UnusedOuter {
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
+            soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    UnusedOuter::spec_name(),
+                ),
+                fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"inner"),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                            soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                                    <UnusedInner>::spec_name(),
+                                ),
+                            },
+                        ),
+                    },
+                ]),
+            },
+        );
+    pub const fn spec_xdr() -> [u8; UnusedOuter::__SPEC_XDR_ENTRY.const_xdr_len()] {
+        const { UnusedOuter::__SPEC_XDR_ENTRY.const_to_xdr() }
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedOuter {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["inner"];
+        let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
+        let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
+            .map_err(|_| ConversionError)?;
+        Ok(Self {
+            inner: vals[0]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UnusedOuter> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UnusedOuter,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["inner"];
+        let vals: [Val; 1usize] = [(&val.inner)
+            .try_into_val(env)
+            .map_err(|_| ConversionError)?];
+        Ok(env
+            .map_new_from_slices(&KEYS, &vals)
+            .map_err(|_| ConversionError)?
+            .into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UnusedOuter> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UnusedOuter,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UnusedOuter>>::try_from_val(env, *val)
+    }
+}
+pub struct UnusedInner {
+    pub v: u32,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UnusedInner {
+    #[inline]
+    fn clone(&self) -> UnusedInner {
+        UnusedInner {
+            v: ::core::clone::Clone::clone(&self.v),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UnusedInner {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field1_finish(f, "UnusedInner", "v", &&self.v)
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UnusedInner {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<u32>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UnusedInner {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UnusedInner {
+    #[inline]
+    fn eq(&self, other: &UnusedInner) -> bool {
+        self.v == other.v
+    }
+}
+impl UnusedInner {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_spec_shaking::UnusedInner"
+    }
+}
+#[doc(hidden)]
+#[allow(dead_code)]
+#[link_section = "contractspecv0"]
+static __SPEC_XDR_TYPE_UNUSEDINNER: [u8; UnusedInner::spec_xdr().len()] = UnusedInner::spec_xdr();
+impl UnusedInner {
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
+            soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    UnusedInner::spec_name(),
+                ),
+                fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                    },
+                ]),
+            },
+        );
+    pub const fn spec_xdr() -> [u8; UnusedInner::__SPEC_XDR_ENTRY.const_xdr_len()] {
+        const { UnusedInner::__SPEC_XDR_ENTRY.const_to_xdr() }
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedInner {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["v"];
+        let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
+        let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
+            .map_err(|_| ConversionError)?;
+        Ok(Self {
+            v: vals[0]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UnusedInner> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UnusedInner,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["v"];
+        let vals: [Val; 1usize] = [(&val.v).try_into_val(env).map_err(|_| ConversionError)?];
+        Ok(env
+            .map_new_from_slices(&KEYS, &vals)
+            .map_err(|_| ConversionError)?
+            .into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UnusedInner> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UnusedInner,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UnusedInner>>::try_from_val(env, *val)
     }
 }
 pub enum UnusedPubError {
@@ -12340,7 +12078,7 @@ impl ::core::cmp::PartialEq for UnusedPubError {
 impl UnusedPubError {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UnusedPubError"
+        "::test_spec_shaking::UnusedPubError"
     }
 }
 #[doc(hidden)]
@@ -12531,7 +12269,7 @@ impl ::core::cmp::PartialEq for UnusedNonContractFnParam {
 impl UnusedNonContractFnParam {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UnusedNonContractFnParam"
+        "::test_spec_shaking::UnusedNonContractFnParam"
     }
 }
 #[doc(hidden)]
@@ -12559,20 +12297,6 @@ impl UnusedNonContractFnParam {
         );
     pub const fn spec_xdr() -> [u8; UnusedNonContractFnParam::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UnusedNonContractFnParam::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for UnusedNonContractFnParam {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &UnusedNonContractFnParam::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedNonContractFnParam {
@@ -12666,7 +12390,7 @@ impl ::core::cmp::PartialEq for UnusedNonContractFnReturn {
 impl UnusedNonContractFnReturn {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UnusedNonContractFnReturn"
+        "::test_spec_shaking::UnusedNonContractFnReturn"
     }
 }
 #[doc(hidden)]
@@ -12694,20 +12418,6 @@ impl UnusedNonContractFnReturn {
         );
     pub const fn spec_xdr() -> [u8; UnusedNonContractFnReturn::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UnusedNonContractFnReturn::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for UnusedNonContractFnReturn {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &UnusedNonContractFnReturn::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedNonContractFnReturn {
@@ -12796,7 +12506,7 @@ impl ::core::cmp::PartialEq for UnusedNonPubStruct {
 impl UnusedNonPubStruct {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UnusedNonPubStruct"
+        "::test_spec_shaking::UnusedNonPubStruct"
     }
 }
 #[doc(hidden)]
@@ -12824,20 +12534,6 @@ impl UnusedNonPubStruct {
         );
     pub const fn spec_xdr() -> [u8; UnusedNonPubStruct::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UnusedNonPubStruct::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for UnusedNonPubStruct {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        {
-            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
-                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
-                    &UnusedNonPubStruct::spec_xdr(),
-                );
-            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedNonPubStruct {
@@ -12924,7 +12620,7 @@ impl ::core::cmp::PartialEq for UnusedNonPubError {
 impl UnusedNonPubError {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v2::UnusedNonPubError"
+        "::test_spec_shaking::UnusedNonPubError"
     }
 }
 #[doc(hidden)]

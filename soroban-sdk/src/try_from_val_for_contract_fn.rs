@@ -13,10 +13,6 @@
 //! For types that can be used and converted everywhere, implementing TryFromVal
 //! is most appropriate. For types that should only be used and converted to as
 //! part of contract function invocation, then this trait is appropriate.
-//!
-//! The trait also calls `SpecShakingMarker::spec_shaking_marker()` to ensure
-//! that type specs are included in the Wasm when types are used at external
-//! boundaries.
 
 use crate::{env::internal::Env, Error, TryFromVal};
 use core::fmt::Debug;
@@ -34,11 +30,10 @@ pub trait TryFromValForContractFn<E: Env, V: ?Sized>: Sized {
 #[allow(deprecated)]
 impl<E: Env, T, U> TryFromValForContractFn<E, T> for U
 where
-    U: TryFromVal<E, T> + crate::SpecShakingMarker,
+    U: TryFromVal<E, T>,
 {
     type Error = U::Error;
     fn try_from_val_for_contract_fn(e: &E, v: &T) -> Result<Self, Self::Error> {
-        U::spec_shaking_marker();
         U::try_from_val(e, v)
     }
 }

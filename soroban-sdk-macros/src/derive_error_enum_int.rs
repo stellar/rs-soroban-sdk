@@ -121,14 +121,8 @@ pub fn derive_type_error_enum_int(
     };
 
     // SpecShakingMarker impl.
-    let spec_shaking_impl = shaking::generate_marker_impl(
-        path,
-        quote!(#enum_ident),
-        std::iter::empty(),
-        None,
-        None,
-        None,
-    );
+    let spec_shaking_impl =
+        shaking::generate_marker_impl(path, quote!(#enum_ident), None, None, None);
 
     // Output.
     quote! {
