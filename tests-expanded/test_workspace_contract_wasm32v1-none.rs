@@ -55,8 +55,8 @@ impl Contract {
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                         soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                b"Value",
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                                <Value>::spec_name(),
                             ),
                         },
                     ),

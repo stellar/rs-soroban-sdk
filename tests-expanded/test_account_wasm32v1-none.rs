@@ -50,6 +50,12 @@ impl ::core::cmp::Ord for Error {
         ::core::cmp::Ordering::Equal
     }
 }
+impl Error {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_account::Error"
+    }
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -60,7 +66,7 @@ impl Error {
             soroban_sdk::xdr::r#const::ScSpecUdtErrorEnumV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"Error"),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Error::spec_name()),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtErrorEnumCaseV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -276,8 +282,8 @@ impl Contract {
                     type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Vec(
                         &soroban_sdk::xdr::r#const::ScSpecTypeVec {
                             element_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                    b"Context",
+                                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                                    <Context>::spec_name(),
                                 ),
                             }),
                         },

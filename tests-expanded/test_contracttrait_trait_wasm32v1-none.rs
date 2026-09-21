@@ -49,6 +49,12 @@ impl ::core::cmp::PartialEq for MyStruct {
         self.a == other.a && self.b == other.b
     }
 }
+impl MyStruct {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_contracttrait_trait::MyStruct"
+    }
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -59,7 +65,9 @@ impl MyStruct {
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"MyStruct"),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    MyStruct::spec_name(),
+                ),
                 fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -187,6 +195,12 @@ impl ::core::cmp::PartialEq for MyEnumUnit {
         __self_discr == __arg1_discr
     }
 }
+impl MyEnumUnit {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_contracttrait_trait::MyEnumUnit"
+    }
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -197,7 +211,9 @@ impl MyEnumUnit {
             soroban_sdk::xdr::r#const::ScSpecUdtEnumV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"MyEnumUnit"),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    MyEnumUnit::spec_name(),
+                ),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtEnumCaseV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -333,6 +349,12 @@ impl ::core::cmp::PartialEq for MyEnumVariants {
             }
     }
 }
+impl MyEnumVariants {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_contracttrait_trait::MyEnumVariants"
+    }
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -342,8 +364,8 @@ impl MyEnumVariants {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
         lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-            b"MyEnumVariants",
+        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+            MyEnumVariants::spec_name(),
         ),
         cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
@@ -365,8 +387,8 @@ impl MyEnumVariants {
                     type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
                         &[
                             soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                    b"MyStruct",
+                                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                                    <MyStruct>::spec_name(),
                                 ),
                             }),
                         ],
@@ -382,8 +404,8 @@ impl MyEnumVariants {
                     type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
                         &[
                             soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                    b"MyEnumUnit",
+                                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                                    <MyEnumUnit>::spec_name(),
                                 ),
                             }),
                         ],
@@ -1945,8 +1967,8 @@ impl AllTypesSpec {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
                         type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                             soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                    b"MyStruct",
+                                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                                    <MyStruct>::spec_name(),
                                 ),
                             },
                         ),
@@ -1955,8 +1977,8 @@ impl AllTypesSpec {
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                         soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                b"MyStruct",
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                                <MyStruct>::spec_name(),
                             ),
                         },
                     ),
@@ -1984,8 +2006,8 @@ impl AllTypesSpec {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
                         type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                             soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                    b"MyEnumUnit",
+                                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                                    <MyEnumUnit>::spec_name(),
                                 ),
                             },
                         ),
@@ -1994,8 +2016,8 @@ impl AllTypesSpec {
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                         soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                b"MyEnumUnit",
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                                <MyEnumUnit>::spec_name(),
                             ),
                         },
                     ),
@@ -2025,8 +2047,8 @@ impl AllTypesSpec {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
                         type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                             soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                    b"MyEnumVariants",
+                                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                                    <MyEnumVariants>::spec_name(),
                                 ),
                             },
                         ),
@@ -2035,8 +2057,8 @@ impl AllTypesSpec {
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                         soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                b"MyEnumVariants",
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                                <MyEnumVariants>::spec_name(),
                             ),
                         },
                     ),
