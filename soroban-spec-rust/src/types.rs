@@ -1,8 +1,8 @@
 use proc_macro2::{Literal, TokenStream};
 use quote::quote;
 use stellar_xdr::{
-    ScSpecEventParamLocationV0, ScSpecEventV0, ScSpecTypeDef, ScSpecUdtEnumV0,
-    ScSpecUdtErrorEnumV0, ScSpecUdtStructV0, ScSpecUdtUnionV0,
+    ScSpecEventDataFormat, ScSpecEventParamLocationV0, ScSpecEventV0, ScSpecTypeDef,
+    ScSpecUdtEnumV0, ScSpecUdtErrorEnumV0, ScSpecUdtStructV0, ScSpecUdtUnionV0,
 };
 
 use crate::syn_ext::str_to_ident;
@@ -223,6 +223,11 @@ pub fn generate_event_with_options(
 ) -> Result<TokenStream, GenerateError> {
     let ident = str_to_ident(&spec.name)?;
     let topics = spec.prefix_topics.iter().map(|t| t.to_string());
+    let data_format = match spec.data_format {
+        ScSpecEventDataFormat::SingleValue => "single-value",
+        ScSpecEventDataFormat::Vec => "vec",
+        ScSpecEventDataFormat::Map => "map",
+    };
     let fields = spec
         .params
         .iter()
@@ -241,7 +246,7 @@ pub fn generate_event_with_options(
         })
         .collect::<Result<Vec<_>, GenerateError>>()?;
     Ok(quote! {
-        #[soroban_sdk::contractevent(topics = [#(#topics,)*])]
+        #[soroban_sdk::contractevent(topics = [#(#topics,)*], data_format = #data_format)]
         #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
         pub struct #ident { #(#fields,)* }
     })
@@ -333,7 +338,7 @@ mod test {
         })
         .unwrap();
         let expect = quote! {
-            #[soroban_sdk::contractevent(topics = [])]
+            #[soroban_sdk::contractevent(topics = [], data_format = "map")]
             #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
             pub struct MyEvent {}
         };
@@ -372,12 +377,78 @@ mod test {
         })
         .unwrap();
         let expect = quote! {
-            #[soroban_sdk::contractevent(topics = ["my_event"])]
+            #[soroban_sdk::contractevent(topics = ["my_event"], data_format = "map")]
             #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
             pub struct MyEvent {
                 pub from: u32,
                 #[topic]
                 pub to: u32,
+            }
+        };
+        assert_eq!(
+            tokens.to_formatted_string().unwrap(),
+            expect.to_formatted_string().unwrap()
+        );
+    }
+
+    #[test]
+    fn test_generate_event_data_format_single_value() {
+        let tokens = generate_event(&ScSpecEventV0 {
+            lib: "".try_into().unwrap(),
+            doc: "".try_into().unwrap(),
+            name: "MyEvent".try_into().unwrap(),
+            prefix_topics: [ScSymbol("my_event".try_into().unwrap())]
+                .try_into()
+                .unwrap(),
+            params: [ScSpecEventParamV0 {
+                doc: "".try_into().unwrap(),
+                name: "amount".try_into().unwrap(),
+                type_: ScSpecTypeDef::I128,
+                location: ScSpecEventParamLocationV0::Data,
+            }]
+            .try_into()
+            .unwrap(),
+            data_format: ScSpecEventDataFormat::SingleValue,
+        })
+        .unwrap();
+        let expect = quote! {
+            #[soroban_sdk::contractevent(topics = ["my_event"], data_format = "single-value")]
+            #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+            pub struct MyEvent {
+                pub amount: i128,
+            }
+        };
+        assert_eq!(
+            tokens.to_formatted_string().unwrap(),
+            expect.to_formatted_string().unwrap()
+        );
+    }
+
+    #[test]
+    fn test_generate_event_data_format_vec() {
+        let tokens = generate_event(&ScSpecEventV0 {
+            lib: "".try_into().unwrap(),
+            doc: "".try_into().unwrap(),
+            name: "MyEvent".try_into().unwrap(),
+            prefix_topics: [ScSymbol("my_event".try_into().unwrap())]
+                .try_into()
+                .unwrap(),
+            params: [ScSpecEventParamV0 {
+                doc: "".try_into().unwrap(),
+                name: "amount".try_into().unwrap(),
+                type_: ScSpecTypeDef::I128,
+                location: ScSpecEventParamLocationV0::Data,
+            }]
+            .try_into()
+            .unwrap(),
+            data_format: ScSpecEventDataFormat::Vec,
+        })
+        .unwrap();
+        let expect = quote! {
+            #[soroban_sdk::contractevent(topics = ["my_event"], data_format = "vec")]
+            #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+            pub struct MyEvent {
+                pub amount: i128,
             }
         };
         assert_eq!(
@@ -555,7 +626,7 @@ mod test {
         })
         .unwrap();
         let expect = quote! {
-            #[soroban_sdk::contractevent(topics = ["my_event"])]
+            #[soroban_sdk::contractevent(topics = ["my_event"], data_format = "map")]
             #[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
             pub struct MyEvent { pub from: u32, }
         };
