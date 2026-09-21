@@ -47,7 +47,7 @@ safe-outputs:
     hide-older-comments: true
 
 pre-agent-steps:
-  - uses: stellar/binaries@v55
+  - uses: stellar/binaries@v86
     with:
       name: cargo-semver-checks
       version: 0.46.0
