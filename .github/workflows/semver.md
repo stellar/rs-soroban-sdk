@@ -50,7 +50,7 @@ pre-agent-steps:
   - uses: stellar/binaries@v86
     with:
       name: cargo-semver-checks
-      version: 0.46.0
+      version: 0.50.0
   - name: Collect the diff for the agent to classify
     env:
       BASE_SHA: ${{ github.event.pull_request.base.sha }}
