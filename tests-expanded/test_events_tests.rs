@@ -247,10 +247,38 @@ pub struct SingleValue {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_EVENT_SINGLEVALUE: [u8; 160usize] = SingleValue::spec_xdr();
+static __SPEC_XDR_EVENT_SINGLEVALUE: [u8; SingleValue::spec_xdr().len()] = SingleValue::spec_xdr();
 impl SingleValue {
-    pub const fn spec_xdr() -> [u8; 160usize] {
-        *b"\0\0\0\x05\0\0\09An event whose data is a single value, rather than a map.\0\0\0\0\0\0\0\0\0\0\x0bSingleValue\0\0\0\0\x01\0\0\0\x0csingle_value\0\0\0\x02\0\0\0\0\0\0\0\x04from\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x06amount\0\0\0\0\0\x0b\0\0\0\0\0\0\0\0"
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
+            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                b"An event whose data is a single value, rather than a map.",
+            ),
+            lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"SingleValue"),
+            prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"single_value"),
+                ),
+            ]),
+            params: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"from"),
+                    type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Address,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
+                },
+                soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"amount"),
+                    type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::I128,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                },
+            ]),
+            data_format: soroban_sdk::xdr::ScSpecEventDataFormat::SingleValue,
+        });
+    pub const fn spec_xdr() -> [u8; SingleValue::__SPEC_XDR_ENTRY.const_xdr_len()] {
+        const { SingleValue::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
 impl soroban_sdk::SpecShakingMarker for SingleValue {
@@ -288,10 +316,44 @@ pub struct SingleValueVoid {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_EVENT_SINGLEVALUEVOID: [u8; 184usize] = SingleValueVoid::spec_xdr();
+static __SPEC_XDR_EVENT_SINGLEVALUEVOID: [u8; SingleValueVoid::spec_xdr().len()] =
+    SingleValueVoid::spec_xdr();
 impl SingleValueVoid {
-    pub const fn spec_xdr() -> [u8; 184usize] {
-        *b"\0\0\0\x05\0\0\0^An event whose data is a single value, and that has no data fields, and so\nwhose data is void.\0\0\0\0\0\0\0\0\0\x0fSingleValueVoid\0\0\0\0\x01\0\0\0\x11single_value_void\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04from\0\0\0\x13\0\0\0\x01\0\0\0\0"
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+            b"An event whose data is a single value, and that has no data fields, and so\nwhose data is void.",
+        ),
+        lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+            b"SingleValueVoid",
+        ),
+        prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"single_value_void",
+                    ),
+                ),
+            ],
+        ),
+        params: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"from",
+                    ),
+                    type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Address,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
+                },
+            ],
+        ),
+        data_format: soroban_sdk::xdr::ScSpecEventDataFormat::SingleValue,
+    });
+    pub const fn spec_xdr() -> [u8; SingleValueVoid::__SPEC_XDR_ENTRY.const_xdr_len()] {
+        const { SingleValueVoid::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
 impl soroban_sdk::SpecShakingMarker for SingleValueVoid {
@@ -328,10 +390,44 @@ pub struct VecValues {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_EVENT_VECVALUES: [u8; 164usize] = VecValues::spec_xdr();
+static __SPEC_XDR_EVENT_VECVALUES: [u8; VecValues::spec_xdr().len()] = VecValues::spec_xdr();
 impl VecValues {
-    pub const fn spec_xdr() -> [u8; 164usize] {
-        *b"\0\0\0\x05\0\0\00An event whose data is a vec, rather than a map.\0\0\0\0\0\0\0\tVecValues\0\0\0\0\0\0\x01\0\0\0\nvec_values\0\0\0\0\0\x03\0\0\0\0\0\0\0\x04from\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x04\0\0\0\0\0\0\0\x01"
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
+            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                b"An event whose data is a vec, rather than a map.",
+            ),
+            lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"VecValues"),
+            prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"vec_values"),
+                ),
+            ]),
+            params: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"from"),
+                    type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Address,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
+                },
+                soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"a"),
+                    type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                },
+                soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"b"),
+                    type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                },
+            ]),
+            data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Vec,
+        });
+    pub const fn spec_xdr() -> [u8; VecValues::__SPEC_XDR_ENTRY.const_xdr_len()] {
+        const { VecValues::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
 impl soroban_sdk::SpecShakingMarker for VecValues {
@@ -381,10 +477,44 @@ pub struct MapValues {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_EVENT_MAPVALUES: [u8; 168usize] = MapValues::spec_xdr();
+static __SPEC_XDR_EVENT_MAPVALUES: [u8; MapValues::spec_xdr().len()] = MapValues::spec_xdr();
 impl MapValues {
-    pub const fn spec_xdr() -> [u8; 168usize] {
-        *b"\0\0\0\x05\0\0\03An event whose data is a map, which is the default.\0\0\0\0\0\0\0\0\tMapValues\0\0\0\0\0\0\x01\0\0\0\nmap_values\0\0\0\0\0\x03\0\0\0\0\0\0\0\x04from\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x04\0\0\0\0\0\0\0\x02"
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
+            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                b"An event whose data is a map, which is the default.",
+            ),
+            lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"MapValues"),
+            prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"map_values"),
+                ),
+            ]),
+            params: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"from"),
+                    type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Address,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
+                },
+                soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"a"),
+                    type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                },
+                soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"b"),
+                    type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                },
+            ]),
+            data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
+        });
+    pub const fn spec_xdr() -> [u8; MapValues::__SPEC_XDR_ENTRY.const_xdr_len()] {
+        const { MapValues::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
 impl soroban_sdk::SpecShakingMarker for MapValues {
@@ -463,12 +593,39 @@ mod __Contract__single_value__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_SINGLE_VALUE: [u8; 68usize] = super::Contract::spec_xdr_single_value();
+    static __SPEC_XDR_FN_SINGLE_VALUE: [u8; super::Contract::spec_xdr_single_value().len()] =
+        super::Contract::spec_xdr_single_value();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_single_value: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"single_value"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"from"),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Address,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"amount",
+                        ),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::I128,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_single_value() -> [u8; 68usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0csingle_value\0\0\0\x02\0\0\0\0\0\0\0\x04from\0\0\0\x13\0\0\0\0\0\0\0\x06amount\0\0\0\0\0\x0b\0\0\0\0"
+    pub const fn spec_xdr_single_value(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_single_value.const_xdr_len()] {
+        const { Contract::__SPEC_XDR_ENTRY_single_value.const_to_xdr() }
     }
 }
 #[doc(hidden)]
@@ -479,13 +636,34 @@ mod __Contract__single_value_void__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_SINGLE_VALUE_VOID: [u8; 56usize] =
-        super::Contract::spec_xdr_single_value_void();
+    static __SPEC_XDR_FN_SINGLE_VALUE_VOID: [u8; super::Contract::spec_xdr_single_value_void()
+        .len()] = super::Contract::spec_xdr_single_value_void();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_single_value_void: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"single_value_void",
+                    ),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"from"),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Address,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_single_value_void() -> [u8; 56usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x11single_value_void\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04from\0\0\0\x13\0\0\0\0"
+    pub const fn spec_xdr_single_value_void(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_single_value_void.const_xdr_len()] {
+        const { Contract::__SPEC_XDR_ENTRY_single_value_void.const_to_xdr() }
     }
 }
 #[doc(hidden)]
@@ -496,12 +674,42 @@ mod __Contract__vec_values__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_VEC_VALUES: [u8; 80usize] = super::Contract::spec_xdr_vec_values();
+    static __SPEC_XDR_FN_VEC_VALUES: [u8; super::Contract::spec_xdr_vec_values().len()] =
+        super::Contract::spec_xdr_vec_values();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_vec_values: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"vec_values"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"from"),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Address,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"a"),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"b"),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_vec_values() -> [u8; 80usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\nvec_values\0\0\0\0\0\x03\0\0\0\0\0\0\0\x04from\0\0\0\x13\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x04\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x04\0\0\0\0"
+    pub const fn spec_xdr_vec_values() -> [u8; Contract::__SPEC_XDR_ENTRY_vec_values.const_xdr_len()]
+    {
+        const { Contract::__SPEC_XDR_ENTRY_vec_values.const_to_xdr() }
     }
 }
 #[doc(hidden)]
@@ -512,12 +720,42 @@ mod __Contract__map_values__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_MAP_VALUES: [u8; 80usize] = super::Contract::spec_xdr_map_values();
+    static __SPEC_XDR_FN_MAP_VALUES: [u8; super::Contract::spec_xdr_map_values().len()] =
+        super::Contract::spec_xdr_map_values();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_map_values: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"map_values"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"from"),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Address,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"a"),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"b"),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_map_values() -> [u8; 80usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\nmap_values\0\0\0\0\0\x03\0\0\0\0\0\0\0\x04from\0\0\0\x13\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x04\0\0\0\0\0\0\0\x01b\0\0\0\0\0\0\x04\0\0\0\0"
+    pub const fn spec_xdr_map_values() -> [u8; Contract::__SPEC_XDR_ENTRY_map_values.const_xdr_len()]
+    {
+        const { Contract::__SPEC_XDR_ENTRY_map_values.const_to_xdr() }
     }
 }
 #[doc(hidden)]
