@@ -87,7 +87,7 @@ impl soroban_sdk::SpecShakingMarker for DataKey {
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14] =
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &DataKey::spec_xdr(),
                 );

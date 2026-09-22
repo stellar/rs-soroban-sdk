@@ -85,7 +85,7 @@ impl soroban_sdk::SpecShakingMarker for MyStruct {
         <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14] =
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &MyStruct::spec_xdr(),
                 );
@@ -221,7 +221,7 @@ impl soroban_sdk::SpecShakingMarker for MyEnumUnit {
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14] =
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &MyEnumUnit::spec_xdr(),
                 );
@@ -403,7 +403,7 @@ impl soroban_sdk::SpecShakingMarker for MyEnumVariants {
         <MyStruct as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <MyEnumUnit as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14] =
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &MyEnumVariants::spec_xdr(),
                 );

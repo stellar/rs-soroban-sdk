@@ -83,7 +83,7 @@ impl soroban_sdk::SpecShakingMarker for StructA {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <bool as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14] =
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &StructA::spec_xdr(),
                 );
@@ -219,7 +219,7 @@ impl soroban_sdk::SpecShakingMarker for StructB {
         <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <soroban_sdk::String as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14] =
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &StructB::spec_xdr(),
                 );
@@ -359,7 +359,7 @@ impl soroban_sdk::SpecShakingMarker for StructC {
         <Vec<u32> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14] =
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &StructC::spec_xdr(),
                 );
@@ -490,7 +490,7 @@ impl soroban_sdk::SpecShakingMarker for StructTupleA {
         <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14] =
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &StructTupleA::spec_xdr(),
                 );
@@ -617,7 +617,7 @@ impl soroban_sdk::SpecShakingMarker for StructTupleB {
         <u128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <u128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14] =
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &StructTupleB::spec_xdr(),
                 );
@@ -745,7 +745,7 @@ impl soroban_sdk::SpecShakingMarker for StructTupleC {
         <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14] =
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &StructTupleC::spec_xdr(),
                 );
@@ -895,7 +895,7 @@ impl soroban_sdk::SpecShakingMarker for EnumA {
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14] =
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &EnumA::spec_xdr(),
                 );
@@ -1099,7 +1099,7 @@ impl soroban_sdk::SpecShakingMarker for EnumB {
     fn spec_shaking_marker() {
         <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14] =
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &EnumB::spec_xdr(),
                 );
@@ -1326,7 +1326,7 @@ impl soroban_sdk::SpecShakingMarker for EnumC {
         <StructA as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <StructTupleA as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14] =
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &EnumC::spec_xdr(),
                 );
@@ -1510,7 +1510,7 @@ impl soroban_sdk::SpecShakingMarker for EnumIntA {
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14] =
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &EnumIntA::spec_xdr(),
                 );
@@ -1644,7 +1644,7 @@ impl soroban_sdk::SpecShakingMarker for EnumIntB {
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14] =
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &EnumIntB::spec_xdr(),
                 );
@@ -1778,7 +1778,7 @@ impl soroban_sdk::SpecShakingMarker for EnumIntC {
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14] =
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &EnumIntC::spec_xdr(),
                 );
@@ -1912,7 +1912,7 @@ impl soroban_sdk::SpecShakingMarker for ErrorA {
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14] =
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &ErrorA::spec_xdr(),
                 );
@@ -2116,7 +2116,7 @@ impl soroban_sdk::SpecShakingMarker for ErrorB {
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14] =
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &ErrorB::spec_xdr(),
                 );
@@ -2320,7 +2320,7 @@ impl soroban_sdk::SpecShakingMarker for ErrorC {
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14] =
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &ErrorC::spec_xdr(),
                 );
@@ -2523,7 +2523,7 @@ impl soroban_sdk::SpecShakingMarker for EventA {
         <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <soroban_sdk::String as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14] =
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &EventA::spec_xdr(),
                 );
@@ -2655,7 +2655,7 @@ impl soroban_sdk::SpecShakingMarker for EventB {
         <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14] =
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &EventB::spec_xdr(),
                 );
@@ -2791,7 +2791,7 @@ impl soroban_sdk::SpecShakingMarker for EventC {
         <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14] =
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &EventC::spec_xdr(),
                 );
@@ -2888,7 +2888,7 @@ impl soroban_sdk::SpecShakingMarker for EventD {
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14] =
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &EventD::spec_xdr(),
                 );

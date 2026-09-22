@@ -61,7 +61,7 @@ impl soroban_sdk::SpecShakingMarker for MockProof {
         <Vec<Bn254G1Affine> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <Vec<Bn254G2Affine> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14] =
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &MockProof::spec_xdr(),
                 );

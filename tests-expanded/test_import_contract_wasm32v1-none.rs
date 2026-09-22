@@ -285,7 +285,7 @@ mod addcontract {
             <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <soroban_sdk::String as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
-                static MARKER: [u8; 14] = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
+                static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &ContractExecutableRef::spec_xdr(),
                 );
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -494,7 +494,7 @@ mod addcontract {
             <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <soroban_sdk::Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
-                static MARKER: [u8; 14] = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
+                static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &ContractContext::spec_xdr(),
                 );
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -698,7 +698,7 @@ mod addcontract {
                 InvokerContractAuthEntry,
             > as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
-                static MARKER: [u8; 14] = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
+                static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &SubContractInvocation::spec_xdr(),
                 );
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -886,7 +886,7 @@ mod addcontract {
             <ContractExecutable as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <soroban_sdk::BytesN<32> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
-                static MARKER: [u8; 14] = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
+                static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &CreateContractHostFnContext::spec_xdr(),
                 );
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -1112,7 +1112,7 @@ mod addcontract {
             <ContractExecutable as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <soroban_sdk::BytesN<32> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
-                static MARKER: [u8; 14] = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
+                static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &CreateContractWithConstructorHostFnContext::spec_xdr(),
                 );
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -1351,7 +1351,7 @@ mod addcontract {
             <soroban_sdk::BytesN<32> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <ContractExecutableRef as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
-                static MARKER: [u8; 14] = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
+                static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &ContractExecutable::spec_xdr(),
                 );
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -1650,7 +1650,7 @@ mod addcontract {
             <CreateContractHostFnContext as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
-                static MARKER: [u8; 14] = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
+                static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &Context::spec_xdr(),
                 );
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -1981,7 +1981,7 @@ mod addcontract {
             <CreateContractHostFnContext as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
-                static MARKER: [u8; 14] = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
+                static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &InvokerContractAuthEntry::spec_xdr(),
                 );
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -2243,7 +2243,7 @@ mod addcontract {
         fn spec_shaking_marker() {
             <soroban_sdk::BytesN<32> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             {
-                static MARKER: [u8; 14] = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
+                static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &Executable::spec_xdr(),
                 );
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -2416,7 +2416,7 @@ mod addcontract {
         #[inline(always)]
         fn spec_shaking_marker() {
             {
-                static MARKER: [u8; 14] = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
+                static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &Error::spec_xdr(),
                 );
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -2606,7 +2606,7 @@ mod addcontract {
         #[inline(always)]
         fn spec_shaking_marker() {
             {
-                static MARKER: [u8; 14] = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
+                static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker = soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &MyError::spec_xdr(),
                 );
                 let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
@@ -5495,7 +5495,7 @@ impl soroban_sdk::SpecShakingMarker for Error {
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14] =
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &Error::spec_xdr(),
                 );

@@ -350,8 +350,28 @@ pub fn const_view_type_def(path: &Path, t: &ScSpecTypeDef) -> TokenStream2 {
             let name = const_view_string(path, &u.name);
             Some(quote!((#xdr::r#const::ScSpecTypeUdt { name: #name })))
         }
-        // All remaining variants are void.
-        _ => None,
+        // Every remaining variant holds no value. Named rather than matched
+        // with a catch-all, so that a variant added to the XDR fails to
+        // compile here instead of silently rendering without its value.
+        ScSpecTypeDef::Val
+        | ScSpecTypeDef::Bool
+        | ScSpecTypeDef::Void
+        | ScSpecTypeDef::Error
+        | ScSpecTypeDef::U32
+        | ScSpecTypeDef::I32
+        | ScSpecTypeDef::U64
+        | ScSpecTypeDef::I64
+        | ScSpecTypeDef::Timepoint
+        | ScSpecTypeDef::Duration
+        | ScSpecTypeDef::U128
+        | ScSpecTypeDef::I128
+        | ScSpecTypeDef::U256
+        | ScSpecTypeDef::I256
+        | ScSpecTypeDef::Bytes
+        | ScSpecTypeDef::String
+        | ScSpecTypeDef::Symbol
+        | ScSpecTypeDef::Address
+        | ScSpecTypeDef::MuxedAddress => None,
     };
     quote!(#xdr::r#const::ScSpecTypeDef::#variant #value)
 }
@@ -543,5 +563,515 @@ mod test {
             }
         );
         assert!(is_mapped_type_udt(&input.ident, &input.generics).is_ok());
+    }
+}
+
+#[cfg(test)]
+mod test_const_view {
+    use super::*;
+    use stellar_xdr::ScSpecType;
+    use syn::parse_quote;
+
+    fn path() -> Path {
+        parse_quote!(soroban_sdk)
+    }
+
+    /// Compares token streams by their rendering, so spacing is not asserted.
+    fn assert_tokens(actual: TokenStream2, expected: TokenStream2) {
+        assert_eq!(actual.to_string(), expected.to_string());
+    }
+
+    fn str_of<const MAX: u32>(s: &str) -> StringM<MAX> {
+        s.try_into().unwrap()
+    }
+
+    /// One representative value per `ScSpecType`. The match is exhaustive on
+    /// purpose: adding a variant to the XDR breaks this test's compile, forcing
+    /// a decision about whether the new variant carries a payload that
+    /// `const_view_type_def` must render. Without that, a new payload-carrying
+    /// variant would fall into the function's `_ => None` arm and silently
+    /// render without its payload.
+    fn representative(t: ScSpecType) -> ScSpecTypeDef {
+        match t {
+            ScSpecType::Val => ScSpecTypeDef::Val,
+            ScSpecType::Bool => ScSpecTypeDef::Bool,
+            ScSpecType::Void => ScSpecTypeDef::Void,
+            ScSpecType::Error => ScSpecTypeDef::Error,
+            ScSpecType::U32 => ScSpecTypeDef::U32,
+            ScSpecType::I32 => ScSpecTypeDef::I32,
+            ScSpecType::U64 => ScSpecTypeDef::U64,
+            ScSpecType::I64 => ScSpecTypeDef::I64,
+            ScSpecType::Timepoint => ScSpecTypeDef::Timepoint,
+            ScSpecType::Duration => ScSpecTypeDef::Duration,
+            ScSpecType::U128 => ScSpecTypeDef::U128,
+            ScSpecType::I128 => ScSpecTypeDef::I128,
+            ScSpecType::U256 => ScSpecTypeDef::U256,
+            ScSpecType::I256 => ScSpecTypeDef::I256,
+            ScSpecType::Bytes => ScSpecTypeDef::Bytes,
+            ScSpecType::String => ScSpecTypeDef::String,
+            ScSpecType::Symbol => ScSpecTypeDef::Symbol,
+            ScSpecType::Address => ScSpecTypeDef::Address,
+            ScSpecType::MuxedAddress => ScSpecTypeDef::MuxedAddress,
+            ScSpecType::Option => ScSpecTypeDef::Option(Box::new(ScSpecTypeOption {
+                value_type: Box::new(ScSpecTypeDef::U32),
+            })),
+            ScSpecType::Result => ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
+                ok_type: Box::new(ScSpecTypeDef::U32),
+                error_type: Box::new(ScSpecTypeDef::Error),
+            })),
+            ScSpecType::Vec => ScSpecTypeDef::Vec(Box::new(ScSpecTypeVec {
+                element_type: Box::new(ScSpecTypeDef::U32),
+            })),
+            ScSpecType::Map => ScSpecTypeDef::Map(Box::new(ScSpecTypeMap {
+                key_type: Box::new(ScSpecTypeDef::Symbol),
+                value_type: Box::new(ScSpecTypeDef::U32),
+            })),
+            ScSpecType::Tuple => ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
+                value_types: vec![ScSpecTypeDef::U32].try_into().unwrap(),
+            })),
+            ScSpecType::BytesN => ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n: 32 }),
+            ScSpecType::Udt => ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                name: str_of("Foo"),
+            }),
+        }
+    }
+
+    /// The variants that render a payload. Every other variant must render as a
+    /// bare path with no trailing group.
+    fn carries_payload(t: ScSpecType) -> bool {
+        matches!(
+            t,
+            ScSpecType::Option
+                | ScSpecType::Result
+                | ScSpecType::Vec
+                | ScSpecType::Map
+                | ScSpecType::Tuple
+                | ScSpecType::BytesN
+                | ScSpecType::Udt
+        )
+    }
+
+    #[test]
+    fn test_every_variant_renders_with_its_own_name() {
+        let p = path();
+        for t in ScSpecType::VARIANTS {
+            let def = representative(t);
+            let rendered = const_view_type_def(&p, &def).to_string();
+            // The variant named in the output is the one the value reports, so
+            // no variant is rendered as another.
+            let expect_prefix = format!(
+                "soroban_sdk :: xdr :: r#const :: ScSpecTypeDef :: {}",
+                def.name()
+            );
+            assert!(
+                rendered.starts_with(&expect_prefix),
+                "variant {t:?} rendered as {rendered}, expected prefix {expect_prefix}"
+            );
+            // A payload shows up as a trailing group; void variants have none.
+            assert_eq!(
+                rendered.len() > expect_prefix.len(),
+                carries_payload(t),
+                "variant {t:?} payload presence mismatch, rendered {rendered}"
+            );
+        }
+    }
+
+    #[test]
+    fn test_void_variant() {
+        assert_tokens(
+            const_view_type_def(&path(), &ScSpecTypeDef::Void),
+            quote!(soroban_sdk::xdr::r#const::ScSpecTypeDef::Void),
+        );
+    }
+
+    #[test]
+    fn test_bytes_n() {
+        // Uses the owned ScSpecTypeBytesN rather than the r#const one, because
+        // it holds no references and so needs no const-specific type.
+        assert_tokens(
+            const_view_type_def(&path(), &ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n: 32 })),
+            quote!(soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
+                soroban_sdk::xdr::ScSpecTypeBytesN { n: 32u32 }
+            )),
+        );
+    }
+
+    #[test]
+    fn test_bytes_n_boundaries() {
+        for n in [0u32, 1, u32::MAX] {
+            assert_tokens(
+                const_view_type_def(&path(), &ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n })),
+                quote!(soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
+                    soroban_sdk::xdr::ScSpecTypeBytesN { n: #n }
+                )),
+            );
+        }
+    }
+
+    #[test]
+    fn test_option() {
+        let def = ScSpecTypeDef::Option(Box::new(ScSpecTypeOption {
+            value_type: Box::new(ScSpecTypeDef::U32),
+        }));
+        assert_tokens(
+            const_view_type_def(&path(), &def),
+            quote!(soroban_sdk::xdr::r#const::ScSpecTypeDef::Option(
+                &soroban_sdk::xdr::r#const::ScSpecTypeOption {
+                    value_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::U32
+                }
+            )),
+        );
+    }
+
+    #[test]
+    fn test_result() {
+        let def = ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
+            ok_type: Box::new(ScSpecTypeDef::U32),
+            error_type: Box::new(ScSpecTypeDef::Error),
+        }));
+        assert_tokens(
+            const_view_type_def(&path(), &def),
+            quote!(soroban_sdk::xdr::r#const::ScSpecTypeDef::Result(
+                &soroban_sdk::xdr::r#const::ScSpecTypeResult {
+                    ok_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                    error_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Error
+                }
+            )),
+        );
+    }
+
+    #[test]
+    fn test_vec() {
+        let def = ScSpecTypeDef::Vec(Box::new(ScSpecTypeVec {
+            element_type: Box::new(ScSpecTypeDef::Bool),
+        }));
+        assert_tokens(
+            const_view_type_def(&path(), &def),
+            quote!(soroban_sdk::xdr::r#const::ScSpecTypeDef::Vec(
+                &soroban_sdk::xdr::r#const::ScSpecTypeVec {
+                    element_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Bool
+                }
+            )),
+        );
+    }
+
+    #[test]
+    fn test_map() {
+        // Key and value are distinct types, so a swap of the two would fail.
+        let def = ScSpecTypeDef::Map(Box::new(ScSpecTypeMap {
+            key_type: Box::new(ScSpecTypeDef::Symbol),
+            value_type: Box::new(ScSpecTypeDef::I128),
+        }));
+        assert_tokens(
+            const_view_type_def(&path(), &def),
+            quote!(soroban_sdk::xdr::r#const::ScSpecTypeDef::Map(
+                &soroban_sdk::xdr::r#const::ScSpecTypeMap {
+                    key_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Symbol,
+                    value_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::I128
+                }
+            )),
+        );
+    }
+
+    #[test]
+    fn test_tuple_empty() {
+        let def = ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
+            value_types: vec![].try_into().unwrap(),
+        }));
+        assert_tokens(
+            const_view_type_def(&path(), &def),
+            quote!(soroban_sdk::xdr::r#const::ScSpecTypeDef::Tuple(
+                &soroban_sdk::xdr::r#const::ScSpecTypeTuple {
+                    value_types: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[])
+                }
+            )),
+        );
+    }
+
+    #[test]
+    fn test_tuple_single() {
+        let def = ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
+            value_types: vec![ScSpecTypeDef::U32].try_into().unwrap(),
+        }));
+        assert_tokens(
+            const_view_type_def(&path(), &def),
+            quote!(soroban_sdk::xdr::r#const::ScSpecTypeDef::Tuple(
+                &soroban_sdk::xdr::r#const::ScSpecTypeTuple {
+                    value_types: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecTypeDef::U32
+                    ])
+                }
+            )),
+        );
+    }
+
+    #[test]
+    fn test_tuple_preserves_order() {
+        // Asserted in both orders, so a reversal would not pass.
+        let forward = ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
+            value_types: vec![ScSpecTypeDef::U32, ScSpecTypeDef::I64]
+                .try_into()
+                .unwrap(),
+        }));
+        assert_tokens(
+            const_view_type_def(&path(), &forward),
+            quote!(soroban_sdk::xdr::r#const::ScSpecTypeDef::Tuple(
+                &soroban_sdk::xdr::r#const::ScSpecTypeTuple {
+                    value_types: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                        soroban_sdk::xdr::r#const::ScSpecTypeDef::I64
+                    ])
+                }
+            )),
+        );
+        let reverse = ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
+            value_types: vec![ScSpecTypeDef::I64, ScSpecTypeDef::U32]
+                .try_into()
+                .unwrap(),
+        }));
+        assert_ne!(
+            const_view_type_def(&path(), &forward).to_string(),
+            const_view_type_def(&path(), &reverse).to_string(),
+        );
+    }
+
+    #[test]
+    fn test_udt() {
+        let def = ScSpecTypeDef::Udt(ScSpecTypeUdt {
+            name: str_of("MyType"),
+        });
+        assert_tokens(
+            const_view_type_def(&path(), &def),
+            quote!(soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"MyType")
+                }
+            )),
+        );
+    }
+
+    #[test]
+    fn test_udt_qualified_name() {
+        // Qualified names, as produced for fully qualified UDTs, carry colons
+        // that must survive as bytes rather than being parsed as tokens.
+        let def = ScSpecTypeDef::Udt(ScSpecTypeUdt {
+            name: str_of("::my_crate::MyType"),
+        });
+        assert_tokens(
+            const_view_type_def(&path(), &def),
+            quote!(soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"::my_crate::MyType"
+                    )
+                }
+            )),
+        );
+    }
+
+    #[test]
+    fn test_nested_recursion() {
+        // Vec<Option<Map<Symbol, Tuple<(BytesN<4>, Udt)>>>>, so every recursive
+        // arm is exercised at depth and each level must be reference-wrapped.
+        let inner_tuple = ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
+            value_types: vec![
+                ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n: 4 }),
+                ScSpecTypeDef::Udt(ScSpecTypeUdt { name: str_of("U") }),
+            ]
+            .try_into()
+            .unwrap(),
+        }));
+        let map = ScSpecTypeDef::Map(Box::new(ScSpecTypeMap {
+            key_type: Box::new(ScSpecTypeDef::Symbol),
+            value_type: Box::new(inner_tuple),
+        }));
+        let option = ScSpecTypeDef::Option(Box::new(ScSpecTypeOption {
+            value_type: Box::new(map),
+        }));
+        let def = ScSpecTypeDef::Vec(Box::new(ScSpecTypeVec {
+            element_type: Box::new(option),
+        }));
+        assert_tokens(
+            const_view_type_def(&path(), &def),
+            quote!(soroban_sdk::xdr::r#const::ScSpecTypeDef::Vec(
+                &soroban_sdk::xdr::r#const::ScSpecTypeVec {
+                    element_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Option(
+                        &soroban_sdk::xdr::r#const::ScSpecTypeOption {
+                            value_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Map(
+                                &soroban_sdk::xdr::r#const::ScSpecTypeMap {
+                                    key_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Symbol,
+                                    value_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Tuple(
+                                        &soroban_sdk::xdr::r#const::ScSpecTypeTuple {
+                                            value_types:
+                                                soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                                                    &[
+                                                        soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
+                                                            soroban_sdk::xdr::ScSpecTypeBytesN { n: 4u32 }
+                                                        ),
+                                                        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                                                            soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                                                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"U")
+                                                            }
+                                                        )
+                                                    ]
+                                                )
+                                        }
+                                    )
+                                }
+                            )
+                        }
+                    )
+                }
+            )),
+        );
+    }
+
+    #[test]
+    fn test_path_is_used_verbatim() {
+        // Every generated path is rooted at the caller's path, including a
+        // leading-colon path and a `crate` path.
+        let def = ScSpecTypeDef::Option(Box::new(ScSpecTypeOption {
+            value_type: Box::new(ScSpecTypeDef::U32),
+        }));
+        let p: Path = parse_quote!(::soroban_sdk);
+        assert_tokens(
+            const_view_type_def(&p, &def),
+            quote!(::soroban_sdk::xdr::r#const::ScSpecTypeDef::Option(
+                &::soroban_sdk::xdr::r#const::ScSpecTypeOption {
+                    value_type: &::soroban_sdk::xdr::r#const::ScSpecTypeDef::U32
+                }
+            )),
+        );
+        let p: Path = parse_quote!(crate);
+        assert_tokens(
+            const_view_type_def(&p, &ScSpecTypeDef::U32),
+            quote!(crate::xdr::r#const::ScSpecTypeDef::U32),
+        );
+    }
+
+    #[test]
+    fn test_string_empty() {
+        assert_tokens(
+            const_view_string(&path(), &str_of::<60>("")),
+            quote!(soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                b""
+            )),
+        );
+    }
+
+    #[test]
+    fn test_string_ascii() {
+        assert_tokens(
+            const_view_string(&path(), &str_of::<60>("hello")),
+            quote!(soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                b"hello"
+            )),
+        );
+    }
+
+    #[test]
+    fn test_string_escapes_quote_and_backslash() {
+        let rendered = const_view_string(&path(), &str_of::<60>(r#"a"b\c"#)).to_string();
+        assert!(
+            rendered.ends_with(r#"(b"a\"b\\c")"#),
+            "unexpected rendering: {rendered}"
+        );
+    }
+
+    #[test]
+    fn test_string_escapes_control_bytes() {
+        // A newline, tab, carriage return and NUL must not terminate or
+        // corrupt the byte string literal.
+        let s: StringM<60> = vec![b'a', b'\n', b'\t', b'\r', 0, b'b'].try_into().unwrap();
+        let rendered = const_view_string(&path(), &s).to_string();
+        assert!(rendered.contains(r"\n"), "no newline escape: {rendered}");
+        assert!(rendered.contains(r"\t"), "no tab escape: {rendered}");
+        assert!(
+            rendered.contains(r"\r"),
+            "no carriage return escape: {rendered}"
+        );
+        assert!(rendered.contains(r"\0"), "no nul escape: {rendered}");
+    }
+
+    #[test]
+    fn test_string_non_ascii_bytes() {
+        // StringM holds bytes, not chars. Multi-byte UTF-8 and bytes that are
+        // not valid UTF-8 at all must both round-trip as escaped bytes.
+        // Escapes are emitted with upper case hex digits.
+        let s: StringM<60> = "é".try_into().unwrap();
+        let rendered = const_view_string(&path(), &s).to_string();
+        assert!(
+            rendered.ends_with(r#"(b"\xC3\xA9")"#),
+            "unexpected rendering: {rendered}"
+        );
+
+        let s: StringM<60> = vec![0xffu8, 0xfe].try_into().unwrap();
+        let rendered = const_view_string(&path(), &s).to_string();
+        assert!(
+            rendered.ends_with(r#"(b"\xFF\xFE")"#),
+            "unexpected rendering: {rendered}"
+        );
+    }
+
+    #[test]
+    fn test_string_max_is_not_rendered() {
+        // The const StringM's MAX is inferred at the assignment site, so the
+        // same bytes render identically whatever the source MAX is.
+        let narrow = const_view_string(&path(), &str_of::<4>("abcd")).to_string();
+        let wide = const_view_string(&path(), &str_of::<1024>("abcd")).to_string();
+        assert_eq!(narrow, wide);
+        assert!(!narrow.contains('4') || narrow.contains("abcd"));
+    }
+
+    #[test]
+    fn test_string_at_max_length() {
+        // A value filling the source StringM's MAX exactly still renders whole.
+        const MAX: u32 = 64;
+        let s = "a".repeat(MAX as usize);
+        let rendered = const_view_string(&path(), &str_of::<MAX>(&s)).to_string();
+        assert!(rendered.contains(&s), "unexpected rendering: {rendered}");
+    }
+
+    #[test]
+    fn test_symbol() {
+        assert_tokens(
+            const_view_symbol(&path(), &ScSymbol(str_of("transfer"))),
+            quote!(soroban_sdk::xdr::r#const::ScSymbol(
+                soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"transfer")
+            )),
+        );
+    }
+
+    #[test]
+    fn test_symbol_empty() {
+        assert_tokens(
+            const_view_symbol(&path(), &ScSymbol(str_of(""))),
+            quote!(soroban_sdk::xdr::r#const::ScSymbol(
+                soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"")
+            )),
+        );
+    }
+
+    #[test]
+    fn test_symbol_wraps_the_string_rendering() {
+        // The symbol is exactly its inner string rendering, wrapped once.
+        let p = path();
+        let sym = ScSymbol(str_of("abc"));
+        let inner = const_view_string(&p, &sym.0);
+        assert_tokens(
+            const_view_symbol(&p, &sym),
+            quote!(soroban_sdk::xdr::r#const::ScSymbol(#inner)),
+        );
+    }
+
+    #[test]
+    fn test_symbol_path_is_used_verbatim() {
+        let p: Path = parse_quote!(crate);
+        assert_tokens(
+            const_view_symbol(&p, &ScSymbol(str_of("s"))),
+            quote!(crate::xdr::r#const::ScSymbol(
+                crate::xdr::r#const::StringM::try_from_slice_or_panic(b"s")
+            )),
+        );
     }
 }

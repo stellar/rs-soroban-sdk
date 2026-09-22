@@ -83,7 +83,7 @@ impl soroban_sdk::SpecShakingMarker for UdtEnum2 {
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14] =
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &UdtEnum2::spec_xdr(),
                 );
@@ -279,7 +279,7 @@ impl soroban_sdk::SpecShakingMarker for UdtEnum {
         <UdtEnum2 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <UdtTuple as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14] =
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &UdtEnum::spec_xdr(),
                 );
@@ -472,7 +472,7 @@ impl soroban_sdk::SpecShakingMarker for UdtTuple {
         <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <Vec<i64> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14] =
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &UdtTuple::spec_xdr(),
                 );
@@ -623,7 +623,7 @@ impl soroban_sdk::SpecShakingMarker for UdtStruct {
         <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <Vec<i64> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14] =
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &UdtStruct::spec_xdr(),
                 );
@@ -786,7 +786,7 @@ impl soroban_sdk::SpecShakingMarker for UdtRecursive {
         <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <Vec<UdtRecursive> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14] =
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &UdtRecursive::spec_xdr(),
                 );
@@ -946,7 +946,7 @@ impl soroban_sdk::SpecShakingMarker for RecursiveToEnum {
         <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <Map<u32, RecursiveEnum> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14] =
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &RecursiveToEnum::spec_xdr(),
                 );
@@ -1110,7 +1110,7 @@ impl soroban_sdk::SpecShakingMarker for RecursiveEnum {
     fn spec_shaking_marker() {
         <RecursiveToEnum as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14] =
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &RecursiveEnum::spec_xdr(),
                 );

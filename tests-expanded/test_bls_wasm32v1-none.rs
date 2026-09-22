@@ -78,7 +78,7 @@ impl soroban_sdk::SpecShakingMarker for DummyProof {
         <Bls12381G1Affine as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <Bls12381G2Affine as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14] =
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
                     &DummyProof::spec_xdr(),
                 );
