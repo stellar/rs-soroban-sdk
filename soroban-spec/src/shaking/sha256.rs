@@ -1,4 +1,9 @@
-//! Const SHA-256, kept in its own module so that it can be fuzzed.
+//! Const SHA-256.
+//!
+//! Not for security sensitive hashing. This implementation exists in this
+//! library for one purpose only: hashing spec entries to generate their
+//! dead-code-elimination marker. Use the `sha2` crate, or the host's own
+//! hashing, for anything else.
 //!
 //! This module must stay free of `crate::` references and of anything beyond
 //! `core`, because `soroban-spec/fuzz` includes this file directly by path in
