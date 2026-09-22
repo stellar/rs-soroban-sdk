@@ -23,8 +23,7 @@ use syn::{Path, Type};
 /// # Arguments
 ///
 /// * `path` - The crate path (e.g., `soroban_sdk`)
-/// * `ident` - The type identifier
-/// * `spec_xdr` - The XDR bytes of the spec entry
+/// * `ident` - The type identifier, whose `spec_xdr()` provides the spec entry XDR
 /// * `field_types` - Optional iterator of field types to include markers for nested types
 /// * `gen_impl` - Optional generics impl tokens (e.g., `<T>`)
 /// * `gen_types` - Optional generics type tokens (e.g., `<T>`)
@@ -36,7 +35,6 @@ use syn::{Path, Type};
 pub fn generate_marker_impl<'a, I>(
     path: &Path,
     ident: TokenStream2,
-    spec_xdr: TokenStream2,
     field_types: I,
     gen_impl: Option<TokenStream2>,
     gen_types: Option<TokenStream2>,
@@ -63,7 +61,7 @@ where
                     // the same const-encoded XDR that is embedded in that section, so
                     // the two cannot drift apart.
                     static MARKER: [u8; 14] =
-                        #path::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(&#spec_xdr);
+                        #path::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(&#ident::spec_xdr());
                     // Volatile read prevents DCE of this function and keeps MARKER
                     // in the data section. We only read a single `u8` from the start
                     // of the array because merely taking a volatile reference to the
