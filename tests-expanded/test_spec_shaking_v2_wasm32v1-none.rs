@@ -6384,7 +6384,7 @@ mod wasm_imported {
                                 b"salt",
                             ),
                             type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
-                                soroban_sdk::xdr::ScSpecTypeBytesN { n: 32u32 },
+                                soroban_sdk::xdr::r#const::ScSpecTypeBytesN { n: 32u32 },
                             ),
                         },
                     ]),
@@ -6606,7 +6606,7 @@ mod wasm_imported {
                                 b"salt",
                             ),
                             type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
-                                soroban_sdk::xdr::ScSpecTypeBytesN { n: 32u32 },
+                                soroban_sdk::xdr::r#const::ScSpecTypeBytesN { n: 32u32 },
                             ),
                         },
                     ]),
@@ -7777,7 +7777,7 @@ mod wasm_imported {
                         ),
                         type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
                             &[
-                                soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(soroban_sdk::xdr::ScSpecTypeBytesN {
+                                soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(soroban_sdk::xdr::r#const::ScSpecTypeBytesN {
                                     n: 32u32,
                                 }),
                             ],
@@ -8668,7 +8668,7 @@ mod wasm_imported {
                                 ),
                                 type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                                     soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
-                                        soroban_sdk::xdr::ScSpecTypeBytesN { n: 32u32 },
+                                        soroban_sdk::xdr::r#const::ScSpecTypeBytesN { n: 32u32 },
                                     ),
                                 ]),
                             },

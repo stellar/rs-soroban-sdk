@@ -355,7 +355,7 @@ impl Contract {
                     name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                         b"signature_payload",
                     ),
-                    type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(soroban_sdk::xdr::ScSpecTypeBytesN {
+                    type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(soroban_sdk::xdr::r#const::ScSpecTypeBytesN {
                         n: 32u32,
                     }),
                 },

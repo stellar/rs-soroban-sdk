@@ -32,14 +32,14 @@ impl DummyProof {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"fp"),
                         type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
-                            soroban_sdk::xdr::ScSpecTypeBytesN { n: 48u32 },
+                            soroban_sdk::xdr::r#const::ScSpecTypeBytesN { n: 48u32 },
                         ),
                     },
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"fp2"),
                         type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
-                            soroban_sdk::xdr::ScSpecTypeBytesN { n: 96u32 },
+                            soroban_sdk::xdr::r#const::ScSpecTypeBytesN { n: 96u32 },
                         ),
                     },
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
@@ -51,14 +51,14 @@ impl DummyProof {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"g1"),
                         type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
-                            soroban_sdk::xdr::ScSpecTypeBytesN { n: 96u32 },
+                            soroban_sdk::xdr::r#const::ScSpecTypeBytesN { n: 96u32 },
                         ),
                     },
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"g2"),
                         type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
-                            soroban_sdk::xdr::ScSpecTypeBytesN { n: 192u32 },
+                            soroban_sdk::xdr::r#const::ScSpecTypeBytesN { n: 192u32 },
                         ),
                     },
                 ]),
@@ -240,7 +240,7 @@ impl Contract {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"p"),
                         type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
-                            soroban_sdk::xdr::ScSpecTypeBytesN { n: 96u32 },
+                            soroban_sdk::xdr::r#const::ScSpecTypeBytesN { n: 96u32 },
                         ),
                     },
                     soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
@@ -251,7 +251,7 @@ impl Contract {
                 ]),
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
-                        soroban_sdk::xdr::ScSpecTypeBytesN { n: 96u32 },
+                        soroban_sdk::xdr::r#const::ScSpecTypeBytesN { n: 96u32 },
                     ),
                 ]),
             },
@@ -287,7 +287,7 @@ impl Contract {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"p"),
                         type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
-                            soroban_sdk::xdr::ScSpecTypeBytesN { n: 192u32 },
+                            soroban_sdk::xdr::r#const::ScSpecTypeBytesN { n: 192u32 },
                         ),
                     },
                     soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
@@ -298,7 +298,7 @@ impl Contract {
                 ]),
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
-                        soroban_sdk::xdr::ScSpecTypeBytesN { n: 192u32 },
+                        soroban_sdk::xdr::r#const::ScSpecTypeBytesN { n: 192u32 },
                     ),
                 ]),
             },

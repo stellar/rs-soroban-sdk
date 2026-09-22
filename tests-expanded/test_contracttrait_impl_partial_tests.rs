@@ -2018,13 +2018,13 @@ impl Contract {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
                         type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
-                            soroban_sdk::xdr::ScSpecTypeBytesN { n: 32u32 },
+                            soroban_sdk::xdr::r#const::ScSpecTypeBytesN { n: 32u32 },
                         ),
                     },
                 ]),
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
-                        soroban_sdk::xdr::ScSpecTypeBytesN { n: 32u32 },
+                        soroban_sdk::xdr::r#const::ScSpecTypeBytesN { n: 32u32 },
                     ),
                 ]),
             },

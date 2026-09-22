@@ -344,7 +344,7 @@ pub fn const_view_type_def(path: &Path, t: &ScSpecTypeDef) -> TokenStream2 {
         }
         ScSpecTypeDef::BytesN(b) => {
             let n = b.n;
-            Some(quote!((#xdr::ScSpecTypeBytesN { n: #n })))
+            Some(quote!((#xdr::r#const::ScSpecTypeBytesN { n: #n })))
         }
         ScSpecTypeDef::Udt(u) => {
             let name = const_view_string(path, &u.name);
@@ -686,12 +686,12 @@ mod test_const_view {
 
     #[test]
     fn test_bytes_n() {
-        // Uses the owned ScSpecTypeBytesN rather than the r#const one, because
-        // it holds no references and so needs no const-specific type.
+        // The const module re-exports the types that need no const-specific
+        // form, so the const path names this one too.
         assert_tokens(
             const_view_type_def(&path(), &ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n: 32 })),
             quote!(soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
-                soroban_sdk::xdr::ScSpecTypeBytesN { n: 32u32 }
+                soroban_sdk::xdr::r#const::ScSpecTypeBytesN { n: 32u32 }
             )),
         );
     }
@@ -702,7 +702,7 @@ mod test_const_view {
             assert_tokens(
                 const_view_type_def(&path(), &ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n })),
                 quote!(soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
-                    soroban_sdk::xdr::ScSpecTypeBytesN { n: #n }
+                    soroban_sdk::xdr::r#const::ScSpecTypeBytesN { n: #n }
                 )),
             );
         }
@@ -906,7 +906,7 @@ mod test_const_view {
                                                 soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
                                                     &[
                                                         soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
-                                                            soroban_sdk::xdr::ScSpecTypeBytesN { n: 4u32 }
+                                                            soroban_sdk::xdr::r#const::ScSpecTypeBytesN { n: 4u32 }
                                                         ),
                                                         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                                                             soroban_sdk::xdr::r#const::ScSpecTypeUdt {
