@@ -666,8 +666,6 @@ mod test_const_view {
 
     #[test]
     fn test_bytes_n() {
-        // The const module re-exports the types that need no const-specific
-        // form, so the const path names this one too.
         assert_tokens(
             const_view_type_def(&path(), &ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n: 32 })),
             quote!(soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
@@ -737,7 +735,6 @@ mod test_const_view {
 
     #[test]
     fn test_map() {
-        // Key and value are distinct types, so a swap of the two would fail.
         let def = ScSpecTypeDef::Map(Box::new(ScSpecTypeMap {
             key_type: Box::new(ScSpecTypeDef::Symbol),
             value_type: Box::new(ScSpecTypeDef::I128),
@@ -787,7 +784,6 @@ mod test_const_view {
 
     #[test]
     fn test_tuple_preserves_order() {
-        // Asserted in both orders, so a reversal would not pass.
         let forward = ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
             value_types: vec![ScSpecTypeDef::U32, ScSpecTypeDef::I64]
                 .try_into()
