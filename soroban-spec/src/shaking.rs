@@ -531,9 +531,10 @@ mod tests {
     }
 }
 
-#[cfg(all(test, feature = "std"))]
+#[cfg(test)]
 mod sha256_tests {
     use super::{generate_marker_for_xdr, sha256};
+    use std::vec::Vec;
 
     /// The const SHA-256 must agree with `sha2` exactly, including across block
     /// boundaries where the padding lands in a different block to the message.
