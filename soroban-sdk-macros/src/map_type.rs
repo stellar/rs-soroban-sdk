@@ -904,8 +904,6 @@ mod test_const_view {
 
     #[test]
     fn test_path_is_used_verbatim() {
-        // Every generated path is rooted at the caller's path, including a
-        // leading-colon path and a `crate` path.
         let def = ScSpecTypeDef::Option(Box::new(ScSpecTypeOption {
             value_type: Box::new(ScSpecTypeDef::U32),
         }));
