@@ -828,8 +828,6 @@ mod test_const_view {
 
     #[test]
     fn test_udt_qualified_name() {
-        // Qualified names, as produced for fully qualified UDTs, carry colons
-        // that must survive as bytes rather than being parsed as tokens.
         let def = ScSpecTypeDef::Udt(ScSpecTypeUdt {
             name: "::my_crate::MyType".try_into().unwrap(),
         });
