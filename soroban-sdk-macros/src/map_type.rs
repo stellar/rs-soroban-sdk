@@ -573,7 +573,6 @@ mod test_const_view {
         parse_quote!(soroban_sdk)
     }
 
-    /// Compares token streams by their rendering, so spacing is not asserted.
     fn assert_tokens(actual: TokenStream2, expected: TokenStream2) {
         assert_eq!(actual.to_string(), expected.to_string());
     }
@@ -624,8 +623,6 @@ mod test_const_view {
                     name: "Foo".try_into().unwrap(),
                 }),
             };
-            // The variants that render a value. Every other must render as a
-            // bare path with no trailing group.
             let holds_value = matches!(
                 t,
                 ScSpecType::Option
@@ -637,8 +634,6 @@ mod test_const_view {
                     | ScSpecType::Udt
             );
             let rendered = const_view_type_def(&p, &def).to_string();
-            // The variant named in the output is the one the value reports, so
-            // no variant is rendered as another.
             let expect_prefix = format!(
                 "soroban_sdk :: xdr :: r#const :: ScSpecTypeDef :: {}",
                 def.name()
@@ -647,7 +642,6 @@ mod test_const_view {
                 rendered.starts_with(&expect_prefix),
                 "variant {t:?} rendered as {rendered}, expected prefix {expect_prefix}"
             );
-            // A value shows up as a trailing group; void variants have none.
             assert_eq!(
                 rendered.len() > expect_prefix.len(),
                 holds_value,
@@ -845,8 +839,6 @@ mod test_const_view {
 
     #[test]
     fn test_nested_recursion() {
-        // Vec<Option<Map<Symbol, Tuple<(BytesN<4>, Udt)>>>>, so every recursive
-        // arm is exercised at depth and each level must be reference-wrapped.
         let inner_tuple = ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
             value_types: vec![
                 ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n: 4 }),
@@ -945,8 +937,6 @@ mod test_const_view {
 
     #[test]
     fn test_string_max_is_not_rendered() {
-        // The const StringM's MAX is inferred at the assignment site, so the
-        // same bytes render identically whatever the source MAX is.
         let narrow =
             const_view_string(&path(), &StringM::<4>::try_from("abcd").unwrap()).to_string();
         let wide =
