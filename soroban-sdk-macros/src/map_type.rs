@@ -968,7 +968,13 @@ mod test_const_view {
         let wide =
             const_view_string(&path(), &StringM::<1024>::try_from("abcd").unwrap()).to_string();
         assert_eq!(narrow, wide);
-        assert!(!narrow.contains('4') || narrow.contains("abcd"));
+        assert_eq!(
+            narrow,
+            quote!(soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                b"abcd"
+            ))
+            .to_string()
+        );
     }
 
     #[test]
