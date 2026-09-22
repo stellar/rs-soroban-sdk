@@ -350,9 +350,6 @@ pub fn const_view_type_def(path: &Path, t: &ScSpecTypeDef) -> TokenStream2 {
             let name = const_view_string(path, &u.name);
             Some(quote!((#xdr::r#const::ScSpecTypeUdt { name: #name })))
         }
-        // Every remaining variant holds no value. Named rather than matched
-        // with a catch-all, so that a variant added to the XDR fails to
-        // compile here instead of silently rendering without its value.
         ScSpecTypeDef::Val
         | ScSpecTypeDef::Bool
         | ScSpecTypeDef::Void
@@ -585,11 +582,6 @@ mod test_const_view {
     fn test_every_variant_renders_with_its_own_name() {
         let p = path();
         for t in ScSpecType::VARIANTS {
-            // One representative value per variant. The match is exhaustive on
-            // purpose: adding a variant to the XDR breaks this test's compile,
-            // forcing a decision about whether the new variant holds a value
-            // that `const_view_type_def` must render. Without that, a new
-            // value-holding variant could go unrendered and unnoticed.
             let def = match t {
                 ScSpecType::Val => ScSpecTypeDef::Val,
                 ScSpecType::Bool => ScSpecTypeDef::Bool,
