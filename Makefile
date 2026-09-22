@@ -51,8 +51,8 @@ build-test-wasms: fmt
 
 # Builds the fuzz tests. Requires cargo-fuzz and cargo-afl.
 build-fuzz:
-	cd tests/fuzz/fuzz && cargo +nightly fuzz check
 	cd soroban-spec/fuzz && cargo +nightly fuzz check
+	cd tests/fuzz/fuzz && cargo +nightly fuzz check
 	cd tests/fuzz_afl/fuzz && cargo afl build
 
 fuzz-corpus:
