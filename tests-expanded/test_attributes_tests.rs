@@ -49,7 +49,7 @@ impl ::core::cmp::PartialEq for AttributeType {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_ATTRIBUTETYPE: [u8; AttributeType::spec_xdr_len()] =
+static __SPEC_XDR_TYPE_ATTRIBUTETYPE: [u8; AttributeType::spec_xdr().len()] =
     AttributeType::spec_xdr();
 impl AttributeType {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -67,10 +67,7 @@ impl AttributeType {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { AttributeType::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; AttributeType::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; AttributeType::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { AttributeType::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -409,7 +406,7 @@ pub struct AttributeEvent {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_EVENT_ATTRIBUTEEVENT: [u8; AttributeEvent::spec_xdr_len()] =
+static __SPEC_XDR_EVENT_ATTRIBUTEEVENT: [u8; AttributeEvent::spec_xdr().len()] =
     AttributeEvent::spec_xdr();
 impl AttributeEvent {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -438,10 +435,7 @@ impl AttributeEvent {
             ]),
             data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
         });
-    pub const fn spec_xdr_len() -> usize {
-        const { AttributeEvent::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; AttributeEvent::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; AttributeEvent::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { AttributeEvent::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -1281,12 +1275,8 @@ impl AttributeTraitSpec {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_trait_override() -> usize {
-        const { AttributeTraitSpec::__SPEC_XDR_ENTRY_trait_override.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_trait_override() -> [u8; AttributeTraitSpec::spec_xdr_len_trait_override()]
-    {
+    pub const fn spec_xdr_trait_override(
+    ) -> [u8; AttributeTraitSpec::__SPEC_XDR_ENTRY_trait_override.const_xdr_len()] {
         const { AttributeTraitSpec::__SPEC_XDR_ENTRY_trait_override.const_to_xdr() }
     }
 }
@@ -1306,12 +1296,8 @@ impl AttributeTraitSpec {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_trait_default() -> usize {
-        const { AttributeTraitSpec::__SPEC_XDR_ENTRY_trait_default.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_trait_default() -> [u8; AttributeTraitSpec::spec_xdr_len_trait_default()]
-    {
+    pub const fn spec_xdr_trait_default(
+    ) -> [u8; AttributeTraitSpec::__SPEC_XDR_ENTRY_trait_default.const_xdr_len()] {
         const { AttributeTraitSpec::__SPEC_XDR_ENTRY_trait_default.const_to_xdr() }
     }
 }
@@ -1333,12 +1319,8 @@ impl AttributeTraitSpec {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_trait_default_stacked_cfg() -> usize {
-        const { AttributeTraitSpec::__SPEC_XDR_ENTRY_trait_default_stacked_cfg.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_default_stacked_cfg(
-    ) -> [u8; AttributeTraitSpec::spec_xdr_len_trait_default_stacked_cfg()] {
+    ) -> [u8; AttributeTraitSpec::__SPEC_XDR_ENTRY_trait_default_stacked_cfg.const_xdr_len()] {
         const { AttributeTraitSpec::__SPEC_XDR_ENTRY_trait_default_stacked_cfg.const_to_xdr() }
     }
 }
@@ -1360,12 +1342,8 @@ impl AttributeTraitSpec {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_trait_override_stacked_cfg() -> usize {
-        const { AttributeTraitSpec::__SPEC_XDR_ENTRY_trait_override_stacked_cfg.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_override_stacked_cfg(
-    ) -> [u8; AttributeTraitSpec::spec_xdr_len_trait_override_stacked_cfg()] {
+    ) -> [u8; AttributeTraitSpec::__SPEC_XDR_ENTRY_trait_override_stacked_cfg.const_xdr_len()] {
         const { AttributeTraitSpec::__SPEC_XDR_ENTRY_trait_override_stacked_cfg.const_to_xdr() }
     }
 }
@@ -1387,12 +1365,8 @@ impl AttributeTraitSpec {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_trait_override_negated_cfg() -> usize {
-        const { AttributeTraitSpec::__SPEC_XDR_ENTRY_trait_override_negated_cfg.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_override_negated_cfg(
-    ) -> [u8; AttributeTraitSpec::spec_xdr_len_trait_override_negated_cfg()] {
+    ) -> [u8; AttributeTraitSpec::__SPEC_XDR_ENTRY_trait_override_negated_cfg.const_xdr_len()] {
         const { AttributeTraitSpec::__SPEC_XDR_ENTRY_trait_override_negated_cfg.const_to_xdr() }
     }
 }
@@ -1414,12 +1388,8 @@ impl AttributeTraitSpec {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_trait_override_dual_cfg() -> usize {
-        const { AttributeTraitSpec::__SPEC_XDR_ENTRY_trait_override_dual_cfg.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_override_dual_cfg(
-    ) -> [u8; AttributeTraitSpec::spec_xdr_len_trait_override_dual_cfg()] {
+    ) -> [u8; AttributeTraitSpec::__SPEC_XDR_ENTRY_trait_override_dual_cfg.const_xdr_len()] {
         const { AttributeTraitSpec::__SPEC_XDR_ENTRY_trait_override_dual_cfg.const_to_xdr() }
     }
 }
@@ -1441,12 +1411,8 @@ impl AttributeTraitSpec {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_trait_default_dual_cfg() -> usize {
-        const { AttributeTraitSpec::__SPEC_XDR_ENTRY_trait_default_dual_cfg.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_default_dual_cfg(
-    ) -> [u8; AttributeTraitSpec::spec_xdr_len_trait_default_dual_cfg()] {
+    ) -> [u8; AttributeTraitSpec::__SPEC_XDR_ENTRY_trait_default_dual_cfg.const_xdr_len()] {
         const { AttributeTraitSpec::__SPEC_XDR_ENTRY_trait_default_dual_cfg.const_to_xdr() }
     }
 }
@@ -1469,7 +1435,7 @@ mod __Contract__always__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_ALWAYS: [u8; super::Contract::spec_xdr_len_always()] =
+    static __SPEC_XDR_FN_ALWAYS: [u8; super::Contract::spec_xdr_always().len()] =
         super::Contract::spec_xdr_always();
 }
 impl Contract {
@@ -1500,11 +1466,7 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_always() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_always.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_always() -> [u8; Contract::spec_xdr_len_always()] {
+    pub const fn spec_xdr_always() -> [u8; Contract::__SPEC_XDR_ENTRY_always.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_always.const_to_xdr() }
     }
 }
@@ -1516,7 +1478,7 @@ mod __Contract__cfg_included__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_CFG_INCLUDED: [u8; super::Contract::spec_xdr_len_cfg_included()] =
+    static __SPEC_XDR_FN_CFG_INCLUDED: [u8; super::Contract::spec_xdr_cfg_included().len()] =
         super::Contract::spec_xdr_cfg_included();
 }
 impl Contract {
@@ -1541,11 +1503,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_cfg_included() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_cfg_included.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_cfg_included() -> [u8; Contract::spec_xdr_len_cfg_included()] {
+    pub const fn spec_xdr_cfg_included(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_cfg_included.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_cfg_included.const_to_xdr() }
     }
 }
@@ -1558,7 +1517,7 @@ mod __Contract__publish__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_PUBLISH: [u8; super::Contract::spec_xdr_len_publish()] =
+    static __SPEC_XDR_FN_PUBLISH: [u8; super::Contract::spec_xdr_publish().len()] =
         super::Contract::spec_xdr_publish();
 }
 impl Contract {
@@ -1586,11 +1545,7 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_publish() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_publish.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_publish() -> [u8; Contract::spec_xdr_len_publish()] {
+    pub const fn spec_xdr_publish() -> [u8; Contract::__SPEC_XDR_ENTRY_publish.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_publish.const_to_xdr() }
     }
 }
@@ -2067,7 +2022,7 @@ mod __Contract__trait_override__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_TRAIT_OVERRIDE: [u8; super::Contract::spec_xdr_len_trait_override()] =
+    static __SPEC_XDR_FN_TRAIT_OVERRIDE: [u8; super::Contract::spec_xdr_trait_override().len()] =
         super::Contract::spec_xdr_trait_override();
 }
 impl Contract {
@@ -2086,11 +2041,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_trait_override() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_trait_override.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_trait_override() -> [u8; Contract::spec_xdr_len_trait_override()] {
+    pub const fn spec_xdr_trait_override(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_trait_override.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_trait_override.const_to_xdr() }
     }
 }
@@ -2105,7 +2057,7 @@ mod __Contract__trait_override_stacked_cfg__spec {
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
     static __SPEC_XDR_FN_TRAIT_OVERRIDE_STACKED_CFG: [u8;
-        super::Contract::spec_xdr_len_trait_override_stacked_cfg()] =
+        super::Contract::spec_xdr_trait_override_stacked_cfg().len()] =
         super::Contract::spec_xdr_trait_override_stacked_cfg();
 }
 impl Contract {
@@ -2126,12 +2078,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_trait_override_stacked_cfg() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_trait_override_stacked_cfg.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_override_stacked_cfg(
-    ) -> [u8; Contract::spec_xdr_len_trait_override_stacked_cfg()] {
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_trait_override_stacked_cfg.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_trait_override_stacked_cfg.const_to_xdr() }
     }
 }
@@ -2144,7 +2092,7 @@ mod __Contract__trait_override_negated_cfg__spec {
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
     static __SPEC_XDR_FN_TRAIT_OVERRIDE_NEGATED_CFG: [u8;
-        super::Contract::spec_xdr_len_trait_override_negated_cfg()] =
+        super::Contract::spec_xdr_trait_override_negated_cfg().len()] =
         super::Contract::spec_xdr_trait_override_negated_cfg();
 }
 impl Contract {
@@ -2165,12 +2113,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_trait_override_negated_cfg() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_trait_override_negated_cfg.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_override_negated_cfg(
-    ) -> [u8; Contract::spec_xdr_len_trait_override_negated_cfg()] {
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_trait_override_negated_cfg.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_trait_override_negated_cfg.const_to_xdr() }
     }
 }
@@ -2183,7 +2127,7 @@ mod __Contract__trait_override_dual_cfg__spec {
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
     static __SPEC_XDR_FN_TRAIT_OVERRIDE_DUAL_CFG: [u8;
-        super::Contract::spec_xdr_len_trait_override_dual_cfg()] =
+        super::Contract::spec_xdr_trait_override_dual_cfg().len()] =
         super::Contract::spec_xdr_trait_override_dual_cfg();
 }
 impl Contract {
@@ -2204,12 +2148,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_trait_override_dual_cfg() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_trait_override_dual_cfg.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_override_dual_cfg(
-    ) -> [u8; Contract::spec_xdr_len_trait_override_dual_cfg()] {
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_trait_override_dual_cfg.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_trait_override_dual_cfg.const_to_xdr() }
     }
 }
@@ -2815,7 +2755,7 @@ mod __Contract__trait_default__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_TRAIT_DEFAULT: [u8; super::Contract::spec_xdr_len_trait_default()] =
+    static __SPEC_XDR_FN_TRAIT_DEFAULT: [u8; super::Contract::spec_xdr_trait_default().len()] =
         super::Contract::spec_xdr_trait_default();
 }
 impl Contract {
@@ -2834,11 +2774,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_trait_default() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_trait_default.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_trait_default() -> [u8; Contract::spec_xdr_len_trait_default()] {
+    pub const fn spec_xdr_trait_default(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_trait_default.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_trait_default.const_to_xdr() }
     }
 }
@@ -2851,7 +2788,7 @@ mod __Contract__trait_default_stacked_cfg__spec {
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
     static __SPEC_XDR_FN_TRAIT_DEFAULT_STACKED_CFG: [u8;
-        super::Contract::spec_xdr_len_trait_default_stacked_cfg()] =
+        super::Contract::spec_xdr_trait_default_stacked_cfg().len()] =
         super::Contract::spec_xdr_trait_default_stacked_cfg();
 }
 impl Contract {
@@ -2872,12 +2809,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_trait_default_stacked_cfg() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_trait_default_stacked_cfg.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_default_stacked_cfg(
-    ) -> [u8; Contract::spec_xdr_len_trait_default_stacked_cfg()] {
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_trait_default_stacked_cfg.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_trait_default_stacked_cfg.const_to_xdr() }
     }
 }
@@ -2893,7 +2826,7 @@ mod __Contract__trait_default_dual_cfg__spec {
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
     static __SPEC_XDR_FN_TRAIT_DEFAULT_DUAL_CFG: [u8;
-        super::Contract::spec_xdr_len_trait_default_dual_cfg()] =
+        super::Contract::spec_xdr_trait_default_dual_cfg().len()] =
         super::Contract::spec_xdr_trait_default_dual_cfg();
 }
 impl Contract {
@@ -2914,12 +2847,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_trait_default_dual_cfg() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_trait_default_dual_cfg.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_default_dual_cfg(
-    ) -> [u8; Contract::spec_xdr_len_trait_default_dual_cfg()] {
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_trait_default_dual_cfg.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_trait_default_dual_cfg.const_to_xdr() }
     }
 }

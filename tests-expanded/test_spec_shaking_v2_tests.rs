@@ -188,7 +188,7 @@ impl ::core::cmp::PartialEq for UsedParamStruct {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_USEDPARAMSTRUCT: [u8; UsedParamStruct::spec_xdr_len()] =
+static __SPEC_XDR_TYPE_USEDPARAMSTRUCT: [u8; UsedParamStruct::spec_xdr().len()] =
     UsedParamStruct::spec_xdr();
 impl UsedParamStruct {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -221,10 +221,7 @@ impl UsedParamStruct {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedParamStruct::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedParamStruct::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedParamStruct::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedParamStruct::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -668,7 +665,7 @@ impl ::core::cmp::PartialEq for UsedReturnEnum {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_USEDRETURNENUM: [u8; UsedReturnEnum::spec_xdr_len()] =
+static __SPEC_XDR_TYPE_USEDRETURNENUM: [u8; UsedReturnEnum::spec_xdr().len()] =
     UsedReturnEnum::spec_xdr();
 impl UsedReturnEnum {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -701,10 +698,7 @@ impl UsedReturnEnum {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedReturnEnum::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedReturnEnum::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedReturnEnum::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedReturnEnum::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -1220,7 +1214,7 @@ impl ::core::cmp::PartialEq for UsedParamIntEnum {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_USEDPARAMINTENUM: [u8; UsedParamIntEnum::spec_xdr_len()] =
+static __SPEC_XDR_TYPE_USEDPARAMINTENUM: [u8; UsedParamIntEnum::spec_xdr().len()] =
     UsedParamIntEnum::spec_xdr();
 impl UsedParamIntEnum {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -1245,10 +1239,7 @@ impl UsedParamIntEnum {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedParamIntEnum::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedParamIntEnum::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedParamIntEnum::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedParamIntEnum::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -1579,7 +1570,7 @@ impl ::core::cmp::PartialEq for UsedErrorEnum {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_USEDERRORENUM: [u8; UsedErrorEnum::spec_xdr_len()] =
+static __SPEC_XDR_TYPE_USEDERRORENUM: [u8; UsedErrorEnum::spec_xdr().len()] =
     UsedErrorEnum::spec_xdr();
 impl UsedErrorEnum {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -1606,10 +1597,7 @@ impl UsedErrorEnum {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedErrorEnum::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedErrorEnum::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedErrorEnum::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedErrorEnum::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -1762,7 +1750,7 @@ impl ::core::cmp::PartialEq for UsedPanicErrorEnum {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_USEDPANICERRORENUM: [u8; UsedPanicErrorEnum::spec_xdr_len()] =
+static __SPEC_XDR_TYPE_USEDPANICERRORENUM: [u8; UsedPanicErrorEnum::spec_xdr().len()] =
     UsedPanicErrorEnum::spec_xdr();
 impl UsedPanicErrorEnum {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -1782,10 +1770,7 @@ impl UsedPanicErrorEnum {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedPanicErrorEnum::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedPanicErrorEnum::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedPanicErrorEnum::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedPanicErrorEnum::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -1936,7 +1921,7 @@ impl ::core::cmp::PartialEq for UsedAssertErrorEnum {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_USEDASSERTERRORENUM: [u8; UsedAssertErrorEnum::spec_xdr_len()] =
+static __SPEC_XDR_TYPE_USEDASSERTERRORENUM: [u8; UsedAssertErrorEnum::spec_xdr().len()] =
     UsedAssertErrorEnum::spec_xdr();
 impl UsedAssertErrorEnum {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -1956,10 +1941,7 @@ impl UsedAssertErrorEnum {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedAssertErrorEnum::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedAssertErrorEnum::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedAssertErrorEnum::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedAssertErrorEnum::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -2117,7 +2099,7 @@ impl ::core::cmp::PartialEq for UsedNestedInStruct {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_USEDNESTEDINSTRUCT: [u8; UsedNestedInStruct::spec_xdr_len()] =
+static __SPEC_XDR_TYPE_USEDNESTEDINSTRUCT: [u8; UsedNestedInStruct::spec_xdr().len()] =
     UsedNestedInStruct::spec_xdr();
 impl UsedNestedInStruct {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -2137,10 +2119,7 @@ impl UsedNestedInStruct {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedNestedInStruct::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedNestedInStruct::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedNestedInStruct::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedNestedInStruct::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -2512,7 +2491,7 @@ impl ::core::cmp::PartialEq for UsedVecElement {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_USEDVECELEMENT: [u8; UsedVecElement::spec_xdr_len()] =
+static __SPEC_XDR_TYPE_USEDVECELEMENT: [u8; UsedVecElement::spec_xdr().len()] =
     UsedVecElement::spec_xdr();
 impl UsedVecElement {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -2532,10 +2511,7 @@ impl UsedVecElement {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedVecElement::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedVecElement::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedVecElement::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedVecElement::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -2912,7 +2888,7 @@ impl ::core::cmp::PartialEq for UsedMapKey {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_USEDMAPKEY: [u8; UsedMapKey::spec_xdr_len()] = UsedMapKey::spec_xdr();
+static __SPEC_XDR_TYPE_USEDMAPKEY: [u8; UsedMapKey::spec_xdr().len()] = UsedMapKey::spec_xdr();
 impl UsedMapKey {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtEnumV0(
@@ -2934,10 +2910,7 @@ impl UsedMapKey {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedMapKey::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedMapKey::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedMapKey::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedMapKey::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -3259,7 +3232,7 @@ impl ::core::cmp::PartialEq for UsedMapVal {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_USEDMAPVAL: [u8; UsedMapVal::spec_xdr_len()] = UsedMapVal::spec_xdr();
+static __SPEC_XDR_TYPE_USEDMAPVAL: [u8; UsedMapVal::spec_xdr().len()] = UsedMapVal::spec_xdr();
 impl UsedMapVal {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
@@ -3276,10 +3249,7 @@ impl UsedMapVal {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedMapVal::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedMapVal::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedMapVal::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedMapVal::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -3650,7 +3620,7 @@ impl ::core::cmp::PartialEq for UsedOptionElement {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_USEDOPTIONELEMENT: [u8; UsedOptionElement::spec_xdr_len()] =
+static __SPEC_XDR_TYPE_USEDOPTIONELEMENT: [u8; UsedOptionElement::spec_xdr().len()] =
     UsedOptionElement::spec_xdr();
 impl UsedOptionElement {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -3670,10 +3640,7 @@ impl UsedOptionElement {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedOptionElement::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedOptionElement::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedOptionElement::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedOptionElement::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -4043,7 +4010,8 @@ impl ::core::cmp::PartialEq for UsedResultOk {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_USEDRESULTOK: [u8; UsedResultOk::spec_xdr_len()] = UsedResultOk::spec_xdr();
+static __SPEC_XDR_TYPE_USEDRESULTOK: [u8; UsedResultOk::spec_xdr().len()] =
+    UsedResultOk::spec_xdr();
 impl UsedResultOk {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
@@ -4060,10 +4028,7 @@ impl UsedResultOk {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedResultOk::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedResultOk::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedResultOk::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedResultOk::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -4441,7 +4406,7 @@ impl ::core::cmp::PartialEq for UsedEventSimple {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_EVENT_USEDEVENTSIMPLE: [u8; UsedEventSimple::spec_xdr_len()] =
+static __SPEC_XDR_EVENT_USEDEVENTSIMPLE: [u8; UsedEventSimple::spec_xdr().len()] =
     UsedEventSimple::spec_xdr();
 impl UsedEventSimple {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -4472,10 +4437,7 @@ impl UsedEventSimple {
             ]),
             data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
         });
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedEventSimple::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedEventSimple::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedEventSimple::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedEventSimple::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -4557,7 +4519,7 @@ impl ::core::cmp::PartialEq for UsedEventTopicType {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_USEDEVENTTOPICTYPE: [u8; UsedEventTopicType::spec_xdr_len()] =
+static __SPEC_XDR_TYPE_USEDEVENTTOPICTYPE: [u8; UsedEventTopicType::spec_xdr().len()] =
     UsedEventTopicType::spec_xdr();
 impl UsedEventTopicType {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -4584,10 +4546,7 @@ impl UsedEventTopicType {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedEventTopicType::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedEventTopicType::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedEventTopicType::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedEventTopicType::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -4923,7 +4882,7 @@ impl ::core::cmp::PartialEq for UsedEventWithTopicType {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_EVENT_USEDEVENTWITHTOPICTYPE: [u8; UsedEventWithTopicType::spec_xdr_len()] =
+static __SPEC_XDR_EVENT_USEDEVENTWITHTOPICTYPE: [u8; UsedEventWithTopicType::spec_xdr().len()] =
     UsedEventWithTopicType::spec_xdr();
 impl UsedEventWithTopicType {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -4962,10 +4921,7 @@ impl UsedEventWithTopicType {
             ]),
             data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
         });
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedEventWithTopicType::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedEventWithTopicType::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedEventWithTopicType::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedEventWithTopicType::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -5052,7 +5008,7 @@ impl ::core::cmp::PartialEq for UsedEventDataType {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_USEDEVENTDATATYPE: [u8; UsedEventDataType::spec_xdr_len()] =
+static __SPEC_XDR_TYPE_USEDEVENTDATATYPE: [u8; UsedEventDataType::spec_xdr().len()] =
     UsedEventDataType::spec_xdr();
 impl UsedEventDataType {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -5077,10 +5033,7 @@ impl UsedEventDataType {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedEventDataType::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedEventDataType::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedEventDataType::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedEventDataType::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -5512,7 +5465,7 @@ impl ::core::cmp::PartialEq for UsedEventWithDataType {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_EVENT_USEDEVENTWITHDATATYPE: [u8; UsedEventWithDataType::spec_xdr_len()] =
+static __SPEC_XDR_EVENT_USEDEVENTWITHDATATYPE: [u8; UsedEventWithDataType::spec_xdr().len()] =
     UsedEventWithDataType::spec_xdr();
 impl UsedEventWithDataType {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -5551,10 +5504,7 @@ impl UsedEventWithDataType {
             ]),
             data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
         });
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedEventWithDataType::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedEventWithDataType::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedEventWithDataType::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedEventWithDataType::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -5637,7 +5587,7 @@ impl ::core::cmp::PartialEq for UsedEventTopicOuter {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_USEDEVENTTOPICOUTER: [u8; UsedEventTopicOuter::spec_xdr_len()] =
+static __SPEC_XDR_TYPE_USEDEVENTTOPICOUTER: [u8; UsedEventTopicOuter::spec_xdr().len()] =
     UsedEventTopicOuter::spec_xdr();
 impl UsedEventTopicOuter {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -5663,10 +5613,7 @@ impl UsedEventTopicOuter {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedEventTopicOuter::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedEventTopicOuter::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedEventTopicOuter::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedEventTopicOuter::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -6048,7 +5995,7 @@ impl ::core::cmp::PartialEq for UsedEventTopicInner {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_USEDEVENTTOPICINNER: [u8; UsedEventTopicInner::spec_xdr_len()] =
+static __SPEC_XDR_TYPE_USEDEVENTTOPICINNER: [u8; UsedEventTopicInner::spec_xdr().len()] =
     UsedEventTopicInner::spec_xdr();
 impl UsedEventTopicInner {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -6068,10 +6015,7 @@ impl UsedEventTopicInner {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedEventTopicInner::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedEventTopicInner::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedEventTopicInner::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedEventTopicInner::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -6455,7 +6399,7 @@ impl ::core::cmp::PartialEq for UsedEventWithNestedTopic {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_EVENT_USEDEVENTWITHNESTEDTOPIC: [u8; UsedEventWithNestedTopic::spec_xdr_len()] =
+static __SPEC_XDR_EVENT_USEDEVENTWITHNESTEDTOPIC: [u8; UsedEventWithNestedTopic::spec_xdr().len()] =
     UsedEventWithNestedTopic::spec_xdr();
 impl UsedEventWithNestedTopic {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -6494,10 +6438,7 @@ impl UsedEventWithNestedTopic {
             ]),
             data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
         });
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedEventWithNestedTopic::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedEventWithNestedTopic::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedEventWithNestedTopic::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedEventWithNestedTopic::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -6580,7 +6521,7 @@ impl ::core::cmp::PartialEq for UsedEventDataOuter {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_USEDEVENTDATAOUTER: [u8; UsedEventDataOuter::spec_xdr_len()] =
+static __SPEC_XDR_TYPE_USEDEVENTDATAOUTER: [u8; UsedEventDataOuter::spec_xdr().len()] =
     UsedEventDataOuter::spec_xdr();
 impl UsedEventDataOuter {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -6606,10 +6547,7 @@ impl UsedEventDataOuter {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedEventDataOuter::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedEventDataOuter::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedEventDataOuter::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedEventDataOuter::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -6989,7 +6927,7 @@ impl ::core::cmp::PartialEq for UsedEventDataInner {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_USEDEVENTDATAINNER: [u8; UsedEventDataInner::spec_xdr_len()] =
+static __SPEC_XDR_TYPE_USEDEVENTDATAINNER: [u8; UsedEventDataInner::spec_xdr().len()] =
     UsedEventDataInner::spec_xdr();
 impl UsedEventDataInner {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -7009,10 +6947,7 @@ impl UsedEventDataInner {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedEventDataInner::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedEventDataInner::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedEventDataInner::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedEventDataInner::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -7394,7 +7329,7 @@ impl ::core::cmp::PartialEq for UsedEventWithNestedData {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_EVENT_USEDEVENTWITHNESTEDDATA: [u8; UsedEventWithNestedData::spec_xdr_len()] =
+static __SPEC_XDR_EVENT_USEDEVENTWITHNESTEDDATA: [u8; UsedEventWithNestedData::spec_xdr().len()] =
     UsedEventWithNestedData::spec_xdr();
 impl UsedEventWithNestedData {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -7433,10 +7368,7 @@ impl UsedEventWithNestedData {
             ]),
             data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
         });
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedEventWithNestedData::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedEventWithNestedData::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedEventWithNestedData::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedEventWithNestedData::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -7521,7 +7453,7 @@ impl ::core::cmp::PartialEq for UsedRefTopicType {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_USEDREFTOPICTYPE: [u8; UsedRefTopicType::spec_xdr_len()] =
+static __SPEC_XDR_TYPE_USEDREFTOPICTYPE: [u8; UsedRefTopicType::spec_xdr().len()] =
     UsedRefTopicType::spec_xdr();
 impl UsedRefTopicType {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -7546,10 +7478,7 @@ impl UsedRefTopicType {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedRefTopicType::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedRefTopicType::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedRefTopicType::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedRefTopicType::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -7878,7 +7807,7 @@ impl ::core::cmp::PartialEq for UsedRefDataType {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_USEDREFDATATYPE: [u8; UsedRefDataType::spec_xdr_len()] =
+static __SPEC_XDR_TYPE_USEDREFDATATYPE: [u8; UsedRefDataType::spec_xdr().len()] =
     UsedRefDataType::spec_xdr();
 impl UsedRefDataType {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -7906,10 +7835,7 @@ impl UsedRefDataType {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedRefDataType::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedRefDataType::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedRefDataType::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedRefDataType::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -8282,7 +8208,7 @@ impl ::core::cmp::PartialEq for UsedRefDataInner {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_USEDREFDATAINNER: [u8; UsedRefDataInner::spec_xdr_len()] =
+static __SPEC_XDR_TYPE_USEDREFDATAINNER: [u8; UsedRefDataInner::spec_xdr().len()] =
     UsedRefDataInner::spec_xdr();
 impl UsedRefDataInner {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -8302,10 +8228,7 @@ impl UsedRefDataInner {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedRefDataInner::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedRefDataInner::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedRefDataInner::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedRefDataInner::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -8685,7 +8608,7 @@ impl<'a> ::core::cmp::PartialEq for UsedEventWithRefs<'a> {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_EVENT_USEDEVENTWITHREFS: [u8; UsedEventWithRefs::spec_xdr_len()] =
+static __SPEC_XDR_EVENT_USEDEVENTWITHREFS: [u8; UsedEventWithRefs::spec_xdr().len()] =
     UsedEventWithRefs::spec_xdr();
 impl<'a> UsedEventWithRefs<'a> {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -8728,10 +8651,7 @@ impl<'a> UsedEventWithRefs<'a> {
             ]),
             data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
         });
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedEventWithRefs::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedEventWithRefs::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedEventWithRefs::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedEventWithRefs::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -8809,7 +8729,7 @@ impl ::core::cmp::PartialEq for UsedTupleElement {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_USEDTUPLEELEMENT: [u8; UsedTupleElement::spec_xdr_len()] =
+static __SPEC_XDR_TYPE_USEDTUPLEELEMENT: [u8; UsedTupleElement::spec_xdr().len()] =
     UsedTupleElement::spec_xdr();
 impl UsedTupleElement {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -8829,10 +8749,7 @@ impl UsedTupleElement {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedTupleElement::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedTupleElement::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedTupleElement::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedTupleElement::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -9207,7 +9124,7 @@ impl ::core::cmp::PartialEq for UsedTupleReturnElement {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_USEDTUPLERETURNELEMENT: [u8; UsedTupleReturnElement::spec_xdr_len()] =
+static __SPEC_XDR_TYPE_USEDTUPLERETURNELEMENT: [u8; UsedTupleReturnElement::spec_xdr().len()] =
     UsedTupleReturnElement::spec_xdr();
 impl UsedTupleReturnElement {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -9227,10 +9144,7 @@ impl UsedTupleReturnElement {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedTupleReturnElement::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedTupleReturnElement::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedTupleReturnElement::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedTupleReturnElement::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -9609,7 +9523,7 @@ impl ::core::cmp::PartialEq for UsedVecInnerVecElement {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_USEDVECINNERVECELEMENT: [u8; UsedVecInnerVecElement::spec_xdr_len()] =
+static __SPEC_XDR_TYPE_USEDVECINNERVECELEMENT: [u8; UsedVecInnerVecElement::spec_xdr().len()] =
     UsedVecInnerVecElement::spec_xdr();
 impl UsedVecInnerVecElement {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -9629,10 +9543,7 @@ impl UsedVecInnerVecElement {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedVecInnerVecElement::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedVecInnerVecElement::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedVecInnerVecElement::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedVecInnerVecElement::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -10011,7 +9922,7 @@ impl ::core::cmp::PartialEq for UsedVecInnerElement {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_USEDVECINNERELEMENT: [u8; UsedVecInnerElement::spec_xdr_len()] =
+static __SPEC_XDR_TYPE_USEDVECINNERELEMENT: [u8; UsedVecInnerElement::spec_xdr().len()] =
     UsedVecInnerElement::spec_xdr();
 impl UsedVecInnerElement {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -10031,10 +9942,7 @@ impl UsedVecInnerElement {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedVecInnerElement::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedVecInnerElement::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedVecInnerElement::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedVecInnerElement::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -10423,7 +10331,7 @@ impl ::core::cmp::PartialEq for UsedVecElementNested {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_USEDVECELEMENTNESTED: [u8; UsedVecElementNested::spec_xdr_len()] =
+static __SPEC_XDR_TYPE_USEDVECELEMENTNESTED: [u8; UsedVecElementNested::spec_xdr().len()] =
     UsedVecElementNested::spec_xdr();
 impl UsedVecElementNested {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -10476,10 +10384,7 @@ impl UsedVecElementNested {
             ],
         ),
     });
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedVecElementNested::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedVecElementNested::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedVecElementNested::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedVecElementNested::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -10977,7 +10882,7 @@ impl ::core::cmp::PartialEq for UsedNonPubStruct {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_USEDNONPUBSTRUCT: [u8; UsedNonPubStruct::spec_xdr_len()] =
+static __SPEC_XDR_TYPE_USEDNONPUBSTRUCT: [u8; UsedNonPubStruct::spec_xdr().len()] =
     UsedNonPubStruct::spec_xdr();
 impl UsedNonPubStruct {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -10997,10 +10902,7 @@ impl UsedNonPubStruct {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedNonPubStruct::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedNonPubStruct::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedNonPubStruct::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedNonPubStruct::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -11368,7 +11270,7 @@ impl ::core::cmp::PartialEq for UsedNonPubError {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_USEDNONPUBERROR: [u8; UsedNonPubError::spec_xdr_len()] =
+static __SPEC_XDR_TYPE_USEDNONPUBERROR: [u8; UsedNonPubError::spec_xdr().len()] =
     UsedNonPubError::spec_xdr();
 impl UsedNonPubError {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -11388,10 +11290,7 @@ impl UsedNonPubError {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedNonPubError::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedNonPubError::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedNonPubError::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedNonPubError::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -11547,7 +11446,7 @@ impl ::core::cmp::PartialEq for UsedRecursiveRoot {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_USEDRECURSIVEROOT: [u8; UsedRecursiveRoot::spec_xdr_len()] =
+static __SPEC_XDR_TYPE_USEDRECURSIVEROOT: [u8; UsedRecursiveRoot::spec_xdr().len()] =
     UsedRecursiveRoot::spec_xdr();
 impl UsedRecursiveRoot {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -11573,10 +11472,7 @@ impl UsedRecursiveRoot {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedRecursiveRoot::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedRecursiveRoot::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedRecursiveRoot::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedRecursiveRoot::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -11973,7 +11869,7 @@ impl ::core::cmp::PartialEq for UsedRecursiveNode {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_USEDRECURSIVENODE: [u8; UsedRecursiveNode::spec_xdr_len()] =
+static __SPEC_XDR_TYPE_USEDRECURSIVENODE: [u8; UsedRecursiveNode::spec_xdr().len()] =
     UsedRecursiveNode::spec_xdr();
 impl UsedRecursiveNode {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
@@ -12021,10 +11917,7 @@ impl UsedRecursiveNode {
             ],
         ),
     });
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedRecursiveNode::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedRecursiveNode::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedRecursiveNode::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedRecursiveNode::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -12548,7 +12441,7 @@ impl ::core::cmp::PartialEq for UsedRecursiveLeaf {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_USEDRECURSIVELEAF: [u8; UsedRecursiveLeaf::spec_xdr_len()] =
+static __SPEC_XDR_TYPE_USEDRECURSIVELEAF: [u8; UsedRecursiveLeaf::spec_xdr().len()] =
     UsedRecursiveLeaf::spec_xdr();
 impl UsedRecursiveLeaf {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -12579,10 +12472,7 @@ impl UsedRecursiveLeaf {
             ],
         ),
     });
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedRecursiveLeaf::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedRecursiveLeaf::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedRecursiveLeaf::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedRecursiveLeaf::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -12958,7 +12848,7 @@ impl ::core::cmp::PartialEq for UsedLeaf {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_USEDLEAF: [u8; UsedLeaf::spec_xdr_len()] = UsedLeaf::spec_xdr();
+static __SPEC_XDR_TYPE_USEDLEAF: [u8; UsedLeaf::spec_xdr().len()] = UsedLeaf::spec_xdr();
 impl UsedLeaf {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
@@ -12975,10 +12865,7 @@ impl UsedLeaf {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { UsedLeaf::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UsedLeaf::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UsedLeaf::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UsedLeaf::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -14077,7 +13964,7 @@ mod wasm_imported {
     }
     #[doc(hidden)]
     #[allow(dead_code)]
-    static __SPEC_XDR_TYPE_CONTRACTEXECUTABLEREF: [u8; ContractExecutableRef::spec_xdr_len()] =
+    static __SPEC_XDR_TYPE_CONTRACTEXECUTABLEREF: [u8; ContractExecutableRef::spec_xdr().len()] =
         ContractExecutableRef::spec_xdr();
     impl ContractExecutableRef {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -14106,10 +13993,7 @@ mod wasm_imported {
                     ]),
                 },
             );
-        pub const fn spec_xdr_len() -> usize {
-            const { ContractExecutableRef::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; ContractExecutableRef::spec_xdr_len()] {
+        pub const fn spec_xdr() -> [u8; ContractExecutableRef::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { ContractExecutableRef::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
@@ -14597,7 +14481,7 @@ mod wasm_imported {
     }
     #[doc(hidden)]
     #[allow(dead_code)]
-    static __SPEC_XDR_TYPE_CONTRACTCONTEXT: [u8; ContractContext::spec_xdr_len()] =
+    static __SPEC_XDR_TYPE_CONTRACTCONTEXT: [u8; ContractContext::spec_xdr().len()] =
         ContractContext::spec_xdr();
     impl ContractContext {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -14637,10 +14521,7 @@ mod wasm_imported {
                     ]),
                 },
             );
-        pub const fn spec_xdr_len() -> usize {
-            const { ContractContext::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; ContractContext::spec_xdr_len()] {
+        pub const fn spec_xdr() -> [u8; ContractContext::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { ContractContext::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
@@ -15183,7 +15064,7 @@ mod wasm_imported {
     }
     #[doc(hidden)]
     #[allow(dead_code)]
-    static __SPEC_XDR_TYPE_SUBCONTRACTINVOCATION: [u8; SubContractInvocation::spec_xdr_len()] =
+    static __SPEC_XDR_TYPE_SUBCONTRACTINVOCATION: [u8; SubContractInvocation::spec_xdr().len()] =
         SubContractInvocation::spec_xdr();
     impl SubContractInvocation {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -15227,10 +15108,7 @@ mod wasm_imported {
                 ],
             ),
         });
-        pub const fn spec_xdr_len() -> usize {
-            const { SubContractInvocation::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; SubContractInvocation::spec_xdr_len()] {
+        pub const fn spec_xdr() -> [u8; SubContractInvocation::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { SubContractInvocation::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
@@ -15715,7 +15593,7 @@ mod wasm_imported {
     #[doc(hidden)]
     #[allow(dead_code)]
     static __SPEC_XDR_TYPE_CREATECONTRACTHOSTFNCONTEXT: [u8;
-        CreateContractHostFnContext::spec_xdr_len()] = CreateContractHostFnContext::spec_xdr();
+        CreateContractHostFnContext::spec_xdr().len()] = CreateContractHostFnContext::spec_xdr();
     impl CreateContractHostFnContext {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
             soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
@@ -15752,10 +15630,8 @@ mod wasm_imported {
                     ]),
                 },
             );
-        pub const fn spec_xdr_len() -> usize {
-            const { CreateContractHostFnContext::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; CreateContractHostFnContext::spec_xdr_len()] {
+        pub const fn spec_xdr(
+        ) -> [u8; CreateContractHostFnContext::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { CreateContractHostFnContext::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
@@ -16259,7 +16135,7 @@ mod wasm_imported {
     #[doc(hidden)]
     #[allow(dead_code)]
     static __SPEC_XDR_TYPE_CREATECONTRACTWITHCONSTRUCTORHOSTFNCONTEXT: [u8;
-        CreateContractWithConstructorHostFnContext::spec_xdr_len()] =
+        CreateContractWithConstructorHostFnContext::spec_xdr().len()] =
         CreateContractWithConstructorHostFnContext::spec_xdr();
     impl CreateContractWithConstructorHostFnContext {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -16308,10 +16184,8 @@ mod wasm_imported {
                     ]),
                 },
             );
-        pub const fn spec_xdr_len() -> usize {
-            const { CreateContractWithConstructorHostFnContext::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; CreateContractWithConstructorHostFnContext::spec_xdr_len()]
+        pub const fn spec_xdr(
+        ) -> [u8; CreateContractWithConstructorHostFnContext::__SPEC_XDR_ENTRY.const_xdr_len()]
         {
             const { CreateContractWithConstructorHostFnContext::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
@@ -16891,7 +16765,7 @@ mod wasm_imported {
     }
     #[doc(hidden)]
     #[allow(dead_code)]
-    static __SPEC_XDR_TYPE_STRUCTA: [u8; StructA::spec_xdr_len()] = StructA::spec_xdr();
+    static __SPEC_XDR_TYPE_STRUCTA: [u8; StructA::spec_xdr().len()] = StructA::spec_xdr();
     impl StructA {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
             soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
@@ -16917,10 +16791,7 @@ mod wasm_imported {
                     ]),
                 },
             );
-        pub const fn spec_xdr_len() -> usize {
-            const { StructA::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; StructA::spec_xdr_len()] {
+        pub const fn spec_xdr() -> [u8; StructA::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { StructA::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
@@ -17369,7 +17240,7 @@ mod wasm_imported {
     }
     #[doc(hidden)]
     #[allow(dead_code)]
-    static __SPEC_XDR_TYPE_STRUCTB: [u8; StructB::spec_xdr_len()] = StructB::spec_xdr();
+    static __SPEC_XDR_TYPE_STRUCTB: [u8; StructB::spec_xdr().len()] = StructB::spec_xdr();
     impl StructB {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
             soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
@@ -17395,10 +17266,7 @@ mod wasm_imported {
                     ]),
                 },
             );
-        pub const fn spec_xdr_len() -> usize {
-            const { StructB::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; StructB::spec_xdr_len()] {
+        pub const fn spec_xdr() -> [u8; StructB::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { StructB::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
@@ -17847,7 +17715,7 @@ mod wasm_imported {
     }
     #[doc(hidden)]
     #[allow(dead_code)]
-    static __SPEC_XDR_TYPE_STRUCTC: [u8; StructC::spec_xdr_len()] = StructC::spec_xdr();
+    static __SPEC_XDR_TYPE_STRUCTC: [u8; StructC::spec_xdr().len()] = StructC::spec_xdr();
     impl StructC {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
             soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
@@ -17877,10 +17745,7 @@ mod wasm_imported {
                     ]),
                 },
             );
-        pub const fn spec_xdr_len() -> usize {
-            const { StructC::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; StructC::spec_xdr_len()] {
+        pub const fn spec_xdr() -> [u8; StructC::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { StructC::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
@@ -18332,7 +18197,7 @@ mod wasm_imported {
     }
     #[doc(hidden)]
     #[allow(dead_code)]
-    static __SPEC_XDR_TYPE_STRUCTTUPLEA: [u8; StructTupleA::spec_xdr_len()] =
+    static __SPEC_XDR_TYPE_STRUCTTUPLEA: [u8; StructTupleA::spec_xdr().len()] =
         StructTupleA::spec_xdr();
     impl StructTupleA {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -18357,10 +18222,7 @@ mod wasm_imported {
                     ]),
                 },
             );
-        pub const fn spec_xdr_len() -> usize {
-            const { StructTupleA::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; StructTupleA::spec_xdr_len()] {
+        pub const fn spec_xdr() -> [u8; StructTupleA::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { StructTupleA::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
@@ -18765,7 +18627,7 @@ mod wasm_imported {
     }
     #[doc(hidden)]
     #[allow(dead_code)]
-    static __SPEC_XDR_TYPE_STRUCTTUPLEB: [u8; StructTupleB::spec_xdr_len()] =
+    static __SPEC_XDR_TYPE_STRUCTTUPLEB: [u8; StructTupleB::spec_xdr().len()] =
         StructTupleB::spec_xdr();
     impl StructTupleB {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -18790,10 +18652,7 @@ mod wasm_imported {
                     ]),
                 },
             );
-        pub const fn spec_xdr_len() -> usize {
-            const { StructTupleB::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; StructTupleB::spec_xdr_len()] {
+        pub const fn spec_xdr() -> [u8; StructTupleB::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { StructTupleB::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
@@ -19199,7 +19058,7 @@ mod wasm_imported {
     }
     #[doc(hidden)]
     #[allow(dead_code)]
-    static __SPEC_XDR_TYPE_STRUCTTUPLEC: [u8; StructTupleC::spec_xdr_len()] =
+    static __SPEC_XDR_TYPE_STRUCTTUPLEC: [u8; StructTupleC::spec_xdr().len()] =
         StructTupleC::spec_xdr();
     impl StructTupleC {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -19224,10 +19083,7 @@ mod wasm_imported {
                     ]),
                 },
             );
-        pub const fn spec_xdr_len() -> usize {
-            const { StructTupleC::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; StructTupleC::spec_xdr_len()] {
+        pub const fn spec_xdr() -> [u8; StructTupleC::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { StructTupleC::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
@@ -19676,7 +19532,7 @@ mod wasm_imported {
     }
     #[doc(hidden)]
     #[allow(dead_code)]
-    static __SPEC_XDR_TYPE_CONTRACTEXECUTABLE: [u8; ContractExecutable::spec_xdr_len()] =
+    static __SPEC_XDR_TYPE_CONTRACTEXECUTABLE: [u8; ContractExecutable::spec_xdr().len()] =
         ContractExecutable::spec_xdr();
     impl ContractExecutable {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
@@ -19722,10 +19578,7 @@ mod wasm_imported {
                 ],
             ),
         });
-        pub const fn spec_xdr_len() -> usize {
-            const { ContractExecutable::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; ContractExecutable::spec_xdr_len()] {
+        pub const fn spec_xdr() -> [u8; ContractExecutable::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { ContractExecutable::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
@@ -20360,7 +20213,7 @@ mod wasm_imported {
     }
     #[doc(hidden)]
     #[allow(dead_code)]
-    static __SPEC_XDR_TYPE_CONTEXT: [u8; Context::spec_xdr_len()] = Context::spec_xdr();
+    static __SPEC_XDR_TYPE_CONTEXT: [u8; Context::spec_xdr().len()] = Context::spec_xdr();
     impl Context {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -20424,10 +20277,7 @@ mod wasm_imported {
                 ],
             ),
         });
-        pub const fn spec_xdr_len() -> usize {
-            const { Context::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; Context::spec_xdr_len()] {
+        pub const fn spec_xdr() -> [u8; Context::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { Context::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
@@ -21155,8 +21005,8 @@ mod wasm_imported {
     }
     #[doc(hidden)]
     #[allow(dead_code)]
-    static __SPEC_XDR_TYPE_INVOKERCONTRACTAUTHENTRY: [u8; InvokerContractAuthEntry::spec_xdr_len(
-    )] = InvokerContractAuthEntry::spec_xdr();
+    static __SPEC_XDR_TYPE_INVOKERCONTRACTAUTHENTRY: [u8; InvokerContractAuthEntry::spec_xdr()
+        .len()] = InvokerContractAuthEntry::spec_xdr();
     impl InvokerContractAuthEntry {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -21220,10 +21070,8 @@ mod wasm_imported {
                 ],
             ),
         });
-        pub const fn spec_xdr_len() -> usize {
-            const { InvokerContractAuthEntry::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; InvokerContractAuthEntry::spec_xdr_len()] {
+        pub const fn spec_xdr() -> [u8; InvokerContractAuthEntry::__SPEC_XDR_ENTRY.const_xdr_len()]
+        {
             const { InvokerContractAuthEntry::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
@@ -21927,7 +21775,7 @@ mod wasm_imported {
     }
     #[doc(hidden)]
     #[allow(dead_code)]
-    static __SPEC_XDR_TYPE_EXECUTABLE: [u8; Executable::spec_xdr_len()] = Executable::spec_xdr();
+    static __SPEC_XDR_TYPE_EXECUTABLE: [u8; Executable::spec_xdr().len()] = Executable::spec_xdr();
     impl Executable {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
             soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(
@@ -21976,10 +21824,7 @@ mod wasm_imported {
                     ]),
                 },
             );
-        pub const fn spec_xdr_len() -> usize {
-            const { Executable::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; Executable::spec_xdr_len()] {
+        pub const fn spec_xdr() -> [u8; Executable::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { Executable::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
@@ -22529,7 +22374,7 @@ mod wasm_imported {
     }
     #[doc(hidden)]
     #[allow(dead_code)]
-    static __SPEC_XDR_TYPE_ENUMA: [u8; EnumA::spec_xdr_len()] = EnumA::spec_xdr();
+    static __SPEC_XDR_TYPE_ENUMA: [u8; EnumA::spec_xdr().len()] = EnumA::spec_xdr();
     impl EnumA {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
             soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(
@@ -22571,10 +22416,7 @@ mod wasm_imported {
                     ]),
                 },
             );
-        pub const fn spec_xdr_len() -> usize {
-            const { EnumA::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; EnumA::spec_xdr_len()] {
+        pub const fn spec_xdr() -> [u8; EnumA::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { EnumA::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
@@ -23096,7 +22938,7 @@ mod wasm_imported {
     }
     #[doc(hidden)]
     #[allow(dead_code)]
-    static __SPEC_XDR_TYPE_ENUMB: [u8; EnumB::spec_xdr_len()] = EnumB::spec_xdr();
+    static __SPEC_XDR_TYPE_ENUMB: [u8; EnumB::spec_xdr().len()] = EnumB::spec_xdr();
     impl EnumB {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
             soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(
@@ -23145,10 +22987,7 @@ mod wasm_imported {
                     ]),
                 },
             );
-        pub const fn spec_xdr_len() -> usize {
-            const { EnumB::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; EnumB::spec_xdr_len()] {
+        pub const fn spec_xdr() -> [u8; EnumB::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { EnumB::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
@@ -23788,7 +23627,7 @@ mod wasm_imported {
     }
     #[doc(hidden)]
     #[allow(dead_code)]
-    static __SPEC_XDR_TYPE_ENUMC: [u8; EnumC::spec_xdr_len()] = EnumC::spec_xdr();
+    static __SPEC_XDR_TYPE_ENUMC: [u8; EnumC::spec_xdr().len()] = EnumC::spec_xdr();
     impl EnumC {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -23841,10 +23680,7 @@ mod wasm_imported {
                 ],
             ),
         });
-        pub const fn spec_xdr_len() -> usize {
-            const { EnumC::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; EnumC::spec_xdr_len()] {
+        pub const fn spec_xdr() -> [u8; EnumC::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { EnumC::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
@@ -24413,7 +24249,7 @@ mod wasm_imported {
     }
     #[doc(hidden)]
     #[allow(dead_code)]
-    static __SPEC_XDR_TYPE_ENUMINTA: [u8; EnumIntA::spec_xdr_len()] = EnumIntA::spec_xdr();
+    static __SPEC_XDR_TYPE_ENUMINTA: [u8; EnumIntA::spec_xdr().len()] = EnumIntA::spec_xdr();
     impl EnumIntA {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
             soroban_sdk::xdr::r#const::ScSpecEntry::UdtEnumV0(
@@ -24446,10 +24282,7 @@ mod wasm_imported {
                     ]),
                 },
             );
-        pub const fn spec_xdr_len() -> usize {
-            const { EnumIntA::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; EnumIntA::spec_xdr_len()] {
+        pub const fn spec_xdr() -> [u8; EnumIntA::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { EnumIntA::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
@@ -24814,7 +24647,7 @@ mod wasm_imported {
     }
     #[doc(hidden)]
     #[allow(dead_code)]
-    static __SPEC_XDR_TYPE_ENUMINTB: [u8; EnumIntB::spec_xdr_len()] = EnumIntB::spec_xdr();
+    static __SPEC_XDR_TYPE_ENUMINTB: [u8; EnumIntB::spec_xdr().len()] = EnumIntB::spec_xdr();
     impl EnumIntB {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
             soroban_sdk::xdr::r#const::ScSpecEntry::UdtEnumV0(
@@ -24847,10 +24680,7 @@ mod wasm_imported {
                     ]),
                 },
             );
-        pub const fn spec_xdr_len() -> usize {
-            const { EnumIntB::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; EnumIntB::spec_xdr_len()] {
+        pub const fn spec_xdr() -> [u8; EnumIntB::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { EnumIntB::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
@@ -25215,7 +25045,7 @@ mod wasm_imported {
     }
     #[doc(hidden)]
     #[allow(dead_code)]
-    static __SPEC_XDR_TYPE_ENUMINTC: [u8; EnumIntC::spec_xdr_len()] = EnumIntC::spec_xdr();
+    static __SPEC_XDR_TYPE_ENUMINTC: [u8; EnumIntC::spec_xdr().len()] = EnumIntC::spec_xdr();
     impl EnumIntC {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
             soroban_sdk::xdr::r#const::ScSpecEntry::UdtEnumV0(
@@ -25248,10 +25078,7 @@ mod wasm_imported {
                     ]),
                 },
             );
-        pub const fn spec_xdr_len() -> usize {
-            const { EnumIntC::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; EnumIntC::spec_xdr_len()] {
+        pub const fn spec_xdr() -> [u8; EnumIntC::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { EnumIntC::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
@@ -25616,7 +25443,7 @@ mod wasm_imported {
     }
     #[doc(hidden)]
     #[allow(dead_code)]
-    static __SPEC_XDR_TYPE_ERRORA: [u8; ErrorA::spec_xdr_len()] = ErrorA::spec_xdr();
+    static __SPEC_XDR_TYPE_ERRORA: [u8; ErrorA::spec_xdr().len()] = ErrorA::spec_xdr();
     impl ErrorA {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
             soroban_sdk::xdr::r#const::ScSpecEntry::UdtErrorEnumV0(
@@ -25649,10 +25476,7 @@ mod wasm_imported {
                     ]),
                 },
             );
-        pub const fn spec_xdr_len() -> usize {
-            const { ErrorA::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; ErrorA::spec_xdr_len()] {
+        pub const fn spec_xdr() -> [u8; ErrorA::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { ErrorA::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
@@ -25838,7 +25662,7 @@ mod wasm_imported {
     }
     #[doc(hidden)]
     #[allow(dead_code)]
-    static __SPEC_XDR_TYPE_ERRORB: [u8; ErrorB::spec_xdr_len()] = ErrorB::spec_xdr();
+    static __SPEC_XDR_TYPE_ERRORB: [u8; ErrorB::spec_xdr().len()] = ErrorB::spec_xdr();
     impl ErrorB {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
             soroban_sdk::xdr::r#const::ScSpecEntry::UdtErrorEnumV0(
@@ -25871,10 +25695,7 @@ mod wasm_imported {
                     ]),
                 },
             );
-        pub const fn spec_xdr_len() -> usize {
-            const { ErrorB::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; ErrorB::spec_xdr_len()] {
+        pub const fn spec_xdr() -> [u8; ErrorB::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { ErrorB::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
@@ -26060,7 +25881,7 @@ mod wasm_imported {
     }
     #[doc(hidden)]
     #[allow(dead_code)]
-    static __SPEC_XDR_TYPE_ERRORC: [u8; ErrorC::spec_xdr_len()] = ErrorC::spec_xdr();
+    static __SPEC_XDR_TYPE_ERRORC: [u8; ErrorC::spec_xdr().len()] = ErrorC::spec_xdr();
     impl ErrorC {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
             soroban_sdk::xdr::r#const::ScSpecEntry::UdtErrorEnumV0(
@@ -26093,10 +25914,7 @@ mod wasm_imported {
                     ]),
                 },
             );
-        pub const fn spec_xdr_len() -> usize {
-            const { ErrorC::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; ErrorC::spec_xdr_len()] {
+        pub const fn spec_xdr() -> [u8; ErrorC::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { ErrorC::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
@@ -26282,7 +26100,7 @@ mod wasm_imported {
     }
     #[doc(hidden)]
     #[allow(dead_code)]
-    static __SPEC_XDR_EVENT_EVENTA: [u8; EventA::spec_xdr_len()] = EventA::spec_xdr();
+    static __SPEC_XDR_EVENT_EVENTA: [u8; EventA::spec_xdr().len()] = EventA::spec_xdr();
     impl EventA {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
             soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(
@@ -26316,10 +26134,7 @@ mod wasm_imported {
                     data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
                 },
             );
-        pub const fn spec_xdr_len() -> usize {
-            const { EventA::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; EventA::spec_xdr_len()] {
+        pub const fn spec_xdr() -> [u8; EventA::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { EventA::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
@@ -26439,7 +26254,7 @@ mod wasm_imported {
     }
     #[doc(hidden)]
     #[allow(dead_code)]
-    static __SPEC_XDR_EVENT_EVENTB: [u8; EventB::spec_xdr_len()] = EventB::spec_xdr();
+    static __SPEC_XDR_EVENT_EVENTB: [u8; EventB::spec_xdr().len()] = EventB::spec_xdr();
     impl EventB {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
             soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(
@@ -26481,10 +26296,7 @@ mod wasm_imported {
                     data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
                 },
             );
-        pub const fn spec_xdr_len() -> usize {
-            const { EventB::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; EventB::spec_xdr_len()] {
+        pub const fn spec_xdr() -> [u8; EventB::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { EventB::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
@@ -26608,7 +26420,7 @@ mod wasm_imported {
     }
     #[doc(hidden)]
     #[allow(dead_code)]
-    static __SPEC_XDR_EVENT_EVENTC: [u8; EventC::spec_xdr_len()] = EventC::spec_xdr();
+    static __SPEC_XDR_EVENT_EVENTC: [u8; EventC::spec_xdr().len()] = EventC::spec_xdr();
     impl EventC {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
             soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(
@@ -26650,10 +26462,7 @@ mod wasm_imported {
                     data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
                 },
             );
-        pub const fn spec_xdr_len() -> usize {
-            const { EventC::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; EventC::spec_xdr_len()] {
+        pub const fn spec_xdr() -> [u8; EventC::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { EventC::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
@@ -26744,7 +26553,7 @@ mod wasm_imported {
     }
     #[doc(hidden)]
     #[allow(dead_code)]
-    static __SPEC_XDR_EVENT_EVENTD: [u8; EventD::spec_xdr_len()] = EventD::spec_xdr();
+    static __SPEC_XDR_EVENT_EVENTD: [u8; EventD::spec_xdr().len()] = EventD::spec_xdr();
     impl EventD {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
             soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(
@@ -26761,10 +26570,7 @@ mod wasm_imported {
                     data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
                 },
             );
-        pub const fn spec_xdr_len() -> usize {
-            const { EventD::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; EventD::spec_xdr_len()] {
+        pub const fn spec_xdr() -> [u8; EventD::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { EventD::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
@@ -26838,7 +26644,8 @@ impl ::core::cmp::PartialEq for UnusedStruct {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_UNUSEDSTRUCT: [u8; UnusedStruct::spec_xdr_len()] = UnusedStruct::spec_xdr();
+static __SPEC_XDR_TYPE_UNUSEDSTRUCT: [u8; UnusedStruct::spec_xdr().len()] =
+    UnusedStruct::spec_xdr();
 impl UnusedStruct {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
@@ -26855,10 +26662,7 @@ impl UnusedStruct {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { UnusedStruct::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UnusedStruct::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UnusedStruct::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UnusedStruct::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -27237,7 +27041,7 @@ impl ::core::cmp::PartialEq for UnusedEnum {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_UNUSEDENUM: [u8; UnusedEnum::spec_xdr_len()] = UnusedEnum::spec_xdr();
+static __SPEC_XDR_TYPE_UNUSEDENUM: [u8; UnusedEnum::spec_xdr().len()] = UnusedEnum::spec_xdr();
 impl UnusedEnum {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(
@@ -27264,10 +27068,7 @@ impl UnusedEnum {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { UnusedEnum::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UnusedEnum::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UnusedEnum::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UnusedEnum::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -27737,7 +27538,7 @@ impl ::core::cmp::PartialEq for UnusedIntEnum {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_UNUSEDINTENUM: [u8; UnusedIntEnum::spec_xdr_len()] =
+static __SPEC_XDR_TYPE_UNUSEDINTENUM: [u8; UnusedIntEnum::spec_xdr().len()] =
     UnusedIntEnum::spec_xdr();
 impl UnusedIntEnum {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -27760,10 +27561,7 @@ impl UnusedIntEnum {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { UnusedIntEnum::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UnusedIntEnum::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UnusedIntEnum::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UnusedIntEnum::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -28097,7 +27895,7 @@ impl ::core::cmp::PartialEq for UnusedEvent {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_EVENT_UNUSEDEVENT: [u8; UnusedEvent::spec_xdr_len()] = UnusedEvent::spec_xdr();
+static __SPEC_XDR_EVENT_UNUSEDEVENT: [u8; UnusedEvent::spec_xdr().len()] = UnusedEvent::spec_xdr();
 impl UnusedEvent {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
@@ -28125,10 +27923,7 @@ impl UnusedEvent {
             ]),
             data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
         });
-    pub const fn spec_xdr_len() -> usize {
-        const { UnusedEvent::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UnusedEvent::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UnusedEvent::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UnusedEvent::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -28201,7 +27996,7 @@ impl ::core::cmp::PartialEq for UnusedPubError {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_UNUSEDPUBERROR: [u8; UnusedPubError::spec_xdr_len()] =
+static __SPEC_XDR_TYPE_UNUSEDPUBERROR: [u8; UnusedPubError::spec_xdr().len()] =
     UnusedPubError::spec_xdr();
 impl UnusedPubError {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -28221,10 +28016,7 @@ impl UnusedPubError {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { UnusedPubError::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UnusedPubError::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UnusedPubError::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UnusedPubError::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -28380,7 +28172,7 @@ impl ::core::cmp::PartialEq for UnusedNonContractFnParam {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_UNUSEDNONCONTRACTFNPARAM: [u8; UnusedNonContractFnParam::spec_xdr_len()] =
+static __SPEC_XDR_TYPE_UNUSEDNONCONTRACTFNPARAM: [u8; UnusedNonContractFnParam::spec_xdr().len()] =
     UnusedNonContractFnParam::spec_xdr();
 impl UnusedNonContractFnParam {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -28400,10 +28192,7 @@ impl UnusedNonContractFnParam {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { UnusedNonContractFnParam::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UnusedNonContractFnParam::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UnusedNonContractFnParam::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UnusedNonContractFnParam::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -28784,8 +28573,8 @@ impl ::core::cmp::PartialEq for UnusedNonContractFnReturn {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_UNUSEDNONCONTRACTFNRETURN: [u8; UnusedNonContractFnReturn::spec_xdr_len()] =
-    UnusedNonContractFnReturn::spec_xdr();
+static __SPEC_XDR_TYPE_UNUSEDNONCONTRACTFNRETURN: [u8; UnusedNonContractFnReturn::spec_xdr()
+    .len()] = UnusedNonContractFnReturn::spec_xdr();
 impl UnusedNonContractFnReturn {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
@@ -28804,10 +28593,7 @@ impl UnusedNonContractFnReturn {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { UnusedNonContractFnReturn::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UnusedNonContractFnReturn::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UnusedNonContractFnReturn::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UnusedNonContractFnReturn::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -29183,7 +28969,7 @@ impl ::core::cmp::PartialEq for UnusedNonPubStruct {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_UNUSEDNONPUBSTRUCT: [u8; UnusedNonPubStruct::spec_xdr_len()] =
+static __SPEC_XDR_TYPE_UNUSEDNONPUBSTRUCT: [u8; UnusedNonPubStruct::spec_xdr().len()] =
     UnusedNonPubStruct::spec_xdr();
 impl UnusedNonPubStruct {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -29203,10 +28989,7 @@ impl UnusedNonPubStruct {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { UnusedNonPubStruct::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UnusedNonPubStruct::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UnusedNonPubStruct::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UnusedNonPubStruct::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -29574,7 +29357,7 @@ impl ::core::cmp::PartialEq for UnusedNonPubError {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_UNUSEDNONPUBERROR: [u8; UnusedNonPubError::spec_xdr_len()] =
+static __SPEC_XDR_TYPE_UNUSEDNONPUBERROR: [u8; UnusedNonPubError::spec_xdr().len()] =
     UnusedNonPubError::spec_xdr();
 impl UnusedNonPubError {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -29594,10 +29377,7 @@ impl UnusedNonPubError {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { UnusedNonPubError::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; UnusedNonPubError::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; UnusedNonPubError::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { UnusedNonPubError::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -29821,7 +29601,7 @@ mod __Contract__with_param__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_WITH_PARAM: [u8; super::Contract::spec_xdr_len_with_param()] =
+    static __SPEC_XDR_FN_WITH_PARAM: [u8; super::Contract::spec_xdr_with_param().len()] =
         super::Contract::spec_xdr_with_param();
 }
 impl Contract {
@@ -29861,11 +29641,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_with_param() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_with_param.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_param() -> [u8; Contract::spec_xdr_len_with_param()] {
+    pub const fn spec_xdr_with_param() -> [u8; Contract::__SPEC_XDR_ENTRY_with_param.const_xdr_len()]
+    {
         const { Contract::__SPEC_XDR_ENTRY_with_param.const_to_xdr() }
     }
 }
@@ -29877,7 +29654,7 @@ mod __Contract__with_return__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_WITH_RETURN: [u8; super::Contract::spec_xdr_len_with_return()] =
+    static __SPEC_XDR_FN_WITH_RETURN: [u8; super::Contract::spec_xdr_with_return().len()] =
         super::Contract::spec_xdr_with_return();
 }
 impl Contract {
@@ -29902,11 +29679,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_with_return() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_with_return.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_return() -> [u8; Contract::spec_xdr_len_with_return()] {
+    pub const fn spec_xdr_with_return(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_with_return.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_with_return.const_to_xdr() }
     }
 }
@@ -29918,7 +29692,7 @@ mod __Contract__with_error__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_WITH_ERROR: [u8; super::Contract::spec_xdr_len_with_error()] =
+    static __SPEC_XDR_FN_WITH_ERROR: [u8; super::Contract::spec_xdr_with_error().len()] =
         super::Contract::spec_xdr_with_error();
 }
 impl Contract {
@@ -29949,11 +29723,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_with_error() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_with_error.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_error() -> [u8; Contract::spec_xdr_len_with_error()] {
+    pub const fn spec_xdr_with_error() -> [u8; Contract::__SPEC_XDR_ENTRY_with_error.const_xdr_len()]
+    {
         const { Contract::__SPEC_XDR_ENTRY_with_error.const_to_xdr() }
     }
 }
@@ -29965,8 +29736,8 @@ mod __Contract__with_panic_error__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_WITH_PANIC_ERROR: [u8; super::Contract::spec_xdr_len_with_panic_error()] =
-        super::Contract::spec_xdr_with_panic_error();
+    static __SPEC_XDR_FN_WITH_PANIC_ERROR: [u8; super::Contract::spec_xdr_with_panic_error()
+        .len()] = super::Contract::spec_xdr_with_panic_error();
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
@@ -29990,11 +29761,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_with_panic_error() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_with_panic_error.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_panic_error() -> [u8; Contract::spec_xdr_len_with_panic_error()] {
+    pub const fn spec_xdr_with_panic_error(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_with_panic_error.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_with_panic_error.const_to_xdr() }
     }
 }
@@ -30006,8 +29774,8 @@ mod __Contract__with_assert_error__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_WITH_ASSERT_ERROR: [u8; super::Contract::spec_xdr_len_with_assert_error(
-    )] = super::Contract::spec_xdr_with_assert_error();
+    static __SPEC_XDR_FN_WITH_ASSERT_ERROR: [u8; super::Contract::spec_xdr_with_assert_error()
+        .len()] = super::Contract::spec_xdr_with_assert_error();
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
@@ -30031,11 +29799,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_with_assert_error() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_with_assert_error.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_assert_error() -> [u8; Contract::spec_xdr_len_with_assert_error()] {
+    pub const fn spec_xdr_with_assert_error(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_with_assert_error.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_with_assert_error.const_to_xdr() }
     }
 }
@@ -30048,7 +29813,7 @@ mod __Contract__with_panic_raw_error__spec {
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
     static __SPEC_XDR_FN_WITH_PANIC_RAW_ERROR: [u8;
-        super::Contract::spec_xdr_len_with_panic_raw_error()] =
+        super::Contract::spec_xdr_with_panic_raw_error().len()] =
         super::Contract::spec_xdr_with_panic_raw_error();
 }
 impl Contract {
@@ -30073,12 +29838,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_with_panic_raw_error() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_with_panic_raw_error.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
     pub const fn spec_xdr_with_panic_raw_error(
-    ) -> [u8; Contract::spec_xdr_len_with_panic_raw_error()] {
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_with_panic_raw_error.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_with_panic_raw_error.const_to_xdr() }
     }
 }
@@ -30090,7 +29851,7 @@ mod __Contract__with_vec__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_WITH_VEC: [u8; super::Contract::spec_xdr_len_with_vec()] =
+    static __SPEC_XDR_FN_WITH_VEC: [u8; super::Contract::spec_xdr_with_vec().len()] =
         super::Contract::spec_xdr_with_vec();
 }
 impl Contract {
@@ -30124,11 +29885,7 @@ impl Contract {
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
     });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_with_vec() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_with_vec.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_vec() -> [u8; Contract::spec_xdr_len_with_vec()] {
+    pub const fn spec_xdr_with_vec() -> [u8; Contract::__SPEC_XDR_ENTRY_with_vec.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_with_vec.const_to_xdr() }
     }
 }
@@ -30140,7 +29897,7 @@ mod __Contract__with_vec_nested__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_WITH_VEC_NESTED: [u8; super::Contract::spec_xdr_len_with_vec_nested()] =
+    static __SPEC_XDR_FN_WITH_VEC_NESTED: [u8; super::Contract::spec_xdr_with_vec_nested().len()] =
         super::Contract::spec_xdr_with_vec_nested();
 }
 impl Contract {
@@ -30176,11 +29933,8 @@ impl Contract {
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
     });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_with_vec_nested() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_with_vec_nested.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_vec_nested() -> [u8; Contract::spec_xdr_len_with_vec_nested()] {
+    pub const fn spec_xdr_with_vec_nested(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_with_vec_nested.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_with_vec_nested.const_to_xdr() }
     }
 }
@@ -30192,7 +29946,7 @@ mod __Contract__with_map__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_WITH_MAP: [u8; super::Contract::spec_xdr_len_with_map()] =
+    static __SPEC_XDR_FN_WITH_MAP: [u8; super::Contract::spec_xdr_with_map().len()] =
         super::Contract::spec_xdr_with_map();
 }
 impl Contract {
@@ -30231,11 +29985,7 @@ impl Contract {
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
     });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_with_map() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_with_map.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_map() -> [u8; Contract::spec_xdr_len_with_map()] {
+    pub const fn spec_xdr_with_map() -> [u8; Contract::__SPEC_XDR_ENTRY_with_map.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_with_map.const_to_xdr() }
     }
 }
@@ -30247,7 +29997,7 @@ mod __Contract__with_option__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_WITH_OPTION: [u8; super::Contract::spec_xdr_len_with_option()] =
+    static __SPEC_XDR_FN_WITH_OPTION: [u8; super::Contract::spec_xdr_with_option().len()] =
         super::Contract::spec_xdr_with_option();
 }
 impl Contract {
@@ -30281,11 +30031,8 @@ impl Contract {
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
     });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_with_option() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_with_option.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_option() -> [u8; Contract::spec_xdr_len_with_option()] {
+    pub const fn spec_xdr_with_option(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_with_option.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_with_option.const_to_xdr() }
     }
 }
@@ -30297,7 +30044,7 @@ mod __Contract__with_result__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_WITH_RESULT: [u8; super::Contract::spec_xdr_len_with_result()] =
+    static __SPEC_XDR_FN_WITH_RESULT: [u8; super::Contract::spec_xdr_with_result().len()] =
         super::Contract::spec_xdr_with_result();
 }
 impl Contract {
@@ -30335,11 +30082,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_with_result() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_with_result.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_result() -> [u8; Contract::spec_xdr_len_with_result()] {
+    pub const fn spec_xdr_with_result(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_with_result.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_with_result.const_to_xdr() }
     }
 }
@@ -30351,7 +30095,7 @@ mod __Contract__with_recursion__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_WITH_RECURSION: [u8; super::Contract::spec_xdr_len_with_recursion()] =
+    static __SPEC_XDR_FN_WITH_RECURSION: [u8; super::Contract::spec_xdr_with_recursion().len()] =
         super::Contract::spec_xdr_with_recursion();
 }
 impl Contract {
@@ -30380,11 +30124,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_with_recursion() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_with_recursion.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_recursion() -> [u8; Contract::spec_xdr_len_with_recursion()] {
+    pub const fn spec_xdr_with_recursion(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_with_recursion.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_with_recursion.const_to_xdr() }
     }
 }
@@ -30396,9 +30137,8 @@ mod __Contract__with_auth_contexts__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_WITH_AUTH_CONTEXTS: [u8;
-        super::Contract::spec_xdr_len_with_auth_contexts()] =
-        super::Contract::spec_xdr_with_auth_contexts();
+    static __SPEC_XDR_FN_WITH_AUTH_CONTEXTS: [u8; super::Contract::spec_xdr_with_auth_contexts()
+        .len()] = super::Contract::spec_xdr_with_auth_contexts();
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
@@ -30433,12 +30173,8 @@ impl Contract {
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
     });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_with_auth_contexts() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_with_auth_contexts.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_auth_contexts() -> [u8; Contract::spec_xdr_len_with_auth_contexts()]
-    {
+    pub const fn spec_xdr_with_auth_contexts(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_with_auth_contexts.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_with_auth_contexts.const_to_xdr() }
     }
 }
@@ -30450,8 +30186,8 @@ mod __Contract__with_invoker_auth__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_WITH_INVOKER_AUTH: [u8; super::Contract::spec_xdr_len_with_invoker_auth(
-    )] = super::Contract::spec_xdr_with_invoker_auth();
+    static __SPEC_XDR_FN_WITH_INVOKER_AUTH: [u8; super::Contract::spec_xdr_with_invoker_auth()
+        .len()] = super::Contract::spec_xdr_with_invoker_auth();
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
@@ -30481,11 +30217,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_with_invoker_auth() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_with_invoker_auth.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_invoker_auth() -> [u8; Contract::spec_xdr_len_with_invoker_auth()] {
+    pub const fn spec_xdr_with_invoker_auth(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_with_invoker_auth.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_with_invoker_auth.const_to_xdr() }
     }
 }
@@ -30497,7 +30230,7 @@ mod __Contract__with_executable__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_WITH_EXECUTABLE: [u8; super::Contract::spec_xdr_len_with_executable()] =
+    static __SPEC_XDR_FN_WITH_EXECUTABLE: [u8; super::Contract::spec_xdr_with_executable().len()] =
         super::Contract::spec_xdr_with_executable();
 }
 impl Contract {
@@ -30526,11 +30259,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_with_executable() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_with_executable.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_executable() -> [u8; Contract::spec_xdr_len_with_executable()] {
+    pub const fn spec_xdr_with_executable(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_with_executable.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_with_executable.const_to_xdr() }
     }
 }
@@ -30542,7 +30272,7 @@ mod __Contract__publish_simple__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_PUBLISH_SIMPLE: [u8; super::Contract::spec_xdr_len_publish_simple()] =
+    static __SPEC_XDR_FN_PUBLISH_SIMPLE: [u8; super::Contract::spec_xdr_publish_simple().len()] =
         super::Contract::spec_xdr_publish_simple();
 }
 impl Contract {
@@ -30559,11 +30289,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_publish_simple() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_publish_simple.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_publish_simple() -> [u8; Contract::spec_xdr_len_publish_simple()] {
+    pub const fn spec_xdr_publish_simple(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_publish_simple.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_publish_simple.const_to_xdr() }
     }
 }
@@ -30575,9 +30302,8 @@ mod __Contract__publish_topic_type__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_PUBLISH_TOPIC_TYPE: [u8;
-        super::Contract::spec_xdr_len_publish_topic_type()] =
-        super::Contract::spec_xdr_publish_topic_type();
+    static __SPEC_XDR_FN_PUBLISH_TOPIC_TYPE: [u8; super::Contract::spec_xdr_publish_topic_type()
+        .len()] = super::Contract::spec_xdr_publish_topic_type();
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
@@ -30595,12 +30321,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_publish_topic_type() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_publish_topic_type.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_publish_topic_type() -> [u8; Contract::spec_xdr_len_publish_topic_type()]
-    {
+    pub const fn spec_xdr_publish_topic_type(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_publish_topic_type.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_publish_topic_type.const_to_xdr() }
     }
 }
@@ -30612,8 +30334,8 @@ mod __Contract__publish_data_type__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_PUBLISH_DATA_TYPE: [u8; super::Contract::spec_xdr_len_publish_data_type(
-    )] = super::Contract::spec_xdr_publish_data_type();
+    static __SPEC_XDR_FN_PUBLISH_DATA_TYPE: [u8; super::Contract::spec_xdr_publish_data_type()
+        .len()] = super::Contract::spec_xdr_publish_data_type();
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
@@ -30631,11 +30353,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_publish_data_type() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_publish_data_type.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_publish_data_type() -> [u8; Contract::spec_xdr_len_publish_data_type()] {
+    pub const fn spec_xdr_publish_data_type(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_publish_data_type.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_publish_data_type.const_to_xdr() }
     }
 }
@@ -30648,7 +30367,7 @@ mod __Contract__publish_nested_topic__spec {
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
     static __SPEC_XDR_FN_PUBLISH_NESTED_TOPIC: [u8;
-        super::Contract::spec_xdr_len_publish_nested_topic()] =
+        super::Contract::spec_xdr_publish_nested_topic().len()] =
         super::Contract::spec_xdr_publish_nested_topic();
 }
 impl Contract {
@@ -30667,12 +30386,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_publish_nested_topic() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_publish_nested_topic.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
     pub const fn spec_xdr_publish_nested_topic(
-    ) -> [u8; Contract::spec_xdr_len_publish_nested_topic()] {
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_publish_nested_topic.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_publish_nested_topic.const_to_xdr() }
     }
 }
@@ -30684,9 +30399,9 @@ mod __Contract__publish_nested_data__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_PUBLISH_NESTED_DATA: [u8;
-        super::Contract::spec_xdr_len_publish_nested_data()] =
-        super::Contract::spec_xdr_publish_nested_data();
+    static __SPEC_XDR_FN_PUBLISH_NESTED_DATA: [u8; super::Contract::spec_xdr_publish_nested_data(
+    )
+    .len()] = super::Contract::spec_xdr_publish_nested_data();
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
@@ -30704,12 +30419,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_publish_nested_data() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_publish_nested_data.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_publish_nested_data() -> [u8; Contract::spec_xdr_len_publish_nested_data()]
-    {
+    pub const fn spec_xdr_publish_nested_data(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_publish_nested_data.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_publish_nested_data.const_to_xdr() }
     }
 }
@@ -30721,7 +30432,7 @@ mod __Contract__with_lib_struct__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_WITH_LIB_STRUCT: [u8; super::Contract::spec_xdr_len_with_lib_struct()] =
+    static __SPEC_XDR_FN_WITH_LIB_STRUCT: [u8; super::Contract::spec_xdr_with_lib_struct().len()] =
         super::Contract::spec_xdr_with_lib_struct();
 }
 impl Contract {
@@ -30750,11 +30461,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_with_lib_struct() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_with_lib_struct.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_lib_struct() -> [u8; Contract::spec_xdr_len_with_lib_struct()] {
+    pub const fn spec_xdr_with_lib_struct(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_with_lib_struct.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_with_lib_struct.const_to_xdr() }
     }
 }
@@ -30766,9 +30474,8 @@ mod __Contract__with_wasm_imported__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_WITH_WASM_IMPORTED: [u8;
-        super::Contract::spec_xdr_len_with_wasm_imported()] =
-        super::Contract::spec_xdr_with_wasm_imported();
+    static __SPEC_XDR_FN_WITH_WASM_IMPORTED: [u8; super::Contract::spec_xdr_with_wasm_imported()
+        .len()] = super::Contract::spec_xdr_with_wasm_imported();
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
@@ -30798,12 +30505,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_with_wasm_imported() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_with_wasm_imported.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_wasm_imported() -> [u8; Contract::spec_xdr_len_with_wasm_imported()]
-    {
+    pub const fn spec_xdr_with_wasm_imported(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_with_wasm_imported.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_with_wasm_imported.const_to_xdr() }
     }
 }
@@ -30815,7 +30518,7 @@ mod __Contract__with_non_pub__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_WITH_NON_PUB: [u8; super::Contract::spec_xdr_len_with_non_pub()] =
+    static __SPEC_XDR_FN_WITH_NON_PUB: [u8; super::Contract::spec_xdr_with_non_pub().len()] =
         super::Contract::spec_xdr_with_non_pub();
 }
 impl Contract {
@@ -30844,11 +30547,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_with_non_pub() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_with_non_pub.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_non_pub() -> [u8; Contract::spec_xdr_len_with_non_pub()] {
+    pub const fn spec_xdr_with_non_pub(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_with_non_pub.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_with_non_pub.const_to_xdr() }
     }
 }
@@ -30860,9 +30560,8 @@ mod __Contract__with_non_pub_error__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_WITH_NON_PUB_ERROR: [u8;
-        super::Contract::spec_xdr_len_with_non_pub_error()] =
-        super::Contract::spec_xdr_with_non_pub_error();
+    static __SPEC_XDR_FN_WITH_NON_PUB_ERROR: [u8; super::Contract::spec_xdr_with_non_pub_error()
+        .len()] = super::Contract::spec_xdr_with_non_pub_error();
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
@@ -30894,12 +30593,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_with_non_pub_error() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_with_non_pub_error.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_non_pub_error() -> [u8; Contract::spec_xdr_len_with_non_pub_error()]
-    {
+    pub const fn spec_xdr_with_non_pub_error(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_with_non_pub_error.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_with_non_pub_error.const_to_xdr() }
     }
 }
@@ -30911,7 +30606,7 @@ mod __Contract__with_tuple__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_WITH_TUPLE: [u8; super::Contract::spec_xdr_len_with_tuple()] =
+    static __SPEC_XDR_FN_WITH_TUPLE: [u8; super::Contract::spec_xdr_with_tuple().len()] =
         super::Contract::spec_xdr_with_tuple();
 }
 impl Contract {
@@ -30950,11 +30645,8 @@ impl Contract {
         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
     });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_with_tuple() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_with_tuple.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_tuple() -> [u8; Contract::spec_xdr_len_with_tuple()] {
+    pub const fn spec_xdr_with_tuple() -> [u8; Contract::__SPEC_XDR_ENTRY_with_tuple.const_xdr_len()]
+    {
         const { Contract::__SPEC_XDR_ENTRY_with_tuple.const_to_xdr() }
     }
 }
@@ -30966,8 +30658,8 @@ mod __Contract__with_tuple_return__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_WITH_TUPLE_RETURN: [u8; super::Contract::spec_xdr_len_with_tuple_return(
-    )] = super::Contract::spec_xdr_with_tuple_return();
+    static __SPEC_XDR_FN_WITH_TUPLE_RETURN: [u8; super::Contract::spec_xdr_with_tuple_return()
+        .len()] = super::Contract::spec_xdr_with_tuple_return();
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
@@ -30999,11 +30691,8 @@ impl Contract {
         ),
     });
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_with_tuple_return() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_with_tuple_return.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_tuple_return() -> [u8; Contract::spec_xdr_len_with_tuple_return()] {
+    pub const fn spec_xdr_with_tuple_return(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_with_tuple_return.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_with_tuple_return.const_to_xdr() }
     }
 }
@@ -31015,8 +30704,8 @@ mod __Contract__publish_ref_event__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_PUBLISH_REF_EVENT: [u8; super::Contract::spec_xdr_len_publish_ref_event(
-    )] = super::Contract::spec_xdr_publish_ref_event();
+    static __SPEC_XDR_FN_PUBLISH_REF_EVENT: [u8; super::Contract::spec_xdr_publish_ref_event()
+        .len()] = super::Contract::spec_xdr_publish_ref_event();
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
@@ -31034,11 +30723,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_publish_ref_event() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_publish_ref_event.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_publish_ref_event() -> [u8; Contract::spec_xdr_len_publish_ref_event()] {
+    pub const fn spec_xdr_publish_ref_event(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_publish_ref_event.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_publish_ref_event.const_to_xdr() }
     }
 }

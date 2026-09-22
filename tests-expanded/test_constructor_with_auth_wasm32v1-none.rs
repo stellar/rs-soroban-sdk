@@ -39,7 +39,7 @@ mod __Contract____constructor__spec {
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    static __SPEC_XDR_FN___CONSTRUCTOR: [u8; super::Contract::spec_xdr_len___constructor()] =
+    static __SPEC_XDR_FN___CONSTRUCTOR: [u8; super::Contract::spec_xdr___constructor().len()] =
         super::Contract::spec_xdr___constructor();
 }
 impl Contract {
@@ -62,11 +62,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len___constructor() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY___constructor.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr___constructor() -> [u8; Contract::spec_xdr_len___constructor()] {
+    pub const fn spec_xdr___constructor(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY___constructor.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY___constructor.const_to_xdr() }
     }
 }

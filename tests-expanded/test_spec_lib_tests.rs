@@ -49,7 +49,7 @@ impl ::core::cmp::PartialEq for StructA {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_STRUCTA: [u8; StructA::spec_xdr_len()] = StructA::spec_xdr();
+static __SPEC_XDR_TYPE_STRUCTA: [u8; StructA::spec_xdr().len()] = StructA::spec_xdr();
 impl StructA {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
@@ -71,10 +71,7 @@ impl StructA {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { StructA::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; StructA::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; StructA::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { StructA::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -499,7 +496,7 @@ impl ::core::cmp::PartialEq for StructB {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_STRUCTB: [u8; StructB::spec_xdr_len()] = StructB::spec_xdr();
+static __SPEC_XDR_TYPE_STRUCTB: [u8; StructB::spec_xdr().len()] = StructB::spec_xdr();
 impl StructB {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
@@ -521,10 +518,7 @@ impl StructB {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { StructB::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; StructB::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; StructB::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { StructB::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -949,7 +943,7 @@ impl ::core::cmp::PartialEq for StructC {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_STRUCTC: [u8; StructC::spec_xdr_len()] = StructC::spec_xdr();
+static __SPEC_XDR_TYPE_STRUCTC: [u8; StructC::spec_xdr().len()] = StructC::spec_xdr();
 impl StructC {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
@@ -975,10 +969,7 @@ impl StructC {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { StructC::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; StructC::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; StructC::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { StructC::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -1399,7 +1390,8 @@ impl ::core::cmp::PartialEq for StructTupleA {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_STRUCTTUPLEA: [u8; StructTupleA::spec_xdr_len()] = StructTupleA::spec_xdr();
+static __SPEC_XDR_TYPE_STRUCTTUPLEA: [u8; StructTupleA::spec_xdr().len()] =
+    StructTupleA::spec_xdr();
 impl StructTupleA {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
@@ -1421,10 +1413,7 @@ impl StructTupleA {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { StructTupleA::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; StructTupleA::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; StructTupleA::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { StructTupleA::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -1800,7 +1789,8 @@ impl ::core::cmp::PartialEq for StructTupleB {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_STRUCTTUPLEB: [u8; StructTupleB::spec_xdr_len()] = StructTupleB::spec_xdr();
+static __SPEC_XDR_TYPE_STRUCTTUPLEB: [u8; StructTupleB::spec_xdr().len()] =
+    StructTupleB::spec_xdr();
 impl StructTupleB {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
@@ -1822,10 +1812,7 @@ impl StructTupleB {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { StructTupleB::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; StructTupleB::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; StructTupleB::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { StructTupleB::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -2202,7 +2189,8 @@ impl ::core::cmp::PartialEq for StructTupleC {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_STRUCTTUPLEC: [u8; StructTupleC::spec_xdr_len()] = StructTupleC::spec_xdr();
+static __SPEC_XDR_TYPE_STRUCTTUPLEC: [u8; StructTupleC::spec_xdr().len()] =
+    StructTupleC::spec_xdr();
 impl StructTupleC {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
@@ -2224,10 +2212,7 @@ impl StructTupleC {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { StructTupleC::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; StructTupleC::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; StructTupleC::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { StructTupleC::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -2615,7 +2600,7 @@ impl ::core::cmp::PartialEq for EnumA {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_ENUMA: [u8; EnumA::spec_xdr_len()] = EnumA::spec_xdr();
+static __SPEC_XDR_TYPE_ENUMA: [u8; EnumA::spec_xdr().len()] = EnumA::spec_xdr();
 impl EnumA {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(
@@ -2651,10 +2636,7 @@ impl EnumA {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { EnumA::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; EnumA::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; EnumA::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { EnumA::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -3124,7 +3106,7 @@ impl ::core::cmp::PartialEq for EnumB {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_ENUMB: [u8; EnumB::spec_xdr_len()] = EnumB::spec_xdr();
+static __SPEC_XDR_TYPE_ENUMB: [u8; EnumB::spec_xdr().len()] = EnumB::spec_xdr();
 impl EnumB {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(
@@ -3167,10 +3149,7 @@ impl EnumB {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { EnumB::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; EnumB::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; EnumB::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { EnumB::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -3764,7 +3743,7 @@ impl ::core::cmp::PartialEq for EnumC {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_ENUMC: [u8; EnumC::spec_xdr_len()] = EnumC::spec_xdr();
+static __SPEC_XDR_TYPE_ENUMC: [u8; EnumC::spec_xdr().len()] = EnumC::spec_xdr();
 impl EnumC {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -3817,10 +3796,7 @@ impl EnumC {
             ],
         ),
     });
-    pub const fn spec_xdr_len() -> usize {
-        const { EnumC::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; EnumC::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; EnumC::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { EnumC::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -4366,7 +4342,7 @@ impl ::core::cmp::PartialEq for EnumIntA {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_ENUMINTA: [u8; EnumIntA::spec_xdr_len()] = EnumIntA::spec_xdr();
+static __SPEC_XDR_TYPE_ENUMINTA: [u8; EnumIntA::spec_xdr().len()] = EnumIntA::spec_xdr();
 impl EnumIntA {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtEnumV0(
@@ -4393,10 +4369,7 @@ impl EnumIntA {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { EnumIntA::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; EnumIntA::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; EnumIntA::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { EnumIntA::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -4739,7 +4712,7 @@ impl ::core::cmp::PartialEq for EnumIntB {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_ENUMINTB: [u8; EnumIntB::spec_xdr_len()] = EnumIntB::spec_xdr();
+static __SPEC_XDR_TYPE_ENUMINTB: [u8; EnumIntB::spec_xdr().len()] = EnumIntB::spec_xdr();
 impl EnumIntB {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtEnumV0(
@@ -4766,10 +4739,7 @@ impl EnumIntB {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { EnumIntB::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; EnumIntB::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; EnumIntB::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { EnumIntB::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -5112,7 +5082,7 @@ impl ::core::cmp::PartialEq for EnumIntC {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_ENUMINTC: [u8; EnumIntC::spec_xdr_len()] = EnumIntC::spec_xdr();
+static __SPEC_XDR_TYPE_ENUMINTC: [u8; EnumIntC::spec_xdr().len()] = EnumIntC::spec_xdr();
 impl EnumIntC {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtEnumV0(
@@ -5139,10 +5109,7 @@ impl EnumIntC {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { EnumIntC::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; EnumIntC::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; EnumIntC::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { EnumIntC::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -5485,7 +5452,7 @@ impl ::core::cmp::PartialEq for ErrorA {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_ERRORA: [u8; ErrorA::spec_xdr_len()] = ErrorA::spec_xdr();
+static __SPEC_XDR_TYPE_ERRORA: [u8; ErrorA::spec_xdr().len()] = ErrorA::spec_xdr();
 impl ErrorA {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtErrorEnumV0(
@@ -5512,10 +5479,7 @@ impl ErrorA {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { ErrorA::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; ErrorA::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; ErrorA::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { ErrorA::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -5683,7 +5647,7 @@ impl ::core::cmp::PartialEq for ErrorB {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_ERRORB: [u8; ErrorB::spec_xdr_len()] = ErrorB::spec_xdr();
+static __SPEC_XDR_TYPE_ERRORB: [u8; ErrorB::spec_xdr().len()] = ErrorB::spec_xdr();
 impl ErrorB {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtErrorEnumV0(
@@ -5710,10 +5674,7 @@ impl ErrorB {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { ErrorB::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; ErrorB::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; ErrorB::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { ErrorB::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -5881,7 +5842,7 @@ impl ::core::cmp::PartialEq for ErrorC {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_ERRORC: [u8; ErrorC::spec_xdr_len()] = ErrorC::spec_xdr();
+static __SPEC_XDR_TYPE_ERRORC: [u8; ErrorC::spec_xdr().len()] = ErrorC::spec_xdr();
 impl ErrorC {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtErrorEnumV0(
@@ -5908,10 +5869,7 @@ impl ErrorC {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { ErrorC::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; ErrorC::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; ErrorC::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { ErrorC::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -6075,7 +6033,7 @@ impl ::core::cmp::PartialEq for EventA {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_EVENT_EVENTA: [u8; EventA::spec_xdr_len()] = EventA::spec_xdr();
+static __SPEC_XDR_EVENT_EVENTA: [u8; EventA::spec_xdr().len()] = EventA::spec_xdr();
 impl EventA {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
@@ -6103,10 +6061,7 @@ impl EventA {
             ]),
             data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
         });
-    pub const fn spec_xdr_len() -> usize {
-        const { EventA::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; EventA::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; EventA::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { EventA::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -6195,7 +6150,7 @@ impl ::core::cmp::PartialEq for EventB {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_EVENT_EVENTB: [u8; EventB::spec_xdr_len()] = EventB::spec_xdr();
+static __SPEC_XDR_EVENT_EVENTB: [u8; EventB::spec_xdr().len()] = EventB::spec_xdr();
 impl EventB {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
@@ -6229,10 +6184,7 @@ impl EventB {
             ]),
             data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
         });
-    pub const fn spec_xdr_len() -> usize {
-        const { EventB::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; EventB::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; EventB::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { EventB::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -6326,7 +6278,7 @@ impl ::core::cmp::PartialEq for EventC {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_EVENT_EVENTC: [u8; EventC::spec_xdr_len()] = EventC::spec_xdr();
+static __SPEC_XDR_EVENT_EVENTC: [u8; EventC::spec_xdr().len()] = EventC::spec_xdr();
 impl EventC {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
@@ -6360,10 +6312,7 @@ impl EventC {
             ]),
             data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
         });
-    pub const fn spec_xdr_len() -> usize {
-        const { EventC::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; EventC::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; EventC::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { EventC::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -6440,7 +6389,7 @@ impl ::core::cmp::PartialEq for EventD {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_EVENT_EVENTD: [u8; EventD::spec_xdr_len()] = EventD::spec_xdr();
+static __SPEC_XDR_EVENT_EVENTD: [u8; EventD::spec_xdr().len()] = EventD::spec_xdr();
 impl EventD {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
@@ -6455,10 +6404,7 @@ impl EventD {
             params: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
             data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
         });
-    pub const fn spec_xdr_len() -> usize {
-        const { EventD::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; EventD::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; EventD::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { EventD::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }

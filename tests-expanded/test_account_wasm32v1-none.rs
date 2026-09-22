@@ -53,7 +53,7 @@ impl ::core::cmp::Ord for Error {
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
-static __SPEC_XDR_TYPE_ERROR: [u8; Error::spec_xdr_len()] = Error::spec_xdr();
+static __SPEC_XDR_TYPE_ERROR: [u8; Error::spec_xdr().len()] = Error::spec_xdr();
 impl Error {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtErrorEnumV0(
@@ -70,10 +70,7 @@ impl Error {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { Error::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; Error::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; Error::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { Error::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -236,7 +233,7 @@ mod __Contract____check_auth__spec {
     #[allow(dead_code)]
     #[allow(non_snake_case)]
     #[link_section = "contractspecv0"]
-    static __SPEC_XDR_FN___CHECK_AUTH: [u8; super::Contract::spec_xdr_len___check_auth()] =
+    static __SPEC_XDR_FN___CHECK_AUTH: [u8; super::Contract::spec_xdr___check_auth().len()] =
         super::Contract::spec_xdr___check_auth();
 }
 impl Contract {
@@ -301,12 +298,8 @@ impl Contract {
     });
     #[allow(non_snake_case)]
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len___check_auth() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY___check_auth.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr___check_auth() -> [u8; Contract::spec_xdr_len___check_auth()] {
+    pub const fn spec_xdr___check_auth(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY___check_auth.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY___check_auth.const_to_xdr() }
     }
 }

@@ -19,7 +19,7 @@ pub struct DummyProof {
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
-static __SPEC_XDR_TYPE_DUMMYPROOF: [u8; DummyProof::spec_xdr_len()] = DummyProof::spec_xdr();
+static __SPEC_XDR_TYPE_DUMMYPROOF: [u8; DummyProof::spec_xdr().len()] = DummyProof::spec_xdr();
 impl DummyProof {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
@@ -64,10 +64,7 @@ impl DummyProof {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { DummyProof::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; DummyProof::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; DummyProof::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { DummyProof::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -226,7 +223,7 @@ mod __Contract__g1_mul__spec {
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    static __SPEC_XDR_FN_G1_MUL: [u8; super::Contract::spec_xdr_len_g1_mul()] =
+    static __SPEC_XDR_FN_G1_MUL: [u8; super::Contract::spec_xdr_g1_mul().len()] =
         super::Contract::spec_xdr_g1_mul();
 }
 impl Contract {
@@ -260,11 +257,7 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_g1_mul() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_g1_mul.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_g1_mul() -> [u8; Contract::spec_xdr_len_g1_mul()] {
+    pub const fn spec_xdr_g1_mul() -> [u8; Contract::__SPEC_XDR_ENTRY_g1_mul.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_g1_mul.const_to_xdr() }
     }
 }
@@ -277,7 +270,7 @@ mod __Contract__g2_mul__spec {
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    static __SPEC_XDR_FN_G2_MUL: [u8; super::Contract::spec_xdr_len_g2_mul()] =
+    static __SPEC_XDR_FN_G2_MUL: [u8; super::Contract::spec_xdr_g2_mul().len()] =
         super::Contract::spec_xdr_g2_mul();
 }
 impl Contract {
@@ -311,11 +304,7 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_g2_mul() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_g2_mul.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_g2_mul() -> [u8; Contract::spec_xdr_len_g2_mul()] {
+    pub const fn spec_xdr_g2_mul() -> [u8; Contract::__SPEC_XDR_ENTRY_g2_mul.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_g2_mul.const_to_xdr() }
     }
 }
@@ -328,7 +317,7 @@ mod __Contract__dummy_verify__spec {
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    static __SPEC_XDR_FN_DUMMY_VERIFY: [u8; super::Contract::spec_xdr_len_dummy_verify()] =
+    static __SPEC_XDR_FN_DUMMY_VERIFY: [u8; super::Contract::spec_xdr_dummy_verify().len()] =
         super::Contract::spec_xdr_dummy_verify();
 }
 impl Contract {
@@ -359,11 +348,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_dummy_verify() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_dummy_verify.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_dummy_verify() -> [u8; Contract::spec_xdr_len_dummy_verify()] {
+    pub const fn spec_xdr_dummy_verify(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_dummy_verify.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_dummy_verify.const_to_xdr() }
     }
 }
@@ -376,7 +362,7 @@ mod __Contract__fr_vec_get__spec {
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    static __SPEC_XDR_FN_FR_VEC_GET: [u8; super::Contract::spec_xdr_len_fr_vec_get()] =
+    static __SPEC_XDR_FN_FR_VEC_GET: [u8; super::Contract::spec_xdr_fr_vec_get().len()] =
         super::Contract::spec_xdr_fr_vec_get();
 }
 impl Contract {
@@ -412,11 +398,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_fr_vec_get() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_fr_vec_get.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_fr_vec_get() -> [u8; Contract::spec_xdr_len_fr_vec_get()] {
+    pub const fn spec_xdr_fr_vec_get() -> [u8; Contract::__SPEC_XDR_ENTRY_fr_vec_get.const_xdr_len()]
+    {
         const { Contract::__SPEC_XDR_ENTRY_fr_vec_get.const_to_xdr() }
     }
 }

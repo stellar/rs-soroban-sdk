@@ -165,7 +165,7 @@ mod __Contract__test_u32__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_TEST_U32: [u8; super::Contract::spec_xdr_len_test_u32()] =
+    static __SPEC_XDR_FN_TEST_U32: [u8; super::Contract::spec_xdr_test_u32().len()] =
         super::Contract::spec_xdr_test_u32();
 }
 impl Contract {
@@ -190,11 +190,7 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_test_u32() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_test_u32.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_u32() -> [u8; Contract::spec_xdr_len_test_u32()] {
+    pub const fn spec_xdr_test_u32() -> [u8; Contract::__SPEC_XDR_ENTRY_test_u32.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_test_u32.const_to_xdr() }
     }
 }
@@ -206,7 +202,7 @@ mod __Contract__test_string__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_TEST_STRING: [u8; super::Contract::spec_xdr_len_test_string()] =
+    static __SPEC_XDR_FN_TEST_STRING: [u8; super::Contract::spec_xdr_test_string().len()] =
         super::Contract::spec_xdr_test_string();
 }
 impl Contract {
@@ -231,11 +227,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_test_string() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_test_string.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_string() -> [u8; Contract::spec_xdr_len_test_string()] {
+    pub const fn spec_xdr_test_string(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_test_string.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_test_string.const_to_xdr() }
     }
 }
@@ -247,7 +240,7 @@ mod __Contract__test_env_param__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_TEST_ENV_PARAM: [u8; super::Contract::spec_xdr_len_test_env_param()] =
+    static __SPEC_XDR_FN_TEST_ENV_PARAM: [u8; super::Contract::spec_xdr_test_env_param().len()] =
         super::Contract::spec_xdr_test_env_param();
 }
 impl Contract {
@@ -266,11 +259,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_test_env_param() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_test_env_param.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_env_param() -> [u8; Contract::spec_xdr_len_test_env_param()] {
+    pub const fn spec_xdr_test_env_param(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_test_env_param.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_test_env_param.const_to_xdr() }
     }
 }
@@ -282,7 +272,7 @@ mod __Contract__test_struct__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_TEST_STRUCT: [u8; super::Contract::spec_xdr_len_test_struct()] =
+    static __SPEC_XDR_FN_TEST_STRUCT: [u8; super::Contract::spec_xdr_test_struct().len()] =
         super::Contract::spec_xdr_test_struct();
 }
 impl Contract {
@@ -319,11 +309,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_test_struct() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_test_struct.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_struct() -> [u8; Contract::spec_xdr_len_test_struct()] {
+    pub const fn spec_xdr_test_struct(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_test_struct.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_test_struct.const_to_xdr() }
     }
 }
@@ -1709,7 +1696,7 @@ mod __Contract__test_i32__spec {
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
     /// Test i32 values.
-    static __SPEC_XDR_FN_TEST_I32: [u8; super::Contract::spec_xdr_len_test_i32()] =
+    static __SPEC_XDR_FN_TEST_I32: [u8; super::Contract::spec_xdr_test_i32().len()] =
         super::Contract::spec_xdr_test_i32();
 }
 impl Contract {
@@ -1738,12 +1725,7 @@ impl Contract {
         );
     #[allow(non_snake_case)]
     /// Test i32 values.
-    pub const fn spec_xdr_len_test_i32() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_test_i32.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    /// Test i32 values.
-    pub const fn spec_xdr_test_i32() -> [u8; Contract::spec_xdr_len_test_i32()] {
+    pub const fn spec_xdr_test_i32() -> [u8; Contract::__SPEC_XDR_ENTRY_test_i32.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_test_i32.const_to_xdr() }
     }
 }
@@ -1755,7 +1737,7 @@ mod __Contract__test_u64__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_TEST_U64: [u8; super::Contract::spec_xdr_len_test_u64()] =
+    static __SPEC_XDR_FN_TEST_U64: [u8; super::Contract::spec_xdr_test_u64().len()] =
         super::Contract::spec_xdr_test_u64();
 }
 impl Contract {
@@ -1780,11 +1762,7 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_test_u64() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_test_u64.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_u64() -> [u8; Contract::spec_xdr_len_test_u64()] {
+    pub const fn spec_xdr_test_u64() -> [u8; Contract::__SPEC_XDR_ENTRY_test_u64.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_test_u64.const_to_xdr() }
     }
 }
@@ -1796,7 +1774,7 @@ mod __Contract__test_i64__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_TEST_I64: [u8; super::Contract::spec_xdr_len_test_i64()] =
+    static __SPEC_XDR_FN_TEST_I64: [u8; super::Contract::spec_xdr_test_i64().len()] =
         super::Contract::spec_xdr_test_i64();
 }
 impl Contract {
@@ -1821,11 +1799,7 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_test_i64() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_test_i64.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_i64() -> [u8; Contract::spec_xdr_len_test_i64()] {
+    pub const fn spec_xdr_test_i64() -> [u8; Contract::__SPEC_XDR_ENTRY_test_i64.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_test_i64.const_to_xdr() }
     }
 }
@@ -1837,7 +1811,7 @@ mod __Contract__test_u128__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_TEST_U128: [u8; super::Contract::spec_xdr_len_test_u128()] =
+    static __SPEC_XDR_FN_TEST_U128: [u8; super::Contract::spec_xdr_test_u128().len()] =
         super::Contract::spec_xdr_test_u128();
 }
 impl Contract {
@@ -1862,11 +1836,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_test_u128() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_test_u128.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_u128() -> [u8; Contract::spec_xdr_len_test_u128()] {
+    pub const fn spec_xdr_test_u128() -> [u8; Contract::__SPEC_XDR_ENTRY_test_u128.const_xdr_len()]
+    {
         const { Contract::__SPEC_XDR_ENTRY_test_u128.const_to_xdr() }
     }
 }
@@ -1878,7 +1849,7 @@ mod __Contract__test_i128__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_TEST_I128: [u8; super::Contract::spec_xdr_len_test_i128()] =
+    static __SPEC_XDR_FN_TEST_I128: [u8; super::Contract::spec_xdr_test_i128().len()] =
         super::Contract::spec_xdr_test_i128();
 }
 impl Contract {
@@ -1903,11 +1874,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_test_i128() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_test_i128.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_i128() -> [u8; Contract::spec_xdr_len_test_i128()] {
+    pub const fn spec_xdr_test_i128() -> [u8; Contract::__SPEC_XDR_ENTRY_test_i128.const_xdr_len()]
+    {
         const { Contract::__SPEC_XDR_ENTRY_test_i128.const_to_xdr() }
     }
 }
@@ -1919,7 +1887,7 @@ mod __Contract__test_bool__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_TEST_BOOL: [u8; super::Contract::spec_xdr_len_test_bool()] =
+    static __SPEC_XDR_FN_TEST_BOOL: [u8; super::Contract::spec_xdr_test_bool().len()] =
         super::Contract::spec_xdr_test_bool();
 }
 impl Contract {
@@ -1944,11 +1912,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_test_bool() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_test_bool.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_bool() -> [u8; Contract::spec_xdr_len_test_bool()] {
+    pub const fn spec_xdr_test_bool() -> [u8; Contract::__SPEC_XDR_ENTRY_test_bool.const_xdr_len()]
+    {
         const { Contract::__SPEC_XDR_ENTRY_test_bool.const_to_xdr() }
     }
 }
@@ -1960,7 +1925,7 @@ mod __Contract__test_address__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_TEST_ADDRESS: [u8; super::Contract::spec_xdr_len_test_address()] =
+    static __SPEC_XDR_FN_TEST_ADDRESS: [u8; super::Contract::spec_xdr_test_address().len()] =
         super::Contract::spec_xdr_test_address();
 }
 impl Contract {
@@ -1985,11 +1950,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_test_address() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_test_address.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_address() -> [u8; Contract::spec_xdr_len_test_address()] {
+    pub const fn spec_xdr_test_address(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_test_address.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_test_address.const_to_xdr() }
     }
 }
@@ -2001,7 +1963,7 @@ mod __Contract__test_bytes__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_TEST_BYTES: [u8; super::Contract::spec_xdr_len_test_bytes()] =
+    static __SPEC_XDR_FN_TEST_BYTES: [u8; super::Contract::spec_xdr_test_bytes().len()] =
         super::Contract::spec_xdr_test_bytes();
 }
 impl Contract {
@@ -2026,11 +1988,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_test_bytes() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_test_bytes.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_bytes() -> [u8; Contract::spec_xdr_len_test_bytes()] {
+    pub const fn spec_xdr_test_bytes() -> [u8; Contract::__SPEC_XDR_ENTRY_test_bytes.const_xdr_len()]
+    {
         const { Contract::__SPEC_XDR_ENTRY_test_bytes.const_to_xdr() }
     }
 }
@@ -2042,7 +2001,7 @@ mod __Contract__test_bytes_n__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_TEST_BYTES_N: [u8; super::Contract::spec_xdr_len_test_bytes_n()] =
+    static __SPEC_XDR_FN_TEST_BYTES_N: [u8; super::Contract::spec_xdr_test_bytes_n().len()] =
         super::Contract::spec_xdr_test_bytes_n();
 }
 impl Contract {
@@ -2071,11 +2030,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_test_bytes_n() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_test_bytes_n.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_bytes_n() -> [u8; Contract::spec_xdr_len_test_bytes_n()] {
+    pub const fn spec_xdr_test_bytes_n(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_test_bytes_n.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_test_bytes_n.const_to_xdr() }
     }
 }
@@ -2087,7 +2043,7 @@ mod __Contract__test_symbol__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_TEST_SYMBOL: [u8; super::Contract::spec_xdr_len_test_symbol()] =
+    static __SPEC_XDR_FN_TEST_SYMBOL: [u8; super::Contract::spec_xdr_test_symbol().len()] =
         super::Contract::spec_xdr_test_symbol();
 }
 impl Contract {
@@ -2112,11 +2068,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_test_symbol() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_test_symbol.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_symbol() -> [u8; Contract::spec_xdr_len_test_symbol()] {
+    pub const fn spec_xdr_test_symbol(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_test_symbol.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_test_symbol.const_to_xdr() }
     }
 }
@@ -2128,7 +2081,7 @@ mod __Contract__test_vec__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_TEST_VEC: [u8; super::Contract::spec_xdr_len_test_vec()] =
+    static __SPEC_XDR_FN_TEST_VEC: [u8; super::Contract::spec_xdr_test_vec().len()] =
         super::Contract::spec_xdr_test_vec();
 }
 impl Contract {
@@ -2161,11 +2114,7 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_test_vec() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_test_vec.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_vec() -> [u8; Contract::spec_xdr_len_test_vec()] {
+    pub const fn spec_xdr_test_vec() -> [u8; Contract::__SPEC_XDR_ENTRY_test_vec.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_test_vec.const_to_xdr() }
     }
 }
@@ -2177,7 +2126,7 @@ mod __Contract__test_map__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_TEST_MAP: [u8; super::Contract::spec_xdr_len_test_map()] =
+    static __SPEC_XDR_FN_TEST_MAP: [u8; super::Contract::spec_xdr_test_map().len()] =
         super::Contract::spec_xdr_test_map();
 }
 impl Contract {
@@ -2212,11 +2161,7 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_test_map() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_test_map.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_map() -> [u8; Contract::spec_xdr_len_test_map()] {
+    pub const fn spec_xdr_test_map() -> [u8; Contract::__SPEC_XDR_ENTRY_test_map.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_test_map.const_to_xdr() }
     }
 }
@@ -2228,7 +2173,7 @@ mod __Contract__test_duration__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_TEST_DURATION: [u8; super::Contract::spec_xdr_len_test_duration()] =
+    static __SPEC_XDR_FN_TEST_DURATION: [u8; super::Contract::spec_xdr_test_duration().len()] =
         super::Contract::spec_xdr_test_duration();
 }
 impl Contract {
@@ -2253,11 +2198,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_test_duration() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_test_duration.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_duration() -> [u8; Contract::spec_xdr_len_test_duration()] {
+    pub const fn spec_xdr_test_duration(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_test_duration.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_test_duration.const_to_xdr() }
     }
 }
@@ -2269,7 +2211,7 @@ mod __Contract__test_timepoint__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_TEST_TIMEPOINT: [u8; super::Contract::spec_xdr_len_test_timepoint()] =
+    static __SPEC_XDR_FN_TEST_TIMEPOINT: [u8; super::Contract::spec_xdr_test_timepoint().len()] =
         super::Contract::spec_xdr_test_timepoint();
 }
 impl Contract {
@@ -2294,11 +2236,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_test_timepoint() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_test_timepoint.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_timepoint() -> [u8; Contract::spec_xdr_len_test_timepoint()] {
+    pub const fn spec_xdr_test_timepoint(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_test_timepoint.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_test_timepoint.const_to_xdr() }
     }
 }
@@ -2310,7 +2249,7 @@ mod __Contract__test_i256__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_TEST_I256: [u8; super::Contract::spec_xdr_len_test_i256()] =
+    static __SPEC_XDR_FN_TEST_I256: [u8; super::Contract::spec_xdr_test_i256().len()] =
         super::Contract::spec_xdr_test_i256();
 }
 impl Contract {
@@ -2335,11 +2274,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_test_i256() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_test_i256.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_i256() -> [u8; Contract::spec_xdr_len_test_i256()] {
+    pub const fn spec_xdr_test_i256() -> [u8; Contract::__SPEC_XDR_ENTRY_test_i256.const_xdr_len()]
+    {
         const { Contract::__SPEC_XDR_ENTRY_test_i256.const_to_xdr() }
     }
 }
@@ -2351,7 +2287,7 @@ mod __Contract__test_u256__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_TEST_U256: [u8; super::Contract::spec_xdr_len_test_u256()] =
+    static __SPEC_XDR_FN_TEST_U256: [u8; super::Contract::spec_xdr_test_u256().len()] =
         super::Contract::spec_xdr_test_u256();
 }
 impl Contract {
@@ -2376,11 +2312,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_test_u256() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_test_u256.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_u256() -> [u8; Contract::spec_xdr_len_test_u256()] {
+    pub const fn spec_xdr_test_u256() -> [u8; Contract::__SPEC_XDR_ENTRY_test_u256.const_xdr_len()]
+    {
         const { Contract::__SPEC_XDR_ENTRY_test_u256.const_to_xdr() }
     }
 }
@@ -2392,7 +2325,7 @@ mod __Contract__test_enum_unit__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_TEST_ENUM_UNIT: [u8; super::Contract::spec_xdr_len_test_enum_unit()] =
+    static __SPEC_XDR_FN_TEST_ENUM_UNIT: [u8; super::Contract::spec_xdr_test_enum_unit().len()] =
         super::Contract::spec_xdr_test_enum_unit();
 }
 impl Contract {
@@ -2429,11 +2362,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_test_enum_unit() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_test_enum_unit.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_enum_unit() -> [u8; Contract::spec_xdr_len_test_enum_unit()] {
+    pub const fn spec_xdr_test_enum_unit(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_test_enum_unit.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_test_enum_unit.const_to_xdr() }
     }
 }
@@ -2445,9 +2375,8 @@ mod __Contract__test_enum_variants__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_TEST_ENUM_VARIANTS: [u8;
-        super::Contract::spec_xdr_len_test_enum_variants()] =
-        super::Contract::spec_xdr_test_enum_variants();
+    static __SPEC_XDR_FN_TEST_ENUM_VARIANTS: [u8; super::Contract::spec_xdr_test_enum_variants()
+        .len()] = super::Contract::spec_xdr_test_enum_variants();
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
@@ -2485,12 +2414,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_test_enum_variants() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_test_enum_variants.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_test_enum_variants() -> [u8; Contract::spec_xdr_len_test_enum_variants()]
-    {
+    pub const fn spec_xdr_test_enum_variants(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_test_enum_variants.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_test_enum_variants.const_to_xdr() }
     }
 }

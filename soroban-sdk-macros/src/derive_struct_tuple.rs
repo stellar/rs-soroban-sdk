@@ -100,16 +100,12 @@ pub fn derive_type_struct_tuple(
             #[doc(hidden)]
             #[allow(dead_code)]
             #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
-            static #spec_ident: [u8; #ident::spec_xdr_len()] = #ident::spec_xdr();
+            static #spec_ident: [u8; #ident::spec_xdr().len()] = #ident::spec_xdr();
 
             impl #ident {
                 const __SPEC_XDR_ENTRY: #path::xdr::r#const::ScSpecEntry = #spec_view;
 
-                pub const fn spec_xdr_len() -> usize {
-                    const { #ident::__SPEC_XDR_ENTRY.const_xdr_len() }
-                }
-
-                pub const fn spec_xdr() -> [u8; #ident::spec_xdr_len()] {
+                pub const fn spec_xdr() -> [u8; #ident::__SPEC_XDR_ENTRY.const_xdr_len()] {
                     const { #ident::__SPEC_XDR_ENTRY.const_to_xdr() }
                 }
             }

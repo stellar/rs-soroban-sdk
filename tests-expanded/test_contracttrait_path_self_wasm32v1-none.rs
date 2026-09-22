@@ -83,12 +83,8 @@ impl SelfPathTraitSpec {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_self_path_method() -> usize {
-        const { SelfPathTraitSpec::__SPEC_XDR_ENTRY_self_path_method.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
     pub const fn spec_xdr_self_path_method(
-    ) -> [u8; SelfPathTraitSpec::spec_xdr_len_self_path_method()] {
+    ) -> [u8; SelfPathTraitSpec::__SPEC_XDR_ENTRY_self_path_method.const_xdr_len()] {
         const { SelfPathTraitSpec::__SPEC_XDR_ENTRY_self_path_method.const_to_xdr() }
     }
 }
@@ -146,7 +142,7 @@ mod __ContractSelfPath__self_path_method__spec {
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_FN_SELF_PATH_METHOD: [u8;
-        super::ContractSelfPath::spec_xdr_len_self_path_method()] =
+        super::ContractSelfPath::spec_xdr_self_path_method().len()] =
         super::ContractSelfPath::spec_xdr_self_path_method();
 }
 impl ContractSelfPath {
@@ -167,12 +163,8 @@ impl ContractSelfPath {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_self_path_method() -> usize {
-        const { ContractSelfPath::__SPEC_XDR_ENTRY_self_path_method.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
     pub const fn spec_xdr_self_path_method(
-    ) -> [u8; ContractSelfPath::spec_xdr_len_self_path_method()] {
+    ) -> [u8; ContractSelfPath::__SPEC_XDR_ENTRY_self_path_method.const_xdr_len()] {
         const { ContractSelfPath::__SPEC_XDR_ENTRY_self_path_method.const_to_xdr() }
     }
 }

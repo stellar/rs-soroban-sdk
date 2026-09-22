@@ -348,11 +348,7 @@ impl TraitSpec {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_exec() -> usize {
-        const { TraitSpec::__SPEC_XDR_ENTRY_exec.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_exec() -> [u8; TraitSpec::spec_xdr_len_exec()] {
+    pub const fn spec_xdr_exec() -> [u8; TraitSpec::__SPEC_XDR_ENTRY_exec.const_xdr_len()] {
         const { TraitSpec::__SPEC_XDR_ENTRY_exec.const_to_xdr() }
     }
 }
@@ -411,7 +407,7 @@ mod __Contract__exec__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_EXEC: [u8; super::Contract::spec_xdr_len_exec()] =
+    static __SPEC_XDR_FN_EXEC: [u8; super::Contract::spec_xdr_exec().len()] =
         super::Contract::spec_xdr_exec();
 }
 impl Contract {
@@ -430,11 +426,7 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_exec() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_exec.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_exec() -> [u8; Contract::spec_xdr_len_exec()] {
+    pub const fn spec_xdr_exec() -> [u8; Contract::__SPEC_XDR_ENTRY_exec.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_exec.const_to_xdr() }
     }
 }
@@ -609,7 +601,7 @@ mod __Contract__exec2__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_EXEC2: [u8; super::Contract::spec_xdr_len_exec2()] =
+    static __SPEC_XDR_FN_EXEC2: [u8; super::Contract::spec_xdr_exec2().len()] =
         super::Contract::spec_xdr_exec2();
 }
 impl Contract {
@@ -628,11 +620,7 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_exec2() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_exec2.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_exec2() -> [u8; Contract::spec_xdr_len_exec2()] {
+    pub const fn spec_xdr_exec2() -> [u8; Contract::__SPEC_XDR_ENTRY_exec2.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_exec2.const_to_xdr() }
     }
 }
@@ -1219,8 +1207,8 @@ mod test_with_wasm {
         }
         #[doc(hidden)]
         #[allow(dead_code)]
-        static __SPEC_XDR_TYPE_CONTRACTEXECUTABLEREF: [u8; ContractExecutableRef::spec_xdr_len()] =
-            ContractExecutableRef::spec_xdr();
+        static __SPEC_XDR_TYPE_CONTRACTEXECUTABLEREF: [u8; ContractExecutableRef::spec_xdr()
+            .len()] = ContractExecutableRef::spec_xdr();
         impl ContractExecutableRef {
             const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
                 soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
@@ -1252,10 +1240,8 @@ mod test_with_wasm {
                         ]),
                     },
                 );
-            pub const fn spec_xdr_len() -> usize {
-                const { ContractExecutableRef::__SPEC_XDR_ENTRY.const_xdr_len() }
-            }
-            pub const fn spec_xdr() -> [u8; ContractExecutableRef::spec_xdr_len()] {
+            pub const fn spec_xdr() -> [u8; ContractExecutableRef::__SPEC_XDR_ENTRY.const_xdr_len()]
+            {
                 const { ContractExecutableRef::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
@@ -1747,7 +1733,7 @@ mod test_with_wasm {
         }
         #[doc(hidden)]
         #[allow(dead_code)]
-        static __SPEC_XDR_TYPE_CONTRACTCONTEXT: [u8; ContractContext::spec_xdr_len()] =
+        static __SPEC_XDR_TYPE_CONTRACTCONTEXT: [u8; ContractContext::spec_xdr().len()] =
             ContractContext::spec_xdr();
         impl ContractContext {
             const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -1794,10 +1780,7 @@ mod test_with_wasm {
                         ]),
                     },
                 );
-            pub const fn spec_xdr_len() -> usize {
-                const { ContractContext::__SPEC_XDR_ENTRY.const_xdr_len() }
-            }
-            pub const fn spec_xdr() -> [u8; ContractContext::spec_xdr_len()] {
+            pub const fn spec_xdr() -> [u8; ContractContext::__SPEC_XDR_ENTRY.const_xdr_len()] {
                 const { ContractContext::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
@@ -2345,8 +2328,8 @@ mod test_with_wasm {
         }
         #[doc(hidden)]
         #[allow(dead_code)]
-        static __SPEC_XDR_TYPE_SUBCONTRACTINVOCATION: [u8; SubContractInvocation::spec_xdr_len()] =
-            SubContractInvocation::spec_xdr();
+        static __SPEC_XDR_TYPE_SUBCONTRACTINVOCATION: [u8; SubContractInvocation::spec_xdr()
+            .len()] = SubContractInvocation::spec_xdr();
         impl SubContractInvocation {
             const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -2389,10 +2372,8 @@ mod test_with_wasm {
                     ],
                 ),
             });
-            pub const fn spec_xdr_len() -> usize {
-                const { SubContractInvocation::__SPEC_XDR_ENTRY.const_xdr_len() }
-            }
-            pub const fn spec_xdr() -> [u8; SubContractInvocation::spec_xdr_len()] {
+            pub const fn spec_xdr() -> [u8; SubContractInvocation::__SPEC_XDR_ENTRY.const_xdr_len()]
+            {
                 const { SubContractInvocation::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
@@ -2878,7 +2859,8 @@ mod test_with_wasm {
         #[doc(hidden)]
         #[allow(dead_code)]
         static __SPEC_XDR_TYPE_CREATECONTRACTHOSTFNCONTEXT: [u8;
-            CreateContractHostFnContext::spec_xdr_len()] = CreateContractHostFnContext::spec_xdr();
+            CreateContractHostFnContext::spec_xdr().len()] =
+            CreateContractHostFnContext::spec_xdr();
         impl CreateContractHostFnContext {
             const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -2915,10 +2897,8 @@ mod test_with_wasm {
                     ],
                 ),
             });
-            pub const fn spec_xdr_len() -> usize {
-                const { CreateContractHostFnContext::__SPEC_XDR_ENTRY.const_xdr_len() }
-            }
-            pub const fn spec_xdr() -> [u8; CreateContractHostFnContext::spec_xdr_len()] {
+            pub const fn spec_xdr(
+            ) -> [u8; CreateContractHostFnContext::__SPEC_XDR_ENTRY.const_xdr_len()] {
                 const { CreateContractHostFnContext::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
@@ -3436,7 +3416,7 @@ mod test_with_wasm {
         #[doc(hidden)]
         #[allow(dead_code)]
         static __SPEC_XDR_TYPE_CREATECONTRACTWITHCONSTRUCTORHOSTFNCONTEXT: [u8;
-            CreateContractWithConstructorHostFnContext::spec_xdr_len()] =
+            CreateContractWithConstructorHostFnContext::spec_xdr().len()] =
             CreateContractWithConstructorHostFnContext::spec_xdr();
         impl CreateContractWithConstructorHostFnContext {
             const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -3487,11 +3467,9 @@ mod test_with_wasm {
                     ],
                 ),
             });
-            pub const fn spec_xdr_len() -> usize {
-                const { CreateContractWithConstructorHostFnContext::__SPEC_XDR_ENTRY.const_xdr_len() }
-            }
             pub const fn spec_xdr(
-            ) -> [u8; CreateContractWithConstructorHostFnContext::spec_xdr_len()] {
+            ) -> [u8; CreateContractWithConstructorHostFnContext::__SPEC_XDR_ENTRY.const_xdr_len()]
+            {
                 const { CreateContractWithConstructorHostFnContext::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
@@ -4113,7 +4091,7 @@ mod test_with_wasm {
         }
         #[doc(hidden)]
         #[allow(dead_code)]
-        static __SPEC_XDR_TYPE_CONTRACTEXECUTABLE: [u8; ContractExecutable::spec_xdr_len()] =
+        static __SPEC_XDR_TYPE_CONTRACTEXECUTABLE: [u8; ContractExecutable::spec_xdr().len()] =
             ContractExecutable::spec_xdr();
         impl ContractExecutable {
             const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
@@ -4159,10 +4137,7 @@ mod test_with_wasm {
                     ],
                 ),
             });
-            pub const fn spec_xdr_len() -> usize {
-                const { ContractExecutable::__SPEC_XDR_ENTRY.const_xdr_len() }
-            }
-            pub const fn spec_xdr() -> [u8; ContractExecutable::spec_xdr_len()] {
+            pub const fn spec_xdr() -> [u8; ContractExecutable::__SPEC_XDR_ENTRY.const_xdr_len()] {
                 const { ContractExecutable::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
@@ -4801,7 +4776,7 @@ mod test_with_wasm {
         }
         #[doc(hidden)]
         #[allow(dead_code)]
-        static __SPEC_XDR_TYPE_CONTEXT: [u8; Context::spec_xdr_len()] = Context::spec_xdr();
+        static __SPEC_XDR_TYPE_CONTEXT: [u8; Context::spec_xdr().len()] = Context::spec_xdr();
         impl Context {
             const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -4865,10 +4840,7 @@ mod test_with_wasm {
                     ],
                 ),
             });
-            pub const fn spec_xdr_len() -> usize {
-                const { Context::__SPEC_XDR_ENTRY.const_xdr_len() }
-            }
-            pub const fn spec_xdr() -> [u8; Context::spec_xdr_len()] {
+            pub const fn spec_xdr() -> [u8; Context::__SPEC_XDR_ENTRY.const_xdr_len()] {
                 const { Context::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
@@ -5607,8 +5579,9 @@ mod test_with_wasm {
         }
         #[doc(hidden)]
         #[allow(dead_code)]
-        static __SPEC_XDR_TYPE_INVOKERCONTRACTAUTHENTRY: [u8;
-            InvokerContractAuthEntry::spec_xdr_len()] = InvokerContractAuthEntry::spec_xdr();
+        static __SPEC_XDR_TYPE_INVOKERCONTRACTAUTHENTRY: [u8; InvokerContractAuthEntry::spec_xdr(
+        )
+        .len()] = InvokerContractAuthEntry::spec_xdr();
         impl InvokerContractAuthEntry {
             const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -5672,10 +5645,8 @@ mod test_with_wasm {
                     ],
                 ),
             });
-            pub const fn spec_xdr_len() -> usize {
-                const { InvokerContractAuthEntry::__SPEC_XDR_ENTRY.const_xdr_len() }
-            }
-            pub const fn spec_xdr() -> [u8; InvokerContractAuthEntry::spec_xdr_len()] {
+            pub const fn spec_xdr(
+            ) -> [u8; InvokerContractAuthEntry::__SPEC_XDR_ENTRY.const_xdr_len()] {
                 const { InvokerContractAuthEntry::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
@@ -6408,7 +6379,7 @@ mod test_with_wasm {
         }
         #[doc(hidden)]
         #[allow(dead_code)]
-        static __SPEC_XDR_TYPE_EXECUTABLE: [u8; Executable::spec_xdr_len()] =
+        static __SPEC_XDR_TYPE_EXECUTABLE: [u8; Executable::spec_xdr().len()] =
             Executable::spec_xdr();
         impl Executable {
             const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -6464,10 +6435,7 @@ mod test_with_wasm {
                         ]),
                     },
                 );
-            pub const fn spec_xdr_len() -> usize {
-                const { Executable::__SPEC_XDR_ENTRY.const_xdr_len() }
-            }
-            pub const fn spec_xdr() -> [u8; Executable::spec_xdr_len()] {
+            pub const fn spec_xdr() -> [u8; Executable::__SPEC_XDR_ENTRY.const_xdr_len()] {
                 const { Executable::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }

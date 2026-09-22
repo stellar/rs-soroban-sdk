@@ -157,7 +157,7 @@ impl ::core::cmp::PartialEq for Error {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_ERROR: [u8; Error::spec_xdr_len()] = Error::spec_xdr();
+static __SPEC_XDR_TYPE_ERROR: [u8; Error::spec_xdr().len()] = Error::spec_xdr();
 impl Error {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtErrorEnumV0(
@@ -176,10 +176,7 @@ impl Error {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { Error::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; Error::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; Error::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { Error::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -312,7 +309,7 @@ impl ::core::cmp::PartialEq for MyError {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_MYERROR: [u8; MyError::spec_xdr_len()] = MyError::spec_xdr();
+static __SPEC_XDR_TYPE_MYERROR: [u8; MyError::spec_xdr().len()] = MyError::spec_xdr();
 impl MyError {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtErrorEnumV0(
@@ -331,10 +328,7 @@ impl MyError {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { MyError::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; MyError::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; MyError::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { MyError::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -465,7 +459,7 @@ mod __Contract__add__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_ADD: [u8; super::Contract::spec_xdr_len_add()] =
+    static __SPEC_XDR_FN_ADD: [u8; super::Contract::spec_xdr_add().len()] =
         super::Contract::spec_xdr_add();
 }
 impl Contract {
@@ -495,11 +489,7 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_add() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_add.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_add() -> [u8; Contract::spec_xdr_len_add()] {
+    pub const fn spec_xdr_add() -> [u8; Contract::__SPEC_XDR_ENTRY_add.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_add.const_to_xdr() }
     }
 }
@@ -511,7 +501,7 @@ mod __Contract__safe_add__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_SAFE_ADD: [u8; super::Contract::spec_xdr_len_safe_add()] =
+    static __SPEC_XDR_FN_SAFE_ADD: [u8; super::Contract::spec_xdr_safe_add().len()] =
         super::Contract::spec_xdr_safe_add();
 }
 impl Contract {
@@ -546,11 +536,7 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_safe_add() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_safe_add.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_safe_add() -> [u8; Contract::spec_xdr_len_safe_add()] {
+    pub const fn spec_xdr_safe_add() -> [u8; Contract::__SPEC_XDR_ENTRY_safe_add.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_safe_add.const_to_xdr() }
     }
 }
@@ -562,7 +548,7 @@ mod __Contract__safe_add_two__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_SAFE_ADD_TWO: [u8; super::Contract::spec_xdr_len_safe_add_two()] =
+    static __SPEC_XDR_FN_SAFE_ADD_TWO: [u8; super::Contract::spec_xdr_safe_add_two().len()] =
         super::Contract::spec_xdr_safe_add_two();
 }
 impl Contract {
@@ -604,11 +590,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_safe_add_two() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_safe_add_two.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_safe_add_two() -> [u8; Contract::spec_xdr_len_safe_add_two()] {
+    pub const fn spec_xdr_safe_add_two(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_safe_add_two.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_safe_add_two.const_to_xdr() }
     }
 }

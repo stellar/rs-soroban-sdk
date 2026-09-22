@@ -199,16 +199,12 @@ pub fn derive_type_enum(
             #[doc(hidden)]
             #[allow(dead_code)]
             #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
-            static #spec_ident: [u8; #enum_ident::spec_xdr_len()] = #enum_ident::spec_xdr();
+            static #spec_ident: [u8; #enum_ident::spec_xdr().len()] = #enum_ident::spec_xdr();
 
             impl #enum_ident {
                 const __SPEC_XDR_ENTRY: #path::xdr::r#const::ScSpecEntry = #spec_view;
 
-                pub const fn spec_xdr_len() -> usize {
-                    const { #enum_ident::__SPEC_XDR_ENTRY.const_xdr_len() }
-                }
-
-                pub const fn spec_xdr() -> [u8; #enum_ident::spec_xdr_len()] {
+                pub const fn spec_xdr() -> [u8; #enum_ident::__SPEC_XDR_ENTRY.const_xdr_len()] {
                     const { #enum_ident::__SPEC_XDR_ENTRY.const_to_xdr() }
                 }
             }

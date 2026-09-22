@@ -157,7 +157,7 @@ mod __Contract__add_with__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_ADD_WITH: [u8; super::Contract::spec_xdr_len_add_with()] =
+    static __SPEC_XDR_FN_ADD_WITH: [u8; super::Contract::spec_xdr_add_with().len()] =
         super::Contract::spec_xdr_add_with();
 }
 impl Contract {
@@ -194,11 +194,7 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_add_with() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_add_with.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_add_with() -> [u8; Contract::spec_xdr_len_add_with()] {
+    pub const fn spec_xdr_add_with() -> [u8; Contract::__SPEC_XDR_ENTRY_add_with.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_add_with.const_to_xdr() }
     }
 }
@@ -550,7 +546,7 @@ mod __AddContract__add__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_ADD: [u8; super::AddContract::spec_xdr_len_add()] =
+    static __SPEC_XDR_FN_ADD: [u8; super::AddContract::spec_xdr_add().len()] =
         super::AddContract::spec_xdr_add();
 }
 impl AddContract {
@@ -580,11 +576,7 @@ impl AddContract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_add() -> usize {
-        const { AddContract::__SPEC_XDR_ENTRY_add.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_add() -> [u8; AddContract::spec_xdr_len_add()] {
+    pub const fn spec_xdr_add() -> [u8; AddContract::__SPEC_XDR_ENTRY_add.const_xdr_len()] {
         const { AddContract::__SPEC_XDR_ENTRY_add.const_to_xdr() }
     }
 }

@@ -33,7 +33,7 @@ pub struct Transfer {
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
-static __SPEC_XDR_EVENT_TRANSFER: [u8; Transfer::spec_xdr_len()] = Transfer::spec_xdr();
+static __SPEC_XDR_EVENT_TRANSFER: [u8; Transfer::spec_xdr().len()] = Transfer::spec_xdr();
 impl Transfer {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
@@ -79,10 +79,7 @@ impl Transfer {
             ]),
             data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
         });
-    pub const fn spec_xdr_len() -> usize {
-        const { Transfer::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; Transfer::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; Transfer::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { Transfer::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -452,7 +449,7 @@ mod __Contract__transfer__spec {
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    static __SPEC_XDR_FN_TRANSFER: [u8; super::Contract::spec_xdr_len_transfer()] =
+    static __SPEC_XDR_FN_TRANSFER: [u8; super::Contract::spec_xdr_transfer().len()] =
         super::Contract::spec_xdr_transfer();
 }
 impl Contract {
@@ -487,11 +484,7 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_transfer() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_transfer.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_transfer() -> [u8; Contract::spec_xdr_len_transfer()] {
+    pub const fn spec_xdr_transfer() -> [u8; Contract::__SPEC_XDR_ENTRY_transfer.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_transfer.const_to_xdr() }
     }
 }
@@ -504,7 +497,7 @@ mod __Contract__failed_transfer__spec {
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    static __SPEC_XDR_FN_FAILED_TRANSFER: [u8; super::Contract::spec_xdr_len_failed_transfer()] =
+    static __SPEC_XDR_FN_FAILED_TRANSFER: [u8; super::Contract::spec_xdr_failed_transfer().len()] =
         super::Contract::spec_xdr_failed_transfer();
 }
 impl Contract {
@@ -539,11 +532,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_failed_transfer() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_failed_transfer.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_failed_transfer() -> [u8; Contract::spec_xdr_len_failed_transfer()] {
+    pub const fn spec_xdr_failed_transfer(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_failed_transfer.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_failed_transfer.const_to_xdr() }
     }
 }

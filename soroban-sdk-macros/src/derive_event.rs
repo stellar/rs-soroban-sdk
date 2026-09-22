@@ -263,16 +263,12 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         #[doc(hidden)]
         #[allow(dead_code)]
         #export_gen
-        static #spec_ident: [u8; #ident::spec_xdr_len()] = #ident::spec_xdr();
+        static #spec_ident: [u8; #ident::spec_xdr().len()] = #ident::spec_xdr();
 
         impl #gen_impl #ident #gen_types #gen_where {
             const __SPEC_XDR_ENTRY: #path::xdr::r#const::ScSpecEntry = #spec_view;
 
-            pub const fn spec_xdr_len() -> usize {
-                const { #ident::__SPEC_XDR_ENTRY.const_xdr_len() }
-            }
-
-            pub const fn spec_xdr() -> [u8; #ident::spec_xdr_len()] {
+            pub const fn spec_xdr() -> [u8; #ident::__SPEC_XDR_ENTRY.const_xdr_len()] {
                 const { #ident::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }

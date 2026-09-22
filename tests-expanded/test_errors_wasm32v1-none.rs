@@ -48,7 +48,7 @@ impl ::core::cmp::PartialEq for Flag {
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
-static __SPEC_XDR_TYPE_FLAG: [u8; Flag::spec_xdr_len()] = Flag::spec_xdr();
+static __SPEC_XDR_TYPE_FLAG: [u8; Flag::spec_xdr().len()] = Flag::spec_xdr();
 impl Flag {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtEnumV0(
@@ -85,10 +85,7 @@ impl Flag {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { Flag::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; Flag::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; Flag::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { Flag::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -179,7 +176,7 @@ impl ::core::cmp::PartialEq for Error {
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
-static __SPEC_XDR_TYPE_ERROR: [u8; Error::spec_xdr_len()] = Error::spec_xdr();
+static __SPEC_XDR_TYPE_ERROR: [u8; Error::spec_xdr().len()] = Error::spec_xdr();
 impl Error {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtErrorEnumV0(
@@ -198,10 +195,7 @@ impl Error {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { Error::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; Error::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; Error::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { Error::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -365,7 +359,7 @@ mod __Contract__hello__spec {
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    static __SPEC_XDR_FN_HELLO: [u8; super::Contract::spec_xdr_len_hello()] =
+    static __SPEC_XDR_FN_HELLO: [u8; super::Contract::spec_xdr_hello().len()] =
         super::Contract::spec_xdr_hello();
 }
 impl Contract {
@@ -401,11 +395,7 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_hello() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_hello.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_hello() -> [u8; Contract::spec_xdr_len_hello()] {
+    pub const fn spec_xdr_hello() -> [u8; Contract::__SPEC_XDR_ENTRY_hello.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_hello.const_to_xdr() }
     }
 }

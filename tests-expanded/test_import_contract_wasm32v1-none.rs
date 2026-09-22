@@ -245,7 +245,7 @@ mod addcontract {
     #[doc(hidden)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    static __SPEC_XDR_TYPE_CONTRACTEXECUTABLEREF: [u8; ContractExecutableRef::spec_xdr_len()] =
+    static __SPEC_XDR_TYPE_CONTRACTEXECUTABLEREF: [u8; ContractExecutableRef::spec_xdr().len()] =
         ContractExecutableRef::spec_xdr();
     impl ContractExecutableRef {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -274,10 +274,7 @@ mod addcontract {
                     ]),
                 },
             );
-        pub const fn spec_xdr_len() -> usize {
-            const { ContractExecutableRef::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; ContractExecutableRef::spec_xdr_len()] {
+        pub const fn spec_xdr() -> [u8; ContractExecutableRef::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { ContractExecutableRef::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
@@ -443,7 +440,7 @@ mod addcontract {
     #[doc(hidden)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    static __SPEC_XDR_TYPE_CONTRACTCONTEXT: [u8; ContractContext::spec_xdr_len()] =
+    static __SPEC_XDR_TYPE_CONTRACTCONTEXT: [u8; ContractContext::spec_xdr().len()] =
         ContractContext::spec_xdr();
     impl ContractContext {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -483,10 +480,7 @@ mod addcontract {
                     ]),
                 },
             );
-        pub const fn spec_xdr_len() -> usize {
-            const { ContractContext::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; ContractContext::spec_xdr_len()] {
+        pub const fn spec_xdr() -> [u8; ContractContext::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { ContractContext::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
@@ -647,7 +641,7 @@ mod addcontract {
     #[doc(hidden)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    static __SPEC_XDR_TYPE_SUBCONTRACTINVOCATION: [u8; SubContractInvocation::spec_xdr_len()] =
+    static __SPEC_XDR_TYPE_SUBCONTRACTINVOCATION: [u8; SubContractInvocation::spec_xdr().len()] =
         SubContractInvocation::spec_xdr();
     impl SubContractInvocation {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -691,10 +685,7 @@ mod addcontract {
                 ],
             ),
         });
-        pub const fn spec_xdr_len() -> usize {
-            const { SubContractInvocation::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; SubContractInvocation::spec_xdr_len()] {
+        pub const fn spec_xdr() -> [u8; SubContractInvocation::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { SubContractInvocation::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
@@ -846,7 +837,7 @@ mod addcontract {
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_TYPE_CREATECONTRACTHOSTFNCONTEXT: [u8;
-        CreateContractHostFnContext::spec_xdr_len()] = CreateContractHostFnContext::spec_xdr();
+        CreateContractHostFnContext::spec_xdr().len()] = CreateContractHostFnContext::spec_xdr();
     impl CreateContractHostFnContext {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
             soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
@@ -883,10 +874,8 @@ mod addcontract {
                     ]),
                 },
             );
-        pub const fn spec_xdr_len() -> usize {
-            const { CreateContractHostFnContext::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; CreateContractHostFnContext::spec_xdr_len()] {
+        pub const fn spec_xdr(
+        ) -> [u8; CreateContractHostFnContext::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { CreateContractHostFnContext::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
@@ -1058,7 +1047,7 @@ mod addcontract {
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_TYPE_CREATECONTRACTWITHCONSTRUCTORHOSTFNCONTEXT: [u8;
-        CreateContractWithConstructorHostFnContext::spec_xdr_len()] =
+        CreateContractWithConstructorHostFnContext::spec_xdr().len()] =
         CreateContractWithConstructorHostFnContext::spec_xdr();
     impl CreateContractWithConstructorHostFnContext {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -1107,10 +1096,8 @@ mod addcontract {
                     ]),
                 },
             );
-        pub const fn spec_xdr_len() -> usize {
-            const { CreateContractWithConstructorHostFnContext::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; CreateContractWithConstructorHostFnContext::spec_xdr_len()]
+        pub const fn spec_xdr(
+        ) -> [u8; CreateContractWithConstructorHostFnContext::__SPEC_XDR_ENTRY.const_xdr_len()]
         {
             const { CreateContractWithConstructorHostFnContext::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
@@ -1307,7 +1294,7 @@ mod addcontract {
     #[doc(hidden)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    static __SPEC_XDR_TYPE_CONTRACTEXECUTABLE: [u8; ContractExecutable::spec_xdr_len()] =
+    static __SPEC_XDR_TYPE_CONTRACTEXECUTABLE: [u8; ContractExecutable::spec_xdr().len()] =
         ContractExecutable::spec_xdr();
     impl ContractExecutable {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
@@ -1353,10 +1340,7 @@ mod addcontract {
                 ],
             ),
         });
-        pub const fn spec_xdr_len() -> usize {
-            const { ContractExecutable::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; ContractExecutable::spec_xdr_len()] {
+        pub const fn spec_xdr() -> [u8; ContractExecutable::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { ContractExecutable::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
@@ -1590,7 +1574,7 @@ mod addcontract {
     #[doc(hidden)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    static __SPEC_XDR_TYPE_CONTEXT: [u8; Context::spec_xdr_len()] = Context::spec_xdr();
+    static __SPEC_XDR_TYPE_CONTEXT: [u8; Context::spec_xdr().len()] = Context::spec_xdr();
     impl Context {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -1654,10 +1638,7 @@ mod addcontract {
                 ],
             ),
         });
-        pub const fn spec_xdr_len() -> usize {
-            const { Context::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; Context::spec_xdr_len()] {
+        pub const fn spec_xdr() -> [u8; Context::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { Context::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
@@ -1922,8 +1903,8 @@ mod addcontract {
     #[doc(hidden)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    static __SPEC_XDR_TYPE_INVOKERCONTRACTAUTHENTRY: [u8; InvokerContractAuthEntry::spec_xdr_len(
-    )] = InvokerContractAuthEntry::spec_xdr();
+    static __SPEC_XDR_TYPE_INVOKERCONTRACTAUTHENTRY: [u8; InvokerContractAuthEntry::spec_xdr()
+        .len()] = InvokerContractAuthEntry::spec_xdr();
     impl InvokerContractAuthEntry {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -1987,10 +1968,8 @@ mod addcontract {
                 ],
             ),
         });
-        pub const fn spec_xdr_len() -> usize {
-            const { InvokerContractAuthEntry::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; InvokerContractAuthEntry::spec_xdr_len()] {
+        pub const fn spec_xdr() -> [u8; InvokerContractAuthEntry::__SPEC_XDR_ENTRY.const_xdr_len()]
+        {
             const { InvokerContractAuthEntry::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
@@ -2205,7 +2184,7 @@ mod addcontract {
     #[doc(hidden)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    static __SPEC_XDR_TYPE_EXECUTABLE: [u8; Executable::spec_xdr_len()] = Executable::spec_xdr();
+    static __SPEC_XDR_TYPE_EXECUTABLE: [u8; Executable::spec_xdr().len()] = Executable::spec_xdr();
     impl Executable {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
             soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(
@@ -2254,10 +2233,7 @@ mod addcontract {
                     ]),
                 },
             );
-        pub const fn spec_xdr_len() -> usize {
-            const { Executable::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; Executable::spec_xdr_len()] {
+        pub const fn spec_xdr() -> [u8; Executable::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { Executable::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
@@ -2412,7 +2388,7 @@ mod addcontract {
     #[doc(hidden)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    static __SPEC_XDR_TYPE_ERROR: [u8; Error::spec_xdr_len()] = Error::spec_xdr();
+    static __SPEC_XDR_TYPE_ERROR: [u8; Error::spec_xdr().len()] = Error::spec_xdr();
     impl Error {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
             soroban_sdk::xdr::r#const::ScSpecEntry::UdtErrorEnumV0(
@@ -2431,10 +2407,7 @@ mod addcontract {
                     ]),
                 },
             );
-        pub const fn spec_xdr_len() -> usize {
-            const { Error::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; Error::spec_xdr_len()] {
+        pub const fn spec_xdr() -> [u8; Error::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { Error::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
@@ -2605,7 +2578,7 @@ mod addcontract {
     #[doc(hidden)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    static __SPEC_XDR_TYPE_MYERROR: [u8; MyError::spec_xdr_len()] = MyError::spec_xdr();
+    static __SPEC_XDR_TYPE_MYERROR: [u8; MyError::spec_xdr().len()] = MyError::spec_xdr();
     impl MyError {
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
             soroban_sdk::xdr::r#const::ScSpecEntry::UdtErrorEnumV0(
@@ -2624,10 +2597,7 @@ mod addcontract {
                     ]),
                 },
             );
-        pub const fn spec_xdr_len() -> usize {
-            const { MyError::__SPEC_XDR_ENTRY.const_xdr_len() }
-        }
-        pub const fn spec_xdr() -> [u8; MyError::spec_xdr_len()] {
+        pub const fn spec_xdr() -> [u8; MyError::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { MyError::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
     }
@@ -5492,7 +5462,7 @@ impl ::core::cmp::PartialEq for Error {
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
-static __SPEC_XDR_TYPE_ERROR: [u8; Error::spec_xdr_len()] = Error::spec_xdr();
+static __SPEC_XDR_TYPE_ERROR: [u8; Error::spec_xdr().len()] = Error::spec_xdr();
 impl Error {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtErrorEnumV0(
@@ -5516,10 +5486,7 @@ impl Error {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { Error::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; Error::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; Error::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { Error::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -5690,7 +5657,7 @@ mod __Contract__add_with__spec {
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    static __SPEC_XDR_FN_ADD_WITH: [u8; super::Contract::spec_xdr_len_add_with()] =
+    static __SPEC_XDR_FN_ADD_WITH: [u8; super::Contract::spec_xdr_add_with().len()] =
         super::Contract::spec_xdr_add_with();
 }
 impl Contract {
@@ -5727,11 +5694,7 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_add_with() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_add_with.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_add_with() -> [u8; Contract::spec_xdr_len_add_with()] {
+    pub const fn spec_xdr_add_with() -> [u8; Contract::__SPEC_XDR_ENTRY_add_with.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_add_with.const_to_xdr() }
     }
 }
@@ -5744,7 +5707,7 @@ mod __Contract__safe_add_with__spec {
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    static __SPEC_XDR_FN_SAFE_ADD_WITH: [u8; super::Contract::spec_xdr_len_safe_add_with()] =
+    static __SPEC_XDR_FN_SAFE_ADD_WITH: [u8; super::Contract::spec_xdr_safe_add_with().len()] =
         super::Contract::spec_xdr_safe_add_with();
 }
 impl Contract {
@@ -5786,11 +5749,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_safe_add_with() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_safe_add_with.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_safe_add_with() -> [u8; Contract::spec_xdr_len_safe_add_with()] {
+    pub const fn spec_xdr_safe_add_with(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_safe_add_with.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_safe_add_with.const_to_xdr() }
     }
 }
@@ -5803,8 +5763,8 @@ mod __Contract__safe_add_with_two__spec {
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    static __SPEC_XDR_FN_SAFE_ADD_WITH_TWO: [u8; super::Contract::spec_xdr_len_safe_add_with_two(
-    )] = super::Contract::spec_xdr_safe_add_with_two();
+    static __SPEC_XDR_FN_SAFE_ADD_WITH_TWO: [u8; super::Contract::spec_xdr_safe_add_with_two()
+        .len()] = super::Contract::spec_xdr_safe_add_with_two();
 }
 impl Contract {
     #[allow(non_upper_case_globals)]
@@ -5847,11 +5807,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_safe_add_with_two() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_safe_add_with_two.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_safe_add_with_two() -> [u8; Contract::spec_xdr_len_safe_add_with_two()] {
+    pub const fn spec_xdr_safe_add_with_two(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_safe_add_with_two.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_safe_add_with_two.const_to_xdr() }
     }
 }

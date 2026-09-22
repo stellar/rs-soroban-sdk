@@ -88,12 +88,9 @@ pub mod traits {
                 },
             );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_len_relative_path_method() -> usize {
-            const { RelativePathTraitSpec::__SPEC_XDR_ENTRY_relative_path_method.const_xdr_len() }
-        }
-        #[allow(non_snake_case)]
         pub const fn spec_xdr_relative_path_method(
-        ) -> [u8; RelativePathTraitSpec::spec_xdr_len_relative_path_method()] {
+        ) -> [u8; RelativePathTraitSpec::__SPEC_XDR_ENTRY_relative_path_method.const_xdr_len()]
+        {
             const { RelativePathTraitSpec::__SPEC_XDR_ENTRY_relative_path_method.const_to_xdr() }
         }
     }
@@ -155,7 +152,7 @@ mod __ContractRelativePath__relative_path_method__spec {
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_FN_RELATIVE_PATH_METHOD: [u8;
-        super::ContractRelativePath::spec_xdr_len_relative_path_method()] =
+        super::ContractRelativePath::spec_xdr_relative_path_method().len()] =
         super::ContractRelativePath::spec_xdr_relative_path_method();
 }
 impl ContractRelativePath {
@@ -176,12 +173,8 @@ impl ContractRelativePath {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_relative_path_method() -> usize {
-        const { ContractRelativePath::__SPEC_XDR_ENTRY_relative_path_method.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
     pub const fn spec_xdr_relative_path_method(
-    ) -> [u8; ContractRelativePath::spec_xdr_len_relative_path_method()] {
+    ) -> [u8; ContractRelativePath::__SPEC_XDR_ENTRY_relative_path_method.const_xdr_len()] {
         const { ContractRelativePath::__SPEC_XDR_ENTRY_relative_path_method.const_to_xdr() }
     }
 }

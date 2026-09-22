@@ -112,11 +112,7 @@ impl TraitSpec {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_exec() -> usize {
-        const { TraitSpec::__SPEC_XDR_ENTRY_exec.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_exec() -> [u8; TraitSpec::spec_xdr_len_exec()] {
+    pub const fn spec_xdr_exec() -> [u8; TraitSpec::__SPEC_XDR_ENTRY_exec.const_xdr_len()] {
         const { TraitSpec::__SPEC_XDR_ENTRY_exec.const_to_xdr() }
     }
 }
@@ -158,7 +154,7 @@ mod __Contract__exec__spec {
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    static __SPEC_XDR_FN_EXEC: [u8; super::Contract::spec_xdr_len_exec()] =
+    static __SPEC_XDR_FN_EXEC: [u8; super::Contract::spec_xdr_exec().len()] =
         super::Contract::spec_xdr_exec();
 }
 impl Contract {
@@ -177,11 +173,7 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_exec() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_exec.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_exec() -> [u8; Contract::spec_xdr_len_exec()] {
+    pub const fn spec_xdr_exec() -> [u8; Contract::__SPEC_XDR_ENTRY_exec.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_exec.const_to_xdr() }
     }
 }
@@ -256,7 +248,7 @@ mod __Contract__exec2__spec {
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    static __SPEC_XDR_FN_EXEC2: [u8; super::Contract::spec_xdr_len_exec2()] =
+    static __SPEC_XDR_FN_EXEC2: [u8; super::Contract::spec_xdr_exec2().len()] =
         super::Contract::spec_xdr_exec2();
 }
 impl Contract {
@@ -275,11 +267,7 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_exec2() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_exec2.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_exec2() -> [u8; Contract::spec_xdr_len_exec2()] {
+    pub const fn spec_xdr_exec2() -> [u8; Contract::__SPEC_XDR_ENTRY_exec2.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_exec2.const_to_xdr() }
     }
 }

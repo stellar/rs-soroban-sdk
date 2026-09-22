@@ -36,7 +36,7 @@ mod __Contract__empty__spec {
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    static __SPEC_XDR_FN_EMPTY: [u8; super::Contract::spec_xdr_len_empty()] =
+    static __SPEC_XDR_FN_EMPTY: [u8; super::Contract::spec_xdr_empty().len()] =
         super::Contract::spec_xdr_empty();
 }
 impl Contract {
@@ -53,11 +53,7 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_empty() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_empty.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_empty() -> [u8; Contract::spec_xdr_len_empty()] {
+    pub const fn spec_xdr_empty() -> [u8; Contract::__SPEC_XDR_ENTRY_empty.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_empty.const_to_xdr() }
     }
 }
@@ -129,7 +125,7 @@ mod __Contract__empty2__spec {
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    static __SPEC_XDR_FN_EMPTY2: [u8; super::Contract::spec_xdr_len_empty2()] =
+    static __SPEC_XDR_FN_EMPTY2: [u8; super::Contract::spec_xdr_empty2().len()] =
         super::Contract::spec_xdr_empty2();
 }
 impl Contract {
@@ -146,11 +142,7 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_empty2() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_empty2.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_empty2() -> [u8; Contract::spec_xdr_len_empty2()] {
+    pub const fn spec_xdr_empty2() -> [u8; Contract::__SPEC_XDR_ENTRY_empty2.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_empty2.const_to_xdr() }
     }
 }
@@ -225,7 +217,7 @@ mod __Contract__empty3__spec {
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    static __SPEC_XDR_FN_EMPTY3: [u8; super::Contract::spec_xdr_len_empty3()] =
+    static __SPEC_XDR_FN_EMPTY3: [u8; super::Contract::spec_xdr_empty3().len()] =
         super::Contract::spec_xdr_empty3();
 }
 impl Contract {
@@ -242,11 +234,7 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_empty3() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_empty3.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_empty3() -> [u8; Contract::spec_xdr_len_empty3()] {
+    pub const fn spec_xdr_empty3() -> [u8; Contract::__SPEC_XDR_ENTRY_empty3.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_empty3.const_to_xdr() }
     }
 }

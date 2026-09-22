@@ -39,7 +39,7 @@ mod __ContractA__fn1__spec {
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    static __SPEC_XDR_FN_FN1: [u8; super::ContractA::spec_xdr_len_fn1()] =
+    static __SPEC_XDR_FN_FN1: [u8; super::ContractA::spec_xdr_fn1().len()] =
         super::ContractA::spec_xdr_fn1();
 }
 impl ContractA {
@@ -64,11 +64,7 @@ impl ContractA {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_fn1() -> usize {
-        const { ContractA::__SPEC_XDR_ENTRY_fn1.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_fn1() -> [u8; ContractA::spec_xdr_len_fn1()] {
+    pub const fn spec_xdr_fn1() -> [u8; ContractA::__SPEC_XDR_ENTRY_fn1.const_xdr_len()] {
         const { ContractA::__SPEC_XDR_ENTRY_fn1.const_to_xdr() }
     }
 }
@@ -177,7 +173,7 @@ mod __ContractB__fn2__spec {
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    static __SPEC_XDR_FN_FN2: [u8; super::ContractB::spec_xdr_len_fn2()] =
+    static __SPEC_XDR_FN_FN2: [u8; super::ContractB::spec_xdr_fn2().len()] =
         super::ContractB::spec_xdr_fn2();
 }
 impl ContractB {
@@ -207,11 +203,7 @@ impl ContractB {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_fn2() -> usize {
-        const { ContractB::__SPEC_XDR_ENTRY_fn2.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_fn2() -> [u8; ContractB::spec_xdr_len_fn2()] {
+    pub const fn spec_xdr_fn2() -> [u8; ContractB::__SPEC_XDR_ENTRY_fn2.const_xdr_len()] {
         const { ContractB::__SPEC_XDR_ENTRY_fn2.const_to_xdr() }
     }
 }

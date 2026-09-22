@@ -212,12 +212,8 @@ pub mod traits {
                 },
             );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_len_crate_path_method() -> usize {
-            const { CratePathTraitSpec::__SPEC_XDR_ENTRY_crate_path_method.const_xdr_len() }
-        }
-        #[allow(non_snake_case)]
         pub const fn spec_xdr_crate_path_method(
-        ) -> [u8; CratePathTraitSpec::spec_xdr_len_crate_path_method()] {
+        ) -> [u8; CratePathTraitSpec::__SPEC_XDR_ENTRY_crate_path_method.const_xdr_len()] {
             const { CratePathTraitSpec::__SPEC_XDR_ENTRY_crate_path_method.const_to_xdr() }
         }
     }
@@ -409,7 +405,7 @@ mod __ContractCratePath__crate_path_method__spec {
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
     static __SPEC_XDR_FN_CRATE_PATH_METHOD: [u8;
-        super::ContractCratePath::spec_xdr_len_crate_path_method()] =
+        super::ContractCratePath::spec_xdr_crate_path_method().len()] =
         super::ContractCratePath::spec_xdr_crate_path_method();
 }
 impl ContractCratePath {
@@ -430,12 +426,8 @@ impl ContractCratePath {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_crate_path_method() -> usize {
-        const { ContractCratePath::__SPEC_XDR_ENTRY_crate_path_method.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
     pub const fn spec_xdr_crate_path_method(
-    ) -> [u8; ContractCratePath::spec_xdr_len_crate_path_method()] {
+    ) -> [u8; ContractCratePath::__SPEC_XDR_ENTRY_crate_path_method.const_xdr_len()] {
         const { ContractCratePath::__SPEC_XDR_ENTRY_crate_path_method.const_to_xdr() }
     }
 }

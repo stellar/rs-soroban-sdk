@@ -42,7 +42,7 @@ mod __Contract__run__spec {
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    static __SPEC_XDR_FN_RUN: [u8; super::Contract::spec_xdr_len_run()] =
+    static __SPEC_XDR_FN_RUN: [u8; super::Contract::spec_xdr_run().len()] =
         super::Contract::spec_xdr_run();
 }
 impl Contract {
@@ -70,11 +70,7 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_run() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_run.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_run() -> [u8; Contract::spec_xdr_len_run()] {
+    pub const fn spec_xdr_run() -> [u8; Contract::__SPEC_XDR_ENTRY_run.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_run.const_to_xdr() }
     }
 }

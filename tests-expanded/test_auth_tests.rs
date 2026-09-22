@@ -150,7 +150,7 @@ mod __ContractA__fn1__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_FN1: [u8; super::ContractA::spec_xdr_len_fn1()] =
+    static __SPEC_XDR_FN_FN1: [u8; super::ContractA::spec_xdr_fn1().len()] =
         super::ContractA::spec_xdr_fn1();
 }
 impl ContractA {
@@ -175,11 +175,7 @@ impl ContractA {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_fn1() -> usize {
-        const { ContractA::__SPEC_XDR_ENTRY_fn1.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_fn1() -> [u8; ContractA::spec_xdr_len_fn1()] {
+    pub const fn spec_xdr_fn1() -> [u8; ContractA::__SPEC_XDR_ENTRY_fn1.const_xdr_len()] {
         const { ContractA::__SPEC_XDR_ENTRY_fn1.const_to_xdr() }
     }
 }
@@ -838,8 +834,8 @@ mod test_a {
             #[allow(non_upper_case_globals)]
             #[allow(dead_code)]
             #[allow(non_snake_case)]
-            static __SPEC_XDR_FN___CHECK_AUTH: [u8; super::Contract::spec_xdr_len___check_auth()] =
-                super::Contract::spec_xdr___check_auth();
+            static __SPEC_XDR_FN___CHECK_AUTH: [u8; super::Contract::spec_xdr___check_auth()
+                .len()] = super::Contract::spec_xdr___check_auth();
         }
         impl Contract {
             #[allow(non_upper_case_globals)]
@@ -887,12 +883,8 @@ mod test_a {
                 );
             #[allow(non_snake_case)]
             #[allow(non_snake_case)]
-            pub const fn spec_xdr_len___check_auth() -> usize {
-                const { Contract::__SPEC_XDR_ENTRY___check_auth.const_xdr_len() }
-            }
-            #[allow(non_snake_case)]
-            #[allow(non_snake_case)]
-            pub const fn spec_xdr___check_auth() -> [u8; Contract::spec_xdr_len___check_auth()] {
+            pub const fn spec_xdr___check_auth(
+            ) -> [u8; Contract::__SPEC_XDR_ENTRY___check_auth.const_xdr_len()] {
                 const { Contract::__SPEC_XDR_ENTRY___check_auth.const_to_xdr() }
             }
         }
@@ -1198,7 +1190,7 @@ mod test_a {
         }
         #[doc(hidden)]
         #[allow(dead_code)]
-        static __SPEC_XDR_TYPE_ERROR: [u8; Error::spec_xdr_len()] = Error::spec_xdr();
+        static __SPEC_XDR_TYPE_ERROR: [u8; Error::spec_xdr().len()] = Error::spec_xdr();
         impl Error {
             const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
                 soroban_sdk::xdr::r#const::ScSpecEntry::UdtErrorEnumV0(
@@ -1219,10 +1211,7 @@ mod test_a {
                         ]),
                     },
                 );
-            pub const fn spec_xdr_len() -> usize {
-                const { Error::__SPEC_XDR_ENTRY.const_xdr_len() }
-            }
-            pub const fn spec_xdr() -> [u8; Error::spec_xdr_len()] {
+            pub const fn spec_xdr() -> [u8; Error::__SPEC_XDR_ENTRY.const_xdr_len()] {
                 const { Error::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
@@ -1356,8 +1345,8 @@ mod test_a {
             #[allow(non_upper_case_globals)]
             #[allow(dead_code)]
             #[allow(non_snake_case)]
-            static __SPEC_XDR_FN___CHECK_AUTH: [u8; super::Contract::spec_xdr_len___check_auth()] =
-                super::Contract::spec_xdr___check_auth();
+            static __SPEC_XDR_FN___CHECK_AUTH: [u8; super::Contract::spec_xdr___check_auth()
+                .len()] = super::Contract::spec_xdr___check_auth();
         }
         impl Contract {
             #[allow(non_upper_case_globals)]
@@ -1412,12 +1401,8 @@ mod test_a {
                 );
             #[allow(non_snake_case)]
             #[allow(non_snake_case)]
-            pub const fn spec_xdr_len___check_auth() -> usize {
-                const { Contract::__SPEC_XDR_ENTRY___check_auth.const_xdr_len() }
-            }
-            #[allow(non_snake_case)]
-            #[allow(non_snake_case)]
-            pub const fn spec_xdr___check_auth() -> [u8; Contract::spec_xdr_len___check_auth()] {
+            pub const fn spec_xdr___check_auth(
+            ) -> [u8; Contract::__SPEC_XDR_ENTRY___check_auth.const_xdr_len()] {
                 const { Contract::__SPEC_XDR_ENTRY___check_auth.const_to_xdr() }
             }
         }
@@ -1679,7 +1664,7 @@ mod __ContractB__fn2__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_FN2: [u8; super::ContractB::spec_xdr_len_fn2()] =
+    static __SPEC_XDR_FN_FN2: [u8; super::ContractB::spec_xdr_fn2().len()] =
         super::ContractB::spec_xdr_fn2();
 }
 impl ContractB {
@@ -1709,11 +1694,7 @@ impl ContractB {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_fn2() -> usize {
-        const { ContractB::__SPEC_XDR_ENTRY_fn2.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_fn2() -> [u8; ContractB::spec_xdr_len_fn2()] {
+    pub const fn spec_xdr_fn2() -> [u8; ContractB::__SPEC_XDR_ENTRY_fn2.const_xdr_len()] {
         const { ContractB::__SPEC_XDR_ENTRY_fn2.const_to_xdr() }
     }
 }
@@ -2485,8 +2466,8 @@ mod test_b {
             #[allow(non_upper_case_globals)]
             #[allow(dead_code)]
             #[allow(non_snake_case)]
-            static __SPEC_XDR_FN___CHECK_AUTH: [u8; super::Contract::spec_xdr_len___check_auth()] =
-                super::Contract::spec_xdr___check_auth();
+            static __SPEC_XDR_FN___CHECK_AUTH: [u8; super::Contract::spec_xdr___check_auth()
+                .len()] = super::Contract::spec_xdr___check_auth();
         }
         impl Contract {
             #[allow(non_upper_case_globals)]
@@ -2534,12 +2515,8 @@ mod test_b {
                 );
             #[allow(non_snake_case)]
             #[allow(non_snake_case)]
-            pub const fn spec_xdr_len___check_auth() -> usize {
-                const { Contract::__SPEC_XDR_ENTRY___check_auth.const_xdr_len() }
-            }
-            #[allow(non_snake_case)]
-            #[allow(non_snake_case)]
-            pub const fn spec_xdr___check_auth() -> [u8; Contract::spec_xdr_len___check_auth()] {
+            pub const fn spec_xdr___check_auth(
+            ) -> [u8; Contract::__SPEC_XDR_ENTRY___check_auth.const_xdr_len()] {
                 const { Contract::__SPEC_XDR_ENTRY___check_auth.const_to_xdr() }
             }
         }
@@ -2845,7 +2822,7 @@ mod test_b {
         }
         #[doc(hidden)]
         #[allow(dead_code)]
-        static __SPEC_XDR_TYPE_ERROR: [u8; Error::spec_xdr_len()] = Error::spec_xdr();
+        static __SPEC_XDR_TYPE_ERROR: [u8; Error::spec_xdr().len()] = Error::spec_xdr();
         impl Error {
             const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
                 soroban_sdk::xdr::r#const::ScSpecEntry::UdtErrorEnumV0(
@@ -2866,10 +2843,7 @@ mod test_b {
                         ]),
                     },
                 );
-            pub const fn spec_xdr_len() -> usize {
-                const { Error::__SPEC_XDR_ENTRY.const_xdr_len() }
-            }
-            pub const fn spec_xdr() -> [u8; Error::spec_xdr_len()] {
+            pub const fn spec_xdr() -> [u8; Error::__SPEC_XDR_ENTRY.const_xdr_len()] {
                 const { Error::__SPEC_XDR_ENTRY.const_to_xdr() }
             }
         }
@@ -3003,8 +2977,8 @@ mod test_b {
             #[allow(non_upper_case_globals)]
             #[allow(dead_code)]
             #[allow(non_snake_case)]
-            static __SPEC_XDR_FN___CHECK_AUTH: [u8; super::Contract::spec_xdr_len___check_auth()] =
-                super::Contract::spec_xdr___check_auth();
+            static __SPEC_XDR_FN___CHECK_AUTH: [u8; super::Contract::spec_xdr___check_auth()
+                .len()] = super::Contract::spec_xdr___check_auth();
         }
         impl Contract {
             #[allow(non_upper_case_globals)]
@@ -3059,12 +3033,8 @@ mod test_b {
                 );
             #[allow(non_snake_case)]
             #[allow(non_snake_case)]
-            pub const fn spec_xdr_len___check_auth() -> usize {
-                const { Contract::__SPEC_XDR_ENTRY___check_auth.const_xdr_len() }
-            }
-            #[allow(non_snake_case)]
-            #[allow(non_snake_case)]
-            pub const fn spec_xdr___check_auth() -> [u8; Contract::spec_xdr_len___check_auth()] {
+            pub const fn spec_xdr___check_auth(
+            ) -> [u8; Contract::__SPEC_XDR_ENTRY___check_auth.const_xdr_len()] {
                 const { Contract::__SPEC_XDR_ENTRY___check_auth.const_to_xdr() }
             }
         }

@@ -24,7 +24,7 @@ mod feat1 {
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
         #[link_section = "contractspecv0"]
-        static __SPEC_XDR_FN_ONE: [u8; super::Contract::spec_xdr_len_one()] =
+        static __SPEC_XDR_FN_ONE: [u8; super::Contract::spec_xdr_one().len()] =
             super::Contract::spec_xdr_one();
     }
     impl Contract {
@@ -43,11 +43,7 @@ mod feat1 {
                 },
             );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_len_one() -> usize {
-            const { Contract::__SPEC_XDR_ENTRY_one.const_xdr_len() }
-        }
-        #[allow(non_snake_case)]
-        pub const fn spec_xdr_one() -> [u8; Contract::spec_xdr_len_one()] {
+        pub const fn spec_xdr_one() -> [u8; Contract::__SPEC_XDR_ENTRY_one.const_xdr_len()] {
             const { Contract::__SPEC_XDR_ENTRY_one.const_to_xdr() }
         }
     }
@@ -129,7 +125,7 @@ mod feat2 {
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
         #[link_section = "contractspecv0"]
-        static __SPEC_XDR_FN_TWO: [u8; super::super::Contract::spec_xdr_len_two()] =
+        static __SPEC_XDR_FN_TWO: [u8; super::super::Contract::spec_xdr_two().len()] =
             super::super::Contract::spec_xdr_two();
     }
     impl super::Contract {
@@ -148,11 +144,7 @@ mod feat2 {
                 },
             );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_len_two() -> usize {
-            const { super::Contract::__SPEC_XDR_ENTRY_two.const_xdr_len() }
-        }
-        #[allow(non_snake_case)]
-        pub const fn spec_xdr_two() -> [u8; super::Contract::spec_xdr_len_two()] {
+        pub const fn spec_xdr_two() -> [u8; super::Contract::__SPEC_XDR_ENTRY_two.const_xdr_len()] {
             const { super::Contract::__SPEC_XDR_ENTRY_two.const_to_xdr() }
         }
     }
@@ -249,7 +241,7 @@ mod __Contract__zero__spec {
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    static __SPEC_XDR_FN_ZERO: [u8; super::Contract::spec_xdr_len_zero()] =
+    static __SPEC_XDR_FN_ZERO: [u8; super::Contract::spec_xdr_zero().len()] =
         super::Contract::spec_xdr_zero();
 }
 impl Contract {
@@ -268,11 +260,7 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_zero() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_zero.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_zero() -> [u8; Contract::spec_xdr_len_zero()] {
+    pub const fn spec_xdr_zero() -> [u8; Contract::__SPEC_XDR_ENTRY_zero.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_zero.const_to_xdr() }
     }
 }

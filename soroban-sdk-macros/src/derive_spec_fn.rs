@@ -187,13 +187,14 @@ pub fn derive_fn_spec(
             })
         }
     };
+    // Of the four idents derived from the fn name, only #spec_ident converts to upper case. There's
+    // no reason for it to do that, other than historical. It has no consequence as nothing can
+    // collide with it anyway, because it is only used inside #hidden_mod_ident. The other three
+    // (spec_entry_ident, spec_fn_ident, hidden_mod_ident) are generated in a scope shared with
+    // every other fn, so they need to retain the original case to be unique.
     let spec_ident = format_ident!("__SPEC_XDR_FN_{}", ident.unraw().to_string().to_uppercase());
-    // Keeps the fn name's case, because unlike #spec_ident these share a scope
-    // with every other fn's, and fn names differing only in case must not
-    // collide.
     let spec_entry_ident = format_ident!("__SPEC_XDR_ENTRY_{}", ident);
     let spec_fn_ident = format_ident!("spec_xdr_{}", ident);
-    let spec_len_fn_ident = format_ident!("spec_xdr_len_{}", ident);
 
     // If errors have occurred, render them instead.
     if !errors.is_empty() {
@@ -222,7 +223,7 @@ pub fn derive_fn_spec(
                 #[allow(dead_code)]
                 #(#attrs)*
                 #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")]
-                static #spec_ident: [u8; super::#ty::#spec_len_fn_ident()] = super::#ty::#spec_fn_ident();
+                static #spec_ident: [u8; super::#ty::#spec_fn_ident().len()] = super::#ty::#spec_fn_ident();
             }
         })
     } else {
@@ -240,13 +241,7 @@ pub fn derive_fn_spec(
 
             #[allow(non_snake_case)]
             #(#attrs)*
-            pub const fn #spec_len_fn_ident() -> usize {
-                const { #ty::#spec_entry_ident.const_xdr_len() }
-            }
-
-            #[allow(non_snake_case)]
-            #(#attrs)*
-            pub const fn #spec_fn_ident() -> [u8; #ty::#spec_len_fn_ident()] {
+            pub const fn #spec_fn_ident() -> [u8; #ty::#spec_entry_ident.const_xdr_len()] {
                 const { #ty::#spec_entry_ident.const_to_xdr() }
             }
         }

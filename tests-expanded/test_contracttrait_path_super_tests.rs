@@ -207,12 +207,8 @@ impl SuperPathTraitSpec {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_super_path_method() -> usize {
-        const { SuperPathTraitSpec::__SPEC_XDR_ENTRY_super_path_method.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
     pub const fn spec_xdr_super_path_method(
-    ) -> [u8; SuperPathTraitSpec::spec_xdr_len_super_path_method()] {
+    ) -> [u8; SuperPathTraitSpec::__SPEC_XDR_ENTRY_super_path_method.const_xdr_len()] {
         const { SuperPathTraitSpec::__SPEC_XDR_ENTRY_super_path_method.const_to_xdr() }
     }
 }
@@ -406,7 +402,7 @@ pub mod submodule {
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
         static __SPEC_XDR_FN_SUPER_PATH_METHOD: [u8;
-            super::ContractSuperPath::spec_xdr_len_super_path_method()] =
+            super::ContractSuperPath::spec_xdr_super_path_method().len()] =
             super::ContractSuperPath::spec_xdr_super_path_method();
     }
     impl ContractSuperPath {
@@ -427,12 +423,8 @@ pub mod submodule {
                 },
             );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_len_super_path_method() -> usize {
-            const { ContractSuperPath::__SPEC_XDR_ENTRY_super_path_method.const_xdr_len() }
-        }
-        #[allow(non_snake_case)]
         pub const fn spec_xdr_super_path_method(
-        ) -> [u8; ContractSuperPath::spec_xdr_len_super_path_method()] {
+        ) -> [u8; ContractSuperPath::__SPEC_XDR_ENTRY_super_path_method.const_xdr_len()] {
             const { ContractSuperPath::__SPEC_XDR_ENTRY_super_path_method.const_to_xdr() }
         }
     }

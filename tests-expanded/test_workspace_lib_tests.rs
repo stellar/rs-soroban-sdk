@@ -35,7 +35,7 @@ impl ::core::cmp::PartialEq for Value {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_VALUE: [u8; Value::spec_xdr_len()] = Value::spec_xdr();
+static __SPEC_XDR_TYPE_VALUE: [u8; Value::spec_xdr().len()] = Value::spec_xdr();
 impl Value {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
@@ -52,10 +52,7 @@ impl Value {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { Value::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; Value::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; Value::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { Value::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }

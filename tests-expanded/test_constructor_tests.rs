@@ -143,7 +143,7 @@ pub enum DataKey {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_DATAKEY: [u8; DataKey::spec_xdr_len()] = DataKey::spec_xdr();
+static __SPEC_XDR_TYPE_DATAKEY: [u8; DataKey::spec_xdr().len()] = DataKey::spec_xdr();
 impl DataKey {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(
@@ -188,10 +188,7 @@ impl DataKey {
                 ]),
             },
         );
-    pub const fn spec_xdr_len() -> usize {
-        const { DataKey::__SPEC_XDR_ENTRY.const_xdr_len() }
-    }
-    pub const fn spec_xdr() -> [u8; DataKey::spec_xdr_len()] {
+    pub const fn spec_xdr() -> [u8; DataKey::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { DataKey::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
@@ -765,7 +762,7 @@ mod __Contract____constructor__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN___CONSTRUCTOR: [u8; super::Contract::spec_xdr_len___constructor()] =
+    static __SPEC_XDR_FN___CONSTRUCTOR: [u8; super::Contract::spec_xdr___constructor().len()] =
         super::Contract::spec_xdr___constructor();
 }
 impl Contract {
@@ -797,11 +794,8 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len___constructor() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY___constructor.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr___constructor() -> [u8; Contract::spec_xdr_len___constructor()] {
+    pub const fn spec_xdr___constructor(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY___constructor.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY___constructor.const_to_xdr() }
     }
 }
@@ -813,7 +807,7 @@ mod __Contract__get_data__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_GET_DATA: [u8; super::Contract::spec_xdr_len_get_data()] =
+    static __SPEC_XDR_FN_GET_DATA: [u8; super::Contract::spec_xdr_get_data().len()] =
         super::Contract::spec_xdr_get_data();
 }
 impl Contract {
@@ -848,11 +842,7 @@ impl Contract {
             },
         );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_len_get_data() -> usize {
-        const { Contract::__SPEC_XDR_ENTRY_get_data.const_xdr_len() }
-    }
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_get_data() -> [u8; Contract::spec_xdr_len_get_data()] {
+    pub const fn spec_xdr_get_data() -> [u8; Contract::__SPEC_XDR_ENTRY_get_data.const_xdr_len()] {
         const { Contract::__SPEC_XDR_ENTRY_get_data.const_to_xdr() }
     }
 }
