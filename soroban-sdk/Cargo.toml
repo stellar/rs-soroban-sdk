@@ -48,7 +48,7 @@ soroban-sdk-macros = { workspace = true, features = ["testutils"] }
 soroban-env-host = { workspace = true, features = ["testutils"] }
 soroban-ledger-snapshot = { workspace = true, features = ["testutils"] }
 stellar-xdr = { workspace = true, features = ["std"] }
-soroban-spec = { workspace = true }
+soroban-spec = { workspace = true, features = ["std"] }
 ed25519-dalek = "2.0.0"
 rand = "0.8.5"
 ctor = "0.5.0"
