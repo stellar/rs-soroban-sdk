@@ -40,6 +40,7 @@ mod crypto_bls12_381;
 mod crypto_bn254;
 mod crypto_ed25519;
 mod crypto_keccak256;
+mod crypto_ml_dsa;
 mod crypto_poseidon;
 mod crypto_secp256k1;
 mod crypto_secp256r1;

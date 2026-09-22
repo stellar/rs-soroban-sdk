@@ -190,6 +190,90 @@ impl Crypto {
         CryptoHazmat::new(env).secp256r1_verify(public_key, &message_digest.0, signature)
     }
 
+    /// Verifies an ML-DSA-44 signature.
+    ///
+    /// The signature is verified as a valid FIPS 204 ML-DSA-44 signature of the
+    /// message by the verifying key, for the given context. The context may be
+    /// empty and must be at most 255 bytes.
+    ///
+    /// ### Panics
+    ///
+    /// If the signature verification fails, or the context is longer than 255
+    /// bytes.
+    pub fn ml_dsa_44_verify(
+        &self,
+        public_key: &BytesN<1312>,
+        message: &Bytes,
+        signature: &BytesN<2420>,
+        context: &Bytes,
+    ) {
+        let env = self.env();
+        let _ = internal::Env::verify_sig_ml_dsa_44(
+            env,
+            public_key.to_object(),
+            message.to_object(),
+            signature.to_object(),
+            context.to_object(),
+        )
+        .unwrap_infallible();
+    }
+
+    /// Verifies an ML-DSA-65 signature.
+    ///
+    /// The signature is verified as a valid FIPS 204 ML-DSA-65 signature of the
+    /// message by the verifying key, for the given context. The context may be
+    /// empty and must be at most 255 bytes.
+    ///
+    /// ### Panics
+    ///
+    /// If the signature verification fails, or the context is longer than 255
+    /// bytes.
+    pub fn ml_dsa_65_verify(
+        &self,
+        public_key: &BytesN<1952>,
+        message: &Bytes,
+        signature: &BytesN<3309>,
+        context: &Bytes,
+    ) {
+        let env = self.env();
+        let _ = internal::Env::verify_sig_ml_dsa_65(
+            env,
+            public_key.to_object(),
+            message.to_object(),
+            signature.to_object(),
+            context.to_object(),
+        )
+        .unwrap_infallible();
+    }
+
+    /// Verifies an ML-DSA-87 signature.
+    ///
+    /// The signature is verified as a valid FIPS 204 ML-DSA-87 signature of the
+    /// message by the verifying key, for the given context. The context may be
+    /// empty and must be at most 255 bytes.
+    ///
+    /// ### Panics
+    ///
+    /// If the signature verification fails, or the context is longer than 255
+    /// bytes.
+    pub fn ml_dsa_87_verify(
+        &self,
+        public_key: &BytesN<2592>,
+        message: &Bytes,
+        signature: &BytesN<4627>,
+        context: &Bytes,
+    ) {
+        let env = self.env();
+        let _ = internal::Env::verify_sig_ml_dsa_87(
+            env,
+            public_key.to_object(),
+            message.to_object(),
+            signature.to_object(),
+            context.to_object(),
+        )
+        .unwrap_infallible();
+    }
+
     /// Get a [Bls12_381][bls12_381::Bls12_381] for accessing the bls12-381
     /// functions.
     pub fn bls12_381(&self) -> bls12_381::Bls12_381 {

@@ -224,6 +224,12 @@ skip = [
     { name = "syn", version = "=3.0.4" },
     { name = "stellar-strkey", version = "=0.0.13" },
     { name = "crate-git-revision", version = "=0.0.6" },
+    # CAP-0087: ml-dsa (via soroban-env-host and our own dev-dependency) pulls
+    # a newer digest/signature stack than ed25519-dalek/k256/sha3 use.
+    { name = "crypto-common", version = "=0.2.2" },
+    { name = "digest", version = "=0.11.3" },
+    { name = "keccak", version = "=0.2.2" },
+    { name = "signature", version = "=3.0.0" },
 ]
 # Similarly to `skip` allows you to skip certain crates during duplicate
 # detection. Unlike skip, it also includes the entire tree of transitive
