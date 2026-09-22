@@ -983,7 +983,6 @@ mod test_const_view {
 
     #[test]
     fn test_symbol_wraps_the_string_rendering() {
-        // The symbol is exactly its inner string rendering, wrapped once.
         let p = path();
         let sym = ScSymbol("abc".try_into().unwrap());
         let inner = const_view_string(&p, &sym.0);
