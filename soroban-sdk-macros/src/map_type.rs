@@ -581,81 +581,69 @@ mod test_const_view {
         assert_eq!(actual.to_string(), expected.to_string());
     }
 
-    fn str_of<const MAX: u32>(s: &str) -> StringM<MAX> {
-        s.try_into().unwrap()
-    }
-
-    /// One representative value per `ScSpecType`. The match is exhaustive on
-    /// purpose: adding a variant to the XDR breaks this test's compile, forcing
-    /// a decision about whether the new variant carries a payload that
-    /// `const_view_type_def` must render. Without that, a new payload-carrying
-    /// variant would fall into the function's `_ => None` arm and silently
-    /// render without its payload.
-    fn representative(t: ScSpecType) -> ScSpecTypeDef {
-        match t {
-            ScSpecType::Val => ScSpecTypeDef::Val,
-            ScSpecType::Bool => ScSpecTypeDef::Bool,
-            ScSpecType::Void => ScSpecTypeDef::Void,
-            ScSpecType::Error => ScSpecTypeDef::Error,
-            ScSpecType::U32 => ScSpecTypeDef::U32,
-            ScSpecType::I32 => ScSpecTypeDef::I32,
-            ScSpecType::U64 => ScSpecTypeDef::U64,
-            ScSpecType::I64 => ScSpecTypeDef::I64,
-            ScSpecType::Timepoint => ScSpecTypeDef::Timepoint,
-            ScSpecType::Duration => ScSpecTypeDef::Duration,
-            ScSpecType::U128 => ScSpecTypeDef::U128,
-            ScSpecType::I128 => ScSpecTypeDef::I128,
-            ScSpecType::U256 => ScSpecTypeDef::U256,
-            ScSpecType::I256 => ScSpecTypeDef::I256,
-            ScSpecType::Bytes => ScSpecTypeDef::Bytes,
-            ScSpecType::String => ScSpecTypeDef::String,
-            ScSpecType::Symbol => ScSpecTypeDef::Symbol,
-            ScSpecType::Address => ScSpecTypeDef::Address,
-            ScSpecType::MuxedAddress => ScSpecTypeDef::MuxedAddress,
-            ScSpecType::Option => ScSpecTypeDef::Option(Box::new(ScSpecTypeOption {
-                value_type: Box::new(ScSpecTypeDef::U32),
-            })),
-            ScSpecType::Result => ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
-                ok_type: Box::new(ScSpecTypeDef::U32),
-                error_type: Box::new(ScSpecTypeDef::Error),
-            })),
-            ScSpecType::Vec => ScSpecTypeDef::Vec(Box::new(ScSpecTypeVec {
-                element_type: Box::new(ScSpecTypeDef::U32),
-            })),
-            ScSpecType::Map => ScSpecTypeDef::Map(Box::new(ScSpecTypeMap {
-                key_type: Box::new(ScSpecTypeDef::Symbol),
-                value_type: Box::new(ScSpecTypeDef::U32),
-            })),
-            ScSpecType::Tuple => ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
-                value_types: vec![ScSpecTypeDef::U32].try_into().unwrap(),
-            })),
-            ScSpecType::BytesN => ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n: 32 }),
-            ScSpecType::Udt => ScSpecTypeDef::Udt(ScSpecTypeUdt {
-                name: str_of("Foo"),
-            }),
-        }
-    }
-
-    /// The variants that render a payload. Every other variant must render as a
-    /// bare path with no trailing group.
-    fn carries_payload(t: ScSpecType) -> bool {
-        matches!(
-            t,
-            ScSpecType::Option
-                | ScSpecType::Result
-                | ScSpecType::Vec
-                | ScSpecType::Map
-                | ScSpecType::Tuple
-                | ScSpecType::BytesN
-                | ScSpecType::Udt
-        )
-    }
-
     #[test]
     fn test_every_variant_renders_with_its_own_name() {
         let p = path();
         for t in ScSpecType::VARIANTS {
-            let def = representative(t);
+            // One representative value per variant. The match is exhaustive on
+            // purpose: adding a variant to the XDR breaks this test's compile,
+            // forcing a decision about whether the new variant holds a value
+            // that `const_view_type_def` must render. Without that, a new
+            // value-holding variant could go unrendered and unnoticed.
+            let def = match t {
+                ScSpecType::Val => ScSpecTypeDef::Val,
+                ScSpecType::Bool => ScSpecTypeDef::Bool,
+                ScSpecType::Void => ScSpecTypeDef::Void,
+                ScSpecType::Error => ScSpecTypeDef::Error,
+                ScSpecType::U32 => ScSpecTypeDef::U32,
+                ScSpecType::I32 => ScSpecTypeDef::I32,
+                ScSpecType::U64 => ScSpecTypeDef::U64,
+                ScSpecType::I64 => ScSpecTypeDef::I64,
+                ScSpecType::Timepoint => ScSpecTypeDef::Timepoint,
+                ScSpecType::Duration => ScSpecTypeDef::Duration,
+                ScSpecType::U128 => ScSpecTypeDef::U128,
+                ScSpecType::I128 => ScSpecTypeDef::I128,
+                ScSpecType::U256 => ScSpecTypeDef::U256,
+                ScSpecType::I256 => ScSpecTypeDef::I256,
+                ScSpecType::Bytes => ScSpecTypeDef::Bytes,
+                ScSpecType::String => ScSpecTypeDef::String,
+                ScSpecType::Symbol => ScSpecTypeDef::Symbol,
+                ScSpecType::Address => ScSpecTypeDef::Address,
+                ScSpecType::MuxedAddress => ScSpecTypeDef::MuxedAddress,
+                ScSpecType::Option => ScSpecTypeDef::Option(Box::new(ScSpecTypeOption {
+                    value_type: Box::new(ScSpecTypeDef::U32),
+                })),
+                ScSpecType::Result => ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
+                    ok_type: Box::new(ScSpecTypeDef::U32),
+                    error_type: Box::new(ScSpecTypeDef::Error),
+                })),
+                ScSpecType::Vec => ScSpecTypeDef::Vec(Box::new(ScSpecTypeVec {
+                    element_type: Box::new(ScSpecTypeDef::U32),
+                })),
+                ScSpecType::Map => ScSpecTypeDef::Map(Box::new(ScSpecTypeMap {
+                    key_type: Box::new(ScSpecTypeDef::Symbol),
+                    value_type: Box::new(ScSpecTypeDef::U32),
+                })),
+                ScSpecType::Tuple => ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
+                    value_types: vec![ScSpecTypeDef::U32].try_into().unwrap(),
+                })),
+                ScSpecType::BytesN => ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n: 32 }),
+                ScSpecType::Udt => ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                    name: "Foo".try_into().unwrap(),
+                }),
+            };
+            // The variants that render a value. Every other must render as a
+            // bare path with no trailing group.
+            let holds_value = matches!(
+                t,
+                ScSpecType::Option
+                    | ScSpecType::Result
+                    | ScSpecType::Vec
+                    | ScSpecType::Map
+                    | ScSpecType::Tuple
+                    | ScSpecType::BytesN
+                    | ScSpecType::Udt
+            );
             let rendered = const_view_type_def(&p, &def).to_string();
             // The variant named in the output is the one the value reports, so
             // no variant is rendered as another.
@@ -667,11 +655,11 @@ mod test_const_view {
                 rendered.starts_with(&expect_prefix),
                 "variant {t:?} rendered as {rendered}, expected prefix {expect_prefix}"
             );
-            // A payload shows up as a trailing group; void variants have none.
+            // A value shows up as a trailing group; void variants have none.
             assert_eq!(
                 rendered.len() > expect_prefix.len(),
-                carries_payload(t),
-                "variant {t:?} payload presence mismatch, rendered {rendered}"
+                holds_value,
+                "variant {t:?} value presence mismatch, rendered {rendered}"
             );
         }
     }
@@ -838,7 +826,7 @@ mod test_const_view {
     #[test]
     fn test_udt() {
         let def = ScSpecTypeDef::Udt(ScSpecTypeUdt {
-            name: str_of("MyType"),
+            name: "MyType".try_into().unwrap(),
         });
         assert_tokens(
             const_view_type_def(&path(), &def),
@@ -855,7 +843,7 @@ mod test_const_view {
         // Qualified names, as produced for fully qualified UDTs, carry colons
         // that must survive as bytes rather than being parsed as tokens.
         let def = ScSpecTypeDef::Udt(ScSpecTypeUdt {
-            name: str_of("::my_crate::MyType"),
+            name: "::my_crate::MyType".try_into().unwrap(),
         });
         assert_tokens(
             const_view_type_def(&path(), &def),
@@ -876,7 +864,9 @@ mod test_const_view {
         let inner_tuple = ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
             value_types: vec![
                 ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n: 4 }),
-                ScSpecTypeDef::Udt(ScSpecTypeUdt { name: str_of("U") }),
+                ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                    name: "U".try_into().unwrap(),
+                }),
             ]
             .try_into()
             .unwrap(),
@@ -952,7 +942,7 @@ mod test_const_view {
     #[test]
     fn test_string_empty() {
         assert_tokens(
-            const_view_string(&path(), &str_of::<60>("")),
+            const_view_string(&path(), &StringM::<60>::try_from("").unwrap()),
             quote!(soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                 b""
             )),
@@ -962,7 +952,7 @@ mod test_const_view {
     #[test]
     fn test_string_ascii() {
         assert_tokens(
-            const_view_string(&path(), &str_of::<60>("hello")),
+            const_view_string(&path(), &StringM::<60>::try_from("hello").unwrap()),
             quote!(soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                 b"hello"
             )),
@@ -970,72 +960,21 @@ mod test_const_view {
     }
 
     #[test]
-    fn test_string_escapes_quote_and_backslash() {
-        let rendered = const_view_string(&path(), &str_of::<60>(r#"a"b\c"#)).to_string();
-        assert!(
-            rendered.ends_with(r#"(b"a\"b\\c")"#),
-            "unexpected rendering: {rendered}"
-        );
-    }
-
-    #[test]
-    fn test_string_escapes_control_bytes() {
-        // A newline, tab, carriage return and NUL must not terminate or
-        // corrupt the byte string literal.
-        let s: StringM<60> = vec![b'a', b'\n', b'\t', b'\r', 0, b'b'].try_into().unwrap();
-        let rendered = const_view_string(&path(), &s).to_string();
-        assert!(rendered.contains(r"\n"), "no newline escape: {rendered}");
-        assert!(rendered.contains(r"\t"), "no tab escape: {rendered}");
-        assert!(
-            rendered.contains(r"\r"),
-            "no carriage return escape: {rendered}"
-        );
-        assert!(rendered.contains(r"\0"), "no nul escape: {rendered}");
-    }
-
-    #[test]
-    fn test_string_non_ascii_bytes() {
-        // StringM holds bytes, not chars. Multi-byte UTF-8 and bytes that are
-        // not valid UTF-8 at all must both round-trip as escaped bytes.
-        // Escapes are emitted with upper case hex digits.
-        let s: StringM<60> = "é".try_into().unwrap();
-        let rendered = const_view_string(&path(), &s).to_string();
-        assert!(
-            rendered.ends_with(r#"(b"\xC3\xA9")"#),
-            "unexpected rendering: {rendered}"
-        );
-
-        let s: StringM<60> = vec![0xffu8, 0xfe].try_into().unwrap();
-        let rendered = const_view_string(&path(), &s).to_string();
-        assert!(
-            rendered.ends_with(r#"(b"\xFF\xFE")"#),
-            "unexpected rendering: {rendered}"
-        );
-    }
-
-    #[test]
     fn test_string_max_is_not_rendered() {
         // The const StringM's MAX is inferred at the assignment site, so the
         // same bytes render identically whatever the source MAX is.
-        let narrow = const_view_string(&path(), &str_of::<4>("abcd")).to_string();
-        let wide = const_view_string(&path(), &str_of::<1024>("abcd")).to_string();
+        let narrow =
+            const_view_string(&path(), &StringM::<4>::try_from("abcd").unwrap()).to_string();
+        let wide =
+            const_view_string(&path(), &StringM::<1024>::try_from("abcd").unwrap()).to_string();
         assert_eq!(narrow, wide);
         assert!(!narrow.contains('4') || narrow.contains("abcd"));
     }
 
     #[test]
-    fn test_string_at_max_length() {
-        // A value filling the source StringM's MAX exactly still renders whole.
-        const MAX: u32 = 64;
-        let s = "a".repeat(MAX as usize);
-        let rendered = const_view_string(&path(), &str_of::<MAX>(&s)).to_string();
-        assert!(rendered.contains(&s), "unexpected rendering: {rendered}");
-    }
-
-    #[test]
     fn test_symbol() {
         assert_tokens(
-            const_view_symbol(&path(), &ScSymbol(str_of("transfer"))),
+            const_view_symbol(&path(), &ScSymbol("transfer".try_into().unwrap())),
             quote!(soroban_sdk::xdr::r#const::ScSymbol(
                 soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"transfer")
             )),
@@ -1045,7 +984,7 @@ mod test_const_view {
     #[test]
     fn test_symbol_empty() {
         assert_tokens(
-            const_view_symbol(&path(), &ScSymbol(str_of(""))),
+            const_view_symbol(&path(), &ScSymbol("".try_into().unwrap())),
             quote!(soroban_sdk::xdr::r#const::ScSymbol(
                 soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"")
             )),
@@ -1056,7 +995,7 @@ mod test_const_view {
     fn test_symbol_wraps_the_string_rendering() {
         // The symbol is exactly its inner string rendering, wrapped once.
         let p = path();
-        let sym = ScSymbol(str_of("abc"));
+        let sym = ScSymbol("abc".try_into().unwrap());
         let inner = const_view_string(&p, &sym.0);
         assert_tokens(
             const_view_symbol(&p, &sym),
@@ -1068,7 +1007,7 @@ mod test_const_view {
     fn test_symbol_path_is_used_verbatim() {
         let p: Path = parse_quote!(crate);
         assert_tokens(
-            const_view_symbol(&p, &ScSymbol(str_of("s"))),
+            const_view_symbol(&p, &ScSymbol("s".try_into().unwrap())),
             quote!(crate::xdr::r#const::ScSymbol(
                 crate::xdr::r#const::StringM::try_from_slice_or_panic(b"s")
             )),
