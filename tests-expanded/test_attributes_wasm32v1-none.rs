@@ -62,7 +62,7 @@ impl soroban_sdk::SpecShakingMarker for AttributeType {
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1i\t\xb7\x06*\x88\xd7\xf8";
+            static MARKER: [u8; 14usize] = *b"SpEcV2\xc1\x14v\xa6\x95\xe8\xc9A";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -133,7 +133,7 @@ impl soroban_sdk::SpecShakingMarker for AttributeEvent {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xbfO\xc3P\xd4\x14\xb5V";
+            static MARKER: [u8; 14usize] = *b"SpEcV2Z\xb5E\xb3\x12\xd0\xd2'";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }

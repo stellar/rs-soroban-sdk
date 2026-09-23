@@ -35,7 +35,7 @@ impl soroban_sdk::SpecShakingMarker for DummyProof {
         <Bls12381G1Affine as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <Bls12381G2Affine as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x85W\0A\xdc~\xb7\"";
+            static MARKER: [u8; 14usize] = *b"SpEcV2\x81<u\xbc\xb4UYe";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }

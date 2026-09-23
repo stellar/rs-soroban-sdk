@@ -44,7 +44,7 @@ impl soroban_sdk::SpecShakingMarker for DataKey {
     fn spec_shaking_marker() {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x14\x94}~\xec\x15\x94\x84";
+            static MARKER: [u8; 14usize] = *b"SpEcV2ii\x89\xae\r'\x1c\x88";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }

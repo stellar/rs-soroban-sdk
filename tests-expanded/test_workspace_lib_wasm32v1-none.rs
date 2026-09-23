@@ -48,7 +48,7 @@ impl soroban_sdk::SpecShakingMarker for Value {
     fn spec_shaking_marker() {
         <i32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x82\xf8t\xbe\t\x04b\\";
+            static MARKER: [u8; 14usize] = *b"SpEcV2y\xba\x02\x0f\xc8S\xaaq";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }

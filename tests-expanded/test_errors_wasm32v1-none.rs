@@ -59,7 +59,7 @@ impl soroban_sdk::SpecShakingMarker for Flag {
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1g\x19\x8d\xc6\x8aP\xeb\xb7";
+            static MARKER: [u8; 14usize] = *b"SpEcV2y\"\xa7\xa8\xa3\x9e\xe0\x9a";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -149,7 +149,7 @@ impl soroban_sdk::SpecShakingMarker for Error {
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xbc\x04\x04\xea\xa4\x9e6(";
+            static MARKER: [u8; 14usize] = *b"SpEcV2s\xc2/1\xde\xac\xe6\x8b";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }

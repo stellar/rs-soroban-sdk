@@ -63,7 +63,7 @@ impl soroban_sdk::SpecShakingMarker for StructA {
         <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <bool as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xb6\x1c\xfd\xdfhY-d";
+            static MARKER: [u8; 14usize] = *b"SpEcV2n\x9c\x13\xfd-\x12\x9fG";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -176,7 +176,7 @@ impl soroban_sdk::SpecShakingMarker for StructB {
         <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <soroban_sdk::String as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xf3\xc4\xd3\x8c\xc1w\xe9\x18";
+            static MARKER: [u8; 14usize] = *b"SpEcV2\x90E$\xd8iQ(\x97";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -289,7 +289,7 @@ impl soroban_sdk::SpecShakingMarker for StructC {
         <Vec<u32> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xa3\x16\n\x8f\xc9\x92\xd2\x11";
+            static MARKER: [u8; 14usize] = *b"SpEcV2@\xb2)\xack+\xb0\x9e";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -396,7 +396,7 @@ impl soroban_sdk::SpecShakingMarker for StructTupleA {
         <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xcf)\x97]S\xb2\xfd)";
+            static MARKER: [u8; 14usize] = *b"SpEcV2Y\xe2\xb7\x16\05\x0b\xdf";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -499,7 +499,7 @@ impl soroban_sdk::SpecShakingMarker for StructTupleB {
         <u128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <u128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1x\xd98\x9c\x1ao\xac\x8c";
+            static MARKER: [u8; 14usize] = *b"SpEcV2-\xf1\xc3.\x81\xc2\xb6\xb2";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -603,7 +603,7 @@ impl soroban_sdk::SpecShakingMarker for StructTupleC {
         <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xc5=\x81\xc1\"\xafT\xd9";
+            static MARKER: [u8; 14usize] = *b"SpEcV2\x1f\x03\xf00956\xc8";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -716,7 +716,7 @@ impl soroban_sdk::SpecShakingMarker for EnumA {
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xa2=N\xc1p\x95\x90\xb2";
+            static MARKER: [u8; 14usize] = *b"SpEcV2$lh\x92\xad\xf7\x8as";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -876,7 +876,7 @@ impl soroban_sdk::SpecShakingMarker for EnumB {
     fn spec_shaking_marker() {
         <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1'\x1b\0DSH^\xcc";
+            static MARKER: [u8; 14usize] = *b"SpEcV2\x02\x9e_|\xa5\xe4\xba\xd3";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -1049,7 +1049,7 @@ impl soroban_sdk::SpecShakingMarker for EnumC {
         <StructA as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <StructTupleA as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xa0\xdd\x8f\xdc\xc9W\xbe\xc2";
+            static MARKER: [u8; 14usize] = *b"SpEcV2qb\x06\xc1\xc0\xd4r7";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -1205,7 +1205,7 @@ impl soroban_sdk::SpecShakingMarker for EnumIntA {
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1V]\x80\\~\x1a\x08/";
+            static MARKER: [u8; 14usize] = *b"SpEcV2\x93;\xd4\xf1a\xd0\xae\x10";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -1311,7 +1311,7 @@ impl soroban_sdk::SpecShakingMarker for EnumIntB {
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1,\x9c\xc0_\xed_)\x85";
+            static MARKER: [u8; 14usize] = *b"SpEcV2B\xcc\xa8\xd2X\xf52\xb4";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -1417,7 +1417,7 @@ impl soroban_sdk::SpecShakingMarker for EnumIntC {
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1`\xca\xda\x19\xb9c\xf0/";
+            static MARKER: [u8; 14usize] = *b"SpEcV2\xe3\xb9\xac\xff\xe9If\x0b";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -1523,7 +1523,7 @@ impl soroban_sdk::SpecShakingMarker for ErrorA {
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xe9R\xa7\xe8b\x99\xa2\xc3";
+            static MARKER: [u8; 14usize] = *b"SpEcV2\xde\x1c\0\xc3\xd0\x9e\x8c\x03";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -1699,7 +1699,7 @@ impl soroban_sdk::SpecShakingMarker for ErrorB {
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x1d1\xd6\xfb\x88\xd2=\xe3";
+            static MARKER: [u8; 14usize] = *b"SpEcV2\xb2\xec\xe7`}\xc4\x14\x03";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -1875,7 +1875,7 @@ impl soroban_sdk::SpecShakingMarker for ErrorC {
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xb9\x01\xafj\xe0c\xa3\r";
+            static MARKER: [u8; 14usize] = *b"SpEcV2:\xa2\x07\xe5\x08\x7f\x9a\x05";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -2049,7 +2049,7 @@ impl soroban_sdk::SpecShakingMarker for EventA {
         <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <soroban_sdk::String as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1K\xe6\x8ej\x19\x9en\xbd";
+            static MARKER: [u8; 14usize] = *b"SpEcV2\xfa\x94o\xe1\x14\xf6\xac\xe8";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -2146,7 +2146,7 @@ impl soroban_sdk::SpecShakingMarker for EventB {
         <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xe6\xaa\xefz\x17i$\x15";
+            static MARKER: [u8; 14usize] = *b"SpEcV2\xc5R\xb2\xd8$\xff\xc3\x1c";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -2247,7 +2247,7 @@ impl soroban_sdk::SpecShakingMarker for EventC {
         <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x16\xd6\xdf\xe7\xdb\xb4W@";
+            static MARKER: [u8; 14usize] = *b"SpEcV2\xf9ii.D\x92\xc1\xa0";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -2328,7 +2328,7 @@ impl soroban_sdk::SpecShakingMarker for EventD {
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x15\xf0Wx\x15\x83\xc0:";
+            static MARKER: [u8; 14usize] = *b"SpEcV2\xd0|\xd7\xcfqD\x9e\xaa";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }

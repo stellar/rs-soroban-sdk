@@ -1,15 +1,15 @@
 //! Generates the `SpecShakingMarker` impl for contract types.
 //!
 //! The marker is a byte array in the data section with a distinctive pattern:
-//! - 6 bytes: "SpEcV1" prefix
-//! - 8 bytes: first 64 bits of SHA256 hash of the spec entry XDR
+//! - 6 bytes: "SpEcV2" prefix
+//! - 8 bytes: xxHash64 of the spec entry XDR, seed 0, big-endian
 //!
 //! Markers are embedded in `spec_shaking_marker()` functions with a volatile read.
 //! When the type is used, the function is called and the marker is included.
 //! When the type is unused, the function is DCE'd along with its marker.
 //!
 //! Post-processing tools (e.g. stellar-cli) can:
-//! 1. Scan the WASM data section for "SpEcV1" patterns
+//! 1. Scan the WASM data section for "SpEcV1" and "SpEcV2" patterns
 //! 2. Extract the hash from each marker
 //! 3. Match against specs in contractspecv0 section (by hashing each spec)
 //! 4. Strip unused specs from contractspecv0
@@ -62,8 +62,8 @@ where
                 #(<#field_type_markers as #path::SpecShakingMarker>::spec_shaking_marker();)*
                 #[cfg(target_family = "wasm")]
                 {
-                    // Marker in data section. Post-build tools can scan for "SpEcV1"
-                    // patterns and match against specs in contractspecv0.
+                    // Marker in data section. Post-build tools can scan for
+                    // "SpEcV2" patterns and match against specs in contractspecv0.
                     static MARKER: [u8; #marker_len] = *#marker_lit;
                     // Volatile read prevents DCE of this function and keeps MARKER
                     // in the data section. We only read a single `u8` from the start

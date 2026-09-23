@@ -63,7 +63,7 @@ impl soroban_sdk::SpecShakingMarker for UdtEnum2 {
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xaf\xf7\x93\xba\x9eM\xde\x9a";
+            static MARKER: [u8; 14usize] = *b"SpEcV2+\xa6C\xca\xb6\0QH";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -188,7 +188,7 @@ impl soroban_sdk::SpecShakingMarker for UdtEnum {
         <UdtEnum2 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <UdtTuple as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xf3\xb0\xab@i\rH\xb4";
+            static MARKER: [u8; 14usize] = *b"SpEcV2*{q\xd0\xb7`E\x10";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -354,7 +354,7 @@ impl soroban_sdk::SpecShakingMarker for UdtTuple {
         <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <Vec<i64> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xeb\x9f\x12&\x9av(*";
+            static MARKER: [u8; 14usize] = *b"SpEcV2\x1aZ\xf4ltl>\xed";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -473,7 +473,7 @@ impl soroban_sdk::SpecShakingMarker for UdtStruct {
         <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <Vec<i64> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x16'd8\xff\xc9\xb1\xf8";
+            static MARKER: [u8; 14usize] = *b"SpEcV2\x12\xb0\xae\xfe\xe9!F\xb3";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -595,7 +595,7 @@ impl soroban_sdk::SpecShakingMarker for UdtRecursive {
         <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <Vec<UdtRecursive> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xc8\x12\x91\xfe\xd7\x13\xf5\x9c";
+            static MARKER: [u8; 14usize] = *b"SpEcV2\xeaK\xd1\xbf\xc81f\x0e";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -713,7 +713,7 @@ impl soroban_sdk::SpecShakingMarker for RecursiveToEnum {
         <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <Map<u32, RecursiveEnum> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xe1oU\xdb\xd47\x98\x14";
+            static MARKER: [u8; 14usize] = *b"SpEcV2jq\x0b\xd4\xfe\x97\x1a\r";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -837,7 +837,7 @@ impl soroban_sdk::SpecShakingMarker for RecursiveEnum {
     fn spec_shaking_marker() {
         <RecursiveToEnum as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xff{V \xab\r\xdcd";
+            static MARKER: [u8; 14usize] = *b"SpEcV2uR\xa7#NA<\x91";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }

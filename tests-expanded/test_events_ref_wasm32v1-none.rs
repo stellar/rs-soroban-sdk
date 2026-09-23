@@ -48,7 +48,7 @@ impl<'a> soroban_sdk::SpecShakingMarker for Transfer<'a> {
         <&'a i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <Option<&'a u64> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1;\xc1i\xa0H>\x8d\xf1";
+            static MARKER: [u8; 14usize] = *b"SpEcV2\0R\xe4\xd1\xf1dRT";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }

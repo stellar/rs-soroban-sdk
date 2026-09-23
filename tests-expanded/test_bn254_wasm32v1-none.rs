@@ -29,7 +29,7 @@ impl soroban_sdk::SpecShakingMarker for MockProof {
         <Vec<Bn254G1Affine> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <Vec<Bn254G2Affine> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1:\x81\xa6\xa0\x9e\xe7\xa7\x1f";
+            static MARKER: [u8; 14usize] = *b"SpEcV2\xb08\x8f\xe3\xb6\x06b6";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }

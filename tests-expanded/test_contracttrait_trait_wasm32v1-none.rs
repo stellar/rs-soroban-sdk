@@ -65,7 +65,7 @@ impl soroban_sdk::SpecShakingMarker for MyStruct {
         <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\x08\xd4\xa7b\xae1|\xdd";
+            static MARKER: [u8; 14usize] = *b"SpEcV2\x85\x87\xc0 \x90Wi\xe2";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -178,7 +178,7 @@ impl soroban_sdk::SpecShakingMarker for MyEnumUnit {
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV12E\x1b4\x1c\x83\xab\xeb";
+            static MARKER: [u8; 14usize] = *b"SpEcV2=)\x92Xq\xd6\x1fo";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -303,7 +303,7 @@ impl soroban_sdk::SpecShakingMarker for MyEnumVariants {
         <MyStruct as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <MyEnumUnit as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xceHo\xd4mpUm";
+            static MARKER: [u8; 14usize] = *b"SpEcV2>[\xfe\xf5V\x88D\xba";
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
