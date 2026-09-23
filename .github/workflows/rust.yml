@@ -15,7 +15,6 @@ concurrency:
 
 env:
   ARTIFACT_RETENTION_DAYS_FOR_TEST_WASMS: 7
-  STELLAR_CLI_VERSION: 28.0.0
 
 defaults:
   run:
@@ -35,6 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       sys: ${{ steps.sys.outputs.sys }}
+      stellar-cli-version: ${{ steps.stellar-cli-version.outputs.stellar-cli-version }}
     steps:
     - id: sys
       run: |
@@ -66,6 +66,9 @@ jobs:
           ]'
         fi
         echo "sys=$(<<< $sys jq -c)" >> $GITHUB_OUTPUT
+    - uses: actions/checkout@v3
+    - id: stellar-cli-version
+      run: echo "stellar-cli-version=$(make stellar-cli-version)" >> $GITHUB_OUTPUT
 
   fmt:
     runs-on: ubuntu-latest
@@ -314,6 +317,7 @@ jobs:
       run: git add -N . && git diff HEAD --exit-code
 
   publish-dry-run:
+    needs: setup
     if: github.event_name == 'push' || startsWith(github.head_ref, 'release/')
     strategy:
       matrix:
@@ -321,7 +325,7 @@ jobs:
         - os: ubuntu-latest
           target: wasm32v1-none
           cargo-hack-feature-options: --manifest-path Cargo.toml --exclude soroban-meta --exclude soroban-spec --exclude soroban-spec-rust --exclude soroban-ledger-snapshot --exclude-features testutils,docs,default,std --feature-powerset
-          env: STELLAR_CLI_VERSION=28.0.0
+          env: STELLAR_CLI_VERSION=${{ needs.setup.outputs.stellar-cli-version }}
         - os: ubuntu-latest
           target: x86_64-unknown-linux-gnu
           cargo-hack-feature-options: '--feature-powerset --exclude-features docs'

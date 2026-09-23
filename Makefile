@@ -4,6 +4,9 @@ TEST_CRATES = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.pack
 MSRV = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.name == "soroban-sdk") | .rust_version')
 TEST_CRATES_RUSTUP_TOOLCHAIN?=$(MSRV)
 
+# The stellar-cli version the soroban-sdk build script requires, the same major as the sdk.
+STELLAR_CLI_VERSION = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.name == "soroban-sdk") | .version | split(".")[0] + ".0.0"')
+
 CARGO_DOC_ARGS?=--open
 
 default: test
@@ -23,7 +26,7 @@ test: fmt build-test-wasms test-only
 # hazmat granular features are excluded because all hazmat features are tested
 # together with the umbrella hazmat feature.
 test-only:
-	STELLAR_CLI_VERSION=28.0.0 \
+	STELLAR_CLI_VERSION=$(STELLAR_CLI_VERSION) \
 		cargo hack --feature-powerset --ignore-unknown-features --features testutils \
 			--exclude-features docs \
 			--exclude-features hazmat-crypto \
@@ -38,7 +41,7 @@ build-libs: fmt
 build-test-wasms: fmt
 	# Build the test wasms with MSRV by default, with some meta disabled for
 	# binary stability for tests.
-	STELLAR_CLI_VERSION=28.0.0 \
+	STELLAR_CLI_VERSION=$(STELLAR_CLI_VERSION) \
 	RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
 	RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
 		cargo hack build --release --target wasm32v1-none $(foreach c,$(TEST_CRATES),--package $(c)) ; \
@@ -74,7 +77,7 @@ expand-tests: build-test-wasms
       RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
       cargo expand --package $$package --tests --target x86_64-unknown-linux-gnu | rustfmt > tests-expanded/$${package}_tests.rs; \
 		echo "Expanding $$package for wasm32v1-none target without tests"; \
-    STELLAR_CLI_VERSION=28.0.0 \
+    STELLAR_CLI_VERSION=$(STELLAR_CLI_VERSION) \
     RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
       RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
 			cargo expand --package $$package --release --target wasm32v1-none | rustfmt > tests-expanded/$${package}_wasm32v1-none.rs; \
@@ -113,3 +116,6 @@ clean:
 
 msrv:
 	@echo $(MSRV)
+
+stellar-cli-version:
+	@echo $(STELLAR_CLI_VERSION)
