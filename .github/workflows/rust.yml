@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       sys: ${{ steps.sys.outputs.sys }}
-      stellar-cli-version: ${{ steps.stellar-cli-version.outputs.stellar-cli-version }}
+      version-major: ${{ steps.version-major.outputs.version-major }}
     steps:
     - id: sys
       run: |
@@ -67,8 +67,8 @@ jobs:
         fi
         echo "sys=$(<<< $sys jq -c)" >> $GITHUB_OUTPUT
     - uses: actions/checkout@v3
-    - id: stellar-cli-version
-      run: echo "stellar-cli-version=$(make stellar-cli-version)" >> $GITHUB_OUTPUT
+    - id: version-major
+      run: echo "version-major=$(make version-major)" >> $GITHUB_OUTPUT
 
   fmt:
     runs-on: ubuntu-latest
@@ -325,7 +325,7 @@ jobs:
         - os: ubuntu-latest
           target: wasm32v1-none
           cargo-hack-feature-options: --manifest-path Cargo.toml --exclude soroban-meta --exclude soroban-spec --exclude soroban-spec-rust --exclude soroban-ledger-snapshot --exclude-features testutils,docs,default,std --feature-powerset
-          env: STELLAR_CLI_VERSION=${{ needs.setup.outputs.stellar-cli-version }}
+          env: STELLAR_CLI_VERSION=${{ needs.setup.outputs.version-major }}.0.0
         - os: ubuntu-latest
           target: x86_64-unknown-linux-gnu
           cargo-hack-feature-options: '--feature-powerset --exclude-features docs'
