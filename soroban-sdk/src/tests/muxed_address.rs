@@ -1,9 +1,10 @@
 use soroban_sdk_macros::{contract, contractimpl, contracttype};
 
-use crate::testutils::{Address as _, MuxedAddress as _};
+use crate::testutils::{Address as _, EnvTestConfig, MuxedAddress as _};
 use crate::{self as soroban_sdk, Bytes, String};
 use crate::{
     env::xdr::{AccountId, ScAddress, Uint256},
+    token::{StellarAssetClient, TokenClient},
     Address, Env, MuxedAddress, TryFromVal,
 };
 
@@ -76,6 +77,42 @@ fn test_muxed_address_component_getters() {
     let muxed_address_from_address = MuxedAddress::new(muxed_address_with_another_id.address(), 0);
     assert_eq!(muxed_address_from_address.address(), expected_address);
     assert_eq!(muxed_address_from_address.id(), Some(0));
+}
+
+#[test]
+fn test_muxed_contract_address() {
+    let env = Env::default();
+    let contract = env.register(MuxedAddressContract, ());
+
+    let muxed_address = MuxedAddress::new(&contract, 123456);
+    assert_eq!(muxed_address.address(), contract);
+    assert_eq!(muxed_address.id(), Some(123456));
+
+    let strkey = muxed_address.to_strkey();
+    assert!(strkey.to_string().starts_with('W'));
+    assert!(format!("{:?}", muxed_address).contains(&strkey.to_string()));
+    assert_eq!(MuxedAddress::from_string(&strkey), muxed_address);
+}
+
+#[test]
+fn test_sac_transfer_to_muxed_contract_address() {
+    // The auth snapshot can't be written because stellar-xdr has no string
+    // form for `ScAddress::MuxedContract` yet.
+    let env = Env::new_with_config(EnvTestConfig {
+        capture_snapshot_at_drop: false,
+    });
+    env.mock_all_auths();
+    let contract = env.register(MuxedAddressContract, ());
+    let muxed_address = MuxedAddress::new(&contract, 123456);
+
+    let admin = Address::generate(&env);
+    let sac = env.register_stellar_asset_contract_v2(admin);
+    let from = Address::generate(&env);
+    StellarAssetClient::new(&env, &sac.address()).mint(&from, &100);
+    let token = TokenClient::new(&env, &sac.address());
+    token.transfer(&from, &muxed_address, &40);
+    assert_eq!(token.balance(&from), 60);
+    assert_eq!(token.balance(&contract), 40);
 }
 
 #[test]
