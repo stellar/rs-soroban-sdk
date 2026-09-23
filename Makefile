@@ -80,19 +80,21 @@ expand-tests: build-test-wasms
 			cargo expand --package $$package --release --target wasm32v1-none | rustfmt > tests-expanded/$${package}_wasm32v1-none.rs; \
 	done
 
-# Dumps the contract spec that each test vector contract in the tests/
-# directory carries in its built wasm, as a stream of XDR-JSON values. Serves
-# to surface changes to the spec a contract ships, which the expanded code does
-# not show because the spec is encoded from it rather than written out by it.
+# Dumps the contractspecv0 section of each test vector contract in the tests/
+# directory, as built by build-test-wasms and so before any spec shaking, as a
+# stream of XDR-JSON values. Serves to surface changes to the spec the SDK
+# embeds, which the expanded code does not show because the spec is encoded
+# from it rather than written out by it.
 spec-snapshots: build-test-wasms spec-snapshots-from-built-wasms
 
 spec-snapshots-from-built-wasms:
 	rm -fr tests-specs
 	mkdir -p tests-specs
-	for wasm in target/wasm32v1-none/release/test_*.wasm; do \
-		name=$$(basename $$wasm .wasm); \
+	for name in $(TEST_CRATES); do \
+		wasm=target/wasm32v1-none/release/$$name.wasm; \
+		[ -f "$$wasm" ] || continue; \
 		echo "Dumping spec of $$name"; \
-		cargo run --quiet --package spec-json -- $$wasm > tests-specs/$$name.json; \
+		cargo run --quiet --package spec-json -- $$wasm > tests-specs/$$name.json || exit 1; \
 	done
 
 miri:
