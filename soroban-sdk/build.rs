@@ -26,24 +26,30 @@ pub fn main() {
     // system that does not do so is an error.
     let env_name = "STELLAR_CLI_VERSION";
     println!("cargo::rerun-if-env-changed={env_name}");
-    if std::env::var("CARGO_CFG_TARGET_FAMILY").unwrap_or_default() == "wasm" && {
-        let sdk_major: u64 = env!("CARGO_PKG_VERSION_MAJOR").parse().unwrap();
-        let cli_major = std::env::var(env_name)
-            .ok()
-            .and_then(|v| semver::Version::parse(&v).ok())
-            .map(|v| v.major);
-        cli_major < Some(sdk_major)
-    } {
+    if std::env::var("CARGO_CFG_TARGET_FAMILY").unwrap_or_default() == "wasm"
+        && cli_major(env_name) < Some(sdk_major())
+    {
         eprintln!(
             "\
 \nerror: soroban-sdk requires stellar-cli v{sdk_major}.0.0+ to build a contract\
 \n\
 \nTo fix, build with `stellar contract build` using stellar-cli v{sdk_major}.0.0+.\
 ",
-            sdk_major = env!("CARGO_PKG_VERSION_MAJOR"),
+            sdk_major = sdk_major(),
         );
         std::process::exit(1);
     }
 
     crate_git_revision::init();
+}
+
+fn sdk_major() -> u64 {
+    env!("CARGO_PKG_VERSION_MAJOR").parse().unwrap()
+}
+
+fn cli_major(env_name: &str) -> Option<u64> {
+    std::env::var(env_name)
+        .ok()
+        .and_then(|v| semver::Version::parse(&v).ok())
+        .map(|v| v.major)
 }
