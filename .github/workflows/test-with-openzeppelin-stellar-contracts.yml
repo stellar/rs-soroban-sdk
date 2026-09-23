@@ -109,7 +109,7 @@ jobs:
 
     - name: Set the stellar-cli version the local soroban-sdk requires
       working-directory: ${{ github.workspace }}
-      run: echo "STELLAR_CLI_VERSION=$(make --no-print-directory -C rs-soroban-sdk stellar-cli-version)" >> $GITHUB_ENV
+      run: echo "STELLAR_CLI_VERSION=$(make --no-print-directory -C rs-soroban-sdk version-major).0.0" >> $GITHUB_ENV
 
     - name: Collect publishable rs-soroban-sdk crates
       working-directory: stellar-contracts
