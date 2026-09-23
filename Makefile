@@ -85,7 +85,8 @@ expand-tests: build-test-wasms
 # stream of XDR-JSON values. Serves to surface changes to the spec the SDK
 # embeds, which the expanded code does not show because the spec is encoded
 # from it rather than written out by it.
-spec-snapshots: build-test-wasms spec-snapshots-from-built-wasms
+spec-snapshots: build-test-wasms
+	$(MAKE) spec-snapshots-from-built-wasms
 
 spec-snapshots-from-built-wasms:
 	rm -fr tests-specs
