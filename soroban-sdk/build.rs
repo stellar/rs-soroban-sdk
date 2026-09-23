@@ -20,13 +20,17 @@ pub fn main() {
         println!("cargo:rustc-env=RUSTC_VERSION={rustc_version}");
     }
 
-    // On a wasm target, check for an env var from the build system (Stellar CLI) that indicates it
-    // supports spec optimization using markers. Spec shaking is always on, and the contract's spec
-    // is only correct once the build system has shaken it, so a build system that does not do so
-    // is an error.
-    let env_name = "SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2";
+    // On a wasm target, check for an env var from the build system (Stellar CLI) that lists, comma
+    // separated, the features it supports. Spec shaking is always on, and the contract's spec is
+    // only correct once the build system has shaken it using markers, so a build system that does
+    // not support spec_shaking_v2 is an error.
+    let env_name = "SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS";
     println!("cargo::rerun-if-env-changed={env_name}");
-    if std::env::var(env_name).is_err()
+    let supports_spec_shaking_v2 = std::env::var(env_name)
+        .unwrap_or_default()
+        .split(',')
+        .any(|s| s.trim() == "spec_shaking_v2");
+    if !supports_spec_shaking_v2
         && std::env::var("CARGO_CFG_TARGET_FAMILY").unwrap_or_default() == "wasm"
     {
         eprintln!(
