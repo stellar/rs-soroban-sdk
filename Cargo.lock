@@ -769,12 +769,13 @@ checksum = "ed5909b6e89a2db4456e54cd5f673791d7eca6732202bbf2a9cc504fe2f9b84a"
 
 [[package]]
 name = "heapless"
-version = "0.8.0"
+version = "0.9.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0bfb9eb618601c89945a70e254898da93b13be0388091d42117462b265bb3fad"
+checksum = "25ba4bd83f9415b58b4ed8dc5714c76e626a105be4646c02630ad730ad3b5aa4"
 dependencies = [
  "hash32",
  "stable_deref_trait",
+ "zeroize",
 ]
 
 [[package]]
@@ -1416,7 +1417,7 @@ checksum = "3c5e1a9a646d36c3599cd173a41282daf47c44583ad367b8e6837255952e5c67"
 [[package]]
 name = "soroban-builtin-sdk-macros"
 version = "29.0.0"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=cb32250d926bd7188f3a6f9075bd48c44550dcac#cb32250d926bd7188f3a6f9075bd48c44550dcac"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=a2094aa582c75b8cdb5a08a4640e147911f31870#a2094aa582c75b8cdb5a08a4640e147911f31870"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -1427,7 +1428,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-common"
 version = "29.0.0"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=cb32250d926bd7188f3a6f9075bd48c44550dcac#cb32250d926bd7188f3a6f9075bd48c44550dcac"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=a2094aa582c75b8cdb5a08a4640e147911f31870#a2094aa582c75b8cdb5a08a4640e147911f31870"
 dependencies = [
  "arbitrary",
  "crate-git-revision 0.0.9",
@@ -1445,7 +1446,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-guest"
 version = "29.0.0"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=cb32250d926bd7188f3a6f9075bd48c44550dcac#cb32250d926bd7188f3a6f9075bd48c44550dcac"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=a2094aa582c75b8cdb5a08a4640e147911f31870#a2094aa582c75b8cdb5a08a4640e147911f31870"
 dependencies = [
  "soroban-env-common",
  "static_assertions",
@@ -1454,7 +1455,7 @@ dependencies = [
 [[package]]
 name = "soroban-env-host"
 version = "29.0.0"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=cb32250d926bd7188f3a6f9075bd48c44550dcac#cb32250d926bd7188f3a6f9075bd48c44550dcac"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=a2094aa582c75b8cdb5a08a4640e147911f31870#a2094aa582c75b8cdb5a08a4640e147911f31870"
 dependencies = [
  "ark-bls12-381",
  "ark-bn254",
@@ -1483,14 +1484,14 @@ dependencies = [
  "soroban-env-common",
  "soroban-wasmi",
  "static_assertions",
- "stellar-strkey 0.0.13",
+ "stellar-strkey 0.0.18",
  "wasmparser",
 ]
 
 [[package]]
 name = "soroban-env-macros"
 version = "29.0.0"
-source = "git+https://github.com/stellar/rs-soroban-env?rev=cb32250d926bd7188f3a6f9075bd48c44550dcac#cb32250d926bd7188f3a6f9075bd48c44550dcac"
+source = "git+https://github.com/stellar/rs-soroban-env?rev=a2094aa582c75b8cdb5a08a4640e147911f31870#a2094aa582c75b8cdb5a08a4640e147911f31870"
 dependencies = [
  "itertools",
  "proc-macro2",
@@ -1552,7 +1553,7 @@ dependencies = [
  "soroban-ledger-snapshot",
  "soroban-sdk-macros",
  "soroban-spec",
- "stellar-strkey 0.0.16",
+ "stellar-strkey 0.0.18",
  "stellar-xdr",
  "trybuild",
  "visibility",
@@ -1688,13 +1689,13 @@ dependencies = [
 
 [[package]]
 name = "stellar-strkey"
-version = "0.0.16"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "084afcb0d458c3d5d5baa2d294b18f881e62cc258ef539d8fdf68be7dbe45520"
+version = "0.0.18"
+source = "git+https://github.com/stellar/rs-stellar-strkey?rev=80085faa3e1f851fc28f3b2b941019265d46c314#80085faa3e1f851fc28f3b2b941019265d46c314"
 dependencies = [
- "crate-git-revision 0.0.6",
+ "crate-git-revision 0.0.9",
  "data-encoding",
  "heapless",
+ "zeroize",
 ]
 
 [[package]]

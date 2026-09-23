@@ -606,8 +606,8 @@ pub trait MuxedAddress {
     /// Returns a new `MuxedAddress` that has the same `Address` part as the
     /// provided `address` and the provided multiplexing id.
     ///
-    /// `address` can be either an `Address` or `MuxedAddress` and it has to
-    /// be an account (non-contract) address.
+    /// `address` can be either an `Address` or `MuxedAddress`, and either an
+    /// account or a contract address.
     ///
     /// Note on usage: the simplest way to test `MuxedAddress` is to generate
     /// an arbitrary valid address with `MuxedAddress::generate`, then
