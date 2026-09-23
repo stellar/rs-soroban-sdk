@@ -11,7 +11,7 @@ rust-version.workspace = true
 crate-type = ["cdylib"]
 doctest = false
 
-[target.'cfg(target_family = "wasm")'.dependencies]
+[dependencies]
 soroban-sdk = "=28.0.0"
 test_spec_lib = {package = "test_spec_lib_v2", path = "../spec_lib_v2"}
 

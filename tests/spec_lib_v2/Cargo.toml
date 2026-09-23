@@ -8,8 +8,9 @@ publish = false
 rust-version.workspace = true
 
 [lib]
+path = "../spec_lib/src/lib.rs"
 crate-type = ["rlib"]
 doctest = false
 
-[target.'cfg(target_family = "wasm")'.dependencies]
+[dependencies]
 soroban-sdk = "=28.0.0"
