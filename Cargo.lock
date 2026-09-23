@@ -2312,6 +2312,7 @@ dependencies = [
  "soroban-meta",
  "soroban-sdk 28.0.0",
  "soroban-spec 28.0.0",
+ "stellar-xdr 28.0.0 (git+https://github.com/stellar/rs-stellar-xdr?rev=e0d289adf4ad2483a10bcc8df743126974d77301)",
  "test_spec_lib",
 ]
 

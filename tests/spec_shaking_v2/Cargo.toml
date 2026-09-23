@@ -8,6 +8,7 @@ publish = false
 rust-version.workspace = true
 
 [lib]
+path = "../spec_shaking_v3/src/lib.rs"
 crate-type = ["cdylib"]
 doctest = false
 

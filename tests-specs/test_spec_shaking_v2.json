@@ -888,6 +888,38 @@
   }
 }
 {
+  "udt_struct_v0": {
+    "doc": "",
+    "lib": "",
+    "name": "UnusedInner",
+    "fields": [
+      {
+        "doc": "",
+        "name": "v",
+        "type": "u32"
+      }
+    ]
+  }
+}
+{
+  "udt_struct_v0": {
+    "doc": "",
+    "lib": "",
+    "name": "UnusedOuter",
+    "fields": [
+      {
+        "doc": "",
+        "name": "inner",
+        "type": {
+          "udt": {
+            "name": "UnusedInner"
+          }
+        }
+      }
+    ]
+  }
+}
+{
   "function_v0": {
     "doc": "",
     "name": "with_error",
@@ -1757,6 +1789,20 @@
   }
 }
 {
+  "udt_struct_v0": {
+    "doc": "",
+    "lib": "",
+    "name": "UnusedEventDataType",
+    "fields": [
+      {
+        "doc": "",
+        "name": "v",
+        "type": "u32"
+      }
+    ]
+  }
+}
+{
   "udt_error_enum_v0": {
     "doc": "",
     "lib": "",
@@ -2029,6 +2075,35 @@
         "doc": "",
         "name": "amount",
         "type": "i128",
+        "location": "data"
+      }
+    ],
+    "data_format": "map"
+  }
+}
+{
+  "event_v0": {
+    "doc": "",
+    "lib": "",
+    "name": "UnusedEventWithDataType",
+    "prefix_topics": [
+      "unused_event_with_data_type"
+    ],
+    "params": [
+      {
+        "doc": "",
+        "name": "kind",
+        "type": "symbol",
+        "location": "topic_list"
+      },
+      {
+        "doc": "",
+        "name": "payload",
+        "type": {
+          "udt": {
+            "name": "UnusedEventDataType"
+          }
+        },
         "location": "data"
       }
     ],

@@ -296,7 +296,9 @@ pub struct UsedLeaf {
 // --- WASM-imported types (contractimport!): only used ones should have markers ---
 
 mod wasm_imported {
-    soroban_sdk::contractimport!(file = "../../target/wasm32v1-none/release/test_spec_import.wasm");
+    soroban_sdk::contractimport!(
+        file = "../../target/wasm32v1-none/release/test_spec_import_v2.wasm"
+    );
 }
 
 // --- Unused types: no markers expected ---

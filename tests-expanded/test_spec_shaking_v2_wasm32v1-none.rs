@@ -9618,6 +9618,409 @@ impl UnusedEvent {
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
+pub struct UnusedEventDataType {
+    pub v: u32,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UnusedEventDataType {
+    #[inline]
+    fn clone(&self) -> UnusedEventDataType {
+        UnusedEventDataType {
+            v: ::core::clone::Clone::clone(&self.v),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UnusedEventDataType {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field1_finish(f, "UnusedEventDataType", "v", &&self.v)
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UnusedEventDataType {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<u32>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UnusedEventDataType {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UnusedEventDataType {
+    #[inline]
+    fn eq(&self, other: &UnusedEventDataType) -> bool {
+        self.v == other.v
+    }
+}
+#[doc(hidden)]
+#[allow(dead_code)]
+#[link_section = "contractspecv0"]
+static __SPEC_XDR_TYPE_UNUSEDEVENTDATATYPE: [u8; 56usize] = UnusedEventDataType::spec_xdr();
+impl UnusedEventDataType {
+    pub const fn spec_xdr() -> [u8; 56usize] {
+        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x13UnusedEventDataType\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x04"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UnusedEventDataType {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1c;\x9e\x07(\x18\xbb<";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedEventDataType {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["v"];
+        let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
+        let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
+            .map_err(|_| ConversionError)?;
+        Ok(Self {
+            v: vals[0]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UnusedEventDataType> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UnusedEventDataType,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["v"];
+        let vals: [Val; 1usize] = [(&val.v).try_into_val(env).map_err(|_| ConversionError)?];
+        Ok(env
+            .map_new_from_slices(&KEYS, &vals)
+            .map_err(|_| ConversionError)?
+            .into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UnusedEventDataType> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UnusedEventDataType,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UnusedEventDataType>>::try_from_val(
+            env, *val,
+        )
+    }
+}
+pub struct UnusedEventWithDataType {
+    pub kind: Symbol,
+    pub payload: UnusedEventDataType,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UnusedEventWithDataType {
+    #[inline]
+    fn clone(&self) -> UnusedEventWithDataType {
+        UnusedEventWithDataType {
+            kind: ::core::clone::Clone::clone(&self.kind),
+            payload: ::core::clone::Clone::clone(&self.payload),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UnusedEventWithDataType {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field2_finish(
+            f,
+            "UnusedEventWithDataType",
+            "kind",
+            &self.kind,
+            "payload",
+            &&self.payload,
+        )
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UnusedEventWithDataType {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<Symbol>;
+        let _: ::core::cmp::AssertParamIsEq<UnusedEventDataType>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UnusedEventWithDataType {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UnusedEventWithDataType {
+    #[inline]
+    fn eq(&self, other: &UnusedEventWithDataType) -> bool {
+        self.kind == other.kind && self.payload == other.payload
+    }
+}
+#[doc(hidden)]
+#[allow(dead_code)]
+#[link_section = "contractspecv0"]
+static __SPEC_XDR_EVENT_UNUSEDEVENTWITHDATATYPE: [u8; 152usize] =
+    UnusedEventWithDataType::spec_xdr();
+impl UnusedEventWithDataType {
+    pub const fn spec_xdr() -> [u8; 152usize] {
+        *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x17UnusedEventWithDataType\0\0\0\0\x01\0\0\0\x1bunused_event_with_data_type\0\0\0\0\x02\0\0\0\0\0\0\0\x04kind\0\0\0\x11\0\0\0\x01\0\0\0\0\0\0\0\x07payload\0\0\0\x07\xd0\0\0\0\x13UnusedEventDataType\0\0\0\0\0\0\0\0\x02"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UnusedEventWithDataType {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <UnusedEventDataType as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1\xea\xc4\xe2\xd5D\xfd\x06\x0b";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
+impl soroban_sdk::Event for UnusedEventWithDataType {
+    fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+        use soroban_sdk::IntoVal;
+        (
+            &{ soroban_sdk::Symbol::new(env, "unused_event_with_data_type") },
+            {
+                let v: soroban_sdk::Val = self.kind.into_val(env);
+                v
+            },
+        )
+            .into_val(env)
+    }
+    fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
+        use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
+        const KEYS: [&'static str; 1usize] = ["payload"];
+        let vals: [soroban_sdk::Val; 1usize] = [self.payload.into_val(env)];
+        env.sparse_map_new_from_slices(&KEYS, &vals)
+            .unwrap_infallible()
+            .into()
+    }
+}
+impl UnusedEventWithDataType {
+    pub fn publish(&self, env: &soroban_sdk::Env) {
+        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <_ as soroban_sdk::Event>::publish(self, env);
+    }
+}
+pub struct UnusedOuter {
+    pub inner: UnusedInner,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UnusedOuter {
+    #[inline]
+    fn clone(&self) -> UnusedOuter {
+        UnusedOuter {
+            inner: ::core::clone::Clone::clone(&self.inner),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UnusedOuter {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field1_finish(f, "UnusedOuter", "inner", &&self.inner)
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UnusedOuter {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<UnusedInner>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UnusedOuter {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UnusedOuter {
+    #[inline]
+    fn eq(&self, other: &UnusedOuter) -> bool {
+        self.inner == other.inner
+    }
+}
+#[doc(hidden)]
+#[allow(dead_code)]
+#[link_section = "contractspecv0"]
+static __SPEC_XDR_TYPE_UNUSEDOUTER: [u8; 68usize] = UnusedOuter::spec_xdr();
+impl UnusedOuter {
+    pub const fn spec_xdr() -> [u8; 68usize] {
+        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0bUnusedOuter\0\0\0\0\x01\0\0\0\0\0\0\0\x05inner\0\0\0\0\0\x07\xd0\0\0\0\x0bUnusedInner\0"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UnusedOuter {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <UnusedInner as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1\x8c\x9f8\x11\x85\x99\xd5\x1a";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedOuter {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["inner"];
+        let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
+        let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
+            .map_err(|_| ConversionError)?;
+        Ok(Self {
+            inner: vals[0]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UnusedOuter> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UnusedOuter,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["inner"];
+        let vals: [Val; 1usize] = [(&val.inner)
+            .try_into_val(env)
+            .map_err(|_| ConversionError)?];
+        Ok(env
+            .map_new_from_slices(&KEYS, &vals)
+            .map_err(|_| ConversionError)?
+            .into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UnusedOuter> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UnusedOuter,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UnusedOuter>>::try_from_val(env, *val)
+    }
+}
+pub struct UnusedInner {
+    pub v: u32,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UnusedInner {
+    #[inline]
+    fn clone(&self) -> UnusedInner {
+        UnusedInner {
+            v: ::core::clone::Clone::clone(&self.v),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UnusedInner {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field1_finish(f, "UnusedInner", "v", &&self.v)
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UnusedInner {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<u32>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UnusedInner {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UnusedInner {
+    #[inline]
+    fn eq(&self, other: &UnusedInner) -> bool {
+        self.v == other.v
+    }
+}
+#[doc(hidden)]
+#[allow(dead_code)]
+#[link_section = "contractspecv0"]
+static __SPEC_XDR_TYPE_UNUSEDINNER: [u8; 48usize] = UnusedInner::spec_xdr();
+impl UnusedInner {
+    pub const fn spec_xdr() -> [u8; 48usize] {
+        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0bUnusedInner\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x04"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UnusedInner {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1n\xd6\x82\xee\x15k \x17";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedInner {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["v"];
+        let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
+        let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
+            .map_err(|_| ConversionError)?;
+        Ok(Self {
+            v: vals[0]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UnusedInner> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UnusedInner,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["v"];
+        let vals: [Val; 1usize] = [(&val.v).try_into_val(env).map_err(|_| ConversionError)?];
+        Ok(env
+            .map_new_from_slices(&KEYS, &vals)
+            .map_err(|_| ConversionError)?
+            .into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UnusedInner> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UnusedInner,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UnusedInner>>::try_from_val(env, *val)
+    }
+}
 pub enum UnusedPubError {
     Nope = 1,
 }
