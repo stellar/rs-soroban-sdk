@@ -111,9 +111,9 @@ jobs:
           echo "Relabelled local rs-soroban-sdk crates from $local_version to $dest_version"
         fi
 
-    - name: Set the stellar-cli version the local soroban-sdk requires
+    - name: Set the stellar-cli major version the local soroban-sdk requires
       working-directory: ${{ github.workspace }}
-      run: echo "STELLAR_CLI_VERSION=$(make --no-print-directory -C rs-soroban-sdk version-major).0.0" >> $GITHUB_ENV
+      run: echo "STELLAR_CLI_VERSION_MAJOR=$(make --no-print-directory -C rs-soroban-sdk version-major)" >> $GITHUB_ENV
 
     - name: Collect publishable rs-soroban-sdk crates
       run: |
