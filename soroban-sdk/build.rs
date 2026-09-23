@@ -27,13 +27,12 @@ pub fn main() {
     let env_name = "STELLAR_CLI_VERSION";
     println!("cargo::rerun-if-env-changed={env_name}");
     if std::env::var("CARGO_CFG_TARGET_FAMILY").unwrap_or_default() == "wasm" {
-        let sdk_major = semver::Version::parse(env!("CARGO_PKG_VERSION"))
-            .unwrap()
-            .major;
-        let cli_version = std::env::var(env_name)
+        let sdk_major: u64 = env!("CARGO_PKG_VERSION_MAJOR").parse().unwrap();
+        let cli_major: Option<u64> = std::env::var(env_name)
             .ok()
-            .and_then(|v| semver::Version::parse(&v).ok());
-        if !cli_version.is_some_and(|cli_version| cli_version.major >= sdk_major) {
+            .and_then(|v| semver::Version::parse(&v).ok())
+            .map(|v| v.major);
+        if !cli_major.is_some_and(|cli_major| cli_major >= sdk_major) {
             eprintln!(
                 "\
 \nerror: soroban-sdk v{sdk_version} requires stellar-cli v{sdk_major}.0.0+ to build a contract\
