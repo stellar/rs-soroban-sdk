@@ -4,10 +4,11 @@ use soroban_sdk::xdr::ScSpecEntry;
 use std::collections::HashSet;
 use std::vec::Vec;
 
-const WASM: &[u8] = include_bytes!("../../../target/wasm32v1-none/release/test_spec_shaking.wasm");
+const WASM: &[u8] =
+    include_bytes!("../../../target/wasm32v1-none/release/test_spec_shaking_v3.wasm");
 
 #[test]
-fn test_spec_shaking() {
+fn test_spec_shaking_v3() {
     // Read all spec entries from the WASM.
     let entries = soroban_spec::read::from_wasm(WASM).unwrap();
 

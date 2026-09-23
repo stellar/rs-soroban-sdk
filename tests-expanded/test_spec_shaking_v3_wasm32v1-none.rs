@@ -77,7 +77,7 @@ impl ::core::cmp::PartialEq for UsedParamStruct {
 impl UsedParamStruct {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedParamStruct"
+        "::test_spec_shaking_v3::UsedParamStruct"
     }
 }
 #[doc(hidden)]
@@ -229,7 +229,7 @@ impl ::core::cmp::PartialEq for UsedReturnEnum {
 impl UsedReturnEnum {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedReturnEnum"
+        "::test_spec_shaking_v3::UsedReturnEnum"
     }
 }
 #[doc(hidden)]
@@ -399,7 +399,7 @@ impl ::core::cmp::PartialEq for UsedParamIntEnum {
 impl UsedParamIntEnum {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedParamIntEnum"
+        "::test_spec_shaking_v3::UsedParamIntEnum"
     }
 }
 #[doc(hidden)]
@@ -520,7 +520,7 @@ impl ::core::cmp::PartialEq for UsedErrorEnum {
 impl UsedErrorEnum {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedErrorEnum"
+        "::test_spec_shaking_v3::UsedErrorEnum"
     }
 }
 #[doc(hidden)]
@@ -717,7 +717,7 @@ impl ::core::cmp::PartialEq for UsedPanicErrorEnum {
 impl UsedPanicErrorEnum {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedPanicErrorEnum"
+        "::test_spec_shaking_v3::UsedPanicErrorEnum"
     }
 }
 #[doc(hidden)]
@@ -903,7 +903,7 @@ impl ::core::cmp::PartialEq for UsedAssertErrorEnum {
 impl UsedAssertErrorEnum {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedAssertErrorEnum"
+        "::test_spec_shaking_v3::UsedAssertErrorEnum"
     }
 }
 #[doc(hidden)]
@@ -1096,7 +1096,7 @@ impl ::core::cmp::PartialEq for UsedNestedInStruct {
 impl UsedNestedInStruct {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedNestedInStruct"
+        "::test_spec_shaking_v3::UsedNestedInStruct"
     }
 }
 #[doc(hidden)]
@@ -1212,7 +1212,7 @@ impl ::core::cmp::PartialEq for UsedVecElement {
 impl UsedVecElement {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedVecElement"
+        "::test_spec_shaking_v3::UsedVecElement"
     }
 }
 #[doc(hidden)]
@@ -1333,7 +1333,7 @@ impl ::core::cmp::PartialEq for UsedMapKey {
 impl UsedMapKey {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedMapKey"
+        "::test_spec_shaking_v3::UsedMapKey"
     }
 }
 #[doc(hidden)]
@@ -1446,7 +1446,7 @@ impl ::core::cmp::PartialEq for UsedMapVal {
 impl UsedMapVal {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedMapVal"
+        "::test_spec_shaking_v3::UsedMapVal"
     }
 }
 #[doc(hidden)]
@@ -1564,7 +1564,7 @@ impl ::core::cmp::PartialEq for UsedOptionElement {
 impl UsedOptionElement {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedOptionElement"
+        "::test_spec_shaking_v3::UsedOptionElement"
     }
 }
 #[doc(hidden)]
@@ -1678,7 +1678,7 @@ impl ::core::cmp::PartialEq for UsedResultOk {
 impl UsedResultOk {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedResultOk"
+        "::test_spec_shaking_v3::UsedResultOk"
     }
 }
 #[doc(hidden)]
@@ -1802,7 +1802,7 @@ impl ::core::cmp::PartialEq for UsedEventSimple {
 impl UsedEventSimple {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedEventSimple"
+        "::test_spec_shaking_v3::UsedEventSimple"
     }
 }
 #[doc(hidden)]
@@ -1929,7 +1929,7 @@ impl ::core::cmp::PartialEq for UsedEventTopicType {
 impl UsedEventTopicType {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedEventTopicType"
+        "::test_spec_shaking_v3::UsedEventTopicType"
     }
 }
 #[doc(hidden)]
@@ -2057,7 +2057,7 @@ impl ::core::cmp::PartialEq for UsedEventWithTopicType {
 impl UsedEventWithTopicType {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedEventWithTopicType"
+        "::test_spec_shaking_v3::UsedEventWithTopicType"
     }
 }
 #[doc(hidden)]
@@ -2195,7 +2195,7 @@ impl ::core::cmp::PartialEq for UsedEventDataType {
 impl UsedEventDataType {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedEventDataType"
+        "::test_spec_shaking_v3::UsedEventDataType"
     }
 }
 #[doc(hidden)]
@@ -2330,7 +2330,7 @@ impl ::core::cmp::PartialEq for UsedEventWithDataType {
 impl UsedEventWithDataType {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedEventWithDataType"
+        "::test_spec_shaking_v3::UsedEventWithDataType"
     }
 }
 #[doc(hidden)]
@@ -2464,7 +2464,7 @@ impl ::core::cmp::PartialEq for UsedEventTopicOuter {
 impl UsedEventTopicOuter {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedEventTopicOuter"
+        "::test_spec_shaking_v3::UsedEventTopicOuter"
     }
 }
 #[doc(hidden)]
@@ -2593,7 +2593,7 @@ impl ::core::cmp::PartialEq for UsedEventTopicInner {
 impl UsedEventTopicInner {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedEventTopicInner"
+        "::test_spec_shaking_v3::UsedEventTopicInner"
     }
 }
 #[doc(hidden)]
@@ -2719,7 +2719,7 @@ impl ::core::cmp::PartialEq for UsedEventWithNestedTopic {
 impl UsedEventWithNestedTopic {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedEventWithNestedTopic"
+        "::test_spec_shaking_v3::UsedEventWithNestedTopic"
     }
 }
 #[doc(hidden)]
@@ -2853,7 +2853,7 @@ impl ::core::cmp::PartialEq for UsedEventDataOuter {
 impl UsedEventDataOuter {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedEventDataOuter"
+        "::test_spec_shaking_v3::UsedEventDataOuter"
     }
 }
 #[doc(hidden)]
@@ -2982,7 +2982,7 @@ impl ::core::cmp::PartialEq for UsedEventDataInner {
 impl UsedEventDataInner {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedEventDataInner"
+        "::test_spec_shaking_v3::UsedEventDataInner"
     }
 }
 #[doc(hidden)]
@@ -3108,7 +3108,7 @@ impl ::core::cmp::PartialEq for UsedEventWithNestedData {
 impl UsedEventWithNestedData {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedEventWithNestedData"
+        "::test_spec_shaking_v3::UsedEventWithNestedData"
     }
 }
 #[doc(hidden)]
@@ -3244,7 +3244,7 @@ impl ::core::cmp::PartialEq for UsedRefTopicType {
 impl UsedRefTopicType {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedRefTopicType"
+        "::test_spec_shaking_v3::UsedRefTopicType"
     }
 }
 #[doc(hidden)]
@@ -3363,7 +3363,7 @@ impl ::core::cmp::PartialEq for UsedRefDataType {
 impl UsedRefDataType {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedRefDataType"
+        "::test_spec_shaking_v3::UsedRefDataType"
     }
 }
 #[doc(hidden)]
@@ -3487,7 +3487,7 @@ impl ::core::cmp::PartialEq for UsedRefDataInner {
 impl UsedRefDataInner {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedRefDataInner"
+        "::test_spec_shaking_v3::UsedRefDataInner"
     }
 }
 #[doc(hidden)]
@@ -3611,7 +3611,7 @@ impl<'a> ::core::cmp::PartialEq for UsedEventWithRefs<'a> {
 impl<'a> UsedEventWithRefs<'a> {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedEventWithRefs"
+        "::test_spec_shaking_v3::UsedEventWithRefs"
     }
 }
 #[doc(hidden)]
@@ -3746,7 +3746,7 @@ impl ::core::cmp::PartialEq for UsedTupleElement {
 impl UsedTupleElement {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedTupleElement"
+        "::test_spec_shaking_v3::UsedTupleElement"
     }
 }
 #[doc(hidden)]
@@ -3865,7 +3865,7 @@ impl ::core::cmp::PartialEq for UsedTupleReturnElement {
 impl UsedTupleReturnElement {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedTupleReturnElement"
+        "::test_spec_shaking_v3::UsedTupleReturnElement"
     }
 }
 #[doc(hidden)]
@@ -3986,7 +3986,7 @@ impl ::core::cmp::PartialEq for UsedVecInnerVecElement {
 impl UsedVecInnerVecElement {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedVecInnerVecElement"
+        "::test_spec_shaking_v3::UsedVecInnerVecElement"
     }
 }
 #[doc(hidden)]
@@ -4107,7 +4107,7 @@ impl ::core::cmp::PartialEq for UsedVecInnerElement {
 impl UsedVecInnerElement {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedVecInnerElement"
+        "::test_spec_shaking_v3::UsedVecInnerElement"
     }
 }
 #[doc(hidden)]
@@ -4238,7 +4238,7 @@ impl ::core::cmp::PartialEq for UsedVecElementNested {
 impl UsedVecElementNested {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedVecElementNested"
+        "::test_spec_shaking_v3::UsedVecElementNested"
     }
 }
 #[doc(hidden)]
@@ -4401,7 +4401,7 @@ impl ::core::cmp::PartialEq for UsedNonPubStruct {
 impl UsedNonPubStruct {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedNonPubStruct"
+        "::test_spec_shaking_v3::UsedNonPubStruct"
     }
 }
 #[doc(hidden)]
@@ -4513,7 +4513,7 @@ impl ::core::cmp::PartialEq for UsedNonPubError {
 impl UsedNonPubError {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedNonPubError"
+        "::test_spec_shaking_v3::UsedNonPubError"
     }
 }
 #[doc(hidden)]
@@ -4704,7 +4704,7 @@ impl ::core::cmp::PartialEq for UsedRecursiveRoot {
 impl UsedRecursiveRoot {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedRecursiveRoot"
+        "::test_spec_shaking_v3::UsedRecursiveRoot"
     }
 }
 #[doc(hidden)]
@@ -4851,7 +4851,7 @@ impl ::core::cmp::PartialEq for UsedRecursiveNode {
 impl UsedRecursiveNode {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedRecursiveNode"
+        "::test_spec_shaking_v3::UsedRecursiveNode"
     }
 }
 #[doc(hidden)]
@@ -5034,7 +5034,7 @@ impl ::core::cmp::PartialEq for UsedRecursiveLeaf {
 impl UsedRecursiveLeaf {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedRecursiveLeaf"
+        "::test_spec_shaking_v3::UsedRecursiveLeaf"
     }
 }
 #[doc(hidden)]
@@ -5159,7 +5159,7 @@ impl ::core::cmp::PartialEq for UsedLeaf {
 impl UsedLeaf {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UsedLeaf"
+        "::test_spec_shaking_v3::UsedLeaf"
     }
 }
 #[doc(hidden)]
@@ -5597,7 +5597,7 @@ mod wasm_imported {
     impl ContractExecutableRef {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking::wasm_imported::ContractExecutableRef"
+            "::test_spec_shaking_v3::wasm_imported::ContractExecutableRef"
         }
     }
     #[doc(hidden)]
@@ -5784,7 +5784,7 @@ mod wasm_imported {
     impl ContractContext {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking::wasm_imported::ContractContext"
+            "::test_spec_shaking_v3::wasm_imported::ContractContext"
         }
     }
     #[doc(hidden)]
@@ -5974,7 +5974,7 @@ mod wasm_imported {
     impl SubContractInvocation {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking::wasm_imported::SubContractInvocation"
+            "::test_spec_shaking_v3::wasm_imported::SubContractInvocation"
         }
     }
     #[doc(hidden)]
@@ -6159,7 +6159,7 @@ mod wasm_imported {
     impl CreateContractHostFnContext {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking::wasm_imported::CreateContractHostFnContext"
+            "::test_spec_shaking_v3::wasm_imported::CreateContractHostFnContext"
         }
     }
     #[doc(hidden)]
@@ -6360,7 +6360,7 @@ mod wasm_imported {
     impl CreateContractWithConstructorHostFnContext {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking::wasm_imported::CreateContractWithConstructorHostFnContext"
+            "::test_spec_shaking_v3::wasm_imported::CreateContractWithConstructorHostFnContext"
         }
     }
     #[doc(hidden)]
@@ -6555,7 +6555,7 @@ mod wasm_imported {
     impl StructA {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking::wasm_imported::StructA"
+            "::test_spec_shaking_v3::wasm_imported::StructA"
         }
     }
     #[doc(hidden)]
@@ -6710,7 +6710,7 @@ mod wasm_imported {
     impl StructB {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking::wasm_imported::StructB"
+            "::test_spec_shaking_v3::wasm_imported::StructB"
         }
     }
     #[doc(hidden)]
@@ -6865,7 +6865,7 @@ mod wasm_imported {
     impl StructC {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking::wasm_imported::StructC"
+            "::test_spec_shaking_v3::wasm_imported::StructC"
         }
     }
     #[doc(hidden)]
@@ -7021,7 +7021,7 @@ mod wasm_imported {
     impl StructTupleA {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking::wasm_imported::StructTupleA"
+            "::test_spec_shaking_v3::wasm_imported::StructTupleA"
         }
     }
     #[doc(hidden)]
@@ -7166,7 +7166,7 @@ mod wasm_imported {
     impl StructTupleB {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking::wasm_imported::StructTupleB"
+            "::test_spec_shaking_v3::wasm_imported::StructTupleB"
         }
     }
     #[doc(hidden)]
@@ -7312,7 +7312,7 @@ mod wasm_imported {
     impl StructTupleC {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking::wasm_imported::StructTupleC"
+            "::test_spec_shaking_v3::wasm_imported::StructTupleC"
         }
     }
     #[doc(hidden)]
@@ -7501,7 +7501,7 @@ mod wasm_imported {
     impl ContractExecutable {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking::wasm_imported::ContractExecutable"
+            "::test_spec_shaking_v3::wasm_imported::ContractExecutable"
         }
     }
     #[doc(hidden)]
@@ -7773,7 +7773,7 @@ mod wasm_imported {
     impl Context {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking::wasm_imported::Context"
+            "::test_spec_shaking_v3::wasm_imported::Context"
         }
     }
     #[doc(hidden)]
@@ -8093,7 +8093,7 @@ mod wasm_imported {
     impl InvokerContractAuthEntry {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking::wasm_imported::InvokerContractAuthEntry"
+            "::test_spec_shaking_v3::wasm_imported::InvokerContractAuthEntry"
         }
     }
     #[doc(hidden)]
@@ -8365,7 +8365,7 @@ mod wasm_imported {
     impl Executable {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking::wasm_imported::Executable"
+            "::test_spec_shaking_v3::wasm_imported::Executable"
         }
     }
     #[doc(hidden)]
@@ -8579,7 +8579,7 @@ mod wasm_imported {
     impl EnumA {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking::wasm_imported::EnumA"
+            "::test_spec_shaking_v3::wasm_imported::EnumA"
         }
     }
     #[doc(hidden)]
@@ -8824,7 +8824,7 @@ mod wasm_imported {
     impl EnumB {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking::wasm_imported::EnumB"
+            "::test_spec_shaking_v3::wasm_imported::EnumB"
         }
     }
     #[doc(hidden)]
@@ -9078,7 +9078,7 @@ mod wasm_imported {
     impl EnumC {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking::wasm_imported::EnumC"
+            "::test_spec_shaking_v3::wasm_imported::EnumC"
         }
     }
     #[doc(hidden)]
@@ -9302,7 +9302,7 @@ mod wasm_imported {
     impl EnumIntA {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking::wasm_imported::EnumIntA"
+            "::test_spec_shaking_v3::wasm_imported::EnumIntA"
         }
     }
     #[doc(hidden)]
@@ -9455,7 +9455,7 @@ mod wasm_imported {
     impl EnumIntB {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking::wasm_imported::EnumIntB"
+            "::test_spec_shaking_v3::wasm_imported::EnumIntB"
         }
     }
     #[doc(hidden)]
@@ -9608,7 +9608,7 @@ mod wasm_imported {
     impl EnumIntC {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking::wasm_imported::EnumIntC"
+            "::test_spec_shaking_v3::wasm_imported::EnumIntC"
         }
     }
     #[doc(hidden)]
@@ -9761,7 +9761,7 @@ mod wasm_imported {
     impl ErrorA {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking::wasm_imported::ErrorA"
+            "::test_spec_shaking_v3::wasm_imported::ErrorA"
         }
     }
     #[doc(hidden)]
@@ -9996,7 +9996,7 @@ mod wasm_imported {
     impl ErrorB {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking::wasm_imported::ErrorB"
+            "::test_spec_shaking_v3::wasm_imported::ErrorB"
         }
     }
     #[doc(hidden)]
@@ -10231,7 +10231,7 @@ mod wasm_imported {
     impl ErrorC {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking::wasm_imported::ErrorC"
+            "::test_spec_shaking_v3::wasm_imported::ErrorC"
         }
     }
     #[doc(hidden)]
@@ -10466,7 +10466,7 @@ mod wasm_imported {
     impl EventA {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking::wasm_imported::EventA"
+            "::test_spec_shaking_v3::wasm_imported::EventA"
         }
     }
     #[doc(hidden)]
@@ -10633,7 +10633,7 @@ mod wasm_imported {
     impl EventB {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking::wasm_imported::EventB"
+            "::test_spec_shaking_v3::wasm_imported::EventB"
         }
     }
     #[doc(hidden)]
@@ -10811,7 +10811,7 @@ mod wasm_imported {
     impl EventC {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking::wasm_imported::EventC"
+            "::test_spec_shaking_v3::wasm_imported::EventC"
         }
     }
     #[doc(hidden)]
@@ -10956,7 +10956,7 @@ mod wasm_imported {
     impl EventD {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking::wasm_imported::EventD"
+            "::test_spec_shaking_v3::wasm_imported::EventD"
         }
     }
     #[doc(hidden)]
@@ -11063,7 +11063,7 @@ impl ::core::cmp::PartialEq for UnusedStruct {
 impl UnusedStruct {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UnusedStruct"
+        "::test_spec_shaking_v3::UnusedStruct"
     }
 }
 #[doc(hidden)]
@@ -11190,7 +11190,7 @@ impl ::core::cmp::PartialEq for UnusedEnum {
 impl UnusedEnum {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UnusedEnum"
+        "::test_spec_shaking_v3::UnusedEnum"
     }
 }
 #[doc(hidden)]
@@ -11350,7 +11350,7 @@ impl ::core::cmp::PartialEq for UnusedIntEnum {
 impl UnusedIntEnum {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UnusedIntEnum"
+        "::test_spec_shaking_v3::UnusedIntEnum"
     }
 }
 #[doc(hidden)]
@@ -11474,7 +11474,7 @@ impl ::core::cmp::PartialEq for UnusedEvent {
 impl UnusedEvent {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UnusedEvent"
+        "::test_spec_shaking_v3::UnusedEvent"
     }
 }
 #[doc(hidden)]
@@ -11591,7 +11591,7 @@ impl ::core::cmp::PartialEq for UnusedEventDataType {
 impl UnusedEventDataType {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UnusedEventDataType"
+        "::test_spec_shaking_v3::UnusedEventDataType"
     }
 }
 #[doc(hidden)]
@@ -11717,7 +11717,7 @@ impl ::core::cmp::PartialEq for UnusedEventWithDataType {
 impl UnusedEventWithDataType {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UnusedEventWithDataType"
+        "::test_spec_shaking_v3::UnusedEventWithDataType"
     }
 }
 #[doc(hidden)]
@@ -11846,7 +11846,7 @@ impl ::core::cmp::PartialEq for UnusedOuter {
 impl UnusedOuter {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UnusedOuter"
+        "::test_spec_shaking_v3::UnusedOuter"
     }
 }
 #[doc(hidden)]
@@ -11967,7 +11967,7 @@ impl ::core::cmp::PartialEq for UnusedInner {
 impl UnusedInner {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UnusedInner"
+        "::test_spec_shaking_v3::UnusedInner"
     }
 }
 #[doc(hidden)]
@@ -12078,7 +12078,7 @@ impl ::core::cmp::PartialEq for UnusedPubError {
 impl UnusedPubError {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UnusedPubError"
+        "::test_spec_shaking_v3::UnusedPubError"
     }
 }
 #[doc(hidden)]
@@ -12269,7 +12269,7 @@ impl ::core::cmp::PartialEq for UnusedNonContractFnParam {
 impl UnusedNonContractFnParam {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UnusedNonContractFnParam"
+        "::test_spec_shaking_v3::UnusedNonContractFnParam"
     }
 }
 #[doc(hidden)]
@@ -12390,7 +12390,7 @@ impl ::core::cmp::PartialEq for UnusedNonContractFnReturn {
 impl UnusedNonContractFnReturn {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UnusedNonContractFnReturn"
+        "::test_spec_shaking_v3::UnusedNonContractFnReturn"
     }
 }
 #[doc(hidden)]
@@ -12506,7 +12506,7 @@ impl ::core::cmp::PartialEq for UnusedNonPubStruct {
 impl UnusedNonPubStruct {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UnusedNonPubStruct"
+        "::test_spec_shaking_v3::UnusedNonPubStruct"
     }
 }
 #[doc(hidden)]
@@ -12620,7 +12620,7 @@ impl ::core::cmp::PartialEq for UnusedNonPubError {
 impl UnusedNonPubError {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking::UnusedNonPubError"
+        "::test_spec_shaking_v3::UnusedNonPubError"
     }
 }
 #[doc(hidden)]
