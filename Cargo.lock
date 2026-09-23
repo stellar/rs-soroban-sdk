@@ -1583,7 +1583,6 @@ version = "28.0.0"
 dependencies = [
  "base64",
  "pretty_assertions",
- "sha2",
  "stellar-xdr",
  "thiserror",
  "wasmparser",

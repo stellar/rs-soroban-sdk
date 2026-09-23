@@ -25,4 +25,3 @@ wasmparser = { version = "0.116.1", optional = true }
 
 [dev-dependencies]
 pretty_assertions = "1.2.1"
-sha2 = "0.10.7"
