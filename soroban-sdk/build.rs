@@ -26,18 +26,19 @@ pub fn main() {
     // build system that does not do so is an error.
     let env_name = "STELLAR_CLI_VERSION_MAJOR";
     println!("cargo::rerun-if-env-changed={env_name}");
-    if std::env::var("CARGO_CFG_TARGET_FAMILY").unwrap_or_default() == "wasm"
-        && cli_major(env_name) < Some(sdk_major())
-    {
-        eprintln!(
-            "\
+    if std::env::var("CARGO_CFG_TARGET_FAMILY").unwrap_or_default() == "wasm" {
+        let sdk_major = sdk_major();
+        let cli_major = cli_major(env_name);
+        if cli_major < Some(sdk_major) {
+            eprintln!(
+                "\
 \nerror: soroban-sdk requires stellar-cli v{sdk_major}.0.0+ to build a contract\
 \n\
 \nTo fix, build with `stellar contract build` using stellar-cli v{sdk_major}.0.0+.\
-",
-            sdk_major = sdk_major(),
-        );
-        std::process::exit(1);
+"
+            );
+            std::process::exit(1);
+        }
     }
 
     crate_git_revision::init();
