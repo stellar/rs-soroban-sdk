@@ -32,7 +32,7 @@ pub fn main() {
             .ok()
             .and_then(|v| semver::Version::parse(&v).ok())
             .map(|v| v.major);
-        if !cli_major.is_some_and(|cli_major| cli_major >= sdk_major) {
+        if cli_major < Some(sdk_major) {
             eprintln!(
                 "\
 \nerror: soroban-sdk v{sdk_version} requires stellar-cli v{sdk_major}.0.0+ to build a contract\
