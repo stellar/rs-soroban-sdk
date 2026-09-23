@@ -7,7 +7,10 @@
 /// shaking version:
 ///
 /// - Absent or `"1"` — version 1 (no markers, no shaking possible).
-/// - `"2"` — version 2, markers are embedded in the data section.
+/// - `"2"` — version 2, markers are embedded in the data section, prefixed
+///   `SpEcV1`.
+/// - `"3"` — version 3, markers are embedded in the data section, prefixed
+///   `SpEcV2`.
 ///
 /// Use [`spec_shaking_version_for_meta`] to determine the version from the
 /// contract's meta entries.
@@ -19,10 +22,10 @@
 /// - 8 bytes: the hash of the spec entry XDR
 ///
 /// Two prefixes are defined. `SpEcV1` carries the first 8 bytes of the SHA-256
-/// of the entry, and is what contracts built before the switch embed. `SpEcV2`
-/// carries the xxHash64 of the entry, seed 0, big-endian, and is what is
-/// generated now. Both are read, so a contract built either way can be shaken;
-/// only the generating side moved.
+/// of the entry, and is what version 2 contracts embed. `SpEcV2` carries the
+/// xxHash64 of the entry, seed 0, big-endian, and is what version 3 contracts
+/// embed. Both are read, so a contract built either way can be shaken; only the
+/// generating side moved.
 ///
 /// Markers are embedded in conversion/usage functions with a volatile read. When the type is used,
 /// the function is called and the marker is included. When the type is unused, the function is
@@ -55,20 +58,35 @@ use xxhash_rust::const_xxh64::xxh64;
 /// Stored in the `contractmetav0` section as an [`ScMetaV0`] entry.
 pub const META_KEY: &str = "rssdk_spec_shaking";
 
-/// The meta value for spec shaking version 2.
+/// The meta value for spec shaking version 2, whose markers carry the
+/// [`MAGIC_V1`] prefix.
 pub const META_VALUE_V2: &str = "2";
+
+/// The meta value for spec shaking version 3, whose markers carry the
+/// [`MAGIC_V2`] prefix.
+pub const META_VALUE_V3: &str = "3";
 
 /// Returns the spec shaking version indicated by the contract meta entries.
 ///
 /// Looks for an [`ScMetaV0`] entry with key [`META_KEY`]. Returns:
+/// - `3` if the value is [`META_VALUE_V3`] (`"3"`).
 /// - `2` if the value is [`META_VALUE_V2`] (`"2"`).
 /// - `1` otherwise (absent or any other value).
+///
+/// The version says which marker prefix the contract was built with, and a
+/// version this code does not know reads as `1`, which carries no markers, so
+/// an older reader leaves a newer contract's spec alone rather than stripping
+/// it.
 #[cfg(feature = "std")]
 pub fn spec_shaking_version_for_meta(meta: &[ScMetaEntry]) -> u32 {
     for entry in meta {
         match entry {
             ScMetaEntry::ScMetaV0(v0) if v0.key.to_utf8_string_lossy() == META_KEY => {
-                if v0.val.to_utf8_string_lossy() == META_VALUE_V2 {
+                let val = v0.val.to_utf8_string_lossy();
+                if val == META_VALUE_V3 {
+                    return 3;
+                }
+                if val == META_VALUE_V2 {
                     return 2;
                 }
             }
@@ -80,10 +98,10 @@ pub fn spec_shaking_version_for_meta(meta: &[ScMetaEntry]) -> u32 {
 
 /// Magic bytes that identify a spec marker holding a truncated SHA-256: `SpEcV1`
 #[cfg(feature = "std")]
-const MAGIC_SHA256: &[u8; 6] = b"SpEcV1";
+const MAGIC_V1: &[u8; 6] = b"SpEcV1";
 
 /// Magic bytes that identify a spec marker holding an xxHash64: `SpEcV2`
-const MAGIC_XXH64: &[u8; 6] = b"SpEcV2";
+const MAGIC_V2: &[u8; 6] = b"SpEcV2";
 
 /// Total length of a spec marker (6-byte prefix + 8-byte hash).
 const LEN: usize = 14;
@@ -101,15 +119,15 @@ pub type Marker = [u8; LEN];
 ///
 /// Evaluatable at compile time, so macro-generated code can derive the marker
 /// from the same const-encoded spec bytes the contract embeds.
-pub const fn generate_marker_for_xdr(spec_entry_xdr: &[u8]) -> Marker {
+pub const fn generate_marker_v2_for_xdr(spec_entry_xdr: &[u8]) -> Marker {
     let hash = xxh64(spec_entry_xdr, 0).to_be_bytes();
     [
-        MAGIC_XXH64[0],
-        MAGIC_XXH64[1],
-        MAGIC_XXH64[2],
-        MAGIC_XXH64[3],
-        MAGIC_XXH64[4],
-        MAGIC_XXH64[5],
+        MAGIC_V2[0],
+        MAGIC_V2[1],
+        MAGIC_V2[2],
+        MAGIC_V2[3],
+        MAGIC_V2[4],
+        MAGIC_V2[5],
         hash[0],
         hash[1],
         hash[2],
@@ -126,15 +144,15 @@ pub const fn generate_marker_for_xdr(spec_entry_xdr: &[u8]) -> Marker {
 /// Contracts built before the move to xxHash64 embed these, so the matching
 /// side still computes them to recognise those contracts.
 #[cfg(feature = "std")]
-fn generate_sha256_marker_for_xdr(spec_entry_xdr: &[u8]) -> Marker {
+fn generate_marker_v1_for_xdr(spec_entry_xdr: &[u8]) -> Marker {
     let hash: [u8; 32] = Sha256::digest(spec_entry_xdr).into();
     [
-        MAGIC_SHA256[0],
-        MAGIC_SHA256[1],
-        MAGIC_SHA256[2],
-        MAGIC_SHA256[3],
-        MAGIC_SHA256[4],
-        MAGIC_SHA256[5],
+        MAGIC_V1[0],
+        MAGIC_V1[1],
+        MAGIC_V1[2],
+        MAGIC_V1[3],
+        MAGIC_V1[4],
+        MAGIC_V1[5],
         hash[0],
         hash[1],
         hash[2],
@@ -156,11 +174,35 @@ fn generate_sha256_marker_for_xdr(spec_entry_xdr: &[u8]) -> Marker {
 /// Panics if the spec entry cannot be encoded to XDR, which should never happen
 /// for valid `ScSpecEntry` values.
 #[cfg(feature = "std")]
-pub fn generate_marker_for_entry(entry: &ScSpecEntry) -> Marker {
-    let xdr_bytes = entry
+pub fn generate_marker_v2_for_entry(entry: &ScSpecEntry) -> Marker {
+    generate_marker_v2_for_xdr(&entry_to_xdr(entry))
+}
+
+/// Generates the `SpEcV1` marker for a spec entry.
+///
+/// Contracts built before the move to xxHash64 embed these, so the matching
+/// side still computes them to recognise those contracts.
+///
+/// # Panics
+///
+/// Panics if the spec entry cannot be encoded to XDR, which should never happen
+/// for valid `ScSpecEntry` values.
+#[cfg(feature = "std")]
+fn generate_marker_v1_for_entry(entry: &ScSpecEntry) -> Marker {
+    generate_marker_v1_for_xdr(&entry_to_xdr(entry))
+}
+
+/// Encodes a spec entry to the XDR bytes that its marker is the hash of.
+///
+/// # Panics
+///
+/// Panics if the spec entry cannot be encoded to XDR, which should never happen
+/// for valid `ScSpecEntry` values.
+#[cfg(feature = "std")]
+fn entry_to_xdr(entry: &ScSpecEntry) -> Vec<u8> {
+    entry
         .to_xdr(Limits::none())
-        .expect("XDR encoding should not fail");
-    generate_marker_for_xdr(&xdr_bytes)
+        .expect("XDR encoding should not fail")
 }
 
 /// Finds all spec markers in a WASM binary's data section.
@@ -199,7 +241,7 @@ fn find_all_in_data(data: &[u8], markers: &mut HashSet<Marker>) {
 
     for i in 0..=data.len() - LEN {
         // Look for the magic bytes of either hash function
-        if data[i..].starts_with(MAGIC_XXH64) || data[i..].starts_with(MAGIC_SHA256) {
+        if data[i..].starts_with(MAGIC_V2) || data[i..].starts_with(MAGIC_V1) {
             let marker_end = i + LEN;
             let mut marker_bytes = [0u8; LEN];
             marker_bytes.copy_from_slice(&data[i..marker_end]);
@@ -238,11 +280,8 @@ pub fn filter<'a, I: IntoIterator<Item = ScSpecEntry> + 'a>(
         // For all other entries (types, events), check if a marker exists under
         // either hash, since the contract may have been built before the move
         // to xxHash64.
-        let xdr_bytes = entry
-            .to_xdr(Limits::none())
-            .expect("XDR encoding should not fail");
-        markers.contains(&generate_marker_for_xdr(&xdr_bytes))
-            || markers.contains(&generate_sha256_marker_for_xdr(&xdr_bytes))
+        markers.contains(&generate_marker_v2_for_entry(entry))
+            || markers.contains(&generate_marker_v1_for_entry(entry))
     })
 }
 
@@ -323,9 +362,9 @@ mod tests {
     }
 
     #[test]
-    fn test_generate_marker_for_xdr() {
+    fn test_generate_marker_v2_for_xdr() {
         let spec_xdr = b"some spec xdr bytes";
-        let marker: Marker = generate_marker_for_xdr(spec_xdr);
+        let marker: Marker = generate_marker_v2_for_xdr(spec_xdr);
 
         // Assert exact marker bytes so that any change to the marker
         // format (prefix, hash algorithm, truncation length) is caught.
@@ -335,23 +374,23 @@ mod tests {
         // contracts built before the move to xxHash64, and is pinned for the
         // same reason.
         assert_eq!(
-            generate_sha256_marker_for_xdr(spec_xdr),
+            generate_marker_v1_for_xdr(spec_xdr),
             *b"SpEcV1\xf5\xbe\x3f\x49\x6f\x7b\xbc\xb6"
         );
 
         // Same input produces same marker
-        let marker2 = generate_marker_for_xdr(spec_xdr);
+        let marker2 = generate_marker_v2_for_xdr(spec_xdr);
         assert_eq!(marker, marker2);
 
         // Different input produces different marker
         let different_xdr = b"different spec xdr bytes";
-        let different_marker = generate_marker_for_xdr(different_xdr);
-        assert_eq!(&different_marker[..6], MAGIC_XXH64.as_slice());
+        let different_marker = generate_marker_v2_for_xdr(different_xdr);
+        assert_eq!(&different_marker[..6], MAGIC_V2.as_slice());
         assert_ne!(marker, different_marker);
     }
 
     #[test]
-    fn test_generate_marker_for_entry() {
+    fn test_generate_marker_v2_for_entry() {
         let entry = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
             doc: StringM::default(),
             name: "test".try_into().unwrap(),
@@ -359,16 +398,16 @@ mod tests {
             outputs: VecM::default(),
         });
 
-        let marker = generate_marker_for_entry(&entry);
+        let marker = generate_marker_v2_for_entry(&entry);
 
         // Marker should be 14 bytes (6-byte prefix + 8-byte hash)
         assert_eq!(marker.len(), LEN);
 
         // First 6 bytes should be magic
-        assert_eq!(&marker[..6], MAGIC_XXH64.as_slice());
+        assert_eq!(&marker[..6], MAGIC_V2.as_slice());
 
         // Same entry produces same marker
-        let marker2 = generate_marker_for_entry(&entry);
+        let marker2 = generate_marker_v2_for_entry(&entry);
         assert_eq!(marker, marker2);
 
         // Different entry produces different marker
@@ -378,28 +417,28 @@ mod tests {
             inputs: VecM::default(),
             outputs: VecM::default(),
         });
-        let marker3 = generate_marker_for_entry(&entry2);
+        let marker3 = generate_marker_v2_for_entry(&entry2);
         assert_ne!(marker, marker3);
     }
 
     #[test]
-    fn test_generate_marker_for_entry_struct() {
+    fn test_generate_marker_v2_for_entry_struct() {
         let entry = make_struct("MyStruct", vec![("field", ScSpecTypeDef::U32)]);
-        let marker = generate_marker_for_entry(&entry);
+        let marker = generate_marker_v2_for_entry(&entry);
 
         // Marker should be 14 bytes (6-byte prefix + 8-byte hash)
         assert_eq!(marker.len(), LEN);
 
         // First 6 bytes should be magic
-        assert_eq!(&marker[..6], MAGIC_XXH64.as_slice());
+        assert_eq!(&marker[..6], MAGIC_V2.as_slice());
 
         // Same entry produces same marker
-        let marker2 = generate_marker_for_entry(&entry);
+        let marker2 = generate_marker_v2_for_entry(&entry);
         assert_eq!(marker, marker2);
 
         // Different entry produces different marker
         let entry2 = make_struct("DifferentStruct", vec![("field", ScSpecTypeDef::U32)]);
-        let marker3 = generate_marker_for_entry(&entry2);
+        let marker3 = generate_marker_v2_for_entry(&entry2);
         assert_ne!(marker, marker3);
     }
 
@@ -408,8 +447,8 @@ mod tests {
         let entry1 = make_event("Transfer");
         let entry2 = make_struct("MyStruct", vec![("field", ScSpecTypeDef::U32)]);
 
-        let encoded1 = generate_marker_for_entry(&entry1);
-        let encoded2 = generate_marker_for_entry(&entry2);
+        let encoded1 = generate_marker_v2_for_entry(&entry1);
+        let encoded2 = generate_marker_v2_for_entry(&entry2);
 
         // Concatenate markers with some padding
         let mut data = Vec::new();
@@ -423,8 +462,8 @@ mod tests {
         find_all_in_data(&data, &mut found);
 
         // Both markers should be found
-        assert!(found.contains(&generate_marker_for_entry(&entry1)));
-        assert!(found.contains(&generate_marker_for_entry(&entry2)));
+        assert!(found.contains(&generate_marker_v2_for_entry(&entry1)));
+        assert!(found.contains(&generate_marker_v2_for_entry(&entry2)));
     }
 
     #[test]
@@ -440,8 +479,8 @@ mod tests {
         ];
 
         let mut markers = HashSet::new();
-        markers.insert(generate_marker_for_entry(&transfer_event));
-        markers.insert(generate_marker_for_entry(&mint_event));
+        markers.insert(generate_marker_v2_for_entry(&transfer_event));
+        markers.insert(generate_marker_v2_for_entry(&mint_event));
 
         let filtered: Vec<_> = filter(entries, &markers).collect();
 
@@ -518,9 +557,9 @@ mod tests {
         ];
 
         let mut markers = HashSet::new();
-        markers.insert(generate_marker_for_entry(&used_struct));
-        markers.insert(generate_marker_for_entry(&used_enum));
-        markers.insert(generate_marker_for_entry(&used_event));
+        markers.insert(generate_marker_v2_for_entry(&used_struct));
+        markers.insert(generate_marker_v2_for_entry(&used_enum));
+        markers.insert(generate_marker_v2_for_entry(&used_event));
 
         let filtered: Vec<_> = filter(entries, &markers).collect();
 
@@ -590,6 +629,15 @@ mod tests {
     }
 
     #[test]
+    fn test_spec_shaking_version_for_meta_v3() {
+        let meta = vec![ScMetaEntry::ScMetaV0(ScMetaV0 {
+            key: META_KEY.try_into().unwrap(),
+            val: META_VALUE_V3.try_into().unwrap(),
+        })];
+        assert_eq!(spec_shaking_version_for_meta(&meta), 3);
+    }
+
+    #[test]
     fn test_spec_shaking_version_unknown_value() {
         let meta = vec![ScMetaEntry::ScMetaV0(ScMetaV0 {
             key: META_KEY.try_into().unwrap(),
@@ -601,7 +649,7 @@ mod tests {
 
 #[cfg(test)]
 mod marker_tests {
-    use super::{generate_marker_for_xdr, xxh64};
+    use super::{generate_marker_v2_for_xdr, xxh64};
 
     /// The reference value published with xxHash for the empty input at seed 0,
     /// which pins the algorithm and the seed the marker is built on.
@@ -613,8 +661,8 @@ mod marker_tests {
     /// Evaluatable at compile time, which is what lets macro-generated code
     /// derive the marker from the same const-encoded spec bytes it embeds.
     #[test]
-    fn generate_marker_for_xdr_is_const() {
-        const M: [u8; 14] = generate_marker_for_xdr(b"abc");
+    fn generate_marker_v2_for_xdr_is_const() {
+        const M: [u8; 14] = generate_marker_v2_for_xdr(b"abc");
         assert_eq!(&M[..6], b"SpEcV2");
         assert_eq!(&M[6..], &xxh64(b"abc", 0).to_be_bytes());
     }
@@ -644,7 +692,7 @@ mod both_hash_tests {
     #[test]
     fn filter_keeps_entry_marked_with_sha256() {
         let entry = udt("Used");
-        let markers = HashSet::from([generate_sha256_marker_for_xdr(&xdr_of(&entry))]);
+        let markers = HashSet::from([generate_marker_v1_for_xdr(&xdr_of(&entry))]);
         let kept: Vec<_> = filter([entry.clone(), udt("Unused")], &markers).collect();
         assert_eq!(kept, vec![entry]);
     }
@@ -653,7 +701,7 @@ mod both_hash_tests {
     #[test]
     fn filter_keeps_entry_marked_with_xxh64() {
         let entry = udt("Used");
-        let markers = HashSet::from([generate_marker_for_xdr(&xdr_of(&entry))]);
+        let markers = HashSet::from([generate_marker_v2_for_xdr(&xdr_of(&entry))]);
         let kept: Vec<_> = filter([entry.clone(), udt("Unused")], &markers).collect();
         assert_eq!(kept, vec![entry]);
     }
@@ -663,8 +711,8 @@ mod both_hash_tests {
     #[test]
     fn the_two_markers_for_an_entry_differ() {
         let xdr = xdr_of(&udt("Used"));
-        let v1 = generate_sha256_marker_for_xdr(&xdr);
-        let v2 = generate_marker_for_xdr(&xdr);
+        let v1 = generate_marker_v1_for_xdr(&xdr);
+        let v2 = generate_marker_v2_for_xdr(&xdr);
         assert_eq!(&v1[..6], b"SpEcV1");
         assert_eq!(&v2[..6], b"SpEcV2");
         assert_ne!(v1, v2);
@@ -675,8 +723,8 @@ mod both_hash_tests {
     #[test]
     fn find_all_in_data_finds_both_prefixes() {
         let xdr = xdr_of(&udt("Used"));
-        let v1 = generate_sha256_marker_for_xdr(&xdr);
-        let v2 = generate_marker_for_xdr(&xdr);
+        let v1 = generate_marker_v1_for_xdr(&xdr);
+        let v2 = generate_marker_v2_for_xdr(&xdr);
         let mut data = vec![0u8; 3];
         data.extend_from_slice(&v1);
         data.extend_from_slice(&[0u8; 5]);

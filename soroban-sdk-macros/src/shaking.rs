@@ -45,7 +45,7 @@ pub fn generate_marker_impl<'a, I>(
 where
     I: Iterator<Item = &'a Type>,
 {
-    let marker = soroban_spec::shaking::generate_marker_for_xdr(spec_xdr);
+    let marker = soroban_spec::shaking::generate_marker_v2_for_xdr(spec_xdr);
     let marker_lit = proc_macro2::Literal::byte_string(&marker);
     let marker_len = marker.len();
 
