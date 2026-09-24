@@ -1,5 +1,5 @@
 [package]
-name = "test_spec_lib"
+name = "test_spec_import_v3"
 version.workspace = true
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 license = "Apache-2.0"
@@ -8,11 +8,9 @@ publish = false
 rust-version.workspace = true
 
 [lib]
-crate-type = ["rlib"]
+crate-type = ["cdylib"]
 doctest = false
 
 [dependencies]
 soroban-sdk = {path = "../../soroban-sdk"}
-
-[dev-dependencies]
-soroban-sdk = {path = "../../soroban-sdk", features = ["testutils"]}
+test_spec_lib = {package = "test_spec_lib_v3", path = "../spec_lib_v3"}

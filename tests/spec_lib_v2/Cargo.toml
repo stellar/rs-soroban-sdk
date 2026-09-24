@@ -8,7 +8,7 @@ publish = false
 rust-version.workspace = true
 
 [lib]
-path = "../spec_lib/src/lib.rs"
+path = "../spec_lib_v3/src/lib.rs"
 crate-type = ["rlib"]
 doctest = false
 

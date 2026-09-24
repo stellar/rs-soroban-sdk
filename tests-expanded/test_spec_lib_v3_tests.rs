@@ -50,7 +50,7 @@ impl ::core::cmp::PartialEq for StructA {
 impl StructA {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::StructA"
+        "::test_spec_lib_v3::StructA"
     }
 }
 #[doc(hidden)]
@@ -497,7 +497,7 @@ impl ::core::cmp::PartialEq for StructB {
 impl StructB {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::StructB"
+        "::test_spec_lib_v3::StructB"
     }
 }
 #[doc(hidden)]
@@ -944,7 +944,7 @@ impl ::core::cmp::PartialEq for StructC {
 impl StructC {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::StructC"
+        "::test_spec_lib_v3::StructC"
     }
 }
 #[doc(hidden)]
@@ -1391,7 +1391,7 @@ impl ::core::cmp::PartialEq for StructTupleA {
 impl StructTupleA {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::StructTupleA"
+        "::test_spec_lib_v3::StructTupleA"
     }
 }
 #[doc(hidden)]
@@ -1790,7 +1790,7 @@ impl ::core::cmp::PartialEq for StructTupleB {
 impl StructTupleB {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::StructTupleB"
+        "::test_spec_lib_v3::StructTupleB"
     }
 }
 #[doc(hidden)]
@@ -2190,7 +2190,7 @@ impl ::core::cmp::PartialEq for StructTupleC {
 impl StructTupleC {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::StructTupleC"
+        "::test_spec_lib_v3::StructTupleC"
     }
 }
 #[doc(hidden)]
@@ -2601,7 +2601,7 @@ impl ::core::cmp::PartialEq for EnumA {
 impl EnumA {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::EnumA"
+        "::test_spec_lib_v3::EnumA"
     }
 }
 #[doc(hidden)]
@@ -3108,7 +3108,7 @@ impl ::core::cmp::PartialEq for EnumB {
 impl EnumB {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::EnumB"
+        "::test_spec_lib_v3::EnumB"
     }
 }
 #[doc(hidden)]
@@ -3744,7 +3744,7 @@ impl ::core::cmp::PartialEq for EnumC {
 impl EnumC {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::EnumC"
+        "::test_spec_lib_v3::EnumC"
     }
 }
 #[doc(hidden)]
@@ -4343,7 +4343,7 @@ impl ::core::cmp::PartialEq for EnumIntA {
 impl EnumIntA {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::EnumIntA"
+        "::test_spec_lib_v3::EnumIntA"
     }
 }
 #[doc(hidden)]
@@ -4716,7 +4716,7 @@ impl ::core::cmp::PartialEq for EnumIntB {
 impl EnumIntB {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::EnumIntB"
+        "::test_spec_lib_v3::EnumIntB"
     }
 }
 #[doc(hidden)]
@@ -5089,7 +5089,7 @@ impl ::core::cmp::PartialEq for EnumIntC {
 impl EnumIntC {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::EnumIntC"
+        "::test_spec_lib_v3::EnumIntC"
     }
 }
 #[doc(hidden)]
@@ -5462,7 +5462,7 @@ impl ::core::cmp::PartialEq for ErrorA {
 impl ErrorA {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::ErrorA"
+        "::test_spec_lib_v3::ErrorA"
     }
 }
 #[doc(hidden)]
@@ -5663,7 +5663,7 @@ impl ::core::cmp::PartialEq for ErrorB {
 impl ErrorB {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::ErrorB"
+        "::test_spec_lib_v3::ErrorB"
     }
 }
 #[doc(hidden)]
@@ -5864,7 +5864,7 @@ impl ::core::cmp::PartialEq for ErrorC {
 impl ErrorC {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::ErrorC"
+        "::test_spec_lib_v3::ErrorC"
     }
 }
 #[doc(hidden)]
@@ -6061,7 +6061,7 @@ impl ::core::cmp::PartialEq for EventA {
 impl EventA {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::EventA"
+        "::test_spec_lib_v3::EventA"
     }
 }
 #[doc(hidden)]
@@ -6181,7 +6181,7 @@ impl ::core::cmp::PartialEq for EventB {
 impl EventB {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::EventB"
+        "::test_spec_lib_v3::EventB"
     }
 }
 #[doc(hidden)]
@@ -6311,7 +6311,7 @@ impl ::core::cmp::PartialEq for EventC {
 impl EventC {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::EventC"
+        "::test_spec_lib_v3::EventC"
     }
 }
 #[doc(hidden)]
@@ -6424,7 +6424,7 @@ impl ::core::cmp::PartialEq for EventD {
 impl EventD {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::EventD"
+        "::test_spec_lib_v3::EventD"
     }
 }
 #[doc(hidden)]

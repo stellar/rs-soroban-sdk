@@ -2265,14 +2265,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "test_spec_import"
-version = "28.0.0"
-dependencies = [
- "soroban-sdk 28.0.0",
- "test_spec_lib",
-]
-
-[[package]]
 name = "test_spec_import_v2"
 version = "28.0.0"
 dependencies = [
@@ -2281,10 +2273,11 @@ dependencies = [
 ]
 
 [[package]]
-name = "test_spec_lib"
+name = "test_spec_import_v3"
 version = "28.0.0"
 dependencies = [
  "soroban-sdk 28.0.0",
+ "test_spec_lib_v3",
 ]
 
 [[package]]
@@ -2292,6 +2285,13 @@ name = "test_spec_lib_v2"
 version = "28.0.0"
 dependencies = [
  "soroban-sdk 28.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "test_spec_lib_v3"
+version = "28.0.0"
+dependencies = [
+ "soroban-sdk 28.0.0",
 ]
 
 [[package]]
@@ -2313,7 +2313,7 @@ dependencies = [
  "soroban-sdk 28.0.0",
  "soroban-spec 28.0.0",
  "stellar-xdr 28.0.0 (git+https://github.com/stellar/rs-stellar-xdr?rev=e0d289adf4ad2483a10bcc8df743126974d77301)",
- "test_spec_lib",
+ "test_spec_lib_v3",
 ]
 
 [[package]]
