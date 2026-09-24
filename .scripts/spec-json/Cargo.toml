@@ -1,6 +1,6 @@
 [package]
 name = "spec-json"
-description = "Prints the contract spec in a wasm as a stream of XDR-JSON values."
+description = "Prints the contract spec in a wasm as a JSON array of XDR-JSON values."
 version.workspace = true
 edition = "2021"
 rust-version.workspace = true
