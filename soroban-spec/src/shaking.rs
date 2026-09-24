@@ -292,33 +292,28 @@ fn keep_flags(entries: &[ScSpecEntry], markers: &HashSet<Marker>) -> Vec<bool> {
 
     // Seed with the entries kept on their own account: functions, and the
     // events and errors the data section holds a marker for.
-    let mut keep = vec![false; entries.len()];
-    let mut pending = Vec::new();
-    for (i, entry) in entries.iter().enumerate() {
-        let seed = match entry {
+    let mut pending: Vec<usize> = (0..entries.len())
+        .filter(|&i| match &entries[i] {
             ScSpecEntry::FunctionV0(_) => true,
-            ScSpecEntry::EventV0(_) | ScSpecEntry::UdtErrorEnumV0(_) => {
+            entry @ (ScSpecEntry::EventV0(_) | ScSpecEntry::UdtErrorEnumV0(_)) => {
                 markers.contains(&generate_marker_for_entry(entry))
             }
             ScSpecEntry::UdtStructV0(_)
             | ScSpecEntry::UdtUnionV0(_)
             | ScSpecEntry::UdtEnumV0(_) => false,
-        };
-        if seed {
-            keep[i] = true;
-            pending.push(i);
-        }
-    }
+        })
+        .collect();
 
-    // Follow references out of each kept entry, keeping what they name.
+    // Keep each pending entry, and follow its references to the entries they
+    // name. An entry already kept has had its references followed.
+    let mut keep = vec![false; entries.len()];
     while let Some(i) = pending.pop() {
+        if keep[i] {
+            continue;
+        }
+        keep[i] = true;
         for name in referenced_type_names(&entries[i]) {
-            for &j in defs.get(name).map_or(&[][..], Vec::as_slice) {
-                if !keep[j] {
-                    keep[j] = true;
-                    pending.push(j);
-                }
-            }
+            pending.extend(defs.get(name).into_iter().flatten());
         }
     }
 
