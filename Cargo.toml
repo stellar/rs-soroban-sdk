@@ -2,6 +2,7 @@
 resolver = "2"
 
 members = [
+    ".scripts/spec-json",
     "soroban-sdk",
     "soroban-sdk-macros",
     "soroban-meta",

@@ -25,7 +25,7 @@ jobs:
 
   complete:
     if: always()
-    needs: [fmt, check-git-rev-deps, build, test, expand-test-wasms, build-fuzz, docs, readme, migration-docs]
+    needs: [fmt, check-git-rev-deps, build, test, expand-test-wasms, spec-snapshots, build-fuzz, docs, readme, migration-docs]
     runs-on: ubuntu-slim
     steps:
     - if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
@@ -295,6 +295,21 @@ jobs:
         name: cargo-expand
         version: 1.0.116
     - run: make expand-tests
+    - name: Check no diffs exist
+      run: git add -N . && git diff HEAD --exit-code
+
+  spec-snapshots:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v5
+    - uses: stellar/actions/rust-cache@main
+    - name: Restore test wasms from one of the msrv builds
+      uses: actions/download-artifact@v5
+      with:
+        name: test-wasms-msrv-x86_64-unknown-linux-gnu
+        path: target/wasm32v1-none/release/
+    - run: make spec-snapshots-from-built-wasms
     - name: Check no diffs exist
       run: git add -N . && git diff HEAD --exit-code
 
