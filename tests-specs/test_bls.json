@@ -103,47 +103,50 @@
 }
 {
   "udt_struct_v0": {
-    "doc": "Authorization context of a single contract call.\\n\\nThis struct corresponds to a `require_auth_for_args` call for an address\\nfrom `contract` function with `fn_name` name and `args` arguments.",
+    "doc": "",
     "lib": "",
-    "name": "ContractContext",
+    "name": "DummyProof",
     "fields": [
       {
         "doc": "",
-        "name": "args",
+        "name": "fp",
         "type": {
-          "vec": {
-            "element_type": "val"
+          "bytes_n": {
+            "n": 48
           }
         }
       },
       {
         "doc": "",
-        "name": "contract",
-        "type": "address"
+        "name": "fp2",
+        "type": {
+          "bytes_n": {
+            "n": 96
+          }
+        }
       },
       {
         "doc": "",
-        "name": "fn_name",
-        "type": "symbol"
-      }
-    ]
-  }
-}
-{
-  "udt_struct_v0": {
-    "doc": "Executable referenced via a persistent storage entry owned by a contract,\\neither this contract or another contract.\\n\\nThe persistent storage entry owned by the `owner` has the `tag` as its key.",
-    "lib": "",
-    "name": "ContractExecutableRef",
-    "fields": [
-      {
-        "doc": "",
-        "name": "owner",
-        "type": "address"
+        "name": "fr",
+        "type": "u256"
       },
       {
         "doc": "",
-        "name": "tag",
-        "type": "string"
+        "name": "g1",
+        "type": {
+          "bytes_n": {
+            "n": 96
+          }
+        }
+      },
+      {
+        "doc": "",
+        "name": "g2",
+        "type": {
+          "bytes_n": {
+            "n": 192
+          }
+        }
       }
     ]
   }
@@ -213,50 +216,47 @@
 }
 {
   "udt_struct_v0": {
-    "doc": "",
+    "doc": "Authorization context of a single contract call.\\n\\nThis struct corresponds to a `require_auth_for_args` call for an address\\nfrom `contract` function with `fn_name` name and `args` arguments.",
     "lib": "",
-    "name": "DummyProof",
+    "name": "ContractContext",
     "fields": [
       {
         "doc": "",
-        "name": "fp",
+        "name": "args",
         "type": {
-          "bytes_n": {
-            "n": 48
+          "vec": {
+            "element_type": "val"
           }
         }
       },
       {
         "doc": "",
-        "name": "fp2",
-        "type": {
-          "bytes_n": {
-            "n": 96
-          }
-        }
+        "name": "contract",
+        "type": "address"
       },
       {
         "doc": "",
-        "name": "fr",
-        "type": "u256"
+        "name": "fn_name",
+        "type": "symbol"
+      }
+    ]
+  }
+}
+{
+  "udt_struct_v0": {
+    "doc": "Executable referenced via a persistent storage entry owned by a contract,\\neither this contract or another contract.\\n\\nThe persistent storage entry owned by the `owner` has the `tag` as its key.",
+    "lib": "",
+    "name": "ContractExecutableRef",
+    "fields": [
+      {
+        "doc": "",
+        "name": "owner",
+        "type": "address"
       },
       {
         "doc": "",
-        "name": "g1",
-        "type": {
-          "bytes_n": {
-            "n": 96
-          }
-        }
-      },
-      {
-        "doc": "",
-        "name": "g2",
-        "type": {
-          "bytes_n": {
-            "n": 192
-          }
-        }
+        "name": "tag",
+        "type": "string"
       }
     ]
   }
@@ -287,6 +287,88 @@
               }
             }
           }
+        }
+      }
+    ]
+  }
+}
+{
+  "udt_union_v0": {
+    "doc": "",
+    "lib": "",
+    "name": "Executable",
+    "cases": [
+      {
+        "tuple_v0": {
+          "doc": "",
+          "name": "Wasm",
+          "type": [
+            {
+              "bytes_n": {
+                "n": 32
+              }
+            }
+          ]
+        }
+      },
+      {
+        "void_v0": {
+          "doc": "",
+          "name": "StellarAsset"
+        }
+      },
+      {
+        "void_v0": {
+          "doc": "",
+          "name": "Account"
+        }
+      }
+    ]
+  }
+}
+{
+  "udt_union_v0": {
+    "doc": "A node in the tree of authorizations performed on behalf of the current\\ncontract as invoker of the contracts deeper in the call stack.\\n\\nThis is used as an argument of `authorize_as_current_contract` host function.\\n\\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\\ncurrent contract.",
+    "lib": "",
+    "name": "InvokerContractAuthEntry",
+    "cases": [
+      {
+        "tuple_v0": {
+          "doc": "Invoke a contract.",
+          "name": "Contract",
+          "type": [
+            {
+              "udt": {
+                "name": "SubContractInvocation"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "tuple_v0": {
+          "doc": "Create a contract passing 0 arguments to constructor.",
+          "name": "CreateContractHostFn",
+          "type": [
+            {
+              "udt": {
+                "name": "CreateContractHostFnContext"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "tuple_v0": {
+          "doc": "Create a contract passing 0 or more arguments to constructor.",
+          "name": "CreateContractWithCtorHostFn",
+          "type": [
+            {
+              "udt": {
+                "name": "CreateContractWithConstructorHostFnContext"
+              }
+            }
+          ]
         }
       }
     ]
@@ -367,88 +449,6 @@
             {
               "udt": {
                 "name": "ContractExecutableRef"
-              }
-            }
-          ]
-        }
-      }
-    ]
-  }
-}
-{
-  "udt_union_v0": {
-    "doc": "",
-    "lib": "",
-    "name": "Executable",
-    "cases": [
-      {
-        "tuple_v0": {
-          "doc": "",
-          "name": "Wasm",
-          "type": [
-            {
-              "bytes_n": {
-                "n": 32
-              }
-            }
-          ]
-        }
-      },
-      {
-        "void_v0": {
-          "doc": "",
-          "name": "StellarAsset"
-        }
-      },
-      {
-        "void_v0": {
-          "doc": "",
-          "name": "Account"
-        }
-      }
-    ]
-  }
-}
-{
-  "udt_union_v0": {
-    "doc": "A node in the tree of authorizations performed on behalf of the current\\ncontract as invoker of the contracts deeper in the call stack.\\n\\nThis is used as an argument of `authorize_as_current_contract` host function.\\n\\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\\ncurrent contract.",
-    "lib": "",
-    "name": "InvokerContractAuthEntry",
-    "cases": [
-      {
-        "tuple_v0": {
-          "doc": "Invoke a contract.",
-          "name": "Contract",
-          "type": [
-            {
-              "udt": {
-                "name": "SubContractInvocation"
-              }
-            }
-          ]
-        }
-      },
-      {
-        "tuple_v0": {
-          "doc": "Create a contract passing 0 arguments to constructor.",
-          "name": "CreateContractHostFn",
-          "type": [
-            {
-              "udt": {
-                "name": "CreateContractHostFnContext"
-              }
-            }
-          ]
-        }
-      },
-      {
-        "tuple_v0": {
-          "doc": "Create a contract passing 0 or more arguments to constructor.",
-          "name": "CreateContractWithCtorHostFn",
-          "type": [
-            {
-              "udt": {
-                "name": "CreateContractWithConstructorHostFnContext"
               }
             }
           ]

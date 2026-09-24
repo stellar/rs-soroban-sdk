@@ -129,53 +129,6 @@
 }
 {
   "udt_struct_v0": {
-    "doc": "Authorization context of a single contract call.\\n\\nThis struct corresponds to a `require_auth_for_args` call for an address\\nfrom `contract` function with `fn_name` name and `args` arguments.",
-    "lib": "",
-    "name": "ContractContext",
-    "fields": [
-      {
-        "doc": "",
-        "name": "args",
-        "type": {
-          "vec": {
-            "element_type": "val"
-          }
-        }
-      },
-      {
-        "doc": "",
-        "name": "contract",
-        "type": "address"
-      },
-      {
-        "doc": "",
-        "name": "fn_name",
-        "type": "symbol"
-      }
-    ]
-  }
-}
-{
-  "udt_struct_v0": {
-    "doc": "Executable referenced via a persistent storage entry owned by a contract,\\neither this contract or another contract.\\n\\nThe persistent storage entry owned by the `owner` has the `tag` as its key.",
-    "lib": "",
-    "name": "ContractExecutableRef",
-    "fields": [
-      {
-        "doc": "",
-        "name": "owner",
-        "type": "address"
-      },
-      {
-        "doc": "",
-        "name": "tag",
-        "type": "string"
-      }
-    ]
-  }
-}
-{
-  "udt_struct_v0": {
     "doc": "Authorization context for `create_contract` host function that creates a\\nnew contract on behalf of authorizer address.",
     "lib": "",
     "name": "CreateContractHostFnContext",
@@ -239,6 +192,53 @@
 }
 {
   "udt_struct_v0": {
+    "doc": "Authorization context of a single contract call.\\n\\nThis struct corresponds to a `require_auth_for_args` call for an address\\nfrom `contract` function with `fn_name` name and `args` arguments.",
+    "lib": "",
+    "name": "ContractContext",
+    "fields": [
+      {
+        "doc": "",
+        "name": "args",
+        "type": {
+          "vec": {
+            "element_type": "val"
+          }
+        }
+      },
+      {
+        "doc": "",
+        "name": "contract",
+        "type": "address"
+      },
+      {
+        "doc": "",
+        "name": "fn_name",
+        "type": "symbol"
+      }
+    ]
+  }
+}
+{
+  "udt_struct_v0": {
+    "doc": "Executable referenced via a persistent storage entry owned by a contract,\\neither this contract or another contract.\\n\\nThe persistent storage entry owned by the `owner` has the `tag` as its key.",
+    "lib": "",
+    "name": "ContractExecutableRef",
+    "fields": [
+      {
+        "doc": "",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "doc": "",
+        "name": "tag",
+        "type": "string"
+      }
+    ]
+  }
+}
+{
+  "udt_struct_v0": {
     "doc": "Value of contract node in InvokerContractAuthEntry tree.",
     "lib": "",
     "name": "SubContractInvocation",
@@ -263,6 +263,88 @@
               }
             }
           }
+        }
+      }
+    ]
+  }
+}
+{
+  "udt_union_v0": {
+    "doc": "",
+    "lib": "",
+    "name": "Executable",
+    "cases": [
+      {
+        "tuple_v0": {
+          "doc": "",
+          "name": "Wasm",
+          "type": [
+            {
+              "bytes_n": {
+                "n": 32
+              }
+            }
+          ]
+        }
+      },
+      {
+        "void_v0": {
+          "doc": "",
+          "name": "StellarAsset"
+        }
+      },
+      {
+        "void_v0": {
+          "doc": "",
+          "name": "Account"
+        }
+      }
+    ]
+  }
+}
+{
+  "udt_union_v0": {
+    "doc": "A node in the tree of authorizations performed on behalf of the current\\ncontract as invoker of the contracts deeper in the call stack.\\n\\nThis is used as an argument of `authorize_as_current_contract` host function.\\n\\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\\ncurrent contract.",
+    "lib": "",
+    "name": "InvokerContractAuthEntry",
+    "cases": [
+      {
+        "tuple_v0": {
+          "doc": "Invoke a contract.",
+          "name": "Contract",
+          "type": [
+            {
+              "udt": {
+                "name": "SubContractInvocation"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "tuple_v0": {
+          "doc": "Create a contract passing 0 arguments to constructor.",
+          "name": "CreateContractHostFn",
+          "type": [
+            {
+              "udt": {
+                "name": "CreateContractHostFnContext"
+              }
+            }
+          ]
+        }
+      },
+      {
+        "tuple_v0": {
+          "doc": "Create a contract passing 0 or more arguments to constructor.",
+          "name": "CreateContractWithCtorHostFn",
+          "type": [
+            {
+              "udt": {
+                "name": "CreateContractWithConstructorHostFnContext"
+              }
+            }
+          ]
         }
       }
     ]
@@ -352,163 +434,6 @@
   }
 }
 {
-  "udt_union_v0": {
-    "doc": "",
-    "lib": "",
-    "name": "Executable",
-    "cases": [
-      {
-        "tuple_v0": {
-          "doc": "",
-          "name": "Wasm",
-          "type": [
-            {
-              "bytes_n": {
-                "n": 32
-              }
-            }
-          ]
-        }
-      },
-      {
-        "void_v0": {
-          "doc": "",
-          "name": "StellarAsset"
-        }
-      },
-      {
-        "void_v0": {
-          "doc": "",
-          "name": "Account"
-        }
-      }
-    ]
-  }
-}
-{
-  "udt_union_v0": {
-    "doc": "A node in the tree of authorizations performed on behalf of the current\\ncontract as invoker of the contracts deeper in the call stack.\\n\\nThis is used as an argument of `authorize_as_current_contract` host function.\\n\\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\\ncurrent contract.",
-    "lib": "",
-    "name": "InvokerContractAuthEntry",
-    "cases": [
-      {
-        "tuple_v0": {
-          "doc": "Invoke a contract.",
-          "name": "Contract",
-          "type": [
-            {
-              "udt": {
-                "name": "SubContractInvocation"
-              }
-            }
-          ]
-        }
-      },
-      {
-        "tuple_v0": {
-          "doc": "Create a contract passing 0 arguments to constructor.",
-          "name": "CreateContractHostFn",
-          "type": [
-            {
-              "udt": {
-                "name": "CreateContractHostFnContext"
-              }
-            }
-          ]
-        }
-      },
-      {
-        "tuple_v0": {
-          "doc": "Create a contract passing 0 or more arguments to constructor.",
-          "name": "CreateContractWithCtorHostFn",
-          "type": [
-            {
-              "udt": {
-                "name": "CreateContractWithConstructorHostFnContext"
-              }
-            }
-          ]
-        }
-      }
-    ]
-  }
-}
-{
-  "event_v0": {
-    "doc": "An event whose data is a map, which is the default.",
-    "lib": "",
-    "name": "MapValues",
-    "prefix_topics": [
-      "map_values"
-    ],
-    "params": [
-      {
-        "doc": "",
-        "name": "from",
-        "type": "address",
-        "location": "topic_list"
-      },
-      {
-        "doc": "",
-        "name": "a",
-        "type": "u32",
-        "location": "data"
-      },
-      {
-        "doc": "",
-        "name": "b",
-        "type": "u32",
-        "location": "data"
-      }
-    ],
-    "data_format": "map"
-  }
-}
-{
-  "event_v0": {
-    "doc": "An event whose data is a single value, rather than a map.",
-    "lib": "",
-    "name": "SingleValue",
-    "prefix_topics": [
-      "single_value"
-    ],
-    "params": [
-      {
-        "doc": "",
-        "name": "from",
-        "type": "address",
-        "location": "topic_list"
-      },
-      {
-        "doc": "",
-        "name": "amount",
-        "type": "i128",
-        "location": "data"
-      }
-    ],
-    "data_format": "single_value"
-  }
-}
-{
-  "event_v0": {
-    "doc": "An event whose data is a single value, and that has no data fields, and so\\nwhose data is void.",
-    "lib": "",
-    "name": "SingleValueVoid",
-    "prefix_topics": [
-      "single_value_void"
-    ],
-    "params": [
-      {
-        "doc": "",
-        "name": "from",
-        "type": "address",
-        "location": "topic_list"
-      }
-    ],
-    "data_format": "single_value"
-  }
-}
-{
   "event_v0": {
     "doc": "",
     "lib": "",
@@ -547,6 +472,81 @@
       }
     ],
     "data_format": "map"
+  }
+}
+{
+  "event_v0": {
+    "doc": "An event whose data is a map, which is the default.",
+    "lib": "",
+    "name": "MapValues",
+    "prefix_topics": [
+      "map_values"
+    ],
+    "params": [
+      {
+        "doc": "",
+        "name": "from",
+        "type": "address",
+        "location": "topic_list"
+      },
+      {
+        "doc": "",
+        "name": "a",
+        "type": "u32",
+        "location": "data"
+      },
+      {
+        "doc": "",
+        "name": "b",
+        "type": "u32",
+        "location": "data"
+      }
+    ],
+    "data_format": "map"
+  }
+}
+{
+  "event_v0": {
+    "doc": "An event whose data is a single value, and that has no data fields, and so\\nwhose data is void.",
+    "lib": "",
+    "name": "SingleValueVoid",
+    "prefix_topics": [
+      "single_value_void"
+    ],
+    "params": [
+      {
+        "doc": "",
+        "name": "from",
+        "type": "address",
+        "location": "topic_list"
+      }
+    ],
+    "data_format": "single_value"
+  }
+}
+{
+  "event_v0": {
+    "doc": "An event whose data is a single value, rather than a map.",
+    "lib": "",
+    "name": "SingleValue",
+    "prefix_topics": [
+      "single_value"
+    ],
+    "params": [
+      {
+        "doc": "",
+        "name": "from",
+        "type": "address",
+        "location": "topic_list"
+      },
+      {
+        "doc": "",
+        "name": "amount",
+        "type": "i128",
+        "location": "data"
+      }
+    ],
+    "data_format": "single_value"
   }
 }
 {
