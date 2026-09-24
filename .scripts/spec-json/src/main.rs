@@ -10,7 +10,7 @@
 //! cargo run --package spec-json -- contract.wasm
 //! ```
 
-use std::{env, fs, process::exit};
+use std::{cmp::Ordering, env, fs, process::exit};
 
 use stellar_xdr::ScSpecEntry;
 
@@ -27,8 +27,13 @@ fn main() {
         eprintln!("error: reading spec from {path}: {e}");
         exit(1);
     });
-    entries.sort_by(|a, b| (a.discriminant(), name(a), a).cmp(&(b.discriminant(), name(b), b)));
+    entries.sort_by(compare);
     println!("{}", serde_json::to_string_pretty(&entries).unwrap());
+}
+
+/// Compares entries by kind and name, then by the entry itself.
+fn compare(a: &ScSpecEntry, b: &ScSpecEntry) -> Ordering {
+    (a.discriminant(), name(a), a).cmp(&(b.discriminant(), name(b), b))
 }
 
 /// Returns the name of the entry.
