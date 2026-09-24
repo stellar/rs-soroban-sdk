@@ -72,9 +72,6 @@ yanked = "warn"
 # A list of advisory IDs to ignore. Note that ignored advisories will still
 # output a note when they are encountered.
 ignore = [
-    # derivative is unmaintained; it's a transitive dep via ark-ec/ark-ff -> soroban-env-host.
-    # No safe upgrade is available upstream.
-    "RUSTSEC-2024-0388",
     # paste is unmaintained; it's a transitive dep via ark-ff/wasmi_core -> soroban-env-host.
     # No safe upgrade is available upstream.
     "RUSTSEC-2024-0436",
