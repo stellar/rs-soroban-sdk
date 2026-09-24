@@ -7,7 +7,7 @@
       "outputs": [
         {
           "udt": {
-            "name": "::test_spec_lib::EnumA"
+            "name": "::test_spec_lib_v3::EnumA"
           }
         }
       ]
@@ -21,7 +21,7 @@
       "outputs": [
         {
           "udt": {
-            "name": "::test_spec_lib::EnumIntA"
+            "name": "::test_spec_lib_v3::EnumIntA"
           }
         }
       ]
@@ -44,7 +44,7 @@
             "ok_type": "u32",
             "error_type": {
               "udt": {
-                "name": "::test_spec_lib::ErrorA"
+                "name": "::test_spec_lib_v3::ErrorA"
               }
             }
           }
@@ -98,7 +98,7 @@
       "outputs": [
         {
           "udt": {
-            "name": "::test_spec_lib::StructA"
+            "name": "::test_spec_lib_v3::StructA"
           }
         }
       ]
@@ -123,7 +123,7 @@
       "outputs": [
         {
           "udt": {
-            "name": "::test_spec_lib::StructTupleA"
+            "name": "::test_spec_lib_v3::StructTupleA"
           }
         }
       ]
@@ -274,7 +274,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::StructA",
+      "name": "::test_spec_lib_v3::StructA",
       "fields": [
         {
           "doc": "",
@@ -293,7 +293,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::StructB",
+      "name": "::test_spec_lib_v3::StructB",
       "fields": [
         {
           "doc": "",
@@ -312,7 +312,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::StructC",
+      "name": "::test_spec_lib_v3::StructC",
       "fields": [
         {
           "doc": "",
@@ -335,7 +335,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::StructTupleA",
+      "name": "::test_spec_lib_v3::StructTupleA",
       "fields": [
         {
           "doc": "",
@@ -354,7 +354,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::StructTupleB",
+      "name": "::test_spec_lib_v3::StructTupleB",
       "fields": [
         {
           "doc": "",
@@ -373,7 +373,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::StructTupleC",
+      "name": "::test_spec_lib_v3::StructTupleC",
       "fields": [
         {
           "doc": "",
@@ -557,7 +557,7 @@
     "udt_union_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EnumA",
+      "name": "::test_spec_lib_v3::EnumA",
       "cases": [
         {
           "void_v0": {
@@ -584,7 +584,7 @@
     "udt_union_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EnumB",
+      "name": "::test_spec_lib_v3::EnumB",
       "cases": [
         {
           "void_v0": {
@@ -618,7 +618,7 @@
     "udt_union_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EnumC",
+      "name": "::test_spec_lib_v3::EnumC",
       "cases": [
         {
           "void_v0": {
@@ -633,7 +633,7 @@
             "type": [
               {
                 "udt": {
-                  "name": "::test_spec_lib::StructA"
+                  "name": "::test_spec_lib_v3::StructA"
                 }
               }
             ]
@@ -646,7 +646,7 @@
             "type": [
               {
                 "udt": {
-                  "name": "::test_spec_lib::StructTupleA"
+                  "name": "::test_spec_lib_v3::StructTupleA"
                 }
               }
             ]
@@ -659,7 +659,7 @@
     "udt_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EnumIntA",
+      "name": "::test_spec_lib_v3::EnumIntA",
       "cases": [
         {
           "doc": "",
@@ -683,7 +683,7 @@
     "udt_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EnumIntB",
+      "name": "::test_spec_lib_v3::EnumIntB",
       "cases": [
         {
           "doc": "",
@@ -707,7 +707,7 @@
     "udt_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EnumIntC",
+      "name": "::test_spec_lib_v3::EnumIntC",
       "cases": [
         {
           "doc": "",
@@ -731,7 +731,7 @@
     "udt_error_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::ErrorA",
+      "name": "::test_spec_lib_v3::ErrorA",
       "cases": [
         {
           "doc": "",
@@ -755,7 +755,7 @@
     "udt_error_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::ErrorB",
+      "name": "::test_spec_lib_v3::ErrorB",
       "cases": [
         {
           "doc": "",
@@ -779,7 +779,7 @@
     "udt_error_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::ErrorC",
+      "name": "::test_spec_lib_v3::ErrorC",
       "cases": [
         {
           "doc": "",
@@ -803,7 +803,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EventA",
+      "name": "::test_spec_lib_v3::EventA",
       "prefix_topics": [
         "event_a"
       ],
@@ -828,7 +828,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EventB",
+      "name": "::test_spec_lib_v3::EventB",
       "prefix_topics": [
         "event_b"
       ],
@@ -859,7 +859,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EventC",
+      "name": "::test_spec_lib_v3::EventC",
       "prefix_topics": [
         "event_c"
       ],
@@ -890,7 +890,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EventD",
+      "name": "::test_spec_lib_v3::EventD",
       "prefix_topics": [
         "event_d"
       ],

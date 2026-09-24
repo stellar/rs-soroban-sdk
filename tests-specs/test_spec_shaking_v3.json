@@ -94,7 +94,7 @@
             "ok_type": "u32",
             "error_type": {
               "udt": {
-                "name": "::test_spec_shaking_v2::UsedErrorEnum"
+                "name": "::test_spec_shaking_v3::UsedErrorEnum"
               }
             }
           }
@@ -148,7 +148,7 @@
           "name": "s",
           "type": {
             "udt": {
-              "name": "::test_spec_lib::StructC"
+              "name": "::test_spec_lib_v3::StructC"
             }
           }
         }
@@ -168,12 +168,12 @@
             "map": {
               "key_type": {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::UsedMapKey"
+                  "name": "::test_spec_shaking_v3::UsedMapKey"
                 }
               },
               "value_type": {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::UsedMapVal"
+                  "name": "::test_spec_shaking_v3::UsedMapVal"
                 }
               }
             }
@@ -193,7 +193,7 @@
           "name": "s",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::UsedNonPubStruct"
+              "name": "::test_spec_shaking_v3::UsedNonPubStruct"
             }
           }
         }
@@ -212,7 +212,7 @@
             "ok_type": "u32",
             "error_type": {
               "udt": {
-                "name": "::test_spec_shaking_v2::UsedNonPubError"
+                "name": "::test_spec_shaking_v3::UsedNonPubError"
               }
             }
           }
@@ -232,7 +232,7 @@
             "option": {
               "value_type": {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::UsedOptionElement"
+                  "name": "::test_spec_shaking_v3::UsedOptionElement"
                 }
               }
             }
@@ -280,7 +280,7 @@
           "name": "s",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::UsedParamStruct"
+              "name": "::test_spec_shaking_v3::UsedParamStruct"
             }
           }
         },
@@ -289,7 +289,7 @@
           "name": "ie",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::UsedParamIntEnum"
+              "name": "::test_spec_shaking_v3::UsedParamIntEnum"
             }
           }
         }
@@ -307,7 +307,7 @@
           "name": "r",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::UsedRecursiveRoot"
+              "name": "::test_spec_shaking_v3::UsedRecursiveRoot"
             }
           }
         }
@@ -325,12 +325,12 @@
           "result": {
             "ok_type": {
               "udt": {
-                "name": "::test_spec_shaking_v2::UsedResultOk"
+                "name": "::test_spec_shaking_v3::UsedResultOk"
               }
             },
             "error_type": {
               "udt": {
-                "name": "::test_spec_shaking_v2::UsedErrorEnum"
+                "name": "::test_spec_shaking_v3::UsedErrorEnum"
               }
             }
           }
@@ -346,7 +346,7 @@
       "outputs": [
         {
           "udt": {
-            "name": "::test_spec_shaking_v2::UsedReturnEnum"
+            "name": "::test_spec_shaking_v3::UsedReturnEnum"
           }
         }
       ]
@@ -365,7 +365,7 @@
               "value_types": [
                 {
                   "udt": {
-                    "name": "::test_spec_shaking_v2::UsedTupleElement"
+                    "name": "::test_spec_shaking_v3::UsedTupleElement"
                   }
                 },
                 "u32"
@@ -388,7 +388,7 @@
             "value_types": [
               {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::UsedTupleReturnElement"
+                  "name": "::test_spec_shaking_v3::UsedTupleReturnElement"
                 }
               },
               "u32"
@@ -410,7 +410,7 @@
             "vec": {
               "element_type": {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::UsedVecElement"
+                  "name": "::test_spec_shaking_v3::UsedVecElement"
                 }
               }
             }
@@ -432,7 +432,7 @@
             "vec": {
               "element_type": {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::UsedVecElementNested"
+                  "name": "::test_spec_shaking_v3::UsedVecElementNested"
                 }
               }
             }
@@ -452,7 +452,7 @@
           "name": "s",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::wasm_imported::StructA"
+              "name": "::test_spec_shaking_v3::wasm_imported::StructA"
             }
           }
         }
@@ -605,7 +605,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::StructA",
+      "name": "::test_spec_lib_v3::StructA",
       "fields": [
         {
           "doc": "",
@@ -624,7 +624,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::StructB",
+      "name": "::test_spec_lib_v3::StructB",
       "fields": [
         {
           "doc": "",
@@ -643,7 +643,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::StructC",
+      "name": "::test_spec_lib_v3::StructC",
       "fields": [
         {
           "doc": "",
@@ -666,7 +666,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::StructTupleA",
+      "name": "::test_spec_lib_v3::StructTupleA",
       "fields": [
         {
           "doc": "",
@@ -685,7 +685,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::StructTupleB",
+      "name": "::test_spec_lib_v3::StructTupleB",
       "fields": [
         {
           "doc": "",
@@ -704,7 +704,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::StructTupleC",
+      "name": "::test_spec_lib_v3::StructTupleC",
       "fields": [
         {
           "doc": "",
@@ -723,7 +723,35 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UnusedNonContractFnParam",
+      "name": "::test_spec_shaking_v3::UnusedEventDataType",
+      "fields": [
+        {
+          "doc": "",
+          "name": "v",
+          "type": "u32"
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "::test_spec_shaking_v3::UnusedInner",
+      "fields": [
+        {
+          "doc": "",
+          "name": "v",
+          "type": "u32"
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "::test_spec_shaking_v3::UnusedNonContractFnParam",
       "fields": [
         {
           "doc": "",
@@ -737,7 +765,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UnusedNonContractFnReturn",
+      "name": "::test_spec_shaking_v3::UnusedNonContractFnReturn",
       "fields": [
         {
           "doc": "",
@@ -751,7 +779,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UnusedNonPubStruct",
+      "name": "::test_spec_shaking_v3::UnusedNonPubStruct",
       "fields": [
         {
           "doc": "",
@@ -765,7 +793,25 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UnusedStruct",
+      "name": "::test_spec_shaking_v3::UnusedOuter",
+      "fields": [
+        {
+          "doc": "",
+          "name": "inner",
+          "type": {
+            "udt": {
+              "name": "::test_spec_shaking_v3::UnusedInner"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "::test_spec_shaking_v3::UnusedStruct",
       "fields": [
         {
           "doc": "",
@@ -779,7 +825,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedEventDataInner",
+      "name": "::test_spec_shaking_v3::UsedEventDataInner",
       "fields": [
         {
           "doc": "",
@@ -793,14 +839,14 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedEventDataOuter",
+      "name": "::test_spec_shaking_v3::UsedEventDataOuter",
       "fields": [
         {
           "doc": "",
           "name": "inner",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::UsedEventDataInner"
+              "name": "::test_spec_shaking_v3::UsedEventDataInner"
             }
           }
         }
@@ -811,7 +857,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedEventDataType",
+      "name": "::test_spec_shaking_v3::UsedEventDataType",
       "fields": [
         {
           "doc": "",
@@ -830,7 +876,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedEventTopicInner",
+      "name": "::test_spec_shaking_v3::UsedEventTopicInner",
       "fields": [
         {
           "doc": "",
@@ -844,14 +890,14 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedEventTopicOuter",
+      "name": "::test_spec_shaking_v3::UsedEventTopicOuter",
       "fields": [
         {
           "doc": "",
           "name": "inner",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::UsedEventTopicInner"
+              "name": "::test_spec_shaking_v3::UsedEventTopicInner"
             }
           }
         }
@@ -862,7 +908,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedLeaf",
+      "name": "::test_spec_shaking_v3::UsedLeaf",
       "fields": [
         {
           "doc": "",
@@ -876,7 +922,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedMapVal",
+      "name": "::test_spec_shaking_v3::UsedMapVal",
       "fields": [
         {
           "doc": "",
@@ -890,7 +936,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedNestedInStruct",
+      "name": "::test_spec_shaking_v3::UsedNestedInStruct",
       "fields": [
         {
           "doc": "",
@@ -904,7 +950,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedNonPubStruct",
+      "name": "::test_spec_shaking_v3::UsedNonPubStruct",
       "fields": [
         {
           "doc": "",
@@ -918,7 +964,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedOptionElement",
+      "name": "::test_spec_shaking_v3::UsedOptionElement",
       "fields": [
         {
           "doc": "",
@@ -932,7 +978,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedParamStruct",
+      "name": "::test_spec_shaking_v3::UsedParamStruct",
       "fields": [
         {
           "doc": "",
@@ -944,7 +990,7 @@
           "name": "nested",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::UsedNestedInStruct"
+              "name": "::test_spec_shaking_v3::UsedNestedInStruct"
             }
           }
         }
@@ -955,7 +1001,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedRecursiveLeaf",
+      "name": "::test_spec_shaking_v3::UsedRecursiveLeaf",
       "fields": [
         {
           "doc": "",
@@ -964,7 +1010,7 @@
             "vec": {
               "element_type": {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::UsedRecursiveRoot"
+                  "name": "::test_spec_shaking_v3::UsedRecursiveRoot"
                 }
               }
             }
@@ -977,14 +1023,14 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedRecursiveRoot",
+      "name": "::test_spec_shaking_v3::UsedRecursiveRoot",
       "fields": [
         {
           "doc": "",
           "name": "val",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::UsedRecursiveNode"
+              "name": "::test_spec_shaking_v3::UsedRecursiveNode"
             }
           }
         }
@@ -995,7 +1041,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedRefDataInner",
+      "name": "::test_spec_shaking_v3::UsedRefDataInner",
       "fields": [
         {
           "doc": "",
@@ -1009,14 +1055,14 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedRefDataType",
+      "name": "::test_spec_shaking_v3::UsedRefDataType",
       "fields": [
         {
           "doc": "",
           "name": "nested",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::UsedRefDataInner"
+              "name": "::test_spec_shaking_v3::UsedRefDataInner"
             }
           }
         }
@@ -1027,7 +1073,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedResultOk",
+      "name": "::test_spec_shaking_v3::UsedResultOk",
       "fields": [
         {
           "doc": "",
@@ -1041,7 +1087,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedTupleElement",
+      "name": "::test_spec_shaking_v3::UsedTupleElement",
       "fields": [
         {
           "doc": "",
@@ -1055,7 +1101,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedTupleReturnElement",
+      "name": "::test_spec_shaking_v3::UsedTupleReturnElement",
       "fields": [
         {
           "doc": "",
@@ -1069,7 +1115,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedVecElement",
+      "name": "::test_spec_shaking_v3::UsedVecElement",
       "fields": [
         {
           "doc": "",
@@ -1083,14 +1129,14 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedVecElementNested",
+      "name": "::test_spec_shaking_v3::UsedVecElementNested",
       "fields": [
         {
           "doc": "",
           "name": "inner",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::UsedVecInnerElement"
+              "name": "::test_spec_shaking_v3::UsedVecInnerElement"
             }
           }
         },
@@ -1106,7 +1152,7 @@
             "vec": {
               "element_type": {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::UsedVecInnerVecElement"
+                  "name": "::test_spec_shaking_v3::UsedVecInnerVecElement"
                 }
               }
             }
@@ -1119,7 +1165,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedVecInnerElement",
+      "name": "::test_spec_shaking_v3::UsedVecInnerElement",
       "fields": [
         {
           "doc": "",
@@ -1133,7 +1179,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedVecInnerVecElement",
+      "name": "::test_spec_shaking_v3::UsedVecInnerVecElement",
       "fields": [
         {
           "doc": "",
@@ -1147,7 +1193,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::ContractContext",
+      "name": "::test_spec_shaking_v3::wasm_imported::ContractContext",
       "fields": [
         {
           "doc": "",
@@ -1175,7 +1221,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::ContractExecutableRef",
+      "name": "::test_spec_shaking_v3::wasm_imported::ContractExecutableRef",
       "fields": [
         {
           "doc": "",
@@ -1194,14 +1240,14 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::CreateContractHostFnContext",
+      "name": "::test_spec_shaking_v3::wasm_imported::CreateContractHostFnContext",
       "fields": [
         {
           "doc": "",
           "name": "executable",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::wasm_imported::ContractExecutable"
+              "name": "::test_spec_shaking_v3::wasm_imported::ContractExecutable"
             }
           }
         },
@@ -1221,7 +1267,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::CreateContractWithConstructorHostFnContext",
+      "name": "::test_spec_shaking_v3::wasm_imported::CreateContractWithConstructorHostFnContext",
       "fields": [
         {
           "doc": "",
@@ -1237,7 +1283,7 @@
           "name": "executable",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::wasm_imported::ContractExecutable"
+              "name": "::test_spec_shaking_v3::wasm_imported::ContractExecutable"
             }
           }
         },
@@ -1257,7 +1303,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::StructA",
+      "name": "::test_spec_shaking_v3::wasm_imported::StructA",
       "fields": [
         {
           "doc": "",
@@ -1276,7 +1322,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::StructB",
+      "name": "::test_spec_shaking_v3::wasm_imported::StructB",
       "fields": [
         {
           "doc": "",
@@ -1295,7 +1341,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::StructC",
+      "name": "::test_spec_shaking_v3::wasm_imported::StructC",
       "fields": [
         {
           "doc": "",
@@ -1318,7 +1364,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::StructTupleA",
+      "name": "::test_spec_shaking_v3::wasm_imported::StructTupleA",
       "fields": [
         {
           "doc": "",
@@ -1337,7 +1383,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::StructTupleB",
+      "name": "::test_spec_shaking_v3::wasm_imported::StructTupleB",
       "fields": [
         {
           "doc": "",
@@ -1356,7 +1402,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::StructTupleC",
+      "name": "::test_spec_shaking_v3::wasm_imported::StructTupleC",
       "fields": [
         {
           "doc": "",
@@ -1375,14 +1421,14 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::SubContractInvocation",
+      "name": "::test_spec_shaking_v3::wasm_imported::SubContractInvocation",
       "fields": [
         {
           "doc": "",
           "name": "context",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::wasm_imported::ContractContext"
+              "name": "::test_spec_shaking_v3::wasm_imported::ContractContext"
             }
           }
         },
@@ -1393,7 +1439,7 @@
             "vec": {
               "element_type": {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::wasm_imported::InvokerContractAuthEntry"
+                  "name": "::test_spec_shaking_v3::wasm_imported::InvokerContractAuthEntry"
                 }
               }
             }
@@ -1571,7 +1617,7 @@
     "udt_union_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EnumA",
+      "name": "::test_spec_lib_v3::EnumA",
       "cases": [
         {
           "void_v0": {
@@ -1598,7 +1644,7 @@
     "udt_union_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EnumB",
+      "name": "::test_spec_lib_v3::EnumB",
       "cases": [
         {
           "void_v0": {
@@ -1632,7 +1678,7 @@
     "udt_union_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EnumC",
+      "name": "::test_spec_lib_v3::EnumC",
       "cases": [
         {
           "void_v0": {
@@ -1647,7 +1693,7 @@
             "type": [
               {
                 "udt": {
-                  "name": "::test_spec_lib::StructA"
+                  "name": "::test_spec_lib_v3::StructA"
                 }
               }
             ]
@@ -1660,7 +1706,7 @@
             "type": [
               {
                 "udt": {
-                  "name": "::test_spec_lib::StructTupleA"
+                  "name": "::test_spec_lib_v3::StructTupleA"
                 }
               }
             ]
@@ -1673,7 +1719,7 @@
     "udt_union_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UnusedEnum",
+      "name": "::test_spec_shaking_v3::UnusedEnum",
       "cases": [
         {
           "void_v0": {
@@ -1697,7 +1743,7 @@
     "udt_union_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedRecursiveNode",
+      "name": "::test_spec_shaking_v3::UsedRecursiveNode",
       "cases": [
         {
           "tuple_v0": {
@@ -1706,7 +1752,7 @@
             "type": [
               {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::UsedLeaf"
+                  "name": "::test_spec_shaking_v3::UsedLeaf"
                 }
               }
             ]
@@ -1719,7 +1765,7 @@
             "type": [
               {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::UsedRecursiveLeaf"
+                  "name": "::test_spec_shaking_v3::UsedRecursiveLeaf"
                 }
               }
             ]
@@ -1732,7 +1778,7 @@
     "udt_union_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedReturnEnum",
+      "name": "::test_spec_shaking_v3::UsedReturnEnum",
       "cases": [
         {
           "tuple_v0": {
@@ -1759,7 +1805,7 @@
     "udt_union_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::Context",
+      "name": "::test_spec_shaking_v3::wasm_imported::Context",
       "cases": [
         {
           "tuple_v0": {
@@ -1768,7 +1814,7 @@
             "type": [
               {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::wasm_imported::ContractContext"
+                  "name": "::test_spec_shaking_v3::wasm_imported::ContractContext"
                 }
               }
             ]
@@ -1781,7 +1827,7 @@
             "type": [
               {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::wasm_imported::CreateContractHostFnContext"
+                  "name": "::test_spec_shaking_v3::wasm_imported::CreateContractHostFnContext"
                 }
               }
             ]
@@ -1794,7 +1840,7 @@
             "type": [
               {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::wasm_imported::CreateContractWithConstructorHostFnContext"
+                  "name": "::test_spec_shaking_v3::wasm_imported::CreateContractWithConstructorHostFnContext"
                 }
               }
             ]
@@ -1807,7 +1853,7 @@
     "udt_union_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::ContractExecutable",
+      "name": "::test_spec_shaking_v3::wasm_imported::ContractExecutable",
       "cases": [
         {
           "tuple_v0": {
@@ -1829,7 +1875,7 @@
             "type": [
               {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::wasm_imported::ContractExecutableRef"
+                  "name": "::test_spec_shaking_v3::wasm_imported::ContractExecutableRef"
                 }
               }
             ]
@@ -1842,7 +1888,7 @@
     "udt_union_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::EnumA",
+      "name": "::test_spec_shaking_v3::wasm_imported::EnumA",
       "cases": [
         {
           "void_v0": {
@@ -1869,7 +1915,7 @@
     "udt_union_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::EnumB",
+      "name": "::test_spec_shaking_v3::wasm_imported::EnumB",
       "cases": [
         {
           "void_v0": {
@@ -1903,7 +1949,7 @@
     "udt_union_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::EnumC",
+      "name": "::test_spec_shaking_v3::wasm_imported::EnumC",
       "cases": [
         {
           "void_v0": {
@@ -1918,7 +1964,7 @@
             "type": [
               {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::wasm_imported::StructA"
+                  "name": "::test_spec_shaking_v3::wasm_imported::StructA"
                 }
               }
             ]
@@ -1931,7 +1977,7 @@
             "type": [
               {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::wasm_imported::StructTupleA"
+                  "name": "::test_spec_shaking_v3::wasm_imported::StructTupleA"
                 }
               }
             ]
@@ -1944,7 +1990,7 @@
     "udt_union_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::Executable",
+      "name": "::test_spec_shaking_v3::wasm_imported::Executable",
       "cases": [
         {
           "tuple_v0": {
@@ -1978,7 +2024,7 @@
     "udt_union_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::InvokerContractAuthEntry",
+      "name": "::test_spec_shaking_v3::wasm_imported::InvokerContractAuthEntry",
       "cases": [
         {
           "tuple_v0": {
@@ -1987,7 +2033,7 @@
             "type": [
               {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::wasm_imported::SubContractInvocation"
+                  "name": "::test_spec_shaking_v3::wasm_imported::SubContractInvocation"
                 }
               }
             ]
@@ -2000,7 +2046,7 @@
             "type": [
               {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::wasm_imported::CreateContractHostFnContext"
+                  "name": "::test_spec_shaking_v3::wasm_imported::CreateContractHostFnContext"
                 }
               }
             ]
@@ -2013,7 +2059,7 @@
             "type": [
               {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::wasm_imported::CreateContractWithConstructorHostFnContext"
+                  "name": "::test_spec_shaking_v3::wasm_imported::CreateContractWithConstructorHostFnContext"
                 }
               }
             ]
@@ -2026,7 +2072,7 @@
     "udt_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EnumIntA",
+      "name": "::test_spec_lib_v3::EnumIntA",
       "cases": [
         {
           "doc": "",
@@ -2050,7 +2096,7 @@
     "udt_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EnumIntB",
+      "name": "::test_spec_lib_v3::EnumIntB",
       "cases": [
         {
           "doc": "",
@@ -2074,7 +2120,7 @@
     "udt_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EnumIntC",
+      "name": "::test_spec_lib_v3::EnumIntC",
       "cases": [
         {
           "doc": "",
@@ -2098,7 +2144,7 @@
     "udt_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UnusedIntEnum",
+      "name": "::test_spec_shaking_v3::UnusedIntEnum",
       "cases": [
         {
           "doc": "",
@@ -2117,7 +2163,7 @@
     "udt_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedEventTopicType",
+      "name": "::test_spec_shaking_v3::UsedEventTopicType",
       "cases": [
         {
           "doc": "",
@@ -2136,7 +2182,7 @@
     "udt_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedMapKey",
+      "name": "::test_spec_shaking_v3::UsedMapKey",
       "cases": [
         {
           "doc": "",
@@ -2155,7 +2201,7 @@
     "udt_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedParamIntEnum",
+      "name": "::test_spec_shaking_v3::UsedParamIntEnum",
       "cases": [
         {
           "doc": "",
@@ -2174,7 +2220,7 @@
     "udt_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedRefTopicType",
+      "name": "::test_spec_shaking_v3::UsedRefTopicType",
       "cases": [
         {
           "doc": "",
@@ -2193,7 +2239,7 @@
     "udt_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::EnumIntA",
+      "name": "::test_spec_shaking_v3::wasm_imported::EnumIntA",
       "cases": [
         {
           "doc": "",
@@ -2217,7 +2263,7 @@
     "udt_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::EnumIntB",
+      "name": "::test_spec_shaking_v3::wasm_imported::EnumIntB",
       "cases": [
         {
           "doc": "",
@@ -2241,7 +2287,7 @@
     "udt_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::EnumIntC",
+      "name": "::test_spec_shaking_v3::wasm_imported::EnumIntC",
       "cases": [
         {
           "doc": "",
@@ -2265,7 +2311,7 @@
     "udt_error_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::ErrorA",
+      "name": "::test_spec_lib_v3::ErrorA",
       "cases": [
         {
           "doc": "",
@@ -2289,7 +2335,7 @@
     "udt_error_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::ErrorB",
+      "name": "::test_spec_lib_v3::ErrorB",
       "cases": [
         {
           "doc": "",
@@ -2313,7 +2359,7 @@
     "udt_error_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::ErrorC",
+      "name": "::test_spec_lib_v3::ErrorC",
       "cases": [
         {
           "doc": "",
@@ -2337,7 +2383,7 @@
     "udt_error_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UnusedNonPubError",
+      "name": "::test_spec_shaking_v3::UnusedNonPubError",
       "cases": [
         {
           "doc": "",
@@ -2351,7 +2397,7 @@
     "udt_error_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UnusedPubError",
+      "name": "::test_spec_shaking_v3::UnusedPubError",
       "cases": [
         {
           "doc": "",
@@ -2365,7 +2411,7 @@
     "udt_error_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedAssertErrorEnum",
+      "name": "::test_spec_shaking_v3::UsedAssertErrorEnum",
       "cases": [
         {
           "doc": "",
@@ -2379,7 +2425,7 @@
     "udt_error_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedErrorEnum",
+      "name": "::test_spec_shaking_v3::UsedErrorEnum",
       "cases": [
         {
           "doc": "",
@@ -2398,7 +2444,7 @@
     "udt_error_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedNonPubError",
+      "name": "::test_spec_shaking_v3::UsedNonPubError",
       "cases": [
         {
           "doc": "",
@@ -2412,7 +2458,7 @@
     "udt_error_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedPanicErrorEnum",
+      "name": "::test_spec_shaking_v3::UsedPanicErrorEnum",
       "cases": [
         {
           "doc": "",
@@ -2426,7 +2472,7 @@
     "udt_error_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::ErrorA",
+      "name": "::test_spec_shaking_v3::wasm_imported::ErrorA",
       "cases": [
         {
           "doc": "",
@@ -2450,7 +2496,7 @@
     "udt_error_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::ErrorB",
+      "name": "::test_spec_shaking_v3::wasm_imported::ErrorB",
       "cases": [
         {
           "doc": "",
@@ -2474,7 +2520,7 @@
     "udt_error_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::ErrorC",
+      "name": "::test_spec_shaking_v3::wasm_imported::ErrorC",
       "cases": [
         {
           "doc": "",
@@ -2498,7 +2544,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EventA",
+      "name": "::test_spec_lib_v3::EventA",
       "prefix_topics": [
         "event_a"
       ],
@@ -2523,7 +2569,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EventB",
+      "name": "::test_spec_lib_v3::EventB",
       "prefix_topics": [
         "event_b"
       ],
@@ -2554,7 +2600,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EventC",
+      "name": "::test_spec_lib_v3::EventC",
       "prefix_topics": [
         "event_c"
       ],
@@ -2585,7 +2631,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EventD",
+      "name": "::test_spec_lib_v3::EventD",
       "prefix_topics": [
         "event_d"
       ],
@@ -2597,7 +2643,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UnusedEvent",
+      "name": "::test_spec_shaking_v3::UnusedEvent",
       "prefix_topics": [
         "unused_event"
       ],
@@ -2622,7 +2668,36 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedEventSimple",
+      "name": "::test_spec_shaking_v3::UnusedEventWithDataType",
+      "prefix_topics": [
+        "unused_event_with_data_type"
+      ],
+      "params": [
+        {
+          "doc": "",
+          "name": "kind",
+          "type": "symbol",
+          "location": "topic_list"
+        },
+        {
+          "doc": "",
+          "name": "payload",
+          "type": {
+            "udt": {
+              "name": "::test_spec_shaking_v3::UnusedEventDataType"
+            }
+          },
+          "location": "data"
+        }
+      ],
+      "data_format": "map"
+    }
+  },
+  {
+    "event_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "::test_spec_shaking_v3::UsedEventSimple",
       "prefix_topics": [
         "used_event_simple"
       ],
@@ -2647,7 +2722,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedEventWithDataType",
+      "name": "::test_spec_shaking_v3::UsedEventWithDataType",
       "prefix_topics": [
         "used_event_with_data_type"
       ],
@@ -2663,7 +2738,7 @@
           "name": "payload",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::UsedEventDataType"
+              "name": "::test_spec_shaking_v3::UsedEventDataType"
             }
           },
           "location": "data"
@@ -2676,7 +2751,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedEventWithNestedData",
+      "name": "::test_spec_shaking_v3::UsedEventWithNestedData",
       "prefix_topics": [
         "used_event_with_nested_data"
       ],
@@ -2692,7 +2767,7 @@
           "name": "payload",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::UsedEventDataOuter"
+              "name": "::test_spec_shaking_v3::UsedEventDataOuter"
             }
           },
           "location": "data"
@@ -2705,7 +2780,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedEventWithNestedTopic",
+      "name": "::test_spec_shaking_v3::UsedEventWithNestedTopic",
       "prefix_topics": [
         "used_event_with_nested_topic"
       ],
@@ -2715,7 +2790,7 @@
           "name": "info",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::UsedEventTopicOuter"
+              "name": "::test_spec_shaking_v3::UsedEventTopicOuter"
             }
           },
           "location": "topic_list"
@@ -2734,7 +2809,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedEventWithRefs",
+      "name": "::test_spec_shaking_v3::UsedEventWithRefs",
       "prefix_topics": [
         "used_event_with_refs"
       ],
@@ -2744,7 +2819,7 @@
           "name": "kind",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::UsedRefTopicType"
+              "name": "::test_spec_shaking_v3::UsedRefTopicType"
             }
           },
           "location": "topic_list"
@@ -2754,7 +2829,7 @@
           "name": "payload",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::UsedRefDataType"
+              "name": "::test_spec_shaking_v3::UsedRefDataType"
             }
           },
           "location": "data"
@@ -2767,7 +2842,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedEventWithTopicType",
+      "name": "::test_spec_shaking_v3::UsedEventWithTopicType",
       "prefix_topics": [
         "used_event_with_topic_type"
       ],
@@ -2777,7 +2852,7 @@
           "name": "kind",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::UsedEventTopicType"
+              "name": "::test_spec_shaking_v3::UsedEventTopicType"
             }
           },
           "location": "topic_list"
@@ -2796,7 +2871,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::EventA",
+      "name": "::test_spec_shaking_v3::wasm_imported::EventA",
       "prefix_topics": [
         "event_a"
       ],
@@ -2821,7 +2896,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::EventB",
+      "name": "::test_spec_shaking_v3::wasm_imported::EventB",
       "prefix_topics": [
         "event_b"
       ],
@@ -2852,7 +2927,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::EventC",
+      "name": "::test_spec_shaking_v3::wasm_imported::EventC",
       "prefix_topics": [
         "event_c"
       ],
@@ -2883,7 +2958,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::EventD",
+      "name": "::test_spec_shaking_v3::wasm_imported::EventD",
       "prefix_topics": [
         "event_d"
       ],
