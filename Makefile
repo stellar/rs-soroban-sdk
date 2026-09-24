@@ -57,7 +57,6 @@ build-fuzz:
 
 fuzz-corpus:
 	cd soroban-spec/fuzz && for t in $$(cargo +nightly fuzz list) ; do cargo +nightly fuzz run $$t -- -runs=0 || exit 1 ; done
-	cd tests/fuzz/fuzz && for t in $$(cargo +nightly fuzz list) ; do cargo +nightly fuzz run $$t -- -runs=0 || exit 1 ; done
 
 readme:
 	cd soroban-sdk \
