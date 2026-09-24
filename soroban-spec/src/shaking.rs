@@ -271,7 +271,8 @@ fn keep_by_marker(markers: &HashSet<Marker>) -> impl Fn(&ScSpecEntry) -> bool + 
             return true;
         }
         // For all other entries (types, events), check if marker exists
-        markers.contains(&generate_marker_for_entry(entry))
+        let marker = generate_marker_for_entry(entry);
+        markers.contains(&marker)
     }
 }
 
