@@ -1,9 +1,10 @@
 //! Prints the contract spec in a wasm as a pretty formatted JSON array of
 //! XDR-JSON values, one per spec entry.
 //!
-//! Entries are sorted, rather than printed in the order they appear in the
-//! wasm, so that moving an item around in the source, which changes the order
-//! its entry is written to the wasm, does not change the output.
+//! Entries are sorted by name, then by the entry itself, rather than printed in
+//! the order they appear in the wasm, so that moving an item around in the
+//! source, which changes the order its entry is written to the wasm, does not
+//! change the output.
 //!
 //! ```console
 //! cargo run --package spec-json -- contract.wasm
@@ -26,6 +27,18 @@ fn main() {
         eprintln!("error: reading spec from {path}: {e}");
         exit(1);
     });
-    entries.sort();
+    entries.sort_by(|a, b| (name(a), a).cmp(&(name(b), b)));
     println!("{}", serde_json::to_string_pretty(&entries).unwrap());
+}
+
+/// Returns the name of the entry.
+fn name(entry: &ScSpecEntry) -> &[u8] {
+    match entry {
+        ScSpecEntry::FunctionV0(e) => e.name.0.as_ref(),
+        ScSpecEntry::UdtStructV0(e) => e.name.as_ref(),
+        ScSpecEntry::UdtUnionV0(e) => e.name.as_ref(),
+        ScSpecEntry::UdtEnumV0(e) => e.name.as_ref(),
+        ScSpecEntry::UdtErrorEnumV0(e) => e.name.as_ref(),
+        ScSpecEntry::EventV0(e) => e.name.as_ref(),
+    }
 }
