@@ -1577,6 +1577,7 @@ dependencies = [
  "ed25519-dalek",
  "rand",
  "rustc_version",
+ "semver",
  "serde",
  "serde_json",
  "soroban-env-guest",
