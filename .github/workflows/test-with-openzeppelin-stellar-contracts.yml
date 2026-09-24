@@ -107,6 +107,10 @@ jobs:
           echo "Relabelled local rs-soroban-sdk crates from $local_version to $dest_version"
         fi
 
+    - name: Set the stellar-cli major version the local soroban-sdk requires
+      working-directory: ${{ github.workspace }}
+      run: echo "STELLAR_CLI_VERSION=$(make --no-print-directory -C rs-soroban-sdk version-major).0.0" >> $GITHUB_ENV
+
     - name: Collect publishable rs-soroban-sdk crates
       working-directory: stellar-contracts
       run: |
@@ -213,7 +217,6 @@ jobs:
       if: steps.check-if-contract.outputs.is-a-contract == 'true'
       env:
         CARGO_BUILD_RUSTFLAGS: "-A deprecated"
-        SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2: "true"
       run: cargo build --target wasm32v1-none --release
 
     - name: Set artifact name
@@ -231,7 +234,6 @@ jobs:
 
     - env:
         CARGO_BUILD_RUSTFLAGS: "-A deprecated"
-        SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2: "true"
       run: cargo test
 
     - name: Diff

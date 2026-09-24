@@ -17,6 +17,7 @@ doctest = false
 
 [build-dependencies]
 rustc_version = "0.4.1"
+semver = "1.0.0"
 crate-git-revision = "0.0.9"
 
 [dependencies]
