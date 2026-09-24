@@ -25,7 +25,7 @@ test: fmt build-test-wasms test-only
 # hazmat granular features are excluded because all hazmat features are tested
 # together with the umbrella hazmat feature.
 test-only:
-	STELLAR_CLI_VERSION_MAJOR=$(VERSION_MAJOR) \
+	STELLAR_CLI_VERSION=$(VERSION_MAJOR).0.0 \
 		cargo hack --feature-powerset --ignore-unknown-features --features testutils \
 			--exclude-features docs \
 			--exclude-features hazmat-crypto \
@@ -40,7 +40,7 @@ build-libs: fmt
 build-test-wasms: fmt
 	# Build the test wasms with MSRV by default, with some meta disabled for
 	# binary stability for tests.
-	STELLAR_CLI_VERSION_MAJOR=$(VERSION_MAJOR) \
+	STELLAR_CLI_VERSION=$(VERSION_MAJOR).0.0 \
 	RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
 	RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
 		cargo hack build --release --target wasm32v1-none $(foreach c,$(TEST_CRATES),--package $(c)) ; \
@@ -76,7 +76,7 @@ expand-tests: build-test-wasms
       RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
       cargo expand --package $$package --tests --target x86_64-unknown-linux-gnu | rustfmt > tests-expanded/$${package}_tests.rs; \
 		echo "Expanding $$package for wasm32v1-none target without tests"; \
-    STELLAR_CLI_VERSION_MAJOR=$(VERSION_MAJOR) \
+    STELLAR_CLI_VERSION=$(VERSION_MAJOR).0.0 \
     RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
       RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
 			cargo expand --package $$package --release --target wasm32v1-none | rustfmt > tests-expanded/$${package}_wasm32v1-none.rs; \

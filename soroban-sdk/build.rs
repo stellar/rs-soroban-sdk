@@ -21,14 +21,16 @@ pub fn main() {
     }
 
     // On a wasm target, check for an env var from the build system (Stellar CLI) that indicates its
-    // major version, and require the same or greater major version as the SDK. Spec shaking is
-    // always on, and the contract's spec is only correct once the build system has shaken it, so a
-    // build system that does not do so is an error.
-    let env_name = "STELLAR_CLI_VERSION_MAJOR";
+    // version, and require the same or greater major version as the SDK. Spec shaking is always
+    // on, and the contract's spec is only correct once the build system has shaken it, so a build
+    // system that does not do so is an error.
+    let env_name = "STELLAR_CLI_VERSION";
     println!("cargo::rerun-if-env-changed={env_name}");
     if std::env::var("CARGO_CFG_TARGET_FAMILY").unwrap_or_default() == "wasm" {
         let sdk_major: u64 = env!("CARGO_PKG_VERSION_MAJOR").parse().unwrap();
-        let cli_major: Option<u64> = std::env::var(env_name).ok().and_then(|v| v.parse().ok());
+        let cli_major: Option<u64> = std::env::var(env_name)
+            .ok()
+            .and_then(|v| v.trim_start_matches('v').split('.').next()?.parse().ok());
         if cli_major < Some(sdk_major) {
             eprintln!(
                 "\

@@ -325,7 +325,7 @@ jobs:
         - os: ubuntu-latest
           target: wasm32v1-none
           cargo-hack-feature-options: --manifest-path Cargo.toml --exclude soroban-meta --exclude soroban-spec --exclude soroban-spec-rust --exclude soroban-ledger-snapshot --exclude-features testutils,docs,default,std --feature-powerset
-          env: STELLAR_CLI_VERSION_MAJOR=${{ needs.setup.outputs.version-major }}
+          env: STELLAR_CLI_VERSION=${{ needs.setup.outputs.version-major }}.0.0
         - os: ubuntu-latest
           target: x86_64-unknown-linux-gnu
           cargo-hack-feature-options: '--feature-powerset --exclude-features docs'
