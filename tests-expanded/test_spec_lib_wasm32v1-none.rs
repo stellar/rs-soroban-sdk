@@ -47,11 +47,25 @@ impl ::core::cmp::PartialEq for StructA {
         self.f1 == other.f1 && self.f2 == other.f2
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_STRUCTA: [u8; 60usize] = StructA::spec_xdr();
+static __SPEC_XDR_TYPE_STRUCTA: [u8; 60usize] = StructA::spec_xdr();
 impl StructA {
     pub const fn spec_xdr() -> [u8; 60usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07StructA\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x04\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x01"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for StructA {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <bool as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1\xb6\x1c\xfd\xdfhY-d";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructA {
@@ -64,7 +78,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructA {
         const KEYS: [&'static str; 2usize] = ["f1", "f2"];
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             f1: vals[0]
@@ -146,11 +160,25 @@ impl ::core::cmp::PartialEq for StructB {
         self.f1 == other.f1 && self.f2 == other.f2
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_STRUCTB: [u8; 60usize] = StructB::spec_xdr();
+static __SPEC_XDR_TYPE_STRUCTB: [u8; 60usize] = StructB::spec_xdr();
 impl StructB {
     pub const fn spec_xdr() -> [u8; 60usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07StructB\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x07\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x10"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for StructB {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <soroban_sdk::String as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1\xf3\xc4\xd3\x8c\xc1w\xe9\x18";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructB {
@@ -163,7 +191,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructB {
         const KEYS: [&'static str; 2usize] = ["f1", "f2"];
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             f1: vals[0]
@@ -245,11 +273,25 @@ impl ::core::cmp::PartialEq for StructC {
         self.f1 == other.f1 && self.f2 == other.f2
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_STRUCTC: [u8; 64usize] = StructC::spec_xdr();
+static __SPEC_XDR_TYPE_STRUCTC: [u8; 64usize] = StructC::spec_xdr();
 impl StructC {
     pub const fn spec_xdr() -> [u8; 64usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07StructC\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\x03\xea\0\0\0\x04\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x13"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for StructC {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <Vec<u32> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1\xa3\x16\n\x8f\xc9\x92\xd2\x11";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructC {
@@ -262,7 +304,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructC {
         const KEYS: [&'static str; 2usize] = ["f1", "f2"];
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             f1: vals[0]
@@ -338,11 +380,25 @@ impl ::core::cmp::PartialEq for StructTupleA {
         self.0 == other.0 && self.1 == other.1
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_STRUCTTUPLEA: [u8; 64usize] = StructTupleA::spec_xdr();
+static __SPEC_XDR_TYPE_STRUCTTUPLEA: [u8; 64usize] = StructTupleA::spec_xdr();
 impl StructTupleA {
     pub const fn spec_xdr() -> [u8; 64usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleA\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x011\0\0\0\0\0\0\x07"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for StructTupleA {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1\xcf)\x97]S\xb2\xfd)";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleA {
@@ -427,11 +483,25 @@ impl ::core::cmp::PartialEq for StructTupleB {
         self.0 == other.0 && self.1 == other.1
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_STRUCTTUPLEB: [u8; 64usize] = StructTupleB::spec_xdr();
+static __SPEC_XDR_TYPE_STRUCTTUPLEB: [u8; 64usize] = StructTupleB::spec_xdr();
 impl StructTupleB {
     pub const fn spec_xdr() -> [u8; 64usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleB\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\n\0\0\0\0\0\0\0\x011\0\0\0\0\0\0\n"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for StructTupleB {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <u128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <u128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1x\xd98\x9c\x1ao\xac\x8c";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleB {
@@ -517,11 +587,25 @@ impl ::core::cmp::PartialEq for StructTupleC {
         self.1 == other.1 && self.0 == other.0
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_STRUCTTUPLEC: [u8; 64usize] = StructTupleC::spec_xdr();
+static __SPEC_XDR_TYPE_STRUCTTUPLEC: [u8; 64usize] = StructTupleC::spec_xdr();
 impl StructTupleC {
     pub const fn spec_xdr() -> [u8; 64usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleC\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\x13\0\0\0\0\0\0\0\x011\0\0\0\0\0\0\x0b"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for StructTupleC {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1\xc5=\x81\xc1\"\xafT\xd9";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleC {
@@ -618,11 +702,23 @@ impl ::core::cmp::PartialEq for EnumA {
         __self_discr == __arg1_discr
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_ENUMA: [u8; 76usize] = EnumA::spec_xdr();
+static __SPEC_XDR_TYPE_ENUMA: [u8; 76usize] = EnumA::spec_xdr();
 impl EnumA {
     pub const fn spec_xdr() -> [u8; 76usize] {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumA\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\0\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\0\0\0\0\0\0\0\0\x02V3\0\0"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for EnumA {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1\xa2=N\xc1p\x95\x90\xb2";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumA {
@@ -765,11 +861,24 @@ impl ::core::cmp::PartialEq for EnumB {
             }
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_ENUMB: [u8; 96usize] = EnumB::spec_xdr();
+static __SPEC_XDR_TYPE_ENUMB: [u8; 96usize] = EnumB::spec_xdr();
 impl EnumB {
     pub const fn spec_xdr() -> [u8; 96usize] {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumB\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x01\0\0\0\x07\0\0\0\x01\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x02\0\0\0\x07\0\0\0\x07"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for EnumB {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1'\x1b\0DSH^\xcc";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumB {
@@ -924,11 +1033,25 @@ impl ::core::cmp::PartialEq for EnumC {
             }
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_ENUMC: [u8; 120usize] = EnumC::spec_xdr();
+static __SPEC_XDR_TYPE_ENUMC: [u8; 120usize] = EnumC::spec_xdr();
 impl EnumC {
     pub const fn spec_xdr() -> [u8; 120usize] {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumC\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x07StructA\0\0\0\0\x01\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x0cStructTupleA"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for EnumC {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <StructA as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <StructTupleA as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1\xa0\xdd\x8f\xdc\xc9W\xbe\xc2";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumC {
@@ -1068,11 +1191,23 @@ impl ::core::cmp::PartialEq for EnumIntA {
         __self_discr == __arg1_discr
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_ENUMINTA: [u8; 76usize] = EnumIntA::spec_xdr();
+static __SPEC_XDR_TYPE_ENUMINTA: [u8; 76usize] = EnumIntA::spec_xdr();
 impl EnumIntA {
     pub const fn spec_xdr() -> [u8; 76usize] {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08EnumIntA\0\0\0\x03\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x03"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for EnumIntA {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1V]\x80\\~\x1a\x08/";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntA {
@@ -1162,11 +1297,23 @@ impl ::core::cmp::PartialEq for EnumIntB {
         __self_discr == __arg1_discr
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_ENUMINTB: [u8; 76usize] = EnumIntB::spec_xdr();
+static __SPEC_XDR_TYPE_ENUMINTB: [u8; 76usize] = EnumIntB::spec_xdr();
 impl EnumIntB {
     pub const fn spec_xdr() -> [u8; 76usize] {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08EnumIntB\0\0\0\x03\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\n\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x14\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x1e"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for EnumIntB {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1,\x9c\xc0_\xed_)\x85";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntB {
@@ -1256,11 +1403,23 @@ impl ::core::cmp::PartialEq for EnumIntC {
         __self_discr == __arg1_discr
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_ENUMINTC: [u8; 76usize] = EnumIntC::spec_xdr();
+static __SPEC_XDR_TYPE_ENUMINTC: [u8; 76usize] = EnumIntC::spec_xdr();
 impl EnumIntC {
     pub const fn spec_xdr() -> [u8; 76usize] {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08EnumIntC\0\0\0\x03\0\0\0\0\0\0\0\x02V1\0\0\0\0\0d\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\xc8\0\0\0\0\0\0\0\x02V3\0\0\0\0\x01,"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for EnumIntC {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1`\xca\xda\x19\xb9c\xf0/";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntC {
@@ -1350,11 +1509,23 @@ impl ::core::cmp::PartialEq for ErrorA {
         __self_discr == __arg1_discr
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_ERRORA: [u8; 76usize] = ErrorA::spec_xdr();
+static __SPEC_XDR_TYPE_ERRORA: [u8; 76usize] = ErrorA::spec_xdr();
 impl ErrorA {
     pub const fn spec_xdr() -> [u8; 76usize] {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x06ErrorA\0\0\0\0\0\x03\0\0\0\0\0\0\0\x02E1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02E2\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02E3\0\0\0\0\0\x03"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for ErrorA {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1\xe9R\xa7\xe8b\x99\xa2\xc3";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
     }
 }
 impl TryFrom<soroban_sdk::Error> for ErrorA {
@@ -1514,11 +1685,23 @@ impl ::core::cmp::PartialEq for ErrorB {
         __self_discr == __arg1_discr
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_ERRORB: [u8; 76usize] = ErrorB::spec_xdr();
+static __SPEC_XDR_TYPE_ERRORB: [u8; 76usize] = ErrorB::spec_xdr();
 impl ErrorB {
     pub const fn spec_xdr() -> [u8; 76usize] {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x06ErrorB\0\0\0\0\0\x03\0\0\0\0\0\0\0\x02E1\0\0\0\0\0\n\0\0\0\0\0\0\0\x02E2\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02E3\0\0\0\0\0\x0c"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for ErrorB {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1\x1d1\xd6\xfb\x88\xd2=\xe3";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
     }
 }
 impl TryFrom<soroban_sdk::Error> for ErrorB {
@@ -1678,11 +1861,23 @@ impl ::core::cmp::PartialEq for ErrorC {
         __self_discr == __arg1_discr
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_ERRORC: [u8; 76usize] = ErrorC::spec_xdr();
+static __SPEC_XDR_TYPE_ERRORC: [u8; 76usize] = ErrorC::spec_xdr();
 impl ErrorC {
     pub const fn spec_xdr() -> [u8; 76usize] {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x06ErrorC\0\0\0\0\0\x03\0\0\0\0\0\0\0\x02E1\0\0\0\0\0d\0\0\0\0\0\0\0\x02E2\0\0\0\0\0e\0\0\0\0\0\0\0\x02E3\0\0\0\0\0f"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for ErrorC {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1\xb9\x01\xafj\xe0c\xa3\r";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
     }
 }
 impl TryFrom<soroban_sdk::Error> for ErrorC {
@@ -1838,11 +2033,25 @@ impl ::core::cmp::PartialEq for EventA {
         self.f1 == other.f1 && self.f2 == other.f2
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_EVENT_EVENTA: [u8; 88usize] = EventA::spec_xdr();
+static __SPEC_XDR_EVENT_EVENTA: [u8; 88usize] = EventA::spec_xdr();
 impl EventA {
     pub const fn spec_xdr() -> [u8; 88usize] {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventA\0\0\0\0\0\x01\0\0\0\x07event_a\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x10\0\0\0\0\0\0\0\x02"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for EventA {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <soroban_sdk::String as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1K\xe6\x8ej\x19\x9en\xbd";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
     }
 }
 impl soroban_sdk::Event for EventA {
@@ -1865,13 +2074,14 @@ impl soroban_sdk::Event for EventA {
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 1usize] = ["f2"];
         let vals: [soroban_sdk::Val; 1usize] = [self.f2.into_val(env)];
-        env.map_new_from_slices(&KEYS, &vals)
+        env.sparse_map_new_from_slices(&KEYS, &vals)
             .unwrap_infallible()
             .into()
     }
 }
 impl EventA {
     pub fn publish(&self, env: &soroban_sdk::Env) {
+        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
@@ -1919,11 +2129,26 @@ impl ::core::cmp::PartialEq for EventB {
         self.f3 == other.f3 && self.f1 == other.f1 && self.f2 == other.f2
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_EVENT_EVENTB: [u8; 108usize] = EventB::spec_xdr();
+static __SPEC_XDR_EVENT_EVENTB: [u8; 108usize] = EventB::spec_xdr();
 impl EventB {
     pub const fn spec_xdr() -> [u8; 108usize] {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventB\0\0\0\0\0\x01\0\0\0\x07event_b\0\0\0\0\x03\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02f3\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for EventB {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1\xe6\xaa\xefz\x17i$\x15";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
     }
 }
 impl soroban_sdk::Event for EventB {
@@ -1950,13 +2175,14 @@ impl soroban_sdk::Event for EventB {
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 1usize] = ["f3"];
         let vals: [soroban_sdk::Val; 1usize] = [self.f3.into_val(env)];
-        env.map_new_from_slices(&KEYS, &vals)
+        env.sparse_map_new_from_slices(&KEYS, &vals)
             .unwrap_infallible()
             .into()
     }
 }
 impl EventB {
     pub fn publish(&self, env: &soroban_sdk::Env) {
+        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
@@ -2004,11 +2230,26 @@ impl ::core::cmp::PartialEq for EventC {
         self.f2 == other.f2 && self.f3 == other.f3 && self.f1 == other.f1
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_EVENT_EVENTC: [u8; 108usize] = EventC::spec_xdr();
+static __SPEC_XDR_EVENT_EVENTC: [u8; 108usize] = EventC::spec_xdr();
 impl EventC {
     pub const fn spec_xdr() -> [u8; 108usize] {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventC\0\0\0\0\0\x01\0\0\0\x07event_c\0\0\0\0\x03\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x11\0\0\0\x01\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x07\0\0\0\0\0\0\0\0\0\0\0\x02f3\0\0\0\0\0\x07\0\0\0\0\0\0\0\x02"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for EventC {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <soroban_sdk::Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1\x16\xd6\xdf\xe7\xdb\xb4W@";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
     }
 }
 impl soroban_sdk::Event for EventC {
@@ -2031,13 +2272,89 @@ impl soroban_sdk::Event for EventC {
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 2usize] = ["f2", "f3"];
         let vals: [soroban_sdk::Val; 2usize] = [self.f2.into_val(env), self.f3.into_val(env)];
-        env.map_new_from_slices(&KEYS, &vals)
+        env.sparse_map_new_from_slices(&KEYS, &vals)
             .unwrap_infallible()
             .into()
     }
 }
 impl EventC {
     pub fn publish(&self, env: &soroban_sdk::Env) {
+        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <_ as soroban_sdk::Event>::publish(self, env);
+    }
+}
+pub struct EventD;
+#[automatically_derived]
+impl ::core::clone::Clone for EventD {
+    #[inline]
+    fn clone(&self) -> EventD {
+        EventD
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for EventD {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::write_str(f, "EventD")
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for EventD {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {}
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for EventD {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for EventD {
+    #[inline]
+    fn eq(&self, other: &EventD) -> bool {
+        true
+    }
+}
+#[doc(hidden)]
+#[allow(dead_code)]
+#[link_section = "contractspecv0"]
+static __SPEC_XDR_EVENT_EVENTD: [u8; 48usize] = EventD::spec_xdr();
+impl EventD {
+    pub const fn spec_xdr() -> [u8; 48usize] {
+        *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventD\0\0\0\0\0\x01\0\0\0\x07event_d\0\0\0\0\0\0\0\0\x02"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for EventD {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1\x15\xf0Wx\x15\x83\xc0:";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
+impl soroban_sdk::Event for EventD {
+    fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+        use soroban_sdk::IntoVal;
+        (&{
+            #[allow(deprecated)]
+            const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("event_d");
+            SYMBOL
+        },)
+            .into_val(env)
+    }
+    fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
+        use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
+        const KEYS: [&'static str; 0usize] = [];
+        let vals: [soroban_sdk::Val; 0usize] = [];
+        env.sparse_map_new_from_slices(&KEYS, &vals)
+            .unwrap_infallible()
+            .into()
+    }
+}
+impl EventD {
+    pub fn publish(&self, env: &soroban_sdk::Env) {
+        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }

@@ -31,6 +31,22 @@ pub trait AttributeTrait {
     fn trait_default_stacked_cfg() -> u32 {
         5
     }
+
+    fn trait_override_stacked_cfg() -> u32 {
+        7
+    }
+
+    fn trait_override_negated_cfg() -> u32 {
+        9
+    }
+
+    fn trait_override_dual_cfg() -> u32 {
+        11
+    }
+
+    fn trait_default_dual_cfg() -> u32 {
+        14
+    }
 }
 
 #[contractimpl]
@@ -70,6 +86,39 @@ impl AttributeTrait for Contract {
     #[cfg(any())]
     fn trait_default_stacked_cfg() -> u32 {
         6
+    }
+
+    #[cfg(all())]
+    #[cfg(all())]
+    fn trait_override_stacked_cfg() -> u32 {
+        8
+    }
+
+    #[cfg(not(any()))]
+    fn trait_override_negated_cfg() -> u32 {
+        10
+    }
+
+    // Two mutually exclusive overrides of the same trait fn, one of which is
+    // configured in, so the trait default is not used.
+    #[cfg(all())]
+    fn trait_override_dual_cfg() -> u32 {
+        12
+    }
+    #[cfg(any())]
+    fn trait_override_dual_cfg() -> u32 {
+        13
+    }
+
+    // Two overrides of the same trait fn, neither of which is configured in, so
+    // the trait default is used.
+    #[cfg(any())]
+    fn trait_default_dual_cfg() -> u32 {
+        15
+    }
+    #[cfg(any())]
+    fn trait_default_dual_cfg() -> u32 {
+        16
     }
 }
 
@@ -115,6 +164,10 @@ mod test {
         assert_eq!(client.trait_override(), 3);
         assert_eq!(client.trait_default(), 2);
         assert_eq!(client.trait_default_stacked_cfg(), 5);
+        assert_eq!(client.trait_override_stacked_cfg(), 8);
+        assert_eq!(client.trait_override_negated_cfg(), 10);
+        assert_eq!(client.trait_override_dual_cfg(), 12);
+        assert_eq!(client.trait_default_dual_cfg(), 14);
     }
 
     #[test]
@@ -191,6 +244,10 @@ mod test {
         assert!(fn_names.contains("trait_override"));
         assert!(fn_names.contains("trait_default"));
         assert!(fn_names.contains("trait_default_stacked_cfg"));
+        assert!(fn_names.contains("trait_override_stacked_cfg"));
+        assert!(fn_names.contains("trait_override_negated_cfg"));
+        assert!(fn_names.contains("trait_override_dual_cfg"));
+        assert!(fn_names.contains("trait_default_dual_cfg"));
         assert!(!fn_names.contains("cfg_excluded"));
     }
 }

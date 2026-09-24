@@ -107,6 +107,10 @@ impl PartialOrd for MuxedAddress {
 
 impl Ord for MuxedAddress {
     fn cmp(&self, other: &Self) -> Ordering {
+        #[cfg(not(target_family = "wasm"))]
+        if !self.env.is_same_env(&other.env) {
+            return ScVal::from(self).cmp(&ScVal::from(other));
+        }
         let v = self
             .env
             .obj_cmp(self.to_val(), other.to_val())

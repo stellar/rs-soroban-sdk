@@ -74,8 +74,10 @@ impl ::core::cmp::PartialEq for UsedParamStruct {
         self.a == other.a && self.nested == other.nested
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDPARAMSTRUCT: [u8; 96usize] = UsedParamStruct::spec_xdr();
+static __SPEC_XDR_TYPE_USEDPARAMSTRUCT: [u8; 96usize] = UsedParamStruct::spec_xdr();
 impl UsedParamStruct {
     pub const fn spec_xdr() -> [u8; 96usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0fUsedParamStruct\0\0\0\0\x02\0\0\0\0\0\0\0\x01a\0\0\0\0\0\0\x04\0\0\0\0\0\0\0\x06nested\0\0\0\0\x07\xd0\0\0\0\x12UsedNestedInStruct\0\0"
@@ -103,7 +105,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedParamSt
         const KEYS: [&'static str; 2usize] = ["a", "nested"];
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             a: vals[0]
@@ -199,8 +201,10 @@ impl ::core::cmp::PartialEq for UsedReturnEnum {
             }
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDRETURNENUM: [u8; 84usize] = UsedReturnEnum::spec_xdr();
+static __SPEC_XDR_TYPE_USEDRETURNENUM: [u8; 84usize] = UsedReturnEnum::spec_xdr();
 impl UsedReturnEnum {
     pub const fn spec_xdr() -> [u8; 84usize] {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x0eUsedReturnEnum\0\0\0\0\0\x02\0\0\0\x01\0\0\0\0\0\0\0\x01A\0\0\0\0\0\0\x01\0\0\0\x04\0\0\0\x01\0\0\0\0\0\0\0\x01B\0\0\0\0\0\0\x01\0\0\0\x07"
@@ -342,8 +346,10 @@ impl ::core::cmp::PartialEq for UsedParamIntEnum {
         __self_discr == __arg1_discr
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDPARAMINTENUM: [u8; 68usize] = UsedParamIntEnum::spec_xdr();
+static __SPEC_XDR_TYPE_USEDPARAMINTENUM: [u8; 68usize] = UsedParamIntEnum::spec_xdr();
 impl UsedParamIntEnum {
     pub const fn spec_xdr() -> [u8; 68usize] {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x10UsedParamIntEnum\0\0\0\x02\0\0\0\0\0\0\0\x01X\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01Y\0\0\0\0\0\0\x02"
@@ -442,8 +448,10 @@ impl ::core::cmp::PartialEq for UsedErrorEnum {
         __self_discr == __arg1_discr
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDERRORENUM: [u8; 76usize] = UsedErrorEnum::spec_xdr();
+static __SPEC_XDR_TYPE_USEDERRORENUM: [u8; 76usize] = UsedErrorEnum::spec_xdr();
 impl UsedErrorEnum {
     pub const fn spec_xdr() -> [u8; 76usize] {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\rUsedErrorEnum\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x08NotFound\0\0\0\x01\0\0\0\0\0\0\0\x07Invalid\0\0\0\0\x02"
@@ -601,8 +609,10 @@ impl ::core::cmp::PartialEq for UsedPanicErrorEnum {
         true
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDPANICERRORENUM: [u8; 56usize] = UsedPanicErrorEnum::spec_xdr();
+static __SPEC_XDR_TYPE_USEDPANICERRORENUM: [u8; 56usize] = UsedPanicErrorEnum::spec_xdr();
 impl UsedPanicErrorEnum {
     pub const fn spec_xdr() -> [u8; 56usize] {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x12UsedPanicErrorEnum\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04Boom\0\0\0\x01"
@@ -758,8 +768,10 @@ impl ::core::cmp::PartialEq for UsedAssertErrorEnum {
         true
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDASSERTERRORENUM: [u8; 56usize] = UsedAssertErrorEnum::spec_xdr();
+static __SPEC_XDR_TYPE_USEDASSERTERRORENUM: [u8; 56usize] = UsedAssertErrorEnum::spec_xdr();
 impl UsedAssertErrorEnum {
     pub const fn spec_xdr() -> [u8; 56usize] {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x13UsedAssertErrorEnum\0\0\0\0\x01\0\0\0\0\0\0\0\x03Bad\0\0\0\0\x01"
@@ -922,8 +934,10 @@ impl ::core::cmp::PartialEq for UsedNestedInStruct {
         self.val == other.val
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDNESTEDINSTRUCT: [u8; 56usize] = UsedNestedInStruct::spec_xdr();
+static __SPEC_XDR_TYPE_USEDNESTEDINSTRUCT: [u8; 56usize] = UsedNestedInStruct::spec_xdr();
 impl UsedNestedInStruct {
     pub const fn spec_xdr() -> [u8; 56usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x12UsedNestedInStruct\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x07"
@@ -950,7 +964,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedNestedI
         const KEYS: [&'static str; 1usize] = ["val"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             val: vals[0]
@@ -1023,8 +1037,10 @@ impl ::core::cmp::PartialEq for UsedVecElement {
         self.data == other.data
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDVECELEMENT: [u8; 52usize] = UsedVecElement::spec_xdr();
+static __SPEC_XDR_TYPE_USEDVECELEMENT: [u8; 52usize] = UsedVecElement::spec_xdr();
 impl UsedVecElement {
     pub const fn spec_xdr() -> [u8; 52usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0eUsedVecElement\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04data\0\0\0\x04"
@@ -1051,7 +1067,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedVecElem
         const KEYS: [&'static str; 1usize] = ["data"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             data: vals[0]
@@ -1129,8 +1145,10 @@ impl ::core::cmp::PartialEq for UsedMapKey {
         __self_discr == __arg1_discr
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDMAPKEY: [u8; 64usize] = UsedMapKey::spec_xdr();
+static __SPEC_XDR_TYPE_USEDMAPKEY: [u8; 64usize] = UsedMapKey::spec_xdr();
 impl UsedMapKey {
     pub const fn spec_xdr() -> [u8; 64usize] {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\nUsedMapKey\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02K1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02K2\0\0\0\0\0\x02"
@@ -1222,8 +1240,10 @@ impl ::core::cmp::PartialEq for UsedMapVal {
         self.v == other.v
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDMAPVAL: [u8; 48usize] = UsedMapVal::spec_xdr();
+static __SPEC_XDR_TYPE_USEDMAPVAL: [u8; 48usize] = UsedMapVal::spec_xdr();
 impl UsedMapVal {
     pub const fn spec_xdr() -> [u8; 48usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\nUsedMapVal\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01v\0\0\0\0\0\0\x04"
@@ -1250,7 +1270,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedMapVal 
         const KEYS: [&'static str; 1usize] = ["v"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             v: vals[0]
@@ -1326,8 +1346,10 @@ impl ::core::cmp::PartialEq for UsedOptionElement {
         self.data == other.data
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDOPTIONELEMENT: [u8; 56usize] = UsedOptionElement::spec_xdr();
+static __SPEC_XDR_TYPE_USEDOPTIONELEMENT: [u8; 56usize] = UsedOptionElement::spec_xdr();
 impl UsedOptionElement {
     pub const fn spec_xdr() -> [u8; 56usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x11UsedOptionElement\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04data\0\0\0\x04"
@@ -1354,7 +1376,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedOptionE
         const KEYS: [&'static str; 1usize] = ["data"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             data: vals[0]
@@ -1425,8 +1447,10 @@ impl ::core::cmp::PartialEq for UsedResultOk {
         self.data == other.data
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDRESULTOK: [u8; 48usize] = UsedResultOk::spec_xdr();
+static __SPEC_XDR_TYPE_USEDRESULTOK: [u8; 48usize] = UsedResultOk::spec_xdr();
 impl UsedResultOk {
     pub const fn spec_xdr() -> [u8; 48usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cUsedResultOk\0\0\0\x01\0\0\0\0\0\0\0\x04data\0\0\0\x04"
@@ -1453,7 +1477,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedResultO
         const KEYS: [&'static str; 1usize] = ["data"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             data: vals[0]
@@ -1534,8 +1558,10 @@ impl ::core::cmp::PartialEq for UsedEventSimple {
         self.amount == other.amount && self.kind == other.kind
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_EVENT_USEDEVENTSIMPLE: [u8; 112usize] = UsedEventSimple::spec_xdr();
+static __SPEC_XDR_EVENT_USEDEVENTSIMPLE: [u8; 112usize] = UsedEventSimple::spec_xdr();
 impl UsedEventSimple {
     pub const fn spec_xdr() -> [u8; 112usize] {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x0fUsedEventSimple\0\0\0\0\x01\0\0\0\x11used_event_simple\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x04kind\0\0\0\x11\0\0\0\x01\0\0\0\0\0\0\0\x06amount\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02"
@@ -1566,7 +1592,7 @@ impl soroban_sdk::Event for UsedEventSimple {
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 1usize] = ["amount"];
         let vals: [soroban_sdk::Val; 1usize] = [self.amount.into_val(env)];
-        env.map_new_from_slices(&KEYS, &vals)
+        env.sparse_map_new_from_slices(&KEYS, &vals)
             .unwrap_infallible()
             .into()
     }
@@ -1621,8 +1647,10 @@ impl ::core::cmp::PartialEq for UsedEventTopicType {
         __self_discr == __arg1_discr
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDEVENTTOPICTYPE: [u8; 76usize] = UsedEventTopicType::spec_xdr();
+static __SPEC_XDR_TYPE_USEDEVENTTOPICTYPE: [u8; 76usize] = UsedEventTopicType::spec_xdr();
 impl UsedEventTopicType {
     pub const fn spec_xdr() -> [u8; 76usize] {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x12UsedEventTopicType\0\0\0\0\0\x02\0\0\0\0\0\0\0\x08Transfer\0\0\0\x01\0\0\0\0\0\0\0\x04Mint\0\0\0\x02"
@@ -1726,9 +1754,10 @@ impl ::core::cmp::PartialEq for UsedEventWithTopicType {
         self.amount == other.amount && self.kind == other.kind
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_EVENT_USEDEVENTWITHTOPICTYPE: [u8; 152usize] =
-    UsedEventWithTopicType::spec_xdr();
+static __SPEC_XDR_EVENT_USEDEVENTWITHTOPICTYPE: [u8; 152usize] = UsedEventWithTopicType::spec_xdr();
 impl UsedEventWithTopicType {
     pub const fn spec_xdr() -> [u8; 152usize] {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x16UsedEventWithTopicType\0\0\0\0\0\x01\0\0\0\x1aused_event_with_topic_type\0\0\0\0\0\x02\0\0\0\0\0\0\0\x04kind\0\0\x07\xd0\0\0\0\x12UsedEventTopicType\0\0\0\0\0\x01\0\0\0\0\0\0\0\x06amount\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02"
@@ -1762,7 +1791,7 @@ impl soroban_sdk::Event for UsedEventWithTopicType {
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 1usize] = ["amount"];
         let vals: [soroban_sdk::Val; 1usize] = [self.amount.into_val(env)];
-        env.map_new_from_slices(&KEYS, &vals)
+        env.sparse_map_new_from_slices(&KEYS, &vals)
             .unwrap_infallible()
             .into()
     }
@@ -1819,8 +1848,10 @@ impl ::core::cmp::PartialEq for UsedEventDataType {
         self.x == other.x && self.y == other.y
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDEVENTDATATYPE: [u8; 72usize] = UsedEventDataType::spec_xdr();
+static __SPEC_XDR_TYPE_USEDEVENTDATATYPE: [u8; 72usize] = UsedEventDataType::spec_xdr();
 impl UsedEventDataType {
     pub const fn spec_xdr() -> [u8; 72usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x11UsedEventDataType\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x01x\0\0\0\0\0\0\x04\0\0\0\0\0\0\0\x01y\0\0\0\0\0\0\x04"
@@ -1848,7 +1879,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventDa
         const KEYS: [&'static str; 2usize] = ["x", "y"];
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             x: vals[0]
@@ -1935,9 +1966,10 @@ impl ::core::cmp::PartialEq for UsedEventWithDataType {
         self.kind == other.kind && self.payload == other.payload
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_EVENT_USEDEVENTWITHDATATYPE: [u8; 152usize] =
-    UsedEventWithDataType::spec_xdr();
+static __SPEC_XDR_EVENT_USEDEVENTWITHDATATYPE: [u8; 152usize] = UsedEventWithDataType::spec_xdr();
 impl UsedEventWithDataType {
     pub const fn spec_xdr() -> [u8; 152usize] {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x15UsedEventWithDataType\0\0\0\0\0\0\x01\0\0\0\x19used_event_with_data_type\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x04kind\0\0\0\x11\0\0\0\x01\0\0\0\0\0\0\0\x07payload\0\0\0\x07\xd0\0\0\0\x11UsedEventDataType\0\0\0\0\0\0\0\0\0\0\x02"
@@ -1971,7 +2003,7 @@ impl soroban_sdk::Event for UsedEventWithDataType {
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 1usize] = ["payload"];
         let vals: [soroban_sdk::Val; 1usize] = [self.payload.into_val(env)];
-        env.map_new_from_slices(&KEYS, &vals)
+        env.sparse_map_new_from_slices(&KEYS, &vals)
             .unwrap_infallible()
             .into()
     }
@@ -2024,8 +2056,10 @@ impl ::core::cmp::PartialEq for UsedEventTopicOuter {
         self.inner == other.inner
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDEVENTTOPICOUTER: [u8; 84usize] = UsedEventTopicOuter::spec_xdr();
+static __SPEC_XDR_TYPE_USEDEVENTTOPICOUTER: [u8; 84usize] = UsedEventTopicOuter::spec_xdr();
 impl UsedEventTopicOuter {
     pub const fn spec_xdr() -> [u8; 84usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x13UsedEventTopicOuter\0\0\0\0\x01\0\0\0\0\0\0\0\x05inner\0\0\0\0\0\x07\xd0\0\0\0\x13UsedEventTopicInner\0"
@@ -2052,7 +2086,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventTo
         const KEYS: [&'static str; 1usize] = ["inner"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             inner: vals[0]
@@ -2132,8 +2166,10 @@ impl ::core::cmp::PartialEq for UsedEventTopicInner {
         self.val == other.val
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDEVENTTOPICINNER: [u8; 56usize] = UsedEventTopicInner::spec_xdr();
+static __SPEC_XDR_TYPE_USEDEVENTTOPICINNER: [u8; 56usize] = UsedEventTopicInner::spec_xdr();
 impl UsedEventTopicInner {
     pub const fn spec_xdr() -> [u8; 56usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x13UsedEventTopicInner\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
@@ -2160,7 +2196,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventTo
         const KEYS: [&'static str; 1usize] = ["val"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             val: vals[0]
@@ -2243,8 +2279,10 @@ impl ::core::cmp::PartialEq for UsedEventWithNestedTopic {
         self.amount == other.amount && self.info == other.info
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_EVENT_USEDEVENTWITHNESTEDTOPIC: [u8; 152usize] =
+static __SPEC_XDR_EVENT_USEDEVENTWITHNESTEDTOPIC: [u8; 152usize] =
     UsedEventWithNestedTopic::spec_xdr();
 impl UsedEventWithNestedTopic {
     pub const fn spec_xdr() -> [u8; 152usize] {
@@ -2279,7 +2317,7 @@ impl soroban_sdk::Event for UsedEventWithNestedTopic {
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 1usize] = ["amount"];
         let vals: [soroban_sdk::Val; 1usize] = [self.amount.into_val(env)];
-        env.map_new_from_slices(&KEYS, &vals)
+        env.sparse_map_new_from_slices(&KEYS, &vals)
             .unwrap_infallible()
             .into()
     }
@@ -2332,8 +2370,10 @@ impl ::core::cmp::PartialEq for UsedEventDataOuter {
         self.inner == other.inner
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDEVENTDATAOUTER: [u8; 84usize] = UsedEventDataOuter::spec_xdr();
+static __SPEC_XDR_TYPE_USEDEVENTDATAOUTER: [u8; 84usize] = UsedEventDataOuter::spec_xdr();
 impl UsedEventDataOuter {
     pub const fn spec_xdr() -> [u8; 84usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x12UsedEventDataOuter\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05inner\0\0\0\0\0\x07\xd0\0\0\0\x12UsedEventDataInner\0\0"
@@ -2360,7 +2400,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventDa
         const KEYS: [&'static str; 1usize] = ["inner"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             inner: vals[0]
@@ -2440,8 +2480,10 @@ impl ::core::cmp::PartialEq for UsedEventDataInner {
         self.val == other.val
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDEVENTDATAINNER: [u8; 56usize] = UsedEventDataInner::spec_xdr();
+static __SPEC_XDR_TYPE_USEDEVENTDATAINNER: [u8; 56usize] = UsedEventDataInner::spec_xdr();
 impl UsedEventDataInner {
     pub const fn spec_xdr() -> [u8; 56usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x12UsedEventDataInner\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
@@ -2468,7 +2510,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventDa
         const KEYS: [&'static str; 1usize] = ["val"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             val: vals[0]
@@ -2551,8 +2593,10 @@ impl ::core::cmp::PartialEq for UsedEventWithNestedData {
         self.kind == other.kind && self.payload == other.payload
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_EVENT_USEDEVENTWITHNESTEDDATA: [u8; 152usize] =
+static __SPEC_XDR_EVENT_USEDEVENTWITHNESTEDDATA: [u8; 152usize] =
     UsedEventWithNestedData::spec_xdr();
 impl UsedEventWithNestedData {
     pub const fn spec_xdr() -> [u8; 152usize] {
@@ -2587,7 +2631,7 @@ impl soroban_sdk::Event for UsedEventWithNestedData {
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 1usize] = ["payload"];
         let vals: [soroban_sdk::Val; 1usize] = [self.payload.into_val(env)];
-        env.map_new_from_slices(&KEYS, &vals)
+        env.sparse_map_new_from_slices(&KEYS, &vals)
             .unwrap_infallible()
             .into()
     }
@@ -2642,8 +2686,10 @@ impl ::core::cmp::PartialEq for UsedRefTopicType {
         __self_discr == __arg1_discr
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDREFTOPICTYPE: [u8; 68usize] = UsedRefTopicType::spec_xdr();
+static __SPEC_XDR_TYPE_USEDREFTOPICTYPE: [u8; 68usize] = UsedRefTopicType::spec_xdr();
 impl UsedRefTopicType {
     pub const fn spec_xdr() -> [u8; 68usize] {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x10UsedRefTopicType\0\0\0\x02\0\0\0\0\0\0\0\x04Send\0\0\0\x01\0\0\0\0\0\0\0\x04Recv\0\0\0\x02"
@@ -2740,8 +2786,10 @@ impl ::core::cmp::PartialEq for UsedRefDataType {
         self.nested == other.nested
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDREFDATATYPE: [u8; 76usize] = UsedRefDataType::spec_xdr();
+static __SPEC_XDR_TYPE_USEDREFDATATYPE: [u8; 76usize] = UsedRefDataType::spec_xdr();
 impl UsedRefDataType {
     pub const fn spec_xdr() -> [u8; 76usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0fUsedRefDataType\0\0\0\0\x01\0\0\0\0\0\0\0\x06nested\0\0\0\0\x07\xd0\0\0\0\x10UsedRefDataInner"
@@ -2768,7 +2816,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRefData
         const KEYS: [&'static str; 1usize] = ["nested"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             nested: vals[0]
@@ -2841,8 +2889,10 @@ impl ::core::cmp::PartialEq for UsedRefDataInner {
         self.val == other.val
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDREFDATAINNER: [u8; 52usize] = UsedRefDataInner::spec_xdr();
+static __SPEC_XDR_TYPE_USEDREFDATAINNER: [u8; 52usize] = UsedRefDataInner::spec_xdr();
 impl UsedRefDataInner {
     pub const fn spec_xdr() -> [u8; 52usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x10UsedRefDataInner\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
@@ -2869,7 +2919,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRefData
         const KEYS: [&'static str; 1usize] = ["val"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             val: vals[0]
@@ -2950,8 +3000,10 @@ impl<'a> ::core::cmp::PartialEq for UsedEventWithRefs<'a> {
         self.kind == other.kind && self.payload == other.payload
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_EVENT_USEDEVENTWITHREFS: [u8; 156usize] = UsedEventWithRefs::spec_xdr();
+static __SPEC_XDR_EVENT_USEDEVENTWITHREFS: [u8; 156usize] = UsedEventWithRefs::spec_xdr();
 impl<'a> UsedEventWithRefs<'a> {
     pub const fn spec_xdr() -> [u8; 156usize] {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x11UsedEventWithRefs\0\0\0\0\0\0\x01\0\0\0\x14used_event_with_refs\0\0\0\x02\0\0\0\0\0\0\0\x04kind\0\0\x07\xd0\0\0\0\x10UsedRefTopicType\0\0\0\x01\0\0\0\0\0\0\0\x07payload\0\0\0\x07\xd0\0\0\0\x0fUsedRefDataType\0\0\0\0\0\0\0\0\x02"
@@ -2985,7 +3037,7 @@ impl<'a> soroban_sdk::Event for UsedEventWithRefs<'a> {
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 1usize] = ["payload"];
         let vals: [soroban_sdk::Val; 1usize] = [self.payload.into_val(env)];
-        env.map_new_from_slices(&KEYS, &vals)
+        env.sparse_map_new_from_slices(&KEYS, &vals)
             .unwrap_infallible()
             .into()
     }
@@ -3033,8 +3085,10 @@ impl ::core::cmp::PartialEq for UsedTupleElement {
         self.val == other.val
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDTUPLEELEMENT: [u8; 52usize] = UsedTupleElement::spec_xdr();
+static __SPEC_XDR_TYPE_USEDTUPLEELEMENT: [u8; 52usize] = UsedTupleElement::spec_xdr();
 impl UsedTupleElement {
     pub const fn spec_xdr() -> [u8; 52usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x10UsedTupleElement\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
@@ -3061,7 +3115,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedTupleEl
         const KEYS: [&'static str; 1usize] = ["val"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             val: vals[0]
@@ -3137,9 +3191,10 @@ impl ::core::cmp::PartialEq for UsedTupleReturnElement {
         self.val == other.val
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDTUPLERETURNELEMENT: [u8; 60usize] =
-    UsedTupleReturnElement::spec_xdr();
+static __SPEC_XDR_TYPE_USEDTUPLERETURNELEMENT: [u8; 60usize] = UsedTupleReturnElement::spec_xdr();
 impl UsedTupleReturnElement {
     pub const fn spec_xdr() -> [u8; 60usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x16UsedTupleReturnElement\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
@@ -3166,7 +3221,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedTupleRe
         const KEYS: [&'static str; 1usize] = ["val"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             val: vals[0]
@@ -3244,9 +3299,10 @@ impl ::core::cmp::PartialEq for UsedVecInnerVecElement {
         self.val == other.val
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDVECINNERVECELEMENT: [u8; 60usize] =
-    UsedVecInnerVecElement::spec_xdr();
+static __SPEC_XDR_TYPE_USEDVECINNERVECELEMENT: [u8; 60usize] = UsedVecInnerVecElement::spec_xdr();
 impl UsedVecInnerVecElement {
     pub const fn spec_xdr() -> [u8; 60usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x16UsedVecInnerVecElement\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
@@ -3273,7 +3329,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedVecInne
         const KEYS: [&'static str; 1usize] = ["val"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             val: vals[0]
@@ -3351,8 +3407,10 @@ impl ::core::cmp::PartialEq for UsedVecInnerElement {
         self.val == other.val
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDVECINNERELEMENT: [u8; 56usize] = UsedVecInnerElement::spec_xdr();
+static __SPEC_XDR_TYPE_USEDVECINNERELEMENT: [u8; 56usize] = UsedVecInnerElement::spec_xdr();
 impl UsedVecInnerElement {
     pub const fn spec_xdr() -> [u8; 56usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x13UsedVecInnerElement\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
@@ -3379,7 +3437,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedVecInne
         const KEYS: [&'static str; 1usize] = ["val"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             val: vals[0]
@@ -3467,8 +3525,10 @@ impl ::core::cmp::PartialEq for UsedVecElementNested {
         self.val == other.val && self.inner == other.inner && self.vec_inner == other.vec_inner
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDVECELEMENTNESTED: [u8; 156usize] = UsedVecElementNested::spec_xdr();
+static __SPEC_XDR_TYPE_USEDVECELEMENTNESTED: [u8; 156usize] = UsedVecElementNested::spec_xdr();
 impl UsedVecElementNested {
     pub const fn spec_xdr() -> [u8; 156usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x14UsedVecElementNested\0\0\0\x03\0\0\0\0\0\0\0\x05inner\0\0\0\0\0\x07\xd0\0\0\0\x13UsedVecInnerElement\0\0\0\0\0\0\0\0\x03val\0\0\0\0\x04\0\0\0\0\0\0\0\tvec_inner\0\0\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x16UsedVecInnerVecElement\0\0"
@@ -3497,7 +3557,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedVecElem
         const KEYS: [&'static str; 3usize] = ["inner", "val", "vec_inner"];
         let mut vals: [Val; 3usize] = [Val::VOID.to_val(); 3usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             inner: vals[0]
@@ -3547,385 +3607,6 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedVecElementNested> for soroba
         )
     }
 }
-#[allow(deprecated)]
-mod export_false_used {
-    use soroban_sdk::{contracterror, contractevent, contracttype, Symbol};
-    pub struct UsedExportFalseStruct {
-        pub val: u32,
-    }
-    #[automatically_derived]
-    impl ::core::clone::Clone for UsedExportFalseStruct {
-        #[inline]
-        fn clone(&self) -> UsedExportFalseStruct {
-            UsedExportFalseStruct {
-                val: ::core::clone::Clone::clone(&self.val),
-            }
-        }
-    }
-    #[automatically_derived]
-    impl ::core::fmt::Debug for UsedExportFalseStruct {
-        #[inline]
-        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
-            ::core::fmt::Formatter::debug_struct_field1_finish(
-                f,
-                "UsedExportFalseStruct",
-                "val",
-                &&self.val,
-            )
-        }
-    }
-    #[automatically_derived]
-    impl ::core::cmp::Eq for UsedExportFalseStruct {
-        #[inline]
-        #[doc(hidden)]
-        #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
-            let _: ::core::cmp::AssertParamIsEq<u32>;
-        }
-    }
-    #[automatically_derived]
-    impl ::core::marker::StructuralPartialEq for UsedExportFalseStruct {}
-    #[automatically_derived]
-    impl ::core::cmp::PartialEq for UsedExportFalseStruct {
-        #[inline]
-        fn eq(&self, other: &UsedExportFalseStruct) -> bool {
-            self.val == other.val
-        }
-    }
-    #[doc(hidden)]
-    #[allow(non_upper_case_globals)]
-    #[deprecated = "`export` is a no-op under `experimental_spec_shaking_v2` (specs are determined by reachability) and will be removed in a future release"]
-    const __SOROBAN_EXPORT_ARG_DEPRECATED_FOR_UsedExportFalseStruct: () = ();
-    const _: () = __SOROBAN_EXPORT_ARG_DEPRECATED_FOR_UsedExportFalseStruct;
-    #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_TYPE_USEDEXPORTFALSESTRUCT: [u8; 60usize] =
-        UsedExportFalseStruct::spec_xdr();
-    impl UsedExportFalseStruct {
-        pub const fn spec_xdr() -> [u8; 60usize] {
-            *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x15UsedExportFalseStruct\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
-        }
-    }
-    impl soroban_sdk::SpecShakingMarker for UsedExportFalseStruct {
-        #[doc(hidden)]
-        #[inline(always)]
-        fn spec_shaking_marker() {
-            <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            {
-                static MARKER: [u8; 14usize] = *b"SpEcV1\x7f\xc5\xceo\xc3ST\x08";
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-            }
-        }
-    }
-    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedExportFalseStruct {
-        type Error = soroban_sdk::ConversionError;
-        fn try_from_val(
-            env: &soroban_sdk::Env,
-            val: &soroban_sdk::Val,
-        ) -> Result<Self, soroban_sdk::ConversionError> {
-            use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
-            const KEYS: [&'static str; 1usize] = ["val"];
-            let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
-            let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-            env.map_unpack_to_slice(map, &KEYS, &mut vals)
-                .map_err(|_| ConversionError)?;
-            Ok(Self {
-                val: vals[0]
-                    .try_into_val(env)
-                    .map_err(|_| soroban_sdk::ConversionError)?,
-            })
-        }
-    }
-    impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedExportFalseStruct> for soroban_sdk::Val {
-        type Error = soroban_sdk::ConversionError;
-        fn try_from_val(
-            env: &soroban_sdk::Env,
-            val: &UsedExportFalseStruct,
-        ) -> Result<Self, soroban_sdk::ConversionError> {
-            use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
-            const KEYS: [&'static str; 1usize] = ["val"];
-            let vals: [Val; 1usize] =
-                [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
-            Ok(env
-                .map_new_from_slices(&KEYS, &vals)
-                .map_err(|_| ConversionError)?
-                .into())
-        }
-    }
-    impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedExportFalseStruct> for soroban_sdk::Val {
-        type Error = soroban_sdk::ConversionError;
-        #[inline(always)]
-        fn try_from_val(
-            env: &soroban_sdk::Env,
-            val: &&UsedExportFalseStruct,
-        ) -> Result<Self, soroban_sdk::ConversionError> {
-            <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedExportFalseStruct>>::try_from_val(
-                env, *val,
-            )
-        }
-    }
-    pub enum UsedExportFalseError {
-        Fail = 1,
-    }
-    #[automatically_derived]
-    impl ::core::marker::Copy for UsedExportFalseError {}
-    #[automatically_derived]
-    impl ::core::clone::Clone for UsedExportFalseError {
-        #[inline]
-        fn clone(&self) -> UsedExportFalseError {
-            *self
-        }
-    }
-    #[automatically_derived]
-    impl ::core::fmt::Debug for UsedExportFalseError {
-        #[inline]
-        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
-            ::core::fmt::Formatter::write_str(f, "Fail")
-        }
-    }
-    #[automatically_derived]
-    impl ::core::cmp::Eq for UsedExportFalseError {
-        #[inline]
-        #[doc(hidden)]
-        #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {}
-    }
-    #[automatically_derived]
-    impl ::core::marker::StructuralPartialEq for UsedExportFalseError {}
-    #[automatically_derived]
-    impl ::core::cmp::PartialEq for UsedExportFalseError {
-        #[inline]
-        fn eq(&self, other: &UsedExportFalseError) -> bool {
-            true
-        }
-    }
-    #[doc(hidden)]
-    #[allow(non_upper_case_globals)]
-    #[deprecated = "`export` is a no-op under `experimental_spec_shaking_v2` (specs are determined by reachability) and will be removed in a future release"]
-    const __SOROBAN_EXPORT_ARG_DEPRECATED_FOR_UsedExportFalseError: () = ();
-    const _: () = __SOROBAN_EXPORT_ARG_DEPRECATED_FOR_UsedExportFalseError;
-    #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_TYPE_USEDEXPORTFALSEERROR: [u8; 56usize] =
-        UsedExportFalseError::spec_xdr();
-    impl UsedExportFalseError {
-        pub const fn spec_xdr() -> [u8; 56usize] {
-            *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x14UsedExportFalseError\0\0\0\x01\0\0\0\0\0\0\0\x04Fail\0\0\0\x01"
-        }
-    }
-    impl soroban_sdk::SpecShakingMarker for UsedExportFalseError {
-        #[doc(hidden)]
-        #[inline(always)]
-        fn spec_shaking_marker() {
-            {
-                static MARKER: [u8; 14usize] = *b"SpEcV1\r\xd6\r \xfc\xdb\xea\xf3";
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-            }
-        }
-    }
-    impl TryFrom<soroban_sdk::Error> for UsedExportFalseError {
-        type Error = soroban_sdk::Error;
-        #[inline(always)]
-        fn try_from(error: soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
-            if error.is_type(soroban_sdk::xdr::ScErrorType::Contract) {
-                let discriminant = error.get_code();
-                Ok(match discriminant {
-                    1u32 => Self::Fail,
-                    _ => return Err(error),
-                })
-            } else {
-                Err(error)
-            }
-        }
-    }
-    impl TryFrom<&soroban_sdk::Error> for UsedExportFalseError {
-        type Error = soroban_sdk::Error;
-        #[inline(always)]
-        fn try_from(error: &soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
-            <_ as TryFrom<soroban_sdk::Error>>::try_from(*error)
-        }
-    }
-    impl From<UsedExportFalseError> for soroban_sdk::Error {
-        #[inline(always)]
-        fn from(val: UsedExportFalseError) -> soroban_sdk::Error {
-            <_ as From<&UsedExportFalseError>>::from(&val)
-        }
-    }
-    impl From<&UsedExportFalseError> for soroban_sdk::Error {
-        #[inline(always)]
-        fn from(val: &UsedExportFalseError) -> soroban_sdk::Error {
-            match val {
-                UsedExportFalseError::Fail => soroban_sdk::Error::from_contract_error(1u32),
-            }
-        }
-    }
-    impl TryFrom<soroban_sdk::InvokeError> for UsedExportFalseError {
-        type Error = soroban_sdk::InvokeError;
-        #[inline(always)]
-        fn try_from(error: soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
-            match error {
-                soroban_sdk::InvokeError::Abort => Err(error),
-                soroban_sdk::InvokeError::Contract(code) => Ok(match code {
-                    1u32 => Self::Fail,
-                    _ => return Err(error),
-                }),
-            }
-        }
-    }
-    impl TryFrom<&soroban_sdk::InvokeError> for UsedExportFalseError {
-        type Error = soroban_sdk::InvokeError;
-        #[inline(always)]
-        fn try_from(error: &soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
-            <_ as TryFrom<soroban_sdk::InvokeError>>::try_from(*error)
-        }
-    }
-    impl From<UsedExportFalseError> for soroban_sdk::InvokeError {
-        #[inline(always)]
-        fn from(val: UsedExportFalseError) -> soroban_sdk::InvokeError {
-            <_ as From<&UsedExportFalseError>>::from(&val)
-        }
-    }
-    impl From<&UsedExportFalseError> for soroban_sdk::InvokeError {
-        #[inline(always)]
-        fn from(val: &UsedExportFalseError) -> soroban_sdk::InvokeError {
-            match val {
-                UsedExportFalseError::Fail => soroban_sdk::InvokeError::Contract(1u32),
-            }
-        }
-    }
-    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedExportFalseError {
-        type Error = soroban_sdk::ConversionError;
-        #[inline(always)]
-        fn try_from_val(
-            env: &soroban_sdk::Env,
-            val: &soroban_sdk::Val,
-        ) -> Result<Self, soroban_sdk::ConversionError> {
-            use soroban_sdk::TryIntoVal;
-            let error: soroban_sdk::Error = val.try_into_val(env)?;
-            error.try_into().map_err(|_| soroban_sdk::ConversionError)
-        }
-    }
-    impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedExportFalseError> for soroban_sdk::Val {
-        type Error = soroban_sdk::ConversionError;
-        #[inline(always)]
-        fn try_from_val(
-            env: &soroban_sdk::Env,
-            val: &UsedExportFalseError,
-        ) -> Result<Self, soroban_sdk::ConversionError> {
-            let error: soroban_sdk::Error = val.into();
-            Ok(error.into())
-        }
-    }
-    impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedExportFalseError> for soroban_sdk::Val {
-        type Error = soroban_sdk::ConversionError;
-        #[inline(always)]
-        fn try_from_val(
-            env: &soroban_sdk::Env,
-            val: &&UsedExportFalseError,
-        ) -> Result<Self, soroban_sdk::ConversionError> {
-            <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedExportFalseError>>::try_from_val(
-                env, *val,
-            )
-        }
-    }
-    pub struct UsedExportFalseEvent {
-        pub kind: Symbol,
-        pub amount: i128,
-    }
-    #[automatically_derived]
-    impl ::core::clone::Clone for UsedExportFalseEvent {
-        #[inline]
-        fn clone(&self) -> UsedExportFalseEvent {
-            UsedExportFalseEvent {
-                kind: ::core::clone::Clone::clone(&self.kind),
-                amount: ::core::clone::Clone::clone(&self.amount),
-            }
-        }
-    }
-    #[automatically_derived]
-    impl ::core::fmt::Debug for UsedExportFalseEvent {
-        #[inline]
-        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
-            ::core::fmt::Formatter::debug_struct_field2_finish(
-                f,
-                "UsedExportFalseEvent",
-                "kind",
-                &self.kind,
-                "amount",
-                &&self.amount,
-            )
-        }
-    }
-    #[automatically_derived]
-    impl ::core::cmp::Eq for UsedExportFalseEvent {
-        #[inline]
-        #[doc(hidden)]
-        #[coverage(off)]
-        fn assert_receiver_is_total_eq(&self) -> () {
-            let _: ::core::cmp::AssertParamIsEq<Symbol>;
-            let _: ::core::cmp::AssertParamIsEq<i128>;
-        }
-    }
-    #[automatically_derived]
-    impl ::core::marker::StructuralPartialEq for UsedExportFalseEvent {}
-    #[automatically_derived]
-    impl ::core::cmp::PartialEq for UsedExportFalseEvent {
-        #[inline]
-        fn eq(&self, other: &UsedExportFalseEvent) -> bool {
-            self.amount == other.amount && self.kind == other.kind
-        }
-    }
-    #[doc(hidden)]
-    #[allow(non_upper_case_globals)]
-    #[deprecated = "`export` is a no-op under `experimental_spec_shaking_v2` (specs are determined by reachability) and will be removed in a future release"]
-    const __SOROBAN_EXPORT_ARG_DEPRECATED_FOR_UsedExportFalseEvent: () = ();
-    const _: () = __SOROBAN_EXPORT_ARG_DEPRECATED_FOR_UsedExportFalseEvent;
-    #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_EVENT_USEDEXPORTFALSEEVENT: [u8; 120usize] =
-        UsedExportFalseEvent::spec_xdr();
-    impl UsedExportFalseEvent {
-        pub const fn spec_xdr() -> [u8; 120usize] {
-            *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x14UsedExportFalseEvent\0\0\0\x01\0\0\0\x17used_export_false_event\0\0\0\0\x02\0\0\0\0\0\0\0\x04kind\0\0\0\x11\0\0\0\x01\0\0\0\0\0\0\0\x06amount\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02"
-        }
-    }
-    impl soroban_sdk::SpecShakingMarker for UsedExportFalseEvent {
-        #[doc(hidden)]
-        #[inline(always)]
-        fn spec_shaking_marker() {
-            <Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            {
-                static MARKER: [u8; 14usize] = *b"SpEcV1\x9a\x14*\xbc\x82a\x08X";
-                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
-            }
-        }
-    }
-    impl soroban_sdk::Event for UsedExportFalseEvent {
-        fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
-            use soroban_sdk::IntoVal;
-            (
-                &{ soroban_sdk::Symbol::new(env, "used_export_false_event") },
-                {
-                    let v: soroban_sdk::Val = self.kind.into_val(env);
-                    v
-                },
-            )
-                .into_val(env)
-        }
-        fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
-            use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
-            const KEYS: [&'static str; 1usize] = ["amount"];
-            let vals: [soroban_sdk::Val; 1usize] = [self.amount.into_val(env)];
-            env.map_new_from_slices(&KEYS, &vals)
-                .unwrap_infallible()
-                .into()
-        }
-    }
-    impl UsedExportFalseEvent {
-        pub fn publish(&self, env: &soroban_sdk::Env) {
-            <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-            <_ as soroban_sdk::Event>::publish(self, env);
-        }
-    }
-}
 struct UsedNonPubStruct {
     pub val: u32,
 }
@@ -3963,8 +3644,10 @@ impl ::core::cmp::PartialEq for UsedNonPubStruct {
         self.val == other.val
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDNONPUBSTRUCT: [u8; 52usize] = UsedNonPubStruct::spec_xdr();
+static __SPEC_XDR_TYPE_USEDNONPUBSTRUCT: [u8; 52usize] = UsedNonPubStruct::spec_xdr();
 impl UsedNonPubStruct {
     pub const fn spec_xdr() -> [u8; 52usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x10UsedNonPubStruct\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
@@ -3991,7 +3674,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedNonPubS
         const KEYS: [&'static str; 1usize] = ["val"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             val: vals[0]
@@ -4060,8 +3743,10 @@ impl ::core::cmp::PartialEq for UsedNonPubError {
         true
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDNONPUBERROR: [u8; 52usize] = UsedNonPubError::spec_xdr();
+static __SPEC_XDR_TYPE_USEDNONPUBERROR: [u8; 52usize] = UsedNonPubError::spec_xdr();
 impl UsedNonPubError {
     pub const fn spec_xdr() -> [u8; 52usize] {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x0fUsedNonPubError\0\0\0\0\x01\0\0\0\0\0\0\0\x04Fail\0\0\0\x01"
@@ -4222,8 +3907,10 @@ impl ::core::cmp::PartialEq for UsedRecursiveRoot {
         self.val == other.val
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDRECURSIVEROOT: [u8; 80usize] = UsedRecursiveRoot::spec_xdr();
+static __SPEC_XDR_TYPE_USEDRECURSIVEROOT: [u8; 80usize] = UsedRecursiveRoot::spec_xdr();
 impl UsedRecursiveRoot {
     pub const fn spec_xdr() -> [u8; 80usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x11UsedRecursiveRoot\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\x07\xd0\0\0\0\x11UsedRecursiveNode\0\0\0"
@@ -4250,7 +3937,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRecursi
         const KEYS: [&'static str; 1usize] = ["val"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             val: vals[0]
@@ -4348,8 +4035,10 @@ impl ::core::cmp::PartialEq for UsedRecursiveNode {
             }
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDRECURSIVENODE: [u8; 140usize] = UsedRecursiveNode::spec_xdr();
+static __SPEC_XDR_TYPE_USEDRECURSIVENODE: [u8; 140usize] = UsedRecursiveNode::spec_xdr();
 impl UsedRecursiveNode {
     pub const fn spec_xdr() -> [u8; 140usize] {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x11UsedRecursiveNode\0\0\0\0\0\0\x02\0\0\0\x01\0\0\0\0\0\0\0\x0cNotRecursive\0\0\0\x01\0\0\x07\xd0\0\0\0\x08UsedLeaf\0\0\0\x01\0\0\0\0\0\0\0\tRecursive\0\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x11UsedRecursiveLeaf\0\0\0"
@@ -4489,8 +4178,10 @@ impl ::core::cmp::PartialEq for UsedRecursiveLeaf {
         self.val == other.val
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDRECURSIVELEAF: [u8; 84usize] = UsedRecursiveLeaf::spec_xdr();
+static __SPEC_XDR_TYPE_USEDRECURSIVELEAF: [u8; 84usize] = UsedRecursiveLeaf::spec_xdr();
 impl UsedRecursiveLeaf {
     pub const fn spec_xdr() -> [u8; 84usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x11UsedRecursiveLeaf\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x11UsedRecursiveRoot\0\0\0"
@@ -4517,7 +4208,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRecursi
         const KEYS: [&'static str; 1usize] = ["val"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             val: vals[0]
@@ -4588,8 +4279,10 @@ impl ::core::cmp::PartialEq for UsedLeaf {
         self.val == other.val
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_USEDLEAF: [u8; 44usize] = UsedLeaf::spec_xdr();
+static __SPEC_XDR_TYPE_USEDLEAF: [u8; 44usize] = UsedLeaf::spec_xdr();
 impl UsedLeaf {
     pub const fn spec_xdr() -> [u8; 44usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x08UsedLeaf\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
@@ -4616,7 +4309,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedLeaf {
         const KEYS: [&'static str; 1usize] = ["val"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             val: vals[0]
@@ -4651,11 +4344,12 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedLeaf> for soroban_sdk::Val {
     }
 }
 mod wasm_imported {
-    pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01*\x07`\x02~~\x01~`\x03~~~\x01~`\x01~\x01~`\x00\x01~`\x02\x7f\x7f\x01~`\x04\x7f\x7f\x7f\x7f\x01~`\x02\x7f~\x00\x02%\x06\x01b\x01j\x00\x00\x01x\x011\x00\x00\x01v\x01g\x00\x00\x01m\x019\x00\x01\x01i\x012\x00\x02\x01i\x011\x00\x02\x03\x0b\n\x03\x04\x03\x02\x00\x05\x00\x00\x06\x06\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x82\x80\xc0\x00\x0b\x7f\x00A\xa0\x80\xc0\x00\x0b\x7f\x00A\xa0\x80\xc0\x00\x0b\x07\x81\x01\n\x06memory\x02\x00\tfn_enum_a\x00\x06\rfn_enum_int_a\x00\x08\nfn_error_a\x00\t\nfn_event_a\x00\n\x0bfn_struct_a\x00\x0c\x11fn_struct_tuple_a\x00\r\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\xbd\x08\n\x8b\x02\x03\x01\x7f\x01~\x03\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00B\x00!\x01A~!\x02\x03~\x02@\x02@\x02@\x02@\x02@ \x02E\r\x00A\x01!\x03 \x02A\x82\x80\xc0\x80\x00j-\x00\x00\"\x04A\xdf\x00F\r\x04 \x04APjA\xff\x01qA\nI\r\x02 \x04A\xbf\x7fjA\xff\x01qA\x1aI\r\x03\x02@ \x04A\x9f\x7fjA\xff\x01qA\x1aO\r\x00 \x04AEj!\x03\x0c\x05\x0b \x00 \x04\xadB\x08\x86B\x01\x847\x03\x00A\x80\x80\xc0\x80\x00\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x80\x80\x80\x80\x00!\x01\x0c\x01\x0b \x00 \x01B\x08\x86B\x0e\x84\"\x017\x02\x04\x0b \x00 \x017\x03\x00 \x00A\x01\x10\x87\x80\x80\x80\x00!\x01 \x00A\x10j$\x80\x80\x80\x80\x00 \x01\x0f\x0b \x04ARj!\x03\x0c\x01\x0b \x04AKj!\x03\x0b \x01B\x06\x86 \x03\xadB\xff\x01\x83\x84!\x01 \x02A\x01j!\x02\x0c\x00\x0b\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x82\x80\x80\x80\x00\x0b\x08\x00B\x84\x80\x80\x800\x0b*\x00\x02@ \x00B\xff\x01\x83B\x04Q\r\x00\x00\x0bB\x83\x80\x80\x80  \x00B\x84\x80\x80\x80p\x83 \x00B\x80\x80\x80\x80\x10T\x1b\x0b\xdc\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcd\x00R\r\x00 \x01B\xff\x01\x83B\xc9\x00R\r\x00 \x02 \x007\x03\x08 \x02B\x8e\xcc\xc1\xfc\xac\xdd\xab\x017\x03\x00A\x00!\x03\x03@\x02@ \x03A\x10G\r\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02A\x10j \x03j \x02 \x03j)\x03\x007\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x02A\x10jA\x02\x10\x87\x80\x80\x80\x00!\x00 \x02 \x017\x03\x10 \x00A\x98\x80\xc0\x80\x00A\x01 \x02A\x10jA\x01\x10\x8b\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x02A j$\x80\x80\x80\x80\x00B\x02\x0f\x0b \x02A\x10j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b\x00\x0b.\x00\x02@ \x01 \x03F\r\x00\x00\x0b \x00\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x83\x80\x80\x80\x00\x0by\x01\x02\x7f#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\x04R\r\x00A\x01A\x02A\x00 \x01\xa7A\xff\x01q\"\x03\x1b \x03A\x01F\x1b\"\x03A\x02F\r\x00 \x02 \x03\xad7\x03\x08 \x02 \x00B\x84\x80\x80\x80p\x837\x03\x00A\x88\x80\xc0\x80\x00A\x02 \x02A\x02\x10\x8b\x80\x80\x80\x00!\x00 \x02A\x10j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b\xb2\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00 \x02A\x10j \x00\x10\x8e\x80\x80\x80\x00\x02@ \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x8e\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x01 \x02A\x10j \x00\x10\x8f\x80\x80\x80\x00 \x02(\x02\x10\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x8f\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02 \x02)\x03\x187\x03\x08 \x02 \x007\x03\x00 \x02A\x02\x10\x87\x80\x80\x80\x00!\x00 \x02A j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b]\x02\x01\x7f\x01~\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc1\x00F\r\x00\x02@ \x02A\x07F\r\x00B\x01!\x03B\x83\x90\x80\x80\x80\x01!\x01\x0c\x02\x0b \x01B\x08\x87!\x01B\x00!\x03\x0c\x01\x0bB\x00!\x03 \x01\x10\x84\x80\x80\x80\x00!\x01\x0b \x00 \x037\x03\x00 \x00 \x017\x03\x08\x0bF\x00\x02@\x02@ \x01B\x80\x80\x80\x80\x80\x80\x80\xc0\x00|B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x01B\x08\x86B\x07\x84!\x01\x0c\x01\x0b \x01\x10\x85\x80\x80\x80\x00!\x01\x0b \x00B\x007\x03\x00 \x00 \x017\x03\x08\x0b\x0b)\x01\x00A\x80\x80\xc0\x00\x0b V2f1f2\x00\x00\x02\x00\x10\x00\x02\x00\x00\x00\x04\x00\x10\x00\x02\x00\x00\x00\x04\x00\x10\x00\x02\x00\x00\x00\x00\xbf\x0e\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\tfn_enum_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_error_a\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05input\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd0\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_event_a\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bfn_struct_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rfn_enum_int_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x08EnumIntA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11fn_struct_tuple_a\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumB\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x07\x00\x00\x00\x07\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumC\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorB\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x0c\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorC\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00e\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00f\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventA\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventB\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_b\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventC\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_c\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructA\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructB\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructC\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x03\xea\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntA\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntB\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntC\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\xc8\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x01,\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleB\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleC\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x0b\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1b\x00\x00\x00\x00\x00+\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00";
+    pub const WASM: &[u8] = b"\x00asm\x01\x00\x00\x00\x01*\x07`\x02~~\x01~`\x03~~~\x01~`\x01~\x01~`\x00\x01~`\x02\x7f\x7f\x01~`\x04\x7f\x7f\x7f\x7f\x01~`\x02\x7f~\x00\x02+\x07\x01b\x01j\x00\x00\x01x\x011\x00\x00\x01m\x019\x00\x01\x01v\x01g\x00\x00\x01m\x01b\x00\x01\x01i\x012\x00\x02\x01i\x011\x00\x02\x03\x0c\x0b\x03\x04\x03\x02\x00\x05\x03\x00\x00\x06\x06\x05\x03\x01\x00\x11\x06!\x04\x7f\x01A\x80\x80\xc0\x00\x0b\x7f\x00A\x82\x80\xc0\x00\x0b\x7f\x00A\x80\x81\xc0\x00\x0b\x7f\x00A\x80\x81\xc0\x00\x0b\x07\x8e\x01\x0b\x06memory\x02\x00\tfn_enum_a\x00\x07\rfn_enum_int_a\x00\t\nfn_error_a\x00\n\nfn_event_a\x00\x0b\nfn_event_d\x00\r\x0bfn_struct_a\x00\x0e\x11fn_struct_tuple_a\x00\x0f\x01_\x03\x01\n__data_end\x03\x02\x0b__heap_base\x03\x03\n\x9d\n\x0b\x95\x02\x03\x01\x7f\x01~\x03\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\x00-\x00\x82\x80\xc0\x80\x00\x1aB\x00!\x01A~!\x02\x03~\x02@\x02@\x02@\x02@\x02@ \x02E\r\x00A\x01!\x03 \x02A\x82\x80\xc0\x80\x00j-\x00\x00\"\x04A\xdf\x00F\r\x04 \x04APjA\xff\x01qA\nI\r\x02 \x04A\xbf\x7fjA\xff\x01qA\x1aI\r\x03\x02@ \x04A\x9f\x7fjA\xff\x01qA\x1aO\r\x00 \x04AEj!\x03\x0c\x05\x0b \x00 \x04\xadB\x08\x86B\x01\x847\x03\x00A\x80\x80\xc0\x80\x00\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x80\x80\x80\x80\x00!\x01\x0c\x01\x0b \x00 \x01B\x08\x86B\x0e\x84\"\x017\x02\x04\x0b \x00 \x017\x03\x00 \x00A\x01\x10\x88\x80\x80\x80\x00!\x01 \x00A\x10j$\x80\x80\x80\x80\x00 \x01\x0f\x0b \x04ARj!\x03\x0c\x01\x0b \x04AKj!\x03\x0b \x01B\x06\x86 \x03\xadB\xff\x01\x83\x84!\x01 \x02A\x01j!\x02\x0c\x00\x0b\x0b\x1a\x00 \x00\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x83\x80\x80\x80\x00\x0b\x12\x00A\x00-\x00\xc8\x80\xc0\x80\x00\x1aB\x84\x80\x80\x800\x0b4\x00\x02@ \x00B\xff\x01\x83B\x04Q\r\x00\x00\x0bA\x00-\x00\x90\x80\xc0\x80\x00\x1aB\x83\x80\x80\x80  \x00B\x84\x80\x80\x80p\x83 \x00B\x80\x80\x80\x80\x10T\x1b\x0b\xe6\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\xcd\x00R\r\x00 \x01B\xff\x01\x83B\xc9\x00R\r\x00A\x00!\x03A\x00-\x00\x9e\x80\xc0\x80\x00\x1a \x02 \x007\x03\x08 \x02B\x8e\xcc\xc1\xfc\xac\xdd\xab\x017\x03\x00\x03@\x02@ \x03A\x10G\r\x00A\x00!\x03\x02@\x03@ \x03A\x10F\r\x01 \x02A\x10j \x03j \x02 \x03j)\x03\x007\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b \x02A\x10jA\x02\x10\x88\x80\x80\x80\x00!\x00 \x02 \x017\x03\x10 \x00A\xf8\x80\xc0\x80\x00A\x01 \x02A\x10jA\x01\x10\x8c\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x02A j$\x80\x80\x80\x80\x00B\x02\x0f\x0b \x02A\x10j \x03jB\x027\x03\x00 \x03A\x08j!\x03\x0c\x00\x0b\x0b\x00\x0b.\x00\x02@ \x01 \x03F\r\x00\x00\x0b \x00\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84 \x01\xadB \x86B\x04\x84\x10\x84\x80\x80\x80\x00\x0b\x91\x01\x03\x01\x7f\x01~\x01\x7f#\x80\x80\x80\x80\x00A\x10k\"\x00$\x80\x80\x80\x80\x00A\x00-\x00\xac\x80\xc0\x80\x00\x1a \x00B\x8e\xd2\xc1\xfc\xac\xdd\xab\x017\x03\x00B\x02!\x01A\x01!\x02\x02@\x03@ \x02E\r\x01 \x02A\x7fj!\x02B\x8e\xd2\xc1\xfc\xac\xdd\xab\x01!\x01\x0c\x00\x0b\x0b \x00 \x017\x03\x08 \x00A\x08jA\x01\x10\x88\x80\x80\x80\x00A\x04A\x00 \x00A\x08jA\x00\x10\x8c\x80\x80\x80\x00\x10\x81\x80\x80\x80\x00\x1a \x00A\x10j$\x80\x80\x80\x80\x00B\x02\x0b\x93\x01\x01\x02\x7f#\x80\x80\x80\x80\x00A\x10k\"\x02$\x80\x80\x80\x80\x00\x02@ \x00B\xff\x01\x83B\x04R\r\x00A\x01A\x02A\x00 \x01\xa7A\xff\x01q\"\x03\x1b \x03A\x01F\x1b\"\x03A\x02F\r\x00A\x00-\x00\xba\x80\xc0\x80\x00\x1a \x02 \x03\xad7\x03\x08 \x02 \x00B\x84\x80\x80\x80p\x837\x03\x00A\xe8\x80\xc0\x80\x00\xadB \x86B\x04\x84 \x02\xadB \x86B\x04\x84B\x84\x80\x80\x80 \x10\x82\x80\x80\x80\x00!\x00 \x02A\x10j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b\xbc\x01\x01\x01\x7f#\x80\x80\x80\x80\x00A k\"\x02$\x80\x80\x80\x80\x00 \x02A\x10j \x00\x10\x90\x80\x80\x80\x00\x02@ \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x90\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02)\x03\x18!\x01A\x00-\x00\xd6\x80\xc0\x80\x00\x1a \x02A\x10j \x00\x10\x91\x80\x80\x80\x00 \x02(\x02\x10\r\x00 \x02)\x03\x18!\x00 \x02A\x10j \x01\x10\x91\x80\x80\x80\x00 \x02(\x02\x10A\x01F\r\x00 \x02 \x02)\x03\x187\x03\x08 \x02 \x007\x03\x00 \x02A\x02\x10\x88\x80\x80\x80\x00!\x00 \x02A j$\x80\x80\x80\x80\x00 \x00\x0f\x0b\x00\x0b]\x02\x01\x7f\x01~\x02@\x02@ \x01\xa7A\xff\x01q\"\x02A\xc1\x00F\r\x00\x02@ \x02A\x07F\r\x00B\x01!\x03B\x83\x90\x80\x80\x80\x01!\x01\x0c\x02\x0b \x01B\x08\x87!\x01B\x00!\x03\x0c\x01\x0bB\x00!\x03 \x01\x10\x85\x80\x80\x80\x00!\x01\x0b \x00 \x037\x03\x00 \x00 \x017\x03\x08\x0bF\x00\x02@\x02@ \x01B\x80\x80\x80\x80\x80\x80\x80\xc0\x00|B\xff\xff\xff\xff\xff\xff\xff\xff\x00V\r\x00 \x01B\x08\x86B\x07\x84!\x01\x0c\x01\x0b \x01\x10\x86\x80\x80\x80\x00!\x01\x0b \x00B\x007\x03\x00 \x00 \x017\x03\x08\x0b\x0b\x8a\x01\x01\x00A\x80\x80\xc0\x00\x0b\x80\x01V2SpEcV1\xa2=N\xc1p\x95\x90\xb2SpEcV1\xe9R\xa7\xe8b\x99\xa2\xc3SpEcV1K\xe6\x8ej\x19\x9en\xbdSpEcV1\x15\xf0Wx\x15\x83\xc0:SpEcV1\xb6\x1c\xfd\xdfhY-dSpEcV1V]\x80\\~\x1a\x08/SpEcV1\xcf)\x97]S\xb2\xfd)f1f2d\x00\x10\x00\x02\x00\x00\x00f\x00\x10\x00\x02\x00\x00\x00f\x00\x10\x00\x02\x00\x00\x00\x00\xc7(\x0econtractspecv0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\tfn_enum_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_error_a\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x05input\x00\x00\x00\x00\x00\x00\x04\x00\x00\x00\x01\x00\x00\x03\xe9\x00\x00\x00\x04\x00\x00\x07\xd0\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_event_a\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nfn_event_d\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0bfn_struct_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\rfn_enum_int_a\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x08EnumIntA\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x11fn_struct_tuple_a\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00_Contract executable used for creating a new contract and used in\n`CreateContractHostFnContext`.\x00\x00\x00\x00\x00\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00xExecutable specified by the contract instance as a specific Wasm contract code entry identified by its Wasm sha256 hash.\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00_Executable reference via a persistent storage entry owned by this contract or another contract.\x00\x00\x00\x00\x0bExternalRef\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x15ContractExecutableRef\x00\x00\x00\x00\x00\x00\x01\x00\x00\x00\xc0Executable referenced via a persistent storage entry owned by a contract,\neither this contract or another contract.\n\nThe persistent storage entry owned by the `owner` has the `tag` as its key.\x00\x00\x00\x00\x00\x00\x00\x15ContractExecutableRef\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x05owner\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x03tag\x00\x00\x00\x00\x10\x00\x00\x00\x02\x00\x00\x00\xe3Context of a single authorized call performed by an address.\n\nCustom account contracts that implement `__check_auth` special function\nreceive a list of `Context` values corresponding to all the calls that\nneed to be authorized.\x00\x00\x00\x00\x00\x00\x00\x00\x07Context\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x14Contract invocation.\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x01\x00\x00\x00=Contract that has a constructor with no arguments is created.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00DContract that has a constructor with 1 or more arguments is created.\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x01\x00\x00\x00\xbdAuthorization context of a single contract call.\n\nThis struct corresponds to a `require_auth_for_args` call for an address\nfrom `contract` function with `fn_name` name and `args` arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x04args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08contract\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x07fn_name\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x008Value of contract node in InvokerContractAuthEntry tree.\x00\x00\x00\x00\x00\x00\x00\x15SubContractInvocation\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x07context\x00\x00\x00\x07\xd0\x00\x00\x00\x0fContractContext\x00\x00\x00\x00\x00\x00\x00\x00\x0fsub_invocations\x00\x00\x00\x03\xea\x00\x00\x07\xd0\x00\x00\x00\x18InvokerContractAuthEntry\x00\x00\x00\x02\x00\x00\x01/A node in the tree of authorizations performed on behalf of the current\ncontract as invoker of the contracts deeper in the call stack.\n\nThis is used as an argument of `authorize_as_current_contract` host function.\n\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\ncurrent contract.\x00\x00\x00\x00\x00\x00\x00\x00\x18InvokerContractAuthEntry\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x12Invoke a contract.\x00\x00\x00\x00\x00\x08Contract\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x15SubContractInvocation\x00\x00\x00\x00\x00\x00\x01\x00\x00\x005Create a contract passing 0 arguments to constructor.\x00\x00\x00\x00\x00\x00\x14CreateContractHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x01\x00\x00\x00=Create a contract passing 0 or more arguments to constructor.\x00\x00\x00\x00\x00\x00\x1cCreateContractWithCtorHostFn\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x01\x00\x00\x00vAuthorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\x00\x00\x00\x00\x00\x00\x00\x00\x00\x1bCreateContractHostFnContext\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x01\x00\x00\x00\xd6Authorization context for `create_contract` host function that creates a\nnew contract on behalf of authorizer address.\nThis is the same as `CreateContractHostFnContext`, but also has\ncontract constructor arguments.\x00\x00\x00\x00\x00\x00\x00\x00\x00*CreateContractWithConstructorHostFnContext\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x10constructor_args\x00\x00\x03\xea\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nexecutable\x00\x00\x00\x00\x07\xd0\x00\x00\x00\x12ContractExecutable\x00\x00\x00\x00\x00\x00\x00\x00\x00\x04salt\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\nExecutable\x00\x00\x00\x00\x00\x03\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x04Wasm\x00\x00\x00\x01\x00\x00\x03\xee\x00\x00\x00 \x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStellarAsset\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07Account\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumA\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumB\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x02\x00\x00\x00\x07\x00\x00\x00\x07\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x05EnumC\x00\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x07StructA\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x01\x00\x00\x07\xd0\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorA\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorB\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00\x0c\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06ErrorC\x00\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02E1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02E2\x00\x00\x00\x00\x00e\x00\x00\x00\x00\x00\x00\x00\x02E3\x00\x00\x00\x00\x00f\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventA\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_a\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventB\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_b\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x0b\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventC\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_c\x00\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x11\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02f3\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x06EventD\x00\x00\x00\x00\x00\x01\x00\x00\x00\x07event_d\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructA\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x01\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructB\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x10\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x07StructC\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02f1\x00\x00\x00\x00\x03\xea\x00\x00\x00\x04\x00\x00\x00\x00\x00\x00\x00\x02f2\x00\x00\x00\x00\x00\x13\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntA\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x03\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntB\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\x14\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x00\x1e\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x08EnumIntC\x00\x00\x00\x03\x00\x00\x00\x00\x00\x00\x00\x02V1\x00\x00\x00\x00\x00d\x00\x00\x00\x00\x00\x00\x00\x02V2\x00\x00\x00\x00\x00\xc8\x00\x00\x00\x00\x00\x00\x00\x02V3\x00\x00\x00\x00\x01,\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleA\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x07\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleB\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\n\x00\x00\x00\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x0cStructTupleC\x00\x00\x00\x02\x00\x00\x00\x00\x00\x00\x00\x010\x00\x00\x00\x00\x00\x00\x13\x00\x00\x00\x00\x00\x00\x00\x011\x00\x00\x00\x00\x00\x00\x0b\x00\x1e\x11contractenvmetav0\x00\x00\x00\x00\x00\x00\x00\x1d\x00\x00\x00\x00\x00O\x0econtractmetav0\x00\x00\x00\x00\x00\x00\x00\x05rsver\x00\x00\x00\x00\x00\x00\x061.91.0\x00\x00\x00\x00\x00\x00\x00\x00\x00\x12rssdk_spec_shaking\x00\x00\x00\x00\x00\x012\x00\x00\x00";
     pub trait Contract {
         fn fn_enum_a(env: soroban_sdk::Env) -> EnumA;
         fn fn_error_a(env: soroban_sdk::Env, input: u32) -> Result<u32, ErrorA>;
         fn fn_event_a(env: soroban_sdk::Env, f1: soroban_sdk::Address, f2: soroban_sdk::String);
+        fn fn_event_d(env: soroban_sdk::Env);
         fn fn_struct_a(env: soroban_sdk::Env, f1: u32, f2: bool) -> StructA;
         fn fn_enum_int_a(env: soroban_sdk::Env) -> EnumIntA;
         fn fn_struct_tuple_a(env: soroban_sdk::Env, f1: i64, f2: i64) -> StructTupleA;
@@ -4769,6 +4463,30 @@ mod wasm_imported {
                     &self.env,
                     [f1.into_val(&self.env), f2.into_val(&self.env)],
                 ),
+            );
+            res
+        }
+        pub fn fn_event_d(&self) -> () {
+            use core::ops::Not;
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "fn_event_d") },
+                ::soroban_sdk::Vec::new(&self.env),
+            );
+            res
+        }
+        pub fn try_fn_event_d(
+            &self,
+        ) -> Result<
+            Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+            Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+        > {
+            use soroban_sdk::{FromVal, IntoVal};
+            let res = self.env.try_invoke_contract(
+                &self.address,
+                &{ soroban_sdk::Symbol::new(&self.env, "fn_event_d") },
+                ::soroban_sdk::Vec::new(&self.env),
             );
             res
         }
@@ -4896,6 +4614,11 @@ mod wasm_imported {
         }
         #[inline(always)]
         #[allow(clippy::unused_unit)]
+        pub fn fn_event_d<'i>() -> () {
+            ()
+        }
+        #[inline(always)]
+        #[allow(clippy::unused_unit)]
         pub fn fn_struct_a<'i>(f1: &'i u32, f2: &'i bool) -> (&'i u32, &'i bool) {
             (f1, f2)
         }
@@ -4908,6 +4631,821 @@ mod wasm_imported {
         #[allow(clippy::unused_unit)]
         pub fn fn_struct_tuple_a<'i>(f1: &'i i64, f2: &'i i64) -> (&'i i64, &'i i64) {
             (f1, f2)
+        }
+    }
+    pub struct ContractExecutableRef {
+        pub owner: soroban_sdk::Address,
+        pub tag: soroban_sdk::String,
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for ContractExecutableRef {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            ::core::fmt::Formatter::debug_struct_field2_finish(
+                f,
+                "ContractExecutableRef",
+                "owner",
+                &self.owner,
+                "tag",
+                &&self.tag,
+            )
+        }
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for ContractExecutableRef {
+        #[inline]
+        fn clone(&self) -> ContractExecutableRef {
+            ContractExecutableRef {
+                owner: ::core::clone::Clone::clone(&self.owner),
+                tag: ::core::clone::Clone::clone(&self.tag),
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for ContractExecutableRef {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {
+            let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Address>;
+            let _: ::core::cmp::AssertParamIsEq<soroban_sdk::String>;
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for ContractExecutableRef {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for ContractExecutableRef {
+        #[inline]
+        fn eq(&self, other: &ContractExecutableRef) -> bool {
+            self.owner == other.owner && self.tag == other.tag
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for ContractExecutableRef {
+        #[inline]
+        fn cmp(&self, other: &ContractExecutableRef) -> ::core::cmp::Ordering {
+            match ::core::cmp::Ord::cmp(&self.owner, &other.owner) {
+                ::core::cmp::Ordering::Equal => ::core::cmp::Ord::cmp(&self.tag, &other.tag),
+                cmp => cmp,
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for ContractExecutableRef {
+        #[inline]
+        fn partial_cmp(
+            &self,
+            other: &ContractExecutableRef,
+        ) -> ::core::option::Option<::core::cmp::Ordering> {
+            match ::core::cmp::PartialOrd::partial_cmp(&self.owner, &other.owner) {
+                ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                    ::core::cmp::PartialOrd::partial_cmp(&self.tag, &other.tag)
+                }
+                cmp => cmp,
+            }
+        }
+    }
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    #[link_section = "contractspecv0"]
+    static __SPEC_XDR_TYPE_CONTRACTEXECUTABLEREF: [u8; 80usize] = ContractExecutableRef::spec_xdr();
+    impl ContractExecutableRef {
+        pub const fn spec_xdr() -> [u8; 80usize] {
+            *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x15ContractExecutableRef\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x05owner\0\0\0\0\0\0\x13\0\0\0\0\0\0\0\x03tag\0\0\0\0\x10"
+        }
+    }
+    impl soroban_sdk::SpecShakingMarker for ContractExecutableRef {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {
+            <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            <soroban_sdk::String as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            {
+                static MARKER: [u8; 14usize] = *b"SpEcV18LJ7\xac-\xa5\xe4";
+                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            }
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ContractExecutableRef {
+        type Error = soroban_sdk::ConversionError;
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::Val,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+            const KEYS: [&'static str; 2usize] = ["owner", "tag"];
+            let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
+            let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+            env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
+                .map_err(|_| ConversionError)?;
+            Ok(Self {
+                owner: vals[0]
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::ConversionError)?,
+                tag: vals[1]
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::ConversionError)?,
+            })
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, ContractExecutableRef> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &ContractExecutableRef,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+            const KEYS: [&'static str; 2usize] = ["owner", "tag"];
+            let vals: [Val; 2usize] = [
+                (&val.owner)
+                    .try_into_val(env)
+                    .map_err(|_| ConversionError)?,
+                (&val.tag).try_into_val(env).map_err(|_| ConversionError)?,
+            ];
+            Ok(env
+                .map_new_from_slices(&KEYS, &vals)
+                .map_err(|_| ConversionError)?
+                .into())
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, &ContractExecutableRef> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &&ContractExecutableRef,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, ContractExecutableRef>>::try_from_val(
+                env, *val,
+            )
+        }
+    }
+    pub struct ContractContext {
+        pub args: soroban_sdk::Vec<soroban_sdk::Val>,
+        pub contract: soroban_sdk::Address,
+        pub fn_name: soroban_sdk::Symbol,
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for ContractContext {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            ::core::fmt::Formatter::debug_struct_field3_finish(
+                f,
+                "ContractContext",
+                "args",
+                &self.args,
+                "contract",
+                &self.contract,
+                "fn_name",
+                &&self.fn_name,
+            )
+        }
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for ContractContext {
+        #[inline]
+        fn clone(&self) -> ContractContext {
+            ContractContext {
+                args: ::core::clone::Clone::clone(&self.args),
+                contract: ::core::clone::Clone::clone(&self.contract),
+                fn_name: ::core::clone::Clone::clone(&self.fn_name),
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for ContractContext {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {
+            let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Vec<soroban_sdk::Val>>;
+            let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Address>;
+            let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Symbol>;
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for ContractContext {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for ContractContext {
+        #[inline]
+        fn eq(&self, other: &ContractContext) -> bool {
+            self.args == other.args
+                && self.contract == other.contract
+                && self.fn_name == other.fn_name
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for ContractContext {
+        #[inline]
+        fn cmp(&self, other: &ContractContext) -> ::core::cmp::Ordering {
+            match ::core::cmp::Ord::cmp(&self.args, &other.args) {
+                ::core::cmp::Ordering::Equal => {
+                    match ::core::cmp::Ord::cmp(&self.contract, &other.contract) {
+                        ::core::cmp::Ordering::Equal => {
+                            ::core::cmp::Ord::cmp(&self.fn_name, &other.fn_name)
+                        }
+                        cmp => cmp,
+                    }
+                }
+                cmp => cmp,
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for ContractContext {
+        #[inline]
+        fn partial_cmp(
+            &self,
+            other: &ContractContext,
+        ) -> ::core::option::Option<::core::cmp::Ordering> {
+            match ::core::cmp::PartialOrd::partial_cmp(&self.args, &other.args) {
+                ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                    match ::core::cmp::PartialOrd::partial_cmp(&self.contract, &other.contract) {
+                        ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                            ::core::cmp::PartialOrd::partial_cmp(&self.fn_name, &other.fn_name)
+                        }
+                        cmp => cmp,
+                    }
+                }
+                cmp => cmp,
+            }
+        }
+    }
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    #[link_section = "contractspecv0"]
+    static __SPEC_XDR_TYPE_CONTRACTCONTEXT: [u8; 96usize] = ContractContext::spec_xdr();
+    impl ContractContext {
+        pub const fn spec_xdr() -> [u8; 96usize] {
+            *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0fContractContext\0\0\0\0\x03\0\0\0\0\0\0\0\x04args\0\0\x03\xea\0\0\0\0\0\0\0\0\0\0\0\x08contract\0\0\0\x13\0\0\0\0\0\0\0\x07fn_name\0\0\0\0\x11"
+        }
+    }
+    impl soroban_sdk::SpecShakingMarker for ContractContext {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {
+            <soroban_sdk::Vec<
+                soroban_sdk::Val,
+            > as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            <soroban_sdk::Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            <soroban_sdk::Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            {
+                static MARKER: [u8; 14usize] = *b"SpEcV1\x03\x04uN\xea\xd7[\x13";
+                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            }
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ContractContext {
+        type Error = soroban_sdk::ConversionError;
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::Val,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+            const KEYS: [&'static str; 3usize] = ["args", "contract", "fn_name"];
+            let mut vals: [Val; 3usize] = [Val::VOID.to_val(); 3usize];
+            let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+            env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
+                .map_err(|_| ConversionError)?;
+            Ok(Self {
+                args: vals[0]
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::ConversionError)?,
+                contract: vals[1]
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::ConversionError)?,
+                fn_name: vals[2]
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::ConversionError)?,
+            })
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, ContractContext> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &ContractContext,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+            const KEYS: [&'static str; 3usize] = ["args", "contract", "fn_name"];
+            let vals: [Val; 3usize] = [
+                (&val.args).try_into_val(env).map_err(|_| ConversionError)?,
+                (&val.contract)
+                    .try_into_val(env)
+                    .map_err(|_| ConversionError)?,
+                (&val.fn_name)
+                    .try_into_val(env)
+                    .map_err(|_| ConversionError)?,
+            ];
+            Ok(env
+                .map_new_from_slices(&KEYS, &vals)
+                .map_err(|_| ConversionError)?
+                .into())
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, &ContractContext> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &&ContractContext,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, ContractContext>>::try_from_val(
+                env, *val,
+            )
+        }
+    }
+    pub struct SubContractInvocation {
+        pub context: ContractContext,
+        pub sub_invocations: soroban_sdk::Vec<InvokerContractAuthEntry>,
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for SubContractInvocation {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            ::core::fmt::Formatter::debug_struct_field2_finish(
+                f,
+                "SubContractInvocation",
+                "context",
+                &self.context,
+                "sub_invocations",
+                &&self.sub_invocations,
+            )
+        }
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for SubContractInvocation {
+        #[inline]
+        fn clone(&self) -> SubContractInvocation {
+            SubContractInvocation {
+                context: ::core::clone::Clone::clone(&self.context),
+                sub_invocations: ::core::clone::Clone::clone(&self.sub_invocations),
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for SubContractInvocation {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {
+            let _: ::core::cmp::AssertParamIsEq<ContractContext>;
+            let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Vec<InvokerContractAuthEntry>>;
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for SubContractInvocation {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for SubContractInvocation {
+        #[inline]
+        fn eq(&self, other: &SubContractInvocation) -> bool {
+            self.context == other.context && self.sub_invocations == other.sub_invocations
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for SubContractInvocation {
+        #[inline]
+        fn cmp(&self, other: &SubContractInvocation) -> ::core::cmp::Ordering {
+            match ::core::cmp::Ord::cmp(&self.context, &other.context) {
+                ::core::cmp::Ordering::Equal => {
+                    ::core::cmp::Ord::cmp(&self.sub_invocations, &other.sub_invocations)
+                }
+                cmp => cmp,
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for SubContractInvocation {
+        #[inline]
+        fn partial_cmp(
+            &self,
+            other: &SubContractInvocation,
+        ) -> ::core::option::Option<::core::cmp::Ordering> {
+            match ::core::cmp::PartialOrd::partial_cmp(&self.context, &other.context) {
+                ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                    ::core::cmp::PartialOrd::partial_cmp(
+                        &self.sub_invocations,
+                        &other.sub_invocations,
+                    )
+                }
+                cmp => cmp,
+            }
+        }
+    }
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    #[link_section = "contractspecv0"]
+    static __SPEC_XDR_TYPE_SUBCONTRACTINVOCATION: [u8; 144usize] =
+        SubContractInvocation::spec_xdr();
+    impl SubContractInvocation {
+        pub const fn spec_xdr() -> [u8; 144usize] {
+            *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x15SubContractInvocation\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x07context\0\0\0\x07\xd0\0\0\0\x0fContractContext\0\0\0\0\0\0\0\0\x0fsub_invocations\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x18InvokerContractAuthEntry"
+        }
+    }
+    impl soroban_sdk::SpecShakingMarker for SubContractInvocation {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {
+            <ContractContext as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            <soroban_sdk::Vec<
+                InvokerContractAuthEntry,
+            > as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            {
+                static MARKER: [u8; 14usize] = *b"SpEcV1 \x9d\xc5_\xba\x8fv\x18";
+                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            }
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for SubContractInvocation {
+        type Error = soroban_sdk::ConversionError;
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::Val,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+            const KEYS: [&'static str; 2usize] = ["context", "sub_invocations"];
+            let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
+            let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+            env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
+                .map_err(|_| ConversionError)?;
+            Ok(Self {
+                context: vals[0]
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::ConversionError)?,
+                sub_invocations: vals[1]
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::ConversionError)?,
+            })
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, SubContractInvocation> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &SubContractInvocation,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+            const KEYS: [&'static str; 2usize] = ["context", "sub_invocations"];
+            let vals: [Val; 2usize] = [
+                (&val.context)
+                    .try_into_val(env)
+                    .map_err(|_| ConversionError)?,
+                (&val.sub_invocations)
+                    .try_into_val(env)
+                    .map_err(|_| ConversionError)?,
+            ];
+            Ok(env
+                .map_new_from_slices(&KEYS, &vals)
+                .map_err(|_| ConversionError)?
+                .into())
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, &SubContractInvocation> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &&SubContractInvocation,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, SubContractInvocation>>::try_from_val(
+                env, *val,
+            )
+        }
+    }
+    pub struct CreateContractHostFnContext {
+        pub executable: ContractExecutable,
+        pub salt: soroban_sdk::BytesN<32>,
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for CreateContractHostFnContext {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            ::core::fmt::Formatter::debug_struct_field2_finish(
+                f,
+                "CreateContractHostFnContext",
+                "executable",
+                &self.executable,
+                "salt",
+                &&self.salt,
+            )
+        }
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for CreateContractHostFnContext {
+        #[inline]
+        fn clone(&self) -> CreateContractHostFnContext {
+            CreateContractHostFnContext {
+                executable: ::core::clone::Clone::clone(&self.executable),
+                salt: ::core::clone::Clone::clone(&self.salt),
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for CreateContractHostFnContext {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {
+            let _: ::core::cmp::AssertParamIsEq<ContractExecutable>;
+            let _: ::core::cmp::AssertParamIsEq<soroban_sdk::BytesN<32>>;
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for CreateContractHostFnContext {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for CreateContractHostFnContext {
+        #[inline]
+        fn eq(&self, other: &CreateContractHostFnContext) -> bool {
+            self.executable == other.executable && self.salt == other.salt
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for CreateContractHostFnContext {
+        #[inline]
+        fn cmp(&self, other: &CreateContractHostFnContext) -> ::core::cmp::Ordering {
+            match ::core::cmp::Ord::cmp(&self.executable, &other.executable) {
+                ::core::cmp::Ordering::Equal => ::core::cmp::Ord::cmp(&self.salt, &other.salt),
+                cmp => cmp,
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for CreateContractHostFnContext {
+        #[inline]
+        fn partial_cmp(
+            &self,
+            other: &CreateContractHostFnContext,
+        ) -> ::core::option::Option<::core::cmp::Ordering> {
+            match ::core::cmp::PartialOrd::partial_cmp(&self.executable, &other.executable) {
+                ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                    ::core::cmp::PartialOrd::partial_cmp(&self.salt, &other.salt)
+                }
+                cmp => cmp,
+            }
+        }
+    }
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    #[link_section = "contractspecv0"]
+    static __SPEC_XDR_TYPE_CREATECONTRACTHOSTFNCONTEXT: [u8; 116usize] =
+        CreateContractHostFnContext::spec_xdr();
+    impl CreateContractHostFnContext {
+        pub const fn spec_xdr() -> [u8; 116usize] {
+            *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x1bCreateContractHostFnContext\0\0\0\0\x02\0\0\0\0\0\0\0\nexecutable\0\0\0\0\x07\xd0\0\0\0\x12ContractExecutable\0\0\0\0\0\0\0\0\0\x04salt\0\0\x03\xee\0\0\0 "
+        }
+    }
+    impl soroban_sdk::SpecShakingMarker for CreateContractHostFnContext {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {
+            <ContractExecutable as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            <soroban_sdk::BytesN<32> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            {
+                static MARKER: [u8; 14usize] = *b"SpEcV1\xe1\"T\xf0&\x19?P";
+                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            }
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for CreateContractHostFnContext {
+        type Error = soroban_sdk::ConversionError;
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::Val,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+            const KEYS: [&'static str; 2usize] = ["executable", "salt"];
+            let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
+            let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+            env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
+                .map_err(|_| ConversionError)?;
+            Ok(Self {
+                executable: vals[0]
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::ConversionError)?,
+                salt: vals[1]
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::ConversionError)?,
+            })
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, CreateContractHostFnContext> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &CreateContractHostFnContext,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+            const KEYS: [&'static str; 2usize] = ["executable", "salt"];
+            let vals: [Val; 2usize] = [
+                (&val.executable)
+                    .try_into_val(env)
+                    .map_err(|_| ConversionError)?,
+                (&val.salt).try_into_val(env).map_err(|_| ConversionError)?,
+            ];
+            Ok(env
+                .map_new_from_slices(&KEYS, &vals)
+                .map_err(|_| ConversionError)?
+                .into())
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, &CreateContractHostFnContext> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &&CreateContractHostFnContext,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            <_ as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                CreateContractHostFnContext,
+            >>::try_from_val(env, *val)
+        }
+    }
+    pub struct CreateContractWithConstructorHostFnContext {
+        pub constructor_args: soroban_sdk::Vec<soroban_sdk::Val>,
+        pub executable: ContractExecutable,
+        pub salt: soroban_sdk::BytesN<32>,
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for CreateContractWithConstructorHostFnContext {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            ::core::fmt::Formatter::debug_struct_field3_finish(
+                f,
+                "CreateContractWithConstructorHostFnContext",
+                "constructor_args",
+                &self.constructor_args,
+                "executable",
+                &self.executable,
+                "salt",
+                &&self.salt,
+            )
+        }
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for CreateContractWithConstructorHostFnContext {
+        #[inline]
+        fn clone(&self) -> CreateContractWithConstructorHostFnContext {
+            CreateContractWithConstructorHostFnContext {
+                constructor_args: ::core::clone::Clone::clone(&self.constructor_args),
+                executable: ::core::clone::Clone::clone(&self.executable),
+                salt: ::core::clone::Clone::clone(&self.salt),
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for CreateContractWithConstructorHostFnContext {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {
+            let _: ::core::cmp::AssertParamIsEq<soroban_sdk::Vec<soroban_sdk::Val>>;
+            let _: ::core::cmp::AssertParamIsEq<ContractExecutable>;
+            let _: ::core::cmp::AssertParamIsEq<soroban_sdk::BytesN<32>>;
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for CreateContractWithConstructorHostFnContext {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for CreateContractWithConstructorHostFnContext {
+        #[inline]
+        fn eq(&self, other: &CreateContractWithConstructorHostFnContext) -> bool {
+            self.constructor_args == other.constructor_args
+                && self.executable == other.executable
+                && self.salt == other.salt
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for CreateContractWithConstructorHostFnContext {
+        #[inline]
+        fn cmp(&self, other: &CreateContractWithConstructorHostFnContext) -> ::core::cmp::Ordering {
+            match ::core::cmp::Ord::cmp(&self.constructor_args, &other.constructor_args) {
+                ::core::cmp::Ordering::Equal => {
+                    match ::core::cmp::Ord::cmp(&self.executable, &other.executable) {
+                        ::core::cmp::Ordering::Equal => {
+                            ::core::cmp::Ord::cmp(&self.salt, &other.salt)
+                        }
+                        cmp => cmp,
+                    }
+                }
+                cmp => cmp,
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for CreateContractWithConstructorHostFnContext {
+        #[inline]
+        fn partial_cmp(
+            &self,
+            other: &CreateContractWithConstructorHostFnContext,
+        ) -> ::core::option::Option<::core::cmp::Ordering> {
+            match ::core::cmp::PartialOrd::partial_cmp(
+                &self.constructor_args,
+                &other.constructor_args,
+            ) {
+                ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                    match ::core::cmp::PartialOrd::partial_cmp(&self.executable, &other.executable)
+                    {
+                        ::core::option::Option::Some(::core::cmp::Ordering::Equal) => {
+                            ::core::cmp::PartialOrd::partial_cmp(&self.salt, &other.salt)
+                        }
+                        cmp => cmp,
+                    }
+                }
+                cmp => cmp,
+            }
+        }
+    }
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    #[link_section = "contractspecv0"]
+    static __SPEC_XDR_TYPE_CREATECONTRACTWITHCONSTRUCTORHOSTFNCONTEXT: [u8; 164usize] =
+        CreateContractWithConstructorHostFnContext::spec_xdr();
+    impl CreateContractWithConstructorHostFnContext {
+        pub const fn spec_xdr() -> [u8; 164usize] {
+            *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0*CreateContractWithConstructorHostFnContext\0\0\0\0\0\x03\0\0\0\0\0\0\0\x10constructor_args\0\0\x03\xea\0\0\0\0\0\0\0\0\0\0\0\nexecutable\0\0\0\0\x07\xd0\0\0\0\x12ContractExecutable\0\0\0\0\0\0\0\0\0\x04salt\0\0\x03\xee\0\0\0 "
+        }
+    }
+    impl soroban_sdk::SpecShakingMarker for CreateContractWithConstructorHostFnContext {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {
+            <soroban_sdk::Vec<
+                soroban_sdk::Val,
+            > as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            <ContractExecutable as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            <soroban_sdk::BytesN<32> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            {
+                static MARKER: [u8; 14usize] = *b"SpEcV1\xd2;\xff\xe6\x97\xda;\x83";
+                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            }
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>
+        for CreateContractWithConstructorHostFnContext
+    {
+        type Error = soroban_sdk::ConversionError;
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::Val,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+            const KEYS: [&'static str; 3usize] = ["constructor_args", "executable", "salt"];
+            let mut vals: [Val; 3usize] = [Val::VOID.to_val(); 3usize];
+            let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+            env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
+                .map_err(|_| ConversionError)?;
+            Ok(Self {
+                constructor_args: vals[0]
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::ConversionError)?,
+                executable: vals[1]
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::ConversionError)?,
+                salt: vals[2]
+                    .try_into_val(env)
+                    .map_err(|_| soroban_sdk::ConversionError)?,
+            })
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, CreateContractWithConstructorHostFnContext>
+        for soroban_sdk::Val
+    {
+        type Error = soroban_sdk::ConversionError;
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &CreateContractWithConstructorHostFnContext,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+            const KEYS: [&'static str; 3usize] = ["constructor_args", "executable", "salt"];
+            let vals: [Val; 3usize] = [
+                (&val.constructor_args)
+                    .try_into_val(env)
+                    .map_err(|_| ConversionError)?,
+                (&val.executable)
+                    .try_into_val(env)
+                    .map_err(|_| ConversionError)?,
+                (&val.salt).try_into_val(env).map_err(|_| ConversionError)?,
+            ];
+            Ok(env
+                .map_new_from_slices(&KEYS, &vals)
+                .map_err(|_| ConversionError)?
+                .into())
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, &CreateContractWithConstructorHostFnContext>
+        for soroban_sdk::Val
+    {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &&CreateContractWithConstructorHostFnContext,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            <_ as soroban_sdk::TryFromVal<
+                soroban_sdk::Env,
+                CreateContractWithConstructorHostFnContext,
+            >>::try_from_val(env, *val)
         }
     }
     pub struct StructA {
@@ -4974,8 +5512,10 @@ mod wasm_imported {
             }
         }
     }
+    #[doc(hidden)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_TYPE_STRUCTA: [u8; 60usize] = StructA::spec_xdr();
+    static __SPEC_XDR_TYPE_STRUCTA: [u8; 60usize] = StructA::spec_xdr();
     impl StructA {
         pub const fn spec_xdr() -> [u8; 60usize] {
             *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07StructA\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x04\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x01"
@@ -5003,7 +5543,7 @@ mod wasm_imported {
             const KEYS: [&'static str; 2usize] = ["f1", "f2"];
             let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
             let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-            env.map_unpack_to_slice(map, &KEYS, &mut vals)
+            env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
                 .map_err(|_| ConversionError)?;
             Ok(Self {
                 f1: vals[0]
@@ -5107,8 +5647,10 @@ mod wasm_imported {
             }
         }
     }
+    #[doc(hidden)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_TYPE_STRUCTB: [u8; 60usize] = StructB::spec_xdr();
+    static __SPEC_XDR_TYPE_STRUCTB: [u8; 60usize] = StructB::spec_xdr();
     impl StructB {
         pub const fn spec_xdr() -> [u8; 60usize] {
             *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07StructB\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x07\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x10"
@@ -5136,7 +5678,7 @@ mod wasm_imported {
             const KEYS: [&'static str; 2usize] = ["f1", "f2"];
             let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
             let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-            env.map_unpack_to_slice(map, &KEYS, &mut vals)
+            env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
                 .map_err(|_| ConversionError)?;
             Ok(Self {
                 f1: vals[0]
@@ -5240,8 +5782,10 @@ mod wasm_imported {
             }
         }
     }
+    #[doc(hidden)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_TYPE_STRUCTC: [u8; 64usize] = StructC::spec_xdr();
+    static __SPEC_XDR_TYPE_STRUCTC: [u8; 64usize] = StructC::spec_xdr();
     impl StructC {
         pub const fn spec_xdr() -> [u8; 64usize] {
             *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x07StructC\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\x03\xea\0\0\0\x04\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x13"
@@ -5269,7 +5813,7 @@ mod wasm_imported {
             const KEYS: [&'static str; 2usize] = ["f1", "f2"];
             let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
             let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-            env.map_unpack_to_slice(map, &KEYS, &mut vals)
+            env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
                 .map_err(|_| ConversionError)?;
             Ok(Self {
                 f1: vals[0]
@@ -5370,8 +5914,10 @@ mod wasm_imported {
             }
         }
     }
+    #[doc(hidden)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_TYPE_STRUCTTUPLEA: [u8; 64usize] = StructTupleA::spec_xdr();
+    static __SPEC_XDR_TYPE_STRUCTTUPLEA: [u8; 64usize] = StructTupleA::spec_xdr();
     impl StructTupleA {
         pub const fn spec_xdr() -> [u8; 64usize] {
             *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleA\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\x07\0\0\0\0\0\0\0\x011\0\0\0\0\0\0\x07"
@@ -5496,8 +6042,10 @@ mod wasm_imported {
             }
         }
     }
+    #[doc(hidden)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_TYPE_STRUCTTUPLEB: [u8; 64usize] = StructTupleB::spec_xdr();
+    static __SPEC_XDR_TYPE_STRUCTTUPLEB: [u8; 64usize] = StructTupleB::spec_xdr();
     impl StructTupleB {
         pub const fn spec_xdr() -> [u8; 64usize] {
             *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleB\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\n\0\0\0\0\0\0\0\x011\0\0\0\0\0\0\n"
@@ -5623,8 +6171,10 @@ mod wasm_imported {
             }
         }
     }
+    #[doc(hidden)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_TYPE_STRUCTTUPLEC: [u8; 64usize] = StructTupleC::spec_xdr();
+    static __SPEC_XDR_TYPE_STRUCTTUPLEC: [u8; 64usize] = StructTupleC::spec_xdr();
     impl StructTupleC {
         pub const fn spec_xdr() -> [u8; 64usize] {
             *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cStructTupleC\0\0\0\x02\0\0\0\0\0\0\0\x010\0\0\0\0\0\0\x13\0\0\0\0\0\0\0\x011\0\0\0\0\0\0\x0b"
@@ -5686,6 +6236,932 @@ mod wasm_imported {
             val: &&StructTupleC,
         ) -> Result<Self, soroban_sdk::ConversionError> {
             <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, StructTupleC>>::try_from_val(env, *val)
+        }
+    }
+    pub enum ContractExecutable {
+        Wasm(soroban_sdk::BytesN<32>),
+        ExternalRef(ContractExecutableRef),
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for ContractExecutable {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            match self {
+                ContractExecutable::Wasm(__self_0) => {
+                    ::core::fmt::Formatter::debug_tuple_field1_finish(f, "Wasm", &__self_0)
+                }
+                ContractExecutable::ExternalRef(__self_0) => {
+                    ::core::fmt::Formatter::debug_tuple_field1_finish(f, "ExternalRef", &__self_0)
+                }
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for ContractExecutable {
+        #[inline]
+        fn clone(&self) -> ContractExecutable {
+            match self {
+                ContractExecutable::Wasm(__self_0) => {
+                    ContractExecutable::Wasm(::core::clone::Clone::clone(__self_0))
+                }
+                ContractExecutable::ExternalRef(__self_0) => {
+                    ContractExecutable::ExternalRef(::core::clone::Clone::clone(__self_0))
+                }
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for ContractExecutable {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {
+            let _: ::core::cmp::AssertParamIsEq<soroban_sdk::BytesN<32>>;
+            let _: ::core::cmp::AssertParamIsEq<ContractExecutableRef>;
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for ContractExecutable {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for ContractExecutable {
+        #[inline]
+        fn eq(&self, other: &ContractExecutable) -> bool {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            __self_discr == __arg1_discr
+                && match (self, other) {
+                    (ContractExecutable::Wasm(__self_0), ContractExecutable::Wasm(__arg1_0)) => {
+                        __self_0 == __arg1_0
+                    }
+                    (
+                        ContractExecutable::ExternalRef(__self_0),
+                        ContractExecutable::ExternalRef(__arg1_0),
+                    ) => __self_0 == __arg1_0,
+                    _ => unsafe { ::core::intrinsics::unreachable() },
+                }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for ContractExecutable {
+        #[inline]
+        fn cmp(&self, other: &ContractExecutable) -> ::core::cmp::Ordering {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            match ::core::cmp::Ord::cmp(&__self_discr, &__arg1_discr) {
+                ::core::cmp::Ordering::Equal => match (self, other) {
+                    (ContractExecutable::Wasm(__self_0), ContractExecutable::Wasm(__arg1_0)) => {
+                        ::core::cmp::Ord::cmp(__self_0, __arg1_0)
+                    }
+                    (
+                        ContractExecutable::ExternalRef(__self_0),
+                        ContractExecutable::ExternalRef(__arg1_0),
+                    ) => ::core::cmp::Ord::cmp(__self_0, __arg1_0),
+                    _ => unsafe { ::core::intrinsics::unreachable() },
+                },
+                cmp => cmp,
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for ContractExecutable {
+        #[inline]
+        fn partial_cmp(
+            &self,
+            other: &ContractExecutable,
+        ) -> ::core::option::Option<::core::cmp::Ordering> {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            match (self, other) {
+                (ContractExecutable::Wasm(__self_0), ContractExecutable::Wasm(__arg1_0)) => {
+                    ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0)
+                }
+                (
+                    ContractExecutable::ExternalRef(__self_0),
+                    ContractExecutable::ExternalRef(__arg1_0),
+                ) => ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0),
+                _ => ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr),
+            }
+        }
+    }
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    #[link_section = "contractspecv0"]
+    static __SPEC_XDR_TYPE_CONTRACTEXECUTABLE: [u8; 128usize] = ContractExecutable::spec_xdr();
+    impl ContractExecutable {
+        pub const fn spec_xdr() -> [u8; 128usize] {
+            *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x12ContractExecutable\0\0\0\0\0\x02\0\0\0\x01\0\0\0\0\0\0\0\x04Wasm\0\0\0\x01\0\0\x03\xee\0\0\0 \0\0\0\x01\0\0\0\0\0\0\0\x0bExternalRef\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x15ContractExecutableRef\0\0\0"
+        }
+    }
+    impl soroban_sdk::SpecShakingMarker for ContractExecutable {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {
+            <soroban_sdk::BytesN<32> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            <ContractExecutableRef as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            {
+                static MARKER: [u8; 14usize] = *b"SpEcV1[\xe2\x10\x02u\xde\xd9\xcc";
+                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            }
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for ContractExecutable {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::Val,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
+            const CASES: &'static [&'static str] = &["Wasm", "ExternalRef"];
+            let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
+            let mut iter = vec.try_iter();
+            let discriminant: soroban_sdk::Symbol = iter
+                .next()
+                .ok_or(soroban_sdk::ConversionError)??
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?;
+            Ok(
+                match u32::from(env.symbol_index_in_strs(discriminant.to_symbol_val(), CASES)?)
+                    as usize
+                {
+                    0 => {
+                        if iter.len() > 1usize {
+                            return Err(soroban_sdk::ConversionError);
+                        }
+                        Self::Wasm(
+                            iter.next()
+                                .ok_or(soroban_sdk::ConversionError)??
+                                .try_into_val(env)?,
+                        )
+                    }
+                    1 => {
+                        if iter.len() > 1usize {
+                            return Err(soroban_sdk::ConversionError);
+                        }
+                        Self::ExternalRef(
+                            iter.next()
+                                .ok_or(soroban_sdk::ConversionError)??
+                                .try_into_val(env)?,
+                        )
+                    }
+                    _ => Err(soroban_sdk::ConversionError {})?,
+                },
+            )
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, ContractExecutable> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &ContractExecutable,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{TryFromVal, TryIntoVal};
+            match val {
+                ContractExecutable::Wasm(ref value0) => {
+                    let tup: (soroban_sdk::Val, soroban_sdk::Val) = (
+                        soroban_sdk::Symbol::try_from_val(env, &"Wasm")?.to_val(),
+                        value0.try_into_val(env)?,
+                    );
+                    tup.try_into_val(env).map_err(Into::into)
+                }
+                ContractExecutable::ExternalRef(ref value0) => {
+                    let tup: (soroban_sdk::Val, soroban_sdk::Val) = (
+                        soroban_sdk::Symbol::try_from_val(env, &"ExternalRef")?.to_val(),
+                        value0.try_into_val(env)?,
+                    );
+                    tup.try_into_val(env).map_err(Into::into)
+                }
+            }
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, &ContractExecutable> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &&ContractExecutable,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, ContractExecutable>>::try_from_val(
+                env, *val,
+            )
+        }
+    }
+    pub enum Context {
+        Contract(ContractContext),
+        CreateContractHostFn(CreateContractHostFnContext),
+        CreateContractWithCtorHostFn(CreateContractWithConstructorHostFnContext),
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for Context {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            match self {
+                Context::Contract(__self_0) => {
+                    ::core::fmt::Formatter::debug_tuple_field1_finish(f, "Contract", &__self_0)
+                }
+                Context::CreateContractHostFn(__self_0) => {
+                    ::core::fmt::Formatter::debug_tuple_field1_finish(
+                        f,
+                        "CreateContractHostFn",
+                        &__self_0,
+                    )
+                }
+                Context::CreateContractWithCtorHostFn(__self_0) => {
+                    ::core::fmt::Formatter::debug_tuple_field1_finish(
+                        f,
+                        "CreateContractWithCtorHostFn",
+                        &__self_0,
+                    )
+                }
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for Context {
+        #[inline]
+        fn clone(&self) -> Context {
+            match self {
+                Context::Contract(__self_0) => {
+                    Context::Contract(::core::clone::Clone::clone(__self_0))
+                }
+                Context::CreateContractHostFn(__self_0) => {
+                    Context::CreateContractHostFn(::core::clone::Clone::clone(__self_0))
+                }
+                Context::CreateContractWithCtorHostFn(__self_0) => {
+                    Context::CreateContractWithCtorHostFn(::core::clone::Clone::clone(__self_0))
+                }
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for Context {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {
+            let _: ::core::cmp::AssertParamIsEq<ContractContext>;
+            let _: ::core::cmp::AssertParamIsEq<CreateContractHostFnContext>;
+            let _: ::core::cmp::AssertParamIsEq<CreateContractWithConstructorHostFnContext>;
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for Context {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for Context {
+        #[inline]
+        fn eq(&self, other: &Context) -> bool {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            __self_discr == __arg1_discr
+                && match (self, other) {
+                    (Context::Contract(__self_0), Context::Contract(__arg1_0)) => {
+                        __self_0 == __arg1_0
+                    }
+                    (
+                        Context::CreateContractHostFn(__self_0),
+                        Context::CreateContractHostFn(__arg1_0),
+                    ) => __self_0 == __arg1_0,
+                    (
+                        Context::CreateContractWithCtorHostFn(__self_0),
+                        Context::CreateContractWithCtorHostFn(__arg1_0),
+                    ) => __self_0 == __arg1_0,
+                    _ => unsafe { ::core::intrinsics::unreachable() },
+                }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for Context {
+        #[inline]
+        fn cmp(&self, other: &Context) -> ::core::cmp::Ordering {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            match ::core::cmp::Ord::cmp(&__self_discr, &__arg1_discr) {
+                ::core::cmp::Ordering::Equal => match (self, other) {
+                    (Context::Contract(__self_0), Context::Contract(__arg1_0)) => {
+                        ::core::cmp::Ord::cmp(__self_0, __arg1_0)
+                    }
+                    (
+                        Context::CreateContractHostFn(__self_0),
+                        Context::CreateContractHostFn(__arg1_0),
+                    ) => ::core::cmp::Ord::cmp(__self_0, __arg1_0),
+                    (
+                        Context::CreateContractWithCtorHostFn(__self_0),
+                        Context::CreateContractWithCtorHostFn(__arg1_0),
+                    ) => ::core::cmp::Ord::cmp(__self_0, __arg1_0),
+                    _ => unsafe { ::core::intrinsics::unreachable() },
+                },
+                cmp => cmp,
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for Context {
+        #[inline]
+        fn partial_cmp(&self, other: &Context) -> ::core::option::Option<::core::cmp::Ordering> {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            match (self, other) {
+                (Context::Contract(__self_0), Context::Contract(__arg1_0)) => {
+                    ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0)
+                }
+                (
+                    Context::CreateContractHostFn(__self_0),
+                    Context::CreateContractHostFn(__arg1_0),
+                ) => ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0),
+                (
+                    Context::CreateContractWithCtorHostFn(__self_0),
+                    Context::CreateContractWithCtorHostFn(__arg1_0),
+                ) => ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0),
+                _ => ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr),
+            }
+        }
+    }
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    #[link_section = "contractspecv0"]
+    static __SPEC_XDR_TYPE_CONTEXT: [u8; 244usize] = Context::spec_xdr();
+    impl Context {
+        pub const fn spec_xdr() -> [u8; 244usize] {
+            *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x07Context\0\0\0\0\x03\0\0\0\x01\0\0\0\0\0\0\0\x08Contract\0\0\0\x01\0\0\x07\xd0\0\0\0\x0fContractContext\0\0\0\0\x01\0\0\0\0\0\0\0\x14CreateContractHostFn\0\0\0\x01\0\0\x07\xd0\0\0\0\x1bCreateContractHostFnContext\0\0\0\0\x01\0\0\0\0\0\0\0\x1cCreateContractWithCtorHostFn\0\0\0\x01\0\0\x07\xd0\0\0\0*CreateContractWithConstructorHostFnContext\0\0"
+        }
+    }
+    impl soroban_sdk::SpecShakingMarker for Context {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {
+            <ContractContext as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            <CreateContractHostFnContext as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            {
+                static MARKER: [u8; 14usize] = *b"SpEcV1\r\xb6\x0b\xec\x8f\xd04l";
+                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            }
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Context {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::Val,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
+            const CASES: &'static [&'static str] = &[
+                "Contract",
+                "CreateContractHostFn",
+                "CreateContractWithCtorHostFn",
+            ];
+            let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
+            let mut iter = vec.try_iter();
+            let discriminant: soroban_sdk::Symbol = iter
+                .next()
+                .ok_or(soroban_sdk::ConversionError)??
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?;
+            Ok(
+                match u32::from(env.symbol_index_in_strs(discriminant.to_symbol_val(), CASES)?)
+                    as usize
+                {
+                    0 => {
+                        if iter.len() > 1usize {
+                            return Err(soroban_sdk::ConversionError);
+                        }
+                        Self::Contract(
+                            iter.next()
+                                .ok_or(soroban_sdk::ConversionError)??
+                                .try_into_val(env)?,
+                        )
+                    }
+                    1 => {
+                        if iter.len() > 1usize {
+                            return Err(soroban_sdk::ConversionError);
+                        }
+                        Self::CreateContractHostFn(
+                            iter.next()
+                                .ok_or(soroban_sdk::ConversionError)??
+                                .try_into_val(env)?,
+                        )
+                    }
+                    2 => {
+                        if iter.len() > 1usize {
+                            return Err(soroban_sdk::ConversionError);
+                        }
+                        Self::CreateContractWithCtorHostFn(
+                            iter.next()
+                                .ok_or(soroban_sdk::ConversionError)??
+                                .try_into_val(env)?,
+                        )
+                    }
+                    _ => Err(soroban_sdk::ConversionError {})?,
+                },
+            )
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, Context> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &Context,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{TryFromVal, TryIntoVal};
+            match val {
+                Context::Contract(ref value0) => {
+                    let tup: (soroban_sdk::Val, soroban_sdk::Val) = (
+                        soroban_sdk::Symbol::try_from_val(env, &"Contract")?.to_val(),
+                        value0.try_into_val(env)?,
+                    );
+                    tup.try_into_val(env).map_err(Into::into)
+                }
+                Context::CreateContractHostFn(ref value0) => {
+                    let tup: (soroban_sdk::Val, soroban_sdk::Val) = (
+                        soroban_sdk::Symbol::try_from_val(env, &"CreateContractHostFn")?.to_val(),
+                        value0.try_into_val(env)?,
+                    );
+                    tup.try_into_val(env).map_err(Into::into)
+                }
+                Context::CreateContractWithCtorHostFn(ref value0) => {
+                    let tup: (soroban_sdk::Val, soroban_sdk::Val) = (
+                        soroban_sdk::Symbol::try_from_val(env, &"CreateContractWithCtorHostFn")?
+                            .to_val(),
+                        value0.try_into_val(env)?,
+                    );
+                    tup.try_into_val(env).map_err(Into::into)
+                }
+            }
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, &Context> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &&Context,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, Context>>::try_from_val(env, *val)
+        }
+    }
+    pub enum InvokerContractAuthEntry {
+        Contract(SubContractInvocation),
+        CreateContractHostFn(CreateContractHostFnContext),
+        CreateContractWithCtorHostFn(CreateContractWithConstructorHostFnContext),
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for InvokerContractAuthEntry {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            match self {
+                InvokerContractAuthEntry::Contract(__self_0) => {
+                    ::core::fmt::Formatter::debug_tuple_field1_finish(f, "Contract", &__self_0)
+                }
+                InvokerContractAuthEntry::CreateContractHostFn(__self_0) => {
+                    ::core::fmt::Formatter::debug_tuple_field1_finish(
+                        f,
+                        "CreateContractHostFn",
+                        &__self_0,
+                    )
+                }
+                InvokerContractAuthEntry::CreateContractWithCtorHostFn(__self_0) => {
+                    ::core::fmt::Formatter::debug_tuple_field1_finish(
+                        f,
+                        "CreateContractWithCtorHostFn",
+                        &__self_0,
+                    )
+                }
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for InvokerContractAuthEntry {
+        #[inline]
+        fn clone(&self) -> InvokerContractAuthEntry {
+            match self {
+                InvokerContractAuthEntry::Contract(__self_0) => {
+                    InvokerContractAuthEntry::Contract(::core::clone::Clone::clone(__self_0))
+                }
+                InvokerContractAuthEntry::CreateContractHostFn(__self_0) => {
+                    InvokerContractAuthEntry::CreateContractHostFn(::core::clone::Clone::clone(
+                        __self_0,
+                    ))
+                }
+                InvokerContractAuthEntry::CreateContractWithCtorHostFn(__self_0) => {
+                    InvokerContractAuthEntry::CreateContractWithCtorHostFn(
+                        ::core::clone::Clone::clone(__self_0),
+                    )
+                }
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for InvokerContractAuthEntry {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {
+            let _: ::core::cmp::AssertParamIsEq<SubContractInvocation>;
+            let _: ::core::cmp::AssertParamIsEq<CreateContractHostFnContext>;
+            let _: ::core::cmp::AssertParamIsEq<CreateContractWithConstructorHostFnContext>;
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for InvokerContractAuthEntry {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for InvokerContractAuthEntry {
+        #[inline]
+        fn eq(&self, other: &InvokerContractAuthEntry) -> bool {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            __self_discr == __arg1_discr
+                && match (self, other) {
+                    (
+                        InvokerContractAuthEntry::Contract(__self_0),
+                        InvokerContractAuthEntry::Contract(__arg1_0),
+                    ) => __self_0 == __arg1_0,
+                    (
+                        InvokerContractAuthEntry::CreateContractHostFn(__self_0),
+                        InvokerContractAuthEntry::CreateContractHostFn(__arg1_0),
+                    ) => __self_0 == __arg1_0,
+                    (
+                        InvokerContractAuthEntry::CreateContractWithCtorHostFn(__self_0),
+                        InvokerContractAuthEntry::CreateContractWithCtorHostFn(__arg1_0),
+                    ) => __self_0 == __arg1_0,
+                    _ => unsafe { ::core::intrinsics::unreachable() },
+                }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for InvokerContractAuthEntry {
+        #[inline]
+        fn cmp(&self, other: &InvokerContractAuthEntry) -> ::core::cmp::Ordering {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            match ::core::cmp::Ord::cmp(&__self_discr, &__arg1_discr) {
+                ::core::cmp::Ordering::Equal => match (self, other) {
+                    (
+                        InvokerContractAuthEntry::Contract(__self_0),
+                        InvokerContractAuthEntry::Contract(__arg1_0),
+                    ) => ::core::cmp::Ord::cmp(__self_0, __arg1_0),
+                    (
+                        InvokerContractAuthEntry::CreateContractHostFn(__self_0),
+                        InvokerContractAuthEntry::CreateContractHostFn(__arg1_0),
+                    ) => ::core::cmp::Ord::cmp(__self_0, __arg1_0),
+                    (
+                        InvokerContractAuthEntry::CreateContractWithCtorHostFn(__self_0),
+                        InvokerContractAuthEntry::CreateContractWithCtorHostFn(__arg1_0),
+                    ) => ::core::cmp::Ord::cmp(__self_0, __arg1_0),
+                    _ => unsafe { ::core::intrinsics::unreachable() },
+                },
+                cmp => cmp,
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for InvokerContractAuthEntry {
+        #[inline]
+        fn partial_cmp(
+            &self,
+            other: &InvokerContractAuthEntry,
+        ) -> ::core::option::Option<::core::cmp::Ordering> {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            match (self, other) {
+                (
+                    InvokerContractAuthEntry::Contract(__self_0),
+                    InvokerContractAuthEntry::Contract(__arg1_0),
+                ) => ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0),
+                (
+                    InvokerContractAuthEntry::CreateContractHostFn(__self_0),
+                    InvokerContractAuthEntry::CreateContractHostFn(__arg1_0),
+                ) => ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0),
+                (
+                    InvokerContractAuthEntry::CreateContractWithCtorHostFn(__self_0),
+                    InvokerContractAuthEntry::CreateContractWithCtorHostFn(__arg1_0),
+                ) => ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0),
+                _ => ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr),
+            }
+        }
+    }
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    #[link_section = "contractspecv0"]
+    static __SPEC_XDR_TYPE_INVOKERCONTRACTAUTHENTRY: [u8; 268usize] =
+        InvokerContractAuthEntry::spec_xdr();
+    impl InvokerContractAuthEntry {
+        pub const fn spec_xdr() -> [u8; 268usize] {
+            *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x18InvokerContractAuthEntry\0\0\0\x03\0\0\0\x01\0\0\0\0\0\0\0\x08Contract\0\0\0\x01\0\0\x07\xd0\0\0\0\x15SubContractInvocation\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x14CreateContractHostFn\0\0\0\x01\0\0\x07\xd0\0\0\0\x1bCreateContractHostFnContext\0\0\0\0\x01\0\0\0\0\0\0\0\x1cCreateContractWithCtorHostFn\0\0\0\x01\0\0\x07\xd0\0\0\0*CreateContractWithConstructorHostFnContext\0\0"
+        }
+    }
+    impl soroban_sdk::SpecShakingMarker for InvokerContractAuthEntry {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {
+            <SubContractInvocation as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            <CreateContractHostFnContext as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            {
+                static MARKER: [u8; 14usize] = *b"SpEcV1\xf0{\xa6\xe9r\xf3\x10\xf6";
+                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            }
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for InvokerContractAuthEntry {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::Val,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
+            const CASES: &'static [&'static str] = &[
+                "Contract",
+                "CreateContractHostFn",
+                "CreateContractWithCtorHostFn",
+            ];
+            let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
+            let mut iter = vec.try_iter();
+            let discriminant: soroban_sdk::Symbol = iter
+                .next()
+                .ok_or(soroban_sdk::ConversionError)??
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?;
+            Ok(
+                match u32::from(env.symbol_index_in_strs(discriminant.to_symbol_val(), CASES)?)
+                    as usize
+                {
+                    0 => {
+                        if iter.len() > 1usize {
+                            return Err(soroban_sdk::ConversionError);
+                        }
+                        Self::Contract(
+                            iter.next()
+                                .ok_or(soroban_sdk::ConversionError)??
+                                .try_into_val(env)?,
+                        )
+                    }
+                    1 => {
+                        if iter.len() > 1usize {
+                            return Err(soroban_sdk::ConversionError);
+                        }
+                        Self::CreateContractHostFn(
+                            iter.next()
+                                .ok_or(soroban_sdk::ConversionError)??
+                                .try_into_val(env)?,
+                        )
+                    }
+                    2 => {
+                        if iter.len() > 1usize {
+                            return Err(soroban_sdk::ConversionError);
+                        }
+                        Self::CreateContractWithCtorHostFn(
+                            iter.next()
+                                .ok_or(soroban_sdk::ConversionError)??
+                                .try_into_val(env)?,
+                        )
+                    }
+                    _ => Err(soroban_sdk::ConversionError {})?,
+                },
+            )
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, InvokerContractAuthEntry> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &InvokerContractAuthEntry,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{TryFromVal, TryIntoVal};
+            match val {
+                InvokerContractAuthEntry::Contract(ref value0) => {
+                    let tup: (soroban_sdk::Val, soroban_sdk::Val) = (
+                        soroban_sdk::Symbol::try_from_val(env, &"Contract")?.to_val(),
+                        value0.try_into_val(env)?,
+                    );
+                    tup.try_into_val(env).map_err(Into::into)
+                }
+                InvokerContractAuthEntry::CreateContractHostFn(ref value0) => {
+                    let tup: (soroban_sdk::Val, soroban_sdk::Val) = (
+                        soroban_sdk::Symbol::try_from_val(env, &"CreateContractHostFn")?.to_val(),
+                        value0.try_into_val(env)?,
+                    );
+                    tup.try_into_val(env).map_err(Into::into)
+                }
+                InvokerContractAuthEntry::CreateContractWithCtorHostFn(ref value0) => {
+                    let tup: (soroban_sdk::Val, soroban_sdk::Val) = (
+                        soroban_sdk::Symbol::try_from_val(env, &"CreateContractWithCtorHostFn")?
+                            .to_val(),
+                        value0.try_into_val(env)?,
+                    );
+                    tup.try_into_val(env).map_err(Into::into)
+                }
+            }
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, &InvokerContractAuthEntry> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &&InvokerContractAuthEntry,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, InvokerContractAuthEntry>>::try_from_val(
+                env, *val,
+            )
+        }
+    }
+    pub enum Executable {
+        Wasm(soroban_sdk::BytesN<32>),
+        StellarAsset,
+        Account,
+    }
+    #[automatically_derived]
+    impl ::core::fmt::Debug for Executable {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            match self {
+                Executable::Wasm(__self_0) => {
+                    ::core::fmt::Formatter::debug_tuple_field1_finish(f, "Wasm", &__self_0)
+                }
+                Executable::StellarAsset => ::core::fmt::Formatter::write_str(f, "StellarAsset"),
+                Executable::Account => ::core::fmt::Formatter::write_str(f, "Account"),
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for Executable {
+        #[inline]
+        fn clone(&self) -> Executable {
+            match self {
+                Executable::Wasm(__self_0) => {
+                    Executable::Wasm(::core::clone::Clone::clone(__self_0))
+                }
+                Executable::StellarAsset => Executable::StellarAsset,
+                Executable::Account => Executable::Account,
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for Executable {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {
+            let _: ::core::cmp::AssertParamIsEq<soroban_sdk::BytesN<32>>;
+        }
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for Executable {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for Executable {
+        #[inline]
+        fn eq(&self, other: &Executable) -> bool {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            __self_discr == __arg1_discr
+                && match (self, other) {
+                    (Executable::Wasm(__self_0), Executable::Wasm(__arg1_0)) => {
+                        __self_0 == __arg1_0
+                    }
+                    _ => true,
+                }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for Executable {
+        #[inline]
+        fn cmp(&self, other: &Executable) -> ::core::cmp::Ordering {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            match ::core::cmp::Ord::cmp(&__self_discr, &__arg1_discr) {
+                ::core::cmp::Ordering::Equal => match (self, other) {
+                    (Executable::Wasm(__self_0), Executable::Wasm(__arg1_0)) => {
+                        ::core::cmp::Ord::cmp(__self_0, __arg1_0)
+                    }
+                    _ => ::core::cmp::Ordering::Equal,
+                },
+                cmp => cmp,
+            }
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for Executable {
+        #[inline]
+        fn partial_cmp(&self, other: &Executable) -> ::core::option::Option<::core::cmp::Ordering> {
+            let __self_discr = ::core::intrinsics::discriminant_value(self);
+            let __arg1_discr = ::core::intrinsics::discriminant_value(other);
+            match (self, other) {
+                (Executable::Wasm(__self_0), Executable::Wasm(__arg1_0)) => {
+                    ::core::cmp::PartialOrd::partial_cmp(__self_0, __arg1_0)
+                }
+                _ => ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr),
+            }
+        }
+    }
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    #[link_section = "contractspecv0"]
+    static __SPEC_XDR_TYPE_EXECUTABLE: [u8; 104usize] = Executable::spec_xdr();
+    impl Executable {
+        pub const fn spec_xdr() -> [u8; 104usize] {
+            *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\nExecutable\0\0\0\0\0\x03\0\0\0\x01\0\0\0\0\0\0\0\x04Wasm\0\0\0\x01\0\0\x03\xee\0\0\0 \0\0\0\0\0\0\0\0\0\0\0\x0cStellarAsset\0\0\0\0\0\0\0\0\0\0\0\x07Account\0"
+        }
+    }
+    impl soroban_sdk::SpecShakingMarker for Executable {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {
+            <soroban_sdk::BytesN<32> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            {
+                static MARKER: [u8; 14usize] = *b"SpEcV1L|{\r\xf4\xf2\x1a\xa8";
+                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            }
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Executable {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &soroban_sdk::Val,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
+            const CASES: &'static [&'static str] = &["Wasm", "StellarAsset", "Account"];
+            let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
+            let mut iter = vec.try_iter();
+            let discriminant: soroban_sdk::Symbol = iter
+                .next()
+                .ok_or(soroban_sdk::ConversionError)??
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?;
+            Ok(
+                match u32::from(env.symbol_index_in_strs(discriminant.to_symbol_val(), CASES)?)
+                    as usize
+                {
+                    0 => {
+                        if iter.len() > 1usize {
+                            return Err(soroban_sdk::ConversionError);
+                        }
+                        Self::Wasm(
+                            iter.next()
+                                .ok_or(soroban_sdk::ConversionError)??
+                                .try_into_val(env)?,
+                        )
+                    }
+                    1 => {
+                        if iter.len() > 0 {
+                            return Err(soroban_sdk::ConversionError);
+                        }
+                        Self::StellarAsset
+                    }
+                    2 => {
+                        if iter.len() > 0 {
+                            return Err(soroban_sdk::ConversionError);
+                        }
+                        Self::Account
+                    }
+                    _ => Err(soroban_sdk::ConversionError {})?,
+                },
+            )
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, Executable> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &Executable,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            use soroban_sdk::{TryFromVal, TryIntoVal};
+            match val {
+                Executable::Wasm(ref value0) => {
+                    let tup: (soroban_sdk::Val, soroban_sdk::Val) = (
+                        soroban_sdk::Symbol::try_from_val(env, &"Wasm")?.to_val(),
+                        value0.try_into_val(env)?,
+                    );
+                    tup.try_into_val(env).map_err(Into::into)
+                }
+                Executable::StellarAsset => {
+                    let tup: (soroban_sdk::Val,) =
+                        (soroban_sdk::Symbol::try_from_val(env, &"StellarAsset")?.to_val(),);
+                    tup.try_into_val(env).map_err(Into::into)
+                }
+                Executable::Account => {
+                    let tup: (soroban_sdk::Val,) =
+                        (soroban_sdk::Symbol::try_from_val(env, &"Account")?.to_val(),);
+                    tup.try_into_val(env).map_err(Into::into)
+                }
+            }
+        }
+    }
+    impl soroban_sdk::TryFromVal<soroban_sdk::Env, &Executable> for soroban_sdk::Val {
+        type Error = soroban_sdk::ConversionError;
+        #[inline(always)]
+        fn try_from_val(
+            env: &soroban_sdk::Env,
+            val: &&Executable,
+        ) -> Result<Self, soroban_sdk::ConversionError> {
+            <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, Executable>>::try_from_val(env, *val)
         }
     }
     pub enum EnumA {
@@ -5754,8 +7230,10 @@ mod wasm_imported {
             ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr)
         }
     }
+    #[doc(hidden)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_TYPE_ENUMA: [u8; 76usize] = EnumA::spec_xdr();
+    static __SPEC_XDR_TYPE_ENUMA: [u8; 76usize] = EnumA::spec_xdr();
     impl EnumA {
         pub const fn spec_xdr() -> [u8; 76usize] {
             *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumA\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\0\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\0\0\0\0\0\0\0\0\x02V3\0\0"
@@ -5959,8 +7437,10 @@ mod wasm_imported {
             }
         }
     }
+    #[doc(hidden)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_TYPE_ENUMB: [u8; 96usize] = EnumB::spec_xdr();
+    static __SPEC_XDR_TYPE_ENUMB: [u8; 96usize] = EnumB::spec_xdr();
     impl EnumB {
         pub const fn spec_xdr() -> [u8; 96usize] {
             *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumB\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x01\0\0\0\x07\0\0\0\x01\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x02\0\0\0\x07\0\0\0\x07"
@@ -6167,8 +7647,10 @@ mod wasm_imported {
             }
         }
     }
+    #[doc(hidden)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_TYPE_ENUMC: [u8; 120usize] = EnumC::spec_xdr();
+    static __SPEC_XDR_TYPE_ENUMC: [u8; 120usize] = EnumC::spec_xdr();
     impl EnumC {
         pub const fn spec_xdr() -> [u8; 120usize] {
             *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x05EnumC\0\0\0\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x07StructA\0\0\0\0\x01\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x01\0\0\x07\xd0\0\0\0\x0cStructTupleA"
@@ -6342,8 +7824,10 @@ mod wasm_imported {
             ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr)
         }
     }
+    #[doc(hidden)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_TYPE_ENUMINTA: [u8; 76usize] = EnumIntA::spec_xdr();
+    static __SPEC_XDR_TYPE_ENUMINTA: [u8; 76usize] = EnumIntA::spec_xdr();
     impl EnumIntA {
         pub const fn spec_xdr() -> [u8; 76usize] {
             *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08EnumIntA\0\0\0\x03\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x03"
@@ -6464,8 +7948,10 @@ mod wasm_imported {
             ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr)
         }
     }
+    #[doc(hidden)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_TYPE_ENUMINTB: [u8; 76usize] = EnumIntB::spec_xdr();
+    static __SPEC_XDR_TYPE_ENUMINTB: [u8; 76usize] = EnumIntB::spec_xdr();
     impl EnumIntB {
         pub const fn spec_xdr() -> [u8; 76usize] {
             *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08EnumIntB\0\0\0\x03\0\0\0\0\0\0\0\x02V1\0\0\0\0\0\n\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\x14\0\0\0\0\0\0\0\x02V3\0\0\0\0\0\x1e"
@@ -6586,8 +8072,10 @@ mod wasm_imported {
             ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr)
         }
     }
+    #[doc(hidden)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_TYPE_ENUMINTC: [u8; 76usize] = EnumIntC::spec_xdr();
+    static __SPEC_XDR_TYPE_ENUMINTC: [u8; 76usize] = EnumIntC::spec_xdr();
     impl EnumIntC {
         pub const fn spec_xdr() -> [u8; 76usize] {
             *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x08EnumIntC\0\0\0\x03\0\0\0\0\0\0\0\x02V1\0\0\0\0\0d\0\0\0\0\0\0\0\x02V2\0\0\0\0\0\xc8\0\0\0\0\0\0\0\x02V3\0\0\0\0\x01,"
@@ -6708,8 +8196,10 @@ mod wasm_imported {
             ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr)
         }
     }
+    #[doc(hidden)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_TYPE_ERRORA: [u8; 76usize] = ErrorA::spec_xdr();
+    static __SPEC_XDR_TYPE_ERRORA: [u8; 76usize] = ErrorA::spec_xdr();
     impl ErrorA {
         pub const fn spec_xdr() -> [u8; 76usize] {
             *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x06ErrorA\0\0\0\0\0\x03\0\0\0\0\0\0\0\x02E1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02E2\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02E3\0\0\0\0\0\x03"
@@ -6900,8 +8390,10 @@ mod wasm_imported {
             ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr)
         }
     }
+    #[doc(hidden)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_TYPE_ERRORB: [u8; 76usize] = ErrorB::spec_xdr();
+    static __SPEC_XDR_TYPE_ERRORB: [u8; 76usize] = ErrorB::spec_xdr();
     impl ErrorB {
         pub const fn spec_xdr() -> [u8; 76usize] {
             *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x06ErrorB\0\0\0\0\0\x03\0\0\0\0\0\0\0\x02E1\0\0\0\0\0\n\0\0\0\0\0\0\0\x02E2\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02E3\0\0\0\0\0\x0c"
@@ -7092,8 +8584,10 @@ mod wasm_imported {
             ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr)
         }
     }
+    #[doc(hidden)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_TYPE_ERRORC: [u8; 76usize] = ErrorC::spec_xdr();
+    static __SPEC_XDR_TYPE_ERRORC: [u8; 76usize] = ErrorC::spec_xdr();
     impl ErrorC {
         pub const fn spec_xdr() -> [u8; 76usize] {
             *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x06ErrorC\0\0\0\0\0\x03\0\0\0\0\0\0\0\x02E1\0\0\0\0\0d\0\0\0\0\0\0\0\x02E2\0\0\0\0\0e\0\0\0\0\0\0\0\x02E3\0\0\0\0\0f"
@@ -7284,8 +8778,10 @@ mod wasm_imported {
             }
         }
     }
+    #[doc(hidden)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_EVENT_EVENTA: [u8; 88usize] = EventA::spec_xdr();
+    static __SPEC_XDR_EVENT_EVENTA: [u8; 88usize] = EventA::spec_xdr();
     impl EventA {
         pub const fn spec_xdr() -> [u8; 88usize] {
             *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventA\0\0\0\0\0\x01\0\0\0\x07event_a\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x10\0\0\0\0\0\0\0\x02"
@@ -7323,7 +8819,7 @@ mod wasm_imported {
             use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
             const KEYS: [&'static str; 1usize] = ["f2"];
             let vals: [soroban_sdk::Val; 1usize] = [self.f2.into_val(env)];
-            env.map_new_from_slices(&KEYS, &vals)
+            env.sparse_map_new_from_slices(&KEYS, &vals)
                 .unwrap_infallible()
                 .into()
         }
@@ -7409,8 +8905,10 @@ mod wasm_imported {
             }
         }
     }
+    #[doc(hidden)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_EVENT_EVENTB: [u8; 108usize] = EventB::spec_xdr();
+    static __SPEC_XDR_EVENT_EVENTB: [u8; 108usize] = EventB::spec_xdr();
     impl EventB {
         pub const fn spec_xdr() -> [u8; 108usize] {
             *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventB\0\0\0\0\0\x01\0\0\0\x07event_b\0\0\0\0\x03\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x13\0\0\0\x01\0\0\0\0\0\0\0\x02f3\0\0\0\0\0\x0b\0\0\0\0\0\0\0\x02"
@@ -7453,7 +8951,7 @@ mod wasm_imported {
             use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
             const KEYS: [&'static str; 1usize] = ["f3"];
             let vals: [soroban_sdk::Val; 1usize] = [self.f3.into_val(env)];
-            env.map_new_from_slices(&KEYS, &vals)
+            env.sparse_map_new_from_slices(&KEYS, &vals)
                 .unwrap_infallible()
                 .into()
         }
@@ -7538,8 +9036,10 @@ mod wasm_imported {
             }
         }
     }
+    #[doc(hidden)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_EVENT_EVENTC: [u8; 108usize] = EventC::spec_xdr();
+    static __SPEC_XDR_EVENT_EVENTC: [u8; 108usize] = EventC::spec_xdr();
     impl EventC {
         pub const fn spec_xdr() -> [u8; 108usize] {
             *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventC\0\0\0\0\0\x01\0\0\0\x07event_c\0\0\0\0\x03\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x11\0\0\0\x01\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x07\0\0\0\0\0\0\0\0\0\0\0\x02f3\0\0\0\0\0\x07\0\0\0\0\0\0\0\x02"
@@ -7578,12 +9078,101 @@ mod wasm_imported {
             use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
             const KEYS: [&'static str; 2usize] = ["f2", "f3"];
             let vals: [soroban_sdk::Val; 2usize] = [self.f2.into_val(env), self.f3.into_val(env)];
-            env.map_new_from_slices(&KEYS, &vals)
+            env.sparse_map_new_from_slices(&KEYS, &vals)
                 .unwrap_infallible()
                 .into()
         }
     }
     impl EventC {
+        pub fn publish(&self, env: &soroban_sdk::Env) {
+            <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+            <_ as soroban_sdk::Event>::publish(self, env);
+        }
+    }
+    pub struct EventD {}
+    #[automatically_derived]
+    impl ::core::fmt::Debug for EventD {
+        #[inline]
+        fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+            ::core::fmt::Formatter::write_str(f, "EventD")
+        }
+    }
+    #[automatically_derived]
+    impl ::core::clone::Clone for EventD {
+        #[inline]
+        fn clone(&self) -> EventD {
+            EventD {}
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Eq for EventD {
+        #[inline]
+        #[doc(hidden)]
+        #[coverage(off)]
+        fn assert_receiver_is_total_eq(&self) -> () {}
+    }
+    #[automatically_derived]
+    impl ::core::marker::StructuralPartialEq for EventD {}
+    #[automatically_derived]
+    impl ::core::cmp::PartialEq for EventD {
+        #[inline]
+        fn eq(&self, other: &EventD) -> bool {
+            true
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::Ord for EventD {
+        #[inline]
+        fn cmp(&self, other: &EventD) -> ::core::cmp::Ordering {
+            ::core::cmp::Ordering::Equal
+        }
+    }
+    #[automatically_derived]
+    impl ::core::cmp::PartialOrd for EventD {
+        #[inline]
+        fn partial_cmp(&self, other: &EventD) -> ::core::option::Option<::core::cmp::Ordering> {
+            ::core::option::Option::Some(::core::cmp::Ordering::Equal)
+        }
+    }
+    #[doc(hidden)]
+    #[allow(dead_code)]
+    #[link_section = "contractspecv0"]
+    static __SPEC_XDR_EVENT_EVENTD: [u8; 48usize] = EventD::spec_xdr();
+    impl EventD {
+        pub const fn spec_xdr() -> [u8; 48usize] {
+            *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x06EventD\0\0\0\0\0\x01\0\0\0\x07event_d\0\0\0\0\0\0\0\0\x02"
+        }
+    }
+    impl soroban_sdk::SpecShakingMarker for EventD {
+        #[doc(hidden)]
+        #[inline(always)]
+        fn spec_shaking_marker() {
+            {
+                static MARKER: [u8; 14usize] = *b"SpEcV1\x15\xf0Wx\x15\x83\xc0:";
+                let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+            }
+        }
+    }
+    impl soroban_sdk::Event for EventD {
+        fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+            use soroban_sdk::IntoVal;
+            (&{
+                #[allow(deprecated)]
+                const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("event_d");
+                SYMBOL
+            },)
+                .into_val(env)
+        }
+        fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
+            use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
+            const KEYS: [&'static str; 0usize] = [];
+            let vals: [soroban_sdk::Val; 0usize] = [];
+            env.sparse_map_new_from_slices(&KEYS, &vals)
+                .unwrap_infallible()
+                .into()
+        }
+    }
+    impl EventD {
         pub fn publish(&self, env: &soroban_sdk::Env) {
             <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <_ as soroban_sdk::Event>::publish(self, env);
@@ -7627,8 +9216,10 @@ impl ::core::cmp::PartialEq for UnusedStruct {
         self.x == other.x
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_UNUSEDSTRUCT: [u8; 48usize] = UnusedStruct::spec_xdr();
+static __SPEC_XDR_TYPE_UNUSEDSTRUCT: [u8; 48usize] = UnusedStruct::spec_xdr();
 impl UnusedStruct {
     pub const fn spec_xdr() -> [u8; 48usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x0cUnusedStruct\0\0\0\x01\0\0\0\0\0\0\0\x01x\0\0\0\0\0\0\x04"
@@ -7655,7 +9246,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedStruc
         const KEYS: [&'static str; 1usize] = ["x"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             x: vals[0]
@@ -7739,8 +9330,10 @@ impl ::core::cmp::PartialEq for UnusedEnum {
             }
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_UNUSEDENUM: [u8; 72usize] = UnusedEnum::spec_xdr();
+static __SPEC_XDR_TYPE_UNUSEDENUM: [u8; 72usize] = UnusedEnum::spec_xdr();
 impl UnusedEnum {
     pub const fn spec_xdr() -> [u8; 72usize] {
         *b"\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\nUnusedEnum\0\0\0\0\0\x02\0\0\0\0\0\0\0\0\0\0\0\x01A\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01B\0\0\0\0\0\0\x01\0\0\0\x07"
@@ -7875,8 +9468,10 @@ impl ::core::cmp::PartialEq for UnusedIntEnum {
         __self_discr == __arg1_discr
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_UNUSEDINTENUM: [u8; 68usize] = UnusedIntEnum::spec_xdr();
+static __SPEC_XDR_TYPE_UNUSEDINTENUM: [u8; 68usize] = UnusedIntEnum::spec_xdr();
 impl UnusedIntEnum {
     pub const fn spec_xdr() -> [u8; 68usize] {
         *b"\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\rUnusedIntEnum\0\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02U1\0\0\0\0\0\x01\0\0\0\0\0\0\0\x02U2\0\0\0\0\0\x02"
@@ -7978,8 +9573,10 @@ impl ::core::cmp::PartialEq for UnusedEvent {
         self.data == other.data && self.kind == other.kind
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_EVENT_UNUSEDEVENT: [u8; 96usize] = UnusedEvent::spec_xdr();
+static __SPEC_XDR_EVENT_UNUSEDEVENT: [u8; 96usize] = UnusedEvent::spec_xdr();
 impl UnusedEvent {
     pub const fn spec_xdr() -> [u8; 96usize] {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x0bUnusedEvent\0\0\0\0\x01\0\0\0\x0cunused_event\0\0\0\x02\0\0\0\0\0\0\0\x04kind\0\0\0\x11\0\0\0\x01\0\0\0\0\0\0\0\x04data\0\0\0\x04\0\0\0\0\0\0\0\x02"
@@ -8010,7 +9607,7 @@ impl soroban_sdk::Event for UnusedEvent {
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 1usize] = ["data"];
         let vals: [soroban_sdk::Val; 1usize] = [self.data.into_val(env)];
-        env.map_new_from_slices(&KEYS, &vals)
+        env.sparse_map_new_from_slices(&KEYS, &vals)
             .unwrap_infallible()
             .into()
     }
@@ -8056,8 +9653,10 @@ impl ::core::cmp::PartialEq for UnusedPubError {
         true
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_UNUSEDPUBERROR: [u8; 52usize] = UnusedPubError::spec_xdr();
+static __SPEC_XDR_TYPE_UNUSEDPUBERROR: [u8; 52usize] = UnusedPubError::spec_xdr();
 impl UnusedPubError {
     pub const fn spec_xdr() -> [u8; 52usize] {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x0eUnusedPubError\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04Nope\0\0\0\x01"
@@ -8218,8 +9817,10 @@ impl ::core::cmp::PartialEq for UnusedNonContractFnParam {
         self.x == other.x
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_UNUSEDNONCONTRACTFNPARAM: [u8; 60usize] =
+static __SPEC_XDR_TYPE_UNUSEDNONCONTRACTFNPARAM: [u8; 60usize] =
     UnusedNonContractFnParam::spec_xdr();
 impl UnusedNonContractFnParam {
     pub const fn spec_xdr() -> [u8; 60usize] {
@@ -8247,7 +9848,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedNonCo
         const KEYS: [&'static str; 1usize] = ["x"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             x: vals[0]
@@ -8325,8 +9926,10 @@ impl ::core::cmp::PartialEq for UnusedNonContractFnReturn {
         self.x == other.x
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_UNUSEDNONCONTRACTFNRETURN: [u8; 64usize] =
+static __SPEC_XDR_TYPE_UNUSEDNONCONTRACTFNRETURN: [u8; 64usize] =
     UnusedNonContractFnReturn::spec_xdr();
 impl UnusedNonContractFnReturn {
     pub const fn spec_xdr() -> [u8; 64usize] {
@@ -8354,7 +9957,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedNonCo
         const KEYS: [&'static str; 1usize] = ["x"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             x: vals[0]
@@ -8427,8 +10030,10 @@ impl ::core::cmp::PartialEq for UnusedNonPubStruct {
         self.x == other.x
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_UNUSEDNONPUBSTRUCT: [u8; 56usize] = UnusedNonPubStruct::spec_xdr();
+static __SPEC_XDR_TYPE_UNUSEDNONPUBSTRUCT: [u8; 56usize] = UnusedNonPubStruct::spec_xdr();
 impl UnusedNonPubStruct {
     pub const fn spec_xdr() -> [u8; 56usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x12UnusedNonPubStruct\0\0\0\0\0\x01\0\0\0\0\0\0\0\x01x\0\0\0\0\0\0\x04"
@@ -8455,7 +10060,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedNonPu
         const KEYS: [&'static str; 1usize] = ["x"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             x: vals[0]
@@ -8526,8 +10131,10 @@ impl ::core::cmp::PartialEq for UnusedNonPubError {
         true
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_UNUSEDNONPUBERROR: [u8; 56usize] = UnusedNonPubError::spec_xdr();
+static __SPEC_XDR_TYPE_UNUSEDNONPUBERROR: [u8; 56usize] = UnusedNonPubError::spec_xdr();
 impl UnusedNonPubError {
     pub const fn spec_xdr() -> [u8; 56usize] {
         *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x11UnusedNonPubError\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x03Bad\0\0\0\0\x01"
@@ -8738,19 +10345,6 @@ impl Contract {
     pub fn with_tuple_return(_env: Env) -> (UsedTupleReturnElement, u32) {
         (UsedTupleReturnElement { val: 1 }, 2)
     }
-    pub fn with_export_false_struct(_env: Env, _s: export_false_used::UsedExportFalseStruct) {}
-    pub fn with_export_false_error(
-        _env: Env,
-    ) -> Result<u32, export_false_used::UsedExportFalseError> {
-        Ok(1)
-    }
-    pub fn publish_export_false_event(env: Env) {
-        export_false_used::UsedExportFalseEvent {
-            kind: Symbol::new(&env, "ef"),
-            amount: 1,
-        }
-        .publish(&env);
-    }
     pub fn publish_ref_event(env: Env) {
         let kind = UsedRefTopicType::Send;
         let payload = UsedRefDataType {
@@ -8765,12 +10359,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_param__spec {
+#[allow(dead_code)]
+mod __Contract__with_param__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_PARAM: [u8; 104usize] = super::Contract::spec_xdr_with_param();
+    static __SPEC_XDR_FN_WITH_PARAM: [u8; 104usize] = super::Contract::spec_xdr_with_param();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -8780,12 +10376,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_return__spec {
+#[allow(dead_code)]
+mod __Contract__with_return__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_RETURN: [u8; 56usize] = super::Contract::spec_xdr_with_return();
+    static __SPEC_XDR_FN_WITH_RETURN: [u8; 56usize] = super::Contract::spec_xdr_with_return();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -8795,12 +10393,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_error__spec {
+#[allow(dead_code)]
+mod __Contract__with_error__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_ERROR: [u8; 64usize] = super::Contract::spec_xdr_with_error();
+    static __SPEC_XDR_FN_WITH_ERROR: [u8; 64usize] = super::Contract::spec_xdr_with_error();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -8810,12 +10410,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_panic_error__spec {
+#[allow(dead_code)]
+mod __Contract__with_panic_error__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_PANIC_ERROR: [u8; 52usize] =
+    static __SPEC_XDR_FN_WITH_PANIC_ERROR: [u8; 52usize] =
         super::Contract::spec_xdr_with_panic_error();
 }
 impl Contract {
@@ -8826,12 +10428,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_assert_error__spec {
+#[allow(dead_code)]
+mod __Contract__with_assert_error__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_ASSERT_ERROR: [u8; 56usize] =
+    static __SPEC_XDR_FN_WITH_ASSERT_ERROR: [u8; 56usize] =
         super::Contract::spec_xdr_with_assert_error();
 }
 impl Contract {
@@ -8842,12 +10446,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_panic_raw_error__spec {
+#[allow(dead_code)]
+mod __Contract__with_panic_raw_error__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_PANIC_RAW_ERROR: [u8; 56usize] =
+    static __SPEC_XDR_FN_WITH_PANIC_RAW_ERROR: [u8; 56usize] =
         super::Contract::spec_xdr_with_panic_raw_error();
 }
 impl Contract {
@@ -8858,12 +10464,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_vec__spec {
+#[allow(dead_code)]
+mod __Contract__with_vec__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_VEC: [u8; 68usize] = super::Contract::spec_xdr_with_vec();
+    static __SPEC_XDR_FN_WITH_VEC: [u8; 68usize] = super::Contract::spec_xdr_with_vec();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -8873,12 +10481,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_vec_nested__spec {
+#[allow(dead_code)]
+mod __Contract__with_vec_nested__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_VEC_NESTED: [u8; 80usize] =
+    static __SPEC_XDR_FN_WITH_VEC_NESTED: [u8; 80usize] =
         super::Contract::spec_xdr_with_vec_nested();
 }
 impl Contract {
@@ -8889,12 +10499,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_map__spec {
+#[allow(dead_code)]
+mod __Contract__with_map__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_MAP: [u8; 84usize] = super::Contract::spec_xdr_with_map();
+    static __SPEC_XDR_FN_WITH_MAP: [u8; 84usize] = super::Contract::spec_xdr_with_map();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -8904,12 +10516,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_option__spec {
+#[allow(dead_code)]
+mod __Contract__with_option__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_OPTION: [u8; 76usize] = super::Contract::spec_xdr_with_option();
+    static __SPEC_XDR_FN_WITH_OPTION: [u8; 76usize] = super::Contract::spec_xdr_with_option();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -8919,12 +10533,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_result__spec {
+#[allow(dead_code)]
+mod __Contract__with_result__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_RESULT: [u8; 80usize] = super::Contract::spec_xdr_with_result();
+    static __SPEC_XDR_FN_WITH_RESULT: [u8; 80usize] = super::Contract::spec_xdr_with_result();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -8934,13 +10550,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_recursion__spec {
+#[allow(dead_code)]
+mod __Contract__with_recursion__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_RECURSION: [u8; 76usize] =
-        super::Contract::spec_xdr_with_recursion();
+    static __SPEC_XDR_FN_WITH_RECURSION: [u8; 76usize] = super::Contract::spec_xdr_with_recursion();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -8950,12 +10567,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_auth_contexts__spec {
+#[allow(dead_code)]
+mod __Contract__with_auth_contexts__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_AUTH_CONTEXTS: [u8; 72usize] =
+    static __SPEC_XDR_FN_WITH_AUTH_CONTEXTS: [u8; 72usize] =
         super::Contract::spec_xdr_with_auth_contexts();
 }
 impl Contract {
@@ -8966,12 +10585,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_invoker_auth__spec {
+#[allow(dead_code)]
+mod __Contract__with_invoker_auth__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_INVOKER_AUTH: [u8; 84usize] =
+    static __SPEC_XDR_FN_WITH_INVOKER_AUTH: [u8; 84usize] =
         super::Contract::spec_xdr_with_invoker_auth();
 }
 impl Contract {
@@ -8982,12 +10603,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_executable__spec {
+#[allow(dead_code)]
+mod __Contract__with_executable__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_EXECUTABLE: [u8; 68usize] =
+    static __SPEC_XDR_FN_WITH_EXECUTABLE: [u8; 68usize] =
         super::Contract::spec_xdr_with_executable();
 }
 impl Contract {
@@ -8998,13 +10621,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__publish_simple__spec {
+#[allow(dead_code)]
+mod __Contract__publish_simple__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_PUBLISH_SIMPLE: [u8; 36usize] =
-        super::Contract::spec_xdr_publish_simple();
+    static __SPEC_XDR_FN_PUBLISH_SIMPLE: [u8; 36usize] = super::Contract::spec_xdr_publish_simple();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -9014,12 +10638,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__publish_topic_type__spec {
+#[allow(dead_code)]
+mod __Contract__publish_topic_type__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_PUBLISH_TOPIC_TYPE: [u8; 40usize] =
+    static __SPEC_XDR_FN_PUBLISH_TOPIC_TYPE: [u8; 40usize] =
         super::Contract::spec_xdr_publish_topic_type();
 }
 impl Contract {
@@ -9030,12 +10656,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__publish_data_type__spec {
+#[allow(dead_code)]
+mod __Contract__publish_data_type__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_PUBLISH_DATA_TYPE: [u8; 40usize] =
+    static __SPEC_XDR_FN_PUBLISH_DATA_TYPE: [u8; 40usize] =
         super::Contract::spec_xdr_publish_data_type();
 }
 impl Contract {
@@ -9046,12 +10674,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__publish_nested_topic__spec {
+#[allow(dead_code)]
+mod __Contract__publish_nested_topic__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_PUBLISH_NESTED_TOPIC: [u8; 40usize] =
+    static __SPEC_XDR_FN_PUBLISH_NESTED_TOPIC: [u8; 40usize] =
         super::Contract::spec_xdr_publish_nested_topic();
 }
 impl Contract {
@@ -9062,12 +10692,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__publish_nested_data__spec {
+#[allow(dead_code)]
+mod __Contract__publish_nested_data__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_PUBLISH_NESTED_DATA: [u8; 40usize] =
+    static __SPEC_XDR_FN_PUBLISH_NESTED_DATA: [u8; 40usize] =
         super::Contract::spec_xdr_publish_nested_data();
 }
 impl Contract {
@@ -9078,12 +10710,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_lib_struct__spec {
+#[allow(dead_code)]
+mod __Contract__with_lib_struct__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_LIB_STRUCT: [u8; 64usize] =
+    static __SPEC_XDR_FN_WITH_LIB_STRUCT: [u8; 64usize] =
         super::Contract::spec_xdr_with_lib_struct();
 }
 impl Contract {
@@ -9094,12 +10728,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_wasm_imported__spec {
+#[allow(dead_code)]
+mod __Contract__with_wasm_imported__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_WASM_IMPORTED: [u8; 68usize] =
+    static __SPEC_XDR_FN_WITH_WASM_IMPORTED: [u8; 68usize] =
         super::Contract::spec_xdr_with_wasm_imported();
 }
 impl Contract {
@@ -9110,12 +10746,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_non_pub__spec {
+#[allow(dead_code)]
+mod __Contract__with_non_pub__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_NON_PUB: [u8; 68usize] = super::Contract::spec_xdr_with_non_pub();
+    static __SPEC_XDR_FN_WITH_NON_PUB: [u8; 68usize] = super::Contract::spec_xdr_with_non_pub();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -9125,12 +10763,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_non_pub_error__spec {
+#[allow(dead_code)]
+mod __Contract__with_non_pub_error__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_NON_PUB_ERROR: [u8; 72usize] =
+    static __SPEC_XDR_FN_WITH_NON_PUB_ERROR: [u8; 72usize] =
         super::Contract::spec_xdr_with_non_pub_error();
 }
 impl Contract {
@@ -9141,12 +10781,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_tuple__spec {
+#[allow(dead_code)]
+mod __Contract__with_tuple__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_TUPLE: [u8; 80usize] = super::Contract::spec_xdr_with_tuple();
+    static __SPEC_XDR_FN_WITH_TUPLE: [u8; 80usize] = super::Contract::spec_xdr_with_tuple();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -9156,12 +10798,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_tuple_return__spec {
+#[allow(dead_code)]
+mod __Contract__with_tuple_return__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_TUPLE_RETURN: [u8; 84usize] =
+    static __SPEC_XDR_FN_WITH_TUPLE_RETURN: [u8; 84usize] =
         super::Contract::spec_xdr_with_tuple_return();
 }
 impl Contract {
@@ -9172,60 +10816,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__with_export_false_struct__spec {
+#[allow(dead_code)]
+mod __Contract__publish_ref_event__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_EXPORT_FALSE_STRUCT: [u8; 88usize] =
-        super::Contract::spec_xdr_with_export_false_struct();
-}
-impl Contract {
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_export_false_struct() -> [u8; 88usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x18with_export_false_struct\0\0\0\x01\0\0\0\0\0\0\0\x01s\0\0\0\0\0\x07\xd0\0\0\0\x15UsedExportFalseStruct\0\0\0\0\0\0\0"
-    }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub mod __Contract__with_export_false_error__spec {
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(non_upper_case_globals)]
-    #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_WITH_EXPORT_FALSE_ERROR: [u8; 80usize] =
-        super::Contract::spec_xdr_with_export_false_error();
-}
-impl Contract {
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_with_export_false_error() -> [u8; 80usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x17with_export_false_error\0\0\0\0\0\0\0\0\x01\0\0\x03\xe9\0\0\0\x04\0\0\x07\xd0\0\0\0\x14UsedExportFalseError"
-    }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub mod __Contract__publish_export_false_event__spec {
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(non_upper_case_globals)]
-    #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_PUBLISH_EXPORT_FALSE_EVENT: [u8; 48usize] =
-        super::Contract::spec_xdr_publish_export_false_event();
-}
-impl Contract {
-    #[allow(non_snake_case)]
-    pub const fn spec_xdr_publish_export_false_event() -> [u8; 48usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x1apublish_export_false_event\0\0\0\0\0\0\0\0\0\0"
-    }
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-pub mod __Contract__publish_ref_event__spec {
-    #[doc(hidden)]
-    #[allow(non_snake_case)]
-    #[allow(non_upper_case_globals)]
-    #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_PUBLISH_REF_EVENT: [u8; 40usize] =
+    static __SPEC_XDR_FN_PUBLISH_REF_EVENT: [u8; 40usize] =
         super::Contract::spec_xdr_publish_ref_event();
 }
 impl Contract {
@@ -9910,79 +11508,6 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
-    pub fn with_export_false_struct(&self, _s: &export_false_used::UsedExportFalseStruct) -> () {
-        use core::ops::Not;
-        use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.invoke_contract(
-            &self.address,
-            &{ soroban_sdk::Symbol::new(&self.env, "with_export_false_struct") },
-            ::soroban_sdk::Vec::from_array(&self.env, [_s.into_val(&self.env)]),
-        );
-        res
-    }
-    pub fn try_with_export_false_struct(
-        &self,
-        _s: &export_false_used::UsedExportFalseStruct,
-    ) -> Result<
-        Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
-        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
-        use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.try_invoke_contract(
-            &self.address,
-            &{ soroban_sdk::Symbol::new(&self.env, "with_export_false_struct") },
-            ::soroban_sdk::Vec::from_array(&self.env, [_s.into_val(&self.env)]),
-        );
-        res
-    }
-    pub fn with_export_false_error(&self) -> u32 {
-        use core::ops::Not;
-        use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.invoke_contract(
-            &self.address,
-            &{ soroban_sdk::Symbol::new(&self.env, "with_export_false_error") },
-            ::soroban_sdk::Vec::new(&self.env),
-        );
-        res
-    }
-    pub fn try_with_export_false_error(
-        &self,
-    ) -> Result<
-        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
-        Result<export_false_used::UsedExportFalseError, soroban_sdk::InvokeError>,
-    > {
-        use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.try_invoke_contract(
-            &self.address,
-            &{ soroban_sdk::Symbol::new(&self.env, "with_export_false_error") },
-            ::soroban_sdk::Vec::new(&self.env),
-        );
-        res
-    }
-    pub fn publish_export_false_event(&self) -> () {
-        use core::ops::Not;
-        use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.invoke_contract(
-            &self.address,
-            &{ soroban_sdk::Symbol::new(&self.env, "publish_export_false_event") },
-            ::soroban_sdk::Vec::new(&self.env),
-        );
-        res
-    }
-    pub fn try_publish_export_false_event(
-        &self,
-    ) -> Result<
-        Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
-        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
-    > {
-        use soroban_sdk::{FromVal, IntoVal};
-        let res = self.env.try_invoke_contract(
-            &self.address,
-            &{ soroban_sdk::Symbol::new(&self.env, "publish_export_false_event") },
-            ::soroban_sdk::Vec::new(&self.env),
-        );
-        res
-    }
     pub fn publish_ref_event(&self) -> () {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -10146,23 +11671,6 @@ impl ContractArgs {
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn with_tuple_return<'i>() -> () {
-        ()
-    }
-    #[inline(always)]
-    #[allow(clippy::unused_unit)]
-    pub fn with_export_false_struct<'i>(
-        _s: &'i export_false_used::UsedExportFalseStruct,
-    ) -> (&'i export_false_used::UsedExportFalseStruct,) {
-        (_s,)
-    }
-    #[inline(always)]
-    #[allow(clippy::unused_unit)]
-    pub fn with_export_false_error<'i>() -> () {
-        ()
-    }
-    #[inline(always)]
-    #[allow(clippy::unused_unit)]
-    pub fn publish_export_false_event<'i>() -> () {
         ()
     }
     #[inline(always)]
@@ -10854,87 +12362,6 @@ pub fn __Contract__with_tuple_return__invoke_raw(env: soroban_sdk::Env) -> sorob
 pub extern "C" fn __Contract__with_tuple_return__invoke_raw_extern() -> soroban_sdk::Val {
     #[allow(deprecated)]
     __Contract__with_tuple_return__invoke_raw(soroban_sdk::Env::default())
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-#[deprecated(
-    note = "use `ContractClient::new(&env, &contract_id).with_export_false_struct` instead"
-)]
-#[allow(deprecated)]
-pub fn __Contract__with_export_false_struct__invoke_raw(
-    env: soroban_sdk::Env,
-    arg_0: soroban_sdk::Val,
-) -> soroban_sdk::Val {
-    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
-        <Contract>::with_export_false_struct(
-            env.clone(),
-            <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                <_ as soroban_sdk::TryFromValForContractFn<
-                    soroban_sdk::Env,
-                    soroban_sdk::Val,
-                >>::try_from_val_for_contract_fn(&env, &arg_0),
-            ),
-        ),
-        &env,
-    )
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-#[deprecated(
-    note = "use `ContractClient::new(&env, &contract_id).with_export_false_struct` instead"
-)]
-#[export_name = "with_export_false_struct"]
-pub extern "C" fn __Contract__with_export_false_struct__invoke_raw_extern(
-    arg_0: soroban_sdk::Val,
-) -> soroban_sdk::Val {
-    #[allow(deprecated)]
-    __Contract__with_export_false_struct__invoke_raw(soroban_sdk::Env::default(), arg_0)
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-#[deprecated(
-    note = "use `ContractClient::new(&env, &contract_id).with_export_false_error` instead"
-)]
-#[allow(deprecated)]
-pub fn __Contract__with_export_false_error__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
-    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
-        <Contract>::with_export_false_error(env.clone()),
-        &env,
-    )
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-#[deprecated(
-    note = "use `ContractClient::new(&env, &contract_id).with_export_false_error` instead"
-)]
-#[export_name = "with_export_false_error"]
-pub extern "C" fn __Contract__with_export_false_error__invoke_raw_extern() -> soroban_sdk::Val {
-    #[allow(deprecated)]
-    __Contract__with_export_false_error__invoke_raw(soroban_sdk::Env::default())
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-#[deprecated(
-    note = "use `ContractClient::new(&env, &contract_id).publish_export_false_event` instead"
-)]
-#[allow(deprecated)]
-pub fn __Contract__publish_export_false_event__invoke_raw(
-    env: soroban_sdk::Env,
-) -> soroban_sdk::Val {
-    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
-        <Contract>::publish_export_false_event(env.clone()),
-        &env,
-    )
-}
-#[doc(hidden)]
-#[allow(non_snake_case)]
-#[deprecated(
-    note = "use `ContractClient::new(&env, &contract_id).publish_export_false_event` instead"
-)]
-#[export_name = "publish_export_false_event"]
-pub extern "C" fn __Contract__publish_export_false_event__invoke_raw_extern() -> soroban_sdk::Val {
-    #[allow(deprecated)]
-    __Contract__publish_export_false_event__invoke_raw(soroban_sdk::Env::default())
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]

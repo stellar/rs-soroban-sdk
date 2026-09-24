@@ -342,10 +342,12 @@ impl<T> Vec<T> {
         self.obj.to_val()
     }
 
+    #[doc(hidden)]
     pub fn as_object(&self) -> &VecObject {
         &self.obj
     }
 
+    #[doc(hidden)]
     pub fn to_object(&self) -> VecObject {
         self.obj
     }

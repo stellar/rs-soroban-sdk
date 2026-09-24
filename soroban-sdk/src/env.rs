@@ -6,7 +6,6 @@ pub mod internal {
 
     pub use soroban_env_guest::*;
     pub type EnvImpl = Guest;
-    pub type MaybeEnvImpl = Guest;
 
     // In the Guest case, Env::Error is already Infallible so there is no work
     // to do to "reject an error": if an error occurs in the environment, the
@@ -22,7 +21,6 @@ pub mod internal {
 
     pub use soroban_env_host::*;
     pub type EnvImpl = Host;
-    pub type MaybeEnvImpl = Option<Host>;
 
     // When we have `feature="testutils"` (or are in cfg(test)) we enable feature
     // `soroban-env-{common,host}/testutils` which in turn adds the helper method
@@ -119,31 +117,31 @@ use crate::unwrap::UnwrapInfallible;
 use crate::unwrap::UnwrapOptimized;
 use crate::InvokeError;
 use crate::{
-    crypto::Crypto, deploy::Deployer, events::Events, ledger::Ledger, logs::Logs, prng::Prng,
-    storage::Storage, Address, Vec,
+    crypto::Crypto, deploy::Deployer, events::Events, executable_refs::ExecutableRefs,
+    ledger::Ledger, logs::Logs, prng::Prng, storage::Storage, Address, Vec,
 };
 use internal::{
-    AddressObject, Bool, BytesObject, DurationObject, I128Object, I256Object, I256Val, I64Object,
-    MuxedAddressObject, StorageType, StringObject, Symbol, SymbolObject, TimepointObject,
-    U128Object, U256Object, U256Val, U32Val, U64Object, U64Val, Void,
+    AddressObject, Bool, BytesObject, DurationObject, ExecutableTagObject, I128Object, I256Object,
+    I256Val, I64Object, MuxedAddressObject, StorageType, StringObject, Symbol, SymbolObject,
+    TimepointObject, U128Object, U256Object, U256Val, U32Val, U64Object, U64Val, Void,
 };
 
 #[doc(hidden)]
 #[derive(Clone)]
 pub struct MaybeEnv {
-    maybe_env_impl: internal::MaybeEnvImpl,
-    #[cfg(any(test, feature = "testutils"))]
-    test_state: Option<EnvTestState>,
+    // On wasm an Env is always available.
+    #[cfg(target_family = "wasm")]
+    env: Env,
+    #[cfg(not(target_family = "wasm"))]
+    env: Option<Env>,
 }
 
 #[cfg(target_family = "wasm")]
 impl TryFrom<MaybeEnv> for Env {
     type Error = Infallible;
 
-    fn try_from(_value: MaybeEnv) -> Result<Self, Self::Error> {
-        Ok(Env {
-            env_impl: internal::EnvImpl {},
-        })
+    fn try_from(value: MaybeEnv) -> Result<Self, Self::Error> {
+        Ok(value.env)
     }
 }
 
@@ -158,7 +156,9 @@ impl MaybeEnv {
     // separate function to be const
     pub const fn none() -> Self {
         Self {
-            maybe_env_impl: internal::EnvImpl {},
+            env: Env {
+                env_impl: internal::EnvImpl {},
+            },
         }
     }
 }
@@ -167,20 +167,14 @@ impl MaybeEnv {
 impl MaybeEnv {
     // separate function to be const
     pub const fn none() -> Self {
-        Self {
-            maybe_env_impl: None,
-            #[cfg(any(test, feature = "testutils"))]
-            test_state: None,
-        }
+        Self { env: None }
     }
 }
 
 #[cfg(target_family = "wasm")]
 impl From<Env> for MaybeEnv {
     fn from(value: Env) -> Self {
-        MaybeEnv {
-            maybe_env_impl: value.env_impl,
-        }
+        MaybeEnv { env: value }
     }
 }
 
@@ -189,26 +183,14 @@ impl TryFrom<MaybeEnv> for Env {
     type Error = ConversionError;
 
     fn try_from(value: MaybeEnv) -> Result<Self, Self::Error> {
-        if let Some(env_impl) = value.maybe_env_impl {
-            Ok(Env {
-                env_impl,
-                #[cfg(any(test, feature = "testutils"))]
-                test_state: value.test_state.unwrap_or_default(),
-            })
-        } else {
-            Err(ConversionError)
-        }
+        value.env.ok_or(ConversionError)
     }
 }
 
 #[cfg(not(target_family = "wasm"))]
 impl From<Env> for MaybeEnv {
     fn from(value: Env) -> Self {
-        MaybeEnv {
-            maybe_env_impl: Some(value.env_impl.clone()),
-            #[cfg(any(test, feature = "testutils"))]
-            test_state: Some(value.test_state.clone()),
-        }
+        MaybeEnv { env: Some(value) }
     }
 }
 
@@ -253,15 +235,88 @@ thread_local! {
     static LAST_ENV: RefCell<Option<LastEnv>> = RefCell::new(None);
 }
 
+/// The test state of an [Env].
+///
+/// An [Env] created by a test has test state. An [Env] created for a contract
+/// function invocation does not, because the host that creates it knows nothing
+/// of the SDK's test state and has none to pass on. Testutils functionality
+/// that depends on the test state panics rather than silently operating on
+/// empty state when used inside a contract function.
 #[cfg(any(test, feature = "testutils"))]
-#[derive(Clone, Default)]
-struct EnvTestState {
-    test_name: Option<String>,
-    number: usize,
-    config: EnvTestConfig,
-    generators: Rc<RefCell<Generators>>,
-    auth_snapshot: Rc<RefCell<AuthSnapshot>>,
-    snapshot: Option<Rc<LedgerSnapshot>>,
+#[derive(Clone)]
+enum EnvTestState {
+    Test {
+        test_name: Option<String>,
+        number: usize,
+        config: EnvTestConfig,
+        generators: Rc<RefCell<Generators>>,
+        auth_snapshot: Rc<RefCell<AuthSnapshot>>,
+        snapshot: Option<Rc<LedgerSnapshot>>,
+    },
+    Contract,
+}
+
+/// Adapts a [`ContractFunctionSet`] into the function set the host dispatches
+/// native contract calls to.
+///
+/// Shared by contract registration and Wasm upload, both of which hand the host
+/// a native contract to dispatch to.
+#[cfg(any(test, feature = "testutils"))]
+struct InternalContractFunctionSet<T: ContractFunctionSet>(T);
+
+#[cfg(any(test, feature = "testutils"))]
+impl<T: ContractFunctionSet> internal::ContractFunctionSet for InternalContractFunctionSet<T> {
+    fn call(&self, func: &Symbol, env_impl: &internal::EnvImpl, args: &[Val]) -> Option<Val> {
+        let env = Env {
+            env_impl: env_impl.clone(),
+            // The test state is unavailable inside the invocation, because the
+            // code is running as the contract.
+            test_state: EnvTestState::Contract,
+        };
+        self.0.call(
+            crate::Symbol::try_from_val(&env, func)
+                .unwrap_infallible()
+                .to_string()
+                .as_str(),
+            env,
+            args,
+        )
+    }
+}
+
+#[cfg(any(test, feature = "testutils"))]
+impl EnvTestState {
+    fn config_mut(&mut self) -> &mut EnvTestConfig {
+        match self {
+            Self::Test { config, .. } => config,
+            Self::Contract => panic!("the test config is unavailable inside a contract function and must be accessed only from the test code outside the contract function"),
+        }
+    }
+
+    fn generators(&self) -> &Rc<RefCell<Generators>> {
+        match self {
+            Self::Test { generators, .. } => generators,
+            Self::Contract => panic!("generating values like addresses is unavailable inside a contract function and must be done only from the test code outside the contract function"),
+        }
+    }
+
+    fn auth_snapshot(&self) -> &Rc<RefCell<AuthSnapshot>> {
+        match self {
+            Self::Test { auth_snapshot, .. } => auth_snapshot,
+            Self::Contract => {
+                panic!("the record of authorizations is unavailable inside a contract function and must be accessed only from the test code outside the contract function")
+            }
+        }
+    }
+
+    fn snapshot(&self) -> &Option<Rc<LedgerSnapshot>> {
+        match self {
+            Self::Test { snapshot, .. } => snapshot,
+            Self::Contract => {
+                panic!("the ledger snapshot is unavailable inside a contract function and must be accessed only from the test code outside the contract function")
+            }
+        }
+    }
 }
 
 /// Config for changing the default behavior of the Env when used in tests.
@@ -291,23 +346,12 @@ impl Env {
     ///
     /// Equivalent to `panic!`, but with an error value instead of a string.
     #[doc(hidden)]
-    #[cfg(feature = "experimental_spec_shaking_v2")]
     #[inline(always)]
     pub fn panic_with_error<I>(&self, error: I) -> !
     where
         I: Into<internal::Error> + crate::SpecShakingMarker,
     {
         I::spec_shaking_marker();
-        self.panic_with_error_inner(error.into())
-    }
-
-    /// Panic with the given error.
-    ///
-    /// Equivalent to `panic!`, but with an error value instead of a string.
-    #[doc(hidden)]
-    #[cfg(not(feature = "experimental_spec_shaking_v2"))]
-    #[inline(always)]
-    pub fn panic_with_error(&self, error: impl Into<internal::Error>) -> ! {
         self.panic_with_error_inner(error.into())
     }
 
@@ -344,6 +388,13 @@ impl Env {
     #[inline(always)]
     pub fn deployer(&self) -> Deployer {
         Deployer::new(self)
+    }
+
+    /// Get an [ExecutableRefs] for managing the executable reference entries
+    /// owned by the currently executing contract.
+    #[inline(always)]
+    pub fn executable_refs(&self) -> ExecutableRefs {
+        ExecutableRefs::new(self)
     }
 
     /// Get an accessor for functions used for custom account implementation.
@@ -625,7 +676,7 @@ impl Env {
 
     #[doc(hidden)]
     pub(crate) fn with_generator<T>(&self, f: impl FnOnce(RefMut<'_, Generators>) -> T) -> T {
-        f((*self.test_state.generators).borrow_mut())
+        f((*self.test_state.generators()).borrow_mut())
     }
 
     /// Create an Env with the test config.
@@ -649,7 +700,7 @@ impl Env {
 
     /// Change the test config of an Env.
     pub fn set_config(&mut self, config: EnvTestConfig) {
-        self.test_state.config = config;
+        *self.test_state.config_mut() = config;
     }
 
     /// Used by multiple constructors to configure test environments consistently.
@@ -731,7 +782,7 @@ impl Env {
 
         let env = Env {
             env_impl,
-            test_state: EnvTestState {
+            test_state: EnvTestState::Test {
                 test_name,
                 number,
                 config,
@@ -788,6 +839,22 @@ impl Env {
     ///
     /// If you need to specify the address the contract should be registered at,
     /// use [`Env::register_at`].
+    ///
+    /// ### Authorization
+    ///
+    /// If the contract has a constructor, it is called during registration
+    /// with authorization mocked: the environment switches to recording auth
+    /// for the constructor call, so any [`Address::require_auth`] calls the
+    /// constructor makes are automatically authorized and succeed regardless
+    /// of the authorization configured on the environment. Because of this,
+    /// `register` cannot be used to test a constructor's authorization.
+    ///
+    /// To test constructor authorization, deploy the contract the way it is
+    /// deployed on-chain using the deployer returned by [`Env::deployer`],
+    /// e.g. [`Deployer::with_address`] followed by
+    /// [`deploy_contract`][crate::deploy::DeployerWithAddress::deploy_contract]. Deploying
+    /// that way runs the constructor subject to the environment's
+    /// authorization, so `require_auth` behaves as it would on-chain.
     ///
     /// ### Examples
     /// Register a contract defined in the current crate, by specifying the type
@@ -853,6 +920,22 @@ impl Env {
     /// Returns the address of the registered contract that is the same as the
     /// contract id passed in.
     ///
+    /// ### Authorization
+    ///
+    /// If the contract has a constructor, it is called during registration
+    /// with authorization mocked: the environment switches to recording auth
+    /// for the constructor call, so any [`Address::require_auth`] calls the
+    /// constructor makes are automatically authorized and succeed regardless
+    /// of the authorization configured on the environment. Because of this,
+    /// `register_at` cannot be used to test a constructor's authorization.
+    ///
+    /// To test constructor authorization, deploy the contract the way it is
+    /// deployed on-chain using the deployer returned by [`Env::deployer`],
+    /// e.g. [`Deployer::with_address`] followed by
+    /// [`deploy_contract`][crate::deploy::DeployerWithAddress::deploy_contract]. Deploying
+    /// that way runs the constructor subject to the environment's
+    /// authorization, so `require_auth` behaves as it would on-chain.
+    ///
     /// ### Examples
     /// Register a contract defined in the current crate, by specifying the type
     /// name:
@@ -905,6 +988,96 @@ impl Env {
         contract.register(self, contract_id, constructor_args)
     }
 
+    /// Upload a contract that is defined in the current crate to the [Env] for
+    /// testing, as if it was a contract Wasm.
+    ///
+    /// Contract instances that use the returned Wasm hash as their executable,
+    /// such as instances deployed with [`Env::deployer`], dispatch their calls
+    /// to the uploaded contract.
+    ///
+    /// A new Wasm hash is generated for every call. If you need to specify the
+    /// Wasm hash the contract should be uploaded to, use [`Env::upload_at`].
+    ///
+    /// Returns the Wasm hash the contract was uploaded to.
+    ///
+    /// ### Examples
+    /// ```
+    /// use soroban_sdk::{contract, contractimpl, Env};
+    ///
+    /// #[contract]
+    /// pub struct Contract;
+    ///
+    /// #[contractimpl]
+    /// impl Contract {
+    ///     pub fn hello(env: Env) { /* ... */ }
+    /// }
+    ///
+    /// #[test]
+    /// fn test() {
+    /// # }
+    /// # fn main() {
+    ///     let env = Env::default();
+    ///     let wasm_hash = env.upload(Contract);
+    /// }
+    /// ```
+    pub fn upload<C>(&self, contract: C) -> BytesN<32>
+    where
+        C: ContractFunctionSet + 'static,
+    {
+        self.upload_at(self.with_generator(|mut g| g.wasm_hash()), contract)
+    }
+
+    /// Upload a contract that is defined in the current crate to the [Env] for
+    /// testing, as if it was a contract Wasm, at the Wasm hash specified.
+    ///
+    /// Contract instances that use the Wasm hash as their executable, such as
+    /// instances deployed with [`Env::deployer`], dispatch their calls to the
+    /// uploaded contract.
+    ///
+    /// Uploading to a Wasm hash that already has a contract, native or Wasm,
+    /// uploaded to it replaces it for the purpose of contract calls. Use
+    /// re-uploading for testing only. It does not exist in the real (on-chain)
+    /// environment, where Wasm is immutable. Any ledger entry that already
+    /// exists for the Wasm hash is left untouched, including a real Wasm's
+    /// entry that a snapshot was loaded with.
+    ///
+    /// Returns the Wasm hash the contract was uploaded to, which is the same as
+    /// the Wasm hash passed in.
+    ///
+    /// ### Examples
+    /// ```
+    /// use soroban_sdk::{contract, contractimpl, Env};
+    ///
+    /// #[contract]
+    /// pub struct Contract;
+    ///
+    /// #[contractimpl]
+    /// impl Contract {
+    ///     pub fn hello(env: Env) { /* ... */ }
+    /// }
+    ///
+    /// #[test]
+    /// fn test() {
+    /// # }
+    /// # fn main() {
+    ///     let env = Env::default();
+    ///     env.upload_at([1u8; 32], Contract);
+    /// }
+    /// ```
+    pub fn upload_at<C>(&self, wasm_hash: impl IntoVal<Env, BytesN<32>>, contract: C) -> BytesN<32>
+    where
+        C: ContractFunctionSet + 'static,
+    {
+        let wasm_hash = wasm_hash.into_val(self);
+        self.env_impl
+            .register_native_contract_as_wasm(
+                Rc::new(InternalContractFunctionSet(contract)),
+                wasm_hash.to_object(),
+            )
+            .unwrap();
+        wasm_hash
+    }
+
     /// Register a contract with the [Env] for testing.
     ///
     /// Passing a contract ID for the first arguments registers the contract
@@ -913,6 +1086,10 @@ impl Env {
     ///
     /// If a contract has a constructor defined, then it will be called with
     /// no arguments. If a constructor takes arguments, use `register`.
+    ///
+    /// The constructor call has authorization mocked, the same as
+    /// [`register`][Self::register]; see that function for how to test
+    /// constructor authorization.
     ///
     /// Registering a contract that is already registered replaces it.
     /// Use re-registration with caution as it does not exist in the real
@@ -981,41 +1158,26 @@ impl Env {
         contract: T,
         constructor_args: A,
     ) -> Address {
-        struct InternalContractFunctionSet<T: ContractFunctionSet>(pub(crate) T);
-        impl<T: ContractFunctionSet> internal::ContractFunctionSet for InternalContractFunctionSet<T> {
-            fn call(
-                &self,
-                func: &Symbol,
-                env_impl: &internal::EnvImpl,
-                args: &[Val],
-            ) -> Option<Val> {
-                let env = Env {
-                    env_impl: env_impl.clone(),
-                    test_state: Default::default(),
-                };
-                self.0.call(
-                    crate::Symbol::try_from_val(&env, func)
-                        .unwrap_infallible()
-                        .to_string()
-                        .as_str(),
-                    env,
-                    args,
-                )
-            }
-        }
-
         let contract_id = if let Some(contract_id) = contract_id.into() {
             contract_id.clone()
         } else {
             Address::generate(self)
         };
+        // Convert the constructor arguments before switching auth managers, so
+        // that a panic during conversion cannot leave the environment stuck in
+        // recording auth. This matches the wasm registration path.
+        let constructor_args = constructor_args.into_val(self).to_object();
+        let prev_auth_manager = self.env_impl.snapshot_auth_manager().unwrap();
         self.env_impl
-            .register_test_contract_with_constructor(
-                contract_id.to_object(),
-                Rc::new(InternalContractFunctionSet(contract)),
-                constructor_args.into_val(self).to_object(),
-            )
+            .switch_to_recording_auth_inherited_from_snapshot(&prev_auth_manager)
             .unwrap();
+        let register_result = self.env_impl.register_test_contract_with_constructor(
+            contract_id.to_object(),
+            Rc::new(InternalContractFunctionSet(contract)),
+            constructor_args,
+        );
+        self.env_impl.set_auth_manager(prev_auth_manager).unwrap();
+        register_result.unwrap();
         contract_id
     }
 
@@ -1024,6 +1186,10 @@ impl Env {
     /// Passing a contract ID for the first arguments registers the contract
     /// with that contract ID. Providing `None` causes the Env to generate a new
     /// contract ID that is assigned to the contract.
+    ///
+    /// If the contract has a constructor, it is called during registration
+    /// with authorization mocked, the same as [`register`][Self::register];
+    /// see that function for how to test constructor authorization.
     ///
     /// Registering a contract that is already registered replaces it.
     /// Use re-registration with caution as it does not exist in the real
@@ -1520,7 +1686,7 @@ impl Env {
     /// # fn main() { }
     /// ```
     pub fn auths(&self) -> std::vec::Vec<(Address, AuthorizedInvocation)> {
-        (*self.test_state.auth_snapshot)
+        (*self.test_state.auth_snapshot())
             .borrow()
             .0
             .last()
@@ -1667,9 +1833,16 @@ impl Env {
         self.host()
             .add_ledger_entry(&key, &entry, Some(live_until_ledger))
             .unwrap();
+        let prev_auth_manager = self.env_impl.snapshot_auth_manager().unwrap();
         self.env_impl
-            .call_constructor_for_stored_contract_unsafe(&contract_id, constructor_args.to_object())
+            .switch_to_recording_auth_inherited_from_snapshot(&prev_auth_manager)
             .unwrap();
+        let call_result = self.env_impl.call_constructor_for_stored_contract_unsafe(
+            &contract_id,
+            constructor_args.to_object(),
+        );
+        self.env_impl.set_auth_manager(prev_auth_manager).unwrap();
+        call_result.unwrap();
     }
 
     /// Run the function as if executed by the given contract ID.
@@ -1839,8 +2012,8 @@ impl Env {
     /// Create a snapshot from the Env's current state.
     pub fn to_snapshot(&self) -> Snapshot {
         Snapshot {
-            generators: (*self.test_state.generators).borrow().clone(),
-            auth: (*self.test_state.auth_snapshot).borrow().clone(),
+            generators: (*self.test_state.generators()).borrow().clone(),
+            auth: (*self.test_state.auth_snapshot()).borrow().clone(),
             ledger: self.to_ledger_snapshot(),
             events: self.to_events_snapshot(),
         }
@@ -1885,7 +2058,7 @@ impl Env {
 
     /// Create a snapshot from the Env's current state.
     pub fn to_ledger_snapshot(&self) -> LedgerSnapshot {
-        let snapshot = self.test_state.snapshot.clone().unwrap_or_default();
+        let snapshot = self.test_state.snapshot().clone().unwrap_or_default();
         let mut snapshot = (*snapshot).clone();
         snapshot.set_ledger_info(self.ledger().get());
         snapshot.update_entries(&self.host().get_stored_entries().unwrap());
@@ -1940,7 +2113,10 @@ impl Drop for Env {
         // snapshot at that point when no other references to the host exist,
         // because it is only when there are no other references that the host
         // is being dropped.
-        if self.env_impl.can_finish() && self.test_state.config.capture_snapshot_at_drop {
+        let EnvTestState::Test { config, .. } = &self.test_state else {
+            return;
+        };
+        if self.env_impl.can_finish() && config.capture_snapshot_at_drop {
             self.to_test_snapshot_file();
         }
     }
@@ -1966,6 +2142,18 @@ impl Env {
     ///
     /// If there is any error writing the file.
     pub(crate) fn to_test_snapshot_file(&self) {
+        // If there's no test state, or no test name, we're not in a test
+        // context, so don't write snapshots. An Env without test state would
+        // panic if its test state were read.
+        let EnvTestState::Test {
+            test_name: Some(test_name),
+            number,
+            ..
+        } = &self.test_state
+        else {
+            return;
+        };
+
         let snapshot = self.to_snapshot();
 
         // Don't write a snapshot that has no data in it.
@@ -1977,11 +2165,6 @@ impl Env {
         }
 
         // Determine path to write test snapshots to.
-        let Some(test_name) = &self.test_state.test_name else {
-            // If there's no test name, we're not in a test context, so don't write snapshots.
-            return;
-        };
-        let number = self.test_state.number;
         // Break up the test name into directories, using :: as the separator.
         // The :: module separator cannot be written into the filename because
         // some operating systems (e.g. Windows) do not allow the : character in
@@ -2149,6 +2332,29 @@ impl internal::EnvBase for Env {
         Ok(self
             .env_impl
             .map_unpack_to_slice(map, keys, vals)
+            .unwrap_optimized())
+    }
+
+    fn sparse_map_new_from_slices(
+        &self,
+        keys: &[&str],
+        vals: &[Val],
+    ) -> Result<MapObject, Self::Error> {
+        Ok(self
+            .env_impl
+            .sparse_map_new_from_slices(keys, vals)
+            .unwrap_optimized())
+    }
+
+    fn sparse_map_unpack_to_slice(
+        &self,
+        map: MapObject,
+        keys: &[&str],
+        vals: &mut [Val],
+    ) -> Result<Void, Self::Error> {
+        Ok(self
+            .env_impl
+            .sparse_map_unpack_to_slice(map, keys, vals)
             .unwrap_optimized())
     }
 

@@ -9,7 +9,7 @@ use soroban_sdk::{contractevent, Address, BytesN, String};
 // purpose of generating the complete contract spec.
 
 /// Transfer event published when a classic payment uses the MEMO_TEXT memo type.
-#[contractevent(topics = ["transfer"], data_format = "map", export = false)]
+#[contractevent(topics = ["transfer"], data_format = "map")]
 #[doc(hidden)]
 pub struct TransferWithMuxedString {
     #[topic]
@@ -21,7 +21,7 @@ pub struct TransferWithMuxedString {
 }
 
 /// Transfer event published when a classic payment uses the MEMO_HASH or MEMO_RETURN memo type.
-#[contractevent(topics = ["transfer"], data_format = "map", export = false)]
+#[contractevent(topics = ["transfer"], data_format = "map")]
 #[doc(hidden)]
 pub struct TransferWithMuxedBytes {
     #[topic]
@@ -33,7 +33,7 @@ pub struct TransferWithMuxedBytes {
 }
 
 /// Mint event published when a classic payment uses the MEMO_TEXT memo type.
-#[contractevent(topics = ["mint"], data_format = "map", export = false)]
+#[contractevent(topics = ["mint"], data_format = "map")]
 #[doc(hidden)]
 pub struct MintWithMuxedString {
     #[topic]
@@ -43,7 +43,7 @@ pub struct MintWithMuxedString {
 }
 
 /// Mint event published when a classic payment uses the MEMO_HASH or MEMO_RETURN memo type.
-#[contractevent(topics = ["mint"], data_format = "map", export = false)]
+#[contractevent(topics = ["mint"], data_format = "map")]
 #[doc(hidden)]
 pub struct MintWithMuxedBytes {
     #[topic]
@@ -76,7 +76,16 @@ pub(crate) const XDR_INPUT: &[&[u8]] = &[
     &soroban_token_sdk::events::Clawback::spec_xdr(),
 ];
 
-pub(crate) const XDR_LEN: usize = 6620;
+pub(crate) const XDR_LEN: usize = {
+    let input = XDR_INPUT;
+    let mut len = 0usize;
+    let mut i = 0;
+    while i < input.len() {
+        len += input[i].len();
+        i += 1;
+    }
+    len
+};
 
 /// Returns the contract spec for a SEP-41 Token contract.
 pub const fn xdr() -> &'static [u8] {

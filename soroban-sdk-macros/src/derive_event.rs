@@ -1,28 +1,48 @@
 use crate::{
     attribute::remove_attributes_from_item, default_crate_path, doc::docs_from_attrs,
-    export_arg_v2_deprecation, map_type::map_type, shaking, symbol, DEFAULT_XDR_RW_LIMITS,
+    export_arg_error, map_type::map_type, shaking, symbol, DEFAULT_XDR_RW_LIMITS,
 };
-use darling::{ast::NestedMeta, Error, FromMeta};
+use darling::{ast::NestedMeta, util::SpannedValue, Error, FromMeta};
 use heck::ToSnakeCase;
 use proc_macro2::Span;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use stellar_xdr::{
     ScSpecEntry, ScSpecEventDataFormat, ScSpecEventParamLocationV0, ScSpecEventParamV0,
-    ScSpecEventV0, ScSymbol, StringM, WriteXdr,
+    ScSpecEventV0, StringM, WriteXdr,
 };
-use syn::{ext::IdentExt as _, parse2, spanned::Spanned, Data, DeriveInput, Fields, LitStr, Path};
+use syn::{
+    ext::IdentExt as _, parse2, spanned::Spanned, Data, DeriveInput, Fields, LitStr, Meta, Path,
+};
 
 #[derive(Debug, FromMeta)]
 struct ContractEventArgs {
     #[darling(default = "default_crate_path")]
     crate_path: Path,
-    lib: Option<String>,
-    export: Option<bool>,
+    export: Option<SpannedValue<bool>>,
     #[darling(default)]
     topics: Option<Vec<LitStr>>,
     #[darling(default)]
     data_format: DataFormat,
+    #[darling(default)]
+    sparse: Option<SparseArg>,
+}
+
+/// The `sparse` argument, carrying the span of the whole `sparse = ...` argument so that an error
+/// about the argument points at all of it and not only at the value.
+#[derive(Copy, Clone, Debug)]
+struct SparseArg {
+    sparse: bool,
+    span: Span,
+}
+
+impl FromMeta for SparseArg {
+    fn from_meta(item: &Meta) -> Result<Self, Error> {
+        Ok(Self {
+            sparse: bool::from_meta(item)?,
+            span: item.span(),
+        })
+    }
 }
 
 #[derive(Copy, Clone, Debug, Default)]
@@ -67,13 +87,13 @@ fn derive_event_or_err(metadata: TokenStream2, input: TokenStream2) -> Result<To
     let args = NestedMeta::parse_meta_list(metadata.into())?;
     let args = ContractEventArgs::from_list(&args)?;
     let input = parse2::<DeriveInput>(input)?;
-    let export_deprecation = export_arg_v2_deprecation(&args.export, &input.ident);
+    let export_error = export_arg_error(&args.export);
     let derived = derive_impls(&args, &input)?;
     let mut input = input;
     remove_attributes_from_item(&mut input.data, &["topic", "data"]);
     Ok(quote! {
         #input
-        #export_deprecation
+        #export_error
         #derived
     }
     .into())
@@ -114,10 +134,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
                     "structs with unnamed fields are not supported as contract events",
                 )
                 .with_span(&struct_.fields.span()))?,
-                Fields::Unit => Err(Error::custom(
-                    "structs with no fields are not supported as contract events",
-                )
-                .with_span(&struct_.fields.span()))?,
+                Fields::Unit => Vec::new(),
             },
             Data::Enum(_) => Err(Error::custom("enums are not supported as contract events")
                 .with_span(&input.span()))?,
@@ -172,21 +189,18 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     // If errors have occurred, return them.
     let mut errors = errors.checkpoint()?;
 
-    // Generated code spec. Under `experimental_spec_shaking_v2` the spec is
-    // always emitted and reachability determines what is retained, so an
-    // explicit `export = false` is ignored (a deprecation warning is emitted
-    // separately).
-    let export = cfg!(feature = "experimental_spec_shaking_v2") || args.export.unwrap_or(true);
-    let export_gen = if export {
-        Some(quote! { #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")] })
-    } else {
-        None
-    };
+    // Generated code spec. The spec is always emitted and reachability determines
+    // what is retained.
+    let export_gen =
+        quote! { #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")] };
     let spec_entry = ScSpecEntry::EventV0(ScSpecEventV0 {
         data_format: args.data_format.into(),
         doc: docs_from_attrs(&input.attrs),
-        lib: args.lib.as_deref().unwrap_or_default().try_into().unwrap(),
-        name: ScSymbol(event_name),
+        // set to empty string always because the field is no longer used
+        lib: StringM::default(),
+        // Event names are limited by the SDK to EVENT_NAME_LENGTH, which is
+        // shorter than the spec's name limit, so the conversion cannot fail.
+        name: event_name.into_vec().try_into().unwrap(),
         prefix_topics: prefix_topics
             .iter()
             .map(|t| t.try_into().unwrap())
@@ -207,16 +221,14 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         "__SPEC_XDR_EVENT_{}",
         input.ident.unraw().to_string().to_uppercase()
     );
-    let spec_shaking_call = if export && cfg!(feature = "experimental_spec_shaking_v2") {
-        Some(quote! { <Self as #path::SpecShakingMarker>::spec_shaking_marker(); })
-    } else {
-        None
-    };
+    let spec_shaking_call = quote! { <Self as #path::SpecShakingMarker>::spec_shaking_marker(); };
 
     // Generated code spec.
     let spec_gen = quote! {
+        #[doc(hidden)]
+        #[allow(dead_code)]
         #export_gen
-        pub static #spec_ident: [u8; #spec_xdr_len] = #ident::spec_xdr();
+        static #spec_ident: [u8; #spec_xdr_len] = #ident::spec_xdr();
 
         impl #gen_impl #ident #gen_types #gen_where {
             pub const fn spec_xdr() -> [u8; #spec_xdr_len] {
@@ -225,21 +237,16 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         }
     };
 
-    // SpecShakingMarker impl - only generated when export is true and the
-    // experimental_spec_shaking_v2 feature is enabled.
-    let spec_shaking_impl = if export && cfg!(feature = "experimental_spec_shaking_v2") {
-        Some(shaking::generate_marker_impl(
-            path,
-            quote!(#ident),
-            &spec_xdr,
-            field_types.iter().cloned(),
-            Some(quote!(#gen_impl)),
-            Some(quote!(#gen_types)),
-            Some(quote!(#gen_where)),
-        ))
-    } else {
-        None
-    };
+    // SpecShakingMarker impl.
+    let spec_shaking_impl = shaking::generate_marker_impl(
+        path,
+        quote!(#ident),
+        &spec_xdr,
+        field_types.iter().cloned(),
+        Some(quote!(#gen_impl)),
+        Some(quote!(#gen_types)),
+        Some(quote!(#gen_where)),
+    );
 
     // Prepare Topics Conversion to Vec<Val>.
     let prefix_topics_symbols = prefix_topics.iter().map(|t| {
@@ -272,6 +279,14 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         .iter()
         .map(|(ident, _)| ident.clone())
         .collect::<Vec<_>>();
+    if let Some(sparse) = &args.sparse {
+        if !matches!(args.data_format, DataFormat::Map) {
+            errors.push(
+                Error::custom("sparse is only supported with data_format = \"map\"")
+                    .with_span(&sparse.span),
+            );
+        }
+    }
     let data_to_val = match args.data_format {
         DataFormat::SingleValue if data_params_count == 0 => quote! {
             #path::Val::VOID.to_val()
@@ -298,9 +313,9 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
             ).into_val(env)
         },
         DataFormat::Map => {
-            // Must be sorted for map_new_from_slices. Sort by the spec name (the
-            // Soroban-facing Symbol string), and carry the original Ident alongside so
-            // that `self.#ident` still uses the raw form where needed.
+            // Must be sorted for map_new_from_slices and sparse_map_new_from_slices. Sort by
+            // the spec name (the Soroban-facing Symbol string), and carry the original Ident
+            // alongside so that `self.#ident` still uses the raw form where needed.
             let mut data_params_sorted = data_params.clone();
             data_params_sorted.sort_by_key(|(_, p)| p.name.to_string());
             let data_idents_sorted = data_params_sorted
@@ -311,13 +326,20 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
                 .iter()
                 .map(|(_, p)| p.name.to_string())
                 .collect::<Vec<_>>();
+            // A sparse map, which is the default, omits fields whose value is void, such as
+            // an Option field that is None, instead of writing them with a void value.
+            let map_new_fn = if args.sparse.map_or(true, |s| s.sparse) {
+                format_ident!("sparse_map_new_from_slices")
+            } else {
+                format_ident!("map_new_from_slices")
+            };
             quote! {
                 use #path::{EnvBase,IntoVal,unwrap::UnwrapInfallible};
                 const KEYS: [&'static str; #data_params_count] = [#(#data_strs_sorted),*];
                 let vals: [#path::Val; #data_params_count] = [
                     #(self.#data_idents_sorted.into_val(env)),*
                 ];
-                env.map_new_from_slices(&KEYS, &vals).unwrap_infallible().into()
+                env.#map_new_fn(&KEYS, &vals).unwrap_infallible().into()
             }
         }
     };

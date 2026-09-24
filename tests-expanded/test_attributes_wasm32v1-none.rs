@@ -47,8 +47,10 @@ impl ::core::cmp::PartialEq for AttributeType {
         self.value == other.value
     }
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_TYPE_ATTRIBUTETYPE: [u8; 56usize] = AttributeType::spec_xdr();
+static __SPEC_XDR_TYPE_ATTRIBUTETYPE: [u8; 56usize] = AttributeType::spec_xdr();
 impl AttributeType {
     pub const fn spec_xdr() -> [u8; 56usize] {
         *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\rAttributeType\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x05value\0\0\0\0\0\0\x04"
@@ -75,7 +77,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for AttributeTy
         const KEYS: [&'static str; 1usize] = ["value"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
         let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
-        env.map_unpack_to_slice(map, &KEYS, &mut vals)
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
             .map_err(|_| ConversionError)?;
         Ok(Self {
             value: vals[0]
@@ -115,8 +117,10 @@ pub struct AttributeEvent {
     topic: u32,
     value: u32,
 }
+#[doc(hidden)]
+#[allow(dead_code)]
 #[link_section = "contractspecv0"]
-pub static __SPEC_XDR_EVENT_ATTRIBUTEEVENT: [u8; 112usize] = AttributeEvent::spec_xdr();
+static __SPEC_XDR_EVENT_ATTRIBUTEEVENT: [u8; 112usize] = AttributeEvent::spec_xdr();
 impl AttributeEvent {
     pub const fn spec_xdr() -> [u8; 112usize] {
         *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x0eAttributeEvent\0\0\0\0\0\x01\0\0\0\x0fattribute_event\0\0\0\0\x02\0\0\0\0\0\0\0\x05topic\0\0\0\0\0\0\x04\0\0\0\x01\0\0\0\0\0\0\0\x05value\0\0\0\0\0\0\x04\0\0\0\0\0\0\0\x02"
@@ -147,7 +151,7 @@ impl soroban_sdk::Event for AttributeEvent {
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 1usize] = ["value"];
         let vals: [soroban_sdk::Val; 1usize] = [self.value.into_val(env)];
-        env.map_new_from_slices(&KEYS, &vals)
+        env.sparse_map_new_from_slices(&KEYS, &vals)
             .unwrap_infallible()
             .into()
     }
@@ -189,6 +193,18 @@ pub trait AttributeTrait {
     }
     fn trait_default_stacked_cfg() -> u32 {
         5
+    }
+    fn trait_override_stacked_cfg() -> u32 {
+        7
+    }
+    fn trait_override_negated_cfg() -> u32 {
+        9
+    }
+    fn trait_override_dual_cfg() -> u32 {
+        11
+    }
+    fn trait_default_dual_cfg() -> u32 {
+        14
     }
 }
 ///AttributeTraitClient is a client for calling the contract defined in "AttributeTrait".
@@ -280,6 +296,102 @@ impl<'a> AttributeTraitClient<'a> {
         );
         res
     }
+    pub fn trait_override_stacked_cfg(&self) -> u32 {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "trait_override_stacked_cfg") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
+    pub fn try_trait_override_stacked_cfg(
+        &self,
+    ) -> Result<
+        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "trait_override_stacked_cfg") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
+    pub fn trait_override_negated_cfg(&self) -> u32 {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "trait_override_negated_cfg") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
+    pub fn try_trait_override_negated_cfg(
+        &self,
+    ) -> Result<
+        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "trait_override_negated_cfg") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
+    pub fn trait_override_dual_cfg(&self) -> u32 {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "trait_override_dual_cfg") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
+    pub fn try_trait_override_dual_cfg(
+        &self,
+    ) -> Result<
+        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "trait_override_dual_cfg") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
+    pub fn trait_default_dual_cfg(&self) -> u32 {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "trait_default_dual_cfg") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
+    pub fn try_trait_default_dual_cfg(
+        &self,
+    ) -> Result<
+        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "trait_default_dual_cfg") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
 }
 ///AttributeTraitArgs is a type for building arg lists for functions defined in "AttributeTrait".
 pub struct AttributeTraitArgs;
@@ -297,6 +409,26 @@ impl AttributeTraitArgs {
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn trait_default_stacked_cfg<'i>() -> () {
+        ()
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn trait_override_stacked_cfg<'i>() -> () {
+        ()
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn trait_override_negated_cfg<'i>() -> () {
+        ()
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn trait_override_dual_cfg<'i>() -> () {
+        ()
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn trait_default_dual_cfg<'i>() -> () {
         ()
     }
 }
@@ -318,6 +450,30 @@ impl AttributeTraitSpec {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x19trait_default_stacked_cfg\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
     }
 }
+impl AttributeTraitSpec {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_trait_override_stacked_cfg() -> [u8; 52usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x1atrait_override_stacked_cfg\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
+    }
+}
+impl AttributeTraitSpec {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_trait_override_negated_cfg() -> [u8; 52usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x1atrait_override_negated_cfg\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
+    }
+}
+impl AttributeTraitSpec {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_trait_override_dual_cfg() -> [u8; 48usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x17trait_override_dual_cfg\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
+    }
+}
+impl AttributeTraitSpec {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_trait_default_dual_cfg() -> [u8; 48usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x16trait_default_dual_cfg\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
+    }
+}
 impl Contract {
     pub fn always(value: AttributeType) -> u32 {
         value.value
@@ -331,12 +487,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__always__spec {
+#[allow(dead_code)]
+mod __Contract__always__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_ALWAYS: [u8; 72usize] = super::Contract::spec_xdr_always();
+    static __SPEC_XDR_FN_ALWAYS: [u8; 72usize] = super::Contract::spec_xdr_always();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -346,12 +504,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__cfg_included__spec {
+#[allow(dead_code)]
+mod __Contract__cfg_included__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_CFG_INCLUDED: [u8; 56usize] = super::Contract::spec_xdr_cfg_included();
+    static __SPEC_XDR_FN_CFG_INCLUDED: [u8; 56usize] = super::Contract::spec_xdr_cfg_included();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -362,12 +522,14 @@ impl Contract {
 impl Contract {}
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__publish__spec {
+#[allow(dead_code)]
+mod __Contract__publish__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_PUBLISH: [u8; 68usize] = super::Contract::spec_xdr_publish();
+    static __SPEC_XDR_FN_PUBLISH: [u8; 68usize] = super::Contract::spec_xdr_publish();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -595,16 +757,26 @@ impl AttributeTrait for Contract {
     fn trait_override() -> u32 {
         3
     }
+    fn trait_override_stacked_cfg() -> u32 {
+        8
+    }
+    fn trait_override_negated_cfg() -> u32 {
+        10
+    }
+    fn trait_override_dual_cfg() -> u32 {
+        12
+    }
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__trait_override__spec {
+#[allow(dead_code)]
+mod __Contract__trait_override__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_TRAIT_OVERRIDE: [u8; 40usize] =
-        super::Contract::spec_xdr_trait_override();
+    static __SPEC_XDR_FN_TRAIT_OVERRIDE: [u8; 40usize] = super::Contract::spec_xdr_trait_override();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -612,6 +784,63 @@ impl Contract {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x0etrait_override\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
     }
 }
+impl Contract {}
+impl Contract {}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+mod __Contract__trait_override_stacked_cfg__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
+    #[link_section = "contractspecv0"]
+    static __SPEC_XDR_FN_TRAIT_OVERRIDE_STACKED_CFG: [u8; 52usize] =
+        super::Contract::spec_xdr_trait_override_stacked_cfg();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_trait_override_stacked_cfg() -> [u8; 52usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x1atrait_override_stacked_cfg\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+mod __Contract__trait_override_negated_cfg__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
+    #[link_section = "contractspecv0"]
+    static __SPEC_XDR_FN_TRAIT_OVERRIDE_NEGATED_CFG: [u8; 52usize] =
+        super::Contract::spec_xdr_trait_override_negated_cfg();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_trait_override_negated_cfg() -> [u8; 52usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x1atrait_override_negated_cfg\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+mod __Contract__trait_override_dual_cfg__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
+    #[link_section = "contractspecv0"]
+    static __SPEC_XDR_FN_TRAIT_OVERRIDE_DUAL_CFG: [u8; 48usize] =
+        super::Contract::spec_xdr_trait_override_dual_cfg();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_trait_override_dual_cfg() -> [u8; 48usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x17trait_override_dual_cfg\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
+    }
+}
+impl Contract {}
 impl Contract {}
 impl Contract {}
 impl<'a> ContractClient<'a> {
@@ -639,11 +868,98 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    pub fn trait_override_stacked_cfg(&self) -> u32 {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "trait_override_stacked_cfg") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
+    pub fn try_trait_override_stacked_cfg(
+        &self,
+    ) -> Result<
+        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "trait_override_stacked_cfg") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
+    pub fn trait_override_negated_cfg(&self) -> u32 {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "trait_override_negated_cfg") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
+    pub fn try_trait_override_negated_cfg(
+        &self,
+    ) -> Result<
+        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "trait_override_negated_cfg") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
+    pub fn trait_override_dual_cfg(&self) -> u32 {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "trait_override_dual_cfg") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
+    pub fn try_trait_override_dual_cfg(
+        &self,
+    ) -> Result<
+        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "trait_override_dual_cfg") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
 }
 impl ContractArgs {
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn trait_override<'i>() -> () {
+        ()
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn trait_override_stacked_cfg<'i>() -> () {
+        ()
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn trait_override_negated_cfg<'i>() -> () {
+        ()
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn trait_override_dual_cfg<'i>() -> () {
         ()
     }
 }
@@ -664,6 +980,76 @@ pub fn __Contract__trait_override__invoke_raw(env: soroban_sdk::Env) -> soroban_
 pub extern "C" fn __Contract__trait_override__invoke_raw_extern() -> soroban_sdk::Val {
     #[allow(deprecated)]
     __Contract__trait_override__invoke_raw(soroban_sdk::Env::default())
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(
+    note = "use `ContractClient::new(&env, &contract_id).trait_override_stacked_cfg` instead"
+)]
+#[allow(deprecated)]
+pub fn __Contract__trait_override_stacked_cfg__invoke_raw(
+    env: soroban_sdk::Env,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract as AttributeTrait>::trait_override_stacked_cfg(),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(
+    note = "use `ContractClient::new(&env, &contract_id).trait_override_stacked_cfg` instead"
+)]
+#[export_name = "trait_override_stacked_cfg"]
+pub extern "C" fn __Contract__trait_override_stacked_cfg__invoke_raw_extern() -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__trait_override_stacked_cfg__invoke_raw(soroban_sdk::Env::default())
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(
+    note = "use `ContractClient::new(&env, &contract_id).trait_override_negated_cfg` instead"
+)]
+#[allow(deprecated)]
+pub fn __Contract__trait_override_negated_cfg__invoke_raw(
+    env: soroban_sdk::Env,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract as AttributeTrait>::trait_override_negated_cfg(),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(
+    note = "use `ContractClient::new(&env, &contract_id).trait_override_negated_cfg` instead"
+)]
+#[export_name = "trait_override_negated_cfg"]
+pub extern "C" fn __Contract__trait_override_negated_cfg__invoke_raw_extern() -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__trait_override_negated_cfg__invoke_raw(soroban_sdk::Env::default())
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(
+    note = "use `ContractClient::new(&env, &contract_id).trait_override_dual_cfg` instead"
+)]
+#[allow(deprecated)]
+pub fn __Contract__trait_override_dual_cfg__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract as AttributeTrait>::trait_override_dual_cfg(),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(
+    note = "use `ContractClient::new(&env, &contract_id).trait_override_dual_cfg` instead"
+)]
+#[export_name = "trait_override_dual_cfg"]
+pub extern "C" fn __Contract__trait_override_dual_cfg__invoke_raw_extern() -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__trait_override_dual_cfg__invoke_raw(soroban_sdk::Env::default())
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
@@ -707,16 +1093,35 @@ pub extern "C" fn __Contract__trait_default_stacked_cfg__invoke_raw_extern() -> 
     #[allow(deprecated)]
     __Contract__trait_default_stacked_cfg__invoke_raw(soroban_sdk::Env::default())
 }
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).trait_default_dual_cfg` instead")]
+#[allow(deprecated)]
+pub fn __Contract__trait_default_dual_cfg__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract as AttributeTrait>::trait_default_dual_cfg(),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).trait_default_dual_cfg` instead")]
+#[export_name = "trait_default_dual_cfg"]
+pub extern "C" fn __Contract__trait_default_dual_cfg__invoke_raw_extern() -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__trait_default_dual_cfg__invoke_raw(soroban_sdk::Env::default())
+}
 impl Contract {}
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__trait_default__spec {
+#[allow(dead_code)]
+mod __Contract__trait_default__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_TRAIT_DEFAULT: [u8; 40usize] =
-        super::Contract::spec_xdr_trait_default();
+    static __SPEC_XDR_FN_TRAIT_DEFAULT: [u8; 40usize] = super::Contract::spec_xdr_trait_default();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -726,18 +1131,41 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__trait_default_stacked_cfg__spec {
+#[allow(dead_code)]
+mod __Contract__trait_default_stacked_cfg__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_TRAIT_DEFAULT_STACKED_CFG: [u8; 52usize] =
+    static __SPEC_XDR_FN_TRAIT_DEFAULT_STACKED_CFG: [u8; 52usize] =
         super::Contract::spec_xdr_trait_default_stacked_cfg();
 }
 impl Contract {
     #[allow(non_snake_case)]
     pub const fn spec_xdr_trait_default_stacked_cfg() -> [u8; 52usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x19trait_default_stacked_cfg\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
+    }
+}
+impl Contract {}
+impl Contract {}
+impl Contract {}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+mod __Contract__trait_default_dual_cfg__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
+    #[link_section = "contractspecv0"]
+    static __SPEC_XDR_FN_TRAIT_DEFAULT_DUAL_CFG: [u8; 48usize] =
+        super::Contract::spec_xdr_trait_default_dual_cfg();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_trait_default_dual_cfg() -> [u8; 48usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x16trait_default_dual_cfg\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
     }
 }
 impl<'a> ContractClient<'a> {
@@ -789,6 +1217,30 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    pub fn trait_default_dual_cfg(&self) -> u32 {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "trait_default_dual_cfg") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
+    pub fn try_trait_default_dual_cfg(
+        &self,
+    ) -> Result<
+        Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "trait_default_dual_cfg") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
 }
 impl ContractArgs {
     #[inline(always)]
@@ -799,6 +1251,11 @@ impl ContractArgs {
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn trait_default_stacked_cfg<'i>() -> () {
+        ()
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn trait_default_dual_cfg<'i>() -> () {
         ()
     }
 }

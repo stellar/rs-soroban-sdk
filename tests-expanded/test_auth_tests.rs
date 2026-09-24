@@ -144,11 +144,13 @@ impl ContractA {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __ContractA__fn1__spec {
+#[allow(dead_code)]
+mod __ContractA__fn1__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_FN1: [u8; 44usize] = super::ContractA::spec_xdr_fn1();
+    #[allow(dead_code)]
+    static __SPEC_XDR_FN_FN1: [u8; 44usize] = super::ContractA::spec_xdr_fn1();
 }
 impl ContractA {
     #[allow(non_snake_case)]
@@ -804,12 +806,14 @@ mod test_a {
         #[doc(hidden)]
         #[allow(non_snake_case)]
         #[allow(non_snake_case)]
-        pub mod __Contract____check_auth__spec {
+        #[allow(dead_code)]
+        mod __Contract____check_auth__spec {
             #[doc(hidden)]
             #[allow(non_snake_case)]
             #[allow(non_upper_case_globals)]
+            #[allow(dead_code)]
             #[allow(non_snake_case)]
-            pub static __SPEC_XDR_FN___CHECK_AUTH: [u8; 112usize] =
+            static __SPEC_XDR_FN___CHECK_AUTH: [u8; 112usize] =
                 super::Contract::spec_xdr___check_auth();
         }
         impl Contract {
@@ -1119,7 +1123,9 @@ mod test_a {
                 ::core::cmp::Ordering::Equal
             }
         }
-        pub static __SPEC_XDR_TYPE_ERROR: [u8; 48usize] = Error::spec_xdr();
+        #[doc(hidden)]
+        #[allow(dead_code)]
+        static __SPEC_XDR_TYPE_ERROR: [u8; 48usize] = Error::spec_xdr();
         impl Error {
             pub const fn spec_xdr() -> [u8; 48usize] {
                 *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x05Error\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x07Decline\0\0\0\0\x01"
@@ -1248,12 +1254,14 @@ mod test_a {
         #[doc(hidden)]
         #[allow(non_snake_case)]
         #[allow(non_snake_case)]
-        pub mod __Contract____check_auth__spec {
+        #[allow(dead_code)]
+        mod __Contract____check_auth__spec {
             #[doc(hidden)]
             #[allow(non_snake_case)]
             #[allow(non_upper_case_globals)]
+            #[allow(dead_code)]
             #[allow(non_snake_case)]
-            pub static __SPEC_XDR_FN___CHECK_AUTH: [u8; 124usize] =
+            static __SPEC_XDR_FN___CHECK_AUTH: [u8; 124usize] =
                 super::Contract::spec_xdr___check_auth();
         }
         impl Contract {
@@ -1515,11 +1523,13 @@ impl ContractB {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __ContractB__fn2__spec {
+#[allow(dead_code)]
+mod __ContractB__fn2__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
-    pub static __SPEC_XDR_FN_FN2: [u8; 60usize] = super::ContractB::spec_xdr_fn2();
+    #[allow(dead_code)]
+    static __SPEC_XDR_FN_FN2: [u8; 60usize] = super::ContractB::spec_xdr_fn2();
 }
 impl ContractB {
     #[allow(non_snake_case)]
@@ -2288,12 +2298,14 @@ mod test_b {
         #[doc(hidden)]
         #[allow(non_snake_case)]
         #[allow(non_snake_case)]
-        pub mod __Contract____check_auth__spec {
+        #[allow(dead_code)]
+        mod __Contract____check_auth__spec {
             #[doc(hidden)]
             #[allow(non_snake_case)]
             #[allow(non_upper_case_globals)]
+            #[allow(dead_code)]
             #[allow(non_snake_case)]
-            pub static __SPEC_XDR_FN___CHECK_AUTH: [u8; 112usize] =
+            static __SPEC_XDR_FN___CHECK_AUTH: [u8; 112usize] =
                 super::Contract::spec_xdr___check_auth();
         }
         impl Contract {
@@ -2603,7 +2615,9 @@ mod test_b {
                 ::core::cmp::Ordering::Equal
             }
         }
-        pub static __SPEC_XDR_TYPE_ERROR: [u8; 48usize] = Error::spec_xdr();
+        #[doc(hidden)]
+        #[allow(dead_code)]
+        static __SPEC_XDR_TYPE_ERROR: [u8; 48usize] = Error::spec_xdr();
         impl Error {
             pub const fn spec_xdr() -> [u8; 48usize] {
                 *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x05Error\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x07Decline\0\0\0\0\x01"
@@ -2732,12 +2746,14 @@ mod test_b {
         #[doc(hidden)]
         #[allow(non_snake_case)]
         #[allow(non_snake_case)]
-        pub mod __Contract____check_auth__spec {
+        #[allow(dead_code)]
+        mod __Contract____check_auth__spec {
             #[doc(hidden)]
             #[allow(non_snake_case)]
             #[allow(non_upper_case_globals)]
+            #[allow(dead_code)]
             #[allow(non_snake_case)]
-            pub static __SPEC_XDR_FN___CHECK_AUTH: [u8; 124usize] =
+            static __SPEC_XDR_FN___CHECK_AUTH: [u8; 124usize] =
                 super::Contract::spec_xdr___check_auth();
         }
         impl Contract {

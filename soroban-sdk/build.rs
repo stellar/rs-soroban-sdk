@@ -20,30 +20,23 @@ pub fn main() {
         println!("cargo:rustc-env=RUSTC_VERSION={rustc_version}");
     }
 
-    // When the experimental_spec_shaking_v2 feature is enabled on a wasm target, check for an
-    // env var from the build system (Stellar CLI) that indicates it supports spec optimization
-    // using markers.
-    if std::env::var("CARGO_FEATURE_EXPERIMENTAL_SPEC_SHAKING_V2").is_ok() {
-        let env_name = "SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2";
-        println!("cargo::rerun-if-env-changed={env_name}");
-        if std::env::var(env_name).is_err()
-            && std::env::var("CARGO_CFG_TARGET_FAMILY").unwrap_or_default() == "wasm"
-        {
-            eprintln!(
-                "\
-\nerror: soroban-sdk feature 'experimental_spec_shaking_v2' requires stellar-cli v25.2.0+\
+    // On a wasm target, check for an env var from the build system (Stellar CLI) that indicates it
+    // supports spec optimization using markers. Spec shaking is always on, and the contract's spec
+    // is only correct once the build system has shaken it, so a build system that does not do so
+    // is an error.
+    let env_name = "SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2";
+    println!("cargo::rerun-if-env-changed={env_name}");
+    if std::env::var(env_name).is_err()
+        && std::env::var("CARGO_CFG_TARGET_FAMILY").unwrap_or_default() == "wasm"
+    {
+        eprintln!(
+            "\
+\nerror: soroban-sdk requires stellar-cli v25.2.0+ to build a contract\
 \n\
-\nThe soroban-sdk 'experimental_spec_shaking_v2' feature requires building\
-\nwith `stellar contract build` from stellar-cli v25.2.0 or newer.\
-\n\
-\nTo fix, either:\
-\n  - Build with `stellar contract build` using stellar-cli v25.2.0+\
-\n  - Disable the feature by removing 'experimental_spec_shaking_v2' from\
-\n    the soroban-sdk import features list in Cargo.toml.\
+\nTo fix, build with `stellar contract build` using stellar-cli v25.2.0+.\
 "
-            );
-            std::process::exit(1);
-        }
+        );
+        std::process::exit(1);
     }
 
     crate_git_revision::init();

@@ -1,3 +1,5 @@
+mod auth_05_register_at_constructor;
+mod auth_06_register_native_constructor;
 mod auth_10_one;
 mod auth_15_one_repeat;
 mod auth_17_no_consume_requirement;

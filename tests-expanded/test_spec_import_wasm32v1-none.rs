@@ -5,7 +5,7 @@ extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
 use soroban_sdk::{contract, contractimpl, Address, Env, String};
-use test_spec_lib::{EnumA, EnumIntA, ErrorA, EventA, StructA, StructTupleA};
+use test_spec_lib::{EnumA, EnumIntA, ErrorA, EventA, EventD, StructA, StructTupleA};
 pub struct Contract;
 ///ContractArgs is a type for building arg lists for functions defined in "Contract".
 pub struct ContractArgs;
@@ -48,15 +48,20 @@ impl Contract {
     pub fn fn_event_a(env: Env, f1: Address, f2: String) {
         EventA { f1, f2 }.publish(&env);
     }
+    pub fn fn_event_d(env: Env) {
+        EventD.publish(&env);
+    }
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__fn_struct_a__spec {
+#[allow(dead_code)]
+mod __Contract__fn_struct_a__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_FN_STRUCT_A: [u8; 80usize] = super::Contract::spec_xdr_fn_struct_a();
+    static __SPEC_XDR_FN_FN_STRUCT_A: [u8; 80usize] = super::Contract::spec_xdr_fn_struct_a();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -66,12 +71,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__fn_struct_tuple_a__spec {
+#[allow(dead_code)]
+mod __Contract__fn_struct_tuple_a__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_FN_STRUCT_TUPLE_A: [u8; 92usize] =
+    static __SPEC_XDR_FN_FN_STRUCT_TUPLE_A: [u8; 92usize] =
         super::Contract::spec_xdr_fn_struct_tuple_a();
 }
 impl Contract {
@@ -82,12 +89,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__fn_enum_a__spec {
+#[allow(dead_code)]
+mod __Contract__fn_enum_a__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_FN_ENUM_A: [u8; 48usize] = super::Contract::spec_xdr_fn_enum_a();
+    static __SPEC_XDR_FN_FN_ENUM_A: [u8; 48usize] = super::Contract::spec_xdr_fn_enum_a();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -97,13 +106,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__fn_enum_int_a__spec {
+#[allow(dead_code)]
+mod __Contract__fn_enum_int_a__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_FN_ENUM_INT_A: [u8; 52usize] =
-        super::Contract::spec_xdr_fn_enum_int_a();
+    static __SPEC_XDR_FN_FN_ENUM_INT_A: [u8; 52usize] = super::Contract::spec_xdr_fn_enum_int_a();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -113,12 +123,14 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__fn_error_a__spec {
+#[allow(dead_code)]
+mod __Contract__fn_error_a__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_FN_ERROR_A: [u8; 76usize] = super::Contract::spec_xdr_fn_error_a();
+    static __SPEC_XDR_FN_FN_ERROR_A: [u8; 76usize] = super::Contract::spec_xdr_fn_error_a();
 }
 impl Contract {
     #[allow(non_snake_case)]
@@ -128,17 +140,36 @@ impl Contract {
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
-pub mod __Contract__fn_event_a__spec {
+#[allow(dead_code)]
+mod __Contract__fn_event_a__spec {
     #[doc(hidden)]
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
     #[link_section = "contractspecv0"]
-    pub static __SPEC_XDR_FN_FN_EVENT_A: [u8; 64usize] = super::Contract::spec_xdr_fn_event_a();
+    static __SPEC_XDR_FN_FN_EVENT_A: [u8; 64usize] = super::Contract::spec_xdr_fn_event_a();
 }
 impl Contract {
     #[allow(non_snake_case)]
     pub const fn spec_xdr_fn_event_a() -> [u8; 64usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\nfn_event_a\0\0\0\0\0\x02\0\0\0\0\0\0\0\x02f1\0\0\0\0\0\x13\0\0\0\0\0\0\0\x02f2\0\0\0\0\0\x10\0\0\0\0"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+mod __Contract__fn_event_d__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
+    #[link_section = "contractspecv0"]
+    static __SPEC_XDR_FN_FN_EVENT_D: [u8; 32usize] = super::Contract::spec_xdr_fn_event_d();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_fn_event_d() -> [u8; 32usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\nfn_event_d\0\0\0\0\0\0\0\0\0\0"
     }
 }
 impl<'a> ContractClient<'a> {
@@ -331,6 +362,30 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    pub fn fn_event_d(&self) -> () {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "fn_event_d") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
+    pub fn try_fn_event_d(
+        &self,
+    ) -> Result<
+        Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "fn_event_d") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
 }
 impl ContractArgs {
     #[inline(always)]
@@ -362,6 +417,11 @@ impl ContractArgs {
     #[allow(clippy::unused_unit)]
     pub fn fn_event_a<'i>(f1: &'i Address, f2: &'i String) -> (&'i Address, &'i String) {
         (f1, f2)
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn fn_event_d<'i>() -> () {
+        ()
     }
 }
 #[doc(hidden)]
@@ -538,4 +598,22 @@ pub extern "C" fn __Contract__fn_event_a__invoke_raw_extern(
 ) -> soroban_sdk::Val {
     #[allow(deprecated)]
     __Contract__fn_event_a__invoke_raw(soroban_sdk::Env::default(), arg_0, arg_1)
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).fn_event_d` instead")]
+#[allow(deprecated)]
+pub fn __Contract__fn_event_d__invoke_raw(env: soroban_sdk::Env) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::fn_event_d(env.clone()),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(note = "use `ContractClient::new(&env, &contract_id).fn_event_d` instead")]
+#[export_name = "fn_event_d"]
+pub extern "C" fn __Contract__fn_event_d__invoke_raw_extern() -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__fn_event_d__invoke_raw(soroban_sdk::Env::default())
 }

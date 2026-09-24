@@ -1,4 +1,4 @@
-LIB_CRATES = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.name | startswith("test_") | not) | .name' | tr '\n' ' ')
+LIB_CRATES = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.publish == null) | .name' | tr '\n' ' ')
 TEST_CRATES = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.name | startswith("test_")) | .name' | tr '\n' ' ')
 
 MSRV = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.name == "soroban-sdk") | .rust_version')
@@ -10,6 +10,10 @@ default: test
 
 doc: fmt
 	cargo test --doc $(foreach c,$(LIB_CRATES),--package $(c)) --features testutils,alloc,hazmat
+	$(MAKE) doc-only
+
+# Build the docs for all the library crates, without running the doc tests.
+doc-only:
 	cargo +nightly doc --no-deps $(foreach c,$(LIB_CRATES),--package $(c)) --all-features $(CARGO_DOC_ARGS)
 
 test: fmt build-test-wasms test-only
@@ -43,8 +47,10 @@ build-test-wasms: fmt
 			ls -l "$$i"; \
 		done
 
+# Builds the fuzz tests. Requires cargo-fuzz and cargo-afl.
 build-fuzz:
 	cd tests/fuzz/fuzz && cargo +nightly fuzz check
+	cd tests/fuzz_afl/fuzz && cargo afl build
 
 readme:
 	cd soroban-sdk \
@@ -72,6 +78,24 @@ expand-tests: build-test-wasms
     RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
       RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
 			cargo expand --package $$package --release --target wasm32v1-none | rustfmt > tests-expanded/$${package}_wasm32v1-none.rs; \
+	done
+
+# Dumps the contractspecv0 section of each test vector contract in the tests/
+# directory, as built by build-test-wasms and so before any spec shaking, as a
+# stream of XDR-JSON values. Serves to surface changes to the spec the SDK
+# embeds, which the expanded code does not show because the spec is encoded
+# from it rather than written out by it.
+spec-snapshots: build-test-wasms
+	$(MAKE) spec-snapshots-from-built-wasms
+
+spec-snapshots-from-built-wasms:
+	rm -fr tests-specs
+	mkdir -p tests-specs
+	for name in $(TEST_CRATES); do \
+		wasm=target/wasm32v1-none/release/$$name.wasm; \
+		[ -f "$$wasm" ] || continue; \
+		echo "Dumping spec of $$name"; \
+		cargo run --quiet --package spec-json -- $$wasm > tests-specs/$$name.json || exit 1; \
 	done
 
 miri:

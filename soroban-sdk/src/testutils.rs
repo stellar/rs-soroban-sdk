@@ -198,6 +198,14 @@ pub struct Generators {
     address: u64,
     nonce: i64,
     mux_id: u64,
+    // Uploading is less common than the other generated values, so the
+    // generator is omitted from snapshots when unused.
+    #[serde(default, skip_serializing_if = "is_zero")]
+    wasm_hash: u64,
+}
+
+fn is_zero(v: &u64) -> bool {
+    *v == 0
 }
 
 impl Default for Generators {
@@ -206,6 +214,7 @@ impl Default for Generators {
             address: 0,
             nonce: 0,
             mux_id: 0,
+            wasm_hash: 0,
         }
     }
 }
@@ -258,6 +267,15 @@ impl Generators {
         self.mux_id = self.mux_id.checked_add(1).unwrap();
         self.mux_id
     }
+
+    pub fn wasm_hash(&mut self) -> [u8; 32] {
+        self.wasm_hash = self.wasm_hash.checked_add(1).unwrap();
+        let b: [u8; 8] = self.wasm_hash.to_be_bytes();
+        [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, b[0], b[1],
+            b[2], b[3], b[4], b[5], b[6], b[7],
+        ]
+    }
 }
 
 #[doc(hidden)]
@@ -277,7 +295,7 @@ pub use crate::env::internal::LedgerInfo;
 /// Returns a default `LedgerInfo` suitable for testing.
 pub(crate) fn default_ledger_info() -> LedgerInfo {
     LedgerInfo {
-        protocol_version: 27,
+        protocol_version: 29,
         sequence_number: 0,
         timestamp: 0,
         network_id: [0; 32],
@@ -666,7 +684,7 @@ impl StellarAssetIssuer {
     ///
     /// Use this to test interactions between trustlines/balances and the issuer flags.
     fn overwrite_issuer_flags(&self, flags: u32) {
-        if u64::from(flags) > xdr::MASK_ACCOUNT_FLAGS_V17 {
+        if flags > xdr::MASK_ACCOUNT_FLAGS_V17 {
             panic!(
                 "issuer flags value must be at most {}",
                 xdr::MASK_ACCOUNT_FLAGS_V17

@@ -14,8 +14,58 @@ pub struct Transfer {
     to_muxed_id: Option<u64>,
 }
 
+/// An event whose data is a single value, rather than a map.
+#[contractevent(data_format = "single-value")]
+pub struct SingleValue {
+    #[topic]
+    from: Address,
+    amount: i128,
+}
+
+/// An event whose data is a single value, and that has no data fields, and so
+/// whose data is void.
+#[contractevent(data_format = "single-value")]
+pub struct SingleValueVoid {
+    #[topic]
+    from: Address,
+}
+
+/// An event whose data is a vec, rather than a map.
+#[contractevent(data_format = "vec")]
+pub struct VecValues {
+    #[topic]
+    from: Address,
+    a: u32,
+    b: u32,
+}
+
+/// An event whose data is a map, which is the default.
+#[contractevent(data_format = "map")]
+pub struct MapValues {
+    #[topic]
+    from: Address,
+    a: u32,
+    b: u32,
+}
+
 #[contractimpl]
 impl Contract {
+    pub fn single_value(env: Env, from: Address, amount: i128) {
+        SingleValue { from, amount }.publish(&env);
+    }
+
+    pub fn single_value_void(env: Env, from: Address) {
+        SingleValueVoid { from }.publish(&env);
+    }
+
+    pub fn vec_values(env: Env, from: Address, a: u32, b: u32) {
+        VecValues { from, a, b }.publish(&env);
+    }
+
+    pub fn map_values(env: Env, from: Address, a: u32, b: u32) {
+        MapValues { from, a, b }.publish(&env);
+    }
+
     pub fn transfer(env: Env, from: Address, to: MuxedAddress, amount: i128) {
         Transfer {
             from: from.clone(),
@@ -133,14 +183,14 @@ mod test {
                     contract_id.clone(),
                     // Expect these event topics.
                     (Symbol::new(&env, "transfer"), &from, &to).into_val(&env),
-                    // Expect this event body.
+                    // Expect this event body. The to_muxed_id field is None,
+                    // and so is omitted from the map.
                     map![
                         &env,
                         (
                             symbol_short!("amount"),
                             <_ as IntoVal<Env, Val>>::into_val(&1i128, &env)
                         ),
-                        (Symbol::new(&env, "to_muxed_id"), ().into_val(&env),),
                     ]
                     .to_val()
                 ),
