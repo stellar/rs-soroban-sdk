@@ -1,6 +1,6 @@
 use soroban_sdk_macros::{contract, contractimpl, contracttype};
 
-use crate::testutils::{Address as _, EnvTestConfig, MuxedAddress as _};
+use crate::testutils::{Address as _, MuxedAddress as _};
 use crate::{self as soroban_sdk, Bytes, String};
 use crate::{
     env::xdr::{AccountId, ScAddress, Uint256},
@@ -96,11 +96,7 @@ fn test_muxed_contract_address() {
 
 #[test]
 fn test_sac_transfer_to_muxed_contract_address() {
-    // The auth snapshot can't be written because stellar-xdr has no string
-    // form for `ScAddress::MuxedContract` yet.
-    let env = Env::new_with_config(EnvTestConfig {
-        capture_snapshot_at_drop: false,
-    });
+    let env = Env::default();
     env.mock_all_auths();
     let contract = env.register(MuxedAddressContract, ());
     let muxed_address = MuxedAddress::new(&contract, 123456);
