@@ -7,6 +7,9 @@ edition = "2021"
 publish = false
 rust-version.workspace = true
 
+# Builds the same contract and tests as test_spec_shaking_v3, but with the
+# released soroban-sdk 28.0.0, whose wasm records spec shaking version 2. The
+# tests check the current soroban-spec shakes it to the same result as v3.
 [lib]
 path = "../spec_shaking_v3/src/lib.rs"
 crate-type = ["cdylib"]

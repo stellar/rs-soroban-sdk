@@ -30,7 +30,8 @@ fn test_spec_shaking() {
     let version = soroban_spec::shaking::spec_shaking_version_for_meta(&meta);
     let expected_version = match env!("CARGO_PKG_NAME") {
         "test_spec_shaking_v2" => soroban_spec::shaking::Version::V2,
-        _ => soroban_spec::shaking::Version::V3,
+        "test_spec_shaking_v3" => soroban_spec::shaking::Version::V3,
+        name => panic!("unexpected package {name}"),
     };
     assert_eq!(version, expected_version);
 
@@ -167,38 +168,42 @@ fn test_spec_shaking() {
         );
     }
 
-    if version == soroban_spec::shaking::Version::V2 {
-        // Every used entry carries a marker.
-        assert_eq!(markers.len(), used.len());
-    } else {
-        // Only the entries that nothing in a spec references by name carry a
-        // marker: the events the contract publishes, and the errors it panics
-        // with. Every other type is named by whatever references it and is kept by
-        // reachability, so the wasm carries no marker for it — including the error
-        // types a function returns in a `Result`.
-        let mut marked: Vec<std::string::String> = entries
-            .iter()
-            .filter(|e| markers.contains(&soroban_spec::shaking::generate_marker_for_entry(e)))
-            .filter_map(entry_name)
-            .collect();
-        marked.sort();
-        assert_eq!(
-            marked,
-            [
-                // An error used only via assert_with_error!.
-                "UsedAssertErrorEnum",
-                // Every published event.
-                "UsedEventSimple",
-                "UsedEventWithDataType",
-                "UsedEventWithNestedData",
-                "UsedEventWithNestedTopic",
-                "UsedEventWithRefs",
-                "UsedEventWithTopicType",
-                // An error used only via panic_with_error!.
-                "UsedPanicErrorEnum",
-            ]
-        );
-        assert_eq!(markers.len(), marked.len());
+    match version {
+        soroban_spec::shaking::Version::V1 => panic!("unexpected version {version:?}"),
+        soroban_spec::shaking::Version::V2 => {
+            // Every used entry carries a marker.
+            assert_eq!(markers.len(), used.len());
+        }
+        soroban_spec::shaking::Version::V3 => {
+            // Only the entries that nothing in a spec references by name carry a
+            // marker: the events the contract publishes, and the errors it panics
+            // with. Every other type is named by whatever references it and is kept by
+            // reachability, so the wasm carries no marker for it — including the error
+            // types a function returns in a `Result`.
+            let mut marked: Vec<std::string::String> = entries
+                .iter()
+                .filter(|e| markers.contains(&soroban_spec::shaking::generate_marker_for_entry(e)))
+                .filter_map(entry_name)
+                .collect();
+            marked.sort();
+            assert_eq!(
+                marked,
+                [
+                    // An error used only via assert_with_error!.
+                    "UsedAssertErrorEnum",
+                    // Every published event.
+                    "UsedEventSimple",
+                    "UsedEventWithDataType",
+                    "UsedEventWithNestedData",
+                    "UsedEventWithNestedTopic",
+                    "UsedEventWithRefs",
+                    "UsedEventWithTopicType",
+                    // An error used only via panic_with_error!.
+                    "UsedPanicErrorEnum",
+                ]
+            );
+            assert_eq!(markers.len(), marked.len());
+        }
     }
 
     // Unused types/events should exist in unfiltered entries: they have spec

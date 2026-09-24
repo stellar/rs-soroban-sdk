@@ -12356,7 +12356,10 @@ mod test {
         let version = soroban_spec::shaking::spec_shaking_version_for_meta(&meta);
         let expected_version = match "test_spec_shaking_v2" {
             "test_spec_shaking_v2" => soroban_spec::shaking::Version::V2,
-            _ => soroban_spec::shaking::Version::V3,
+            "test_spec_shaking_v3" => soroban_spec::shaking::Version::V3,
+            name => {
+                ::core::panicking::panic_fmt(format_args!("unexpected package {0}", name));
+            }
         };
         match (&version, &expected_version) {
             (left_val, right_val) => {
@@ -12483,65 +12486,73 @@ mod test {
                 }
             }
         }
-        if version == soroban_spec::shaking::Version::V2 {
-            match (&markers.len(), &used.len()) {
-                (left_val, right_val) => {
-                    if !(*left_val == *right_val) {
-                        let kind = ::core::panicking::AssertKind::Eq;
-                        ::core::panicking::assert_failed(
-                            kind,
-                            &*left_val,
-                            &*right_val,
-                            ::core::option::Option::None,
-                        );
+        match version {
+            soroban_spec::shaking::Version::V1 => {
+                ::core::panicking::panic_fmt(format_args!("unexpected version {0:?}", version));
+            }
+            soroban_spec::shaking::Version::V2 => {
+                match (&markers.len(), &used.len()) {
+                    (left_val, right_val) => {
+                        if !(*left_val == *right_val) {
+                            let kind = ::core::panicking::AssertKind::Eq;
+                            ::core::panicking::assert_failed(
+                                kind,
+                                &*left_val,
+                                &*right_val,
+                                ::core::option::Option::None,
+                            );
+                        }
                     }
-                }
-            };
-        } else {
-            let mut marked: Vec<std::string::String> = entries
-                .iter()
-                .filter(|e| markers.contains(&soroban_spec::shaking::generate_marker_for_entry(e)))
-                .filter_map(entry_name)
-                .collect();
-            marked.sort();
-            match (
-                &marked,
-                &[
-                    "UsedAssertErrorEnum",
-                    "UsedEventSimple",
-                    "UsedEventWithDataType",
-                    "UsedEventWithNestedData",
-                    "UsedEventWithNestedTopic",
-                    "UsedEventWithRefs",
-                    "UsedEventWithTopicType",
-                    "UsedPanicErrorEnum",
-                ],
-            ) {
-                (left_val, right_val) => {
-                    if !(*left_val == *right_val) {
-                        let kind = ::core::panicking::AssertKind::Eq;
-                        ::core::panicking::assert_failed(
-                            kind,
-                            &*left_val,
-                            &*right_val,
-                            ::core::option::Option::None,
-                        );
+                };
+            }
+            soroban_spec::shaking::Version::V3 => {
+                let mut marked: Vec<std::string::String> = entries
+                    .iter()
+                    .filter(|e| {
+                        markers.contains(&soroban_spec::shaking::generate_marker_for_entry(e))
+                    })
+                    .filter_map(entry_name)
+                    .collect();
+                marked.sort();
+                match (
+                    &marked,
+                    &[
+                        "UsedAssertErrorEnum",
+                        "UsedEventSimple",
+                        "UsedEventWithDataType",
+                        "UsedEventWithNestedData",
+                        "UsedEventWithNestedTopic",
+                        "UsedEventWithRefs",
+                        "UsedEventWithTopicType",
+                        "UsedPanicErrorEnum",
+                    ],
+                ) {
+                    (left_val, right_val) => {
+                        if !(*left_val == *right_val) {
+                            let kind = ::core::panicking::AssertKind::Eq;
+                            ::core::panicking::assert_failed(
+                                kind,
+                                &*left_val,
+                                &*right_val,
+                                ::core::option::Option::None,
+                            );
+                        }
                     }
-                }
-            };
-            match (&markers.len(), &marked.len()) {
-                (left_val, right_val) => {
-                    if !(*left_val == *right_val) {
-                        let kind = ::core::panicking::AssertKind::Eq;
-                        ::core::panicking::assert_failed(
-                            kind,
-                            &*left_val,
-                            &*right_val,
-                            ::core::option::Option::None,
-                        );
+                };
+                match (&markers.len(), &marked.len()) {
+                    (left_val, right_val) => {
+                        if !(*left_val == *right_val) {
+                            let kind = ::core::panicking::AssertKind::Eq;
+                            ::core::panicking::assert_failed(
+                                kind,
+                                &*left_val,
+                                &*right_val,
+                                ::core::option::Option::None,
+                            );
+                        }
                     }
-                }
-            };
+                };
+            }
         }
         let unused = [
             "UnusedStruct",
