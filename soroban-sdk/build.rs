@@ -30,7 +30,8 @@ pub fn main() {
         let sdk_major: u64 = env!("CARGO_PKG_VERSION_MAJOR").parse().unwrap();
         let cli_major: Option<u64> = std::env::var(env_name)
             .ok()
-            .and_then(|v| v.trim_start_matches('v').split('.').next()?.parse().ok());
+            .and_then(|v| semver::Version::parse(&v).ok())
+            .map(|v| v.major);
         if cli_major < Some(sdk_major) {
             eprintln!(
                 "\
