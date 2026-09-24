@@ -24,4 +24,5 @@ thiserror = { version = "1.0.32", optional = true }
 wasmparser = { version = "0.116.1", optional = true }
 
 [dev-dependencies]
+hex = "0.4.3"
 pretty_assertions = "1.2.1"

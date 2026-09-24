@@ -1583,6 +1583,7 @@ name = "soroban-spec"
 version = "28.0.0"
 dependencies = [
  "base64",
+ "hex",
  "pretty_assertions",
  "stellar-xdr",
  "thiserror",
