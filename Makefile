@@ -82,10 +82,10 @@ expand-tests: build-test-wasms
 
 # Dumps the contractspecv0 section of each test vector contract in the tests/
 # directory, as built by build-test-wasms and so before any spec shaking, as a
-# pretty formatted JSON array of XDR-JSON values, sorted by name then entry so
-# that moving items around in the source does not reorder them. Serves to
-# surface changes to the spec the SDK embeds, which the expanded code does not
-# show because the spec is encoded from it rather than written out by it.
+# pretty formatted JSON array of XDR-JSON values, sorted by kind and name then
+# entry so that moving items around in the source does not reorder them. Serves
+# to surface changes to the spec the SDK embeds, which the expanded code does
+# not show because the spec is encoded from it rather than written out by it.
 spec-snapshots: build-test-wasms
 	$(MAKE) spec-snapshots-from-built-wasms
 

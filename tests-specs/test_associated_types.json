@@ -1,49 +1,11 @@
 [
   {
-    "udt_union_v0": {
-      "doc": "Context of a single authorized call performed by an address.\\n\\nCustom account contracts that implement `__check_auth` special function\\nreceive a list of `Context` values corresponding to all the calls that\\nneed to be authorized.",
-      "lib": "",
-      "name": "Context",
-      "cases": [
-        {
-          "tuple_v0": {
-            "doc": "Contract invocation.",
-            "name": "Contract",
-            "type": [
-              {
-                "udt": {
-                  "name": "ContractContext"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "tuple_v0": {
-            "doc": "Contract that has a constructor with no arguments is created.",
-            "name": "CreateContractHostFn",
-            "type": [
-              {
-                "udt": {
-                  "name": "CreateContractHostFnContext"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "tuple_v0": {
-            "doc": "Contract that has a constructor with 1 or more arguments is created.",
-            "name": "CreateContractWithCtorHostFn",
-            "type": [
-              {
-                "udt": {
-                  "name": "CreateContractWithConstructorHostFnContext"
-                }
-              }
-            ]
-          }
-        }
+    "function_v0": {
+      "doc": "",
+      "name": "exec",
+      "inputs": [],
+      "outputs": [
+        "string"
       ]
     }
   },
@@ -71,41 +33,6 @@
           "doc": "",
           "name": "fn_name",
           "type": "symbol"
-        }
-      ]
-    }
-  },
-  {
-    "udt_union_v0": {
-      "doc": "Contract executable used for creating a new contract and used in\\n`CreateContractHostFnContext`.",
-      "lib": "",
-      "name": "ContractExecutable",
-      "cases": [
-        {
-          "tuple_v0": {
-            "doc": "Executable specified by the contract instance as a specific Wasm contract code entry identified by its Wasm sha256 hash.",
-            "name": "Wasm",
-            "type": [
-              {
-                "bytes_n": {
-                  "n": 32
-                }
-              }
-            ]
-          }
-        },
-        {
-          "tuple_v0": {
-            "doc": "Executable reference via a persistent storage entry owned by this contract or another contract.",
-            "name": "ExternalRef",
-            "type": [
-              {
-                "udt": {
-                  "name": "ContractExecutableRef"
-                }
-              }
-            ]
-          }
         }
       ]
     }
@@ -193,6 +120,120 @@
     }
   },
   {
+    "udt_struct_v0": {
+      "doc": "Value of contract node in InvokerContractAuthEntry tree.",
+      "lib": "",
+      "name": "SubContractInvocation",
+      "fields": [
+        {
+          "doc": "",
+          "name": "context",
+          "type": {
+            "udt": {
+              "name": "ContractContext"
+            }
+          }
+        },
+        {
+          "doc": "",
+          "name": "sub_invocations",
+          "type": {
+            "vec": {
+              "element_type": {
+                "udt": {
+                  "name": "InvokerContractAuthEntry"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "udt_union_v0": {
+      "doc": "Context of a single authorized call performed by an address.\\n\\nCustom account contracts that implement `__check_auth` special function\\nreceive a list of `Context` values corresponding to all the calls that\\nneed to be authorized.",
+      "lib": "",
+      "name": "Context",
+      "cases": [
+        {
+          "tuple_v0": {
+            "doc": "Contract invocation.",
+            "name": "Contract",
+            "type": [
+              {
+                "udt": {
+                  "name": "ContractContext"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "tuple_v0": {
+            "doc": "Contract that has a constructor with no arguments is created.",
+            "name": "CreateContractHostFn",
+            "type": [
+              {
+                "udt": {
+                  "name": "CreateContractHostFnContext"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "tuple_v0": {
+            "doc": "Contract that has a constructor with 1 or more arguments is created.",
+            "name": "CreateContractWithCtorHostFn",
+            "type": [
+              {
+                "udt": {
+                  "name": "CreateContractWithConstructorHostFnContext"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "udt_union_v0": {
+      "doc": "Contract executable used for creating a new contract and used in\\n`CreateContractHostFnContext`.",
+      "lib": "",
+      "name": "ContractExecutable",
+      "cases": [
+        {
+          "tuple_v0": {
+            "doc": "Executable specified by the contract instance as a specific Wasm contract code entry identified by its Wasm sha256 hash.",
+            "name": "Wasm",
+            "type": [
+              {
+                "bytes_n": {
+                  "n": 32
+                }
+              }
+            ]
+          }
+        },
+        {
+          "tuple_v0": {
+            "doc": "Executable reference via a persistent storage entry owned by this contract or another contract.",
+            "name": "ExternalRef",
+            "type": [
+              {
+                "udt": {
+                  "name": "ContractExecutableRef"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
     "udt_union_v0": {
       "doc": "",
       "lib": "",
@@ -271,47 +312,6 @@
             ]
           }
         }
-      ]
-    }
-  },
-  {
-    "udt_struct_v0": {
-      "doc": "Value of contract node in InvokerContractAuthEntry tree.",
-      "lib": "",
-      "name": "SubContractInvocation",
-      "fields": [
-        {
-          "doc": "",
-          "name": "context",
-          "type": {
-            "udt": {
-              "name": "ContractContext"
-            }
-          }
-        },
-        {
-          "doc": "",
-          "name": "sub_invocations",
-          "type": {
-            "vec": {
-              "element_type": {
-                "udt": {
-                  "name": "InvokerContractAuthEntry"
-                }
-              }
-            }
-          }
-        }
-      ]
-    }
-  },
-  {
-    "function_v0": {
-      "doc": "",
-      "name": "exec",
-      "inputs": [],
-      "outputs": [
-        "string"
       ]
     }
   }

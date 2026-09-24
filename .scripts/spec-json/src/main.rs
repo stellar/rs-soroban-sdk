@@ -1,10 +1,10 @@
 //! Prints the contract spec in a wasm as a pretty formatted JSON array of
 //! XDR-JSON values, one per spec entry.
 //!
-//! Entries are sorted by name, then by the entry itself, rather than printed in
-//! the order they appear in the wasm, so that moving an item around in the
-//! source, which changes the order its entry is written to the wasm, does not
-//! change the output.
+//! Entries are sorted by kind and name, then by the entry itself, rather than
+//! printed in the order they appear in the wasm, so that moving an item around
+//! in the source, which changes the order its entry is written to the wasm,
+//! does not change the output.
 //!
 //! ```console
 //! cargo run --package spec-json -- contract.wasm
@@ -27,7 +27,7 @@ fn main() {
         eprintln!("error: reading spec from {path}: {e}");
         exit(1);
     });
-    entries.sort_by(|a, b| (name(a), a).cmp(&(name(b), b)));
+    entries.sort_by(|a, b| (a.discriminant(), name(a), a).cmp(&(b.discriminant(), name(b), b)));
     println!("{}", serde_json::to_string_pretty(&entries).unwrap());
 }
 

@@ -1,143 +1,87 @@
 [
   {
-    "udt_union_v0": {
+    "function_v0": {
       "doc": "",
-      "lib": "",
-      "name": "Context",
-      "cases": [
+      "name": "add_with",
+      "inputs": [
         {
-          "tuple_v0": {
-            "doc": "",
-            "name": "Contract",
-            "type": [
-              {
-                "udt": {
-                  "name": "ContractContext"
-                }
-              }
-            ]
-          }
+          "doc": "",
+          "name": "contract_id",
+          "type": "address"
         },
         {
-          "tuple_v0": {
-            "doc": "",
-            "name": "CreateContractHostFn",
-            "type": [
-              {
-                "udt": {
-                  "name": "CreateContractHostFnContext"
-                }
-              }
-            ]
-          }
+          "doc": "",
+          "name": "x",
+          "type": "u64"
         },
         {
-          "tuple_v0": {
-            "doc": "",
-            "name": "CreateContractWithCtorHostFn",
-            "type": [
-              {
-                "udt": {
-                  "name": "CreateContractWithConstructorHostFnContext"
-                }
-              }
-            ]
+          "doc": "",
+          "name": "y",
+          "type": "u64"
+        }
+      ],
+      "outputs": [
+        "u64"
+      ]
+    }
+  },
+  {
+    "function_v0": {
+      "doc": "",
+      "name": "safe_add_with",
+      "inputs": [
+        {
+          "doc": "",
+          "name": "contract_id",
+          "type": "address"
+        },
+        {
+          "doc": "",
+          "name": "x",
+          "type": "u64"
+        },
+        {
+          "doc": "",
+          "name": "y",
+          "type": "u64"
+        }
+      ],
+      "outputs": [
+        {
+          "result": {
+            "ok_type": "u64",
+            "error_type": "error"
           }
         }
       ]
     }
   },
   {
-    "udt_union_v0": {
+    "function_v0": {
       "doc": "",
-      "lib": "",
-      "name": "Context",
-      "cases": [
+      "name": "safe_add_with_two",
+      "inputs": [
         {
-          "tuple_v0": {
-            "doc": "",
-            "name": "Contract",
-            "type": [
-              {
-                "udt": {
-                  "name": "ContractContext"
-                }
-              }
-            ]
-          }
+          "doc": "",
+          "name": "contract_id",
+          "type": "address"
         },
         {
-          "tuple_v0": {
-            "doc": "",
-            "name": "CreateContractHostFn",
-            "type": [
-              {
-                "udt": {
-                  "name": "CreateContractHostFnContext"
-                }
-              }
-            ]
-          }
+          "doc": "",
+          "name": "x",
+          "type": "u64"
         },
         {
-          "tuple_v0": {
-            "doc": "",
-            "name": "CreateContractWithCtorHostFn",
-            "type": [
-              {
-                "udt": {
-                  "name": "CreateContractWithConstructorHostFnContext"
-                }
-              }
-            ]
-          }
+          "doc": "",
+          "name": "y",
+          "type": "u64"
         }
-      ]
-    }
-  },
-  {
-    "udt_union_v0": {
-      "doc": "Context of a single authorized call performed by an address.\\n\\nCustom account contracts that implement `__check_auth` special function\\nreceive a list of `Context` values corresponding to all the calls that\\nneed to be authorized.",
-      "lib": "",
-      "name": "Context",
-      "cases": [
+      ],
+      "outputs": [
         {
-          "tuple_v0": {
-            "doc": "Contract invocation.",
-            "name": "Contract",
-            "type": [
-              {
-                "udt": {
-                  "name": "ContractContext"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "tuple_v0": {
-            "doc": "Contract that has a constructor with no arguments is created.",
-            "name": "CreateContractHostFn",
-            "type": [
-              {
-                "udt": {
-                  "name": "CreateContractHostFnContext"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "tuple_v0": {
-            "doc": "Contract that has a constructor with 1 or more arguments is created.",
-            "name": "CreateContractWithCtorHostFn",
-            "type": [
-              {
-                "udt": {
-                  "name": "CreateContractWithConstructorHostFnContext"
-                }
-              }
-            ]
+          "result": {
+            "ok_type": "u64",
+            "error_type": "error"
           }
         }
       ]
@@ -223,111 +167,6 @@
           "doc": "",
           "name": "fn_name",
           "type": "symbol"
-        }
-      ]
-    }
-  },
-  {
-    "udt_union_v0": {
-      "doc": "",
-      "lib": "",
-      "name": "ContractExecutable",
-      "cases": [
-        {
-          "tuple_v0": {
-            "doc": "",
-            "name": "Wasm",
-            "type": [
-              {
-                "bytes_n": {
-                  "n": 32
-                }
-              }
-            ]
-          }
-        },
-        {
-          "tuple_v0": {
-            "doc": "",
-            "name": "ExternalRef",
-            "type": [
-              {
-                "udt": {
-                  "name": "ContractExecutableRef"
-                }
-              }
-            ]
-          }
-        }
-      ]
-    }
-  },
-  {
-    "udt_union_v0": {
-      "doc": "",
-      "lib": "",
-      "name": "ContractExecutable",
-      "cases": [
-        {
-          "tuple_v0": {
-            "doc": "",
-            "name": "Wasm",
-            "type": [
-              {
-                "bytes_n": {
-                  "n": 32
-                }
-              }
-            ]
-          }
-        },
-        {
-          "tuple_v0": {
-            "doc": "",
-            "name": "ExternalRef",
-            "type": [
-              {
-                "udt": {
-                  "name": "ContractExecutableRef"
-                }
-              }
-            ]
-          }
-        }
-      ]
-    }
-  },
-  {
-    "udt_union_v0": {
-      "doc": "Contract executable used for creating a new contract and used in\\n`CreateContractHostFnContext`.",
-      "lib": "",
-      "name": "ContractExecutable",
-      "cases": [
-        {
-          "tuple_v0": {
-            "doc": "Executable specified by the contract instance as a specific Wasm contract code entry identified by its Wasm sha256 hash.",
-            "name": "Wasm",
-            "type": [
-              {
-                "bytes_n": {
-                  "n": 32
-                }
-              }
-            ]
-          }
-        },
-        {
-          "tuple_v0": {
-            "doc": "Executable reference via a persistent storage entry owned by this contract or another contract.",
-            "name": "ExternalRef",
-            "type": [
-              {
-                "udt": {
-                  "name": "ContractExecutableRef"
-                }
-              }
-            ]
-          }
         }
       ]
     }
@@ -579,34 +418,343 @@
     }
   },
   {
-    "udt_error_enum_v0": {
+    "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "Error",
-      "cases": [
+      "name": "SubContractInvocation",
+      "fields": [
         {
           "doc": "",
-          "name": "Abort",
-          "value": 0
+          "name": "context",
+          "type": {
+            "udt": {
+              "name": "ContractContext"
+            }
+          }
         },
         {
           "doc": "",
-          "name": "Overflow",
-          "value": 1
+          "name": "sub_invocations",
+          "type": {
+            "vec": {
+              "element_type": {
+                "udt": {
+                  "name": "InvokerContractAuthEntry"
+                }
+              }
+            }
+          }
         }
       ]
     }
   },
   {
-    "udt_error_enum_v0": {
+    "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "Error",
-      "cases": [
+      "name": "SubContractInvocation",
+      "fields": [
         {
           "doc": "",
-          "name": "Overflow",
-          "value": 1
+          "name": "context",
+          "type": {
+            "udt": {
+              "name": "ContractContext"
+            }
+          }
+        },
+        {
+          "doc": "",
+          "name": "sub_invocations",
+          "type": {
+            "vec": {
+              "element_type": {
+                "udt": {
+                  "name": "InvokerContractAuthEntry"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "Value of contract node in InvokerContractAuthEntry tree.",
+      "lib": "",
+      "name": "SubContractInvocation",
+      "fields": [
+        {
+          "doc": "",
+          "name": "context",
+          "type": {
+            "udt": {
+              "name": "ContractContext"
+            }
+          }
+        },
+        {
+          "doc": "",
+          "name": "sub_invocations",
+          "type": {
+            "vec": {
+              "element_type": {
+                "udt": {
+                  "name": "InvokerContractAuthEntry"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "udt_union_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "Context",
+      "cases": [
+        {
+          "tuple_v0": {
+            "doc": "",
+            "name": "Contract",
+            "type": [
+              {
+                "udt": {
+                  "name": "ContractContext"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "tuple_v0": {
+            "doc": "",
+            "name": "CreateContractHostFn",
+            "type": [
+              {
+                "udt": {
+                  "name": "CreateContractHostFnContext"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "tuple_v0": {
+            "doc": "",
+            "name": "CreateContractWithCtorHostFn",
+            "type": [
+              {
+                "udt": {
+                  "name": "CreateContractWithConstructorHostFnContext"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "udt_union_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "Context",
+      "cases": [
+        {
+          "tuple_v0": {
+            "doc": "",
+            "name": "Contract",
+            "type": [
+              {
+                "udt": {
+                  "name": "ContractContext"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "tuple_v0": {
+            "doc": "",
+            "name": "CreateContractHostFn",
+            "type": [
+              {
+                "udt": {
+                  "name": "CreateContractHostFnContext"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "tuple_v0": {
+            "doc": "",
+            "name": "CreateContractWithCtorHostFn",
+            "type": [
+              {
+                "udt": {
+                  "name": "CreateContractWithConstructorHostFnContext"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "udt_union_v0": {
+      "doc": "Context of a single authorized call performed by an address.\\n\\nCustom account contracts that implement `__check_auth` special function\\nreceive a list of `Context` values corresponding to all the calls that\\nneed to be authorized.",
+      "lib": "",
+      "name": "Context",
+      "cases": [
+        {
+          "tuple_v0": {
+            "doc": "Contract invocation.",
+            "name": "Contract",
+            "type": [
+              {
+                "udt": {
+                  "name": "ContractContext"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "tuple_v0": {
+            "doc": "Contract that has a constructor with no arguments is created.",
+            "name": "CreateContractHostFn",
+            "type": [
+              {
+                "udt": {
+                  "name": "CreateContractHostFnContext"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "tuple_v0": {
+            "doc": "Contract that has a constructor with 1 or more arguments is created.",
+            "name": "CreateContractWithCtorHostFn",
+            "type": [
+              {
+                "udt": {
+                  "name": "CreateContractWithConstructorHostFnContext"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "udt_union_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "ContractExecutable",
+      "cases": [
+        {
+          "tuple_v0": {
+            "doc": "",
+            "name": "Wasm",
+            "type": [
+              {
+                "bytes_n": {
+                  "n": 32
+                }
+              }
+            ]
+          }
+        },
+        {
+          "tuple_v0": {
+            "doc": "",
+            "name": "ExternalRef",
+            "type": [
+              {
+                "udt": {
+                  "name": "ContractExecutableRef"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "udt_union_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "ContractExecutable",
+      "cases": [
+        {
+          "tuple_v0": {
+            "doc": "",
+            "name": "Wasm",
+            "type": [
+              {
+                "bytes_n": {
+                  "n": 32
+                }
+              }
+            ]
+          }
+        },
+        {
+          "tuple_v0": {
+            "doc": "",
+            "name": "ExternalRef",
+            "type": [
+              {
+                "udt": {
+                  "name": "ContractExecutableRef"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "udt_union_v0": {
+      "doc": "Contract executable used for creating a new contract and used in\\n`CreateContractHostFnContext`.",
+      "lib": "",
+      "name": "ContractExecutable",
+      "cases": [
+        {
+          "tuple_v0": {
+            "doc": "Executable specified by the contract instance as a specific Wasm contract code entry identified by its Wasm sha256 hash.",
+            "name": "Wasm",
+            "type": [
+              {
+                "bytes_n": {
+                  "n": 32
+                }
+              }
+            ]
+          }
+        },
+        {
+          "tuple_v0": {
+            "doc": "Executable reference via a persistent storage entry owned by this contract or another contract.",
+            "name": "ExternalRef",
+            "type": [
+              {
+                "udt": {
+                  "name": "ContractExecutableRef"
+                }
+              }
+            ]
+          }
         }
       ]
     }
@@ -858,6 +1006,53 @@
     }
   },
   {
+    "udt_error_enum_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "Error",
+      "cases": [
+        {
+          "doc": "",
+          "name": "Abort",
+          "value": 0
+        },
+        {
+          "doc": "",
+          "name": "Overflow",
+          "value": 1
+        }
+      ]
+    }
+  },
+  {
+    "udt_error_enum_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "Error",
+      "cases": [
+        {
+          "doc": "",
+          "name": "Overflow",
+          "value": 1
+        }
+      ]
+    }
+  },
+  {
+    "udt_error_enum_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "MyError",
+      "cases": [
+        {
+          "doc": "",
+          "name": "Overflow",
+          "value": 1
+        }
+      ]
+    }
+  },
+  {
     "event_v0": {
       "doc": "",
       "lib": "",
@@ -886,20 +1081,6 @@
         }
       ],
       "data_format": "map"
-    }
-  },
-  {
-    "udt_error_enum_v0": {
-      "doc": "",
-      "lib": "",
-      "name": "MyError",
-      "cases": [
-        {
-          "doc": "",
-          "name": "Overflow",
-          "value": 1
-        }
-      ]
     }
   },
   {
@@ -944,99 +1125,6 @@
         }
       ],
       "data_format": "single_value"
-    }
-  },
-  {
-    "udt_struct_v0": {
-      "doc": "",
-      "lib": "",
-      "name": "SubContractInvocation",
-      "fields": [
-        {
-          "doc": "",
-          "name": "context",
-          "type": {
-            "udt": {
-              "name": "ContractContext"
-            }
-          }
-        },
-        {
-          "doc": "",
-          "name": "sub_invocations",
-          "type": {
-            "vec": {
-              "element_type": {
-                "udt": {
-                  "name": "InvokerContractAuthEntry"
-                }
-              }
-            }
-          }
-        }
-      ]
-    }
-  },
-  {
-    "udt_struct_v0": {
-      "doc": "",
-      "lib": "",
-      "name": "SubContractInvocation",
-      "fields": [
-        {
-          "doc": "",
-          "name": "context",
-          "type": {
-            "udt": {
-              "name": "ContractContext"
-            }
-          }
-        },
-        {
-          "doc": "",
-          "name": "sub_invocations",
-          "type": {
-            "vec": {
-              "element_type": {
-                "udt": {
-                  "name": "InvokerContractAuthEntry"
-                }
-              }
-            }
-          }
-        }
-      ]
-    }
-  },
-  {
-    "udt_struct_v0": {
-      "doc": "Value of contract node in InvokerContractAuthEntry tree.",
-      "lib": "",
-      "name": "SubContractInvocation",
-      "fields": [
-        {
-          "doc": "",
-          "name": "context",
-          "type": {
-            "udt": {
-              "name": "ContractContext"
-            }
-          }
-        },
-        {
-          "doc": "",
-          "name": "sub_invocations",
-          "type": {
-            "vec": {
-              "element_type": {
-                "udt": {
-                  "name": "InvokerContractAuthEntry"
-                }
-              }
-            }
-          }
-        }
-      ]
     }
   },
   {
@@ -1109,94 +1197,6 @@
         }
       ],
       "data_format": "vec"
-    }
-  },
-  {
-    "function_v0": {
-      "doc": "",
-      "name": "add_with",
-      "inputs": [
-        {
-          "doc": "",
-          "name": "contract_id",
-          "type": "address"
-        },
-        {
-          "doc": "",
-          "name": "x",
-          "type": "u64"
-        },
-        {
-          "doc": "",
-          "name": "y",
-          "type": "u64"
-        }
-      ],
-      "outputs": [
-        "u64"
-      ]
-    }
-  },
-  {
-    "function_v0": {
-      "doc": "",
-      "name": "safe_add_with",
-      "inputs": [
-        {
-          "doc": "",
-          "name": "contract_id",
-          "type": "address"
-        },
-        {
-          "doc": "",
-          "name": "x",
-          "type": "u64"
-        },
-        {
-          "doc": "",
-          "name": "y",
-          "type": "u64"
-        }
-      ],
-      "outputs": [
-        {
-          "result": {
-            "ok_type": "u64",
-            "error_type": "error"
-          }
-        }
-      ]
-    }
-  },
-  {
-    "function_v0": {
-      "doc": "",
-      "name": "safe_add_with_two",
-      "inputs": [
-        {
-          "doc": "",
-          "name": "contract_id",
-          "type": "address"
-        },
-        {
-          "doc": "",
-          "name": "x",
-          "type": "u64"
-        },
-        {
-          "doc": "",
-          "name": "y",
-          "type": "u64"
-        }
-      ],
-      "outputs": [
-        {
-          "result": {
-            "ok_type": "u64",
-            "error_type": "error"
-          }
-        }
-      ]
     }
   }
 ]
