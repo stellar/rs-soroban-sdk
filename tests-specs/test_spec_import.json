@@ -1,899 +1,901 @@
-{
-  "function_v0": {
-    "doc": "",
-    "name": "fn_enum_a",
-    "inputs": [],
-    "outputs": [
-      {
-        "udt": {
-          "name": "EnumA"
+[
+  {
+    "function_v0": {
+      "doc": "",
+      "name": "fn_enum_a",
+      "inputs": [],
+      "outputs": [
+        {
+          "udt": {
+            "name": "EnumA"
+          }
         }
-      }
-    ]
-  }
-}
-{
-  "function_v0": {
-    "doc": "",
-    "name": "fn_enum_int_a",
-    "inputs": [],
-    "outputs": [
-      {
-        "udt": {
-          "name": "EnumIntA"
+      ]
+    }
+  },
+  {
+    "function_v0": {
+      "doc": "",
+      "name": "fn_enum_int_a",
+      "inputs": [],
+      "outputs": [
+        {
+          "udt": {
+            "name": "EnumIntA"
+          }
         }
-      }
-    ]
-  }
-}
-{
-  "function_v0": {
-    "doc": "",
-    "name": "fn_error_a",
-    "inputs": [
-      {
-        "doc": "",
-        "name": "input",
-        "type": "u32"
-      }
-    ],
-    "outputs": [
-      {
-        "result": {
-          "ok_type": "u32",
-          "error_type": {
+      ]
+    }
+  },
+  {
+    "function_v0": {
+      "doc": "",
+      "name": "fn_error_a",
+      "inputs": [
+        {
+          "doc": "",
+          "name": "input",
+          "type": "u32"
+        }
+      ],
+      "outputs": [
+        {
+          "result": {
+            "ok_type": "u32",
+            "error_type": {
+              "udt": {
+                "name": "ErrorA"
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "function_v0": {
+      "doc": "",
+      "name": "fn_event_a",
+      "inputs": [
+        {
+          "doc": "",
+          "name": "f1",
+          "type": "address"
+        },
+        {
+          "doc": "",
+          "name": "f2",
+          "type": "string"
+        }
+      ],
+      "outputs": []
+    }
+  },
+  {
+    "function_v0": {
+      "doc": "",
+      "name": "fn_event_d",
+      "inputs": [],
+      "outputs": []
+    }
+  },
+  {
+    "function_v0": {
+      "doc": "",
+      "name": "fn_struct_a",
+      "inputs": [
+        {
+          "doc": "",
+          "name": "f1",
+          "type": "u32"
+        },
+        {
+          "doc": "",
+          "name": "f2",
+          "type": "bool"
+        }
+      ],
+      "outputs": [
+        {
+          "udt": {
+            "name": "StructA"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "function_v0": {
+      "doc": "",
+      "name": "fn_struct_tuple_a",
+      "inputs": [
+        {
+          "doc": "",
+          "name": "f1",
+          "type": "i64"
+        },
+        {
+          "doc": "",
+          "name": "f2",
+          "type": "i64"
+        }
+      ],
+      "outputs": [
+        {
+          "udt": {
+            "name": "StructTupleA"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "StructA",
+      "fields": [
+        {
+          "doc": "",
+          "name": "f1",
+          "type": "u32"
+        },
+        {
+          "doc": "",
+          "name": "f2",
+          "type": "bool"
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "StructB",
+      "fields": [
+        {
+          "doc": "",
+          "name": "f1",
+          "type": "i64"
+        },
+        {
+          "doc": "",
+          "name": "f2",
+          "type": "string"
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "StructC",
+      "fields": [
+        {
+          "doc": "",
+          "name": "f1",
+          "type": {
+            "vec": {
+              "element_type": "u32"
+            }
+          }
+        },
+        {
+          "doc": "",
+          "name": "f2",
+          "type": "address"
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "StructTupleA",
+      "fields": [
+        {
+          "doc": "",
+          "name": "0",
+          "type": "i64"
+        },
+        {
+          "doc": "",
+          "name": "1",
+          "type": "i64"
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "StructTupleB",
+      "fields": [
+        {
+          "doc": "",
+          "name": "0",
+          "type": "u128"
+        },
+        {
+          "doc": "",
+          "name": "1",
+          "type": "u128"
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "StructTupleC",
+      "fields": [
+        {
+          "doc": "",
+          "name": "0",
+          "type": "address"
+        },
+        {
+          "doc": "",
+          "name": "1",
+          "type": "i128"
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "Authorization context for `create_contract` host function that creates a\\nnew contract on behalf of authorizer address.",
+      "lib": "",
+      "name": "CreateContractHostFnContext",
+      "fields": [
+        {
+          "doc": "",
+          "name": "executable",
+          "type": {
             "udt": {
-              "name": "ErrorA"
+              "name": "ContractExecutable"
+            }
+          }
+        },
+        {
+          "doc": "",
+          "name": "salt",
+          "type": {
+            "bytes_n": {
+              "n": 32
             }
           }
         }
-      }
-    ]
-  }
-}
-{
-  "function_v0": {
-    "doc": "",
-    "name": "fn_event_a",
-    "inputs": [
-      {
-        "doc": "",
-        "name": "f1",
-        "type": "address"
-      },
-      {
-        "doc": "",
-        "name": "f2",
-        "type": "string"
-      }
-    ],
-    "outputs": []
-  }
-}
-{
-  "function_v0": {
-    "doc": "",
-    "name": "fn_event_d",
-    "inputs": [],
-    "outputs": []
-  }
-}
-{
-  "function_v0": {
-    "doc": "",
-    "name": "fn_struct_a",
-    "inputs": [
-      {
-        "doc": "",
-        "name": "f1",
-        "type": "u32"
-      },
-      {
-        "doc": "",
-        "name": "f2",
-        "type": "bool"
-      }
-    ],
-    "outputs": [
-      {
-        "udt": {
-          "name": "StructA"
-        }
-      }
-    ]
-  }
-}
-{
-  "function_v0": {
-    "doc": "",
-    "name": "fn_struct_tuple_a",
-    "inputs": [
-      {
-        "doc": "",
-        "name": "f1",
-        "type": "i64"
-      },
-      {
-        "doc": "",
-        "name": "f2",
-        "type": "i64"
-      }
-    ],
-    "outputs": [
-      {
-        "udt": {
-          "name": "StructTupleA"
-        }
-      }
-    ]
-  }
-}
-{
-  "udt_struct_v0": {
-    "doc": "",
-    "lib": "",
-    "name": "StructA",
-    "fields": [
-      {
-        "doc": "",
-        "name": "f1",
-        "type": "u32"
-      },
-      {
-        "doc": "",
-        "name": "f2",
-        "type": "bool"
-      }
-    ]
-  }
-}
-{
-  "udt_struct_v0": {
-    "doc": "",
-    "lib": "",
-    "name": "StructB",
-    "fields": [
-      {
-        "doc": "",
-        "name": "f1",
-        "type": "i64"
-      },
-      {
-        "doc": "",
-        "name": "f2",
-        "type": "string"
-      }
-    ]
-  }
-}
-{
-  "udt_struct_v0": {
-    "doc": "",
-    "lib": "",
-    "name": "StructC",
-    "fields": [
-      {
-        "doc": "",
-        "name": "f1",
-        "type": {
-          "vec": {
-            "element_type": "u32"
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "Authorization context for `create_contract` host function that creates a\\nnew contract on behalf of authorizer address.\\nThis is the same as `CreateContractHostFnContext`, but also has\\ncontract constructor arguments.",
+      "lib": "",
+      "name": "CreateContractWithConstructorHostFnContext",
+      "fields": [
+        {
+          "doc": "",
+          "name": "constructor_args",
+          "type": {
+            "vec": {
+              "element_type": "val"
+            }
+          }
+        },
+        {
+          "doc": "",
+          "name": "executable",
+          "type": {
+            "udt": {
+              "name": "ContractExecutable"
+            }
+          }
+        },
+        {
+          "doc": "",
+          "name": "salt",
+          "type": {
+            "bytes_n": {
+              "n": 32
+            }
           }
         }
-      },
-      {
-        "doc": "",
-        "name": "f2",
-        "type": "address"
-      }
-    ]
-  }
-}
-{
-  "udt_struct_v0": {
-    "doc": "",
-    "lib": "",
-    "name": "StructTupleA",
-    "fields": [
-      {
-        "doc": "",
-        "name": "0",
-        "type": "i64"
-      },
-      {
-        "doc": "",
-        "name": "1",
-        "type": "i64"
-      }
-    ]
-  }
-}
-{
-  "udt_struct_v0": {
-    "doc": "",
-    "lib": "",
-    "name": "StructTupleB",
-    "fields": [
-      {
-        "doc": "",
-        "name": "0",
-        "type": "u128"
-      },
-      {
-        "doc": "",
-        "name": "1",
-        "type": "u128"
-      }
-    ]
-  }
-}
-{
-  "udt_struct_v0": {
-    "doc": "",
-    "lib": "",
-    "name": "StructTupleC",
-    "fields": [
-      {
-        "doc": "",
-        "name": "0",
-        "type": "address"
-      },
-      {
-        "doc": "",
-        "name": "1",
-        "type": "i128"
-      }
-    ]
-  }
-}
-{
-  "udt_struct_v0": {
-    "doc": "Authorization context for `create_contract` host function that creates a\\nnew contract on behalf of authorizer address.",
-    "lib": "",
-    "name": "CreateContractHostFnContext",
-    "fields": [
-      {
-        "doc": "",
-        "name": "executable",
-        "type": {
-          "udt": {
-            "name": "ContractExecutable"
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "Authorization context of a single contract call.\\n\\nThis struct corresponds to a `require_auth_for_args` call for an address\\nfrom `contract` function with `fn_name` name and `args` arguments.",
+      "lib": "",
+      "name": "ContractContext",
+      "fields": [
+        {
+          "doc": "",
+          "name": "args",
+          "type": {
+            "vec": {
+              "element_type": "val"
+            }
           }
+        },
+        {
+          "doc": "",
+          "name": "contract",
+          "type": "address"
+        },
+        {
+          "doc": "",
+          "name": "fn_name",
+          "type": "symbol"
         }
-      },
-      {
-        "doc": "",
-        "name": "salt",
-        "type": {
-          "bytes_n": {
-            "n": 32
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "Executable referenced via a persistent storage entry owned by a contract,\\neither this contract or another contract.\\n\\nThe persistent storage entry owned by the `owner` has the `tag` as its key.",
+      "lib": "",
+      "name": "ContractExecutableRef",
+      "fields": [
+        {
+          "doc": "",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "doc": "",
+          "name": "tag",
+          "type": "string"
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "Value of contract node in InvokerContractAuthEntry tree.",
+      "lib": "",
+      "name": "SubContractInvocation",
+      "fields": [
+        {
+          "doc": "",
+          "name": "context",
+          "type": {
+            "udt": {
+              "name": "ContractContext"
+            }
           }
-        }
-      }
-    ]
-  }
-}
-{
-  "udt_struct_v0": {
-    "doc": "Authorization context for `create_contract` host function that creates a\\nnew contract on behalf of authorizer address.\\nThis is the same as `CreateContractHostFnContext`, but also has\\ncontract constructor arguments.",
-    "lib": "",
-    "name": "CreateContractWithConstructorHostFnContext",
-    "fields": [
-      {
-        "doc": "",
-        "name": "constructor_args",
-        "type": {
-          "vec": {
-            "element_type": "val"
-          }
-        }
-      },
-      {
-        "doc": "",
-        "name": "executable",
-        "type": {
-          "udt": {
-            "name": "ContractExecutable"
-          }
-        }
-      },
-      {
-        "doc": "",
-        "name": "salt",
-        "type": {
-          "bytes_n": {
-            "n": 32
-          }
-        }
-      }
-    ]
-  }
-}
-{
-  "udt_struct_v0": {
-    "doc": "Authorization context of a single contract call.\\n\\nThis struct corresponds to a `require_auth_for_args` call for an address\\nfrom `contract` function with `fn_name` name and `args` arguments.",
-    "lib": "",
-    "name": "ContractContext",
-    "fields": [
-      {
-        "doc": "",
-        "name": "args",
-        "type": {
-          "vec": {
-            "element_type": "val"
-          }
-        }
-      },
-      {
-        "doc": "",
-        "name": "contract",
-        "type": "address"
-      },
-      {
-        "doc": "",
-        "name": "fn_name",
-        "type": "symbol"
-      }
-    ]
-  }
-}
-{
-  "udt_struct_v0": {
-    "doc": "Executable referenced via a persistent storage entry owned by a contract,\\neither this contract or another contract.\\n\\nThe persistent storage entry owned by the `owner` has the `tag` as its key.",
-    "lib": "",
-    "name": "ContractExecutableRef",
-    "fields": [
-      {
-        "doc": "",
-        "name": "owner",
-        "type": "address"
-      },
-      {
-        "doc": "",
-        "name": "tag",
-        "type": "string"
-      }
-    ]
-  }
-}
-{
-  "udt_struct_v0": {
-    "doc": "Value of contract node in InvokerContractAuthEntry tree.",
-    "lib": "",
-    "name": "SubContractInvocation",
-    "fields": [
-      {
-        "doc": "",
-        "name": "context",
-        "type": {
-          "udt": {
-            "name": "ContractContext"
-          }
-        }
-      },
-      {
-        "doc": "",
-        "name": "sub_invocations",
-        "type": {
-          "vec": {
-            "element_type": {
-              "udt": {
-                "name": "InvokerContractAuthEntry"
+        },
+        {
+          "doc": "",
+          "name": "sub_invocations",
+          "type": {
+            "vec": {
+              "element_type": {
+                "udt": {
+                  "name": "InvokerContractAuthEntry"
+                }
               }
             }
           }
         }
-      }
-    ]
-  }
-}
-{
-  "udt_union_v0": {
-    "doc": "",
-    "lib": "",
-    "name": "EnumA",
-    "cases": [
-      {
-        "void_v0": {
-          "doc": "",
-          "name": "V1"
+      ]
+    }
+  },
+  {
+    "udt_union_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "EnumA",
+      "cases": [
+        {
+          "void_v0": {
+            "doc": "",
+            "name": "V1"
+          }
+        },
+        {
+          "void_v0": {
+            "doc": "",
+            "name": "V2"
+          }
+        },
+        {
+          "void_v0": {
+            "doc": "",
+            "name": "V3"
+          }
         }
-      },
-      {
-        "void_v0": {
-          "doc": "",
-          "name": "V2"
+      ]
+    }
+  },
+  {
+    "udt_union_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "EnumB",
+      "cases": [
+        {
+          "void_v0": {
+            "doc": "",
+            "name": "V1"
+          }
+        },
+        {
+          "tuple_v0": {
+            "doc": "",
+            "name": "V2",
+            "type": [
+              "i64"
+            ]
+          }
+        },
+        {
+          "tuple_v0": {
+            "doc": "",
+            "name": "V3",
+            "type": [
+              "i64",
+              "i64"
+            ]
+          }
         }
-      },
-      {
-        "void_v0": {
-          "doc": "",
-          "name": "V3"
+      ]
+    }
+  },
+  {
+    "udt_union_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "EnumC",
+      "cases": [
+        {
+          "void_v0": {
+            "doc": "",
+            "name": "V1"
+          }
+        },
+        {
+          "tuple_v0": {
+            "doc": "",
+            "name": "V2",
+            "type": [
+              {
+                "udt": {
+                  "name": "StructA"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "tuple_v0": {
+            "doc": "",
+            "name": "V3",
+            "type": [
+              {
+                "udt": {
+                  "name": "StructTupleA"
+                }
+              }
+            ]
+          }
         }
-      }
-    ]
-  }
-}
-{
-  "udt_union_v0": {
-    "doc": "",
-    "lib": "",
-    "name": "EnumB",
-    "cases": [
-      {
-        "void_v0": {
-          "doc": "",
-          "name": "V1"
+      ]
+    }
+  },
+  {
+    "udt_union_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "Executable",
+      "cases": [
+        {
+          "tuple_v0": {
+            "doc": "",
+            "name": "Wasm",
+            "type": [
+              {
+                "bytes_n": {
+                  "n": 32
+                }
+              }
+            ]
+          }
+        },
+        {
+          "void_v0": {
+            "doc": "",
+            "name": "StellarAsset"
+          }
+        },
+        {
+          "void_v0": {
+            "doc": "",
+            "name": "Account"
+          }
         }
-      },
-      {
-        "tuple_v0": {
+      ]
+    }
+  },
+  {
+    "udt_union_v0": {
+      "doc": "A node in the tree of authorizations performed on behalf of the current\\ncontract as invoker of the contracts deeper in the call stack.\\n\\nThis is used as an argument of `authorize_as_current_contract` host function.\\n\\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\\ncurrent contract.",
+      "lib": "",
+      "name": "InvokerContractAuthEntry",
+      "cases": [
+        {
+          "tuple_v0": {
+            "doc": "Invoke a contract.",
+            "name": "Contract",
+            "type": [
+              {
+                "udt": {
+                  "name": "SubContractInvocation"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "tuple_v0": {
+            "doc": "Create a contract passing 0 arguments to constructor.",
+            "name": "CreateContractHostFn",
+            "type": [
+              {
+                "udt": {
+                  "name": "CreateContractHostFnContext"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "tuple_v0": {
+            "doc": "Create a contract passing 0 or more arguments to constructor.",
+            "name": "CreateContractWithCtorHostFn",
+            "type": [
+              {
+                "udt": {
+                  "name": "CreateContractWithConstructorHostFnContext"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "udt_union_v0": {
+      "doc": "Context of a single authorized call performed by an address.\\n\\nCustom account contracts that implement `__check_auth` special function\\nreceive a list of `Context` values corresponding to all the calls that\\nneed to be authorized.",
+      "lib": "",
+      "name": "Context",
+      "cases": [
+        {
+          "tuple_v0": {
+            "doc": "Contract invocation.",
+            "name": "Contract",
+            "type": [
+              {
+                "udt": {
+                  "name": "ContractContext"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "tuple_v0": {
+            "doc": "Contract that has a constructor with no arguments is created.",
+            "name": "CreateContractHostFn",
+            "type": [
+              {
+                "udt": {
+                  "name": "CreateContractHostFnContext"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "tuple_v0": {
+            "doc": "Contract that has a constructor with 1 or more arguments is created.",
+            "name": "CreateContractWithCtorHostFn",
+            "type": [
+              {
+                "udt": {
+                  "name": "CreateContractWithConstructorHostFnContext"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "udt_union_v0": {
+      "doc": "Contract executable used for creating a new contract and used in\\n`CreateContractHostFnContext`.",
+      "lib": "",
+      "name": "ContractExecutable",
+      "cases": [
+        {
+          "tuple_v0": {
+            "doc": "Executable specified by the contract instance as a specific Wasm contract code entry identified by its Wasm sha256 hash.",
+            "name": "Wasm",
+            "type": [
+              {
+                "bytes_n": {
+                  "n": 32
+                }
+              }
+            ]
+          }
+        },
+        {
+          "tuple_v0": {
+            "doc": "Executable reference via a persistent storage entry owned by this contract or another contract.",
+            "name": "ExternalRef",
+            "type": [
+              {
+                "udt": {
+                  "name": "ContractExecutableRef"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "udt_enum_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "EnumIntA",
+      "cases": [
+        {
+          "doc": "",
+          "name": "V1",
+          "value": 1
+        },
+        {
           "doc": "",
           "name": "V2",
-          "type": [
-            "i64"
-          ]
-        }
-      },
-      {
-        "tuple_v0": {
+          "value": 2
+        },
+        {
           "doc": "",
           "name": "V3",
-          "type": [
-            "i64",
-            "i64"
-          ]
+          "value": 3
         }
-      }
-    ]
-  }
-}
-{
-  "udt_union_v0": {
-    "doc": "",
-    "lib": "",
-    "name": "EnumC",
-    "cases": [
-      {
-        "void_v0": {
+      ]
+    }
+  },
+  {
+    "udt_enum_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "EnumIntB",
+      "cases": [
+        {
           "doc": "",
-          "name": "V1"
-        }
-      },
-      {
-        "tuple_v0": {
+          "name": "V1",
+          "value": 10
+        },
+        {
           "doc": "",
           "name": "V2",
-          "type": [
-            {
-              "udt": {
-                "name": "StructA"
-              }
-            }
-          ]
-        }
-      },
-      {
-        "tuple_v0": {
+          "value": 20
+        },
+        {
           "doc": "",
           "name": "V3",
-          "type": [
-            {
-              "udt": {
-                "name": "StructTupleA"
-              }
-            }
-          ]
+          "value": 30
         }
-      }
-    ]
-  }
-}
-{
-  "udt_union_v0": {
-    "doc": "",
-    "lib": "",
-    "name": "Executable",
-    "cases": [
-      {
-        "tuple_v0": {
+      ]
+    }
+  },
+  {
+    "udt_enum_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "EnumIntC",
+      "cases": [
+        {
           "doc": "",
-          "name": "Wasm",
-          "type": [
-            {
-              "bytes_n": {
-                "n": 32
-              }
-            }
-          ]
-        }
-      },
-      {
-        "void_v0": {
+          "name": "V1",
+          "value": 100
+        },
+        {
           "doc": "",
-          "name": "StellarAsset"
-        }
-      },
-      {
-        "void_v0": {
+          "name": "V2",
+          "value": 200
+        },
+        {
           "doc": "",
-          "name": "Account"
+          "name": "V3",
+          "value": 300
         }
-      }
-    ]
-  }
-}
-{
-  "udt_union_v0": {
-    "doc": "A node in the tree of authorizations performed on behalf of the current\\ncontract as invoker of the contracts deeper in the call stack.\\n\\nThis is used as an argument of `authorize_as_current_contract` host function.\\n\\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\\ncurrent contract.",
-    "lib": "",
-    "name": "InvokerContractAuthEntry",
-    "cases": [
-      {
-        "tuple_v0": {
-          "doc": "Invoke a contract.",
-          "name": "Contract",
-          "type": [
-            {
-              "udt": {
-                "name": "SubContractInvocation"
-              }
-            }
-          ]
+      ]
+    }
+  },
+  {
+    "udt_error_enum_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "ErrorA",
+      "cases": [
+        {
+          "doc": "",
+          "name": "E1",
+          "value": 1
+        },
+        {
+          "doc": "",
+          "name": "E2",
+          "value": 2
+        },
+        {
+          "doc": "",
+          "name": "E3",
+          "value": 3
         }
-      },
-      {
-        "tuple_v0": {
-          "doc": "Create a contract passing 0 arguments to constructor.",
-          "name": "CreateContractHostFn",
-          "type": [
-            {
-              "udt": {
-                "name": "CreateContractHostFnContext"
-              }
-            }
-          ]
+      ]
+    }
+  },
+  {
+    "udt_error_enum_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "ErrorB",
+      "cases": [
+        {
+          "doc": "",
+          "name": "E1",
+          "value": 10
+        },
+        {
+          "doc": "",
+          "name": "E2",
+          "value": 11
+        },
+        {
+          "doc": "",
+          "name": "E3",
+          "value": 12
         }
-      },
-      {
-        "tuple_v0": {
-          "doc": "Create a contract passing 0 or more arguments to constructor.",
-          "name": "CreateContractWithCtorHostFn",
-          "type": [
-            {
-              "udt": {
-                "name": "CreateContractWithConstructorHostFnContext"
-              }
-            }
-          ]
+      ]
+    }
+  },
+  {
+    "udt_error_enum_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "ErrorC",
+      "cases": [
+        {
+          "doc": "",
+          "name": "E1",
+          "value": 100
+        },
+        {
+          "doc": "",
+          "name": "E2",
+          "value": 101
+        },
+        {
+          "doc": "",
+          "name": "E3",
+          "value": 102
         }
-      }
-    ]
-  }
-}
-{
-  "udt_union_v0": {
-    "doc": "Context of a single authorized call performed by an address.\\n\\nCustom account contracts that implement `__check_auth` special function\\nreceive a list of `Context` values corresponding to all the calls that\\nneed to be authorized.",
-    "lib": "",
-    "name": "Context",
-    "cases": [
-      {
-        "tuple_v0": {
-          "doc": "Contract invocation.",
-          "name": "Contract",
-          "type": [
-            {
-              "udt": {
-                "name": "ContractContext"
-              }
-            }
-          ]
+      ]
+    }
+  },
+  {
+    "event_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "EventA",
+      "prefix_topics": [
+        "event_a"
+      ],
+      "params": [
+        {
+          "doc": "",
+          "name": "f1",
+          "type": "address",
+          "location": "topic_list"
+        },
+        {
+          "doc": "",
+          "name": "f2",
+          "type": "string",
+          "location": "data"
         }
-      },
-      {
-        "tuple_v0": {
-          "doc": "Contract that has a constructor with no arguments is created.",
-          "name": "CreateContractHostFn",
-          "type": [
-            {
-              "udt": {
-                "name": "CreateContractHostFnContext"
-              }
-            }
-          ]
+      ],
+      "data_format": "map"
+    }
+  },
+  {
+    "event_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "EventB",
+      "prefix_topics": [
+        "event_b"
+      ],
+      "params": [
+        {
+          "doc": "",
+          "name": "f1",
+          "type": "address",
+          "location": "topic_list"
+        },
+        {
+          "doc": "",
+          "name": "f2",
+          "type": "address",
+          "location": "topic_list"
+        },
+        {
+          "doc": "",
+          "name": "f3",
+          "type": "i128",
+          "location": "data"
         }
-      },
-      {
-        "tuple_v0": {
-          "doc": "Contract that has a constructor with 1 or more arguments is created.",
-          "name": "CreateContractWithCtorHostFn",
-          "type": [
-            {
-              "udt": {
-                "name": "CreateContractWithConstructorHostFnContext"
-              }
-            }
-          ]
+      ],
+      "data_format": "map"
+    }
+  },
+  {
+    "event_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "EventC",
+      "prefix_topics": [
+        "event_c"
+      ],
+      "params": [
+        {
+          "doc": "",
+          "name": "f1",
+          "type": "symbol",
+          "location": "topic_list"
+        },
+        {
+          "doc": "",
+          "name": "f2",
+          "type": "i64",
+          "location": "data"
+        },
+        {
+          "doc": "",
+          "name": "f3",
+          "type": "i64",
+          "location": "data"
         }
-      }
-    ]
+      ],
+      "data_format": "map"
+    }
+  },
+  {
+    "event_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "EventD",
+      "prefix_topics": [
+        "event_d"
+      ],
+      "params": [],
+      "data_format": "map"
+    }
   }
-}
-{
-  "udt_union_v0": {
-    "doc": "Contract executable used for creating a new contract and used in\\n`CreateContractHostFnContext`.",
-    "lib": "",
-    "name": "ContractExecutable",
-    "cases": [
-      {
-        "tuple_v0": {
-          "doc": "Executable specified by the contract instance as a specific Wasm contract code entry identified by its Wasm sha256 hash.",
-          "name": "Wasm",
-          "type": [
-            {
-              "bytes_n": {
-                "n": 32
-              }
-            }
-          ]
-        }
-      },
-      {
-        "tuple_v0": {
-          "doc": "Executable reference via a persistent storage entry owned by this contract or another contract.",
-          "name": "ExternalRef",
-          "type": [
-            {
-              "udt": {
-                "name": "ContractExecutableRef"
-              }
-            }
-          ]
-        }
-      }
-    ]
-  }
-}
-{
-  "udt_enum_v0": {
-    "doc": "",
-    "lib": "",
-    "name": "EnumIntA",
-    "cases": [
-      {
-        "doc": "",
-        "name": "V1",
-        "value": 1
-      },
-      {
-        "doc": "",
-        "name": "V2",
-        "value": 2
-      },
-      {
-        "doc": "",
-        "name": "V3",
-        "value": 3
-      }
-    ]
-  }
-}
-{
-  "udt_enum_v0": {
-    "doc": "",
-    "lib": "",
-    "name": "EnumIntB",
-    "cases": [
-      {
-        "doc": "",
-        "name": "V1",
-        "value": 10
-      },
-      {
-        "doc": "",
-        "name": "V2",
-        "value": 20
-      },
-      {
-        "doc": "",
-        "name": "V3",
-        "value": 30
-      }
-    ]
-  }
-}
-{
-  "udt_enum_v0": {
-    "doc": "",
-    "lib": "",
-    "name": "EnumIntC",
-    "cases": [
-      {
-        "doc": "",
-        "name": "V1",
-        "value": 100
-      },
-      {
-        "doc": "",
-        "name": "V2",
-        "value": 200
-      },
-      {
-        "doc": "",
-        "name": "V3",
-        "value": 300
-      }
-    ]
-  }
-}
-{
-  "udt_error_enum_v0": {
-    "doc": "",
-    "lib": "",
-    "name": "ErrorA",
-    "cases": [
-      {
-        "doc": "",
-        "name": "E1",
-        "value": 1
-      },
-      {
-        "doc": "",
-        "name": "E2",
-        "value": 2
-      },
-      {
-        "doc": "",
-        "name": "E3",
-        "value": 3
-      }
-    ]
-  }
-}
-{
-  "udt_error_enum_v0": {
-    "doc": "",
-    "lib": "",
-    "name": "ErrorB",
-    "cases": [
-      {
-        "doc": "",
-        "name": "E1",
-        "value": 10
-      },
-      {
-        "doc": "",
-        "name": "E2",
-        "value": 11
-      },
-      {
-        "doc": "",
-        "name": "E3",
-        "value": 12
-      }
-    ]
-  }
-}
-{
-  "udt_error_enum_v0": {
-    "doc": "",
-    "lib": "",
-    "name": "ErrorC",
-    "cases": [
-      {
-        "doc": "",
-        "name": "E1",
-        "value": 100
-      },
-      {
-        "doc": "",
-        "name": "E2",
-        "value": 101
-      },
-      {
-        "doc": "",
-        "name": "E3",
-        "value": 102
-      }
-    ]
-  }
-}
-{
-  "event_v0": {
-    "doc": "",
-    "lib": "",
-    "name": "EventA",
-    "prefix_topics": [
-      "event_a"
-    ],
-    "params": [
-      {
-        "doc": "",
-        "name": "f1",
-        "type": "address",
-        "location": "topic_list"
-      },
-      {
-        "doc": "",
-        "name": "f2",
-        "type": "string",
-        "location": "data"
-      }
-    ],
-    "data_format": "map"
-  }
-}
-{
-  "event_v0": {
-    "doc": "",
-    "lib": "",
-    "name": "EventB",
-    "prefix_topics": [
-      "event_b"
-    ],
-    "params": [
-      {
-        "doc": "",
-        "name": "f1",
-        "type": "address",
-        "location": "topic_list"
-      },
-      {
-        "doc": "",
-        "name": "f2",
-        "type": "address",
-        "location": "topic_list"
-      },
-      {
-        "doc": "",
-        "name": "f3",
-        "type": "i128",
-        "location": "data"
-      }
-    ],
-    "data_format": "map"
-  }
-}
-{
-  "event_v0": {
-    "doc": "",
-    "lib": "",
-    "name": "EventC",
-    "prefix_topics": [
-      "event_c"
-    ],
-    "params": [
-      {
-        "doc": "",
-        "name": "f1",
-        "type": "symbol",
-        "location": "topic_list"
-      },
-      {
-        "doc": "",
-        "name": "f2",
-        "type": "i64",
-        "location": "data"
-      },
-      {
-        "doc": "",
-        "name": "f3",
-        "type": "i64",
-        "location": "data"
-      }
-    ],
-    "data_format": "map"
-  }
-}
-{
-  "event_v0": {
-    "doc": "",
-    "lib": "",
-    "name": "EventD",
-    "prefix_topics": [
-      "event_d"
-    ],
-    "params": [],
-    "data_format": "map"
-  }
-}
+]

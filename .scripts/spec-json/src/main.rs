@@ -1,7 +1,5 @@
-//! Prints the contract spec in a wasm as a stream of XDR-JSON values.
-//!
-//! Each spec entry is printed as one pretty formatted JSON value after the
-//! other, so that a diff of the output points at the entry that changed.
+//! Prints the contract spec in a wasm as a pretty formatted JSON array of
+//! XDR-JSON values, one per spec entry.
 //!
 //! Entries are sorted, rather than printed in the order they appear in the
 //! wasm, so that moving an item around in the source, which changes the order
@@ -29,7 +27,5 @@ fn main() {
         exit(1);
     });
     entries.sort();
-    for entry in entries {
-        println!("{}", serde_json::to_string_pretty(&entry).unwrap());
-    }
+    println!("{}", serde_json::to_string_pretty(&entries).unwrap());
 }
