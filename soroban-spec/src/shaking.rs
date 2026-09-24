@@ -396,7 +396,26 @@ fn collect_type_names<'a>(type_: &'a ScSpecTypeDef, names: &mut Vec<&'a [u8]>) {
                 collect_type_names(value_type, names);
             }
         }
-        _ => {}
+        ScSpecTypeDef::Val
+        | ScSpecTypeDef::Bool
+        | ScSpecTypeDef::Void
+        | ScSpecTypeDef::Error
+        | ScSpecTypeDef::U32
+        | ScSpecTypeDef::I32
+        | ScSpecTypeDef::U64
+        | ScSpecTypeDef::I64
+        | ScSpecTypeDef::Timepoint
+        | ScSpecTypeDef::Duration
+        | ScSpecTypeDef::U128
+        | ScSpecTypeDef::I128
+        | ScSpecTypeDef::U256
+        | ScSpecTypeDef::I256
+        | ScSpecTypeDef::Bytes
+        | ScSpecTypeDef::String
+        | ScSpecTypeDef::Symbol
+        | ScSpecTypeDef::Address
+        | ScSpecTypeDef::MuxedAddress
+        | ScSpecTypeDef::BytesN(_) => {}
     }
 }
 
