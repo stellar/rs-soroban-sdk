@@ -32,6 +32,10 @@ fn main() {
 }
 
 /// Compares entries by kind and name, then by the entry itself.
+///
+/// Comparing by kind and name first ensures that an entry is sorted into the
+/// same location based off its kind and name, even if fields that come before
+/// the name in the entry's structure, such as the doc and lib fields, change.
 fn compare(a: &ScSpecEntry, b: &ScSpecEntry) -> Ordering {
     (a.discriminant(), name(a), a).cmp(&(b.discriminant(), name(b), b))
 }
