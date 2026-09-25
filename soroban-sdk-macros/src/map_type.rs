@@ -308,36 +308,48 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
 /// Renders a [ScSpecTypeDef] as a const expression of type
 /// `#path::xdr::r#const::ScSpecTypeDef`, so the containing spec entry can be encoded
 /// to XDR at compile time by the contract crate.
-pub fn const_view_type_def(path: &Path, t: &ScSpecTypeDef) -> TokenStream2 {
+///
+/// `rust` is the Rust type the spec type was mapped from. A reference to a
+/// user-defined type needs it to name that type, because the name is the one the
+/// type reports for itself and only the Rust type says which type that is.
+pub fn const_view_type_def(path: &Path, t: &ScSpecTypeDef, rust: Option<&Type>) -> TokenStream2 {
     let xdr = quote!(#path::xdr);
     let variant = format_ident!("{}", t.name());
+    // The Rust type arguments lining up with this spec type's arguments, so that
+    // a nested reference is paired with the Rust type it was mapped from.
+    let args = rust.map(type_args).unwrap_or_default();
+    let arg = |i: usize| args.get(i).copied();
     // Variants that hold a value. The recursive ones sit behind a reference in
     // the const type, matching the Box in the owned type.
     let value = match t {
         ScSpecTypeDef::Option(o) => {
-            let value_type = const_view_type_def(path, &o.value_type);
+            let value_type = const_view_type_def(path, &o.value_type, arg(0));
             Some(quote!((&#xdr::r#const::ScSpecTypeOption { value_type: &#value_type })))
         }
         ScSpecTypeDef::Result(r) => {
-            let ok_type = const_view_type_def(path, &r.ok_type);
-            let error_type = const_view_type_def(path, &r.error_type);
+            let ok_type = const_view_type_def(path, &r.ok_type, arg(0));
+            let error_type = const_view_type_def(path, &r.error_type, arg(1));
             Some(
                 quote!((&#xdr::r#const::ScSpecTypeResult { ok_type: &#ok_type, error_type: &#error_type })),
             )
         }
         ScSpecTypeDef::Vec(v) => {
-            let element_type = const_view_type_def(path, &v.element_type);
+            let element_type = const_view_type_def(path, &v.element_type, arg(0));
             Some(quote!((&#xdr::r#const::ScSpecTypeVec { element_type: &#element_type })))
         }
         ScSpecTypeDef::Map(m) => {
-            let key_type = const_view_type_def(path, &m.key_type);
-            let value_type = const_view_type_def(path, &m.value_type);
+            let key_type = const_view_type_def(path, &m.key_type, arg(0));
+            let value_type = const_view_type_def(path, &m.value_type, arg(1));
             Some(
                 quote!((&#xdr::r#const::ScSpecTypeMap { key_type: &#key_type, value_type: &#value_type })),
             )
         }
         ScSpecTypeDef::Tuple(t) => {
-            let value_types = t.value_types.iter().map(|t| const_view_type_def(path, t));
+            let value_types = t
+                .value_types
+                .iter()
+                .enumerate()
+                .map(|(i, t)| const_view_type_def(path, t, arg(i)));
             Some(
                 quote!((&#xdr::r#const::ScSpecTypeTuple { value_types: #xdr::r#const::VecM::try_from_slice_or_panic(&[#(#value_types),*]) })),
             )
@@ -346,10 +358,20 @@ pub fn const_view_type_def(path: &Path, t: &ScSpecTypeDef) -> TokenStream2 {
             let n = b.n;
             Some(quote!((#xdr::r#const::ScSpecTypeBytesN { n: #n })))
         }
-        ScSpecTypeDef::Udt(u) => {
-            let name = const_view_string(path, &u.name);
-            Some(quote!((#xdr::r#const::ScSpecTypeUdt { name: #name })))
-        }
+        // A reference names the type by the fully qualified name that type
+        // reports for itself, which only the referenced type can give because
+        // only its own expansion sees the module it is defined in. The Rust type
+        // the reference was mapped from is how that type is reached.
+        ScSpecTypeDef::Udt(_) => Some(match rust.map(unref) {
+            Some(ty) => {
+                quote!((#xdr::r#const::ScSpecTypeUdt { name: #xdr::r#const::StringM::try_from_str_or_panic(<#ty>::spec_name()) }))
+            }
+            None => quote!(
+                (compile_error!(
+                    "user-defined type reference has no Rust type to take its name from"
+                ))
+            ),
+        }),
         ScSpecTypeDef::Val
         | ScSpecTypeDef::Bool
         | ScSpecTypeDef::Void
@@ -371,6 +393,81 @@ pub fn const_view_type_def(path: &Path, t: &ScSpecTypeDef) -> TokenStream2 {
         | ScSpecTypeDef::MuxedAddress => None,
     };
     quote!(#xdr::r#const::ScSpecTypeDef::#variant #value)
+}
+
+/// The Rust type behind any number of references.
+fn unref(t: &Type) -> &Type {
+    match t {
+        Type::Reference(TypeReference { elem, .. }) => unref(elem),
+        _ => t,
+    }
+}
+
+/// The Rust type arguments that line up, in order, with the type arguments of
+/// the spec type [map_type] produced for `t`: the arguments of a container
+/// (`Option<T>`, `Result<T, E>`, `Vec<T>`, `Map<K, V>`) or the elements of a
+/// tuple. Empty for anything else, including the parameterized types whose
+/// arguments are not types in the spec (`BytesN<N>`, `Hash<N>`).
+fn type_args(t: &Type) -> Vec<&Type> {
+    match unref(t) {
+        Type::Tuple(TypeTuple { elems, .. }) => elems.iter().collect(),
+        Type::Path(TypePath {
+            qself: None,
+            path: Path { segments, .. },
+        }) => match segments.last() {
+            Some(PathSegment {
+                ident,
+                arguments: PathArguments::AngleBracketed(args),
+            }) if matches!(
+                &ident.unraw().to_string()[..],
+                "Option" | "Result" | "Vec" | "Map"
+            ) =>
+            {
+                args.args
+                    .iter()
+                    .filter_map(|a| match a {
+                        GenericArgument::Type(ty) => Some(ty),
+                        _ => None,
+                    })
+                    .collect()
+            }
+            _ => Vec::new(),
+        },
+        _ => Vec::new(),
+    }
+}
+
+/// Emits the `spec_name` const fn on a user-defined type: the name the
+/// contract spec knows it by, which is its Rust path — the module it is defined
+/// in, then its own name.
+///
+/// The module path is only known where the type is defined, and a macro cannot
+/// see it, so `module_path!` is emitted for the compiler to expand in place
+/// rather than resolved here. It is rooted with a leading `::` so the name is
+/// an absolute crate path, distinguishing crates that would otherwise collide
+/// with a same-named module imported into each context.
+///
+/// The generics arguments carry the type's `split_for_impl` pieces so an event
+/// struct that borrows its fields can repeat its generics on the impl; a type
+/// without generics passes `None` for each.
+pub fn spec_name_gen(
+    ident: &Ident,
+    gen_impl: Option<TokenStream2>,
+    gen_types: Option<TokenStream2>,
+    gen_where: Option<TokenStream2>,
+) -> TokenStream2 {
+    let name = Literal::string(&ident.unraw().to_string());
+    let gen_impl = gen_impl.unwrap_or_default();
+    let gen_types = gen_types.unwrap_or_default();
+    let gen_where = gen_where.unwrap_or_default();
+    quote! {
+        impl #gen_impl #ident #gen_types #gen_where {
+            #[doc(hidden)]
+            pub const fn spec_name() -> &'static str {
+                ::core::concat!("::", ::core::module_path!(), "::", #name)
+            }
+        }
+    }
 }
 
 /// Renders a [StringM] as a const expression of type `#path::xdr::r#const::StringM`.
@@ -580,6 +677,9 @@ mod test_const_view {
     #[test]
     fn test_every_variant_renders_with_its_own_name() {
         let p = path();
+        // A Udt renders its name from the Rust type, so supply one throughout;
+        // it is ignored by every other variant.
+        let rust: Type = parse_quote!(MyType);
         for t in ScSpecType::VARIANTS {
             let def = match t {
                 ScSpecType::Val => ScSpecTypeDef::Val,
@@ -633,7 +733,7 @@ mod test_const_view {
                     | ScSpecType::BytesN
                     | ScSpecType::Udt
             );
-            let rendered = const_view_type_def(&p, &def).to_string();
+            let rendered = const_view_type_def(&p, &def, Some(&rust)).to_string();
             let expect_prefix = format!(
                 "soroban_sdk :: xdr :: r#const :: ScSpecTypeDef :: {}",
                 def.name()
@@ -653,7 +753,7 @@ mod test_const_view {
     #[test]
     fn test_void_variant() {
         assert_tokens(
-            const_view_type_def(&path(), &ScSpecTypeDef::Void),
+            const_view_type_def(&path(), &ScSpecTypeDef::Void, None),
             quote!(soroban_sdk::xdr::r#const::ScSpecTypeDef::Void),
         );
     }
@@ -661,7 +761,11 @@ mod test_const_view {
     #[test]
     fn test_bytes_n() {
         assert_tokens(
-            const_view_type_def(&path(), &ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n: 32 })),
+            const_view_type_def(
+                &path(),
+                &ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n: 32 }),
+                None,
+            ),
             quote!(soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
                 soroban_sdk::xdr::r#const::ScSpecTypeBytesN { n: 32u32 }
             )),
@@ -672,7 +776,11 @@ mod test_const_view {
     fn test_bytes_n_boundaries() {
         for n in [0u32, 1, u32::MAX] {
             assert_tokens(
-                const_view_type_def(&path(), &ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n })),
+                const_view_type_def(
+                    &path(),
+                    &ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n }),
+                    None,
+                ),
                 quote!(soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
                     soroban_sdk::xdr::r#const::ScSpecTypeBytesN { n: #n }
                 )),
@@ -686,7 +794,7 @@ mod test_const_view {
             value_type: Box::new(ScSpecTypeDef::U32),
         }));
         assert_tokens(
-            const_view_type_def(&path(), &def),
+            const_view_type_def(&path(), &def, None),
             quote!(soroban_sdk::xdr::r#const::ScSpecTypeDef::Option(
                 &soroban_sdk::xdr::r#const::ScSpecTypeOption {
                     value_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::U32
@@ -702,7 +810,7 @@ mod test_const_view {
             error_type: Box::new(ScSpecTypeDef::Error),
         }));
         assert_tokens(
-            const_view_type_def(&path(), &def),
+            const_view_type_def(&path(), &def, None),
             quote!(soroban_sdk::xdr::r#const::ScSpecTypeDef::Result(
                 &soroban_sdk::xdr::r#const::ScSpecTypeResult {
                     ok_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
@@ -718,7 +826,7 @@ mod test_const_view {
             element_type: Box::new(ScSpecTypeDef::Bool),
         }));
         assert_tokens(
-            const_view_type_def(&path(), &def),
+            const_view_type_def(&path(), &def, None),
             quote!(soroban_sdk::xdr::r#const::ScSpecTypeDef::Vec(
                 &soroban_sdk::xdr::r#const::ScSpecTypeVec {
                     element_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Bool
@@ -734,7 +842,7 @@ mod test_const_view {
             value_type: Box::new(ScSpecTypeDef::I128),
         }));
         assert_tokens(
-            const_view_type_def(&path(), &def),
+            const_view_type_def(&path(), &def, None),
             quote!(soroban_sdk::xdr::r#const::ScSpecTypeDef::Map(
                 &soroban_sdk::xdr::r#const::ScSpecTypeMap {
                     key_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Symbol,
@@ -750,7 +858,7 @@ mod test_const_view {
             value_types: vec![].try_into().unwrap(),
         }));
         assert_tokens(
-            const_view_type_def(&path(), &def),
+            const_view_type_def(&path(), &def, None),
             quote!(soroban_sdk::xdr::r#const::ScSpecTypeDef::Tuple(
                 &soroban_sdk::xdr::r#const::ScSpecTypeTuple {
                     value_types: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[])
@@ -765,7 +873,7 @@ mod test_const_view {
             value_types: vec![ScSpecTypeDef::U32].try_into().unwrap(),
         }));
         assert_tokens(
-            const_view_type_def(&path(), &def),
+            const_view_type_def(&path(), &def, None),
             quote!(soroban_sdk::xdr::r#const::ScSpecTypeDef::Tuple(
                 &soroban_sdk::xdr::r#const::ScSpecTypeTuple {
                     value_types: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
@@ -784,7 +892,7 @@ mod test_const_view {
                 .unwrap(),
         }));
         assert_tokens(
-            const_view_type_def(&path(), &forward),
+            const_view_type_def(&path(), &forward, None),
             quote!(soroban_sdk::xdr::r#const::ScSpecTypeDef::Tuple(
                 &soroban_sdk::xdr::r#const::ScSpecTypeTuple {
                     value_types: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
@@ -800,40 +908,86 @@ mod test_const_view {
                 .unwrap(),
         }));
         assert_ne!(
-            const_view_type_def(&path(), &forward).to_string(),
-            const_view_type_def(&path(), &reverse).to_string(),
+            const_view_type_def(&path(), &forward, None).to_string(),
+            const_view_type_def(&path(), &reverse, None).to_string(),
         );
     }
 
     #[test]
-    fn test_udt() {
+    fn test_udt_takes_its_name_from_the_rust_type() {
+        // The name in the spec value is ignored: the rendered name is whatever
+        // the Rust type reports for itself at expansion time.
         let def = ScSpecTypeDef::Udt(ScSpecTypeUdt {
-            name: "MyType".try_into().unwrap(),
+            name: "Ignored".try_into().unwrap(),
         });
+        let rust: Type = parse_quote!(MyType);
         assert_tokens(
-            const_view_type_def(&path(), &def),
+            const_view_type_def(&path(), &def, Some(&rust)),
             quote!(soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                 soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"MyType")
-                }
-            )),
-        );
-    }
-
-    #[test]
-    fn test_udt_qualified_name() {
-        let def = ScSpecTypeDef::Udt(ScSpecTypeUdt {
-            name: "::my_crate::MyType".try_into().unwrap(),
-        });
-        assert_tokens(
-            const_view_type_def(&path(), &def),
-            quote!(soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
-                soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                        b"::my_crate::MyType"
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                        <MyType>::spec_name()
                     )
                 }
             )),
+        );
+    }
+
+    #[test]
+    fn test_udt_reaches_through_references() {
+        // A reference is followed to the type it points at, so the name comes
+        // from the type itself rather than the reference.
+        let def = ScSpecTypeDef::Udt(ScSpecTypeUdt {
+            name: "X".try_into().unwrap(),
+        });
+        let rust: Type = parse_quote!(&&MyType);
+        assert_tokens(
+            const_view_type_def(&path(), &def, Some(&rust)),
+            quote!(soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                        <MyType>::spec_name()
+                    )
+                }
+            )),
+        );
+    }
+
+    #[test]
+    fn test_udt_path_qualified_rust_type() {
+        // A path-qualified Rust type is rendered whole, so the name is taken
+        // from the type that path names.
+        let def = ScSpecTypeDef::Udt(ScSpecTypeUdt {
+            name: "X".try_into().unwrap(),
+        });
+        let rust: Type = parse_quote!(crate::inner::MyType);
+        assert_tokens(
+            const_view_type_def(&path(), &def, Some(&rust)),
+            quote!(soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                        <crate::inner::MyType>::spec_name()
+                    )
+                }
+            )),
+        );
+    }
+
+    #[test]
+    fn test_udt_without_rust_type_is_a_compile_error() {
+        // Without a Rust type there is no name to render, so the expansion
+        // fails loudly at the use site rather than emitting a wrong name.
+        let def = ScSpecTypeDef::Udt(ScSpecTypeUdt {
+            name: "X".try_into().unwrap(),
+        });
+        let rendered = const_view_type_def(&path(), &def, None).to_string();
+        assert!(
+            rendered.contains("compile_error !"),
+            "expected a compile_error, got {rendered}"
+        );
+        assert!(
+            !rendered.contains("spec_name"),
+            "expected no name to be rendered, got {rendered}"
         );
     }
 
@@ -859,8 +1013,9 @@ mod test_const_view {
         let def = ScSpecTypeDef::Vec(Box::new(ScSpecTypeVec {
             element_type: Box::new(option),
         }));
+        let rust: Type = parse_quote!(Vec<Option<Map<Symbol, (BytesN<4>, MyType)>>>);
         assert_tokens(
-            const_view_type_def(&path(), &def),
+            const_view_type_def(&path(), &def, Some(&rust)),
             quote!(soroban_sdk::xdr::r#const::ScSpecTypeDef::Vec(
                 &soroban_sdk::xdr::r#const::ScSpecTypeVec {
                     element_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Option(
@@ -878,7 +1033,9 @@ mod test_const_view {
                                                         ),
                                                         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                                                             soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                                                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"U")
+                                                                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                                                                    <MyType>::spec_name()
+                                                                )
                                                             }
                                                         )
                                                     ]
@@ -901,7 +1058,7 @@ mod test_const_view {
         }));
         let p: Path = parse_quote!(::soroban_sdk);
         assert_tokens(
-            const_view_type_def(&p, &def),
+            const_view_type_def(&p, &def, None),
             quote!(::soroban_sdk::xdr::r#const::ScSpecTypeDef::Option(
                 &::soroban_sdk::xdr::r#const::ScSpecTypeOption {
                     value_type: &::soroban_sdk::xdr::r#const::ScSpecTypeDef::U32
@@ -910,7 +1067,7 @@ mod test_const_view {
         );
         let p: Path = parse_quote!(crate);
         assert_tokens(
-            const_view_type_def(&p, &ScSpecTypeDef::U32),
+            const_view_type_def(&p, &ScSpecTypeDef::U32, None),
             quote!(crate::xdr::r#const::ScSpecTypeDef::U32),
         );
     }

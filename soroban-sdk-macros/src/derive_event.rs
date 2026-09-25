@@ -3,7 +3,9 @@ use crate::{
     default_crate_path,
     doc::docs_from_attrs,
     export_arg_error,
-    map_type::{const_view_string, const_view_symbol, const_view_type_def, map_type},
+    map_type::{
+        const_view_string, const_view_symbol, const_view_type_def, map_type, spec_name_gen,
+    },
     shaking, symbol,
 };
 use darling::{ast::NestedMeta, util::SpannedValue, Error, FromMeta};
@@ -111,7 +113,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     let path = &args.crate_path;
 
     // Check event name length
-    const EVENT_NAME_LENGTH: u32 = 32;
+    const EVENT_NAME_LENGTH: u32 = 1024;
     let event_name = input.ident.unraw().to_string();
     let event_name_len = event_name.len();
     let event_name: StringM<EVENT_NAME_LENGTH> = errors
@@ -201,9 +203,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         doc: docs_from_attrs(&input.attrs),
         // set to empty string always because the field is no longer used
         lib: StringM::default(),
-        // Event names are limited by the SDK to EVENT_NAME_LENGTH, which is
-        // shorter than the spec's name limit, so the conversion cannot fail.
-        name: event_name.into_vec().try_into().unwrap(),
+        name: event_name,
         prefix_topics: prefix_topics
             .iter()
             .map(|t| t.try_into().unwrap())
@@ -228,23 +228,29 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     let spec_view = {
         let doc = const_view_string(path, &spec.doc);
         let lib = const_view_string(path, &spec.lib);
-        let name = const_view_string(path, &spec.name);
+        let name = quote!(#path::xdr::r#const::StringM::try_from_str_or_panic(#ident::spec_name()));
         let prefix_topics = spec
             .prefix_topics
             .iter()
             .map(|t| const_view_symbol(path, t));
-        let params = spec.params.iter().map(|p| {
-            let doc = const_view_string(path, &p.doc);
-            let name = const_view_string(path, &p.name);
-            let type_ = const_view_type_def(path, &p.type_);
-            let location = format_ident!("{}", p.location.name());
-            quote!(#path::xdr::r#const::ScSpecEventParamV0 {
-                doc: #doc,
-                name: #name,
-                type_: #type_,
-                location: #path::xdr::ScSpecEventParamLocationV0::#location,
-            })
-        });
+        // Each param's Rust type, so a reference to a user-defined type in a
+        // param resolves to the name that type reports for itself.
+        let params = spec
+            .params
+            .iter()
+            .zip(field_types.iter().copied())
+            .map(|(p, rust)| {
+                let doc = const_view_string(path, &p.doc);
+                let name = const_view_string(path, &p.name);
+                let type_ = const_view_type_def(path, &p.type_, Some(rust));
+                let location = format_ident!("{}", p.location.name());
+                quote!(#path::xdr::r#const::ScSpecEventParamV0 {
+                    doc: #doc,
+                    name: #name,
+                    type_: #type_,
+                    location: #path::xdr::ScSpecEventParamLocationV0::#location,
+                })
+            });
         let data_format = format_ident!("{}", spec.data_format.name());
         quote! {
             #path::xdr::r#const::ScSpecEntry::EventV0(#path::xdr::r#const::ScSpecEventV0 {
@@ -381,7 +387,17 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     };
 
     // Output.
+    // Unlike other user-defined types, an event struct can carry generics
+    // (e.g. a lifetime on borrowed fields), so the impl repeats them.
+    let spec_name = spec_name_gen(
+        ident,
+        Some(quote!(#gen_impl)),
+        Some(quote!(#gen_types)),
+        Some(quote!(#gen_where)),
+    );
     let output = quote! {
+        #spec_name
+
         #spec_gen
 
         #spec_shaking_impl

@@ -1673,6 +1673,7 @@ name = "stellar-asset-spec"
 version = "28.0.0"
 dependencies = [
  "soroban-sdk",
+ "soroban-spec",
  "soroban-token-sdk",
  "soroban-token-spec",
 ]

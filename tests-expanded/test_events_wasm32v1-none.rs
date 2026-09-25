@@ -30,6 +30,12 @@ pub struct Transfer {
     amount: i128,
     to_muxed_id: Option<u64>,
 }
+impl Transfer {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_events::Transfer"
+    }
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -39,7 +45,7 @@ impl Transfer {
         soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"Transfer"),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Transfer::spec_name()),
             prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::r#const::ScSymbol(
                     soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"transfer"),
@@ -141,6 +147,12 @@ pub struct SingleValue {
     from: Address,
     amount: i128,
 }
+impl SingleValue {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_events::SingleValue"
+    }
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -152,7 +164,9 @@ impl SingleValue {
                 b"An event whose data is a single value, rather than a map.",
             ),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"SingleValue"),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                SingleValue::spec_name(),
+            ),
             prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::r#const::ScSymbol(
                     soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"single_value"),
@@ -218,6 +232,12 @@ impl SingleValue {
 pub struct SingleValueVoid {
     from: Address,
 }
+impl SingleValueVoid {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_events::SingleValueVoid"
+    }
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -229,8 +249,8 @@ impl SingleValueVoid {
             b"An event whose data is a single value, and that has no data fields, and so\nwhose data is void.",
         ),
         lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-            b"SingleValueVoid",
+        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+            SingleValueVoid::spec_name(),
         ),
         prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
@@ -300,6 +320,12 @@ pub struct VecValues {
     a: u32,
     b: u32,
 }
+impl VecValues {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_events::VecValues"
+    }
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -311,7 +337,7 @@ impl VecValues {
                 b"An event whose data is a vec, rather than a map.",
             ),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"VecValues"),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(VecValues::spec_name()),
             prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::r#const::ScSymbol(
                     soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"vec_values"),
@@ -395,6 +421,12 @@ pub struct MapValues {
     a: u32,
     b: u32,
 }
+impl MapValues {
+    #[doc(hidden)]
+    pub const fn spec_name() -> &'static str {
+        "::test_events::MapValues"
+    }
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -406,7 +438,7 @@ impl MapValues {
                 b"An event whose data is a map, which is the default.",
             ),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"MapValues"),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(MapValues::spec_name()),
             prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::r#const::ScSymbol(
                     soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"map_values"),
