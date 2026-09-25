@@ -1,7 +1,4 @@
-use crate::{
-    attribute::{is_attr_cfg, is_attr_cfg_attr, is_attr_doc, reject_items},
-    default_crate_path, syn_ext,
-};
+use crate::attribute::{is_attr_cfg, is_attr_cfg_attr, is_attr_doc, reject_items};
 use darling::{ast::NestedMeta, Error, FromMeta};
 use heck::ToSnakeCase;
 use proc_macro2::{Ident, TokenStream as TokenStream2};
@@ -12,10 +9,7 @@ use syn::{ext::IdentExt as _, parse2, ImplItemFn, ItemTrait, Path, TraitItem, Tr
 // See soroban-sdk/docs/contracttrait.md for documentation on how this works.
 
 #[derive(Debug, FromMeta)]
-struct Args {
-    #[darling(default = "default_crate_path")]
-    crate_path: Path,
-}
+struct Args {}
 
 pub fn derive_contractimpl_trait_macro(
     metadata: TokenStream2,
@@ -29,9 +23,9 @@ pub fn derive_contractimpl_trait_macro(
 
 fn derive_or_err(metadata: TokenStream2, input: TokenStream2) -> Result<TokenStream2, Error> {
     let args = NestedMeta::parse_meta_list(metadata.into())?;
-    let args = Args::from_list(&args)?;
+    Args::from_list(&args)?;
     let input = parse2(input)?;
-    let trait_macro = derive(&args, &input);
+    let trait_macro = derive(&input);
 
     Ok(quote! {
         #trait_macro
@@ -43,9 +37,7 @@ fn derive_or_err(metadata: TokenStream2, input: TokenStream2) -> Result<TokenStr
 /// Generates the trait machinery unconditionally, rolling any errors into the
 /// generated code rather than emitting them in place of it, so that downstream
 /// impls still resolve against the trait and its macro.
-fn derive(args: &Args, input: &ItemTrait) -> TokenStream2 {
-    let path = syn_ext::path_in_macro_rules(&args.crate_path);
-
+fn derive(input: &ItemTrait) -> TokenStream2 {
     let trait_ident = &input.ident;
 
     let mut errors: Option<syn::Error> = None;
@@ -80,7 +72,7 @@ fn derive(args: &Args, input: &ItemTrait) -> TokenStream2 {
         #[macro_export]
         macro_rules! #macro_ident {
             (
-                $crate_path:literal,
+                [$($crate_path:tt)+],
                 $trait_ident:path,
                 $impl_ident:ty,
                 $impl_fns:expr,
@@ -88,8 +80,8 @@ fn derive(args: &Args, input: &ItemTrait) -> TokenStream2 {
                 $args_name:literal,
                 $spec_name:literal $(,)?
             ) => {
-                #path::contractimpl_trait_default_fns_not_overridden!(
-                    crate_path = $crate_path,
+                $($crate_path)+::contractimpl_trait_default_fns_not_overridden!(
+                    crate_path = $($crate_path)+,
                     trait_ident = $trait_ident,
                     trait_default_fns = [#(#fns),*],
                     impl_ident = $impl_ident,
@@ -113,7 +105,7 @@ fn derive(args: &Args, input: &ItemTrait) -> TokenStream2 {
 }
 
 pub fn generate_call_to_contractimpl_for_trait(
-    crate_path_str: &str,
+    crate_path: &Path,
     trait_ident: &Path,
     impl_ident: &Type,
     pub_methods: &[ImplItemFn],
@@ -139,7 +131,7 @@ pub fn generate_call_to_contractimpl_for_trait(
     });
     Ok(quote! {
         #trait_ident!(
-            #crate_path_str,
+            [#crate_path],
             #trait_ident,
             #impl_ident,
             [#(#impl_fns),*],

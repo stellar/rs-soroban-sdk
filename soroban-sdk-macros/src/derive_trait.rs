@@ -55,7 +55,7 @@ fn derive_or_err(metadata: TokenStream2, input: TokenStream2) -> Result<TokenStr
         #[#path::contractspecfn(name = #spec_name, export = #spec_export)]
         #[#path::contractargs(name = #args_name)]
         #[#path::contractclient(crate_path = #path, name = #client_name)]
-        #[#path::contractimpl_trait_macro(crate_path = #path)]
+        #[#path::contractimpl_trait_macro]
         #input
     }
     .into())

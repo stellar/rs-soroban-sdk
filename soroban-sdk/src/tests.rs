@@ -36,6 +36,7 @@ mod contractimpl_trait_call_resolution;
 mod contractimport;
 mod contractimport_with_error;
 mod contracttrait_crate_path;
+mod contracttrait_crate_path_mod;
 mod cost_estimate;
 mod crypto_bls12_381;
 mod crypto_bn254;
