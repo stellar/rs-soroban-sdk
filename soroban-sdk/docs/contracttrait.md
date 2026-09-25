@@ -58,7 +58,7 @@ When `#[contracttrait]` is applied to a trait, it wraps the trait with four addi
 #[contractspecfn(name = "PauseSpec", export = false)]
 #[contractargs(name = "PauseArgs")]
 #[contractclient(crate_path = soroban_sdk, name = "PauseClient")]
-#[contractimpl_trait_macro]
+#[contractimpl_trait_macro(crate_path = soroban_sdk)]
 trait Pause { ... }
 ```
 

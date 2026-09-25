@@ -1,4 +1,7 @@
-use crate::attribute::{is_attr_cfg, is_attr_cfg_attr, is_attr_doc, reject_items};
+use crate::{
+    attribute::{is_attr_cfg, is_attr_cfg_attr, is_attr_doc, reject_items},
+    default_crate_path,
+};
 use darling::{ast::NestedMeta, Error, FromMeta};
 use heck::ToSnakeCase;
 use proc_macro2::{Ident, TokenStream as TokenStream2};
@@ -9,7 +12,13 @@ use syn::{ext::IdentExt as _, parse2, ImplItemFn, ItemTrait, Path, TraitItem, Tr
 // See soroban-sdk/docs/contracttrait.md for documentation on how this works.
 
 #[derive(Debug, FromMeta)]
-struct Args {}
+struct Args {
+    // Unused, accepted for backwards compatibility. The generated trait macro
+    // uses the crate_path passed by `#[contractimpl]` instead.
+    #[allow(dead_code)]
+    #[darling(default = "default_crate_path")]
+    crate_path: Path,
+}
 
 pub fn derive_contractimpl_trait_macro(
     metadata: TokenStream2,

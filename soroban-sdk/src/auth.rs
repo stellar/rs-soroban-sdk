@@ -222,7 +222,7 @@ pub struct SubContractInvocation {
 ///
 /// Once a contract implements the interface, call to [`Address::require_auth`]
 /// for the contract's address will call its `__check_auth` implementation.
-#[contractimpl_trait_macro]
+#[contractimpl_trait_macro(crate_path = "crate")]
 pub trait CustomAccountInterface {
     type Signature;
     type Error: Into<Error>;
