@@ -302,6 +302,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
                     .filter(|_| args.contracttrait)
                     .map(|trait_ident| {
                         generate_call_to_contractimpl_for_trait(
+                            crate_path,
                             trait_ident,
                             ty,
                             &pub_methods,
