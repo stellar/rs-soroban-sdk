@@ -51,8 +51,12 @@ build-test-wasms: fmt
 
 # Builds the fuzz tests. Requires cargo-fuzz and cargo-afl.
 build-fuzz:
+	cd soroban-spec/fuzz && cargo +nightly fuzz check
 	cd tests/fuzz/fuzz && cargo +nightly fuzz check
 	cd tests/fuzz_afl/fuzz && cargo afl build
+
+fuzz-corpus:
+	cd soroban-spec/fuzz && targets=$$(cargo +nightly fuzz list) && for t in $$targets ; do cargo +nightly fuzz run $$t -- -runs=0 || exit 1 ; done
 
 readme:
 	cd soroban-sdk \

@@ -7,6 +7,6 @@ rust-version.workspace = true
 publish = false
 
 [dependencies]
-soroban-spec = { workspace = true }
+soroban-spec = { workspace = true, features = ["std"] }
 stellar-xdr = { workspace = true, features = ["std", "serde"] }
 serde_json = "1"

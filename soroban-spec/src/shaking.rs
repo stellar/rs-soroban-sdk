@@ -33,10 +33,17 @@
 /// same pattern could be used in other languages, and so it is not a general part of the SEP-48
 /// Contract Interface Specification. Markers are just a mechanism used by the Rust soroban-sdk and
 /// the stellar-cli to achieve accurately scoped contract specs.
+
+#[cfg(feature = "std")]
 use std::collections::HashSet;
 
-use sha2::{Digest, Sha256};
+#[cfg(feature = "std")]
 use stellar_xdr::{Limits, ScMetaEntry, ScSpecEntry, WriteXdr};
+
+mod sha256;
+#[cfg(test)]
+mod sha256_test;
+use sha256::sha256;
 
 /// The contract meta key that indicates the spec shaking version.
 ///
@@ -51,6 +58,7 @@ pub const META_VALUE_V2: &str = "2";
 /// Looks for an [`ScMetaV0`] entry with key [`META_KEY`]. Returns:
 /// - `2` if the value is [`META_VALUE_V2`] (`"2"`).
 /// - `1` otherwise (absent or any other value).
+#[cfg(feature = "std")]
 pub fn spec_shaking_version_for_meta(meta: &[ScMetaEntry]) -> u32 {
     for entry in meta {
         match entry {
@@ -77,8 +85,8 @@ const LEN: usize = 14;
 pub type Marker = [u8; LEN];
 
 /// Generates a spec marker for spec entry XDR bytes.
-pub fn generate_marker_for_xdr(spec_entry_xdr: &[u8]) -> Marker {
-    let hash: [u8; 32] = Sha256::digest(spec_entry_xdr).into();
+pub const fn generate_marker_for_xdr(spec_entry_xdr: &[u8]) -> Marker {
+    let hash = sha256(spec_entry_xdr);
     [
         MAGIC[0], MAGIC[1], MAGIC[2], MAGIC[3], MAGIC[4], MAGIC[5], hash[0], hash[1], hash[2],
         hash[3], hash[4], hash[5], hash[6], hash[7],
@@ -94,6 +102,7 @@ pub fn generate_marker_for_xdr(spec_entry_xdr: &[u8]) -> Marker {
 ///
 /// Panics if the spec entry cannot be encoded to XDR, which should never happen
 /// for valid `ScSpecEntry` values.
+#[cfg(feature = "std")]
 pub fn generate_marker_for_entry(entry: &ScSpecEntry) -> Marker {
     let xdr_bytes = entry
         .to_xdr(Limits::none())
@@ -110,6 +119,7 @@ pub fn generate_marker_for_entry(entry: &ScSpecEntry) -> Marker {
 /// Marker format:
 /// - 6 bytes: `SpEcV1` magic
 /// - 8 bytes: truncated SHA256 hash of the spec entry XDR bytes
+#[cfg(feature = "std")]
 pub fn find_all(wasm_bytes: &[u8]) -> HashSet<Marker> {
     let mut markers = HashSet::new();
 
@@ -127,6 +137,7 @@ pub fn find_all(wasm_bytes: &[u8]) -> HashSet<Marker> {
 }
 
 /// Finds spec markers in a data segment.
+#[cfg(feature = "std")]
 fn find_all_in_data(data: &[u8], markers: &mut HashSet<Marker>) {
     // Marker size is exactly 14 bytes: 6 (magic) + 8 (hash)
     if data.len() < LEN {
@@ -160,6 +171,7 @@ fn find_all_in_data(data: &[u8], markers: &mut HashSet<Marker>) {
 /// # Returns
 ///
 /// Iterator of filtered entries with only used types/events remaining.
+#[cfg(feature = "std")]
 #[allow(clippy::implicit_hasher)]
 pub fn filter<'a, I: IntoIterator<Item = ScSpecEntry> + 'a>(
     entries: I,
@@ -176,7 +188,7 @@ pub fn filter<'a, I: IntoIterator<Item = ScSpecEntry> + 'a>(
     })
 }
 
-#[cfg(test)]
+#[cfg(all(test, feature = "std"))]
 mod tests {
     use super::*;
     use stellar_xdr::{
@@ -518,5 +530,20 @@ mod tests {
             val: "99".try_into().unwrap(),
         })];
         assert_eq!(spec_shaking_version_for_meta(&meta), 1);
+    }
+}
+
+#[cfg(test)]
+mod marker_tests {
+    use super::generate_marker_for_xdr;
+
+    /// Evaluatable at compile time, which is what lets macro-generated code
+    /// derive the marker from the same const-encoded spec bytes it embeds.
+    #[test]
+    fn generate_marker_for_xdr_is_const() {
+        const M: [u8; 14] = generate_marker_for_xdr(b"abc");
+        assert_eq!(&M[..6], b"SpEcV1");
+        // SHA-256("abc") = ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad
+        assert_eq!(&M[6..], b"\xba\x78\x16\xbf\x8f\x01\xcf\xea");
     }
 }
