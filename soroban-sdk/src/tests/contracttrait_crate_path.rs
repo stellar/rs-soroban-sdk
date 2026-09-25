@@ -1,7 +1,9 @@
-mod one {
-    use crate::{self as crate2, contracttrait, Env};
+// Each mod has its own alias for the crate so a crate_path used outside its mod fails to resolve.
 
-    #[contracttrait(crate_path = "crate2")]
+mod one {
+    use crate::{self as crate1, contracttrait, Env};
+
+    #[contracttrait(crate_path = "crate1")]
     pub trait CratePathTrait {
         fn default_method(env: &Env) -> u32 {
             let _ = env;
@@ -17,12 +19,12 @@ mod one {
 
 mod two {
     use super::one;
-    use crate::{contract, contractimpl, Env};
+    use crate::{self as crate2, contract, contractimpl, Env};
 
-    #[contract(crate_path = "crate")]
+    #[contract(crate_path = "crate2")]
     pub struct Contract;
 
-    #[contractimpl(crate_path = "crate", contracttrait)]
+    #[contractimpl(crate_path = "crate2", contracttrait)]
     impl one::CratePathTrait for Contract {
         fn overridden_method(env: &Env) -> u32 {
             let _ = env;
