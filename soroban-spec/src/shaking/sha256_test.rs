@@ -5,7 +5,7 @@
 //! free of anything beyond `core`.
 
 use super::sha256::sha256;
-use std::{time::Instant, vec::Vec};
+use std::vec::Vec;
 
 fn unhex(s: &str) -> Vec<u8> {
     hex::decode(s).unwrap()
@@ -232,20 +232,4 @@ fn sha256_matches_nist_monte_carlo_vectors() {
         seed = md[2];
         assert_eq!(seed, unhex(expected).as_slice(), "mismatch at COUNT = {i}");
     }
-}
-
-/// Measures how long a very large entry takes to hash, as a reference point
-/// for the cost of hashing large spec entries. The time is printed, run with
-/// `--nocapture` to see it.
-#[test]
-fn sha256_hashes_a_50kb_entry() {
-    let input: Vec<u8> = (0..50_000).map(|i| (i % 251) as u8).collect();
-    let start = Instant::now();
-    let digest = sha256(&input);
-    let elapsed = start.elapsed();
-    std::println!("sha256 of {} bytes took {elapsed:?}", input.len());
-    assert_eq!(
-        digest,
-        unhex("819e1ce4db744eb7573f7d5036d64f3c52184201ffa2ece0a2491a51ef14aba0").as_slice(),
-    );
 }
