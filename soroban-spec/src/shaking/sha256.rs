@@ -139,7 +139,12 @@ pub(crate) const fn sha256(input: &[u8]) -> [u8; 32] {
 /// const evaluator steps through the rotate intrinsic's fallback body, which
 /// makes it several times slower and trips the `long_running_const_eval` lint
 /// on inputs above a few tens of kilobytes.
+///
+/// Unlike `u32::rotate_right` this does not handle `n` of `0` or of
+/// `u32::BITS` and above, where one of the shifts would overflow. Handling
+/// them is unnecessary because every call passes one of SHA-256's fixed
+/// rotation amounts, all of which are between `2` and `25`.
 #[allow(clippy::manual_rotate)]
 const fn rotr(x: u32, n: u32) -> u32 {
-    (x >> n) | (x << (32 - n))
+    (x >> n) | (x << (u32::BITS - n))
 }
