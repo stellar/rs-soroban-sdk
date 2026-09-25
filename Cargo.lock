@@ -1888,6 +1888,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_contracttrait_crate_path"
+version = "28.0.0"
+dependencies = [
+ "soroban-sdk",
+]
+
+[[package]]
 name = "test_contracttrait_impl_full"
 version = "28.0.0"
 dependencies = [

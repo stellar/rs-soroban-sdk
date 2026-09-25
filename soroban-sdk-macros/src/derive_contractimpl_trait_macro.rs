@@ -85,9 +85,11 @@ fn derive(args: &Args, input: &ItemTrait) -> TokenStream2 {
                 $impl_fns:expr,
                 $client_name:literal,
                 $args_name:literal,
-                $spec_name:literal $(,)?
+                $spec_name:literal,
+                $crate_path:literal $(,)?
             ) => {
                 #path::contractimpl_trait_default_fns_not_overridden!(
+                    crate_path = $crate_path,
                     trait_ident = $trait_ident,
                     trait_default_fns = [#(#fns),*],
                     impl_ident = $impl_ident,
@@ -117,6 +119,7 @@ pub fn generate_call_to_contractimpl_for_trait(
     client_ident: &str,
     args_ident: &str,
     spec_ident: &str,
+    crate_path_str: &str,
 ) -> Result<TokenStream2, syn::Error> {
     for method in pub_methods {
         reject_items(
@@ -142,6 +145,7 @@ pub fn generate_call_to_contractimpl_for_trait(
             #client_ident,
             #args_ident,
             #spec_ident,
+            #crate_path_str,
         );
     })
 }

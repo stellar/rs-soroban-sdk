@@ -308,6 +308,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
                             &client_ident,
                             &args_ident,
                             &ty_str,
+                            &crate_path_str,
                         )
                         .unwrap_or_else(|err| err.to_compile_error())
                     });
