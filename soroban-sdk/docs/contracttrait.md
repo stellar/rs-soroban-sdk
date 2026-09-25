@@ -20,9 +20,9 @@ flowchart TB
         A -->|generates| C["#91;contractargs#93;<br/>trait Pause #123;"]
         A -->|generates| D["#91;contractclient#93;<br/>trait Pause #123;"]
         A -->|1. generates| E["#91;contractimpl_trait_macro#93;<br/>trait Pause #123;"]
-        E -->|2. generates| F["macro_rules! Pause #123;<br/>&emsp;#40;impl_fns#41; => #123;<br/>contractimpl_trait_default_fns_not_overridden!#40;<br/>&emsp;&emsp;trait_default_fns = #91;f2#93;,<br/>&emsp;&emsp;impl_fns = $impl_fns,<br/>#41;<br/>&emsp;#125;<br/>#125;"]
+        E -->|2. generates| F["macro_rules! Pause #123;<br/>&emsp;#40;#91;crate_path#93;, impl_fns#41; => #123;<br/>$crate_path::contractimpl_trait_default_fns_not_overridden!#40;<br/>&emsp;&emsp;crate_path = $crate_path,<br/>&emsp;&emsp;trait_default_fns = #91;f2#93;,<br/>&emsp;&emsp;impl_fns = $impl_fns,<br/>#41;<br/>&emsp;#125;<br/>#125;"]
         style F text-align:left
-        F -->|4. generates| I["contractimpl_trait_default_fns_not_overridden!#40;trait_default_fns, impl_fns#41;"]
+        F -->|4. generates| I["contractimpl_trait_default_fns_not_overridden!#40;crate_path, trait_default_fns, impl_fns#41;"]
     end
 
     subgraph impl_def ["Trait Implementer"]
@@ -31,7 +31,7 @@ flowchart TB
         style G text-align:left
     end
 
-    G -->|"3. calls<br/>Pause!#40;impl_fns = #91;f1#93;#41;"| F
+    G -->|"3. calls<br/>Pause!#40;#91;crate_path#93;, impl_fns = #91;f1#93;#41;"| F
 
     subgraph outputs ["Generated Code"]
         direction BT
@@ -76,8 +76,9 @@ This attribute generates a declarative macro named after the trait (e.g., `Pause
 #[doc(hidden)]
 #[macro_export]
 macro_rules! __contractimpl_for_pause {
-    (/* ... */, $impl_fns:expr, /* ... */) => {
-        soroban_sdk::contractimpl_trait_default_fns_not_overridden!(
+    ([$($crate_path:tt)+], /* ... */, $impl_fns:expr, /* ... */) => {
+        $($crate_path)+::contractimpl_trait_default_fns_not_overridden!(
+            crate_path = $($crate_path)+,
             trait_default_fns = ["#[doc(...)] fn f2(_)"],
             impl_fns = $impl_fns,
             //...
@@ -88,6 +89,8 @@ pub use __contractimpl_for_pause as Pause;
 ```
 
 The `trait_default_fns` contains stringified signatures (and documentation) of all functions with default implementations. We serialize function signatures and their documentation into strings because the tooling used to parse macros and values doesn't handle raw tokens well as parameters. This information is "remembered" by the declarative macro for later comparison.
+
+The first argument is the path to the SDK crate, supplied by `#[contractimpl]` in Stage 3. The macro uses it, rather than the `crate_path` given to `#[contracttrait]`, because the macro expands in the implementing crate, where the trait-defining crate's path to the SDK may not resolve, e.g. if the implementing crate depends on the SDK under a different name. The path is used both to call `contractimpl_trait_default_fns_not_overridden!` and as the `crate_path` for the code it generates.
 
 `cfg` and `cfg_attr` attributes are rejected on default functions. Default-function metadata is captured in the generated helper macro when the trait is defined, but wrappers for non-overridden defaults are generated later at the `#[contractimpl(contracttrait)]` site. Carrying cfgs through this path would cause those cfgs to be evaluated in the implementing crate's cfg context, which may differ from the trait-defining crate's context.
 
@@ -107,12 +110,13 @@ impl Pause for Contract {
 The `contractimpl` macro:
 1. Processes the impl block normally (generating specs, client, etc. for implemented functions like `f1`)
 2. If the attribute `contracttrait` is included, knows that it should call the trait's macro `Pause!`
-3. Generates a call to the `Pause!` macro with the list of implemented function names
+3. Generates a call to the `Pause!` macro with its `crate_path` and the list of implemented function names
 
 Direct `cfg` attributes are supported on methods in `#[contractimpl(contracttrait)]` impls. If a cfg-gated override is inactive, generated code for the trait default is emitted under the inverse cfg. `cfg_attr` is rejected because it can conditionally affect default-vs-override matching and is not normalized by this handoff.
 
 ```rust
 Pause!(
+    [soroban_sdk],
     Contract,
     ["f1"],
     //...
@@ -121,7 +125,8 @@ Pause!(
 
 ### Stage 4: The trait macro calls `contractimpl_trait_default_fns_not_overridden`
 
-The `Pause!` macro expands to call the proc macro `contractimpl_trait_default_fns_not_overridden!` with both:
+The `Pause!` macro expands to call the proc macro `contractimpl_trait_default_fns_not_overridden!` with:
+- `crate_path` - the path to the SDK crate in the implementing crate (from Stage 3)
 - `trait_default_fns` - all trait functions with defaults (captured at Stage 2)
 - `impl_fns` - functions actually implemented in the impl block (from Stage 3)
 
