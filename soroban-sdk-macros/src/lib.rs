@@ -302,13 +302,13 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
                     .filter(|_| args.contracttrait)
                     .map(|trait_ident| {
                         generate_call_to_contractimpl_for_trait(
+                            &crate_path_str,
                             trait_ident,
                             ty,
                             &pub_methods,
                             &client_ident,
                             &args_ident,
                             &ty_str,
-                            &crate_path_str,
                         )
                         .unwrap_or_else(|err| err.to_compile_error())
                     });

@@ -107,7 +107,7 @@ impl Pause for Contract {
 The `contractimpl` macro:
 1. Processes the impl block normally (generating specs, client, etc. for implemented functions like `f1`)
 2. If the attribute `contracttrait` is included, knows that it should call the trait's macro `Pause!`
-3. Generates a call to the `Pause!` macro with the list of implemented function names and its own `crate_path`, so that the code generated for default functions uses the SDK path of the implementing crate
+3. Generates a call to the `Pause!` macro with the list of implemented function names
 
 Direct `cfg` attributes are supported on methods in `#[contractimpl(contracttrait)]` impls. If a cfg-gated override is inactive, generated code for the trait default is emitted under the inverse cfg. `cfg_attr` is rejected because it can conditionally affect default-vs-override matching and is not normalized by this handoff.
 
@@ -124,7 +124,6 @@ Pause!(
 The `Pause!` macro expands to call the proc macro `contractimpl_trait_default_fns_not_overridden!` with both:
 - `trait_default_fns` - all trait functions with defaults (captured at Stage 2)
 - `impl_fns` - functions actually implemented in the impl block (from Stage 3)
-- `crate_path` - the SDK path of the implementing crate (from Stage 3)
 
 ### Stage 5: Generate code for non-overridden default functions
 

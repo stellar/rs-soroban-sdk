@@ -80,13 +80,13 @@ fn derive(args: &Args, input: &ItemTrait) -> TokenStream2 {
         #[macro_export]
         macro_rules! #macro_ident {
             (
+                $crate_path:literal,
                 $trait_ident:path,
                 $impl_ident:ty,
                 $impl_fns:expr,
                 $client_name:literal,
                 $args_name:literal,
-                $spec_name:literal,
-                $crate_path:literal $(,)?
+                $spec_name:literal $(,)?
             ) => {
                 #path::contractimpl_trait_default_fns_not_overridden!(
                     crate_path = $crate_path,
@@ -113,13 +113,13 @@ fn derive(args: &Args, input: &ItemTrait) -> TokenStream2 {
 }
 
 pub fn generate_call_to_contractimpl_for_trait(
+    crate_path_str: &str,
     trait_ident: &Path,
     impl_ident: &Type,
     pub_methods: &[ImplItemFn],
     client_ident: &str,
     args_ident: &str,
     spec_ident: &str,
-    crate_path_str: &str,
 ) -> Result<TokenStream2, syn::Error> {
     for method in pub_methods {
         reject_items(
@@ -139,13 +139,13 @@ pub fn generate_call_to_contractimpl_for_trait(
     });
     Ok(quote! {
         #trait_ident!(
+            #crate_path_str,
             #trait_ident,
             #impl_ident,
             [#(#impl_fns),*],
             #client_ident,
             #args_ident,
             #spec_ident,
-            #crate_path_str,
         );
     })
 }
