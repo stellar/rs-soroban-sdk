@@ -56,8 +56,7 @@ build-fuzz:
 	cd tests/fuzz_afl/fuzz && cargo afl build
 
 fuzz-corpus:
-	cd soroban-spec/fuzz && for t in $$(cargo +nightly fuzz list) ; do cargo +nightly fuzz run $$t -- -runs=0 || exit 1 ; done
-	cd tests/fuzz/fuzz && for t in $$(cargo +nightly fuzz list) ; do cargo +nightly fuzz run $$t -- -runs=0 || exit 1 ; done
+	cd soroban-spec/fuzz && targets=$$(cargo +nightly fuzz list) && for t in $$targets ; do cargo +nightly fuzz run $$t -- -runs=0 || exit 1 ; done
 
 readme:
 	cd soroban-sdk \
@@ -89,9 +88,10 @@ expand-tests: build-test-wasms
 
 # Dumps the contractspecv0 section of each test vector contract in the tests/
 # directory, as built by build-test-wasms and so before any spec shaking, as a
-# stream of XDR-JSON values. Serves to surface changes to the spec the SDK
-# embeds, which the expanded code does not show because the spec is encoded
-# from it rather than written out by it.
+# pretty formatted JSON array of XDR-JSON values, sorted by kind and name then
+# entry so that moving items around in the source does not reorder them. Serves
+# to surface changes to the spec the SDK embeds, which the expanded code does
+# not show because the spec is encoded from it rather than written out by it.
 spec-snapshots: build-test-wasms
 	$(MAKE) spec-snapshots-from-built-wasms
 

@@ -9,6 +9,9 @@ license = "Apache-2.0"
 version.workspace = true
 edition = "2021"
 rust-version.workspace = true
+# The NIST test vectors are only used by the tests, and are most of the
+# size of the package. The fuzz project is only used in development.
+exclude = ["src/shaking/sha256_test_vectors/", "fuzz/"]
 
 [features]
 default = ["std"]
@@ -24,4 +27,5 @@ thiserror = { version = "1.0.32", optional = true }
 wasmparser = { version = "0.116.1", optional = true }
 
 [dev-dependencies]
+hex = "0.4.3"
 pretty_assertions = "1.2.1"

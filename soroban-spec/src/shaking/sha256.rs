@@ -72,8 +72,8 @@ pub(crate) const fn sha256(input: &[u8]) -> [u8; 32] {
 
         let mut t = 16;
         while t < 64 {
-            let s0 = w[t - 15].rotate_right(7) ^ w[t - 15].rotate_right(18) ^ (w[t - 15] >> 3);
-            let s1 = w[t - 2].rotate_right(17) ^ w[t - 2].rotate_right(19) ^ (w[t - 2] >> 10);
+            let s0 = rotr(w[t - 15], 7) ^ rotr(w[t - 15], 18) ^ (w[t - 15] >> 3);
+            let s1 = rotr(w[t - 2], 17) ^ rotr(w[t - 2], 19) ^ (w[t - 2] >> 10);
             w[t] = w[t - 16]
                 .wrapping_add(s0)
                 .wrapping_add(w[t - 7])
@@ -86,14 +86,14 @@ pub(crate) const fn sha256(input: &[u8]) -> [u8; 32] {
 
         let mut t = 0;
         while t < 64 {
-            let s1 = e.rotate_right(6) ^ e.rotate_right(11) ^ e.rotate_right(25);
+            let s1 = rotr(e, 6) ^ rotr(e, 11) ^ rotr(e, 25);
             let ch = (e & f) ^ ((!e) & g);
             let temp1 = hh
                 .wrapping_add(s1)
                 .wrapping_add(ch)
                 .wrapping_add(SHA256_K[t])
                 .wrapping_add(w[t]);
-            let s0 = a.rotate_right(2) ^ a.rotate_right(13) ^ a.rotate_right(22);
+            let s0 = rotr(a, 2) ^ rotr(a, 13) ^ rotr(a, 22);
             let maj = (a & b) ^ (a & c) ^ (b & c);
             let temp2 = s0.wrapping_add(maj);
 
@@ -131,4 +131,20 @@ pub(crate) const fn sha256(input: &[u8]) -> [u8; 32] {
         i += 1;
     }
     out
+}
+
+/// Rotate `x` right by `n` bits.
+///
+/// Spelled out with shifts rather than `u32::rotate_right` because rustc's
+/// const evaluator steps through the rotate intrinsic's fallback body, which
+/// makes it several times slower and trips the `long_running_const_eval` lint
+/// on inputs above a few tens of kilobytes.
+///
+/// Unlike `u32::rotate_right` this does not handle `n` of `0` or of
+/// `u32::BITS` and above, where one of the shifts would overflow. Handling
+/// them is unnecessary because every call passes one of SHA-256's fixed
+/// rotation amounts, all of which are between `2` and `25`.
+#[allow(clippy::manual_rotate)]
+const fn rotr(x: u32, n: u32) -> u32 {
+    (x >> n) | (x << (u32::BITS - n))
 }

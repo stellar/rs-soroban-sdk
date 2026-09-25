@@ -195,6 +195,9 @@ jobs:
     - name: Build soroban-examples
       env:
         CARGO_BUILD_RUSTFLAGS: "-A deprecated"
+        # Nested example contracts outside the patched workspace build with the
+        # released soroban-sdk, which still checks for this variable.
+        SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2: "true"
       run: make build
 
     - name: Set artifact name
@@ -211,6 +214,9 @@ jobs:
     - name: Test soroban-examples
       env:
         CARGO_BUILD_RUSTFLAGS: "-A deprecated"
+        # Nested example contracts outside the patched workspace build with the
+        # released soroban-sdk, which still checks for this variable.
+        SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2: "true"
       run: make test
         
     - name: Diff

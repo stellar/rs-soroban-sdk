@@ -41,6 +41,8 @@ use std::collections::HashSet;
 use stellar_xdr::{Limits, ScMetaEntry, ScSpecEntry, WriteXdr};
 
 mod sha256;
+#[cfg(test)]
+mod sha256_test;
 use sha256::sha256;
 
 /// The contract meta key that indicates the spec shaking version.
@@ -532,119 +534,8 @@ mod tests {
 }
 
 #[cfg(test)]
-mod sha256_tests {
-    use super::{generate_marker_for_xdr, sha256};
-    use std::vec::Vec;
-
-    /// The const SHA-256 must produce known digests, including across block
-    /// boundaries where the padding lands in a different block to the message.
-    /// Each input is `len` bytes of `i % 251`, and each expected digest was
-    /// computed independently of this crate.
-    #[test]
-    fn sha256_matches_known_digests() {
-        // Lengths either side of the 64-byte block size and the 55/56-byte
-        // boundary where the length field no longer fits in the final block.
-        let cases: &[(usize, &[u8; 32])] = &[
-            (
-                0,
-                b"\xe3\xb0\xc4\x42\x98\xfc\x1c\x14\x9a\xfb\xf4\xc8\x99\x6f\xb9\x24\
-                  \x27\xae\x41\xe4\x64\x9b\x93\x4c\xa4\x95\x99\x1b\x78\x52\xb8\x55",
-            ),
-            (
-                1,
-                b"\x6e\x34\x0b\x9c\xff\xb3\x7a\x98\x9c\xa5\x44\xe6\xbb\x78\x0a\x2c\
-                  \x78\x90\x1d\x3f\xb3\x37\x38\x76\x85\x11\xa3\x06\x17\xaf\xa0\x1d",
-            ),
-            (
-                54,
-                b"\x67\x5f\x28\xac\xc0\xb9\x0a\x72\xd1\xc3\xa5\x70\xfe\x83\xac\x56\
-                  \x55\x55\xdb\x35\x8c\xf0\x18\x26\xdc\x8e\xef\xb2\xbf\x7c\xa0\xf3",
-            ),
-            (
-                55,
-                b"\x46\x3e\xb2\x8e\x72\xf8\x2e\x0a\x96\xc0\xa4\xcc\x53\x69\x0c\x57\
-                  \x12\x81\x13\x1f\x67\x2a\xa2\x29\xe0\xd4\x5a\xe5\x9b\x59\x8b\x59",
-            ),
-            (
-                56,
-                b"\xda\x2a\xe4\xd6\xb3\x67\x48\xf2\xa3\x18\xf2\x3e\x7a\xb1\xdf\xdf\
-                  \x45\xac\xdc\x9d\x04\x9b\xd8\x0e\x59\xde\x82\xa6\x08\x95\xf5\x62",
-            ),
-            (
-                57,
-                b"\x2f\xe7\x41\xaf\x80\x1c\xc2\x38\x60\x2a\xc0\xec\x6a\x7b\x0c\x3a\
-                  \x8a\x87\xc7\xfc\x7d\x7f\x02\xa3\xfe\x03\xd1\xc1\x2e\xac\x4d\x8f",
-            ),
-            (
-                63,
-                b"\x29\xaf\x26\x86\xfd\x53\x37\x4a\x36\xb0\x84\x66\x94\xcc\x34\x21\
-                  \x77\xe4\x28\xd1\x64\x75\x15\xf0\x78\x78\x4d\x69\xcd\xb9\xe4\x88",
-            ),
-            (
-                64,
-                b"\xfd\xea\xb9\xac\xf3\x71\x03\x62\xbd\x26\x58\xcd\xc9\xa2\x9e\x8f\
-                  \x9c\x75\x7f\xcf\x98\x11\x60\x3a\x8c\x44\x7c\xd1\xd9\x15\x11\x08",
-            ),
-            (
-                65,
-                b"\x4b\xfd\x2c\x8b\x6f\x1e\xec\x7a\x2a\xfe\xb4\x8b\x93\x4e\xe4\xb2\
-                  \x69\x41\x82\x02\x7e\x6d\x0f\xc0\x75\x07\x4f\x2f\xab\xb3\x17\x81",
-            ),
-            (
-                119,
-                b"\xda\x18\x79\x7e\xd7\xc3\xa7\x77\xf0\x84\x7f\x42\x97\x24\xa2\xd8\
-                  \xcd\x51\x38\xe6\xed\x28\x95\xc3\xfa\x1a\x6d\x39\xd1\x8f\x7e\xc6",
-            ),
-            (
-                120,
-                b"\xf5\x2b\x23\xdb\x1f\xbb\x6d\xed\x89\xef\x42\xa2\x3c\xe0\xc8\x92\
-                  \x2c\x45\xf2\x5c\x50\xb5\x68\xa9\x3b\xf1\xc0\x75\x42\x0b\xbb\x7c",
-            ),
-            (
-                127,
-                b"\x92\xca\x0f\xa6\x65\x1e\xe2\xf9\x7b\x88\x4b\x72\x46\xa5\x62\xfa\
-                  \x71\x25\x0f\xed\xef\xe5\xeb\xf2\x70\xd3\x1c\x54\x6b\xfe\xa9\x76",
-            ),
-            (
-                128,
-                b"\x47\x1f\xb9\x43\xaa\x23\xc5\x11\xf6\xf7\x2f\x8d\x16\x52\xd9\xc8\
-                  \x80\xcf\xa3\x92\xad\x80\x50\x31\x20\x54\x77\x03\xe5\x6a\x2b\xe5",
-            ),
-            (
-                129,
-                b"\x50\x99\xc6\xa5\x62\x03\xf9\x68\x7f\x7d\x33\xf4\xbf\xdf\x57\x6d\
-                  \x31\xdc\x91\xf6\xb6\x95\xec\xea\x38\xb2\x77\x0c\x87\x63\x11\x35",
-            ),
-            (
-                1000,
-                b"\x4e\x4c\x29\x4b\x33\x1f\x7a\x20\x99\xa3\x79\xbe\xc3\x4b\x9f\x9f\
-                  \xc0\x3d\xc4\x6a\xb4\x65\xd9\x98\xf4\xd6\x83\xda\x53\x48\x7e\x6d",
-            ),
-        ];
-        for &(len, expected) in cases {
-            let input: Vec<u8> = (0..len).map(|i| (i % 251) as u8).collect();
-            assert_eq!(&sha256(&input), expected, "mismatch at len {len}");
-        }
-    }
-
-    /// The two samples from NIST's SHA-256 example document, a message that
-    /// fits in one block and a message that spans two.
-    /// https://csrc.nist.gov/CSRC/media/Projects/Cryptographic-Standards-and-Guidelines/documents/examples/SHA256.pdf
-    #[test]
-    fn sha256_matches_nist_examples() {
-        // One Block Message Sample.
-        assert_eq!(
-            &sha256(b"abc"),
-            b"\xba\x78\x16\xbf\x8f\x01\xcf\xea\x41\x41\x40\xde\x5d\xae\x22\x23\
-              \xb0\x03\x61\xa3\x96\x17\x7a\x9c\xb4\x10\xff\x61\xf2\x00\x15\xad",
-        );
-        // Two Block Message Sample.
-        assert_eq!(
-            &sha256(b"abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq"),
-            b"\x24\x8d\x6a\x61\xd2\x06\x38\xb8\xe5\xc0\x26\x93\x0c\x3e\x60\x39\
-              \xa3\x3c\xe4\x59\x64\xff\x21\x67\xf6\xec\xed\xd4\x19\xdb\x06\xc1",
-        );
-    }
+mod marker_tests {
+    use super::generate_marker_for_xdr;
 
     /// Evaluatable at compile time, which is what lets macro-generated code
     /// derive the marker from the same const-encoded spec bytes it embeds.
