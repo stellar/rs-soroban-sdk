@@ -9,6 +9,9 @@ license = "Apache-2.0"
 version.workspace = true
 edition = "2021"
 rust-version.workspace = true
+# The NIST test vectors are only used by the tests, and are most of the
+# size of the package.
+exclude = ["src/shaking/sha256_test_vectors/"]
 
 [features]
 default = ["std"]
