@@ -31,8 +31,6 @@ fn sha256_matches_nist_examples() {
 // The SHA-256 test vectors from NIST's Cryptographic Algorithm Validation
 // Program, byte-oriented set, unmodified from
 // https://csrc.nist.gov/CSRC/media/Projects/Cryptographic-Algorithm-Validation-Program/documents/shs/shabytetestvectors.zip
-//
-// The files are excluded from the published crate in Cargo.toml.
 const SHORT_MSG: &str = include_str!("sha256_test_vectors/SHA256ShortMsg.rsp");
 const LONG_MSG: &str = include_str!("sha256_test_vectors/SHA256LongMsg.rsp");
 const MONTE: &str = include_str!("sha256_test_vectors/SHA256Monte.rsp");
