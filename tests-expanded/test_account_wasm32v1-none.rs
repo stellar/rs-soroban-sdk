@@ -53,10 +53,25 @@ impl ::core::cmp::Ord for Error {
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
-static __SPEC_XDR_TYPE_ERROR: [u8; 44usize] = Error::spec_xdr();
+static __SPEC_XDR_TYPE_ERROR: [u8; Error::spec_xdr().len()] = Error::spec_xdr();
 impl Error {
-    pub const fn spec_xdr() -> [u8; 44usize] {
-        *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x05Error\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04Fail\0\0\0\x01"
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::UdtErrorEnumV0(
+            soroban_sdk::xdr::r#const::ScSpecUdtErrorEnumV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"Error"),
+                cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecUdtErrorEnumCaseV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"Fail"),
+                        value: 1u32,
+                    },
+                ]),
+            },
+        );
+    pub const fn spec_xdr() -> [u8; Error::__SPEC_XDR_ENTRY.const_xdr_len()] {
+        const { Error::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
 impl soroban_sdk::SpecShakingMarker for Error {
@@ -64,7 +79,10 @@ impl soroban_sdk::SpecShakingMarker for Error {
     #[inline(always)]
     fn spec_shaking_marker() {
         {
-            static MARKER: [u8; 14usize] = *b"SpEcV1\xa8\x1f\xc4#\x9c\x8f\xeb\x88";
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
+                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
+                    &Error::spec_xdr(),
+                );
             let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
         }
     }
@@ -215,13 +233,74 @@ mod __Contract____check_auth__spec {
     #[allow(dead_code)]
     #[allow(non_snake_case)]
     #[link_section = "contractspecv0"]
-    static __SPEC_XDR_FN___CHECK_AUTH: [u8; 148usize] = super::Contract::spec_xdr___check_auth();
+    static __SPEC_XDR_FN___CHECK_AUTH: [u8; super::Contract::spec_xdr___check_auth().len()] =
+        super::Contract::spec_xdr___check_auth();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    #[allow(non_snake_case)]
+    const __SPEC_XDR_ENTRY___check_auth: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"__check_auth"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"signature_payload",
+                    ),
+                    type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(soroban_sdk::xdr::r#const::ScSpecTypeBytesN {
+                        n: 32u32,
+                    }),
+                },
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"signatures",
+                    ),
+                    type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Void,
+                },
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"auth_contexts",
+                    ),
+                    type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Vec(
+                        &soroban_sdk::xdr::r#const::ScSpecTypeVec {
+                            element_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                    b"Context",
+                                ),
+                            }),
+                        },
+                    ),
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecTypeDef::Result(
+                    &soroban_sdk::xdr::r#const::ScSpecTypeResult {
+                        ok_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Void,
+                        error_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Error,
+                    },
+                ),
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     #[allow(non_snake_case)]
-    pub const fn spec_xdr___check_auth() -> [u8; 148usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0c__check_auth\0\0\0\x03\0\0\0\0\0\0\0\x11signature_payload\0\0\0\0\0\x03\xee\0\0\0 \0\0\0\0\0\0\0\nsignatures\0\0\0\0\0\x02\0\0\0\0\0\0\0\rauth_contexts\0\0\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x07Context\0\0\0\0\x01\0\0\x03\xe9\0\0\0\x02\0\0\0\x03"
+    pub const fn spec_xdr___check_auth(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY___check_auth.const_xdr_len()] {
+        const { Contract::__SPEC_XDR_ENTRY___check_auth.const_to_xdr() }
     }
 }
 impl<'a> ContractClient<'a> {}

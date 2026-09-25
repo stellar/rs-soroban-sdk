@@ -190,9 +190,26 @@ impl SuperPathTraitArgs {
     }
 }
 impl SuperPathTraitSpec {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_super_path_method: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"super_path_method",
+                    ),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_super_path_method() -> [u8; 44usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x11super_path_method\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
+    pub const fn spec_xdr_super_path_method(
+    ) -> [u8; SuperPathTraitSpec::__SPEC_XDR_ENTRY_super_path_method.const_xdr_len()] {
+        const { SuperPathTraitSpec::__SPEC_XDR_ENTRY_super_path_method.const_to_xdr() }
     }
 }
 pub mod submodule {
@@ -384,13 +401,31 @@ pub mod submodule {
         #[allow(non_snake_case)]
         #[allow(non_upper_case_globals)]
         #[allow(dead_code)]
-        static __SPEC_XDR_FN_SUPER_PATH_METHOD: [u8; 44usize] =
+        static __SPEC_XDR_FN_SUPER_PATH_METHOD: [u8;
+            super::ContractSuperPath::spec_xdr_super_path_method().len()] =
             super::ContractSuperPath::spec_xdr_super_path_method();
     }
     impl ContractSuperPath {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_super_path_method: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"super_path_method",
+                        ),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_super_path_method() -> [u8; 44usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\x11super_path_method\0\0\0\0\0\0\0\0\0\0\x01\0\0\0\x04"
+        pub const fn spec_xdr_super_path_method(
+        ) -> [u8; ContractSuperPath::__SPEC_XDR_ENTRY_super_path_method.const_xdr_len()] {
+            const { ContractSuperPath::__SPEC_XDR_ENTRY_super_path_method.const_to_xdr() }
         }
     }
     impl<'a> ContractSuperPathClient<'a> {

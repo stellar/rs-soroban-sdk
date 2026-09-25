@@ -1325,7 +1325,9 @@ dependencies = [
  "soroban-env-host",
  "soroban-ledger-snapshot",
  "soroban-sdk-macros",
+ "soroban-spec",
  "stellar-strkey 0.0.18",
+ "stellar-xdr",
  "visibility",
 ]
 
@@ -1341,7 +1343,6 @@ dependencies = [
  "quote",
  "sha2",
  "soroban-env-common",
- "soroban-spec",
  "soroban-spec-rust",
  "stellar-xdr",
  "syn",
