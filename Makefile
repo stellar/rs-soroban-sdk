@@ -39,8 +39,10 @@ build-libs: fmt
 
 build-test-wasms: fmt
 	# Build the test wasms with MSRV by default, with some meta disabled for
-	# binary stability for tests.
+	# binary stability for tests. The spec shaking v2 var is for the
+	# test_spec_shaking_v2 contract, built with soroban-sdk 28.0.0, which needs it.
 	STELLAR_CLI_VERSION=$(VERSION_MAJOR).0.0 \
+	SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2=1 \
 	RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
 	RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
 		cargo hack build --release --target wasm32v1-none $(foreach c,$(TEST_CRATES),--package $(c)) ; \
@@ -81,6 +83,7 @@ expand-tests: build-test-wasms
       cargo expand --package $$package --tests --target x86_64-unknown-linux-gnu | rustfmt > tests-expanded/$${package}_tests.rs; \
 		echo "Expanding $$package for wasm32v1-none target without tests"; \
     STELLAR_CLI_VERSION=$(VERSION_MAJOR).0.0 \
+    SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2=1 \
     RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
       RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
 			cargo expand --package $$package --release --target wasm32v1-none | rustfmt > tests-expanded/$${package}_wasm32v1-none.rs; \

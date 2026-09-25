@@ -93,10 +93,6 @@ impl soroban_sdk::SpecShakingMarker for Transfer {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Option<u64> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
             static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
@@ -196,8 +192,6 @@ impl soroban_sdk::SpecShakingMarker for SingleValue {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
             static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
@@ -285,7 +279,6 @@ impl soroban_sdk::SpecShakingMarker for SingleValueVoid {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
             static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
@@ -373,9 +366,6 @@ impl soroban_sdk::SpecShakingMarker for VecValues {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
             static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
@@ -474,9 +464,6 @@ impl soroban_sdk::SpecShakingMarker for MapValues {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
             static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(

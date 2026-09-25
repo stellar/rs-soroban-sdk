@@ -50,7 +50,7 @@ impl ::core::cmp::PartialEq for StructA {
 impl StructA {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::StructA"
+        "::test_spec_lib_v3::StructA"
     }
 }
 #[doc(hidden)]
@@ -81,14 +81,6 @@ impl StructA {
         );
     pub const fn spec_xdr() -> [u8; StructA::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { StructA::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for StructA {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <bool as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructA {
@@ -505,7 +497,7 @@ impl ::core::cmp::PartialEq for StructB {
 impl StructB {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::StructB"
+        "::test_spec_lib_v3::StructB"
     }
 }
 #[doc(hidden)]
@@ -536,14 +528,6 @@ impl StructB {
         );
     pub const fn spec_xdr() -> [u8; StructB::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { StructB::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for StructB {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <soroban_sdk::String as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructB {
@@ -960,7 +944,7 @@ impl ::core::cmp::PartialEq for StructC {
 impl StructC {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::StructC"
+        "::test_spec_lib_v3::StructC"
     }
 }
 #[doc(hidden)]
@@ -995,14 +979,6 @@ impl StructC {
         );
     pub const fn spec_xdr() -> [u8; StructC::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { StructC::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for StructC {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <Vec<u32> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructC {
@@ -1415,7 +1391,7 @@ impl ::core::cmp::PartialEq for StructTupleA {
 impl StructTupleA {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::StructTupleA"
+        "::test_spec_lib_v3::StructTupleA"
     }
 }
 #[doc(hidden)]
@@ -1447,14 +1423,6 @@ impl StructTupleA {
         );
     pub const fn spec_xdr() -> [u8; StructTupleA::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { StructTupleA::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for StructTupleA {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleA {
@@ -1822,7 +1790,7 @@ impl ::core::cmp::PartialEq for StructTupleB {
 impl StructTupleB {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::StructTupleB"
+        "::test_spec_lib_v3::StructTupleB"
     }
 }
 #[doc(hidden)]
@@ -1854,14 +1822,6 @@ impl StructTupleB {
         );
     pub const fn spec_xdr() -> [u8; StructTupleB::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { StructTupleB::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for StructTupleB {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <u128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <u128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleB {
@@ -2230,7 +2190,7 @@ impl ::core::cmp::PartialEq for StructTupleC {
 impl StructTupleC {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::StructTupleC"
+        "::test_spec_lib_v3::StructTupleC"
     }
 }
 #[doc(hidden)]
@@ -2262,14 +2222,6 @@ impl StructTupleC {
         );
     pub const fn spec_xdr() -> [u8; StructTupleC::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { StructTupleC::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for StructTupleC {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleC {
@@ -2649,7 +2601,7 @@ impl ::core::cmp::PartialEq for EnumA {
 impl EnumA {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::EnumA"
+        "::test_spec_lib_v3::EnumA"
     }
 }
 #[doc(hidden)]
@@ -2693,11 +2645,6 @@ impl EnumA {
     pub const fn spec_xdr() -> [u8; EnumA::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { EnumA::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
-}
-impl soroban_sdk::SpecShakingMarker for EnumA {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {}
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumA {
     type Error = soroban_sdk::ConversionError;
@@ -3161,7 +3108,7 @@ impl ::core::cmp::PartialEq for EnumB {
 impl EnumB {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::EnumB"
+        "::test_spec_lib_v3::EnumB"
     }
 }
 #[doc(hidden)]
@@ -3211,13 +3158,6 @@ impl EnumB {
         );
     pub const fn spec_xdr() -> [u8; EnumB::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { EnumB::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for EnumB {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumB {
@@ -3804,7 +3744,7 @@ impl ::core::cmp::PartialEq for EnumC {
 impl EnumC {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::EnumC"
+        "::test_spec_lib_v3::EnumC"
     }
 }
 #[doc(hidden)]
@@ -3866,14 +3806,6 @@ impl EnumC {
     });
     pub const fn spec_xdr() -> [u8; EnumC::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { EnumC::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for EnumC {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <StructA as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <StructTupleA as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumC {
@@ -4411,7 +4343,7 @@ impl ::core::cmp::PartialEq for EnumIntA {
 impl EnumIntA {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::EnumIntA"
+        "::test_spec_lib_v3::EnumIntA"
     }
 }
 #[doc(hidden)]
@@ -4448,11 +4380,6 @@ impl EnumIntA {
     pub const fn spec_xdr() -> [u8; EnumIntA::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { EnumIntA::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
-}
-impl soroban_sdk::SpecShakingMarker for EnumIntA {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {}
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntA {
     type Error = soroban_sdk::ConversionError;
@@ -4789,7 +4716,7 @@ impl ::core::cmp::PartialEq for EnumIntB {
 impl EnumIntB {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::EnumIntB"
+        "::test_spec_lib_v3::EnumIntB"
     }
 }
 #[doc(hidden)]
@@ -4826,11 +4753,6 @@ impl EnumIntB {
     pub const fn spec_xdr() -> [u8; EnumIntB::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { EnumIntB::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
-}
-impl soroban_sdk::SpecShakingMarker for EnumIntB {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {}
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntB {
     type Error = soroban_sdk::ConversionError;
@@ -5167,7 +5089,7 @@ impl ::core::cmp::PartialEq for EnumIntC {
 impl EnumIntC {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::EnumIntC"
+        "::test_spec_lib_v3::EnumIntC"
     }
 }
 #[doc(hidden)]
@@ -5204,11 +5126,6 @@ impl EnumIntC {
     pub const fn spec_xdr() -> [u8; EnumIntC::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { EnumIntC::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
-}
-impl soroban_sdk::SpecShakingMarker for EnumIntC {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {}
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntC {
     type Error = soroban_sdk::ConversionError;
@@ -5545,7 +5462,7 @@ impl ::core::cmp::PartialEq for ErrorA {
 impl ErrorA {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::ErrorA"
+        "::test_spec_lib_v3::ErrorA"
     }
 }
 #[doc(hidden)]
@@ -5746,7 +5663,7 @@ impl ::core::cmp::PartialEq for ErrorB {
 impl ErrorB {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::ErrorB"
+        "::test_spec_lib_v3::ErrorB"
     }
 }
 #[doc(hidden)]
@@ -5947,7 +5864,7 @@ impl ::core::cmp::PartialEq for ErrorC {
 impl ErrorC {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::ErrorC"
+        "::test_spec_lib_v3::ErrorC"
     }
 }
 #[doc(hidden)]
@@ -6144,7 +6061,7 @@ impl ::core::cmp::PartialEq for EventA {
 impl EventA {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::EventA"
+        "::test_spec_lib_v3::EventA"
     }
 }
 #[doc(hidden)]
@@ -6184,10 +6101,7 @@ impl EventA {
 impl soroban_sdk::SpecShakingMarker for EventA {
     #[doc(hidden)]
     #[inline(always)]
-    fn spec_shaking_marker() {
-        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <soroban_sdk::String as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-    }
+    fn spec_shaking_marker() {}
 }
 impl soroban_sdk::Event for EventA {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
@@ -6267,7 +6181,7 @@ impl ::core::cmp::PartialEq for EventB {
 impl EventB {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::EventB"
+        "::test_spec_lib_v3::EventB"
     }
 }
 #[doc(hidden)]
@@ -6313,11 +6227,7 @@ impl EventB {
 impl soroban_sdk::SpecShakingMarker for EventB {
     #[doc(hidden)]
     #[inline(always)]
-    fn spec_shaking_marker() {
-        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-    }
+    fn spec_shaking_marker() {}
 }
 impl soroban_sdk::Event for EventB {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
@@ -6401,7 +6311,7 @@ impl ::core::cmp::PartialEq for EventC {
 impl EventC {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::EventC"
+        "::test_spec_lib_v3::EventC"
     }
 }
 #[doc(hidden)]
@@ -6447,11 +6357,7 @@ impl EventC {
 impl soroban_sdk::SpecShakingMarker for EventC {
     #[doc(hidden)]
     #[inline(always)]
-    fn spec_shaking_marker() {
-        <soroban_sdk::Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-    }
+    fn spec_shaking_marker() {}
 }
 impl soroban_sdk::Event for EventC {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
@@ -6518,7 +6424,7 @@ impl ::core::cmp::PartialEq for EventD {
 impl EventD {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::EventD"
+        "::test_spec_lib_v3::EventD"
     }
 }
 #[doc(hidden)]

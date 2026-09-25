@@ -296,7 +296,9 @@ pub struct UsedLeaf {
 // --- WASM-imported types (contractimport!): only used ones should have markers ---
 
 mod wasm_imported {
-    soroban_sdk::contractimport!(file = "../../target/wasm32v1-none/release/test_spec_import.wasm");
+    soroban_sdk::contractimport!(
+        file = "../../target/wasm32v1-none/release/test_spec_import_v2.wasm"
+    );
 }
 
 // --- Unused types: no markers expected ---
@@ -327,6 +329,37 @@ pub struct UnusedEvent {
     #[topic]
     pub kind: Symbol,
     pub data: u32,
+}
+
+// A type referenced only by an event the contract never publishes. The event
+// is shaken out for want of a marker, and takes the type with it: nothing that
+// survives names it.
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UnusedEventDataType {
+    pub v: u32,
+}
+
+#[contractevent]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UnusedEventWithDataType {
+    #[topic]
+    pub kind: Symbol,
+    pub payload: UnusedEventDataType,
+}
+
+// A chain of types that only reference each other. No function, event, or
+// other reachable type names the outer one, so the whole chain is shaken out.
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UnusedOuter {
+    pub inner: UnusedInner,
+}
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UnusedInner {
+    pub v: u32,
 }
 
 // A pub #[contracterror] enum that is never referenced anywhere — neither in a

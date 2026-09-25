@@ -203,12 +203,7 @@ impl<'a> Transfer<'a> {
 impl<'a> soroban_sdk::SpecShakingMarker for Transfer<'a> {
     #[doc(hidden)]
     #[inline(always)]
-    fn spec_shaking_marker() {
-        <&'a Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <&'a Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <&'a i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Option<&'a u64> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-    }
+    fn spec_shaking_marker() {}
 }
 impl<'a> soroban_sdk::Event for Transfer<'a> {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {

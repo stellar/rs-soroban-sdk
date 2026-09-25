@@ -7,7 +7,7 @@
       "outputs": [
         {
           "udt": {
-            "name": "::test_spec_lib::EnumA"
+            "name": "EnumA"
           }
         }
       ]
@@ -21,7 +21,7 @@
       "outputs": [
         {
           "udt": {
-            "name": "::test_spec_lib::EnumIntA"
+            "name": "EnumIntA"
           }
         }
       ]
@@ -44,7 +44,7 @@
             "ok_type": "u32",
             "error_type": {
               "udt": {
-                "name": "::test_spec_lib::ErrorA"
+                "name": "ErrorA"
               }
             }
           }
@@ -98,7 +98,7 @@
       "outputs": [
         {
           "udt": {
-            "name": "::test_spec_lib::StructA"
+            "name": "StructA"
           }
         }
       ]
@@ -123,27 +123,8 @@
       "outputs": [
         {
           "udt": {
-            "name": "::test_spec_lib::StructTupleA"
+            "name": "StructTupleA"
           }
-        }
-      ]
-    }
-  },
-  {
-    "udt_struct_v0": {
-      "doc": "Executable referenced via a persistent storage entry owned by a contract,\\neither this contract or another contract.\\n\\nThe persistent storage entry owned by the `owner` has the `tag` as its key.",
-      "lib": "",
-      "name": "::soroban_sdk::ContractExecutableRef",
-      "fields": [
-        {
-          "doc": "",
-          "name": "owner",
-          "type": "address"
-        },
-        {
-          "doc": "",
-          "name": "tag",
-          "type": "string"
         }
       ]
     }
@@ -152,7 +133,7 @@
     "udt_struct_v0": {
       "doc": "Authorization context of a single contract call.\\n\\nThis struct corresponds to a `require_auth_for_args` call for an address\\nfrom `contract` function with `fn_name` name and `args` arguments.",
       "lib": "",
-      "name": "::soroban_sdk::auth::ContractContext",
+      "name": "ContractContext",
       "fields": [
         {
           "doc": "",
@@ -178,16 +159,35 @@
   },
   {
     "udt_struct_v0": {
+      "doc": "Executable referenced via a persistent storage entry owned by a contract,\\neither this contract or another contract.\\n\\nThe persistent storage entry owned by the `owner` has the `tag` as its key.",
+      "lib": "",
+      "name": "ContractExecutableRef",
+      "fields": [
+        {
+          "doc": "",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "doc": "",
+          "name": "tag",
+          "type": "string"
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
       "doc": "Authorization context for `create_contract` host function that creates a\\nnew contract on behalf of authorizer address.",
       "lib": "",
-      "name": "::soroban_sdk::auth::CreateContractHostFnContext",
+      "name": "CreateContractHostFnContext",
       "fields": [
         {
           "doc": "",
           "name": "executable",
           "type": {
             "udt": {
-              "name": "::soroban_sdk::ContractExecutable"
+              "name": "ContractExecutable"
             }
           }
         },
@@ -207,7 +207,7 @@
     "udt_struct_v0": {
       "doc": "Authorization context for `create_contract` host function that creates a\\nnew contract on behalf of authorizer address.\\nThis is the same as `CreateContractHostFnContext`, but also has\\ncontract constructor arguments.",
       "lib": "",
-      "name": "::soroban_sdk::auth::CreateContractWithConstructorHostFnContext",
+      "name": "CreateContractWithConstructorHostFnContext",
       "fields": [
         {
           "doc": "",
@@ -223,7 +223,7 @@
           "name": "executable",
           "type": {
             "udt": {
-              "name": "::soroban_sdk::ContractExecutable"
+              "name": "ContractExecutable"
             }
           }
         },
@@ -241,40 +241,9 @@
   },
   {
     "udt_struct_v0": {
-      "doc": "Value of contract node in InvokerContractAuthEntry tree.",
-      "lib": "",
-      "name": "::soroban_sdk::auth::SubContractInvocation",
-      "fields": [
-        {
-          "doc": "",
-          "name": "context",
-          "type": {
-            "udt": {
-              "name": "::soroban_sdk::auth::ContractContext"
-            }
-          }
-        },
-        {
-          "doc": "",
-          "name": "sub_invocations",
-          "type": {
-            "vec": {
-              "element_type": {
-                "udt": {
-                  "name": "::soroban_sdk::auth::InvokerContractAuthEntry"
-                }
-              }
-            }
-          }
-        }
-      ]
-    }
-  },
-  {
-    "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::StructA",
+      "name": "StructA",
       "fields": [
         {
           "doc": "",
@@ -293,7 +262,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::StructB",
+      "name": "StructB",
       "fields": [
         {
           "doc": "",
@@ -312,7 +281,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::StructC",
+      "name": "StructC",
       "fields": [
         {
           "doc": "",
@@ -335,7 +304,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::StructTupleA",
+      "name": "StructTupleA",
       "fields": [
         {
           "doc": "",
@@ -354,7 +323,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::StructTupleB",
+      "name": "StructTupleB",
       "fields": [
         {
           "doc": "",
@@ -373,7 +342,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::StructTupleC",
+      "name": "StructTupleC",
       "fields": [
         {
           "doc": "",
@@ -389,10 +358,89 @@
     }
   },
   {
+    "udt_struct_v0": {
+      "doc": "Value of contract node in InvokerContractAuthEntry tree.",
+      "lib": "",
+      "name": "SubContractInvocation",
+      "fields": [
+        {
+          "doc": "",
+          "name": "context",
+          "type": {
+            "udt": {
+              "name": "ContractContext"
+            }
+          }
+        },
+        {
+          "doc": "",
+          "name": "sub_invocations",
+          "type": {
+            "vec": {
+              "element_type": {
+                "udt": {
+                  "name": "InvokerContractAuthEntry"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "udt_union_v0": {
+      "doc": "Context of a single authorized call performed by an address.\\n\\nCustom account contracts that implement `__check_auth` special function\\nreceive a list of `Context` values corresponding to all the calls that\\nneed to be authorized.",
+      "lib": "",
+      "name": "Context",
+      "cases": [
+        {
+          "tuple_v0": {
+            "doc": "Contract invocation.",
+            "name": "Contract",
+            "type": [
+              {
+                "udt": {
+                  "name": "ContractContext"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "tuple_v0": {
+            "doc": "Contract that has a constructor with no arguments is created.",
+            "name": "CreateContractHostFn",
+            "type": [
+              {
+                "udt": {
+                  "name": "CreateContractHostFnContext"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "tuple_v0": {
+            "doc": "Contract that has a constructor with 1 or more arguments is created.",
+            "name": "CreateContractWithCtorHostFn",
+            "type": [
+              {
+                "udt": {
+                  "name": "CreateContractWithConstructorHostFnContext"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
     "udt_union_v0": {
       "doc": "Contract executable used for creating a new contract and used in\\n`CreateContractHostFnContext`.",
       "lib": "",
-      "name": "::soroban_sdk::ContractExecutable",
+      "name": "ContractExecutable",
       "cases": [
         {
           "tuple_v0": {
@@ -414,7 +462,7 @@
             "type": [
               {
                 "udt": {
-                  "name": "::soroban_sdk::ContractExecutableRef"
+                  "name": "ContractExecutableRef"
                 }
               }
             ]
@@ -427,137 +475,7 @@
     "udt_union_v0": {
       "doc": "",
       "lib": "",
-      "name": "::soroban_sdk::address::Executable",
-      "cases": [
-        {
-          "tuple_v0": {
-            "doc": "",
-            "name": "Wasm",
-            "type": [
-              {
-                "bytes_n": {
-                  "n": 32
-                }
-              }
-            ]
-          }
-        },
-        {
-          "void_v0": {
-            "doc": "",
-            "name": "StellarAsset"
-          }
-        },
-        {
-          "void_v0": {
-            "doc": "",
-            "name": "Account"
-          }
-        }
-      ]
-    }
-  },
-  {
-    "udt_union_v0": {
-      "doc": "Context of a single authorized call performed by an address.\\n\\nCustom account contracts that implement `__check_auth` special function\\nreceive a list of `Context` values corresponding to all the calls that\\nneed to be authorized.",
-      "lib": "",
-      "name": "::soroban_sdk::auth::Context",
-      "cases": [
-        {
-          "tuple_v0": {
-            "doc": "Contract invocation.",
-            "name": "Contract",
-            "type": [
-              {
-                "udt": {
-                  "name": "::soroban_sdk::auth::ContractContext"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "tuple_v0": {
-            "doc": "Contract that has a constructor with no arguments is created.",
-            "name": "CreateContractHostFn",
-            "type": [
-              {
-                "udt": {
-                  "name": "::soroban_sdk::auth::CreateContractHostFnContext"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "tuple_v0": {
-            "doc": "Contract that has a constructor with 1 or more arguments is created.",
-            "name": "CreateContractWithCtorHostFn",
-            "type": [
-              {
-                "udt": {
-                  "name": "::soroban_sdk::auth::CreateContractWithConstructorHostFnContext"
-                }
-              }
-            ]
-          }
-        }
-      ]
-    }
-  },
-  {
-    "udt_union_v0": {
-      "doc": "A node in the tree of authorizations performed on behalf of the current\\ncontract as invoker of the contracts deeper in the call stack.\\n\\nThis is used as an argument of `authorize_as_current_contract` host function.\\n\\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\\ncurrent contract.",
-      "lib": "",
-      "name": "::soroban_sdk::auth::InvokerContractAuthEntry",
-      "cases": [
-        {
-          "tuple_v0": {
-            "doc": "Invoke a contract.",
-            "name": "Contract",
-            "type": [
-              {
-                "udt": {
-                  "name": "::soroban_sdk::auth::SubContractInvocation"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "tuple_v0": {
-            "doc": "Create a contract passing 0 arguments to constructor.",
-            "name": "CreateContractHostFn",
-            "type": [
-              {
-                "udt": {
-                  "name": "::soroban_sdk::auth::CreateContractHostFnContext"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "tuple_v0": {
-            "doc": "Create a contract passing 0 or more arguments to constructor.",
-            "name": "CreateContractWithCtorHostFn",
-            "type": [
-              {
-                "udt": {
-                  "name": "::soroban_sdk::auth::CreateContractWithConstructorHostFnContext"
-                }
-              }
-            ]
-          }
-        }
-      ]
-    }
-  },
-  {
-    "udt_union_v0": {
-      "doc": "",
-      "lib": "",
-      "name": "::test_spec_lib::EnumA",
+      "name": "EnumA",
       "cases": [
         {
           "void_v0": {
@@ -584,7 +502,7 @@
     "udt_union_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EnumB",
+      "name": "EnumB",
       "cases": [
         {
           "void_v0": {
@@ -618,7 +536,7 @@
     "udt_union_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EnumC",
+      "name": "EnumC",
       "cases": [
         {
           "void_v0": {
@@ -633,7 +551,7 @@
             "type": [
               {
                 "udt": {
-                  "name": "::test_spec_lib::StructA"
+                  "name": "StructA"
                 }
               }
             ]
@@ -646,7 +564,89 @@
             "type": [
               {
                 "udt": {
-                  "name": "::test_spec_lib::StructTupleA"
+                  "name": "StructTupleA"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "udt_union_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "Executable",
+      "cases": [
+        {
+          "tuple_v0": {
+            "doc": "",
+            "name": "Wasm",
+            "type": [
+              {
+                "bytes_n": {
+                  "n": 32
+                }
+              }
+            ]
+          }
+        },
+        {
+          "void_v0": {
+            "doc": "",
+            "name": "StellarAsset"
+          }
+        },
+        {
+          "void_v0": {
+            "doc": "",
+            "name": "Account"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "udt_union_v0": {
+      "doc": "A node in the tree of authorizations performed on behalf of the current\\ncontract as invoker of the contracts deeper in the call stack.\\n\\nThis is used as an argument of `authorize_as_current_contract` host function.\\n\\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\\ncurrent contract.",
+      "lib": "",
+      "name": "InvokerContractAuthEntry",
+      "cases": [
+        {
+          "tuple_v0": {
+            "doc": "Invoke a contract.",
+            "name": "Contract",
+            "type": [
+              {
+                "udt": {
+                  "name": "SubContractInvocation"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "tuple_v0": {
+            "doc": "Create a contract passing 0 arguments to constructor.",
+            "name": "CreateContractHostFn",
+            "type": [
+              {
+                "udt": {
+                  "name": "CreateContractHostFnContext"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "tuple_v0": {
+            "doc": "Create a contract passing 0 or more arguments to constructor.",
+            "name": "CreateContractWithCtorHostFn",
+            "type": [
+              {
+                "udt": {
+                  "name": "CreateContractWithConstructorHostFnContext"
                 }
               }
             ]
@@ -659,7 +659,7 @@
     "udt_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EnumIntA",
+      "name": "EnumIntA",
       "cases": [
         {
           "doc": "",
@@ -683,7 +683,7 @@
     "udt_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EnumIntB",
+      "name": "EnumIntB",
       "cases": [
         {
           "doc": "",
@@ -707,7 +707,7 @@
     "udt_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EnumIntC",
+      "name": "EnumIntC",
       "cases": [
         {
           "doc": "",
@@ -731,7 +731,7 @@
     "udt_error_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::ErrorA",
+      "name": "ErrorA",
       "cases": [
         {
           "doc": "",
@@ -755,7 +755,7 @@
     "udt_error_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::ErrorB",
+      "name": "ErrorB",
       "cases": [
         {
           "doc": "",
@@ -779,7 +779,7 @@
     "udt_error_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::ErrorC",
+      "name": "ErrorC",
       "cases": [
         {
           "doc": "",
@@ -803,7 +803,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EventA",
+      "name": "EventA",
       "prefix_topics": [
         "event_a"
       ],
@@ -828,7 +828,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EventB",
+      "name": "EventB",
       "prefix_topics": [
         "event_b"
       ],
@@ -859,7 +859,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EventC",
+      "name": "EventC",
       "prefix_topics": [
         "event_c"
       ],
@@ -890,7 +890,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EventD",
+      "name": "EventD",
       "prefix_topics": [
         "event_d"
       ],

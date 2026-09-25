@@ -1,23 +1,43 @@
 extern crate std;
 
-use soroban_sdk::xdr::ScSpecEntry;
 use std::collections::HashSet;
 use std::vec::Vec;
+use stellar_xdr::ScSpecEntry;
 
-const WASM: &[u8] =
-    include_bytes!("../../../target/wasm32v1-none/release/test_spec_shaking_v2.wasm");
+// This test and the contract are shared by test_spec_shaking_v2, built with
+// soroban-sdk 28.0.0, and test_spec_shaking_v3, built with the SDK in this repo.
+const WASM: &[u8] = include_bytes!(concat!(
+    "../../../target/wasm32v1-none/release/",
+    env!("CARGO_PKG_NAME"),
+    ".wasm"
+));
 
 #[test]
-fn test_spec_shaking_v2() {
+fn test_spec_shaking() {
     // Read all spec entries from the WASM.
     let entries = soroban_spec::read::from_wasm(WASM).unwrap();
 
     // Find markers embedded in the WASM data section.
     let markers = soroban_spec::shaking::find_all(WASM);
 
-    // Filter entries using markers.
+    // The version the contract records is what selects the shaking rules, so
+    // read it rather than assuming one. Built by soroban-sdk 28.0.0 the contract
+    // records version 2, where every used entry carries a marker. Built by the
+    // SDK in this repo it records version 3, where only its events and
+    // panicked-with errors carry markers, and every other type is settled by
+    // reachability. Either way the same entries survive.
+    let meta = soroban_meta::read::from_wasm(WASM).unwrap();
+    let version = soroban_spec::shaking::spec_shaking_version_for_meta(&meta);
+    let expected_version = match env!("CARGO_PKG_NAME") {
+        "test_spec_shaking_v2" => soroban_spec::shaking::Version::V2,
+        "test_spec_shaking_v3" => soroban_spec::shaking::Version::V3,
+        name => panic!("unexpected package {name}"),
+    };
+    assert_eq!(version, expected_version);
+
+    // Filter entries by that version's rules.
     let filtered: Vec<_> =
-        soroban_spec::shaking::filter(entries.iter().cloned(), &markers).collect();
+        soroban_spec::shaking::filter(entries.iter().cloned(), &markers, version).collect();
 
     // Collect names of filtered entries by kind for assertions.
     let filtered_names: HashSet<std::string::String> =
@@ -147,14 +167,59 @@ fn test_spec_shaking_v2() {
             "used type/event {name} should be present in filtered entries, but was not found"
         );
     }
-    assert_eq!(markers.len(), used.len());
 
-    // Unused types/events should exist in unfiltered entries (they have spec entries, just no markers).
+    match version {
+        soroban_spec::shaking::Version::V1 => panic!("unexpected version {version:?}"),
+        soroban_spec::shaking::Version::V2 => {
+            // Every used entry carries a marker.
+            assert_eq!(markers.len(), used.len());
+        }
+        soroban_spec::shaking::Version::V3 => {
+            // Only the entries that nothing in a spec references by name carry a
+            // marker: the events the contract publishes, and the errors it panics
+            // with. Every other type is named by whatever references it and is kept by
+            // reachability, so the wasm carries no marker for it — including the error
+            // types a function returns in a `Result`.
+            let mut marked: Vec<std::string::String> = entries
+                .iter()
+                .filter(|e| markers.contains(&soroban_spec::shaking::generate_marker_for_entry(e)))
+                .filter_map(entry_name)
+                .collect();
+            marked.sort();
+            assert_eq!(
+                marked,
+                [
+                    // An error used only via assert_with_error!.
+                    "UsedAssertErrorEnum",
+                    // Every published event.
+                    "UsedEventSimple",
+                    "UsedEventWithDataType",
+                    "UsedEventWithNestedData",
+                    "UsedEventWithNestedTopic",
+                    "UsedEventWithRefs",
+                    "UsedEventWithTopicType",
+                    // An error used only via panic_with_error!.
+                    "UsedPanicErrorEnum",
+                ]
+            );
+            assert_eq!(markers.len(), marked.len());
+        }
+    }
+
+    // Unused types/events should exist in unfiltered entries: they have spec
+    // entries, they are just not reachable and hold no markers.
     let unused = [
         "UnusedStruct",
         "UnusedEnum",
         "UnusedIntEnum",
         "UnusedEvent",
+        // Type referenced only by an event that is never published, and so is
+        // itself shaken out.
+        "UnusedEventDataType",
+        "UnusedEventWithDataType",
+        // Types that only reference each other, reached from nowhere.
+        "UnusedOuter",
+        "UnusedInner",
         "UnusedPubError",
         // Types used only in non-contractimpl fns (not at contract boundary)
         "UnusedNonContractFnParam",
