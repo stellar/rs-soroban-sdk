@@ -27,6 +27,7 @@ impl C {
 #[contracttrait]
 pub trait Tr {
     fn with_const<const N: u32>(_env: Env) {}
+    fn plain(_env: Env) {}
 }
 
 // Implementing a trait whose `#[contracttrait]` expansion was rejected should
