@@ -36,6 +36,8 @@ fn derive_or_err(metadata: TokenStream2, input: TokenStream2) -> Result<TokenStr
     let args = NestedMeta::parse_meta_list(metadata.into())?;
     let args = Args::from_list(&args)?;
     let input: ItemTrait = parse2(input)?;
+    let path = &args.crate_path;
+
     let mut errors = Error::accumulator();
     errors.handle(
         check_generics_are_lifetimes(&input.generics, "contract traits").map_err(Error::from),
@@ -48,9 +50,18 @@ fn derive_or_err(metadata: TokenStream2, input: TokenStream2) -> Result<TokenStr
             );
         }
     }
-    errors.finish()?;
+    if let Err(e) = errors.finish() {
+        // Keep the trait and its trait macro so that impls of it still resolve
+        // and only the errors above are reported, but skip the spec, args, and
+        // client, which cannot be generated for the unsupported parameters.
+        let e = e.write_errors();
+        return Ok(quote! {
+            #e
+            #[#path::contractimpl_trait_macro(crate_path = #path)]
+            #input
+        });
+    }
 
-    let path = &args.crate_path;
     let spec_name = args
         .spec_name
         .unwrap_or_else(|| format!("{}Spec", input.ident.unraw()));
