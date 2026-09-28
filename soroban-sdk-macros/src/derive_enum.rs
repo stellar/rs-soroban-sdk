@@ -197,7 +197,7 @@ pub fn derive_type_enum(
                     ))
                 }
             });
-        let spec_view = quote! {
+        let spec_entry = quote! {
             #path::xdr::r#const::ScSpecEntry::UdtUnionV0(#path::xdr::r#const::ScSpecUdtUnionV0 {
                 doc: #doc,
                 lib: #lib,
@@ -216,7 +216,7 @@ pub fn derive_type_enum(
             static #spec_ident: [u8; #enum_ident::spec_xdr().len()] = #enum_ident::spec_xdr();
 
             impl #enum_ident {
-                const __SPEC_XDR_ENTRY: #path::xdr::r#const::ScSpecEntry = #spec_view;
+                const __SPEC_XDR_ENTRY: #path::xdr::r#const::ScSpecEntry = #spec_entry;
 
                 pub const fn spec_xdr() -> [u8; #enum_ident::__SPEC_XDR_ENTRY.const_xdr_len()] {
                     const { #enum_ident::__SPEC_XDR_ENTRY.const_to_xdr() }

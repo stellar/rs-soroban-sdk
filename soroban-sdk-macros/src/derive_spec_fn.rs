@@ -163,7 +163,7 @@ pub fn derive_fn_spec(
 
     // Generated code spec.
     let name = &ident.unraw().to_string();
-    let spec_entry = ScSpecFunctionV0 {
+    let spec = ScSpecFunctionV0 {
         doc: docs_from_attrs(attrs),
         name: name.try_into().unwrap_or_else(|_| {
             errors.push(Error::new(
@@ -182,10 +182,10 @@ pub fn derive_fn_spec(
 
     // The spec entry rendered as the equivalent const::ScSpecEntry, which the
     // contract crate encodes to XDR at compile time.
-    let spec_view = {
-        let doc = const_view_string(path, &spec_entry.doc);
-        let name = const_view_symbol(path, &spec_entry.name);
-        let inputs = spec_entry
+    let spec_entry = {
+        let doc = const_view_string(path, &spec.doc);
+        let name = const_view_symbol(path, &spec.name);
+        let inputs = spec
             .inputs
             .iter()
             .zip(arg_types.iter().copied())
@@ -195,7 +195,7 @@ pub fn derive_fn_spec(
                 let type_ = const_view_type_def(path, &i.type_, rust);
                 quote!(#path::xdr::r#const::ScSpecFunctionInputV0 { doc: #doc, name: #name, type_: #type_ })
             });
-        let outputs = spec_entry
+        let outputs = spec
             .outputs
             .iter()
             .map(|o| const_view_type_def(path, o, output_type));
@@ -258,7 +258,7 @@ pub fn derive_fn_spec(
         impl #ty {
             #[allow(non_upper_case_globals)]
             #(#attrs)*
-            const #spec_entry_ident: #path::xdr::r#const::ScSpecEntry = #spec_view;
+            const #spec_entry_ident: #path::xdr::r#const::ScSpecEntry = #spec_entry;
 
             #[allow(non_snake_case)]
             #(#attrs)*
