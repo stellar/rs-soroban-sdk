@@ -1,0 +1,31 @@
+error: type parameter `T` is not supported on contract events, only lifetimes are
+  --> tests/compile_fails/generics_errors.rs:10:25
+   |
+10 | pub struct WithType<'a, T: IntoVal<Env, Val>> {
+   |                         ^
+
+error: const parameter `N` is not supported on contract events, only lifetimes are
+  --> tests/compile_fails/generics_errors.rs:17:22
+   |
+17 | pub struct WithConst<const N: u32> {
+   |                      ^^^^^
+
+error: type parameter `T` is not supported on contract functions, only lifetimes are
+  --> tests/compile_fails/generics_errors.rs:24:22
+   |
+24 |     pub fn with_type<T: soroban_sdk::TryFromVal<Env, Val>>(_env: Env, _x: T) {}
+   |                      ^
+
+error: const parameter `N` is not supported on contract functions, only lifetimes are
+  --> tests/compile_fails/generics_errors.rs:29:19
+   |
+29 |     fn with_const<const N: u32>(_env: Env) {}
+   |                   ^^^^^
+
+warning: unused imports: `Address` and `IntoVal`
+ --> tests/compile_fails/generics_errors.rs:1:73
+  |
+1 | use soroban_sdk::{contract, contractevent, contractimpl, contracttrait, Address, Env, IntoVal, Val};
+  |                                                                         ^^^^^^^       ^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
