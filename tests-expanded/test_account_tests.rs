@@ -174,14 +174,14 @@ pub struct ContractClient<'a> {
     pub env: soroban_sdk::Env,
     pub address: soroban_sdk::Address,
     #[doc(hidden)]
-    auths: soroban_sdk::testutils::ClientAuths<'a>,
+    config: soroban_sdk::testutils::ClientInternalConfig<'a>,
 }
 impl<'a> ContractClient<'a> {
     pub fn new(env: &soroban_sdk::Env, address: &soroban_sdk::Address) -> Self {
         Self {
             env: env.clone(),
             address: address.clone(),
-            auths: soroban_sdk::testutils::ClientAuths::default(),
+            config: soroban_sdk::testutils::ClientInternalConfig::default(),
         }
     }
     /// Set authorizations in the environment which will be consumed by
@@ -196,7 +196,7 @@ impl<'a> ContractClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            auths: self.auths.set_auths(auths),
+            config: self.config.set_auths(auths),
         }
     }
     /// Mock authorizations in the environment which will cause matching invokes
@@ -208,7 +208,7 @@ impl<'a> ContractClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            auths: self.auths.mock_auths(mock_auths),
+            config: self.config.mock_auths(mock_auths),
         }
     }
     /// Mock all calls to the `Address::require_auth` and
@@ -221,7 +221,7 @@ impl<'a> ContractClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            auths: self.auths.mock_all_auths(),
+            config: self.config.mock_all_auths(),
         }
     }
     /// A version of `mock_all_auths` that allows authorizations that
@@ -237,7 +237,7 @@ impl<'a> ContractClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            auths: self.auths.mock_all_auths_allowing_non_root_auth(),
+            config: self.config.mock_all_auths_allowing_non_root_auth(),
         }
     }
 }
@@ -435,14 +435,14 @@ mod test {
         pub env: soroban_sdk::Env,
         pub address: soroban_sdk::Address,
         #[doc(hidden)]
-        auths: soroban_sdk::testutils::ClientAuths<'a>,
+        config: soroban_sdk::testutils::ClientInternalConfig<'a>,
     }
     impl<'a> TestContractClient<'a> {
         pub fn new(env: &soroban_sdk::Env, address: &soroban_sdk::Address) -> Self {
             Self {
                 env: env.clone(),
                 address: address.clone(),
-                auths: soroban_sdk::testutils::ClientAuths::default(),
+                config: soroban_sdk::testutils::ClientInternalConfig::default(),
             }
         }
         /// Set authorizations in the environment which will be consumed by
@@ -457,7 +457,7 @@ mod test {
             Self {
                 env: self.env.clone(),
                 address: self.address.clone(),
-                auths: self.auths.set_auths(auths),
+                config: self.config.set_auths(auths),
             }
         }
         /// Mock authorizations in the environment which will cause matching invokes
@@ -469,7 +469,7 @@ mod test {
             Self {
                 env: self.env.clone(),
                 address: self.address.clone(),
-                auths: self.auths.mock_auths(mock_auths),
+                config: self.config.mock_auths(mock_auths),
             }
         }
         /// Mock all calls to the `Address::require_auth` and
@@ -482,7 +482,7 @@ mod test {
             Self {
                 env: self.env.clone(),
                 address: self.address.clone(),
-                auths: self.auths.mock_all_auths(),
+                config: self.config.mock_all_auths(),
             }
         }
         /// A version of `mock_all_auths` that allows authorizations that
@@ -498,7 +498,7 @@ mod test {
             Self {
                 env: self.env.clone(),
                 address: self.address.clone(),
-                auths: self.auths.mock_all_auths_allowing_non_root_auth(),
+                config: self.config.mock_all_auths_allowing_non_root_auth(),
             }
         }
     }

@@ -13,14 +13,14 @@ pub struct ContractAClient<'a> {
     pub env: soroban_sdk::Env,
     pub address: soroban_sdk::Address,
     #[doc(hidden)]
-    auths: soroban_sdk::testutils::ClientAuths<'a>,
+    config: soroban_sdk::testutils::ClientInternalConfig<'a>,
 }
 impl<'a> ContractAClient<'a> {
     pub fn new(env: &soroban_sdk::Env, address: &soroban_sdk::Address) -> Self {
         Self {
             env: env.clone(),
             address: address.clone(),
-            auths: soroban_sdk::testutils::ClientAuths::default(),
+            config: soroban_sdk::testutils::ClientInternalConfig::default(),
         }
     }
     /// Set authorizations in the environment which will be consumed by
@@ -35,7 +35,7 @@ impl<'a> ContractAClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            auths: self.auths.set_auths(auths),
+            config: self.config.set_auths(auths),
         }
     }
     /// Mock authorizations in the environment which will cause matching invokes
@@ -47,7 +47,7 @@ impl<'a> ContractAClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            auths: self.auths.mock_auths(mock_auths),
+            config: self.config.mock_auths(mock_auths),
         }
     }
     /// Mock all calls to the `Address::require_auth` and
@@ -60,7 +60,7 @@ impl<'a> ContractAClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            auths: self.auths.mock_all_auths(),
+            config: self.config.mock_all_auths(),
         }
     }
     /// A version of `mock_all_auths` that allows authorizations that
@@ -76,7 +76,7 @@ impl<'a> ContractAClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            auths: self.auths.mock_all_auths_allowing_non_root_auth(),
+            config: self.config.mock_all_auths_allowing_non_root_auth(),
         }
     }
 }
@@ -139,7 +139,7 @@ impl ContractA {
 }
 impl<'a> ContractAClient<'a> {
     pub fn fn1(&self, a: &Address) -> u64 {
-        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.auths);
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
@@ -159,7 +159,7 @@ impl<'a> ContractAClient<'a> {
         Result<u64, <u64 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.auths);
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -603,14 +603,14 @@ mod test_a {
             pub env: soroban_sdk::Env,
             pub address: soroban_sdk::Address,
             #[doc(hidden)]
-            auths: soroban_sdk::testutils::ClientAuths<'a>,
+            config: soroban_sdk::testutils::ClientInternalConfig<'a>,
         }
         impl<'a> ContractClient<'a> {
             pub fn new(env: &soroban_sdk::Env, address: &soroban_sdk::Address) -> Self {
                 Self {
                     env: env.clone(),
                     address: address.clone(),
-                    auths: soroban_sdk::testutils::ClientAuths::default(),
+                    config: soroban_sdk::testutils::ClientInternalConfig::default(),
                 }
             }
             /// Set authorizations in the environment which will be consumed by
@@ -628,7 +628,7 @@ mod test_a {
                 Self {
                     env: self.env.clone(),
                     address: self.address.clone(),
-                    auths: self.auths.set_auths(auths),
+                    config: self.config.set_auths(auths),
                 }
             }
             /// Mock authorizations in the environment which will cause matching invokes
@@ -643,7 +643,7 @@ mod test_a {
                 Self {
                     env: self.env.clone(),
                     address: self.address.clone(),
-                    auths: self.auths.mock_auths(mock_auths),
+                    config: self.config.mock_auths(mock_auths),
                 }
             }
             /// Mock all calls to the `Address::require_auth` and
@@ -656,7 +656,7 @@ mod test_a {
                 Self {
                     env: self.env.clone(),
                     address: self.address.clone(),
-                    auths: self.auths.mock_all_auths(),
+                    config: self.config.mock_all_auths(),
                 }
             }
             /// A version of `mock_all_auths` that allows authorizations that
@@ -672,7 +672,7 @@ mod test_a {
                 Self {
                     env: self.env.clone(),
                     address: self.address.clone(),
-                    auths: self.auths.mock_all_auths_allowing_non_root_auth(),
+                    config: self.config.mock_all_auths_allowing_non_root_auth(),
                 }
             }
         }
@@ -856,14 +856,14 @@ mod test_a {
             pub env: soroban_sdk::Env,
             pub address: soroban_sdk::Address,
             #[doc(hidden)]
-            auths: soroban_sdk::testutils::ClientAuths<'a>,
+            config: soroban_sdk::testutils::ClientInternalConfig<'a>,
         }
         impl<'a> ContractClient<'a> {
             pub fn new(env: &soroban_sdk::Env, address: &soroban_sdk::Address) -> Self {
                 Self {
                     env: env.clone(),
                     address: address.clone(),
-                    auths: soroban_sdk::testutils::ClientAuths::default(),
+                    config: soroban_sdk::testutils::ClientInternalConfig::default(),
                 }
             }
             /// Set authorizations in the environment which will be consumed by
@@ -881,7 +881,7 @@ mod test_a {
                 Self {
                     env: self.env.clone(),
                     address: self.address.clone(),
-                    auths: self.auths.set_auths(auths),
+                    config: self.config.set_auths(auths),
                 }
             }
             /// Mock authorizations in the environment which will cause matching invokes
@@ -896,7 +896,7 @@ mod test_a {
                 Self {
                     env: self.env.clone(),
                     address: self.address.clone(),
-                    auths: self.auths.mock_auths(mock_auths),
+                    config: self.config.mock_auths(mock_auths),
                 }
             }
             /// Mock all calls to the `Address::require_auth` and
@@ -909,7 +909,7 @@ mod test_a {
                 Self {
                     env: self.env.clone(),
                     address: self.address.clone(),
-                    auths: self.auths.mock_all_auths(),
+                    config: self.config.mock_all_auths(),
                 }
             }
             /// A version of `mock_all_auths` that allows authorizations that
@@ -925,7 +925,7 @@ mod test_a {
                 Self {
                     env: self.env.clone(),
                     address: self.address.clone(),
-                    auths: self.auths.mock_all_auths_allowing_non_root_auth(),
+                    config: self.config.mock_all_auths_allowing_non_root_auth(),
                 }
             }
         }
@@ -1282,14 +1282,14 @@ pub struct ContractBClient<'a> {
     pub env: soroban_sdk::Env,
     pub address: soroban_sdk::Address,
     #[doc(hidden)]
-    auths: soroban_sdk::testutils::ClientAuths<'a>,
+    config: soroban_sdk::testutils::ClientInternalConfig<'a>,
 }
 impl<'a> ContractBClient<'a> {
     pub fn new(env: &soroban_sdk::Env, address: &soroban_sdk::Address) -> Self {
         Self {
             env: env.clone(),
             address: address.clone(),
-            auths: soroban_sdk::testutils::ClientAuths::default(),
+            config: soroban_sdk::testutils::ClientInternalConfig::default(),
         }
     }
     /// Set authorizations in the environment which will be consumed by
@@ -1304,7 +1304,7 @@ impl<'a> ContractBClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            auths: self.auths.set_auths(auths),
+            config: self.config.set_auths(auths),
         }
     }
     /// Mock authorizations in the environment which will cause matching invokes
@@ -1316,7 +1316,7 @@ impl<'a> ContractBClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            auths: self.auths.mock_auths(mock_auths),
+            config: self.config.mock_auths(mock_auths),
         }
     }
     /// Mock all calls to the `Address::require_auth` and
@@ -1329,7 +1329,7 @@ impl<'a> ContractBClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            auths: self.auths.mock_all_auths(),
+            config: self.config.mock_all_auths(),
         }
     }
     /// A version of `mock_all_auths` that allows authorizations that
@@ -1345,7 +1345,7 @@ impl<'a> ContractBClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            auths: self.auths.mock_all_auths_allowing_non_root_auth(),
+            config: self.config.mock_all_auths_allowing_non_root_auth(),
         }
     }
 }
@@ -1409,7 +1409,7 @@ impl ContractB {
 }
 impl<'a> ContractBClient<'a> {
     pub fn fn2(&self, a: &Address, sub: &Address) -> u64 {
-        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.auths);
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
@@ -1433,7 +1433,7 @@ impl<'a> ContractBClient<'a> {
         Result<u64, <u64 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.auths);
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -1986,14 +1986,14 @@ mod test_b {
             pub env: soroban_sdk::Env,
             pub address: soroban_sdk::Address,
             #[doc(hidden)]
-            auths: soroban_sdk::testutils::ClientAuths<'a>,
+            config: soroban_sdk::testutils::ClientInternalConfig<'a>,
         }
         impl<'a> ContractClient<'a> {
             pub fn new(env: &soroban_sdk::Env, address: &soroban_sdk::Address) -> Self {
                 Self {
                     env: env.clone(),
                     address: address.clone(),
-                    auths: soroban_sdk::testutils::ClientAuths::default(),
+                    config: soroban_sdk::testutils::ClientInternalConfig::default(),
                 }
             }
             /// Set authorizations in the environment which will be consumed by
@@ -2011,7 +2011,7 @@ mod test_b {
                 Self {
                     env: self.env.clone(),
                     address: self.address.clone(),
-                    auths: self.auths.set_auths(auths),
+                    config: self.config.set_auths(auths),
                 }
             }
             /// Mock authorizations in the environment which will cause matching invokes
@@ -2026,7 +2026,7 @@ mod test_b {
                 Self {
                     env: self.env.clone(),
                     address: self.address.clone(),
-                    auths: self.auths.mock_auths(mock_auths),
+                    config: self.config.mock_auths(mock_auths),
                 }
             }
             /// Mock all calls to the `Address::require_auth` and
@@ -2039,7 +2039,7 @@ mod test_b {
                 Self {
                     env: self.env.clone(),
                     address: self.address.clone(),
-                    auths: self.auths.mock_all_auths(),
+                    config: self.config.mock_all_auths(),
                 }
             }
             /// A version of `mock_all_auths` that allows authorizations that
@@ -2055,7 +2055,7 @@ mod test_b {
                 Self {
                     env: self.env.clone(),
                     address: self.address.clone(),
-                    auths: self.auths.mock_all_auths_allowing_non_root_auth(),
+                    config: self.config.mock_all_auths_allowing_non_root_auth(),
                 }
             }
         }
@@ -2239,14 +2239,14 @@ mod test_b {
             pub env: soroban_sdk::Env,
             pub address: soroban_sdk::Address,
             #[doc(hidden)]
-            auths: soroban_sdk::testutils::ClientAuths<'a>,
+            config: soroban_sdk::testutils::ClientInternalConfig<'a>,
         }
         impl<'a> ContractClient<'a> {
             pub fn new(env: &soroban_sdk::Env, address: &soroban_sdk::Address) -> Self {
                 Self {
                     env: env.clone(),
                     address: address.clone(),
-                    auths: soroban_sdk::testutils::ClientAuths::default(),
+                    config: soroban_sdk::testutils::ClientInternalConfig::default(),
                 }
             }
             /// Set authorizations in the environment which will be consumed by
@@ -2264,7 +2264,7 @@ mod test_b {
                 Self {
                     env: self.env.clone(),
                     address: self.address.clone(),
-                    auths: self.auths.set_auths(auths),
+                    config: self.config.set_auths(auths),
                 }
             }
             /// Mock authorizations in the environment which will cause matching invokes
@@ -2279,7 +2279,7 @@ mod test_b {
                 Self {
                     env: self.env.clone(),
                     address: self.address.clone(),
-                    auths: self.auths.mock_auths(mock_auths),
+                    config: self.config.mock_auths(mock_auths),
                 }
             }
             /// Mock all calls to the `Address::require_auth` and
@@ -2292,7 +2292,7 @@ mod test_b {
                 Self {
                     env: self.env.clone(),
                     address: self.address.clone(),
-                    auths: self.auths.mock_all_auths(),
+                    config: self.config.mock_all_auths(),
                 }
             }
             /// A version of `mock_all_auths` that allows authorizations that
@@ -2308,7 +2308,7 @@ mod test_b {
                 Self {
                     env: self.env.clone(),
                     address: self.address.clone(),
-                    auths: self.auths.mock_all_auths_allowing_non_root_auth(),
+                    config: self.config.mock_all_auths_allowing_non_root_auth(),
                 }
             }
         }

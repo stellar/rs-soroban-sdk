@@ -3233,14 +3233,14 @@ pub struct ContractClient<'a> {
     pub env: soroban_sdk::Env,
     pub address: soroban_sdk::Address,
     #[doc(hidden)]
-    auths: soroban_sdk::testutils::ClientAuths<'a>,
+    config: soroban_sdk::testutils::ClientInternalConfig<'a>,
 }
 impl<'a> ContractClient<'a> {
     pub fn new(env: &soroban_sdk::Env, address: &soroban_sdk::Address) -> Self {
         Self {
             env: env.clone(),
             address: address.clone(),
-            auths: soroban_sdk::testutils::ClientAuths::default(),
+            config: soroban_sdk::testutils::ClientInternalConfig::default(),
         }
     }
     /// Set authorizations in the environment which will be consumed by
@@ -3255,7 +3255,7 @@ impl<'a> ContractClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            auths: self.auths.set_auths(auths),
+            config: self.config.set_auths(auths),
         }
     }
     /// Mock authorizations in the environment which will cause matching invokes
@@ -3267,7 +3267,7 @@ impl<'a> ContractClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            auths: self.auths.mock_auths(mock_auths),
+            config: self.config.mock_auths(mock_auths),
         }
     }
     /// Mock all calls to the `Address::require_auth` and
@@ -3280,7 +3280,7 @@ impl<'a> ContractClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            auths: self.auths.mock_all_auths(),
+            config: self.config.mock_all_auths(),
         }
     }
     /// A version of `mock_all_auths` that allows authorizations that
@@ -3296,7 +3296,7 @@ impl<'a> ContractClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            auths: self.auths.mock_all_auths_allowing_non_root_auth(),
+            config: self.config.mock_all_auths_allowing_non_root_auth(),
         }
     }
 }
@@ -3416,7 +3416,7 @@ impl Contract {
 }
 impl<'a> ContractClient<'a> {
     pub fn add(&self, a: &UdtEnum, b: &UdtEnum) -> i64 {
-        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.auths);
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
@@ -3440,7 +3440,7 @@ impl<'a> ContractClient<'a> {
         Result<i64, <i64 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.auths);
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -3457,7 +3457,7 @@ impl<'a> ContractClient<'a> {
         res
     }
     pub fn recursive(&self, a: &UdtRecursive) -> Option<UdtRecursive> {
-        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.auths);
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
@@ -3482,7 +3482,7 @@ impl<'a> ContractClient<'a> {
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     >{
-        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.auths);
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -3496,7 +3496,7 @@ impl<'a> ContractClient<'a> {
         res
     }
     pub fn recursive_enum(&self, a: &RecursiveEnum, key: &u32) -> Option<RecursiveEnum> {
-        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.auths);
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
@@ -3522,7 +3522,7 @@ impl<'a> ContractClient<'a> {
         >,
         Result<Error, soroban_sdk::InvokeError>,
     > {
-        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.auths);
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -4094,14 +4094,14 @@ mod test_with_wasm {
             pub env: soroban_sdk::Env,
             pub address: soroban_sdk::Address,
             #[doc(hidden)]
-            auths: soroban_sdk::testutils::ClientAuths<'a>,
+            config: soroban_sdk::testutils::ClientInternalConfig<'a>,
         }
         impl<'a> Client<'a> {
             pub fn new(env: &soroban_sdk::Env, address: &soroban_sdk::Address) -> Self {
                 Self {
                     env: env.clone(),
                     address: address.clone(),
-                    auths: soroban_sdk::testutils::ClientAuths::default(),
+                    config: soroban_sdk::testutils::ClientInternalConfig::default(),
                 }
             }
             /// Set authorizations in the environment which will be consumed by
@@ -4119,7 +4119,7 @@ mod test_with_wasm {
                 Self {
                     env: self.env.clone(),
                     address: self.address.clone(),
-                    auths: self.auths.set_auths(auths),
+                    config: self.config.set_auths(auths),
                 }
             }
             /// Mock authorizations in the environment which will cause matching invokes
@@ -4134,7 +4134,7 @@ mod test_with_wasm {
                 Self {
                     env: self.env.clone(),
                     address: self.address.clone(),
-                    auths: self.auths.mock_auths(mock_auths),
+                    config: self.config.mock_auths(mock_auths),
                 }
             }
             /// Mock all calls to the `Address::require_auth` and
@@ -4147,7 +4147,7 @@ mod test_with_wasm {
                 Self {
                     env: self.env.clone(),
                     address: self.address.clone(),
-                    auths: self.auths.mock_all_auths(),
+                    config: self.config.mock_all_auths(),
                 }
             }
             /// A version of `mock_all_auths` that allows authorizations that
@@ -4163,14 +4163,14 @@ mod test_with_wasm {
                 Self {
                     env: self.env.clone(),
                     address: self.address.clone(),
-                    auths: self.auths.mock_all_auths_allowing_non_root_auth(),
+                    config: self.config.mock_all_auths_allowing_non_root_auth(),
                 }
             }
         }
         impl<'a> Client<'a> {
             pub fn add(&self, a: &UdtEnum, b: &UdtEnum) -> i64 {
                 let _call_scope =
-                    soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.auths);
+                    soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
                 use soroban_sdk::{FromVal, IntoVal};
                 let res = self.env.invoke_contract(
                     &self.address,
@@ -4198,7 +4198,7 @@ mod test_with_wasm {
                 Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
             > {
                 let _call_scope =
-                    soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.auths);
+                    soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
                 use soroban_sdk::{FromVal, IntoVal};
                 let res = self.env.try_invoke_contract(
                     &self.address,
@@ -4216,7 +4216,7 @@ mod test_with_wasm {
             }
             pub fn recursive(&self, a: &UdtRecursive) -> Option<UdtRecursive> {
                 let _call_scope =
-                    soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.auths);
+                    soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
                 use soroban_sdk::{FromVal, IntoVal};
                 let res = self.env.invoke_contract(
                     &self.address,
@@ -4243,7 +4243,7 @@ mod test_with_wasm {
                 Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
             > {
                 let _call_scope =
-                    soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.auths);
+                    soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
                 use soroban_sdk::{FromVal, IntoVal};
                 let res = self.env.try_invoke_contract(
                     &self.address,
@@ -4258,7 +4258,7 @@ mod test_with_wasm {
             }
             pub fn recursive_enum(&self, a: &RecursiveEnum, key: &u32) -> Option<RecursiveEnum> {
                 let _call_scope =
-                    soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.auths);
+                    soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
                 use soroban_sdk::{FromVal, IntoVal};
                 let res = self.env.invoke_contract(
                     &self.address,
@@ -4285,7 +4285,7 @@ mod test_with_wasm {
                 Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
             > {
                 let _call_scope =
-                    soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.auths);
+                    soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
                 use soroban_sdk::{FromVal, IntoVal};
                 let res = self.env.try_invoke_contract(
                     &self.address,
