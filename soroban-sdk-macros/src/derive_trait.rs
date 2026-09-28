@@ -50,17 +50,10 @@ fn derive_or_err(metadata: TokenStream2, input: TokenStream2) -> Result<TokenStr
             );
         }
     }
-    if let Err(e) = errors.finish() {
-        // Keep the trait and its trait macro so that impls of it still resolve
-        // and only the errors above are reported, but skip the spec, args, and
-        // client, which cannot be generated for the unsupported parameters.
-        let e = e.write_errors();
-        return Ok(quote! {
-            #e
-            #[#path::contractimpl_trait_macro(crate_path = #path)]
-            #input
-        });
-    }
+    // The errors are reported alongside everything the trait would otherwise
+    // generate, so that code using the trait, its client, or its args still
+    // resolves and only these errors are reported.
+    let errors = errors.finish().err().map(|e| e.write_errors());
 
     let spec_name = args
         .spec_name
@@ -75,6 +68,7 @@ fn derive_or_err(metadata: TokenStream2, input: TokenStream2) -> Result<TokenStr
         .unwrap_or_else(|| format!("{}Client", input.ident.unraw()));
 
     Ok(quote! {
+        #errors
         pub struct #spec_ident;
         #[#path::contractspecfn(name = #spec_name, export = #spec_export)]
         #[#path::contractargs(name = #args_name)]
