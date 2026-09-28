@@ -77,7 +77,20 @@ impl ::core::cmp::PartialEq for UsedParamStruct {
 impl UsedParamStruct {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedParamStruct"
+        const NAME: &str = "::test_spec_shaking_v3::UsedParamStruct";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedParamStruct` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedParamStruct`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -229,7 +242,20 @@ impl ::core::cmp::PartialEq for UsedReturnEnum {
 impl UsedReturnEnum {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedReturnEnum"
+        const NAME: &str = "::test_spec_shaking_v3::UsedReturnEnum";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedReturnEnum` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedReturnEnum`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -399,7 +425,20 @@ impl ::core::cmp::PartialEq for UsedParamIntEnum {
 impl UsedParamIntEnum {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedParamIntEnum"
+        const NAME: &str = "::test_spec_shaking_v3::UsedParamIntEnum";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedParamIntEnum` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedParamIntEnum`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -520,7 +559,20 @@ impl ::core::cmp::PartialEq for UsedErrorEnum {
 impl UsedErrorEnum {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedErrorEnum"
+        const NAME: &str = "::test_spec_shaking_v3::UsedErrorEnum";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedErrorEnum` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedErrorEnum`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -717,7 +769,20 @@ impl ::core::cmp::PartialEq for UsedPanicErrorEnum {
 impl UsedPanicErrorEnum {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedPanicErrorEnum"
+        const NAME: &str = "::test_spec_shaking_v3::UsedPanicErrorEnum";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedPanicErrorEnum` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedPanicErrorEnum`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -903,7 +968,20 @@ impl ::core::cmp::PartialEq for UsedAssertErrorEnum {
 impl UsedAssertErrorEnum {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedAssertErrorEnum"
+        const NAME: &str = "::test_spec_shaking_v3::UsedAssertErrorEnum";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedAssertErrorEnum` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedAssertErrorEnum`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -1096,7 +1174,20 @@ impl ::core::cmp::PartialEq for UsedNestedInStruct {
 impl UsedNestedInStruct {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedNestedInStruct"
+        const NAME: &str = "::test_spec_shaking_v3::UsedNestedInStruct";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedNestedInStruct` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedNestedInStruct`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -1212,7 +1303,20 @@ impl ::core::cmp::PartialEq for UsedVecElement {
 impl UsedVecElement {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedVecElement"
+        const NAME: &str = "::test_spec_shaking_v3::UsedVecElement";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedVecElement` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedVecElement`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -1333,7 +1437,20 @@ impl ::core::cmp::PartialEq for UsedMapKey {
 impl UsedMapKey {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedMapKey"
+        const NAME: &str = "::test_spec_shaking_v3::UsedMapKey";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedMapKey` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedMapKey`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -1446,7 +1563,20 @@ impl ::core::cmp::PartialEq for UsedMapVal {
 impl UsedMapVal {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedMapVal"
+        const NAME: &str = "::test_spec_shaking_v3::UsedMapVal";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedMapVal` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedMapVal`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -1564,7 +1694,20 @@ impl ::core::cmp::PartialEq for UsedOptionElement {
 impl UsedOptionElement {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedOptionElement"
+        const NAME: &str = "::test_spec_shaking_v3::UsedOptionElement";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedOptionElement` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedOptionElement`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -1678,7 +1821,20 @@ impl ::core::cmp::PartialEq for UsedResultOk {
 impl UsedResultOk {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedResultOk"
+        const NAME: &str = "::test_spec_shaking_v3::UsedResultOk";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedResultOk` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedResultOk`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -1802,7 +1958,20 @@ impl ::core::cmp::PartialEq for UsedEventSimple {
 impl UsedEventSimple {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedEventSimple"
+        const NAME: &str = "::test_spec_shaking_v3::UsedEventSimple";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedEventSimple` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedEventSimple`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -1929,7 +2098,20 @@ impl ::core::cmp::PartialEq for UsedEventTopicType {
 impl UsedEventTopicType {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedEventTopicType"
+        const NAME: &str = "::test_spec_shaking_v3::UsedEventTopicType";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedEventTopicType` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedEventTopicType`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -2057,7 +2239,20 @@ impl ::core::cmp::PartialEq for UsedEventWithTopicType {
 impl UsedEventWithTopicType {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedEventWithTopicType"
+        const NAME: &str = "::test_spec_shaking_v3::UsedEventWithTopicType";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedEventWithTopicType` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedEventWithTopicType`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -2195,7 +2390,20 @@ impl ::core::cmp::PartialEq for UsedEventDataType {
 impl UsedEventDataType {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedEventDataType"
+        const NAME: &str = "::test_spec_shaking_v3::UsedEventDataType";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedEventDataType` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedEventDataType`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -2330,7 +2538,20 @@ impl ::core::cmp::PartialEq for UsedEventWithDataType {
 impl UsedEventWithDataType {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedEventWithDataType"
+        const NAME: &str = "::test_spec_shaking_v3::UsedEventWithDataType";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedEventWithDataType` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedEventWithDataType`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -2464,7 +2685,20 @@ impl ::core::cmp::PartialEq for UsedEventTopicOuter {
 impl UsedEventTopicOuter {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedEventTopicOuter"
+        const NAME: &str = "::test_spec_shaking_v3::UsedEventTopicOuter";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedEventTopicOuter` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedEventTopicOuter`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -2593,7 +2827,20 @@ impl ::core::cmp::PartialEq for UsedEventTopicInner {
 impl UsedEventTopicInner {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedEventTopicInner"
+        const NAME: &str = "::test_spec_shaking_v3::UsedEventTopicInner";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedEventTopicInner` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedEventTopicInner`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -2719,7 +2966,20 @@ impl ::core::cmp::PartialEq for UsedEventWithNestedTopic {
 impl UsedEventWithNestedTopic {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedEventWithNestedTopic"
+        const NAME: &str = "::test_spec_shaking_v3::UsedEventWithNestedTopic";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedEventWithNestedTopic` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedEventWithNestedTopic`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -2853,7 +3113,20 @@ impl ::core::cmp::PartialEq for UsedEventDataOuter {
 impl UsedEventDataOuter {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedEventDataOuter"
+        const NAME: &str = "::test_spec_shaking_v3::UsedEventDataOuter";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedEventDataOuter` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedEventDataOuter`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -2982,7 +3255,20 @@ impl ::core::cmp::PartialEq for UsedEventDataInner {
 impl UsedEventDataInner {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedEventDataInner"
+        const NAME: &str = "::test_spec_shaking_v3::UsedEventDataInner";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedEventDataInner` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedEventDataInner`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -3108,7 +3394,20 @@ impl ::core::cmp::PartialEq for UsedEventWithNestedData {
 impl UsedEventWithNestedData {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedEventWithNestedData"
+        const NAME: &str = "::test_spec_shaking_v3::UsedEventWithNestedData";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedEventWithNestedData` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedEventWithNestedData`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -3244,7 +3543,20 @@ impl ::core::cmp::PartialEq for UsedRefTopicType {
 impl UsedRefTopicType {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedRefTopicType"
+        const NAME: &str = "::test_spec_shaking_v3::UsedRefTopicType";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedRefTopicType` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedRefTopicType`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -3363,7 +3675,20 @@ impl ::core::cmp::PartialEq for UsedRefDataType {
 impl UsedRefDataType {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedRefDataType"
+        const NAME: &str = "::test_spec_shaking_v3::UsedRefDataType";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedRefDataType` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedRefDataType`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -3487,7 +3812,20 @@ impl ::core::cmp::PartialEq for UsedRefDataInner {
 impl UsedRefDataInner {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedRefDataInner"
+        const NAME: &str = "::test_spec_shaking_v3::UsedRefDataInner";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedRefDataInner` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedRefDataInner`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -3611,7 +3949,20 @@ impl<'a> ::core::cmp::PartialEq for UsedEventWithRefs<'a> {
 impl<'a> UsedEventWithRefs<'a> {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedEventWithRefs"
+        const NAME: &str = "::test_spec_shaking_v3::UsedEventWithRefs";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedEventWithRefs` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedEventWithRefs`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -3746,7 +4097,20 @@ impl ::core::cmp::PartialEq for UsedTupleElement {
 impl UsedTupleElement {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedTupleElement"
+        const NAME: &str = "::test_spec_shaking_v3::UsedTupleElement";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedTupleElement` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedTupleElement`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -3865,7 +4229,20 @@ impl ::core::cmp::PartialEq for UsedTupleReturnElement {
 impl UsedTupleReturnElement {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedTupleReturnElement"
+        const NAME: &str = "::test_spec_shaking_v3::UsedTupleReturnElement";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedTupleReturnElement` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedTupleReturnElement`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -3986,7 +4363,20 @@ impl ::core::cmp::PartialEq for UsedVecInnerVecElement {
 impl UsedVecInnerVecElement {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedVecInnerVecElement"
+        const NAME: &str = "::test_spec_shaking_v3::UsedVecInnerVecElement";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedVecInnerVecElement` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedVecInnerVecElement`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -4107,7 +4497,20 @@ impl ::core::cmp::PartialEq for UsedVecInnerElement {
 impl UsedVecInnerElement {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedVecInnerElement"
+        const NAME: &str = "::test_spec_shaking_v3::UsedVecInnerElement";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedVecInnerElement` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedVecInnerElement`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -4238,7 +4641,20 @@ impl ::core::cmp::PartialEq for UsedVecElementNested {
 impl UsedVecElementNested {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedVecElementNested"
+        const NAME: &str = "::test_spec_shaking_v3::UsedVecElementNested";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedVecElementNested` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedVecElementNested`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -4401,7 +4817,20 @@ impl ::core::cmp::PartialEq for UsedNonPubStruct {
 impl UsedNonPubStruct {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedNonPubStruct"
+        const NAME: &str = "::test_spec_shaking_v3::UsedNonPubStruct";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedNonPubStruct` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedNonPubStruct`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -4513,7 +4942,20 @@ impl ::core::cmp::PartialEq for UsedNonPubError {
 impl UsedNonPubError {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedNonPubError"
+        const NAME: &str = "::test_spec_shaking_v3::UsedNonPubError";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedNonPubError` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedNonPubError`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -4704,7 +5146,20 @@ impl ::core::cmp::PartialEq for UsedRecursiveRoot {
 impl UsedRecursiveRoot {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedRecursiveRoot"
+        const NAME: &str = "::test_spec_shaking_v3::UsedRecursiveRoot";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedRecursiveRoot` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedRecursiveRoot`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -4851,7 +5306,20 @@ impl ::core::cmp::PartialEq for UsedRecursiveNode {
 impl UsedRecursiveNode {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedRecursiveNode"
+        const NAME: &str = "::test_spec_shaking_v3::UsedRecursiveNode";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedRecursiveNode` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedRecursiveNode`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -5034,7 +5502,20 @@ impl ::core::cmp::PartialEq for UsedRecursiveLeaf {
 impl UsedRecursiveLeaf {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedRecursiveLeaf"
+        const NAME: &str = "::test_spec_shaking_v3::UsedRecursiveLeaf";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedRecursiveLeaf` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedRecursiveLeaf`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -5159,7 +5640,20 @@ impl ::core::cmp::PartialEq for UsedLeaf {
 impl UsedLeaf {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UsedLeaf"
+        const NAME: &str = "::test_spec_shaking_v3::UsedLeaf";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedLeaf` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedLeaf`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -5597,7 +6091,20 @@ mod wasm_imported {
     impl ContractExecutableRef {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v3::wasm_imported::ContractExecutableRef"
+            const NAME: &str = "::test_spec_shaking_v3::wasm_imported::ContractExecutableRef";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `ContractExecutableRef` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::ContractExecutableRef`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -5784,7 +6291,20 @@ mod wasm_imported {
     impl ContractContext {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v3::wasm_imported::ContractContext"
+            const NAME: &str = "::test_spec_shaking_v3::wasm_imported::ContractContext";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `ContractContext` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::ContractContext`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -5974,7 +6494,20 @@ mod wasm_imported {
     impl SubContractInvocation {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v3::wasm_imported::SubContractInvocation"
+            const NAME: &str = "::test_spec_shaking_v3::wasm_imported::SubContractInvocation";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `SubContractInvocation` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::SubContractInvocation`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -6159,7 +6692,20 @@ mod wasm_imported {
     impl CreateContractHostFnContext {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v3::wasm_imported::CreateContractHostFnContext"
+            const NAME: &str = "::test_spec_shaking_v3::wasm_imported::CreateContractHostFnContext";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `CreateContractHostFnContext` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::CreateContractHostFnContext`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -6360,7 +6906,21 @@ mod wasm_imported {
     impl CreateContractWithConstructorHostFnContext {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v3::wasm_imported::CreateContractWithConstructorHostFnContext"
+            const NAME: &str =
+                "::test_spec_shaking_v3::wasm_imported::CreateContractWithConstructorHostFnContext";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `CreateContractWithConstructorHostFnContext` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::CreateContractWithConstructorHostFnContext`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -6555,7 +7115,20 @@ mod wasm_imported {
     impl StructA {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v3::wasm_imported::StructA"
+            const NAME: &str = "::test_spec_shaking_v3::wasm_imported::StructA";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `StructA` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::StructA`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -6710,7 +7283,20 @@ mod wasm_imported {
     impl StructB {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v3::wasm_imported::StructB"
+            const NAME: &str = "::test_spec_shaking_v3::wasm_imported::StructB";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `StructB` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::StructB`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -6865,7 +7451,20 @@ mod wasm_imported {
     impl StructC {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v3::wasm_imported::StructC"
+            const NAME: &str = "::test_spec_shaking_v3::wasm_imported::StructC";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `StructC` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::StructC`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -7021,7 +7620,20 @@ mod wasm_imported {
     impl StructTupleA {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v3::wasm_imported::StructTupleA"
+            const NAME: &str = "::test_spec_shaking_v3::wasm_imported::StructTupleA";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `StructTupleA` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::StructTupleA`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -7166,7 +7778,20 @@ mod wasm_imported {
     impl StructTupleB {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v3::wasm_imported::StructTupleB"
+            const NAME: &str = "::test_spec_shaking_v3::wasm_imported::StructTupleB";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `StructTupleB` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::StructTupleB`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -7312,7 +7937,20 @@ mod wasm_imported {
     impl StructTupleC {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v3::wasm_imported::StructTupleC"
+            const NAME: &str = "::test_spec_shaking_v3::wasm_imported::StructTupleC";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `StructTupleC` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::StructTupleC`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -7501,7 +8139,20 @@ mod wasm_imported {
     impl ContractExecutable {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v3::wasm_imported::ContractExecutable"
+            const NAME: &str = "::test_spec_shaking_v3::wasm_imported::ContractExecutable";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `ContractExecutable` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::ContractExecutable`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -7773,7 +8424,20 @@ mod wasm_imported {
     impl Context {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v3::wasm_imported::Context"
+            const NAME: &str = "::test_spec_shaking_v3::wasm_imported::Context";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `Context` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::Context`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -8093,7 +8757,20 @@ mod wasm_imported {
     impl InvokerContractAuthEntry {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v3::wasm_imported::InvokerContractAuthEntry"
+            const NAME: &str = "::test_spec_shaking_v3::wasm_imported::InvokerContractAuthEntry";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `InvokerContractAuthEntry` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::InvokerContractAuthEntry`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -8365,7 +9042,20 @@ mod wasm_imported {
     impl Executable {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v3::wasm_imported::Executable"
+            const NAME: &str = "::test_spec_shaking_v3::wasm_imported::Executable";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `Executable` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::Executable`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -8579,7 +9269,20 @@ mod wasm_imported {
     impl EnumA {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v3::wasm_imported::EnumA"
+            const NAME: &str = "::test_spec_shaking_v3::wasm_imported::EnumA";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `EnumA` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::EnumA`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -8824,7 +9527,20 @@ mod wasm_imported {
     impl EnumB {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v3::wasm_imported::EnumB"
+            const NAME: &str = "::test_spec_shaking_v3::wasm_imported::EnumB";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `EnumB` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::EnumB`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -9078,7 +9794,20 @@ mod wasm_imported {
     impl EnumC {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v3::wasm_imported::EnumC"
+            const NAME: &str = "::test_spec_shaking_v3::wasm_imported::EnumC";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `EnumC` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::EnumC`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -9302,7 +10031,20 @@ mod wasm_imported {
     impl EnumIntA {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v3::wasm_imported::EnumIntA"
+            const NAME: &str = "::test_spec_shaking_v3::wasm_imported::EnumIntA";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `EnumIntA` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::EnumIntA`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -9455,7 +10197,20 @@ mod wasm_imported {
     impl EnumIntB {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v3::wasm_imported::EnumIntB"
+            const NAME: &str = "::test_spec_shaking_v3::wasm_imported::EnumIntB";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `EnumIntB` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::EnumIntB`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -9608,7 +10363,20 @@ mod wasm_imported {
     impl EnumIntC {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v3::wasm_imported::EnumIntC"
+            const NAME: &str = "::test_spec_shaking_v3::wasm_imported::EnumIntC";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `EnumIntC` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::EnumIntC`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -9761,7 +10529,20 @@ mod wasm_imported {
     impl ErrorA {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v3::wasm_imported::ErrorA"
+            const NAME: &str = "::test_spec_shaking_v3::wasm_imported::ErrorA";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `ErrorA` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::ErrorA`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -9996,7 +10777,20 @@ mod wasm_imported {
     impl ErrorB {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v3::wasm_imported::ErrorB"
+            const NAME: &str = "::test_spec_shaking_v3::wasm_imported::ErrorB";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `ErrorB` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::ErrorB`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -10231,7 +11025,20 @@ mod wasm_imported {
     impl ErrorC {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v3::wasm_imported::ErrorC"
+            const NAME: &str = "::test_spec_shaking_v3::wasm_imported::ErrorC";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `ErrorC` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::ErrorC`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -10466,7 +11273,20 @@ mod wasm_imported {
     impl EventA {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v3::wasm_imported::EventA"
+            const NAME: &str = "::test_spec_shaking_v3::wasm_imported::EventA";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `EventA` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::EventA`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -10633,7 +11453,20 @@ mod wasm_imported {
     impl EventB {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v3::wasm_imported::EventB"
+            const NAME: &str = "::test_spec_shaking_v3::wasm_imported::EventB";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `EventB` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::EventB`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -10811,7 +11644,20 @@ mod wasm_imported {
     impl EventC {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v3::wasm_imported::EventC"
+            const NAME: &str = "::test_spec_shaking_v3::wasm_imported::EventC";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `EventC` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::EventC`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -10956,7 +11802,20 @@ mod wasm_imported {
     impl EventD {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_spec_shaking_v3::wasm_imported::EventD"
+            const NAME: &str = "::test_spec_shaking_v3::wasm_imported::EventD";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `EventD` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::EventD`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -11063,7 +11922,20 @@ impl ::core::cmp::PartialEq for UnusedStruct {
 impl UnusedStruct {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UnusedStruct"
+        const NAME: &str = "::test_spec_shaking_v3::UnusedStruct";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UnusedStruct` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedStruct`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -11190,7 +12062,20 @@ impl ::core::cmp::PartialEq for UnusedEnum {
 impl UnusedEnum {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UnusedEnum"
+        const NAME: &str = "::test_spec_shaking_v3::UnusedEnum";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UnusedEnum` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedEnum`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -11350,7 +12235,20 @@ impl ::core::cmp::PartialEq for UnusedIntEnum {
 impl UnusedIntEnum {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UnusedIntEnum"
+        const NAME: &str = "::test_spec_shaking_v3::UnusedIntEnum";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UnusedIntEnum` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedIntEnum`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -11474,7 +12372,20 @@ impl ::core::cmp::PartialEq for UnusedEvent {
 impl UnusedEvent {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UnusedEvent"
+        const NAME: &str = "::test_spec_shaking_v3::UnusedEvent";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UnusedEvent` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedEvent`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -11591,7 +12502,20 @@ impl ::core::cmp::PartialEq for UnusedEventDataType {
 impl UnusedEventDataType {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UnusedEventDataType"
+        const NAME: &str = "::test_spec_shaking_v3::UnusedEventDataType";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UnusedEventDataType` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedEventDataType`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -11717,7 +12641,20 @@ impl ::core::cmp::PartialEq for UnusedEventWithDataType {
 impl UnusedEventWithDataType {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UnusedEventWithDataType"
+        const NAME: &str = "::test_spec_shaking_v3::UnusedEventWithDataType";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UnusedEventWithDataType` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedEventWithDataType`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -11846,7 +12783,20 @@ impl ::core::cmp::PartialEq for UnusedOuter {
 impl UnusedOuter {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UnusedOuter"
+        const NAME: &str = "::test_spec_shaking_v3::UnusedOuter";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UnusedOuter` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedOuter`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -11967,7 +12917,20 @@ impl ::core::cmp::PartialEq for UnusedInner {
 impl UnusedInner {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UnusedInner"
+        const NAME: &str = "::test_spec_shaking_v3::UnusedInner";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UnusedInner` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedInner`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -12078,7 +13041,20 @@ impl ::core::cmp::PartialEq for UnusedPubError {
 impl UnusedPubError {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UnusedPubError"
+        const NAME: &str = "::test_spec_shaking_v3::UnusedPubError";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UnusedPubError` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedPubError`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -12269,7 +13245,20 @@ impl ::core::cmp::PartialEq for UnusedNonContractFnParam {
 impl UnusedNonContractFnParam {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UnusedNonContractFnParam"
+        const NAME: &str = "::test_spec_shaking_v3::UnusedNonContractFnParam";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UnusedNonContractFnParam` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedNonContractFnParam`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -12390,7 +13379,20 @@ impl ::core::cmp::PartialEq for UnusedNonContractFnReturn {
 impl UnusedNonContractFnReturn {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UnusedNonContractFnReturn"
+        const NAME: &str = "::test_spec_shaking_v3::UnusedNonContractFnReturn";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UnusedNonContractFnReturn` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedNonContractFnReturn`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -12506,7 +13508,20 @@ impl ::core::cmp::PartialEq for UnusedNonPubStruct {
 impl UnusedNonPubStruct {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UnusedNonPubStruct"
+        const NAME: &str = "::test_spec_shaking_v3::UnusedNonPubStruct";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UnusedNonPubStruct` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedNonPubStruct`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -12620,7 +13635,20 @@ impl ::core::cmp::PartialEq for UnusedNonPubError {
 impl UnusedNonPubError {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_shaking_v3::UnusedNonPubError"
+        const NAME: &str = "::test_spec_shaking_v3::UnusedNonPubError";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UnusedNonPubError` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedNonPubError`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]

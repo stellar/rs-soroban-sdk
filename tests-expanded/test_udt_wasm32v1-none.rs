@@ -52,7 +52,20 @@ impl ::core::cmp::PartialEq for UdtEnum2 {
 impl UdtEnum2 {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_udt::UdtEnum2"
+        const NAME: &str = "::test_udt::UdtEnum2";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UdtEnum2` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::UdtEnum2`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -192,7 +205,20 @@ impl ::core::cmp::PartialEq for UdtEnum {
 impl UdtEnum {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_udt::UdtEnum"
+        const NAME: &str = "::test_udt::UdtEnum";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UdtEnum` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::UdtEnum`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -422,7 +448,20 @@ impl ::core::cmp::PartialEq for UdtTuple {
 impl UdtTuple {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_udt::UdtTuple"
+        const NAME: &str = "::test_udt::UdtTuple";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UdtTuple` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::UdtTuple`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -560,7 +599,20 @@ impl ::core::cmp::PartialEq for UdtStruct {
 impl UdtStruct {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_udt::UdtStruct"
+        const NAME: &str = "::test_udt::UdtStruct";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UdtStruct` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::UdtStruct`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -707,7 +759,20 @@ impl ::core::cmp::PartialEq for UdtRecursive {
 impl UdtRecursive {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_udt::UdtRecursive"
+        const NAME: &str = "::test_udt::UdtRecursive";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UdtRecursive` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::UdtRecursive`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -857,7 +922,20 @@ impl ::core::cmp::PartialEq for RecursiveToEnum {
 impl RecursiveToEnum {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_udt::RecursiveToEnum"
+        const NAME: &str = "::test_udt::RecursiveToEnum";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `RecursiveToEnum` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::RecursiveToEnum`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -1015,7 +1093,20 @@ impl ::core::cmp::PartialEq for RecursiveEnum {
 impl RecursiveEnum {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_udt::RecursiveEnum"
+        const NAME: &str = "::test_udt::RecursiveEnum";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `RecursiveEnum` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::RecursiveEnum`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]

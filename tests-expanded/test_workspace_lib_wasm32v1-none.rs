@@ -36,7 +36,20 @@ impl ::core::cmp::PartialEq for Value {
 impl Value {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_workspace_lib::Value"
+        const NAME: &str = "::test_workspace_lib::Value";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `Value` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_workspace_lib::Value`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]

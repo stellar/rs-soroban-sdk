@@ -50,7 +50,20 @@ impl ::core::cmp::PartialEq for AttributeType {
 impl AttributeType {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_attributes::AttributeType"
+        const NAME: &str = "::test_attributes::AttributeType";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `AttributeType` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_attributes::AttributeType`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -133,7 +146,20 @@ pub struct AttributeEvent {
 impl AttributeEvent {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_attributes::AttributeEvent"
+        const NAME: &str = "::test_attributes::AttributeEvent";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `AttributeEvent` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_attributes::AttributeEvent`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]

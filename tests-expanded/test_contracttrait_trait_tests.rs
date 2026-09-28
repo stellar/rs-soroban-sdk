@@ -52,7 +52,20 @@ impl ::core::cmp::PartialEq for MyStruct {
 impl MyStruct {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_contracttrait_trait::MyStruct"
+        const NAME: &str = "::test_contracttrait_trait::MyStruct";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `MyStruct` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_contracttrait_trait::MyStruct`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -501,7 +514,20 @@ impl ::core::cmp::PartialEq for MyEnumUnit {
 impl MyEnumUnit {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_contracttrait_trait::MyEnumUnit"
+        const NAME: &str = "::test_contracttrait_trait::MyEnumUnit";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `MyEnumUnit` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_contracttrait_trait::MyEnumUnit`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -876,7 +902,20 @@ impl ::core::cmp::PartialEq for MyEnumVariants {
 impl MyEnumVariants {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_contracttrait_trait::MyEnumVariants"
+        const NAME: &str = "::test_contracttrait_trait::MyEnumVariants";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `MyEnumVariants` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_contracttrait_trait::MyEnumVariants`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
