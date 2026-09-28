@@ -278,6 +278,28 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
     .unwrap_or_else(|| "Client".to_string());
 
     let pub_methods: Vec<_> = syn_ext::impl_pub_methods(&imp);
+
+    // Contract functions are exported with a spec that has no way to represent
+    // a type or const parameter, whether declared on the impl or on the fn.
+    let generics_check = std::iter::once(syn_ext::check_generics_are_lifetimes(
+        &imp.generics,
+        "contract impls",
+    ))
+    .chain(
+        pub_methods
+            .iter()
+            .map(|m| syn_ext::check_generics_are_lifetimes(&m.sig.generics, "contract functions")),
+    )
+    .filter_map(Result::err)
+    .reduce(|mut a, b| {
+        a.combine(b);
+        a
+    });
+    if let Some(e) = generics_check {
+        let e = e.into_compile_error();
+        return quote! { #imp #e }.into();
+    }
+
     let pub_methods_fns: Vec<syn_ext::Fn> = pub_methods.iter().map(Into::into).collect();
     let derived = derive_pub_fns(
         crate_path,

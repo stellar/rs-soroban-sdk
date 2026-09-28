@@ -7,6 +7,7 @@ use crate::{
         const_view_string, const_view_symbol, const_view_type_def, map_type, spec_name_gen,
     },
     shaking, symbol,
+    syn_ext::check_generics_are_lifetimes,
 };
 use darling::{ast::NestedMeta, util::SpannedValue, Error, FromMeta};
 use heck::ToSnakeCase;
@@ -92,6 +93,7 @@ fn derive_event_or_err(metadata: TokenStream2, input: TokenStream2) -> Result<To
     let args = NestedMeta::parse_meta_list(metadata.into())?;
     let args = ContractEventArgs::from_list(&args)?;
     let input = parse2::<DeriveInput>(input)?;
+    check_generics_are_lifetimes(&input.generics, "contract events")?;
     let export_error = export_arg_error(&args.export);
     let derived = derive_impls(&args, &input)?;
     let mut input = input;
