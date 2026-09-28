@@ -65,7 +65,7 @@ fn derive(args: &Args, input: &ItemTrait) -> TokenStream2 {
             // error by `#[contracttrait]`, so the build is failing regardless. Skip only
             // that fn: generating it would add a confusing second error about inferring
             // the parameters. The trait's other default fns are still generated so code
-            // that uses them doesn't fail too. A build that succeeds never skips a fn.
+            // that uses them doesn't fail too.
             if !sig
                 .generics
                 .params
