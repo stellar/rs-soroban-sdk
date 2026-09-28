@@ -1,128 +1,31 @@
-error[E0425]: cannot find type `T` in this scope
-  --> tests/compile_fails/generics_errors.rs:24:75
-   |
- 4 | pub struct C;
-   | ------------- similarly named struct `C` defined here
-...
-24 |     pub fn with_type<T: soroban_sdk::TryFromVal<Env, Val>>(_env: Env, _x: T) {}
-   |                                                                           ^
-   |
-help: a struct with a similar name exists
-   |
-24 -     pub fn with_type<T: soroban_sdk::TryFromVal<Env, Val>>(_env: Env, _x: T) {}
-24 +     pub fn with_type<T: soroban_sdk::TryFromVal<Env, Val>>(_env: Env, _x: C) {}
-   |
-
-error[E0283]: type annotations needed
-  --> tests/compile_fails/generics_errors.rs:9:1
-   |
- 9 | #[contractevent]
-   | ^ cannot infer type
-   |
-   = note: multiple `impl`s satisfying `_: IntoVal<Env, soroban_sdk::Val>` found in the `soroban_sdk` crate:
-           - impl<E, T, U> IntoVal<E, T> for U
-             where E: soroban_env_common::env::Env, T: FromVal<E, U>;
-           - impl<N> IntoVal<Env, soroban_sdk::Val> for soroban_sdk::crypto::Hash<N>
-             where the constant `N` has type `usize`;
-note: required by a bound in `WithType`
-  --> tests/compile_fails/generics_errors.rs:10:28
+error: type parameter `T` is not supported on contract events, only lifetimes are
+  --> tests/compile_fails/generics_errors.rs:10:25
    |
 10 | pub struct WithType<'a, T: IntoVal<Env, Val>> {
-   |                            ^^^^^^^^^^^^^^^^^ required by this bound in `WithType`
-   = note: this error originates in the attribute macro `contractevent` (in Nightly builds, run with -Z macro-backtrace for more info)
+   |                         ^
 
-error[E0283]: type annotations needed
-  --> tests/compile_fails/generics_errors.rs:9:1
-   |
- 9 | #[contractevent]
-   | ^^^^^^^^^^^^^^^^ cannot infer type
-   |
-   = note: multiple `impl`s satisfying `_: IntoVal<Env, soroban_sdk::Val>` found in the `soroban_sdk` crate:
-           - impl<E, T, U> IntoVal<E, T> for U
-             where E: soroban_env_common::env::Env, T: FromVal<E, U>;
-           - impl<N> IntoVal<Env, soroban_sdk::Val> for soroban_sdk::crypto::Hash<N>
-             where the constant `N` has type `usize`;
-note: required by a bound in `WithType::<'a, T>::spec_xdr`
-  --> tests/compile_fails/generics_errors.rs:10:28
-   |
- 9 | #[contractevent]
-   | ---------------- required by a bound in this associated function
-10 | pub struct WithType<'a, T: IntoVal<Env, Val>> {
-   |                            ^^^^^^^^^^^^^^^^^ required by this bound in `WithType::<'a, T>::spec_xdr`
-   = note: this error originates in the attribute macro `contractevent` (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error[E0277]: the trait bound `T: soroban_sdk::SpecShakingMarker` is not satisfied
-  --> tests/compile_fails/generics_errors.rs:13:12
-   |
-13 |     value: T,
-   |            ^ the trait `soroban_sdk::SpecShakingMarker` is not implemented for `T`
-   |
-help: consider further restricting type parameter `T` with trait `SpecShakingMarker`
-   |
-10 | pub struct WithType<'a, T: IntoVal<Env, Val> + soroban_sdk::SpecShakingMarker> {
-   |                                              ++++++++++++++++++++++++++++++++
-
-error[E0284]: type annotations needed
-  --> tests/compile_fails/generics_errors.rs:16:1
-   |
-16 | #[contractevent]
-   | ^ cannot infer the value of const parameter `N`
-   |
-note: required by a const generic parameter in `WithConst`
+error: const parameter `N` is not supported on contract events, only lifetimes are
   --> tests/compile_fails/generics_errors.rs:17:22
    |
 17 | pub struct WithConst<const N: u32> {
-   |                      ^^^^^^^^^^^^ required by this const generic parameter in `WithConst`
-   = note: this error originates in the attribute macro `contractevent` (in Nightly builds, run with -Z macro-backtrace for more info)
+   |                      ^^^^^
 
-error[E0284]: type annotations needed
-  --> tests/compile_fails/generics_errors.rs:16:1
-   |
-16 | #[contractevent]
-   | ^^^^^^^^^^^^^^^^ cannot infer the value of const parameter `N`
-   |
-note: required by a const generic parameter in `WithConst::<N>::spec_xdr`
-  --> tests/compile_fails/generics_errors.rs:17:22
-   |
-16 | #[contractevent]
-   | ---------------- required by a bound in this associated function
-17 | pub struct WithConst<const N: u32> {
-   |                      ^^^^^^^^^^^^ required by this const generic parameter in `WithConst::<N>::spec_xdr`
-   = note: this error originates in the attribute macro `contractevent` (in Nightly builds, run with -Z macro-backtrace for more info)
-
-error[E0283]: type annotations needed
-  --> tests/compile_fails/generics_errors.rs:22:1
-   |
-22 | #[contractimpl]
-   | ^^^^^^^^^^^^^^^ cannot infer type
-   |
-   = note: the type must implement `TryFromVal<Env, soroban_sdk::Val>`
-   = help: the following types implement trait `TryFromVal<E, V>`:
-             Bls12381Fp
-             Bls12381Fp2
-             Bls12381Fr
-             Bls12381G1Affine
-             Bls12381G2Affine
-             Bn254Fp
-             Bn254Fr
-             Bn254G1Affine
-           and $N others
-note: required by a bound in `C::with_type`
-  --> tests/compile_fails/generics_errors.rs:24:25
+error: type parameter `T` is not supported on contract functions, only lifetimes are
+  --> tests/compile_fails/generics_errors.rs:24:22
    |
 24 |     pub fn with_type<T: soroban_sdk::TryFromVal<Env, Val>>(_env: Env, _x: T) {}
-   |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `C::with_type`
-   = note: this error originates in the attribute macro `contractimpl` (in Nightly builds, run with -Z macro-backtrace for more info)
+   |                      ^
 
-error[E0283]: type annotations needed
-  --> tests/compile_fails/generics_errors.rs:22:1
+error: const parameter `N` is not supported on contract functions, only lifetimes are
+  --> tests/compile_fails/generics_errors.rs:29:19
    |
-22 | #[contractimpl]
-   | ^^^^^^^^^^^^^^^ cannot infer type
-   |
-   = note: multiple `impl`s satisfying `_: soroban_sdk::TryFromValForContractFn<Env, soroban_sdk::Val>` found in the `soroban_sdk` crate:
-           - impl<E, T, U> soroban_sdk::TryFromValForContractFn<E, T> for U
-             where E: soroban_env_common::env::Env, U: TryFromVal<E, T>, U: soroban_sdk::SpecShakingMarker;
-           - impl<N> soroban_sdk::TryFromValForContractFn<Env, soroban_sdk::Val> for soroban_sdk::crypto::Hash<N>
-             where the constant `N` has type `usize`;
-   = note: this error originates in the attribute macro `contractimpl` (in Nightly builds, run with -Z macro-backtrace for more info)
+29 |     fn with_const<const N: u32>(_env: Env) {}
+   |                   ^^^^^
+
+warning: unused imports: `Address` and `IntoVal`
+ --> tests/compile_fails/generics_errors.rs:1:73
+  |
+1 | use soroban_sdk::{contract, contractevent, contractimpl, contracttrait, Address, Env, IntoVal, Val};
+  |                                                                         ^^^^^^^       ^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default

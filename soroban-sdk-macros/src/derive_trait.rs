@@ -1,8 +1,8 @@
-use crate::default_crate_path;
+use crate::{default_crate_path, syn_ext::check_generics_are_lifetimes};
 use darling::{ast::NestedMeta, Error, FromMeta};
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
-use syn::{ext::IdentExt as _, parse2, ItemTrait, Path};
+use syn::{ext::IdentExt as _, parse2, ItemTrait, Path, TraitItem};
 
 // See soroban-sdk/docs/contracttrait.md for documentation on how this works.
 
@@ -36,6 +36,19 @@ fn derive_or_err(metadata: TokenStream2, input: TokenStream2) -> Result<TokenStr
     let args = NestedMeta::parse_meta_list(metadata.into())?;
     let args = Args::from_list(&args)?;
     let input: ItemTrait = parse2(input)?;
+    let mut errors = Error::accumulator();
+    errors.handle(
+        check_generics_are_lifetimes(&input.generics, "contract traits").map_err(Error::from),
+    );
+    for item in &input.items {
+        if let TraitItem::Fn(f) = item {
+            errors.handle(
+                check_generics_are_lifetimes(&f.sig.generics, "contract functions")
+                    .map_err(Error::from),
+            );
+        }
+    }
+    errors.finish()?;
 
     let path = &args.crate_path;
     let spec_name = args

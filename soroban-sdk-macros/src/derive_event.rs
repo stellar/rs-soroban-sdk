@@ -1,6 +1,7 @@
 use crate::{
     attribute::remove_attributes_from_item, default_crate_path, doc::docs_from_attrs,
-    export_arg_error, map_type::map_type, shaking, symbol, DEFAULT_XDR_RW_LIMITS,
+    export_arg_error, map_type::map_type, shaking, symbol, syn_ext::check_generics_are_lifetimes,
+    DEFAULT_XDR_RW_LIMITS,
 };
 use darling::{ast::NestedMeta, util::SpannedValue, Error, FromMeta};
 use heck::ToSnakeCase;
@@ -87,6 +88,7 @@ fn derive_event_or_err(metadata: TokenStream2, input: TokenStream2) -> Result<To
     let args = NestedMeta::parse_meta_list(metadata.into())?;
     let args = ContractEventArgs::from_list(&args)?;
     let input = parse2::<DeriveInput>(input)?;
+    check_generics_are_lifetimes(&input.generics, "contract events")?;
     let export_error = export_arg_error(&args.export);
     let derived = derive_impls(&args, &input)?;
     let mut input = input;
