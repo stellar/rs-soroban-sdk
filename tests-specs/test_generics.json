@@ -26,6 +26,43 @@
     }
   },
   {
+    "function_v0": {
+      "doc": "",
+      "name": "exec_fn_lifetime",
+      "inputs": [
+        {
+          "doc": "",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "doc": "",
+          "name": "i1",
+          "type": "u32"
+        }
+      ],
+      "outputs": [
+        "u32"
+      ]
+    }
+  },
+  {
+    "function_v0": {
+      "doc": "",
+      "name": "exec_trait_lifetime",
+      "inputs": [
+        {
+          "doc": "",
+          "name": "i1",
+          "type": "u32"
+        }
+      ],
+      "outputs": [
+        "u32"
+      ]
+    }
+  },
+  {
     "udt_struct_v0": {
       "doc": "Executable referenced via a persistent storage entry owned by a contract,\\neither this contract or another contract.\\n\\nThe persistent storage entry owned by the `owner` has the `tag` as its key.",
       "lib": "",
@@ -329,6 +366,31 @@
           }
         }
       ]
+    }
+  },
+  {
+    "event_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "::test_generics::Exec",
+      "prefix_topics": [
+        "exec"
+      ],
+      "params": [
+        {
+          "doc": "",
+          "name": "from",
+          "type": "address",
+          "location": "topic_list"
+        },
+        {
+          "doc": "",
+          "name": "result",
+          "type": "u32",
+          "location": "data"
+        }
+      ],
+      "data_format": "map"
     }
   }
 ]
