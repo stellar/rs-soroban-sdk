@@ -307,6 +307,8 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
 #[cfg(test)]
 mod test {
     use super::*;
+    use proc_macro2::Span;
+    use stellar_xdr::SC_SPEC_TYPE_NAME_LIMIT;
     use syn::{parse_quote, DeriveInput};
 
     #[test]
@@ -455,15 +457,13 @@ mod test {
 
     #[test]
     fn test_is_mapped_type_udt_unique_xdr_error() {
-        let input: DeriveInput = parse_quote!(
-            struct MyTypeIsOverSixtyCharactersLongAndShouldFailToCompileDueToThat {
-                pub key: [u8; 32],
-            }
-        );
-        let err = is_mapped_type_udt(&input.ident, &input.generics).unwrap_err();
+        // A name longer than the XDR spec's type name limit.
+        let name = "A".repeat(SC_SPEC_TYPE_NAME_LIMIT as usize + 1);
+        let ident = Ident::new(&name, Span::call_site());
+        let err = is_mapped_type_udt(&ident, &Generics::default()).unwrap_err();
         assert_eq!(
             err.to_string(),
-            "type `MyTypeIsOverSixtyCharactersLongAndShouldFailToCompileDueToThat` cannot be used in XDR spec: xdr value max length exceeded"
+            format!("type `{name}` cannot be used in XDR spec: xdr value max length exceeded")
         );
     }
 

@@ -4,6 +4,8 @@ TEST_CRATES = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.pack
 MSRV = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.name == "soroban-sdk") | .rust_version')
 TEST_CRATES_RUSTUP_TOOLCHAIN?=$(MSRV)
 
+VERSION_MAJOR = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.name == "soroban-sdk") | .version | split(".")[0]')
+
 CARGO_DOC_ARGS?=--open
 
 default: test
@@ -23,7 +25,7 @@ test: fmt build-test-wasms test-only
 # hazmat granular features are excluded because all hazmat features are tested
 # together with the umbrella hazmat feature.
 test-only:
-	SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2=1 \
+	STELLAR_CLI_VERSION=$(VERSION_MAJOR).0.0 \
 		cargo hack --feature-powerset --ignore-unknown-features --features testutils \
 			--exclude-features docs \
 			--exclude-features hazmat-crypto \
@@ -38,7 +40,7 @@ build-libs: fmt
 build-test-wasms: fmt
 	# Build the test wasms with MSRV by default, with some meta disabled for
 	# binary stability for tests.
-	SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2=1 \
+	STELLAR_CLI_VERSION=$(VERSION_MAJOR).0.0 \
 	RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
 	RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
 		cargo hack build --release --target wasm32v1-none $(foreach c,$(TEST_CRATES),--package $(c)) ; \
@@ -49,8 +51,12 @@ build-test-wasms: fmt
 
 # Builds the fuzz tests. Requires cargo-fuzz and cargo-afl.
 build-fuzz:
+	cd soroban-spec/fuzz && cargo +nightly fuzz check
 	cd tests/fuzz/fuzz && cargo +nightly fuzz check
 	cd tests/fuzz_afl/fuzz && cargo afl build
+
+fuzz-corpus:
+	cd soroban-spec/fuzz && targets=$$(cargo +nightly fuzz list) && for t in $$targets ; do cargo +nightly fuzz run $$t -- -runs=0 || exit 1 ; done
 
 readme:
 	cd soroban-sdk \
@@ -74,10 +80,29 @@ expand-tests: build-test-wasms
       RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
       cargo expand --package $$package --tests --target x86_64-unknown-linux-gnu | rustfmt > tests-expanded/$${package}_tests.rs; \
 		echo "Expanding $$package for wasm32v1-none target without tests"; \
-    SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2=1 \
+    STELLAR_CLI_VERSION=$(VERSION_MAJOR).0.0 \
     RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
       RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
 			cargo expand --package $$package --release --target wasm32v1-none | rustfmt > tests-expanded/$${package}_wasm32v1-none.rs; \
+	done
+
+# Dumps the contractspecv0 section of each test vector contract in the tests/
+# directory, as built by build-test-wasms and so before any spec shaking, as a
+# pretty formatted JSON array of XDR-JSON values, sorted by kind and name then
+# entry so that moving items around in the source does not reorder them. Serves
+# to surface changes to the spec the SDK embeds, which the expanded code does
+# not show because the spec is encoded from it rather than written out by it.
+spec-snapshots: build-test-wasms
+	$(MAKE) spec-snapshots-from-built-wasms
+
+spec-snapshots-from-built-wasms:
+	rm -fr tests-specs
+	mkdir -p tests-specs
+	for name in $(TEST_CRATES); do \
+		wasm=target/wasm32v1-none/release/$$name.wasm; \
+		[ -f "$$wasm" ] || continue; \
+		echo "Dumping spec of $$name"; \
+		cargo run --quiet --package spec-json -- $$wasm > tests-specs/$$name.json || exit 1; \
 	done
 
 miri:
@@ -94,3 +119,6 @@ clean:
 
 msrv:
 	@echo $(MSRV)
+
+version-major:
+	@echo $(VERSION_MAJOR)

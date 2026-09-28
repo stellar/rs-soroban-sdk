@@ -111,6 +111,10 @@ jobs:
           echo "Relabelled local rs-soroban-sdk crates from $local_version to $dest_version"
         fi
 
+    - name: Set the stellar-cli major version the local soroban-sdk requires
+      working-directory: ${{ github.workspace }}
+      run: echo "STELLAR_CLI_VERSION=$(make --no-print-directory -C rs-soroban-sdk version-major).0.0" >> $GITHUB_ENV
+
     - name: Collect publishable rs-soroban-sdk crates
       run: |
         # Collect the publishable rs-soroban-sdk crates, their directories, and their
@@ -191,6 +195,8 @@ jobs:
     - name: Build soroban-examples
       env:
         CARGO_BUILD_RUSTFLAGS: "-A deprecated"
+        # Nested example contracts outside the patched workspace build with the
+        # released soroban-sdk, which still checks for this variable.
         SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2: "true"
       run: make build
 
@@ -208,6 +214,8 @@ jobs:
     - name: Test soroban-examples
       env:
         CARGO_BUILD_RUSTFLAGS: "-A deprecated"
+        # Nested example contracts outside the patched workspace build with the
+        # released soroban-sdk, which still checks for this variable.
         SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2: "true"
       run: make test
         

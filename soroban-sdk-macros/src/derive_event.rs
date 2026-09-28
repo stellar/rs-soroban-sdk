@@ -9,7 +9,7 @@ use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use stellar_xdr::{
     ScSpecEntry, ScSpecEventDataFormat, ScSpecEventParamLocationV0, ScSpecEventParamV0,
-    ScSpecEventV0, ScSymbol, StringM, WriteXdr,
+    ScSpecEventV0, StringM, WriteXdr,
 };
 use syn::{
     ext::IdentExt as _, parse2, spanned::Spanned, Data, DeriveInput, Fields, LitStr, Meta, Path,
@@ -198,7 +198,9 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         doc: docs_from_attrs(&input.attrs),
         // set to empty string always because the field is no longer used
         lib: StringM::default(),
-        name: ScSymbol(event_name),
+        // Event names are limited by the SDK to EVENT_NAME_LENGTH, which is
+        // shorter than the spec's name limit, so the conversion cannot fail.
+        name: event_name.into_vec().try_into().unwrap(),
         prefix_topics: prefix_topics
             .iter()
             .map(|t| t.try_into().unwrap())
