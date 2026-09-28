@@ -50,7 +50,20 @@ impl ::core::cmp::PartialEq for StructA {
 impl StructA {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::StructA"
+        const NAME: &str = "::test_spec_lib::StructA";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `StructA` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::StructA`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -505,7 +518,20 @@ impl ::core::cmp::PartialEq for StructB {
 impl StructB {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::StructB"
+        const NAME: &str = "::test_spec_lib::StructB";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `StructB` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::StructB`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -960,7 +986,20 @@ impl ::core::cmp::PartialEq for StructC {
 impl StructC {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::StructC"
+        const NAME: &str = "::test_spec_lib::StructC";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `StructC` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::StructC`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -1415,7 +1454,20 @@ impl ::core::cmp::PartialEq for StructTupleA {
 impl StructTupleA {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::StructTupleA"
+        const NAME: &str = "::test_spec_lib::StructTupleA";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `StructTupleA` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::StructTupleA`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -1822,7 +1874,20 @@ impl ::core::cmp::PartialEq for StructTupleB {
 impl StructTupleB {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::StructTupleB"
+        const NAME: &str = "::test_spec_lib::StructTupleB";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `StructTupleB` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::StructTupleB`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -2230,7 +2295,20 @@ impl ::core::cmp::PartialEq for StructTupleC {
 impl StructTupleC {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::StructTupleC"
+        const NAME: &str = "::test_spec_lib::StructTupleC";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `StructTupleC` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::StructTupleC`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -2649,7 +2727,20 @@ impl ::core::cmp::PartialEq for EnumA {
 impl EnumA {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::EnumA"
+        const NAME: &str = "::test_spec_lib::EnumA";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `EnumA` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::EnumA`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -3161,7 +3252,20 @@ impl ::core::cmp::PartialEq for EnumB {
 impl EnumB {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::EnumB"
+        const NAME: &str = "::test_spec_lib::EnumB";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `EnumB` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::EnumB`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -3804,7 +3908,20 @@ impl ::core::cmp::PartialEq for EnumC {
 impl EnumC {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::EnumC"
+        const NAME: &str = "::test_spec_lib::EnumC";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `EnumC` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::EnumC`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -4411,7 +4528,20 @@ impl ::core::cmp::PartialEq for EnumIntA {
 impl EnumIntA {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::EnumIntA"
+        const NAME: &str = "::test_spec_lib::EnumIntA";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `EnumIntA` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::EnumIntA`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -4789,7 +4919,20 @@ impl ::core::cmp::PartialEq for EnumIntB {
 impl EnumIntB {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::EnumIntB"
+        const NAME: &str = "::test_spec_lib::EnumIntB";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `EnumIntB` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::EnumIntB`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -5167,7 +5310,20 @@ impl ::core::cmp::PartialEq for EnumIntC {
 impl EnumIntC {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::EnumIntC"
+        const NAME: &str = "::test_spec_lib::EnumIntC";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `EnumIntC` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::EnumIntC`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -5545,7 +5701,20 @@ impl ::core::cmp::PartialEq for ErrorA {
 impl ErrorA {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::ErrorA"
+        const NAME: &str = "::test_spec_lib::ErrorA";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `ErrorA` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::ErrorA`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -5746,7 +5915,20 @@ impl ::core::cmp::PartialEq for ErrorB {
 impl ErrorB {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::ErrorB"
+        const NAME: &str = "::test_spec_lib::ErrorB";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `ErrorB` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::ErrorB`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -5947,7 +6129,20 @@ impl ::core::cmp::PartialEq for ErrorC {
 impl ErrorC {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::ErrorC"
+        const NAME: &str = "::test_spec_lib::ErrorC";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `ErrorC` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::ErrorC`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -6144,7 +6339,20 @@ impl ::core::cmp::PartialEq for EventA {
 impl EventA {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::EventA"
+        const NAME: &str = "::test_spec_lib::EventA";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `EventA` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::EventA`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -6267,7 +6475,20 @@ impl ::core::cmp::PartialEq for EventB {
 impl EventB {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::EventB"
+        const NAME: &str = "::test_spec_lib::EventB";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `EventB` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::EventB`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -6401,7 +6622,20 @@ impl ::core::cmp::PartialEq for EventC {
 impl EventC {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::EventC"
+        const NAME: &str = "::test_spec_lib::EventC";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `EventC` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::EventC`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -6518,7 +6752,20 @@ impl ::core::cmp::PartialEq for EventD {
 impl EventD {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_spec_lib::EventD"
+        const NAME: &str = "::test_spec_lib::EventD";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `EventD` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::EventD`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]

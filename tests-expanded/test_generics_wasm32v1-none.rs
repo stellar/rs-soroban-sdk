@@ -37,7 +37,20 @@ where
 {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_generics::Exec"
+        const NAME: &str = "::test_generics::Exec";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `Exec` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_generics::Exec`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]

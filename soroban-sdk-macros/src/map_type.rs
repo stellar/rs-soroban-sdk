@@ -1,8 +1,8 @@
 use proc_macro2::{Literal, TokenStream as TokenStream2};
-use quote::{format_ident, quote, ToTokens};
+use quote::{format_ident, quote, quote_spanned, ToTokens};
 use stellar_xdr::{
     ScSpecTypeBytesN, ScSpecTypeDef, ScSpecTypeMap, ScSpecTypeOption, ScSpecTypeResult,
-    ScSpecTypeTuple, ScSpecTypeUdt, ScSpecTypeVec, ScSymbol, StringM,
+    ScSpecTypeTuple, ScSpecTypeUdt, ScSpecTypeVec, ScSymbol, StringM, SC_SPEC_TYPE_NAME_LIMIT,
 };
 use syn::{
     ext::IdentExt as _, spanned::Spanned, Error, Expr, ExprLit, GenericArgument, Ident, Lit, Path,
@@ -450,6 +450,12 @@ fn type_args(t: &Type) -> Vec<&Type> {
 /// The generics arguments carry the type's `split_for_impl` pieces so an event
 /// struct that borrows its fields can repeat its generics on the impl; a type
 /// without generics passes `None` for each.
+///
+/// The name must fit the spec's type name limit, and its length is only known
+/// once the compiler has expanded `module_path!`, so it is checked at compile
+/// time. The check is part of evaluating the name, so an over-long name fails
+/// with a single error naming the type, rather than with the XDR length error
+/// that encoding the name would hit in every spec entry that uses it.
 pub fn spec_name_gen(
     ident: &Ident,
     gen_impl: Option<TokenStream2>,
@@ -457,14 +463,33 @@ pub fn spec_name_gen(
     gen_where: Option<TokenStream2>,
 ) -> TokenStream2 {
     let name = Literal::string(&ident.unraw().to_string());
+    let limit = SC_SPEC_TYPE_NAME_LIMIT as usize;
+    let too_long = Literal::string(&format!(
+        "type `{}` has a contract spec name longer than the limit of {limit} bytes, shorten its module path or name: `::",
+        ident.unraw(),
+    ));
     let gen_impl = gen_impl.unwrap_or_default();
     let gen_types = gen_types.unwrap_or_default();
     let gen_where = gen_where.unwrap_or_default();
+    // Spanned to the type's name so that the error points at the type. The name
+    // is held in consts rather than a local, because a local's name would be
+    // resolved in the type's module and so could clash with a const there.
+    let checked_name = quote_spanned! {ident.span()=>
+        const NAME: &str = ::core::concat!("::", ::core::module_path!(), "::", #name);
+        const CHECKED_NAME: &str = {
+            ::core::assert!(
+                NAME.len() <= #limit,
+                ::core::concat!(#too_long, ::core::module_path!(), "::", #name, "`")
+            );
+            NAME
+        };
+    };
     quote! {
         impl #gen_impl #ident #gen_types #gen_where {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                ::core::concat!("::", ::core::module_path!(), "::", #name)
+                #checked_name
+                CHECKED_NAME
             }
         }
     }
@@ -490,7 +515,6 @@ pub fn const_view_symbol(path: &Path, s: &ScSymbol) -> TokenStream2 {
 mod test {
     use super::*;
     use proc_macro2::Span;
-    use stellar_xdr::SC_SPEC_TYPE_NAME_LIMIT;
     use syn::{parse_quote, DeriveInput};
 
     #[test]

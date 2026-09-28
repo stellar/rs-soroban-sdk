@@ -245,7 +245,20 @@ mod addcontract {
     impl ContractExecutableRef {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_import_contract::addcontract::ContractExecutableRef"
+            const NAME: &str = "::test_import_contract::addcontract::ContractExecutableRef";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `ContractExecutableRef` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::ContractExecutableRef`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -446,7 +459,20 @@ mod addcontract {
     impl ContractContext {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_import_contract::addcontract::ContractContext"
+            const NAME: &str = "::test_import_contract::addcontract::ContractContext";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `ContractContext` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::ContractContext`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -653,7 +679,20 @@ mod addcontract {
     impl SubContractInvocation {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_import_contract::addcontract::SubContractInvocation"
+            const NAME: &str = "::test_import_contract::addcontract::SubContractInvocation";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `SubContractInvocation` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::SubContractInvocation`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -854,7 +893,20 @@ mod addcontract {
     impl CreateContractHostFnContext {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_import_contract::addcontract::CreateContractHostFnContext"
+            const NAME: &str = "::test_import_contract::addcontract::CreateContractHostFnContext";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `CreateContractHostFnContext` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::CreateContractHostFnContext`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -1069,7 +1121,21 @@ mod addcontract {
     impl CreateContractWithConstructorHostFnContext {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_import_contract::addcontract::CreateContractWithConstructorHostFnContext"
+            const NAME: &str =
+                "::test_import_contract::addcontract::CreateContractWithConstructorHostFnContext";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `CreateContractWithConstructorHostFnContext` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::CreateContractWithConstructorHostFnContext`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -1322,7 +1388,20 @@ mod addcontract {
     impl ContractExecutable {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_import_contract::addcontract::ContractExecutable"
+            const NAME: &str = "::test_import_contract::addcontract::ContractExecutable";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `ContractExecutable` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::ContractExecutable`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -1608,7 +1687,20 @@ mod addcontract {
     impl Context {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_import_contract::addcontract::Context"
+            const NAME: &str = "::test_import_contract::addcontract::Context";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `Context` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::Context`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -1943,7 +2035,20 @@ mod addcontract {
     impl InvokerContractAuthEntry {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_import_contract::addcontract::InvokerContractAuthEntry"
+            const NAME: &str = "::test_import_contract::addcontract::InvokerContractAuthEntry";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `InvokerContractAuthEntry` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::InvokerContractAuthEntry`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -2230,7 +2335,20 @@ mod addcontract {
     impl Executable {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_import_contract::addcontract::Executable"
+            const NAME: &str = "::test_import_contract::addcontract::Executable";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `Executable` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::Executable`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -2440,7 +2558,20 @@ mod addcontract {
     impl Error {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_import_contract::addcontract::Error"
+            const NAME: &str = "::test_import_contract::addcontract::Error";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `Error` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::Error`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -2638,7 +2769,20 @@ mod addcontract {
     impl MyError {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_import_contract::addcontract::MyError"
+            const NAME: &str = "::test_import_contract::addcontract::MyError";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `MyError` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::MyError`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -3196,7 +3340,20 @@ mod eventscontract {
     impl ContractExecutableRef {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_import_contract::eventscontract::ContractExecutableRef"
+            const NAME: &str = "::test_import_contract::eventscontract::ContractExecutableRef";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `ContractExecutableRef` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::ContractExecutableRef`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -3397,7 +3554,20 @@ mod eventscontract {
     impl ContractContext {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_import_contract::eventscontract::ContractContext"
+            const NAME: &str = "::test_import_contract::eventscontract::ContractContext";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `ContractContext` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::ContractContext`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -3604,7 +3774,20 @@ mod eventscontract {
     impl SubContractInvocation {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_import_contract::eventscontract::SubContractInvocation"
+            const NAME: &str = "::test_import_contract::eventscontract::SubContractInvocation";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `SubContractInvocation` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::SubContractInvocation`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -3805,7 +3988,21 @@ mod eventscontract {
     impl CreateContractHostFnContext {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_import_contract::eventscontract::CreateContractHostFnContext"
+            const NAME: &str =
+                "::test_import_contract::eventscontract::CreateContractHostFnContext";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `CreateContractHostFnContext` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::CreateContractHostFnContext`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -4020,7 +4217,20 @@ mod eventscontract {
     impl CreateContractWithConstructorHostFnContext {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_import_contract::eventscontract::CreateContractWithConstructorHostFnContext"
+            const NAME: &str = "::test_import_contract::eventscontract::CreateContractWithConstructorHostFnContext";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `CreateContractWithConstructorHostFnContext` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::CreateContractWithConstructorHostFnContext`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -4273,7 +4483,20 @@ mod eventscontract {
     impl ContractExecutable {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_import_contract::eventscontract::ContractExecutable"
+            const NAME: &str = "::test_import_contract::eventscontract::ContractExecutable";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `ContractExecutable` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::ContractExecutable`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -4559,7 +4782,20 @@ mod eventscontract {
     impl Context {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_import_contract::eventscontract::Context"
+            const NAME: &str = "::test_import_contract::eventscontract::Context";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `Context` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::Context`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -4894,7 +5130,20 @@ mod eventscontract {
     impl InvokerContractAuthEntry {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_import_contract::eventscontract::InvokerContractAuthEntry"
+            const NAME: &str = "::test_import_contract::eventscontract::InvokerContractAuthEntry";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `InvokerContractAuthEntry` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::InvokerContractAuthEntry`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -5181,7 +5430,20 @@ mod eventscontract {
     impl Executable {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_import_contract::eventscontract::Executable"
+            const NAME: &str = "::test_import_contract::eventscontract::Executable";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `Executable` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::Executable`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -5448,7 +5710,20 @@ mod eventscontract {
     impl Transfer {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_import_contract::eventscontract::Transfer"
+            const NAME: &str = "::test_import_contract::eventscontract::Transfer";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `Transfer` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::Transfer`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -5652,7 +5927,20 @@ mod eventscontract {
     impl MapValues {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_import_contract::eventscontract::MapValues"
+            const NAME: &str = "::test_import_contract::eventscontract::MapValues";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `MapValues` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::MapValues`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -5827,7 +6115,20 @@ mod eventscontract {
     impl VecValues {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_import_contract::eventscontract::VecValues"
+            const NAME: &str = "::test_import_contract::eventscontract::VecValues";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `VecValues` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::VecValues`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -5999,7 +6300,20 @@ mod eventscontract {
     impl SingleValue {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_import_contract::eventscontract::SingleValue"
+            const NAME: &str = "::test_import_contract::eventscontract::SingleValue";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `SingleValue` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::SingleValue`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -6144,7 +6458,20 @@ mod eventscontract {
     impl SingleValueVoid {
         #[doc(hidden)]
         pub const fn spec_name() -> &'static str {
-            "::test_import_contract::eventscontract::SingleValueVoid"
+            const NAME: &str = "::test_import_contract::eventscontract::SingleValueVoid";
+            const CHECKED_NAME: &str = {
+                if !(NAME.len() <= 1024usize) {
+                    {
+                        ::core::panicking::panic_fmt(
+                            format_args!(
+                                "type `SingleValueVoid` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::SingleValueVoid`",
+                            ),
+                        );
+                    }
+                }
+                NAME
+            };
+            CHECKED_NAME
         }
     }
     #[doc(hidden)]
@@ -6249,7 +6576,20 @@ impl ::core::cmp::PartialEq for Error {
 impl Error {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_import_contract::Error"
+        const NAME: &str = "::test_import_contract::Error";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `Error` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::Error`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]

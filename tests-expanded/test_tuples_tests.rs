@@ -1197,7 +1197,20 @@ mod test {
         impl ContractExecutableRef {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "::test_tuples::test::wasm::ContractExecutableRef"
+                const NAME: &str = "::test_tuples::test::wasm::ContractExecutableRef";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= 1024usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `ContractExecutableRef` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_tuples::test::wasm::ContractExecutableRef`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
             }
         }
         #[doc(hidden)]
@@ -1729,7 +1742,20 @@ mod test {
         impl ContractContext {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "::test_tuples::test::wasm::ContractContext"
+                const NAME: &str = "::test_tuples::test::wasm::ContractContext";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= 1024usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `ContractContext` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_tuples::test::wasm::ContractContext`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
             }
         }
         #[doc(hidden)]
@@ -2330,7 +2356,20 @@ mod test {
         impl SubContractInvocation {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "::test_tuples::test::wasm::SubContractInvocation"
+                const NAME: &str = "::test_tuples::test::wasm::SubContractInvocation";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= 1024usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `SubContractInvocation` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_tuples::test::wasm::SubContractInvocation`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
             }
         }
         #[doc(hidden)]
@@ -2866,7 +2905,20 @@ mod test {
         impl CreateContractHostFnContext {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "::test_tuples::test::wasm::CreateContractHostFnContext"
+                const NAME: &str = "::test_tuples::test::wasm::CreateContractHostFnContext";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= 1024usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `CreateContractHostFnContext` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_tuples::test::wasm::CreateContractHostFnContext`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
             }
         }
         #[doc(hidden)]
@@ -3429,7 +3481,21 @@ mod test {
         impl CreateContractWithConstructorHostFnContext {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "::test_tuples::test::wasm::CreateContractWithConstructorHostFnContext"
+                const NAME: &str =
+                    "::test_tuples::test::wasm::CreateContractWithConstructorHostFnContext";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= 1024usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `CreateContractWithConstructorHostFnContext` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_tuples::test::wasm::CreateContractWithConstructorHostFnContext`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
             }
         }
         #[doc(hidden)]
@@ -4111,7 +4177,20 @@ mod test {
         impl ContractExecutable {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "::test_tuples::test::wasm::ContractExecutable"
+                const NAME: &str = "::test_tuples::test::wasm::ContractExecutable";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= 1024usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `ContractExecutable` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_tuples::test::wasm::ContractExecutable`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
             }
         }
         #[doc(hidden)]
@@ -4802,7 +4881,20 @@ mod test {
         impl Context {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "::test_tuples::test::wasm::Context"
+                const NAME: &str = "::test_tuples::test::wasm::Context";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= 1024usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `Context` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_tuples::test::wasm::Context`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
             }
         }
         #[doc(hidden)]
@@ -5611,7 +5703,20 @@ mod test {
         impl InvokerContractAuthEntry {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "::test_tuples::test::wasm::InvokerContractAuthEntry"
+                const NAME: &str = "::test_tuples::test::wasm::InvokerContractAuthEntry";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= 1024usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `InvokerContractAuthEntry` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_tuples::test::wasm::InvokerContractAuthEntry`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
             }
         }
         #[doc(hidden)]
@@ -6417,7 +6522,20 @@ mod test {
         impl Executable {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "::test_tuples::test::wasm::Executable"
+                const NAME: &str = "::test_tuples::test::wasm::Executable";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= 1024usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `Executable` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_tuples::test::wasm::Executable`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
             }
         }
         #[doc(hidden)]

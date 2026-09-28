@@ -145,7 +145,20 @@ pub struct Transfer {
 impl Transfer {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_events::Transfer"
+        const NAME: &str = "::test_events::Transfer";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `Transfer` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_events::Transfer`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -254,7 +267,20 @@ pub struct SingleValue {
 impl SingleValue {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_events::SingleValue"
+        const NAME: &str = "::test_events::SingleValue";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `SingleValue` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_events::SingleValue`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -331,7 +357,20 @@ pub struct SingleValueVoid {
 impl SingleValueVoid {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_events::SingleValueVoid"
+        const NAME: &str = "::test_events::SingleValueVoid";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `SingleValueVoid` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_events::SingleValueVoid`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -411,7 +450,20 @@ pub struct VecValues {
 impl VecValues {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_events::VecValues"
+        const NAME: &str = "::test_events::VecValues";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `VecValues` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_events::VecValues`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -504,7 +556,20 @@ pub struct MapValues {
 impl MapValues {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_events::MapValues"
+        const NAME: &str = "::test_events::MapValues";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `MapValues` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_events::MapValues`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]

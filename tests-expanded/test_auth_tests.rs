@@ -1191,7 +1191,20 @@ mod test_a {
         impl Error {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "::test_auth::test_a::auth_decline::Error"
+                const NAME: &str = "::test_auth::test_a::auth_decline::Error";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= 1024usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `Error` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_auth::test_a::auth_decline::Error`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
             }
         }
         #[doc(hidden)]
@@ -2831,7 +2844,20 @@ mod test_b {
         impl Error {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "::test_auth::test_b::auth_decline::Error"
+                const NAME: &str = "::test_auth::test_b::auth_decline::Error";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= 1024usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `Error` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_auth::test_b::auth_decline::Error`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
             }
         }
         #[doc(hidden)]

@@ -1208,7 +1208,20 @@ mod test_with_wasm {
         impl ContractExecutableRef {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "::test_associated_types_contracttrait::test_with_wasm::contract::ContractExecutableRef"
+                const NAME: &str = "::test_associated_types_contracttrait::test_with_wasm::contract::ContractExecutableRef";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= 1024usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `ContractExecutableRef` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_associated_types_contracttrait::test_with_wasm::contract::ContractExecutableRef`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
             }
         }
         #[doc(hidden)]
@@ -1740,7 +1753,20 @@ mod test_with_wasm {
         impl ContractContext {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "::test_associated_types_contracttrait::test_with_wasm::contract::ContractContext"
+                const NAME: &str = "::test_associated_types_contracttrait::test_with_wasm::contract::ContractContext";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= 1024usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `ContractContext` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_associated_types_contracttrait::test_with_wasm::contract::ContractContext`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
             }
         }
         #[doc(hidden)]
@@ -2341,7 +2367,20 @@ mod test_with_wasm {
         impl SubContractInvocation {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "::test_associated_types_contracttrait::test_with_wasm::contract::SubContractInvocation"
+                const NAME: &str = "::test_associated_types_contracttrait::test_with_wasm::contract::SubContractInvocation";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= 1024usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `SubContractInvocation` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_associated_types_contracttrait::test_with_wasm::contract::SubContractInvocation`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
             }
         }
         #[doc(hidden)]
@@ -2877,7 +2916,20 @@ mod test_with_wasm {
         impl CreateContractHostFnContext {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "::test_associated_types_contracttrait::test_with_wasm::contract::CreateContractHostFnContext"
+                const NAME: &str = "::test_associated_types_contracttrait::test_with_wasm::contract::CreateContractHostFnContext";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= 1024usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `CreateContractHostFnContext` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_associated_types_contracttrait::test_with_wasm::contract::CreateContractHostFnContext`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
             }
         }
         #[doc(hidden)]
@@ -3440,7 +3492,20 @@ mod test_with_wasm {
         impl CreateContractWithConstructorHostFnContext {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "::test_associated_types_contracttrait::test_with_wasm::contract::CreateContractWithConstructorHostFnContext"
+                const NAME: &str = "::test_associated_types_contracttrait::test_with_wasm::contract::CreateContractWithConstructorHostFnContext";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= 1024usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `CreateContractWithConstructorHostFnContext` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_associated_types_contracttrait::test_with_wasm::contract::CreateContractWithConstructorHostFnContext`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
             }
         }
         #[doc(hidden)]
@@ -4122,7 +4187,20 @@ mod test_with_wasm {
         impl ContractExecutable {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "::test_associated_types_contracttrait::test_with_wasm::contract::ContractExecutable"
+                const NAME: &str = "::test_associated_types_contracttrait::test_with_wasm::contract::ContractExecutable";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= 1024usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `ContractExecutable` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_associated_types_contracttrait::test_with_wasm::contract::ContractExecutable`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
             }
         }
         #[doc(hidden)]
@@ -4813,7 +4891,21 @@ mod test_with_wasm {
         impl Context {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "::test_associated_types_contracttrait::test_with_wasm::contract::Context"
+                const NAME: &str =
+                    "::test_associated_types_contracttrait::test_with_wasm::contract::Context";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= 1024usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `Context` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_associated_types_contracttrait::test_with_wasm::contract::Context`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
             }
         }
         #[doc(hidden)]
@@ -5622,7 +5714,20 @@ mod test_with_wasm {
         impl InvokerContractAuthEntry {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "::test_associated_types_contracttrait::test_with_wasm::contract::InvokerContractAuthEntry"
+                const NAME: &str = "::test_associated_types_contracttrait::test_with_wasm::contract::InvokerContractAuthEntry";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= 1024usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `InvokerContractAuthEntry` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_associated_types_contracttrait::test_with_wasm::contract::InvokerContractAuthEntry`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
             }
         }
         #[doc(hidden)]
@@ -6428,7 +6533,21 @@ mod test_with_wasm {
         impl Executable {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "::test_associated_types_contracttrait::test_with_wasm::contract::Executable"
+                const NAME: &str =
+                    "::test_associated_types_contracttrait::test_with_wasm::contract::Executable";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= 1024usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `Executable` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_associated_types_contracttrait::test_with_wasm::contract::Executable`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
             }
         }
         #[doc(hidden)]

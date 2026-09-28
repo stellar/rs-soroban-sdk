@@ -52,7 +52,20 @@ impl ::core::cmp::PartialEq for UdtEnum2 {
 impl UdtEnum2 {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_udt::UdtEnum2"
+        const NAME: &str = "::test_udt::UdtEnum2";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UdtEnum2` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::UdtEnum2`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -431,7 +444,20 @@ impl ::core::cmp::PartialEq for UdtEnum {
 impl UdtEnum {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_udt::UdtEnum"
+        const NAME: &str = "::test_udt::UdtEnum";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UdtEnum` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::UdtEnum`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -1124,7 +1150,20 @@ impl ::core::cmp::PartialEq for UdtTuple {
 impl UdtTuple {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_udt::UdtTuple"
+        const NAME: &str = "::test_udt::UdtTuple";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UdtTuple` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::UdtTuple`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -1551,7 +1590,20 @@ impl ::core::cmp::PartialEq for UdtStruct {
 impl UdtStruct {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_udt::UdtStruct"
+        const NAME: &str = "::test_udt::UdtStruct";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UdtStruct` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::UdtStruct`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -2074,7 +2126,20 @@ impl ::core::cmp::PartialEq for UdtRecursive {
 impl UdtRecursive {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_udt::UdtRecursive"
+        const NAME: &str = "::test_udt::UdtRecursive";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UdtRecursive` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::UdtRecursive`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -2554,7 +2619,20 @@ impl ::core::cmp::PartialEq for RecursiveToEnum {
 impl RecursiveToEnum {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_udt::RecursiveToEnum"
+        const NAME: &str = "::test_udt::RecursiveToEnum";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `RecursiveToEnum` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::RecursiveToEnum`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -3049,7 +3127,20 @@ impl ::core::cmp::PartialEq for RecursiveEnum {
 impl RecursiveEnum {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_udt::RecursiveEnum"
+        const NAME: &str = "::test_udt::RecursiveEnum";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `RecursiveEnum` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::RecursiveEnum`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
@@ -5132,7 +5223,20 @@ mod test_with_wasm {
         impl UdtTuple {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "::test_udt::test_with_wasm::contract::UdtTuple"
+                const NAME: &str = "::test_udt::test_with_wasm::contract::UdtTuple";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= 1024usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `UdtTuple` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::UdtTuple`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
             }
         }
         #[doc(hidden)]
@@ -5613,7 +5717,20 @@ mod test_with_wasm {
         impl UdtStruct {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "::test_udt::test_with_wasm::contract::UdtStruct"
+                const NAME: &str = "::test_udt::test_with_wasm::contract::UdtStruct";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= 1024usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `UdtStruct` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::UdtStruct`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
             }
         }
         #[doc(hidden)]
@@ -6186,7 +6303,20 @@ mod test_with_wasm {
         impl UdtRecursive {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "::test_udt::test_with_wasm::contract::UdtRecursive"
+                const NAME: &str = "::test_udt::test_with_wasm::contract::UdtRecursive";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= 1024usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `UdtRecursive` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::UdtRecursive`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
             }
         }
         #[doc(hidden)]
@@ -6701,7 +6831,20 @@ mod test_with_wasm {
         impl RecursiveToEnum {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "::test_udt::test_with_wasm::contract::RecursiveToEnum"
+                const NAME: &str = "::test_udt::test_with_wasm::contract::RecursiveToEnum";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= 1024usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `RecursiveToEnum` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::RecursiveToEnum`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
             }
         }
         #[doc(hidden)]
@@ -7221,7 +7364,20 @@ mod test_with_wasm {
         impl ContractExecutableRef {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "::test_udt::test_with_wasm::contract::ContractExecutableRef"
+                const NAME: &str = "::test_udt::test_with_wasm::contract::ContractExecutableRef";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= 1024usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `ContractExecutableRef` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::ContractExecutableRef`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
             }
         }
         #[doc(hidden)]
@@ -7753,7 +7909,20 @@ mod test_with_wasm {
         impl ContractContext {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "::test_udt::test_with_wasm::contract::ContractContext"
+                const NAME: &str = "::test_udt::test_with_wasm::contract::ContractContext";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= 1024usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `ContractContext` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::ContractContext`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
             }
         }
         #[doc(hidden)]
@@ -8354,7 +8523,20 @@ mod test_with_wasm {
         impl SubContractInvocation {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "::test_udt::test_with_wasm::contract::SubContractInvocation"
+                const NAME: &str = "::test_udt::test_with_wasm::contract::SubContractInvocation";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= 1024usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `SubContractInvocation` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::SubContractInvocation`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
             }
         }
         #[doc(hidden)]
@@ -8890,7 +9072,21 @@ mod test_with_wasm {
         impl CreateContractHostFnContext {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "::test_udt::test_with_wasm::contract::CreateContractHostFnContext"
+                const NAME: &str =
+                    "::test_udt::test_with_wasm::contract::CreateContractHostFnContext";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= 1024usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `CreateContractHostFnContext` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::CreateContractHostFnContext`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
             }
         }
         #[doc(hidden)]
@@ -9453,7 +9649,20 @@ mod test_with_wasm {
         impl CreateContractWithConstructorHostFnContext {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "::test_udt::test_with_wasm::contract::CreateContractWithConstructorHostFnContext"
+                const NAME: &str = "::test_udt::test_with_wasm::contract::CreateContractWithConstructorHostFnContext";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= 1024usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `CreateContractWithConstructorHostFnContext` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::CreateContractWithConstructorHostFnContext`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
             }
         }
         #[doc(hidden)]
@@ -10134,7 +10343,20 @@ mod test_with_wasm {
         impl UdtEnum {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "::test_udt::test_with_wasm::contract::UdtEnum"
+                const NAME: &str = "::test_udt::test_with_wasm::contract::UdtEnum";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= 1024usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `UdtEnum` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::UdtEnum`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
             }
         }
         #[doc(hidden)]
@@ -10902,7 +11124,20 @@ mod test_with_wasm {
         impl RecursiveEnum {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "::test_udt::test_with_wasm::contract::RecursiveEnum"
+                const NAME: &str = "::test_udt::test_with_wasm::contract::RecursiveEnum";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= 1024usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `RecursiveEnum` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::RecursiveEnum`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
             }
         }
         #[doc(hidden)]
@@ -11511,7 +11746,20 @@ mod test_with_wasm {
         impl ContractExecutable {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "::test_udt::test_with_wasm::contract::ContractExecutable"
+                const NAME: &str = "::test_udt::test_with_wasm::contract::ContractExecutable";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= 1024usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `ContractExecutable` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::ContractExecutable`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
             }
         }
         #[doc(hidden)]
@@ -12202,7 +12450,20 @@ mod test_with_wasm {
         impl Context {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "::test_udt::test_with_wasm::contract::Context"
+                const NAME: &str = "::test_udt::test_with_wasm::contract::Context";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= 1024usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `Context` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::Context`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
             }
         }
         #[doc(hidden)]
@@ -13011,7 +13272,20 @@ mod test_with_wasm {
         impl InvokerContractAuthEntry {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "::test_udt::test_with_wasm::contract::InvokerContractAuthEntry"
+                const NAME: &str = "::test_udt::test_with_wasm::contract::InvokerContractAuthEntry";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= 1024usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `InvokerContractAuthEntry` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::InvokerContractAuthEntry`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
             }
         }
         #[doc(hidden)]
@@ -13817,7 +14091,20 @@ mod test_with_wasm {
         impl Executable {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "::test_udt::test_with_wasm::contract::Executable"
+                const NAME: &str = "::test_udt::test_with_wasm::contract::Executable";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= 1024usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `Executable` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::Executable`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
             }
         }
         #[doc(hidden)]
@@ -14436,7 +14723,20 @@ mod test_with_wasm {
         impl UdtEnum2 {
             #[doc(hidden)]
             pub const fn spec_name() -> &'static str {
-                "::test_udt::test_with_wasm::contract::UdtEnum2"
+                const NAME: &str = "::test_udt::test_with_wasm::contract::UdtEnum2";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= 1024usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `UdtEnum2` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::UdtEnum2`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
             }
         }
         #[doc(hidden)]

@@ -144,7 +144,20 @@ pub enum DataKey {
 impl DataKey {
     #[doc(hidden)]
     pub const fn spec_name() -> &'static str {
-        "::test_constructor::DataKey"
+        const NAME: &str = "::test_constructor::DataKey";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= 1024usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `DataKey` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_constructor::DataKey`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
     }
 }
 #[doc(hidden)]
