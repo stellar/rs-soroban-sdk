@@ -51,13 +51,7 @@ pub fn derive_client_type(crate_path: &Path, ty: &str, name: &str) -> TokenStrea
                 pub env: #crate_path::Env,
                 pub address: #crate_path::Address,
                 #[doc(hidden)]
-                set_auths: Option<&'a [#crate_path::xdr::SorobanAuthorizationEntry]>,
-                #[doc(hidden)]
-                mock_auths: Option<&'a [#crate_path::testutils::MockAuth<'a>]>,
-                #[doc(hidden)]
-                mock_all_auths: bool,
-                #[doc(hidden)]
-                allow_non_root_auth: bool,
+                auths: #crate_path::testutils::ClientAuths<'a>,
             }
 
             impl<'a> #client_ident<'a> {
@@ -65,10 +59,7 @@ pub fn derive_client_type(crate_path: &Path, ty: &str, name: &str) -> TokenStrea
                     Self {
                         env: env.clone(),
                         address: address.clone(),
-                        set_auths: None,
-                        mock_auths: None,
-                        mock_all_auths: false,
-                        allow_non_root_auth: false,
+                        auths: #crate_path::testutils::ClientAuths::default(),
                     }
                 }
 
@@ -84,10 +75,7 @@ pub fn derive_client_type(crate_path: &Path, ty: &str, name: &str) -> TokenStrea
                     Self {
                         env: self.env.clone(),
                         address: self.address.clone(),
-                        set_auths: Some(auths),
-                        mock_auths: self.mock_auths.clone(),
-                        mock_all_auths: false,
-                        allow_non_root_auth: false,
+                        auths: self.auths.set_auths(auths),
                     }
                 }
 
@@ -100,10 +88,7 @@ pub fn derive_client_type(crate_path: &Path, ty: &str, name: &str) -> TokenStrea
                     Self {
                         env: self.env.clone(),
                         address: self.address.clone(),
-                        set_auths: self.set_auths.clone(),
-                        mock_auths: Some(mock_auths),
-                        mock_all_auths: false,
-                        allow_non_root_auth: false,
+                        auths: self.auths.mock_auths(mock_auths),
                     }
                 }
 
@@ -117,10 +102,7 @@ pub fn derive_client_type(crate_path: &Path, ty: &str, name: &str) -> TokenStrea
                     Self {
                         env: self.env.clone(),
                         address: self.address.clone(),
-                        set_auths: None,
-                        mock_auths: None,
-                        mock_all_auths: true,
-                        allow_non_root_auth: false,
+                        auths: self.auths.mock_all_auths(),
                     }
                 }
 
@@ -137,10 +119,7 @@ pub fn derive_client_type(crate_path: &Path, ty: &str, name: &str) -> TokenStrea
                     Self {
                         env: self.env.clone(),
                         address: self.address.clone(),
-                        set_auths: None,
-                        mock_auths: None,
-                        mock_all_auths: true,
-                        allow_non_root_auth: true,
+                        auths: self.auths.mock_all_auths_allowing_non_root_auth(),
                     }
                 }
             }
@@ -265,13 +244,7 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                     pub fn #fn_ident(&self, #(#fn_input_types),*) -> #fn_output {
                         // Exists only to be dropped at the end of this fn, restoring the auth
                         // manager even if the call panics. Binding it to `_` would drop it early.
-                        let _call_scope = #crate_path::testutils::ClientCallScope::enter(
-                            &self.env,
-                            self.set_auths,
-                            self.mock_auths,
-                            self.mock_all_auths,
-                            self.allow_non_root_auth,
-                        );
+                        let _call_scope = #crate_path::testutils::ClientCallScope::enter(&self.env, self.auths);
                         use #crate_path::{IntoVal,FromVal};
                         let res = self.env.invoke_contract(
                             &self.address,
@@ -285,13 +258,7 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                     pub fn #fn_try_ident(&self, #(#fn_input_types),*) -> #fn_try_output {
                         // Exists only to be dropped at the end of this fn, restoring the auth
                         // manager even if the call panics. Binding it to `_` would drop it early.
-                        let _call_scope = #crate_path::testutils::ClientCallScope::enter(
-                            &self.env,
-                            self.set_auths,
-                            self.mock_auths,
-                            self.mock_all_auths,
-                            self.allow_non_root_auth,
-                        );
+                        let _call_scope = #crate_path::testutils::ClientCallScope::enter(&self.env, self.auths);
                         use #crate_path::{IntoVal,FromVal};
                         let res = self.env.try_invoke_contract(
                             &self.address,

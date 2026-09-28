@@ -25,23 +25,14 @@ pub struct ContractClient<'a> {
     pub env: soroban_sdk::Env,
     pub address: soroban_sdk::Address,
     #[doc(hidden)]
-    set_auths: Option<&'a [soroban_sdk::xdr::SorobanAuthorizationEntry]>,
-    #[doc(hidden)]
-    mock_auths: Option<&'a [soroban_sdk::testutils::MockAuth<'a>]>,
-    #[doc(hidden)]
-    mock_all_auths: bool,
-    #[doc(hidden)]
-    allow_non_root_auth: bool,
+    auths: soroban_sdk::testutils::ClientAuths<'a>,
 }
 impl<'a> ContractClient<'a> {
     pub fn new(env: &soroban_sdk::Env, address: &soroban_sdk::Address) -> Self {
         Self {
             env: env.clone(),
             address: address.clone(),
-            set_auths: None,
-            mock_auths: None,
-            mock_all_auths: false,
-            allow_non_root_auth: false,
+            auths: soroban_sdk::testutils::ClientAuths::default(),
         }
     }
     /// Set authorizations in the environment which will be consumed by
@@ -56,10 +47,7 @@ impl<'a> ContractClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            set_auths: Some(auths),
-            mock_auths: self.mock_auths.clone(),
-            mock_all_auths: false,
-            allow_non_root_auth: false,
+            auths: self.auths.set_auths(auths),
         }
     }
     /// Mock authorizations in the environment which will cause matching invokes
@@ -71,10 +59,7 @@ impl<'a> ContractClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            set_auths: self.set_auths.clone(),
-            mock_auths: Some(mock_auths),
-            mock_all_auths: false,
-            allow_non_root_auth: false,
+            auths: self.auths.mock_auths(mock_auths),
         }
     }
     /// Mock all calls to the `Address::require_auth` and
@@ -87,10 +72,7 @@ impl<'a> ContractClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            set_auths: None,
-            mock_auths: None,
-            mock_all_auths: true,
-            allow_non_root_auth: false,
+            auths: self.auths.mock_all_auths(),
         }
     }
     /// A version of `mock_all_auths` that allows authorizations that
@@ -106,10 +88,7 @@ impl<'a> ContractClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            set_auths: None,
-            mock_auths: None,
-            mock_all_auths: true,
-            allow_non_root_auth: true,
+            auths: self.auths.mock_all_auths_allowing_non_root_auth(),
         }
     }
 }
@@ -331,13 +310,7 @@ impl Contract {
 }
 impl<'a> ContractClient<'a> {
     pub fn set_val(&self, input: &u64) -> () {
-        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(
-            &self.env,
-            self.set_auths,
-            self.mock_auths,
-            self.mock_all_auths,
-            self.allow_non_root_auth,
-        );
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.auths);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
@@ -357,13 +330,7 @@ impl<'a> ContractClient<'a> {
         Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(
-            &self.env,
-            self.set_auths,
-            self.mock_auths,
-            self.mock_all_auths,
-            self.allow_non_root_auth,
-        );
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.auths);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -377,13 +344,7 @@ impl<'a> ContractClient<'a> {
         res
     }
     pub fn get_val(&self) -> u64 {
-        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(
-            &self.env,
-            self.set_auths,
-            self.mock_auths,
-            self.mock_all_auths,
-            self.allow_non_root_auth,
-        );
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.auths);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
@@ -402,13 +363,7 @@ impl<'a> ContractClient<'a> {
         Result<u64, <u64 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(
-            &self.env,
-            self.set_auths,
-            self.mock_auths,
-            self.mock_all_auths,
-            self.allow_non_root_auth,
-        );
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.auths);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -422,13 +377,7 @@ impl<'a> ContractClient<'a> {
         res
     }
     pub fn both(&self, input: &u64) -> u64 {
-        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(
-            &self.env,
-            self.set_auths,
-            self.mock_auths,
-            self.mock_all_auths,
-            self.allow_non_root_auth,
-        );
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.auths);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
@@ -448,13 +397,7 @@ impl<'a> ContractClient<'a> {
         Result<u64, <u64 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(
-            &self.env,
-            self.set_auths,
-            self.mock_auths,
-            self.mock_all_auths,
-            self.allow_non_root_auth,
-        );
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.auths);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -468,13 +411,7 @@ impl<'a> ContractClient<'a> {
         res
     }
     pub fn wrapped(&self, input: &Vec<u64>) -> u64 {
-        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(
-            &self.env,
-            self.set_auths,
-            self.mock_auths,
-            self.mock_all_auths,
-            self.allow_non_root_auth,
-        );
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.auths);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
@@ -494,13 +431,7 @@ impl<'a> ContractClient<'a> {
         Result<u64, <u64 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
         Result<Error, soroban_sdk::InvokeError>,
     > {
-        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(
-            &self.env,
-            self.set_auths,
-            self.mock_auths,
-            self.mock_all_auths,
-            self.allow_non_root_auth,
-        );
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.auths);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -514,13 +445,7 @@ impl<'a> ContractClient<'a> {
         res
     }
     pub fn double_wrapped(&self, input: &Option<Vec<u64>>) -> Vec<u64> {
-        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(
-            &self.env,
-            self.set_auths,
-            self.mock_auths,
-            self.mock_all_auths,
-            self.allow_non_root_auth,
-        );
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.auths);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
@@ -539,13 +464,7 @@ impl<'a> ContractClient<'a> {
         >,
         Result<Error, soroban_sdk::InvokeError>,
     > {
-        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(
-            &self.env,
-            self.set_auths,
-            self.mock_auths,
-            self.mock_all_auths,
-            self.allow_non_root_auth,
-        );
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.auths);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -555,13 +474,7 @@ impl<'a> ContractClient<'a> {
         res
     }
     pub fn valval(&self, input: &u64) -> Option<u64> {
-        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(
-            &self.env,
-            self.set_auths,
-            self.mock_auths,
-            self.mock_all_auths,
-            self.allow_non_root_auth,
-        );
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.auths);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
@@ -584,13 +497,7 @@ impl<'a> ContractClient<'a> {
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(
-            &self.env,
-            self.set_auths,
-            self.mock_auths,
-            self.mock_all_auths,
-            self.allow_non_root_auth,
-        );
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.auths);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -604,13 +511,7 @@ impl<'a> ContractClient<'a> {
         res
     }
     pub fn tuple(&self, input: &u64) -> (u64, u64) {
-        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(
-            &self.env,
-            self.set_auths,
-            self.mock_auths,
-            self.mock_all_auths,
-            self.allow_non_root_auth,
-        );
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.auths);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
@@ -633,13 +534,7 @@ impl<'a> ContractClient<'a> {
         >,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(
-            &self.env,
-            self.set_auths,
-            self.mock_auths,
-            self.mock_all_auths,
-            self.allow_non_root_auth,
-        );
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.auths);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -653,13 +548,7 @@ impl<'a> ContractClient<'a> {
         res
     }
     pub fn valref(&self, input: &u64) -> u64 {
-        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(
-            &self.env,
-            self.set_auths,
-            self.mock_auths,
-            self.mock_all_auths,
-            self.allow_non_root_auth,
-        );
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.auths);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
@@ -679,13 +568,7 @@ impl<'a> ContractClient<'a> {
         Result<u64, <u64 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(
-            &self.env,
-            self.set_auths,
-            self.mock_auths,
-            self.mock_all_auths,
-            self.allow_non_root_auth,
-        );
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.auths);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,

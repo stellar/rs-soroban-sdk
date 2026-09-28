@@ -19,23 +19,14 @@ pub struct SelfPathTraitClient<'a> {
     pub env: soroban_sdk::Env,
     pub address: soroban_sdk::Address,
     #[doc(hidden)]
-    set_auths: Option<&'a [soroban_sdk::xdr::SorobanAuthorizationEntry]>,
-    #[doc(hidden)]
-    mock_auths: Option<&'a [soroban_sdk::testutils::MockAuth<'a>]>,
-    #[doc(hidden)]
-    mock_all_auths: bool,
-    #[doc(hidden)]
-    allow_non_root_auth: bool,
+    auths: soroban_sdk::testutils::ClientAuths<'a>,
 }
 impl<'a> SelfPathTraitClient<'a> {
     pub fn new(env: &soroban_sdk::Env, address: &soroban_sdk::Address) -> Self {
         Self {
             env: env.clone(),
             address: address.clone(),
-            set_auths: None,
-            mock_auths: None,
-            mock_all_auths: false,
-            allow_non_root_auth: false,
+            auths: soroban_sdk::testutils::ClientAuths::default(),
         }
     }
     /// Set authorizations in the environment which will be consumed by
@@ -50,10 +41,7 @@ impl<'a> SelfPathTraitClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            set_auths: Some(auths),
-            mock_auths: self.mock_auths.clone(),
-            mock_all_auths: false,
-            allow_non_root_auth: false,
+            auths: self.auths.set_auths(auths),
         }
     }
     /// Mock authorizations in the environment which will cause matching invokes
@@ -65,10 +53,7 @@ impl<'a> SelfPathTraitClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            set_auths: self.set_auths.clone(),
-            mock_auths: Some(mock_auths),
-            mock_all_auths: false,
-            allow_non_root_auth: false,
+            auths: self.auths.mock_auths(mock_auths),
         }
     }
     /// Mock all calls to the `Address::require_auth` and
@@ -81,10 +66,7 @@ impl<'a> SelfPathTraitClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            set_auths: None,
-            mock_auths: None,
-            mock_all_auths: true,
-            allow_non_root_auth: false,
+            auths: self.auths.mock_all_auths(),
         }
     }
     /// A version of `mock_all_auths` that allows authorizations that
@@ -100,22 +82,13 @@ impl<'a> SelfPathTraitClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            set_auths: None,
-            mock_auths: None,
-            mock_all_auths: true,
-            allow_non_root_auth: true,
+            auths: self.auths.mock_all_auths_allowing_non_root_auth(),
         }
     }
 }
 impl<'a> SelfPathTraitClient<'a> {
     pub fn self_path_method(&self) -> u32 {
-        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(
-            &self.env,
-            self.set_auths,
-            self.mock_auths,
-            self.mock_all_auths,
-            self.allow_non_root_auth,
-        );
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.auths);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
@@ -130,13 +103,7 @@ impl<'a> SelfPathTraitClient<'a> {
         Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(
-            &self.env,
-            self.set_auths,
-            self.mock_auths,
-            self.mock_all_auths,
-            self.allow_non_root_auth,
-        );
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.auths);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
@@ -169,23 +136,14 @@ pub struct ContractSelfPathClient<'a> {
     pub env: soroban_sdk::Env,
     pub address: soroban_sdk::Address,
     #[doc(hidden)]
-    set_auths: Option<&'a [soroban_sdk::xdr::SorobanAuthorizationEntry]>,
-    #[doc(hidden)]
-    mock_auths: Option<&'a [soroban_sdk::testutils::MockAuth<'a>]>,
-    #[doc(hidden)]
-    mock_all_auths: bool,
-    #[doc(hidden)]
-    allow_non_root_auth: bool,
+    auths: soroban_sdk::testutils::ClientAuths<'a>,
 }
 impl<'a> ContractSelfPathClient<'a> {
     pub fn new(env: &soroban_sdk::Env, address: &soroban_sdk::Address) -> Self {
         Self {
             env: env.clone(),
             address: address.clone(),
-            set_auths: None,
-            mock_auths: None,
-            mock_all_auths: false,
-            allow_non_root_auth: false,
+            auths: soroban_sdk::testutils::ClientAuths::default(),
         }
     }
     /// Set authorizations in the environment which will be consumed by
@@ -200,10 +158,7 @@ impl<'a> ContractSelfPathClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            set_auths: Some(auths),
-            mock_auths: self.mock_auths.clone(),
-            mock_all_auths: false,
-            allow_non_root_auth: false,
+            auths: self.auths.set_auths(auths),
         }
     }
     /// Mock authorizations in the environment which will cause matching invokes
@@ -215,10 +170,7 @@ impl<'a> ContractSelfPathClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            set_auths: self.set_auths.clone(),
-            mock_auths: Some(mock_auths),
-            mock_all_auths: false,
-            allow_non_root_auth: false,
+            auths: self.auths.mock_auths(mock_auths),
         }
     }
     /// Mock all calls to the `Address::require_auth` and
@@ -231,10 +183,7 @@ impl<'a> ContractSelfPathClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            set_auths: None,
-            mock_auths: None,
-            mock_all_auths: true,
-            allow_non_root_auth: false,
+            auths: self.auths.mock_all_auths(),
         }
     }
     /// A version of `mock_all_auths` that allows authorizations that
@@ -250,10 +199,7 @@ impl<'a> ContractSelfPathClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            set_auths: None,
-            mock_auths: None,
-            mock_all_auths: true,
-            allow_non_root_auth: true,
+            auths: self.auths.mock_all_auths_allowing_non_root_auth(),
         }
     }
 }
@@ -356,13 +302,7 @@ impl ContractSelfPath {
 }
 impl<'a> ContractSelfPathClient<'a> {
     pub fn self_path_method(&self) -> u32 {
-        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(
-            &self.env,
-            self.set_auths,
-            self.mock_auths,
-            self.mock_all_auths,
-            self.allow_non_root_auth,
-        );
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.auths);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
@@ -377,13 +317,7 @@ impl<'a> ContractSelfPathClient<'a> {
         Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(
-            &self.env,
-            self.set_auths,
-            self.mock_auths,
-            self.mock_all_auths,
-            self.allow_non_root_auth,
-        );
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.auths);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
