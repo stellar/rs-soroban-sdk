@@ -263,67 +263,41 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                 quote! {
                     #(#fn_attrs)*
                     pub fn #fn_ident(&self, #(#fn_input_types),*) -> #fn_output {
-                        use core::ops::Not;
-                        let old_auth_manager = self.env.in_contract().not().then(||
-                            self.env.host().snapshot_auth_manager().unwrap()
+                        // Exists only to be dropped at the end of this fn, restoring the auth
+                        // manager even if the call panics. Binding it to `_` would drop it early.
+                        let _call_scope = #crate_path::testutils::ClientCallScope::enter(
+                            &self.env,
+                            self.set_auths,
+                            self.mock_auths,
+                            self.mock_all_auths,
+                            self.allow_non_root_auth,
                         );
-                        {
-                            if let Some(set_auths) = self.set_auths {
-                                self.env.set_auths(set_auths);
-                            }
-                            if let Some(mock_auths) = self.mock_auths {
-                                self.env.mock_auths(mock_auths);
-                            }
-                            if self.mock_all_auths {
-                                if self.allow_non_root_auth {
-                                    self.env.mock_all_auths_allowing_non_root_auth();
-                                } else {
-                                    self.env.mock_all_auths();
-                                }
-                            }
-                        }
                         use #crate_path::{IntoVal,FromVal};
                         let res = self.env.invoke_contract(
                             &self.address,
                             &#fn_name_symbol,
                             #crate_path::vec![&self.env, #(#fn_input_conversions),*],
                         );
-                        if let Some(old_auth_manager) = old_auth_manager {
-                            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-                        }
                         res
                     }
 
                     #(#fn_attrs)*
                     pub fn #fn_try_ident(&self, #(#fn_input_types),*) -> #fn_try_output {
-                        use core::ops::Not;
-                        let old_auth_manager = self.env.in_contract().not().then(||
-                            self.env.host().snapshot_auth_manager().unwrap()
+                        // Exists only to be dropped at the end of this fn, restoring the auth
+                        // manager even if the call panics. Binding it to `_` would drop it early.
+                        let _call_scope = #crate_path::testutils::ClientCallScope::enter(
+                            &self.env,
+                            self.set_auths,
+                            self.mock_auths,
+                            self.mock_all_auths,
+                            self.allow_non_root_auth,
                         );
-                        {
-                            if let Some(set_auths) = self.set_auths {
-                                self.env.set_auths(set_auths);
-                            }
-                            if let Some(mock_auths) = self.mock_auths {
-                                self.env.mock_auths(mock_auths);
-                            }
-                            if self.mock_all_auths {
-                                if self.allow_non_root_auth {
-                                    self.env.mock_all_auths_allowing_non_root_auth();
-                                } else {
-                                    self.env.mock_all_auths();
-                                }
-                            }
-                        }
                         use #crate_path::{IntoVal,FromVal};
                         let res = self.env.try_invoke_contract(
                             &self.address,
                             &#fn_name_symbol,
                             #crate_path::vec![&self.env, #(#fn_input_conversions),*],
                         );
-                        if let Some(old_auth_manager) = old_auth_manager {
-                            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-                        }
                         res
                     }
                 }

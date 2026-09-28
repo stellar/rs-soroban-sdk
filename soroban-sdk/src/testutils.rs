@@ -20,6 +20,10 @@ pub mod storage;
 
 pub mod cost_estimate;
 
+mod client_call;
+#[doc(hidden)]
+pub use client_call::ClientCallScope;
+
 use crate::{xdr, ConstructorArgs, Env, Val, Vec};
 use soroban_ledger_snapshot::LedgerSnapshot;
 
