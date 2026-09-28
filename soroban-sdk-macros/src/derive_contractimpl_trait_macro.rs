@@ -61,9 +61,11 @@ fn derive(args: &Args, input: &ItemTrait) -> TokenStream2 {
             ..
         }) = i
         {
-            // `#[contracttrait]` rejects type and const parameters, so a default
-            // fn with them is left out rather than generated as a contract fn
-            // that could not infer them and would add to that error.
+            // A default fn with type or const parameters has already been reported as an
+            // error by `#[contracttrait]`, so the build is failing regardless. Skip only
+            // that fn: generating it would add a confusing second error about inferring
+            // the parameters. The trait's other default fns are still generated so code
+            // that uses them doesn't fail too.
             if !sig
                 .generics
                 .params
