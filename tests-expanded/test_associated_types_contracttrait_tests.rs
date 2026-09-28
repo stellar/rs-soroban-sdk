@@ -1214,7 +1214,7 @@ mod test_with_wasm {
                         {
                             ::core::panicking::panic_fmt(
                                 format_args!(
-                                    "type `ContractExecutableRef` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_associated_types_contracttrait::test_with_wasm::contract::ContractExecutableRef`",
+                                    "type `ContractExecutableRef` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_associated_types_contracttrait::test_with_wasm::contract::ContractExecutableRef`",
                                 ),
                             );
                         }
@@ -1759,7 +1759,7 @@ mod test_with_wasm {
                         {
                             ::core::panicking::panic_fmt(
                                 format_args!(
-                                    "type `ContractContext` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_associated_types_contracttrait::test_with_wasm::contract::ContractContext`",
+                                    "type `ContractContext` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_associated_types_contracttrait::test_with_wasm::contract::ContractContext`",
                                 ),
                             );
                         }
@@ -2373,7 +2373,7 @@ mod test_with_wasm {
                         {
                             ::core::panicking::panic_fmt(
                                 format_args!(
-                                    "type `SubContractInvocation` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_associated_types_contracttrait::test_with_wasm::contract::SubContractInvocation`",
+                                    "type `SubContractInvocation` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_associated_types_contracttrait::test_with_wasm::contract::SubContractInvocation`",
                                 ),
                             );
                         }
@@ -2922,7 +2922,7 @@ mod test_with_wasm {
                         {
                             ::core::panicking::panic_fmt(
                                 format_args!(
-                                    "type `CreateContractHostFnContext` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_associated_types_contracttrait::test_with_wasm::contract::CreateContractHostFnContext`",
+                                    "type `CreateContractHostFnContext` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_associated_types_contracttrait::test_with_wasm::contract::CreateContractHostFnContext`",
                                 ),
                             );
                         }
@@ -3498,7 +3498,7 @@ mod test_with_wasm {
                         {
                             ::core::panicking::panic_fmt(
                                 format_args!(
-                                    "type `CreateContractWithConstructorHostFnContext` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_associated_types_contracttrait::test_with_wasm::contract::CreateContractWithConstructorHostFnContext`",
+                                    "type `CreateContractWithConstructorHostFnContext` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_associated_types_contracttrait::test_with_wasm::contract::CreateContractWithConstructorHostFnContext`",
                                 ),
                             );
                         }
@@ -4193,7 +4193,7 @@ mod test_with_wasm {
                         {
                             ::core::panicking::panic_fmt(
                                 format_args!(
-                                    "type `ContractExecutable` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_associated_types_contracttrait::test_with_wasm::contract::ContractExecutable`",
+                                    "type `ContractExecutable` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_associated_types_contracttrait::test_with_wasm::contract::ContractExecutable`",
                                 ),
                             );
                         }
@@ -4898,7 +4898,7 @@ mod test_with_wasm {
                         {
                             ::core::panicking::panic_fmt(
                                 format_args!(
-                                    "type `Context` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_associated_types_contracttrait::test_with_wasm::contract::Context`",
+                                    "type `Context` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_associated_types_contracttrait::test_with_wasm::contract::Context`",
                                 ),
                             );
                         }
@@ -5720,7 +5720,7 @@ mod test_with_wasm {
                         {
                             ::core::panicking::panic_fmt(
                                 format_args!(
-                                    "type `InvokerContractAuthEntry` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_associated_types_contracttrait::test_with_wasm::contract::InvokerContractAuthEntry`",
+                                    "type `InvokerContractAuthEntry` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_associated_types_contracttrait::test_with_wasm::contract::InvokerContractAuthEntry`",
                                 ),
                             );
                         }
@@ -6540,7 +6540,7 @@ mod test_with_wasm {
                         {
                             ::core::panicking::panic_fmt(
                                 format_args!(
-                                    "type `Executable` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_associated_types_contracttrait::test_with_wasm::contract::Executable`",
+                                    "type `Executable` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_associated_types_contracttrait::test_with_wasm::contract::Executable`",
                                 ),
                             );
                         }

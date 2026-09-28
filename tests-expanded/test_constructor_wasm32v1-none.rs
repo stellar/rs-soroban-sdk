@@ -38,7 +38,7 @@ impl DataKey {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `DataKey` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_constructor::DataKey`",
+                            "type `DataKey` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_constructor::DataKey`",
                         ),
                     );
                 }

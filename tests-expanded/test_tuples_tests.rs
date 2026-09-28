@@ -1203,7 +1203,7 @@ mod test {
                         {
                             ::core::panicking::panic_fmt(
                                 format_args!(
-                                    "type `ContractExecutableRef` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_tuples::test::wasm::ContractExecutableRef`",
+                                    "type `ContractExecutableRef` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_tuples::test::wasm::ContractExecutableRef`",
                                 ),
                             );
                         }
@@ -1748,7 +1748,7 @@ mod test {
                         {
                             ::core::panicking::panic_fmt(
                                 format_args!(
-                                    "type `ContractContext` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_tuples::test::wasm::ContractContext`",
+                                    "type `ContractContext` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_tuples::test::wasm::ContractContext`",
                                 ),
                             );
                         }
@@ -2362,7 +2362,7 @@ mod test {
                         {
                             ::core::panicking::panic_fmt(
                                 format_args!(
-                                    "type `SubContractInvocation` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_tuples::test::wasm::SubContractInvocation`",
+                                    "type `SubContractInvocation` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_tuples::test::wasm::SubContractInvocation`",
                                 ),
                             );
                         }
@@ -2911,7 +2911,7 @@ mod test {
                         {
                             ::core::panicking::panic_fmt(
                                 format_args!(
-                                    "type `CreateContractHostFnContext` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_tuples::test::wasm::CreateContractHostFnContext`",
+                                    "type `CreateContractHostFnContext` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_tuples::test::wasm::CreateContractHostFnContext`",
                                 ),
                             );
                         }
@@ -3488,7 +3488,7 @@ mod test {
                         {
                             ::core::panicking::panic_fmt(
                                 format_args!(
-                                    "type `CreateContractWithConstructorHostFnContext` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_tuples::test::wasm::CreateContractWithConstructorHostFnContext`",
+                                    "type `CreateContractWithConstructorHostFnContext` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_tuples::test::wasm::CreateContractWithConstructorHostFnContext`",
                                 ),
                             );
                         }
@@ -4183,7 +4183,7 @@ mod test {
                         {
                             ::core::panicking::panic_fmt(
                                 format_args!(
-                                    "type `ContractExecutable` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_tuples::test::wasm::ContractExecutable`",
+                                    "type `ContractExecutable` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_tuples::test::wasm::ContractExecutable`",
                                 ),
                             );
                         }
@@ -4887,7 +4887,7 @@ mod test {
                         {
                             ::core::panicking::panic_fmt(
                                 format_args!(
-                                    "type `Context` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_tuples::test::wasm::Context`",
+                                    "type `Context` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_tuples::test::wasm::Context`",
                                 ),
                             );
                         }
@@ -5709,7 +5709,7 @@ mod test {
                         {
                             ::core::panicking::panic_fmt(
                                 format_args!(
-                                    "type `InvokerContractAuthEntry` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_tuples::test::wasm::InvokerContractAuthEntry`",
+                                    "type `InvokerContractAuthEntry` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_tuples::test::wasm::InvokerContractAuthEntry`",
                                 ),
                             );
                         }
@@ -6528,7 +6528,7 @@ mod test {
                         {
                             ::core::panicking::panic_fmt(
                                 format_args!(
-                                    "type `Executable` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_tuples::test::wasm::Executable`",
+                                    "type `Executable` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_tuples::test::wasm::Executable`",
                                 ),
                             );
                         }

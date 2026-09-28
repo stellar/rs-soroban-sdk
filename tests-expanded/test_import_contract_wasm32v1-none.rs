@@ -251,7 +251,7 @@ mod addcontract {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `ContractExecutableRef` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::ContractExecutableRef`",
+                                "type `ContractExecutableRef` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::ContractExecutableRef`",
                             ),
                         );
                     }
@@ -465,7 +465,7 @@ mod addcontract {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `ContractContext` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::ContractContext`",
+                                "type `ContractContext` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::ContractContext`",
                             ),
                         );
                     }
@@ -685,7 +685,7 @@ mod addcontract {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `SubContractInvocation` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::SubContractInvocation`",
+                                "type `SubContractInvocation` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::SubContractInvocation`",
                             ),
                         );
                     }
@@ -899,7 +899,7 @@ mod addcontract {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `CreateContractHostFnContext` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::CreateContractHostFnContext`",
+                                "type `CreateContractHostFnContext` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::CreateContractHostFnContext`",
                             ),
                         );
                     }
@@ -1128,7 +1128,7 @@ mod addcontract {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `CreateContractWithConstructorHostFnContext` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::CreateContractWithConstructorHostFnContext`",
+                                "type `CreateContractWithConstructorHostFnContext` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::CreateContractWithConstructorHostFnContext`",
                             ),
                         );
                     }
@@ -1394,7 +1394,7 @@ mod addcontract {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `ContractExecutable` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::ContractExecutable`",
+                                "type `ContractExecutable` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::ContractExecutable`",
                             ),
                         );
                     }
@@ -1693,7 +1693,7 @@ mod addcontract {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `Context` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::Context`",
+                                "type `Context` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::Context`",
                             ),
                         );
                     }
@@ -2041,7 +2041,7 @@ mod addcontract {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `InvokerContractAuthEntry` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::InvokerContractAuthEntry`",
+                                "type `InvokerContractAuthEntry` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::InvokerContractAuthEntry`",
                             ),
                         );
                     }
@@ -2341,7 +2341,7 @@ mod addcontract {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `Executable` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::Executable`",
+                                "type `Executable` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::Executable`",
                             ),
                         );
                     }
@@ -2564,7 +2564,7 @@ mod addcontract {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `Error` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::Error`",
+                                "type `Error` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::Error`",
                             ),
                         );
                     }
@@ -2775,7 +2775,7 @@ mod addcontract {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `MyError` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::MyError`",
+                                "type `MyError` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::MyError`",
                             ),
                         );
                     }
@@ -3346,7 +3346,7 @@ mod eventscontract {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `ContractExecutableRef` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::ContractExecutableRef`",
+                                "type `ContractExecutableRef` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::ContractExecutableRef`",
                             ),
                         );
                     }
@@ -3560,7 +3560,7 @@ mod eventscontract {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `ContractContext` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::ContractContext`",
+                                "type `ContractContext` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::ContractContext`",
                             ),
                         );
                     }
@@ -3780,7 +3780,7 @@ mod eventscontract {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `SubContractInvocation` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::SubContractInvocation`",
+                                "type `SubContractInvocation` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::SubContractInvocation`",
                             ),
                         );
                     }
@@ -3995,7 +3995,7 @@ mod eventscontract {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `CreateContractHostFnContext` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::CreateContractHostFnContext`",
+                                "type `CreateContractHostFnContext` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::CreateContractHostFnContext`",
                             ),
                         );
                     }
@@ -4223,7 +4223,7 @@ mod eventscontract {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `CreateContractWithConstructorHostFnContext` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::CreateContractWithConstructorHostFnContext`",
+                                "type `CreateContractWithConstructorHostFnContext` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::CreateContractWithConstructorHostFnContext`",
                             ),
                         );
                     }
@@ -4489,7 +4489,7 @@ mod eventscontract {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `ContractExecutable` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::ContractExecutable`",
+                                "type `ContractExecutable` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::ContractExecutable`",
                             ),
                         );
                     }
@@ -4788,7 +4788,7 @@ mod eventscontract {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `Context` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::Context`",
+                                "type `Context` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::Context`",
                             ),
                         );
                     }
@@ -5136,7 +5136,7 @@ mod eventscontract {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `InvokerContractAuthEntry` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::InvokerContractAuthEntry`",
+                                "type `InvokerContractAuthEntry` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::InvokerContractAuthEntry`",
                             ),
                         );
                     }
@@ -5436,7 +5436,7 @@ mod eventscontract {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `Executable` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::Executable`",
+                                "type `Executable` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::Executable`",
                             ),
                         );
                     }
@@ -5716,7 +5716,7 @@ mod eventscontract {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `Transfer` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::Transfer`",
+                                "type `Transfer` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::Transfer`",
                             ),
                         );
                     }
@@ -5933,7 +5933,7 @@ mod eventscontract {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `MapValues` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::MapValues`",
+                                "type `MapValues` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::MapValues`",
                             ),
                         );
                     }
@@ -6121,7 +6121,7 @@ mod eventscontract {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `VecValues` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::VecValues`",
+                                "type `VecValues` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::VecValues`",
                             ),
                         );
                     }
@@ -6306,7 +6306,7 @@ mod eventscontract {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `SingleValue` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::SingleValue`",
+                                "type `SingleValue` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::SingleValue`",
                             ),
                         );
                     }
@@ -6464,7 +6464,7 @@ mod eventscontract {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `SingleValueVoid` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::SingleValueVoid`",
+                                "type `SingleValueVoid` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::SingleValueVoid`",
                             ),
                         );
                     }
@@ -6582,7 +6582,7 @@ impl Error {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `Error` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_import_contract::Error`",
+                            "type `Error` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::Error`",
                         ),
                     );
                 }

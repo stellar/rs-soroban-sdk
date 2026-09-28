@@ -25,7 +25,7 @@ impl DummyProof {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `DummyProof` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_bls::DummyProof`",
+                            "type `DummyProof` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_bls::DummyProof`",
                         ),
                     );
                 }

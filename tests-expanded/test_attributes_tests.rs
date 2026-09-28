@@ -56,7 +56,7 @@ impl AttributeType {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `AttributeType` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_attributes::AttributeType`",
+                            "type `AttributeType` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_attributes::AttributeType`",
                         ),
                     );
                 }
@@ -434,7 +434,7 @@ impl AttributeEvent {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `AttributeEvent` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_attributes::AttributeEvent`",
+                            "type `AttributeEvent` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_attributes::AttributeEvent`",
                         ),
                     );
                 }

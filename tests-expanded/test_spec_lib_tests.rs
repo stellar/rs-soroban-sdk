@@ -56,7 +56,7 @@ impl StructA {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `StructA` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::StructA`",
+                            "type `StructA` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib::StructA`",
                         ),
                     );
                 }
@@ -524,7 +524,7 @@ impl StructB {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `StructB` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::StructB`",
+                            "type `StructB` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib::StructB`",
                         ),
                     );
                 }
@@ -992,7 +992,7 @@ impl StructC {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `StructC` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::StructC`",
+                            "type `StructC` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib::StructC`",
                         ),
                     );
                 }
@@ -1460,7 +1460,7 @@ impl StructTupleA {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `StructTupleA` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::StructTupleA`",
+                            "type `StructTupleA` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib::StructTupleA`",
                         ),
                     );
                 }
@@ -1880,7 +1880,7 @@ impl StructTupleB {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `StructTupleB` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::StructTupleB`",
+                            "type `StructTupleB` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib::StructTupleB`",
                         ),
                     );
                 }
@@ -2301,7 +2301,7 @@ impl StructTupleC {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `StructTupleC` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::StructTupleC`",
+                            "type `StructTupleC` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib::StructTupleC`",
                         ),
                     );
                 }
@@ -2733,7 +2733,7 @@ impl EnumA {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `EnumA` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::EnumA`",
+                            "type `EnumA` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib::EnumA`",
                         ),
                     );
                 }
@@ -3258,7 +3258,7 @@ impl EnumB {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `EnumB` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::EnumB`",
+                            "type `EnumB` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib::EnumB`",
                         ),
                     );
                 }
@@ -3914,7 +3914,7 @@ impl EnumC {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `EnumC` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::EnumC`",
+                            "type `EnumC` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib::EnumC`",
                         ),
                     );
                 }
@@ -4534,7 +4534,7 @@ impl EnumIntA {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `EnumIntA` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::EnumIntA`",
+                            "type `EnumIntA` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib::EnumIntA`",
                         ),
                     );
                 }
@@ -4925,7 +4925,7 @@ impl EnumIntB {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `EnumIntB` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::EnumIntB`",
+                            "type `EnumIntB` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib::EnumIntB`",
                         ),
                     );
                 }
@@ -5316,7 +5316,7 @@ impl EnumIntC {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `EnumIntC` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::EnumIntC`",
+                            "type `EnumIntC` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib::EnumIntC`",
                         ),
                     );
                 }
@@ -5707,7 +5707,7 @@ impl ErrorA {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `ErrorA` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::ErrorA`",
+                            "type `ErrorA` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib::ErrorA`",
                         ),
                     );
                 }
@@ -5921,7 +5921,7 @@ impl ErrorB {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `ErrorB` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::ErrorB`",
+                            "type `ErrorB` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib::ErrorB`",
                         ),
                     );
                 }
@@ -6135,7 +6135,7 @@ impl ErrorC {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `ErrorC` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::ErrorC`",
+                            "type `ErrorC` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib::ErrorC`",
                         ),
                     );
                 }
@@ -6345,7 +6345,7 @@ impl EventA {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `EventA` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::EventA`",
+                            "type `EventA` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib::EventA`",
                         ),
                     );
                 }
@@ -6481,7 +6481,7 @@ impl EventB {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `EventB` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::EventB`",
+                            "type `EventB` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib::EventB`",
                         ),
                     );
                 }
@@ -6628,7 +6628,7 @@ impl EventC {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `EventC` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::EventC`",
+                            "type `EventC` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib::EventC`",
                         ),
                     );
                 }
@@ -6758,7 +6758,7 @@ impl EventD {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `EventD` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_lib::EventD`",
+                            "type `EventD` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib::EventD`",
                         ),
                     );
                 }

@@ -58,7 +58,7 @@ impl UdtEnum2 {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UdtEnum2` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::UdtEnum2`",
+                            "type `UdtEnum2` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_udt::UdtEnum2`",
                         ),
                     );
                 }
@@ -224,7 +224,7 @@ impl UdtEnum {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UdtEnum` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::UdtEnum`",
+                            "type `UdtEnum` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_udt::UdtEnum`",
                         ),
                     );
                 }
@@ -483,7 +483,7 @@ impl UdtTuple {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UdtTuple` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::UdtTuple`",
+                            "type `UdtTuple` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_udt::UdtTuple`",
                         ),
                     );
                 }
@@ -649,7 +649,7 @@ impl UdtStruct {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UdtStruct` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::UdtStruct`",
+                            "type `UdtStruct` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_udt::UdtStruct`",
                         ),
                     );
                 }
@@ -825,7 +825,7 @@ impl UdtRecursive {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UdtRecursive` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::UdtRecursive`",
+                            "type `UdtRecursive` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_udt::UdtRecursive`",
                         ),
                     );
                 }
@@ -1003,7 +1003,7 @@ impl RecursiveToEnum {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `RecursiveToEnum` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::RecursiveToEnum`",
+                            "type `RecursiveToEnum` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_udt::RecursiveToEnum`",
                         ),
                     );
                 }
@@ -1189,7 +1189,7 @@ impl RecursiveEnum {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `RecursiveEnum` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::RecursiveEnum`",
+                            "type `RecursiveEnum` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_udt::RecursiveEnum`",
                         ),
                     );
                 }
