@@ -84,8 +84,6 @@ impl<'a> ClientCallScope<'a> {
 impl Drop for ClientCallScope<'_> {
     fn drop(&mut self) {
         if let Some(auth_manager) = self.auth_manager.take() {
-            // Continuing with leaked authorization would invalidate the test.
-            // If restoration fails during unwinding, the second panic aborts.
             self.env
                 .host()
                 .set_auth_manager(auth_manager)
