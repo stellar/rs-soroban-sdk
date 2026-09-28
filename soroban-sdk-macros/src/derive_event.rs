@@ -227,7 +227,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
 
     // The spec entry rendered as the equivalent const::ScSpecEntry, which the
     // contract crate encodes to XDR at compile time.
-    let spec_view = {
+    let spec_entry = {
         let doc = const_view_string(path, &spec.doc);
         let lib = const_view_string(path, &spec.lib);
         let name = const_view_string(path, &spec.name);
@@ -268,7 +268,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         static #spec_ident: [u8; #ident::spec_xdr().len()] = #ident::spec_xdr();
 
         impl #gen_impl #ident #gen_types #gen_where {
-            const __SPEC_XDR_ENTRY: #path::xdr::r#const::ScSpecEntry = #spec_view;
+            const __SPEC_XDR_ENTRY: #path::xdr::r#const::ScSpecEntry = #spec_entry;
 
             pub const fn spec_xdr() -> [u8; #ident::__SPEC_XDR_ENTRY.const_xdr_len()] {
                 const { #ident::__SPEC_XDR_ENTRY.const_to_xdr() }

@@ -100,7 +100,7 @@ pub fn derive_type_struct(
             let type_ = const_view_type_def(path, &f.type_);
             quote!(#path::xdr::r#const::ScSpecUdtStructFieldV0 { doc: #doc, name: #name, type_: #type_ })
         });
-        let spec_view = quote! {
+        let spec_entry = quote! {
             #path::xdr::r#const::ScSpecEntry::UdtStructV0(#path::xdr::r#const::ScSpecUdtStructV0 {
                 doc: #doc,
                 lib: #lib,
@@ -119,7 +119,7 @@ pub fn derive_type_struct(
             static #spec_ident: [u8; #ident::spec_xdr().len()] = #ident::spec_xdr();
 
             impl #ident {
-                const __SPEC_XDR_ENTRY: #path::xdr::r#const::ScSpecEntry = #spec_view;
+                const __SPEC_XDR_ENTRY: #path::xdr::r#const::ScSpecEntry = #spec_entry;
 
                 pub const fn spec_xdr() -> [u8; #ident::__SPEC_XDR_ENTRY.const_xdr_len()] {
                     const { #ident::__SPEC_XDR_ENTRY.const_to_xdr() }
