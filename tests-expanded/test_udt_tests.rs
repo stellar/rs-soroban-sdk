@@ -58,7 +58,7 @@ impl UdtEnum2 {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UdtEnum2` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::UdtEnum2`",
+                            "type `UdtEnum2` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_udt::UdtEnum2`",
                         ),
                     );
                 }
@@ -445,7 +445,7 @@ impl UdtEnum {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UdtEnum` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::UdtEnum`",
+                            "type `UdtEnum` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_udt::UdtEnum`",
                         ),
                     );
                 }
@@ -1142,7 +1142,7 @@ impl UdtTuple {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UdtTuple` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::UdtTuple`",
+                            "type `UdtTuple` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_udt::UdtTuple`",
                         ),
                     );
                 }
@@ -1574,7 +1574,7 @@ impl UdtStruct {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UdtStruct` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::UdtStruct`",
+                            "type `UdtStruct` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_udt::UdtStruct`",
                         ),
                     );
                 }
@@ -2101,7 +2101,7 @@ impl UdtRecursive {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UdtRecursive` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::UdtRecursive`",
+                            "type `UdtRecursive` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_udt::UdtRecursive`",
                         ),
                     );
                 }
@@ -2586,7 +2586,7 @@ impl RecursiveToEnum {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `RecursiveToEnum` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::RecursiveToEnum`",
+                            "type `RecursiveToEnum` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_udt::RecursiveToEnum`",
                         ),
                     );
                 }
@@ -3086,7 +3086,7 @@ impl RecursiveEnum {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `RecursiveEnum` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::RecursiveEnum`",
+                            "type `RecursiveEnum` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_udt::RecursiveEnum`",
                         ),
                     );
                 }
@@ -5175,7 +5175,7 @@ mod test_with_wasm {
                         {
                             ::core::panicking::panic_fmt(
                                 format_args!(
-                                    "type `UdtTuple` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::UdtTuple`",
+                                    "type `UdtTuple` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::UdtTuple`",
                                 ),
                             );
                         }
@@ -5661,7 +5661,7 @@ mod test_with_wasm {
                         {
                             ::core::panicking::panic_fmt(
                                 format_args!(
-                                    "type `UdtStruct` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::UdtStruct`",
+                                    "type `UdtStruct` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::UdtStruct`",
                                 ),
                             );
                         }
@@ -6238,7 +6238,7 @@ mod test_with_wasm {
                         {
                             ::core::panicking::panic_fmt(
                                 format_args!(
-                                    "type `UdtRecursive` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::UdtRecursive`",
+                                    "type `UdtRecursive` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::UdtRecursive`",
                                 ),
                             );
                         }
@@ -6756,7 +6756,7 @@ mod test_with_wasm {
                         {
                             ::core::panicking::panic_fmt(
                                 format_args!(
-                                    "type `RecursiveToEnum` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::RecursiveToEnum`",
+                                    "type `RecursiveToEnum` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::RecursiveToEnum`",
                                 ),
                             );
                         }
@@ -7278,7 +7278,7 @@ mod test_with_wasm {
                         {
                             ::core::panicking::panic_fmt(
                                 format_args!(
-                                    "type `ContractExecutableRef` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::ContractExecutableRef`",
+                                    "type `ContractExecutableRef` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::ContractExecutableRef`",
                                 ),
                             );
                         }
@@ -7815,7 +7815,7 @@ mod test_with_wasm {
                         {
                             ::core::panicking::panic_fmt(
                                 format_args!(
-                                    "type `ContractContext` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::ContractContext`",
+                                    "type `ContractContext` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::ContractContext`",
                                 ),
                             );
                         }
@@ -8418,7 +8418,7 @@ mod test_with_wasm {
                         {
                             ::core::panicking::panic_fmt(
                                 format_args!(
-                                    "type `SubContractInvocation` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::SubContractInvocation`",
+                                    "type `SubContractInvocation` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::SubContractInvocation`",
                                 ),
                             );
                         }
@@ -8958,7 +8958,7 @@ mod test_with_wasm {
                         {
                             ::core::panicking::panic_fmt(
                                 format_args!(
-                                    "type `CreateContractHostFnContext` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::CreateContractHostFnContext`",
+                                    "type `CreateContractHostFnContext` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::CreateContractHostFnContext`",
                                 ),
                             );
                         }
@@ -9526,7 +9526,7 @@ mod test_with_wasm {
                         {
                             ::core::panicking::panic_fmt(
                                 format_args!(
-                                    "type `CreateContractWithConstructorHostFnContext` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::CreateContractWithConstructorHostFnContext`",
+                                    "type `CreateContractWithConstructorHostFnContext` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::CreateContractWithConstructorHostFnContext`",
                                 ),
                             );
                         }
@@ -10209,7 +10209,7 @@ mod test_with_wasm {
                         {
                             ::core::panicking::panic_fmt(
                                 format_args!(
-                                    "type `UdtEnum` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::UdtEnum`",
+                                    "type `UdtEnum` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::UdtEnum`",
                                 ),
                             );
                         }
@@ -10981,7 +10981,7 @@ mod test_with_wasm {
                         {
                             ::core::panicking::panic_fmt(
                                 format_args!(
-                                    "type `RecursiveEnum` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::RecursiveEnum`",
+                                    "type `RecursiveEnum` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::RecursiveEnum`",
                                 ),
                             );
                         }
@@ -11596,7 +11596,7 @@ mod test_with_wasm {
                         {
                             ::core::panicking::panic_fmt(
                                 format_args!(
-                                    "type `ContractExecutable` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::ContractExecutable`",
+                                    "type `ContractExecutable` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::ContractExecutable`",
                                 ),
                             );
                         }
@@ -12292,7 +12292,7 @@ mod test_with_wasm {
                         {
                             ::core::panicking::panic_fmt(
                                 format_args!(
-                                    "type `Context` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::Context`",
+                                    "type `Context` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::Context`",
                                 ),
                             );
                         }
@@ -13105,7 +13105,7 @@ mod test_with_wasm {
                         {
                             ::core::panicking::panic_fmt(
                                 format_args!(
-                                    "type `InvokerContractAuthEntry` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::InvokerContractAuthEntry`",
+                                    "type `InvokerContractAuthEntry` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::InvokerContractAuthEntry`",
                                 ),
                             );
                         }
@@ -13915,7 +13915,7 @@ mod test_with_wasm {
                         {
                             ::core::panicking::panic_fmt(
                                 format_args!(
-                                    "type `Executable` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::Executable`",
+                                    "type `Executable` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::Executable`",
                                 ),
                             );
                         }
@@ -14540,7 +14540,7 @@ mod test_with_wasm {
                         {
                             ::core::panicking::panic_fmt(
                                 format_args!(
-                                    "type `UdtEnum2` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::UdtEnum2`",
+                                    "type `UdtEnum2` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_udt::test_with_wasm::contract::UdtEnum2`",
                                 ),
                             );
                         }

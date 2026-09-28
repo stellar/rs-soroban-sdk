@@ -59,7 +59,7 @@ impl Error {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `Error` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_account::Error`",
+                            "type `Error` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_account::Error`",
                         ),
                     );
                 }

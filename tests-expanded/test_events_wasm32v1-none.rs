@@ -39,7 +39,7 @@ impl Transfer {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `Transfer` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_events::Transfer`",
+                            "type `Transfer` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_events::Transfer`",
                         ),
                     );
                 }
@@ -165,7 +165,7 @@ impl SingleValue {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `SingleValue` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_events::SingleValue`",
+                            "type `SingleValue` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_events::SingleValue`",
                         ),
                     );
                 }
@@ -261,7 +261,7 @@ impl SingleValueVoid {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `SingleValueVoid` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_events::SingleValueVoid`",
+                            "type `SingleValueVoid` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_events::SingleValueVoid`",
                         ),
                     );
                 }
@@ -361,7 +361,7 @@ impl VecValues {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `VecValues` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_events::VecValues`",
+                            "type `VecValues` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_events::VecValues`",
                         ),
                     );
                 }
@@ -472,7 +472,7 @@ impl MapValues {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `MapValues` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_events::MapValues`",
+                            "type `MapValues` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_events::MapValues`",
                         ),
                     );
                 }

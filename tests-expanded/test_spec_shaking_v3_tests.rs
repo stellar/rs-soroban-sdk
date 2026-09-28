@@ -195,7 +195,7 @@ impl UsedParamStruct {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedParamStruct` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedParamStruct`",
+                            "type `UsedParamStruct` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedParamStruct`",
                         ),
                     );
                 }
@@ -683,7 +683,7 @@ impl UsedReturnEnum {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedReturnEnum` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedReturnEnum`",
+                            "type `UsedReturnEnum` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedReturnEnum`",
                         ),
                     );
                 }
@@ -1243,7 +1243,7 @@ impl UsedParamIntEnum {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedParamIntEnum` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedParamIntEnum`",
+                            "type `UsedParamIntEnum` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedParamIntEnum`",
                         ),
                     );
                 }
@@ -1613,7 +1613,7 @@ impl UsedErrorEnum {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedErrorEnum` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedErrorEnum`",
+                            "type `UsedErrorEnum` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedErrorEnum`",
                         ),
                     );
                 }
@@ -1814,7 +1814,7 @@ impl UsedPanicErrorEnum {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedPanicErrorEnum` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedPanicErrorEnum`",
+                            "type `UsedPanicErrorEnum` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedPanicErrorEnum`",
                         ),
                     );
                 }
@@ -2004,7 +2004,7 @@ impl UsedAssertErrorEnum {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedAssertErrorEnum` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedAssertErrorEnum`",
+                            "type `UsedAssertErrorEnum` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedAssertErrorEnum`",
                         ),
                     );
                 }
@@ -2201,7 +2201,7 @@ impl UsedNestedInStruct {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedNestedInStruct` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedNestedInStruct`",
+                            "type `UsedNestedInStruct` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedNestedInStruct`",
                         ),
                     );
                 }
@@ -2605,7 +2605,7 @@ impl UsedVecElement {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedVecElement` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedVecElement`",
+                            "type `UsedVecElement` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedVecElement`",
                         ),
                     );
                 }
@@ -3014,7 +3014,7 @@ impl UsedMapKey {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedMapKey` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedMapKey`",
+                            "type `UsedMapKey` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedMapKey`",
                         ),
                     );
                 }
@@ -3374,7 +3374,7 @@ impl UsedMapVal {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedMapVal` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedMapVal`",
+                            "type `UsedMapVal` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedMapVal`",
                         ),
                     );
                 }
@@ -3776,7 +3776,7 @@ impl UsedOptionElement {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedOptionElement` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedOptionElement`",
+                            "type `UsedOptionElement` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedOptionElement`",
                         ),
                     );
                 }
@@ -4178,7 +4178,7 @@ impl UsedResultOk {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedResultOk` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedResultOk`",
+                            "type `UsedResultOk` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedResultOk`",
                         ),
                     );
                 }
@@ -4588,7 +4588,7 @@ impl UsedEventSimple {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedEventSimple` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedEventSimple`",
+                            "type `UsedEventSimple` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedEventSimple`",
                         ),
                     );
                 }
@@ -4719,7 +4719,7 @@ impl UsedEventTopicType {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedEventTopicType` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedEventTopicType`",
+                            "type `UsedEventTopicType` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedEventTopicType`",
                         ),
                     );
                 }
@@ -5096,7 +5096,7 @@ impl UsedEventWithTopicType {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedEventWithTopicType` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedEventWithTopicType`",
+                            "type `UsedEventWithTopicType` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedEventWithTopicType`",
                         ),
                     );
                 }
@@ -5238,7 +5238,7 @@ impl UsedEventDataType {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedEventDataType` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedEventDataType`",
+                            "type `UsedEventDataType` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedEventDataType`",
                         ),
                     );
                 }
@@ -5706,7 +5706,7 @@ impl UsedEventWithDataType {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedEventWithDataType` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedEventWithDataType`",
+                            "type `UsedEventWithDataType` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedEventWithDataType`",
                         ),
                     );
                 }
@@ -5844,7 +5844,7 @@ impl UsedEventTopicOuter {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedEventTopicOuter` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedEventTopicOuter`",
+                            "type `UsedEventTopicOuter` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedEventTopicOuter`",
                         ),
                     );
                 }
@@ -6264,7 +6264,7 @@ impl UsedEventTopicInner {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedEventTopicInner` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedEventTopicInner`",
+                            "type `UsedEventTopicInner` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedEventTopicInner`",
                         ),
                     );
                 }
@@ -6680,7 +6680,7 @@ impl UsedEventWithNestedTopic {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedEventWithNestedTopic` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedEventWithNestedTopic`",
+                            "type `UsedEventWithNestedTopic` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedEventWithNestedTopic`",
                         ),
                     );
                 }
@@ -6818,7 +6818,7 @@ impl UsedEventDataOuter {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedEventDataOuter` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedEventDataOuter`",
+                            "type `UsedEventDataOuter` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedEventDataOuter`",
                         ),
                     );
                 }
@@ -7236,7 +7236,7 @@ impl UsedEventDataInner {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedEventDataInner` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedEventDataInner`",
+                            "type `UsedEventDataInner` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedEventDataInner`",
                         ),
                     );
                 }
@@ -7650,7 +7650,7 @@ impl UsedEventWithNestedData {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedEventWithNestedData` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedEventWithNestedData`",
+                            "type `UsedEventWithNestedData` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedEventWithNestedData`",
                         ),
                     );
                 }
@@ -7790,7 +7790,7 @@ impl UsedRefTopicType {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedRefTopicType` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedRefTopicType`",
+                            "type `UsedRefTopicType` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedRefTopicType`",
                         ),
                     );
                 }
@@ -8158,7 +8158,7 @@ impl UsedRefDataType {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedRefDataType` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedRefDataType`",
+                            "type `UsedRefDataType` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedRefDataType`",
                         ),
                     );
                 }
@@ -8571,7 +8571,7 @@ impl UsedRefDataInner {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedRefDataInner` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedRefDataInner`",
+                            "type `UsedRefDataInner` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedRefDataInner`",
                         ),
                     );
                 }
@@ -8983,7 +8983,7 @@ impl<'a> UsedEventWithRefs<'a> {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedEventWithRefs` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedEventWithRefs`",
+                            "type `UsedEventWithRefs` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedEventWithRefs`",
                         ),
                     );
                 }
@@ -9122,7 +9122,7 @@ impl UsedTupleElement {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedTupleElement` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedTupleElement`",
+                            "type `UsedTupleElement` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedTupleElement`",
                         ),
                     );
                 }
@@ -9529,7 +9529,7 @@ impl UsedTupleReturnElement {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedTupleReturnElement` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedTupleReturnElement`",
+                            "type `UsedTupleReturnElement` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedTupleReturnElement`",
                         ),
                     );
                 }
@@ -9940,7 +9940,7 @@ impl UsedVecInnerVecElement {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedVecInnerVecElement` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedVecInnerVecElement`",
+                            "type `UsedVecInnerVecElement` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedVecInnerVecElement`",
                         ),
                     );
                 }
@@ -10351,7 +10351,7 @@ impl UsedVecInnerElement {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedVecInnerElement` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedVecInnerElement`",
+                            "type `UsedVecInnerElement` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedVecInnerElement`",
                         ),
                     );
                 }
@@ -10772,7 +10772,7 @@ impl UsedVecElementNested {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedVecElementNested` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedVecElementNested`",
+                            "type `UsedVecElementNested` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedVecElementNested`",
                         ),
                     );
                 }
@@ -11333,7 +11333,7 @@ impl UsedNonPubStruct {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedNonPubStruct` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedNonPubStruct`",
+                            "type `UsedNonPubStruct` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedNonPubStruct`",
                         ),
                     );
                 }
@@ -11733,7 +11733,7 @@ impl UsedNonPubError {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedNonPubError` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedNonPubError`",
+                            "type `UsedNonPubError` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedNonPubError`",
                         ),
                     );
                 }
@@ -11928,7 +11928,7 @@ impl UsedRecursiveRoot {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedRecursiveRoot` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedRecursiveRoot`",
+                            "type `UsedRecursiveRoot` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedRecursiveRoot`",
                         ),
                     );
                 }
@@ -12363,7 +12363,7 @@ impl UsedRecursiveNode {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedRecursiveNode` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedRecursiveNode`",
+                            "type `UsedRecursiveNode` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedRecursiveNode`",
                         ),
                     );
                 }
@@ -12946,7 +12946,7 @@ impl UsedRecursiveLeaf {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedRecursiveLeaf` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedRecursiveLeaf`",
+                            "type `UsedRecursiveLeaf` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedRecursiveLeaf`",
                         ),
                     );
                 }
@@ -13365,7 +13365,7 @@ impl UsedLeaf {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UsedLeaf` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedLeaf`",
+                            "type `UsedLeaf` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UsedLeaf`",
                         ),
                     );
                 }
@@ -14495,7 +14495,7 @@ mod wasm_imported {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `ContractExecutableRef` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::ContractExecutableRef`",
+                                "type `ContractExecutableRef` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::ContractExecutableRef`",
                             ),
                         );
                     }
@@ -15023,7 +15023,7 @@ mod wasm_imported {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `ContractContext` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::ContractContext`",
+                                "type `ContractContext` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::ContractContext`",
                             ),
                         );
                     }
@@ -15614,7 +15614,7 @@ mod wasm_imported {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `SubContractInvocation` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::SubContractInvocation`",
+                                "type `SubContractInvocation` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::SubContractInvocation`",
                             ),
                         );
                     }
@@ -16151,7 +16151,7 @@ mod wasm_imported {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `CreateContractHostFnContext` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::CreateContractHostFnContext`",
+                                "type `CreateContractHostFnContext` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::CreateContractHostFnContext`",
                             ),
                         );
                     }
@@ -16704,7 +16704,7 @@ mod wasm_imported {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `CreateContractWithConstructorHostFnContext` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::CreateContractWithConstructorHostFnContext`",
+                                "type `CreateContractWithConstructorHostFnContext` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::CreateContractWithConstructorHostFnContext`",
                             ),
                         );
                     }
@@ -17342,7 +17342,7 @@ mod wasm_imported {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `StructA` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::StructA`",
+                                "type `StructA` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::StructA`",
                             ),
                         );
                     }
@@ -17830,7 +17830,7 @@ mod wasm_imported {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `StructB` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::StructB`",
+                                "type `StructB` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::StructB`",
                             ),
                         );
                     }
@@ -18318,7 +18318,7 @@ mod wasm_imported {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `StructC` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::StructC`",
+                                "type `StructC` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::StructC`",
                             ),
                         );
                     }
@@ -18813,7 +18813,7 @@ mod wasm_imported {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `StructTupleA` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::StructTupleA`",
+                                "type `StructTupleA` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::StructTupleA`",
                             ),
                         );
                     }
@@ -19254,7 +19254,7 @@ mod wasm_imported {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `StructTupleB` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::StructTupleB`",
+                                "type `StructTupleB` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::StructTupleB`",
                             ),
                         );
                     }
@@ -19696,7 +19696,7 @@ mod wasm_imported {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `StructTupleC` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::StructTupleC`",
+                                "type `StructTupleC` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::StructTupleC`",
                             ),
                         );
                     }
@@ -20181,7 +20181,7 @@ mod wasm_imported {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `ContractExecutable` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::ContractExecutable`",
+                                "type `ContractExecutable` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::ContractExecutable`",
                             ),
                         );
                     }
@@ -20873,7 +20873,7 @@ mod wasm_imported {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `Context` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::Context`",
+                                "type `Context` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::Context`",
                             ),
                         );
                     }
@@ -21675,7 +21675,7 @@ mod wasm_imported {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `InvokerContractAuthEntry` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::InvokerContractAuthEntry`",
+                                "type `InvokerContractAuthEntry` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::InvokerContractAuthEntry`",
                             ),
                         );
                     }
@@ -22455,7 +22455,7 @@ mod wasm_imported {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `Executable` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::Executable`",
+                                "type `Executable` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::Executable`",
                             ),
                         );
                     }
@@ -23066,7 +23066,7 @@ mod wasm_imported {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `EnumA` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::EnumA`",
+                                "type `EnumA` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::EnumA`",
                             ),
                         );
                     }
@@ -23646,7 +23646,7 @@ mod wasm_imported {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `EnumB` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::EnumB`",
+                                "type `EnumB` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::EnumB`",
                             ),
                         );
                     }
@@ -24349,7 +24349,7 @@ mod wasm_imported {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `EnumC` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::EnumC`",
+                                "type `EnumC` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::EnumC`",
                             ),
                         );
                     }
@@ -24984,7 +24984,7 @@ mod wasm_imported {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `EnumIntA` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::EnumIntA`",
+                                "type `EnumIntA` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::EnumIntA`",
                             ),
                         );
                     }
@@ -25398,7 +25398,7 @@ mod wasm_imported {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `EnumIntB` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::EnumIntB`",
+                                "type `EnumIntB` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::EnumIntB`",
                             ),
                         );
                     }
@@ -25812,7 +25812,7 @@ mod wasm_imported {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `EnumIntC` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::EnumIntC`",
+                                "type `EnumIntC` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::EnumIntC`",
                             ),
                         );
                     }
@@ -26226,7 +26226,7 @@ mod wasm_imported {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `ErrorA` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::ErrorA`",
+                                "type `ErrorA` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::ErrorA`",
                             ),
                         );
                     }
@@ -26466,7 +26466,7 @@ mod wasm_imported {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `ErrorB` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::ErrorB`",
+                                "type `ErrorB` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::ErrorB`",
                             ),
                         );
                     }
@@ -26706,7 +26706,7 @@ mod wasm_imported {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `ErrorC` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::ErrorC`",
+                                "type `ErrorC` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::ErrorC`",
                             ),
                         );
                     }
@@ -26946,7 +26946,7 @@ mod wasm_imported {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `EventA` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::EventA`",
+                                "type `EventA` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::EventA`",
                             ),
                         );
                     }
@@ -27118,7 +27118,7 @@ mod wasm_imported {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `EventB` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::EventB`",
+                                "type `EventB` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::EventB`",
                             ),
                         );
                     }
@@ -27301,7 +27301,7 @@ mod wasm_imported {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `EventC` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::EventC`",
+                                "type `EventC` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::EventC`",
                             ),
                         );
                     }
@@ -27451,7 +27451,7 @@ mod wasm_imported {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `EventD` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::EventD`",
+                                "type `EventD` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::wasm_imported::EventD`",
                             ),
                         );
                     }
@@ -27563,7 +27563,7 @@ impl UnusedStruct {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UnusedStruct` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedStruct`",
+                            "type `UnusedStruct` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedStruct`",
                         ),
                     );
                 }
@@ -27974,7 +27974,7 @@ impl UnusedEnum {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UnusedEnum` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedEnum`",
+                            "type `UnusedEnum` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedEnum`",
                         ),
                     );
                 }
@@ -28485,7 +28485,7 @@ impl UnusedIntEnum {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UnusedIntEnum` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedIntEnum`",
+                            "type `UnusedIntEnum` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedIntEnum`",
                         ),
                     );
                 }
@@ -28858,7 +28858,7 @@ impl UnusedEvent {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UnusedEvent` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedEvent`",
+                            "type `UnusedEvent` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedEvent`",
                         ),
                     );
                 }
@@ -28979,7 +28979,7 @@ impl UnusedEventDataType {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UnusedEventDataType` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedEventDataType`",
+                            "type `UnusedEventDataType` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedEventDataType`",
                         ),
                     );
                 }
@@ -29393,7 +29393,7 @@ impl UnusedEventWithDataType {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UnusedEventWithDataType` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedEventWithDataType`",
+                            "type `UnusedEventWithDataType` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedEventWithDataType`",
                         ),
                     );
                 }
@@ -29526,7 +29526,7 @@ impl UnusedOuter {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UnusedOuter` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedOuter`",
+                            "type `UnusedOuter` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedOuter`",
                         ),
                     );
                 }
@@ -29933,7 +29933,7 @@ impl UnusedInner {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UnusedInner` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedInner`",
+                            "type `UnusedInner` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedInner`",
                         ),
                     );
                 }
@@ -30328,7 +30328,7 @@ impl UnusedPubError {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UnusedPubError` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedPubError`",
+                            "type `UnusedPubError` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedPubError`",
                         ),
                     );
                 }
@@ -30523,7 +30523,7 @@ impl UnusedNonContractFnParam {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UnusedNonContractFnParam` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedNonContractFnParam`",
+                            "type `UnusedNonContractFnParam` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedNonContractFnParam`",
                         ),
                     );
                 }
@@ -30936,7 +30936,7 @@ impl UnusedNonContractFnReturn {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UnusedNonContractFnReturn` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedNonContractFnReturn`",
+                            "type `UnusedNonContractFnReturn` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedNonContractFnReturn`",
                         ),
                     );
                 }
@@ -31344,7 +31344,7 @@ impl UnusedNonPubStruct {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UnusedNonPubStruct` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedNonPubStruct`",
+                            "type `UnusedNonPubStruct` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedNonPubStruct`",
                         ),
                     );
                 }
@@ -31744,7 +31744,7 @@ impl UnusedNonPubError {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UnusedNonPubError` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedNonPubError`",
+                            "type `UnusedNonPubError` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_shaking_v3::UnusedNonPubError`",
                         ),
                     );
                 }

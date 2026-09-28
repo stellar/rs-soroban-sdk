@@ -1197,7 +1197,7 @@ mod test_a {
                         {
                             ::core::panicking::panic_fmt(
                                 format_args!(
-                                    "type `Error` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_auth::test_a::auth_decline::Error`",
+                                    "type `Error` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_auth::test_a::auth_decline::Error`",
                                 ),
                             );
                         }
@@ -2850,7 +2850,7 @@ mod test_b {
                         {
                             ::core::panicking::panic_fmt(
                                 format_args!(
-                                    "type `Error` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_auth::test_b::auth_decline::Error`",
+                                    "type `Error` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_auth::test_b::auth_decline::Error`",
                                 ),
                             );
                         }

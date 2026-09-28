@@ -58,7 +58,7 @@ impl MyStruct {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `MyStruct` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_contracttrait_trait::MyStruct`",
+                            "type `MyStruct` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_contracttrait_trait::MyStruct`",
                         ),
                     );
                 }
@@ -520,7 +520,7 @@ impl MyEnumUnit {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `MyEnumUnit` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_contracttrait_trait::MyEnumUnit`",
+                            "type `MyEnumUnit` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_contracttrait_trait::MyEnumUnit`",
                         ),
                     );
                 }
@@ -908,7 +908,7 @@ impl MyEnumVariants {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `MyEnumVariants` has a contract spec name longer than the limit of 1024 bytes, shorten its module path or name: `::test_contracttrait_trait::MyEnumVariants`",
+                            "type `MyEnumVariants` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_contracttrait_trait::MyEnumVariants`",
                         ),
                     );
                 }

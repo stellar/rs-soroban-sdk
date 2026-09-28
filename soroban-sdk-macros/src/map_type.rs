@@ -465,7 +465,7 @@ pub fn spec_name_gen(
     let name = Literal::string(&ident.unraw().to_string());
     let limit = SC_SPEC_TYPE_NAME_LIMIT as usize;
     let too_long = Literal::string(&format!(
-        "type `{}` has a contract spec name longer than the limit of {limit} bytes, shorten its module path or name: `::",
+        "type `{}` full name including its module path is too long, the limit is {limit} bytes, shorten its module path or name: `::",
         ident.unraw(),
     ));
     let gen_impl = gen_impl.unwrap_or_default();

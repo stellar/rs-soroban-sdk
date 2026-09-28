@@ -7,7 +7,10 @@ use heck::ToSnakeCase;
 use proc_macro2::{Ident, TokenStream as TokenStream2};
 use quote::ToTokens;
 use quote::{format_ident, quote};
-use syn::{ext::IdentExt as _, parse2, ImplItemFn, ItemTrait, Path, TraitItem, TraitItemFn, Type};
+use syn::{
+    ext::IdentExt as _, parse2, GenericParam, ImplItemFn, ItemTrait, Path, TraitItem, TraitItemFn,
+    Type,
+};
 
 // See soroban-sdk/docs/contracttrait.md for documentation on how this works.
 
@@ -58,6 +61,17 @@ fn derive(args: &Args, input: &ItemTrait) -> TokenStream2 {
             ..
         }) = i
         {
+            // `#[contracttrait]` rejects type and const parameters, so a default
+            // fn with them is left out rather than generated as a contract fn
+            // that could not infer them and would add to that error.
+            if !sig
+                .generics
+                .params
+                .iter()
+                .all(|p| matches!(p, GenericParam::Lifetime(_)))
+            {
+                continue;
+            }
             if let Err(err) = reject_items(
                 attrs.iter().filter(|a| is_attr_cfg(a) || is_attr_cfg_attr(a)),
                 "`cfg` and `cfg_attr` are not supported on `#[contracttrait]` default functions because they would be evaluated where the default implementation is generated, not where the trait is defined",

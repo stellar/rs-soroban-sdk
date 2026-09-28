@@ -27,6 +27,16 @@ impl C {
 #[contracttrait]
 pub trait Tr {
     fn with_const<const N: u32>(_env: Env) {}
+    fn plain(_env: Env) {}
 }
+
+// Implementing a trait whose `#[contracttrait]` expansion was rejected should
+// surface only the trait's own error, not a `cannot find macro`/`cannot find
+// trait` cascade from a dropped trait declaration.
+#[contract]
+pub struct D;
+
+#[contractimpl(contracttrait)]
+impl Tr for D {}
 
 fn main() {}
