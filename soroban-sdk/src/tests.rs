@@ -23,6 +23,7 @@ mod contract_overlapping_type_fn_names;
 mod contract_snapshot;
 mod contract_store;
 mod contract_timepoint;
+mod contract_trait_empty;
 mod contract_udt_enum;
 mod contract_udt_enum_error;
 mod contract_udt_enum_int;
