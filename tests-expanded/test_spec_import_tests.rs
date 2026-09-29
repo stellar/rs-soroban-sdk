@@ -88,7 +88,7 @@ impl Contract {
                     soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                         soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                             name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                <StructA>::spec_name(),
+                                <StructA as soroban_sdk::SpecName>::SPEC_NAME,
                             ),
                         },
                     ),
@@ -139,7 +139,7 @@ impl Contract {
                     soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                         soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                             name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                <StructTupleA>::spec_name(),
+                                <StructTupleA as soroban_sdk::SpecName>::SPEC_NAME,
                             ),
                         },
                     ),
@@ -177,7 +177,7 @@ impl Contract {
                     soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                         soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                             name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                <EnumA>::spec_name(),
+                                <EnumA as soroban_sdk::SpecName>::SPEC_NAME,
                             ),
                         },
                     ),
@@ -215,7 +215,7 @@ impl Contract {
                     soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                         soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                             name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                <EnumIntA>::spec_name(),
+                                <EnumIntA as soroban_sdk::SpecName>::SPEC_NAME,
                             ),
                         },
                     ),
@@ -262,7 +262,7 @@ impl Contract {
                             error_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                                 soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                        <ErrorA>::spec_name(),
+                                        <ErrorA as soroban_sdk::SpecName>::SPEC_NAME,
                                     ),
                                 },
                             ),

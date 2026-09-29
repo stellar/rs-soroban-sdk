@@ -1971,7 +1971,7 @@ impl Contract {
                         type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                             soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                    <MyStruct>::spec_name(),
+                                    <MyStruct as soroban_sdk::SpecName>::SPEC_NAME,
                                 ),
                             },
                         ),
@@ -1981,7 +1981,7 @@ impl Contract {
                     soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                         soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                             name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                <MyStruct>::spec_name(),
+                                <MyStruct as soroban_sdk::SpecName>::SPEC_NAME,
                             ),
                         },
                     ),
@@ -2021,7 +2021,7 @@ impl Contract {
                         type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                             soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                    <MyEnumUnit>::spec_name(),
+                                    <MyEnumUnit as soroban_sdk::SpecName>::SPEC_NAME,
                                 ),
                             },
                         ),
@@ -2031,7 +2031,7 @@ impl Contract {
                     soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                         soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                             name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                <MyEnumUnit>::spec_name(),
+                                <MyEnumUnit as soroban_sdk::SpecName>::SPEC_NAME,
                             ),
                         },
                     ),
@@ -2073,7 +2073,7 @@ impl Contract {
                         type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                             soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                    <MyEnumVariants>::spec_name(),
+                                    <MyEnumVariants as soroban_sdk::SpecName>::SPEC_NAME,
                                 ),
                             },
                         ),
@@ -2083,7 +2083,7 @@ impl Contract {
                     soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                         soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                             name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                <MyEnumVariants>::spec_name(),
+                                <MyEnumVariants as soroban_sdk::SpecName>::SPEC_NAME,
                             ),
                         },
                     ),

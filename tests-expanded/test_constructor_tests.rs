@@ -141,9 +141,8 @@ pub enum DataKey {
     Temp(u32),
     Instance(u32),
 }
-impl DataKey {
-    #[doc(hidden)]
-    pub const fn spec_name() -> &'static str {
+impl soroban_sdk::SpecName for DataKey {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_constructor::DataKey";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -158,7 +157,7 @@ impl DataKey {
             NAME
         };
         CHECKED_NAME
-    }
+    };
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -170,7 +169,7 @@ impl DataKey {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    DataKey::spec_name(),
+                    <DataKey as soroban_sdk::SpecName>::SPEC_NAME,
                 ),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(
@@ -847,7 +846,7 @@ impl Contract {
                         type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                             soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                    <DataKey>::spec_name(),
+                                    <DataKey as soroban_sdk::SpecName>::SPEC_NAME,
                                 ),
                             },
                         ),

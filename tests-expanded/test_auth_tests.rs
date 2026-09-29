@@ -1188,9 +1188,8 @@ mod test_a {
                 ::core::cmp::Ordering::Equal
             }
         }
-        impl Error {
-            #[doc(hidden)]
-            pub const fn spec_name() -> &'static str {
+        impl soroban_sdk::SpecName for Error {
+            const SPEC_NAME: &'static str = {
                 const NAME: &str = "::test_auth::test_a::auth_decline::Error";
                 const CHECKED_NAME: &str = {
                     if !(NAME.len() <= 1024usize) {
@@ -1205,7 +1204,7 @@ mod test_a {
                     NAME
                 };
                 CHECKED_NAME
-            }
+            };
         }
         #[doc(hidden)]
         #[allow(dead_code)]
@@ -1217,7 +1216,7 @@ mod test_a {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                            Error::spec_name(),
+                            <Error as soroban_sdk::SpecName>::SPEC_NAME,
                         ),
                         cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                             soroban_sdk::xdr::r#const::ScSpecUdtErrorEnumCaseV0 {
@@ -2841,9 +2840,8 @@ mod test_b {
                 ::core::cmp::Ordering::Equal
             }
         }
-        impl Error {
-            #[doc(hidden)]
-            pub const fn spec_name() -> &'static str {
+        impl soroban_sdk::SpecName for Error {
+            const SPEC_NAME: &'static str = {
                 const NAME: &str = "::test_auth::test_b::auth_decline::Error";
                 const CHECKED_NAME: &str = {
                     if !(NAME.len() <= 1024usize) {
@@ -2858,7 +2856,7 @@ mod test_b {
                     NAME
                 };
                 CHECKED_NAME
-            }
+            };
         }
         #[doc(hidden)]
         #[allow(dead_code)]
@@ -2870,7 +2868,7 @@ mod test_b {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                            Error::spec_name(),
+                            <Error as soroban_sdk::SpecName>::SPEC_NAME,
                         ),
                         cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                             soroban_sdk::xdr::r#const::ScSpecUdtErrorEnumCaseV0 {
