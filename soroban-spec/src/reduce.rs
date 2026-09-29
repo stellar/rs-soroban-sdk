@@ -1,11 +1,8 @@
-use stellar_xdr::{ScSpecEntry, ScSpecTypeDef, ScSpecUdtUnionCaseV0};
+use stellar_xdr::{ScSpecEntry, ScSpecTypeDef, ScSpecUdtUnionCaseV0, SC_SPEC_TYPE_NAME_LIMIT};
 
-/// The most bytes a spec type name can hold (`SC_SPEC_TYPE_NAME_LIMIT`), which
-/// bounds the names the numbering below may produce.
-const TYPE_NAME_LIMIT: usize = 1024;
-
-/// The most bytes an event name can hold (`SC_SPEC_TYPE_NAME_LIMIT`).
-const EVENT_NAME_LIMIT: usize = 1024;
+/// The most bytes a spec type or event name can hold, which bounds the names
+/// the numbering below may produce.
+const NAME_LIMIT: usize = SC_SPEC_TYPE_NAME_LIMIT as usize;
 
 /// A spec with its user-defined type names reduced to simple names. Each
 /// entry is paired with how its own name resolved.
@@ -118,11 +115,11 @@ pub fn reduce(spec: &[ScSpecEntry]) -> Result<Reduced, DuplicateName> {
     let defined: Vec<(Vec<u8>, usize)> = spec
         .iter()
         .filter_map(|entry| match entry {
-            ScSpecEntry::UdtStructV0(s) => Some((s.name.to_vec(), TYPE_NAME_LIMIT)),
-            ScSpecEntry::UdtUnionV0(u) => Some((u.name.to_vec(), TYPE_NAME_LIMIT)),
-            ScSpecEntry::UdtEnumV0(e) => Some((e.name.to_vec(), TYPE_NAME_LIMIT)),
-            ScSpecEntry::UdtErrorEnumV0(e) => Some((e.name.to_vec(), TYPE_NAME_LIMIT)),
-            ScSpecEntry::EventV0(e) => Some((e.name.to_vec(), EVENT_NAME_LIMIT)),
+            ScSpecEntry::UdtStructV0(s) => Some((s.name.to_vec(), NAME_LIMIT)),
+            ScSpecEntry::UdtUnionV0(u) => Some((u.name.to_vec(), NAME_LIMIT)),
+            ScSpecEntry::UdtEnumV0(e) => Some((e.name.to_vec(), NAME_LIMIT)),
+            ScSpecEntry::UdtErrorEnumV0(e) => Some((e.name.to_vec(), NAME_LIMIT)),
+            ScSpecEntry::EventV0(e) => Some((e.name.to_vec(), NAME_LIMIT)),
             _ => None,
         })
         .collect();
@@ -289,7 +286,7 @@ fn rewrite_ty(t: &mut ScSpecTypeDef, resolve: &dyn Fn(&[u8]) -> Vec<u8>) {
 
 #[cfg(test)]
 mod test {
-    use super::{numbered_name, reduce, DuplicateName, Rename, TYPE_NAME_LIMIT};
+    use super::{numbered_name, reduce, DuplicateName, Rename, NAME_LIMIT};
     use stellar_xdr::{
         ScSpecEntry, ScSpecTypeDef, ScSpecTypeUdt, ScSpecUdtStructFieldV0, ScSpecUdtStructV0,
     };
@@ -562,6 +559,6 @@ mod test {
         let base = "x".repeat(1024).into_bytes();
         let mut expected = "x".repeat(1023).into_bytes();
         expected.push(b'2');
-        assert_eq!(numbered_name(&base, 2, TYPE_NAME_LIMIT), expected);
+        assert_eq!(numbered_name(&base, 2, NAME_LIMIT), expected);
     }
 }
