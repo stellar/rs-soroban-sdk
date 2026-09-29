@@ -1,0 +1,11 @@
+error: missing `fn` or `struct` for function or struct definition
+  --> tests/compile_fails/contracttrait_generic_errors.rs:24:6
+   |
+24 | impl WithType<u32> for C {}
+   |      ^^^^^^^^
+
+error: missing `fn` or `struct` for function or struct definition
+  --> tests/compile_fails/contracttrait_generic_errors.rs:30:10
+   |
+30 | impl<'a> WithLifetime<'a> for D {}
+   |          ^^^^^^^^^^^^
