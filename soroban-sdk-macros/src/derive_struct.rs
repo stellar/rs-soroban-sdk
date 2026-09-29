@@ -7,7 +7,7 @@ use stellar_xdr::{ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, Stri
 
 use crate::{
     doc::docs_from_attrs,
-    map_type::{const_view_string, const_view_type_def, map_type, spec_name_gen},
+    map_type::{const_view_string, const_view_type_def, map_type, spec_type_def_gen},
     shaking,
 };
 
@@ -90,7 +90,7 @@ pub fn derive_type_struct(
 
     // The fully qualified name the spec knows this type by, emitted for every
     // type so that a reference to it from anywhere can reach it.
-    let spec_name = spec_name_gen(path, ident, None, None, None);
+    let spec_type_def = spec_type_def_gen(path, ident, None, None, None);
 
     // Generated code spec. The spec entry is rendered as the equivalent
     // const::ScSpecEntry, which the contract crate encodes to XDR at compile time.
@@ -149,7 +149,7 @@ pub fn derive_type_struct(
 
     // Output.
     let mut output = quote! {
-        #spec_name
+        #spec_type_def
 
         #spec_gen
 

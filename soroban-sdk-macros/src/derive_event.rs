@@ -4,7 +4,7 @@ use crate::{
     doc::docs_from_attrs,
     export_arg_error,
     map_type::{
-        const_view_string, const_view_symbol, const_view_type_def, map_type, spec_name_gen,
+        const_view_string, const_view_symbol, const_view_type_def, map_type, spec_type_def_gen,
     },
     shaking, symbol,
 };
@@ -409,7 +409,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     // Output.
     // Unlike other user-defined types, an event struct can carry generics
     // (e.g. a lifetime on borrowed fields), so the impl repeats them.
-    let spec_name = spec_name_gen(
+    let spec_type_def = spec_type_def_gen(
         path,
         ident,
         Some(quote!(#gen_impl)),
@@ -417,7 +417,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         Some(quote!(#gen_where)),
     );
     let output = quote! {
-        #spec_name
+        #spec_type_def
 
         #spec_gen
 
