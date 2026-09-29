@@ -18,6 +18,8 @@ pub enum GenerateError {
     InvalidUtf8,
     #[error("invalid Rust identifier: {0:?}")]
     InvalidIdent(String),
+    #[error(transparent)]
+    DuplicateName(#[from] soroban_spec::reduce::DuplicateName),
 }
 
 /// Options for controlling code generation behavior.

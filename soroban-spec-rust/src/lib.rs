@@ -116,7 +116,7 @@ pub fn generate_without_file_with_options(
     // rewriting references to keep them matched up with the types they refer
     // to. Reducing an already-simple spec changes nothing, so a caller that
     // reduced first (to report on the renames) generates the same code.
-    let specs: Vec<ScSpecEntry> = soroban_spec::reduce::reduce(&specs)
+    let specs: Vec<ScSpecEntry> = soroban_spec::reduce::reduce(&specs)?
         .into_entries()
         .collect();
     let specs: &[ScSpecEntry] = &specs;
