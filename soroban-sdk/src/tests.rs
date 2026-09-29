@@ -18,6 +18,7 @@ mod contract_executable_ref;
 mod contract_fn;
 mod contract_invoke;
 mod contract_invoke_arg_count;
+mod contract_invoke_panics;
 mod contract_meta;
 mod contract_overlapping_type_fn_names;
 mod contract_snapshot;
