@@ -1,3 +1,15 @@
+error: generic parameters are not supported on `#[contracttrait]` traits
+ --> tests/compile_fails/contracttrait_generic_errors.rs:7:19
+  |
+7 | pub trait WithType<T> {
+  |                   ^^^
+
+error: generic parameters are not supported on `#[contracttrait]` traits
+  --> tests/compile_fails/contracttrait_generic_errors.rs:14:23
+   |
+14 | pub trait WithLifetime<'a> {
+   |                       ^^^^
+
 error: generic parameters are not supported on traits implemented with `#[contractimpl(contracttrait)]`
   --> tests/compile_fails/contracttrait_generic_errors.rs:24:14
    |

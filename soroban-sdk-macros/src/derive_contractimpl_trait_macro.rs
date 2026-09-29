@@ -51,7 +51,14 @@ fn derive(args: &Args, input: &ItemTrait) -> TokenStream2 {
 
     let trait_ident = &input.ident;
 
-    let mut errors: Option<syn::Error> = None;
+    // The trait's macro is invoked by the trait's path, which cannot carry the
+    // generic arguments that an impl of a generic trait needs.
+    let mut errors: Option<syn::Error> = (!input.generics.params.is_empty()).then(|| {
+        syn::Error::new_spanned(
+            &input.generics,
+            "generic parameters are not supported on `#[contracttrait]` traits",
+        )
+    });
     let mut fns = Vec::new();
     for i in &input.items {
         if let TraitItem::Fn(TraitItemFn {
@@ -122,7 +129,9 @@ pub fn generate_call_to_contractimpl_for_trait(
     spec_ident: &str,
 ) -> Result<TokenStream2, syn::Error> {
     // The trait's macro is invoked by the trait's path, and a macro invocation
-    // cannot carry generic arguments.
+    // cannot carry generic arguments. This is checked here even though
+    // `#[contracttrait]` rejects generic traits, because the impl expands on its
+    // own and would otherwise fail with a parse error.
     if let Some(segment) = trait_ident.segments.last() {
         if !matches!(segment.arguments, PathArguments::None) {
             return Err(syn::Error::new_spanned(
