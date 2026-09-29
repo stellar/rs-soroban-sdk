@@ -78,8 +78,6 @@ jobs:
       with:
         deno-version: v2.x
 
-    - uses: stellar/stellar-cli@v28.0.0
-
     - uses: stellar/actions/rust-cache@main
 
     - name: Align the local soroban-sdk version with the example
