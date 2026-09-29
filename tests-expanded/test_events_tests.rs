@@ -121,8 +121,8 @@ pub struct Transfer {
     amount: i128,
     to_muxed_id: Option<u64>,
 }
-impl soroban_sdk::SpecName for Transfer {
-    const SPEC_NAME: &'static str = {
+impl Transfer {
+    const __SPEC_NAME: &'static str = {
         const NAME: &str = "::test_events::Transfer";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -142,9 +142,7 @@ impl soroban_sdk::SpecName for Transfer {
 impl soroban_sdk::SpecTypeDef for Transfer {
     const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                <Self as soroban_sdk::SpecName>::SPEC_NAME,
-            ),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Self::__SPEC_NAME),
         });
 }
 #[doc(hidden)]
@@ -155,9 +153,7 @@ impl Transfer {
         soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                <Transfer as soroban_sdk::SpecName>::SPEC_NAME,
-            ),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Transfer::__SPEC_NAME),
             prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::r#const::ScSymbol(
                     soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"transfer"),
@@ -252,8 +248,8 @@ pub struct SingleValue {
     from: Address,
     amount: i128,
 }
-impl soroban_sdk::SpecName for SingleValue {
-    const SPEC_NAME: &'static str = {
+impl SingleValue {
+    const __SPEC_NAME: &'static str = {
         const NAME: &str = "::test_events::SingleValue";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -273,9 +269,7 @@ impl soroban_sdk::SpecName for SingleValue {
 impl soroban_sdk::SpecTypeDef for SingleValue {
     const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                <Self as soroban_sdk::SpecName>::SPEC_NAME,
-            ),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Self::__SPEC_NAME),
         });
 }
 #[doc(hidden)]
@@ -289,7 +283,7 @@ impl SingleValue {
             ),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                <SingleValue as soroban_sdk::SpecName>::SPEC_NAME,
+                SingleValue::__SPEC_NAME,
             ),
             prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::r#const::ScSymbol(
@@ -349,8 +343,8 @@ impl SingleValue {
 pub struct SingleValueVoid {
     from: Address,
 }
-impl soroban_sdk::SpecName for SingleValueVoid {
-    const SPEC_NAME: &'static str = {
+impl SingleValueVoid {
+    const __SPEC_NAME: &'static str = {
         const NAME: &str = "::test_events::SingleValueVoid";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -370,9 +364,7 @@ impl soroban_sdk::SpecName for SingleValueVoid {
 impl soroban_sdk::SpecTypeDef for SingleValueVoid {
     const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                <Self as soroban_sdk::SpecName>::SPEC_NAME,
-            ),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Self::__SPEC_NAME),
         });
 }
 #[doc(hidden)]
@@ -386,7 +378,7 @@ impl SingleValueVoid {
         ),
         lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
         name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-            <SingleValueVoid as soroban_sdk::SpecName>::SPEC_NAME,
+            SingleValueVoid::__SPEC_NAME,
         ),
         prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
@@ -449,8 +441,8 @@ pub struct VecValues {
     a: u32,
     b: u32,
 }
-impl soroban_sdk::SpecName for VecValues {
-    const SPEC_NAME: &'static str = {
+impl VecValues {
+    const __SPEC_NAME: &'static str = {
         const NAME: &str = "::test_events::VecValues";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -470,9 +462,7 @@ impl soroban_sdk::SpecName for VecValues {
 impl soroban_sdk::SpecTypeDef for VecValues {
     const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                <Self as soroban_sdk::SpecName>::SPEC_NAME,
-            ),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Self::__SPEC_NAME),
         });
 }
 #[doc(hidden)]
@@ -485,9 +475,7 @@ impl VecValues {
                 b"An event whose data is a vec, rather than a map.",
             ),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                <VecValues as soroban_sdk::SpecName>::SPEC_NAME,
-            ),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(VecValues::__SPEC_NAME),
             prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::r#const::ScSymbol(
                     soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"vec_values"),
@@ -564,8 +552,8 @@ pub struct MapValues {
     a: u32,
     b: u32,
 }
-impl soroban_sdk::SpecName for MapValues {
-    const SPEC_NAME: &'static str = {
+impl MapValues {
+    const __SPEC_NAME: &'static str = {
         const NAME: &str = "::test_events::MapValues";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -585,9 +573,7 @@ impl soroban_sdk::SpecName for MapValues {
 impl soroban_sdk::SpecTypeDef for MapValues {
     const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                <Self as soroban_sdk::SpecName>::SPEC_NAME,
-            ),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Self::__SPEC_NAME),
         });
 }
 #[doc(hidden)]
@@ -600,9 +586,7 @@ impl MapValues {
                 b"An event whose data is a map, which is the default.",
             ),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                <MapValues as soroban_sdk::SpecName>::SPEC_NAME,
-            ),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(MapValues::__SPEC_NAME),
             prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::r#const::ScSymbol(
                     soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"map_values"),

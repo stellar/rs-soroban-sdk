@@ -4,7 +4,7 @@
 //! user-defined type.
 
 use crate::{self as soroban_sdk};
-use soroban_sdk::{contract, contracterror, contractimpl, SpecName};
+use soroban_sdk::{contract, contracterror, contractimpl};
 use stellar_xdr::{Limits, ReadXdr, ScSpecEntry, ScSpecTypeDef, ScSpecTypeResult, ScSpecTypeUdt};
 
 pub mod a {
@@ -85,20 +85,14 @@ fn test_sdk_error_is_the_builtin_error_type() {
 fn test_user_defined_errors_are_referred_to_by_their_own_names() {
     assert_eq!(
         error_type(&Contract::spec_xdr_local()),
-        udt(<Error as SpecName>::SPEC_NAME)
+        udt("::soroban_sdk::tests::contract_error_references::Error")
     );
     assert_eq!(
         error_type(&Contract::spec_xdr_a()),
-        udt(<a::Error as SpecName>::SPEC_NAME)
+        udt("::soroban_sdk::tests::contract_error_references::a::Error")
     );
     assert_eq!(
         error_type(&Contract::spec_xdr_b()),
-        udt(<b::Error as SpecName>::SPEC_NAME)
+        udt("::soroban_sdk::tests::contract_error_references::b::Error")
     );
-    let names = [
-        <Error as SpecName>::SPEC_NAME,
-        <a::Error as SpecName>::SPEC_NAME,
-        <b::Error as SpecName>::SPEC_NAME,
-    ];
-    assert!(names[0] != names[1] && names[1] != names[2] && names[0] != names[2]);
 }

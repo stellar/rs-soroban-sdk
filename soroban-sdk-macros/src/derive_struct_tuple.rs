@@ -97,7 +97,7 @@ pub fn derive_type_struct_tuple(
             #path::xdr::r#const::ScSpecEntry::UdtStructV0(#path::xdr::r#const::ScSpecUdtStructV0 {
                 doc: #doc,
                 lib: #lib,
-                name: #path::xdr::r#const::StringM::try_from_str_or_panic(<#ident as #path::SpecName>::SPEC_NAME),
+                name: #path::xdr::r#const::StringM::try_from_str_or_panic(#ident::__SPEC_NAME),
                 fields: #path::xdr::r#const::VecM::try_from_slice_or_panic(&[#(#fields),*]),
             })
         };

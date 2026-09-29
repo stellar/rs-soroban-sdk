@@ -49,8 +49,8 @@ impl ::core::cmp::PartialEq for UdtEnum2 {
         __self_discr == __arg1_discr
     }
 }
-impl soroban_sdk::SpecName for UdtEnum2 {
-    const SPEC_NAME: &'static str = {
+impl UdtEnum2 {
+    const __SPEC_NAME: &'static str = {
         const NAME: &str = "::test_udt::UdtEnum2";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -70,9 +70,7 @@ impl soroban_sdk::SpecName for UdtEnum2 {
 impl soroban_sdk::SpecTypeDef for UdtEnum2 {
     const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                <Self as soroban_sdk::SpecName>::SPEC_NAME,
-            ),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Self::__SPEC_NAME),
         });
 }
 #[doc(hidden)]
@@ -85,7 +83,7 @@ impl UdtEnum2 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    <UdtEnum2 as soroban_sdk::SpecName>::SPEC_NAME,
+                    UdtEnum2::__SPEC_NAME,
                 ),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtEnumCaseV0 {
@@ -448,8 +446,8 @@ impl ::core::cmp::PartialEq for UdtEnum {
             }
     }
 }
-impl soroban_sdk::SpecName for UdtEnum {
-    const SPEC_NAME: &'static str = {
+impl UdtEnum {
+    const __SPEC_NAME: &'static str = {
         const NAME: &str = "::test_udt::UdtEnum";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -469,9 +467,7 @@ impl soroban_sdk::SpecName for UdtEnum {
 impl soroban_sdk::SpecTypeDef for UdtEnum {
     const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                <Self as soroban_sdk::SpecName>::SPEC_NAME,
-            ),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Self::__SPEC_NAME),
         });
 }
 #[doc(hidden)]
@@ -484,7 +480,7 @@ impl UdtEnum {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    <UdtEnum as soroban_sdk::SpecName>::SPEC_NAME,
+                    UdtEnum::__SPEC_NAME,
                 ),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::VoidV0(
@@ -1144,8 +1140,8 @@ impl ::core::cmp::PartialEq for UdtTuple {
         self.0 == other.0 && self.1 == other.1
     }
 }
-impl soroban_sdk::SpecName for UdtTuple {
-    const SPEC_NAME: &'static str = {
+impl UdtTuple {
+    const __SPEC_NAME: &'static str = {
         const NAME: &str = "::test_udt::UdtTuple";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -1165,9 +1161,7 @@ impl soroban_sdk::SpecName for UdtTuple {
 impl soroban_sdk::SpecTypeDef for UdtTuple {
     const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                <Self as soroban_sdk::SpecName>::SPEC_NAME,
-            ),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Self::__SPEC_NAME),
         });
 }
 #[doc(hidden)]
@@ -1180,7 +1174,7 @@ impl UdtTuple {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    <UdtTuple as soroban_sdk::SpecName>::SPEC_NAME,
+                    UdtTuple::__SPEC_NAME,
                 ),
                 fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
@@ -1591,8 +1585,8 @@ impl ::core::cmp::PartialEq for UdtStruct {
         self.a == other.a && self.b == other.b && self.c == other.c
     }
 }
-impl soroban_sdk::SpecName for UdtStruct {
-    const SPEC_NAME: &'static str = {
+impl UdtStruct {
+    const __SPEC_NAME: &'static str = {
         const NAME: &str = "::test_udt::UdtStruct";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -1612,9 +1606,7 @@ impl soroban_sdk::SpecName for UdtStruct {
 impl soroban_sdk::SpecTypeDef for UdtStruct {
     const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                <Self as soroban_sdk::SpecName>::SPEC_NAME,
-            ),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Self::__SPEC_NAME),
         });
 }
 #[doc(hidden)]
@@ -1627,7 +1619,7 @@ impl UdtStruct {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    <UdtStruct as soroban_sdk::SpecName>::SPEC_NAME,
+                    UdtStruct::__SPEC_NAME,
                 ),
                 fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
@@ -2134,8 +2126,8 @@ impl ::core::cmp::PartialEq for UdtRecursive {
         self.a == other.a && self.b == other.b
     }
 }
-impl soroban_sdk::SpecName for UdtRecursive {
-    const SPEC_NAME: &'static str = {
+impl UdtRecursive {
+    const __SPEC_NAME: &'static str = {
         const NAME: &str = "::test_udt::UdtRecursive";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -2155,9 +2147,7 @@ impl soroban_sdk::SpecName for UdtRecursive {
 impl soroban_sdk::SpecTypeDef for UdtRecursive {
     const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                <Self as soroban_sdk::SpecName>::SPEC_NAME,
-            ),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Self::__SPEC_NAME),
         });
 }
 #[doc(hidden)]
@@ -2171,7 +2161,7 @@ impl UdtRecursive {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    <UdtRecursive as soroban_sdk::SpecName>::SPEC_NAME,
+                    UdtRecursive::__SPEC_NAME,
                 ),
                 fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
@@ -2624,8 +2614,8 @@ impl ::core::cmp::PartialEq for RecursiveToEnum {
         self.a == other.a && self.b == other.b
     }
 }
-impl soroban_sdk::SpecName for RecursiveToEnum {
-    const SPEC_NAME: &'static str = {
+impl RecursiveToEnum {
+    const __SPEC_NAME: &'static str = {
         const NAME: &str = "::test_udt::RecursiveToEnum";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -2645,9 +2635,7 @@ impl soroban_sdk::SpecName for RecursiveToEnum {
 impl soroban_sdk::SpecTypeDef for RecursiveToEnum {
     const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                <Self as soroban_sdk::SpecName>::SPEC_NAME,
-            ),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Self::__SPEC_NAME),
         });
 }
 #[doc(hidden)]
@@ -2661,7 +2649,7 @@ impl RecursiveToEnum {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    <RecursiveToEnum as soroban_sdk::SpecName>::SPEC_NAME,
+                    RecursiveToEnum::__SPEC_NAME,
                 ),
                 fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
@@ -3129,8 +3117,8 @@ impl ::core::cmp::PartialEq for RecursiveEnum {
             }
     }
 }
-impl soroban_sdk::SpecName for RecursiveEnum {
-    const SPEC_NAME: &'static str = {
+impl RecursiveEnum {
+    const __SPEC_NAME: &'static str = {
         const NAME: &str = "::test_udt::RecursiveEnum";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -3150,9 +3138,7 @@ impl soroban_sdk::SpecName for RecursiveEnum {
 impl soroban_sdk::SpecTypeDef for RecursiveEnum {
     const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                <Self as soroban_sdk::SpecName>::SPEC_NAME,
-            ),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Self::__SPEC_NAME),
         });
 }
 #[doc(hidden)]
@@ -3166,7 +3152,7 @@ impl RecursiveEnum {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    <RecursiveEnum as soroban_sdk::SpecName>::SPEC_NAME,
+                    RecursiveEnum::__SPEC_NAME,
                 ),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::VoidV0(
@@ -4873,8 +4859,8 @@ mod test_with_wasm {
                 }
             }
         }
-        impl soroban_sdk::SpecName for UdtTuple {
-            const SPEC_NAME: &'static str = {
+        impl UdtTuple {
+            const __SPEC_NAME: &'static str = {
                 const NAME: &str = "::test_udt::test_with_wasm::contract::UdtTuple";
                 const CHECKED_NAME: &str = {
                     if !(NAME.len() <= 1024usize) {
@@ -4896,7 +4882,7 @@ mod test_with_wasm {
                 soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                     soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                            Self::__SPEC_NAME,
                         ),
                     },
                 );
@@ -4911,7 +4897,7 @@ mod test_with_wasm {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                            <UdtTuple as soroban_sdk::SpecName>::SPEC_NAME,
+                            UdtTuple::__SPEC_NAME,
                         ),
                         fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                             soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
@@ -5376,8 +5362,8 @@ mod test_with_wasm {
                 }
             }
         }
-        impl soroban_sdk::SpecName for UdtStruct {
-            const SPEC_NAME: &'static str = {
+        impl UdtStruct {
+            const __SPEC_NAME: &'static str = {
                 const NAME: &str = "::test_udt::test_with_wasm::contract::UdtStruct";
                 const CHECKED_NAME: &str = {
                     if !(NAME.len() <= 1024usize) {
@@ -5399,7 +5385,7 @@ mod test_with_wasm {
                 soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                     soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                            Self::__SPEC_NAME,
                         ),
                     },
                 );
@@ -5414,7 +5400,7 @@ mod test_with_wasm {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                            <UdtStruct as soroban_sdk::SpecName>::SPEC_NAME,
+                            UdtStruct::__SPEC_NAME,
                         ),
                         fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                             soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
@@ -5971,8 +5957,8 @@ mod test_with_wasm {
                 }
             }
         }
-        impl soroban_sdk::SpecName for UdtRecursive {
-            const SPEC_NAME: &'static str = {
+        impl UdtRecursive {
+            const __SPEC_NAME: &'static str = {
                 const NAME: &str = "::test_udt::test_with_wasm::contract::UdtRecursive";
                 const CHECKED_NAME: &str = {
                     if !(NAME.len() <= 1024usize) {
@@ -5994,7 +5980,7 @@ mod test_with_wasm {
                 soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                     soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                            Self::__SPEC_NAME,
                         ),
                     },
                 );
@@ -6008,7 +5994,7 @@ mod test_with_wasm {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    <UdtRecursive as soroban_sdk::SpecName>::SPEC_NAME,
+                    UdtRecursive::__SPEC_NAME,
                 ),
                 fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
                     &[
@@ -6504,8 +6490,8 @@ mod test_with_wasm {
                 }
             }
         }
-        impl soroban_sdk::SpecName for RecursiveToEnum {
-            const SPEC_NAME: &'static str = {
+        impl RecursiveToEnum {
+            const __SPEC_NAME: &'static str = {
                 const NAME: &str = "::test_udt::test_with_wasm::contract::RecursiveToEnum";
                 const CHECKED_NAME: &str = {
                     if !(NAME.len() <= 1024usize) {
@@ -6527,7 +6513,7 @@ mod test_with_wasm {
                 soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                     soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                            Self::__SPEC_NAME,
                         ),
                     },
                 );
@@ -6541,7 +6527,7 @@ mod test_with_wasm {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    <RecursiveToEnum as soroban_sdk::SpecName>::SPEC_NAME,
+                    RecursiveToEnum::__SPEC_NAME,
                 ),
                 fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
                     &[
@@ -7042,8 +7028,8 @@ mod test_with_wasm {
                 }
             }
         }
-        impl soroban_sdk::SpecName for ContractExecutableRef {
-            const SPEC_NAME: &'static str = {
+        impl ContractExecutableRef {
+            const __SPEC_NAME: &'static str = {
                 const NAME: &str = "::test_udt::test_with_wasm::contract::ContractExecutableRef";
                 const CHECKED_NAME: &str = {
                     if !(NAME.len() <= 1024usize) {
@@ -7065,7 +7051,7 @@ mod test_with_wasm {
                 soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                     soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                            Self::__SPEC_NAME,
                         ),
                     },
                 );
@@ -7081,7 +7067,7 @@ mod test_with_wasm {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                            <ContractExecutableRef as soroban_sdk::SpecName>::SPEC_NAME,
+                            ContractExecutableRef::__SPEC_NAME,
                         ),
                         fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                             soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
@@ -7596,8 +7582,8 @@ mod test_with_wasm {
                 }
             }
         }
-        impl soroban_sdk::SpecName for ContractContext {
-            const SPEC_NAME: &'static str = {
+        impl ContractContext {
+            const __SPEC_NAME: &'static str = {
                 const NAME: &str = "::test_udt::test_with_wasm::contract::ContractContext";
                 const CHECKED_NAME: &str = {
                     if !(NAME.len() <= 1024usize) {
@@ -7619,7 +7605,7 @@ mod test_with_wasm {
                 soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                     soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                            Self::__SPEC_NAME,
                         ),
                     },
                 );
@@ -7635,7 +7621,7 @@ mod test_with_wasm {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                            <ContractContext as soroban_sdk::SpecName>::SPEC_NAME,
+                            ContractContext::__SPEC_NAME,
                         ),
                         fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                             soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
@@ -8219,8 +8205,8 @@ mod test_with_wasm {
                 }
             }
         }
-        impl soroban_sdk::SpecName for SubContractInvocation {
-            const SPEC_NAME: &'static str = {
+        impl SubContractInvocation {
+            const __SPEC_NAME: &'static str = {
                 const NAME: &str = "::test_udt::test_with_wasm::contract::SubContractInvocation";
                 const CHECKED_NAME: &str = {
                     if !(NAME.len() <= 1024usize) {
@@ -8242,7 +8228,7 @@ mod test_with_wasm {
                 soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                     soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                            Self::__SPEC_NAME,
                         ),
                     },
                 );
@@ -8256,7 +8242,7 @@ mod test_with_wasm {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    <SubContractInvocation as soroban_sdk::SpecName>::SPEC_NAME,
+                    SubContractInvocation::__SPEC_NAME,
                 ),
                 fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
                     &[
@@ -8769,8 +8755,8 @@ mod test_with_wasm {
                 }
             }
         }
-        impl soroban_sdk::SpecName for CreateContractHostFnContext {
-            const SPEC_NAME: &'static str = {
+        impl CreateContractHostFnContext {
+            const __SPEC_NAME: &'static str = {
                 const NAME: &str =
                     "::test_udt::test_with_wasm::contract::CreateContractHostFnContext";
                 const CHECKED_NAME: &str = {
@@ -8793,7 +8779,7 @@ mod test_with_wasm {
                 soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                     soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                            Self::__SPEC_NAME,
                         ),
                     },
                 );
@@ -8810,7 +8796,7 @@ mod test_with_wasm {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                            <CreateContractHostFnContext as soroban_sdk::SpecName>::SPEC_NAME,
+                            CreateContractHostFnContext::__SPEC_NAME,
                         ),
                         fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                             soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
@@ -9353,8 +9339,8 @@ mod test_with_wasm {
                 }
             }
         }
-        impl soroban_sdk::SpecName for CreateContractWithConstructorHostFnContext {
-            const SPEC_NAME: &'static str = {
+        impl CreateContractWithConstructorHostFnContext {
+            const __SPEC_NAME: &'static str = {
                 const NAME: &str = "::test_udt::test_with_wasm::contract::CreateContractWithConstructorHostFnContext";
                 const CHECKED_NAME: &str = {
                     if !(NAME.len() <= 1024usize) {
@@ -9376,7 +9362,7 @@ mod test_with_wasm {
                 soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                     soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                            Self::__SPEC_NAME,
                         ),
                     },
                 );
@@ -9387,50 +9373,53 @@ mod test_with_wasm {
             CreateContractWithConstructorHostFnContext::spec_xdr().len()] =
             CreateContractWithConstructorHostFnContext::spec_xdr();
         impl CreateContractWithConstructorHostFnContext {
-            const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
-                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecName>::SPEC_NAME,
-                ),
-                fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
-                    &[
-                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
-                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                b"",
-                            ),
-                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                b"constructor_args",
-                            ),
-                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Vec(
-                                &soroban_sdk::xdr::r#const::ScSpecTypeVec {
-                                    element_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Val,
-                                },
-                            ),
-                        },
-                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
-                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                b"",
-                            ),
-                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                b"executable",
-                            ),
-                            type_: <ContractExecutable as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                        },
-                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
-                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                b"",
-                            ),
-                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                b"salt",
-                            ),
-                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(soroban_sdk::xdr::r#const::ScSpecTypeBytesN {
-                                n: 32u32,
-                            }),
-                        },
-                    ],
-                ),
-            });
+            const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+                soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
+                    soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                            CreateContractWithConstructorHostFnContext::__SPEC_NAME,
+                        ),
+                        fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                            soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                    b"",
+                                ),
+                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                    b"constructor_args",
+                                ),
+                                type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Vec(
+                                    &soroban_sdk::xdr::r#const::ScSpecTypeVec {
+                                        element_type:
+                                            &soroban_sdk::xdr::r#const::ScSpecTypeDef::Val,
+                                    },
+                                ),
+                            },
+                            soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                    b"",
+                                ),
+                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                    b"executable",
+                                ),
+                                type_:
+                                    <ContractExecutable as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                            },
+                            soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                    b"",
+                                ),
+                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                    b"salt",
+                                ),
+                                type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
+                                    soroban_sdk::xdr::r#const::ScSpecTypeBytesN { n: 32u32 },
+                                ),
+                            },
+                        ]),
+                    },
+                );
             pub const fn spec_xdr(
             ) -> [u8; CreateContractWithConstructorHostFnContext::__SPEC_XDR_ENTRY.const_xdr_len()]
             {
@@ -10052,8 +10041,8 @@ mod test_with_wasm {
                 }
             }
         }
-        impl soroban_sdk::SpecName for UdtEnum {
-            const SPEC_NAME: &'static str = {
+        impl UdtEnum {
+            const __SPEC_NAME: &'static str = {
                 const NAME: &str = "::test_udt::test_with_wasm::contract::UdtEnum";
                 const CHECKED_NAME: &str = {
                     if !(NAME.len() <= 1024usize) {
@@ -10075,7 +10064,7 @@ mod test_with_wasm {
                 soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                     soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                            Self::__SPEC_NAME,
                         ),
                     },
                 );
@@ -10090,7 +10079,7 @@ mod test_with_wasm {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                            <UdtEnum as soroban_sdk::SpecName>::SPEC_NAME,
+                            UdtEnum::__SPEC_NAME,
                         ),
                         cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                             soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::VoidV0(
@@ -10841,8 +10830,8 @@ mod test_with_wasm {
                 }
             }
         }
-        impl soroban_sdk::SpecName for RecursiveEnum {
-            const SPEC_NAME: &'static str = {
+        impl RecursiveEnum {
+            const __SPEC_NAME: &'static str = {
                 const NAME: &str = "::test_udt::test_with_wasm::contract::RecursiveEnum";
                 const CHECKED_NAME: &str = {
                     if !(NAME.len() <= 1024usize) {
@@ -10864,7 +10853,7 @@ mod test_with_wasm {
                 soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                     soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                            Self::__SPEC_NAME,
                         ),
                     },
                 );
@@ -10878,7 +10867,7 @@ mod test_with_wasm {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    <RecursiveEnum as soroban_sdk::SpecName>::SPEC_NAME,
+                    RecursiveEnum::__SPEC_NAME,
                 ),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
                     &[
@@ -11468,8 +11457,8 @@ mod test_with_wasm {
                 }
             }
         }
-        impl soroban_sdk::SpecName for ContractExecutable {
-            const SPEC_NAME: &'static str = {
+        impl ContractExecutable {
+            const __SPEC_NAME: &'static str = {
                 const NAME: &str = "::test_udt::test_with_wasm::contract::ContractExecutable";
                 const CHECKED_NAME: &str = {
                     if !(NAME.len() <= 1024usize) {
@@ -11491,7 +11480,7 @@ mod test_with_wasm {
                 soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                     soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                            Self::__SPEC_NAME,
                         ),
                     },
                 );
@@ -11505,7 +11494,7 @@ mod test_with_wasm {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    <ContractExecutable as soroban_sdk::SpecName>::SPEC_NAME,
+                    ContractExecutable::__SPEC_NAME,
                 ),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
                     &[
@@ -12177,8 +12166,8 @@ mod test_with_wasm {
                 }
             }
         }
-        impl soroban_sdk::SpecName for Context {
-            const SPEC_NAME: &'static str = {
+        impl Context {
+            const __SPEC_NAME: &'static str = {
                 const NAME: &str = "::test_udt::test_with_wasm::contract::Context";
                 const CHECKED_NAME: &str = {
                     if !(NAME.len() <= 1024usize) {
@@ -12200,7 +12189,7 @@ mod test_with_wasm {
                 soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                     soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                            Self::__SPEC_NAME,
                         ),
                     },
                 );
@@ -12213,7 +12202,7 @@ mod test_with_wasm {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    <Context as soroban_sdk::SpecName>::SPEC_NAME,
+                    Context::__SPEC_NAME,
                 ),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
                     &[
@@ -12996,8 +12985,8 @@ mod test_with_wasm {
                 }
             }
         }
-        impl soroban_sdk::SpecName for InvokerContractAuthEntry {
-            const SPEC_NAME: &'static str = {
+        impl InvokerContractAuthEntry {
+            const __SPEC_NAME: &'static str = {
                 const NAME: &str = "::test_udt::test_with_wasm::contract::InvokerContractAuthEntry";
                 const CHECKED_NAME: &str = {
                     if !(NAME.len() <= 1024usize) {
@@ -13019,7 +13008,7 @@ mod test_with_wasm {
                 soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                     soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                            Self::__SPEC_NAME,
                         ),
                     },
                 );
@@ -13034,7 +13023,7 @@ mod test_with_wasm {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    <InvokerContractAuthEntry as soroban_sdk::SpecName>::SPEC_NAME,
+                    InvokerContractAuthEntry::__SPEC_NAME,
                 ),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
                     &[
@@ -13812,8 +13801,8 @@ mod test_with_wasm {
                 }
             }
         }
-        impl soroban_sdk::SpecName for Executable {
-            const SPEC_NAME: &'static str = {
+        impl Executable {
+            const __SPEC_NAME: &'static str = {
                 const NAME: &str = "::test_udt::test_with_wasm::contract::Executable";
                 const CHECKED_NAME: &str = {
                     if !(NAME.len() <= 1024usize) {
@@ -13835,7 +13824,7 @@ mod test_with_wasm {
                 soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                     soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                            Self::__SPEC_NAME,
                         ),
                     },
                 );
@@ -13851,7 +13840,7 @@ mod test_with_wasm {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                            <Executable as soroban_sdk::SpecName>::SPEC_NAME,
+                            Executable::__SPEC_NAME,
                         ),
                         cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                             soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(
@@ -14453,8 +14442,8 @@ mod test_with_wasm {
                 ::core::cmp::PartialOrd::partial_cmp(&__self_discr, &__arg1_discr)
             }
         }
-        impl soroban_sdk::SpecName for UdtEnum2 {
-            const SPEC_NAME: &'static str = {
+        impl UdtEnum2 {
+            const __SPEC_NAME: &'static str = {
                 const NAME: &str = "::test_udt::test_with_wasm::contract::UdtEnum2";
                 const CHECKED_NAME: &str = {
                     if !(NAME.len() <= 1024usize) {
@@ -14476,7 +14465,7 @@ mod test_with_wasm {
                 soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                     soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                            Self::__SPEC_NAME,
                         ),
                     },
                 );
@@ -14491,7 +14480,7 @@ mod test_with_wasm {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                            <UdtEnum2 as soroban_sdk::SpecName>::SPEC_NAME,
+                            UdtEnum2::__SPEC_NAME,
                         ),
                         cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                             soroban_sdk::xdr::r#const::ScSpecUdtEnumCaseV0 {

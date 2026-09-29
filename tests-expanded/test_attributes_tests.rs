@@ -47,8 +47,8 @@ impl ::core::cmp::PartialEq for AttributeType {
         self.value == other.value
     }
 }
-impl soroban_sdk::SpecName for AttributeType {
-    const SPEC_NAME: &'static str = {
+impl AttributeType {
+    const __SPEC_NAME: &'static str = {
         const NAME: &str = "::test_attributes::AttributeType";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -68,9 +68,7 @@ impl soroban_sdk::SpecName for AttributeType {
 impl soroban_sdk::SpecTypeDef for AttributeType {
     const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                <Self as soroban_sdk::SpecName>::SPEC_NAME,
-            ),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Self::__SPEC_NAME),
         });
 }
 #[doc(hidden)]
@@ -84,7 +82,7 @@ impl AttributeType {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    <AttributeType as soroban_sdk::SpecName>::SPEC_NAME,
+                    AttributeType::__SPEC_NAME,
                 ),
                 fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
@@ -432,8 +430,8 @@ pub struct AttributeEvent {
     topic: u32,
     value: u32,
 }
-impl soroban_sdk::SpecName for AttributeEvent {
-    const SPEC_NAME: &'static str = {
+impl AttributeEvent {
+    const __SPEC_NAME: &'static str = {
         const NAME: &str = "::test_attributes::AttributeEvent";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -453,9 +451,7 @@ impl soroban_sdk::SpecName for AttributeEvent {
 impl soroban_sdk::SpecTypeDef for AttributeEvent {
     const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                <Self as soroban_sdk::SpecName>::SPEC_NAME,
-            ),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Self::__SPEC_NAME),
         });
 }
 #[doc(hidden)]
@@ -468,7 +464,7 @@ impl AttributeEvent {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                <AttributeEvent as soroban_sdk::SpecName>::SPEC_NAME,
+                AttributeEvent::__SPEC_NAME,
             ),
             prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::r#const::ScSymbol(

@@ -200,7 +200,7 @@ pub fn derive_type_enum(
             #path::xdr::r#const::ScSpecEntry::UdtUnionV0(#path::xdr::r#const::ScSpecUdtUnionV0 {
                 doc: #doc,
                 lib: #lib,
-                name: #path::xdr::r#const::StringM::try_from_str_or_panic(<#enum_ident as #path::SpecName>::SPEC_NAME),
+                name: #path::xdr::r#const::StringM::try_from_str_or_panic(#enum_ident::__SPEC_NAME),
                 cases: #path::xdr::r#const::VecM::try_from_slice_or_panic(&[#(#cases),*]),
             })
         };
