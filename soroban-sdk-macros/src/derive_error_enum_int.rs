@@ -84,8 +84,6 @@ pub fn derive_type_error_enum_int(
     let spec_gen = {
         let doc = const_view_string(path, &spec.doc);
         let lib = const_view_string(path, &spec.lib);
-        let name =
-            quote!(#path::xdr::r#const::StringM::try_from_str_or_panic(#enum_ident::spec_name()));
         let cases = spec.cases.iter().map(|c| {
             let doc = const_view_string(path, &c.doc);
             let name = const_view_string(path, &c.name);
@@ -96,7 +94,7 @@ pub fn derive_type_error_enum_int(
             #path::xdr::r#const::ScSpecEntry::UdtErrorEnumV0(#path::xdr::r#const::ScSpecUdtErrorEnumV0 {
                 doc: #doc,
                 lib: #lib,
-                name: #name,
+                name: #path::xdr::r#const::StringM::try_from_str_or_panic(#enum_ident::spec_name()),
                 cases: #path::xdr::r#const::VecM::try_from_slice_or_panic(&[#(#cases),*]),
             })
         };

@@ -165,8 +165,6 @@ pub fn derive_type_enum(
     let spec_gen = {
         let doc = const_view_string(path, &spec.doc);
         let lib = const_view_string(path, &spec.lib);
-        let name =
-            quote!(#path::xdr::r#const::StringM::try_from_str_or_panic(#enum_ident::spec_name()));
         // Each case's Rust field types, so a reference to a user-defined type in
         // a case resolves to the name that type reports for itself.
         let cases = spec
@@ -202,7 +200,7 @@ pub fn derive_type_enum(
             #path::xdr::r#const::ScSpecEntry::UdtUnionV0(#path::xdr::r#const::ScSpecUdtUnionV0 {
                 doc: #doc,
                 lib: #lib,
-                name: #name,
+                name: #path::xdr::r#const::StringM::try_from_str_or_panic(#enum_ident::spec_name()),
                 cases: #path::xdr::r#const::VecM::try_from_slice_or_panic(&[#(#cases),*]),
             })
         };
