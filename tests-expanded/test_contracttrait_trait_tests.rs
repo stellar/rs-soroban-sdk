@@ -49,9 +49,8 @@ impl ::core::cmp::PartialEq for MyStruct {
         self.a == other.a && self.b == other.b
     }
 }
-impl MyStruct {
-    #[doc(hidden)]
-    pub const fn spec_name() -> &'static str {
+impl soroban_sdk::SpecName for MyStruct {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_contracttrait_trait::MyStruct";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -66,7 +65,7 @@ impl MyStruct {
             NAME
         };
         CHECKED_NAME
-    }
+    };
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -78,7 +77,7 @@ impl MyStruct {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    MyStruct::spec_name(),
+                    <MyStruct as soroban_sdk::SpecName>::SPEC_NAME,
                 ),
                 fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
@@ -511,9 +510,8 @@ impl ::core::cmp::PartialEq for MyEnumUnit {
         __self_discr == __arg1_discr
     }
 }
-impl MyEnumUnit {
-    #[doc(hidden)]
-    pub const fn spec_name() -> &'static str {
+impl soroban_sdk::SpecName for MyEnumUnit {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_contracttrait_trait::MyEnumUnit";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -528,7 +526,7 @@ impl MyEnumUnit {
             NAME
         };
         CHECKED_NAME
-    }
+    };
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -540,7 +538,7 @@ impl MyEnumUnit {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    MyEnumUnit::spec_name(),
+                    <MyEnumUnit as soroban_sdk::SpecName>::SPEC_NAME,
                 ),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtEnumCaseV0 {
@@ -899,9 +897,8 @@ impl ::core::cmp::PartialEq for MyEnumVariants {
             }
     }
 }
-impl MyEnumVariants {
-    #[doc(hidden)]
-    pub const fn spec_name() -> &'static str {
+impl soroban_sdk::SpecName for MyEnumVariants {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_contracttrait_trait::MyEnumVariants";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -916,7 +913,7 @@ impl MyEnumVariants {
             NAME
         };
         CHECKED_NAME
-    }
+    };
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -927,7 +924,7 @@ impl MyEnumVariants {
         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
         lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
         name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-            MyEnumVariants::spec_name(),
+            <MyEnumVariants as soroban_sdk::SpecName>::SPEC_NAME,
         ),
         cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
@@ -950,7 +947,7 @@ impl MyEnumVariants {
                         &[
                             soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                    <MyStruct>::spec_name(),
+                                    <MyStruct as soroban_sdk::SpecName>::SPEC_NAME,
                                 ),
                             }),
                         ],
@@ -967,7 +964,7 @@ impl MyEnumVariants {
                         &[
                             soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                    <MyEnumUnit>::spec_name(),
+                                    <MyEnumUnit as soroban_sdk::SpecName>::SPEC_NAME,
                                 ),
                             }),
                         ],
@@ -4036,7 +4033,7 @@ impl AllTypesSpec {
                         type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                             soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                    <MyStruct>::spec_name(),
+                                    <MyStruct as soroban_sdk::SpecName>::SPEC_NAME,
                                 ),
                             },
                         ),
@@ -4046,7 +4043,7 @@ impl AllTypesSpec {
                     soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                         soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                             name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                <MyStruct>::spec_name(),
+                                <MyStruct as soroban_sdk::SpecName>::SPEC_NAME,
                             ),
                         },
                     ),
@@ -4075,7 +4072,7 @@ impl AllTypesSpec {
                         type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                             soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                    <MyEnumUnit>::spec_name(),
+                                    <MyEnumUnit as soroban_sdk::SpecName>::SPEC_NAME,
                                 ),
                             },
                         ),
@@ -4085,7 +4082,7 @@ impl AllTypesSpec {
                     soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                         soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                             name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                <MyEnumUnit>::spec_name(),
+                                <MyEnumUnit as soroban_sdk::SpecName>::SPEC_NAME,
                             ),
                         },
                     ),
@@ -4116,7 +4113,7 @@ impl AllTypesSpec {
                         type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                             soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                    <MyEnumVariants>::spec_name(),
+                                    <MyEnumVariants as soroban_sdk::SpecName>::SPEC_NAME,
                                 ),
                             },
                         ),
@@ -4126,7 +4123,7 @@ impl AllTypesSpec {
                     soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                         soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                             name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                <MyEnumVariants>::spec_name(),
+                                <MyEnumVariants as soroban_sdk::SpecName>::SPEC_NAME,
                             ),
                         },
                     ),
@@ -6122,7 +6119,7 @@ mod test {
                             type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                                 soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                        <MyStruct>::spec_name(),
+                                        <MyStruct as soroban_sdk::SpecName>::SPEC_NAME,
                                     ),
                                 },
                             ),
@@ -6132,7 +6129,7 @@ mod test {
                         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                             soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                    <MyStruct>::spec_name(),
+                                    <MyStruct as soroban_sdk::SpecName>::SPEC_NAME,
                                 ),
                             },
                         ),
@@ -6174,7 +6171,7 @@ mod test {
                             type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                                 soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                        <MyEnumUnit>::spec_name(),
+                                        <MyEnumUnit as soroban_sdk::SpecName>::SPEC_NAME,
                                     ),
                                 },
                             ),
@@ -6184,7 +6181,7 @@ mod test {
                         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                             soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                    <MyEnumUnit>::spec_name(),
+                                    <MyEnumUnit as soroban_sdk::SpecName>::SPEC_NAME,
                                 ),
                             },
                         ),
@@ -6227,7 +6224,7 @@ mod test {
                             type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                                 soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                        <MyEnumVariants>::spec_name(),
+                                        <MyEnumVariants as soroban_sdk::SpecName>::SPEC_NAME,
                                     ),
                                 },
                             ),
@@ -6237,7 +6234,7 @@ mod test {
                         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                             soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                    <MyEnumVariants>::spec_name(),
+                                    <MyEnumVariants as soroban_sdk::SpecName>::SPEC_NAME,
                                 ),
                             },
                         ),

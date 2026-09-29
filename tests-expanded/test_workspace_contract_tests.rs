@@ -167,7 +167,7 @@ impl Contract {
                     soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                         soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                             name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                <Value>::spec_name(),
+                                <Value as soroban_sdk::SpecName>::SPEC_NAME,
                             ),
                         },
                     ),

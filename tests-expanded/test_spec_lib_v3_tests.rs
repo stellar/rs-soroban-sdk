@@ -47,9 +47,8 @@ impl ::core::cmp::PartialEq for StructA {
         self.f1 == other.f1 && self.f2 == other.f2
     }
 }
-impl StructA {
-    #[doc(hidden)]
-    pub const fn spec_name() -> &'static str {
+impl soroban_sdk::SpecName for StructA {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::StructA";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -64,7 +63,7 @@ impl StructA {
             NAME
         };
         CHECKED_NAME
-    }
+    };
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -76,7 +75,7 @@ impl StructA {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    StructA::spec_name(),
+                    <StructA as soroban_sdk::SpecName>::SPEC_NAME,
                 ),
                 fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
@@ -507,9 +506,8 @@ impl ::core::cmp::PartialEq for StructB {
         self.f1 == other.f1 && self.f2 == other.f2
     }
 }
-impl StructB {
-    #[doc(hidden)]
-    pub const fn spec_name() -> &'static str {
+impl soroban_sdk::SpecName for StructB {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::StructB";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -524,7 +522,7 @@ impl StructB {
             NAME
         };
         CHECKED_NAME
-    }
+    };
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -536,7 +534,7 @@ impl StructB {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    StructB::spec_name(),
+                    <StructB as soroban_sdk::SpecName>::SPEC_NAME,
                 ),
                 fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
@@ -967,9 +965,8 @@ impl ::core::cmp::PartialEq for StructC {
         self.f1 == other.f1 && self.f2 == other.f2
     }
 }
-impl StructC {
-    #[doc(hidden)]
-    pub const fn spec_name() -> &'static str {
+impl soroban_sdk::SpecName for StructC {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::StructC";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -984,7 +981,7 @@ impl StructC {
             NAME
         };
         CHECKED_NAME
-    }
+    };
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -996,7 +993,7 @@ impl StructC {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    StructC::spec_name(),
+                    <StructC as soroban_sdk::SpecName>::SPEC_NAME,
                 ),
                 fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
@@ -1427,9 +1424,8 @@ impl ::core::cmp::PartialEq for StructTupleA {
         self.0 == other.0 && self.1 == other.1
     }
 }
-impl StructTupleA {
-    #[doc(hidden)]
-    pub const fn spec_name() -> &'static str {
+impl soroban_sdk::SpecName for StructTupleA {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::StructTupleA";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -1444,7 +1440,7 @@ impl StructTupleA {
             NAME
         };
         CHECKED_NAME
-    }
+    };
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -1457,7 +1453,7 @@ impl StructTupleA {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    StructTupleA::spec_name(),
+                    <StructTupleA as soroban_sdk::SpecName>::SPEC_NAME,
                 ),
                 fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
@@ -1839,9 +1835,8 @@ impl ::core::cmp::PartialEq for StructTupleB {
         self.0 == other.0 && self.1 == other.1
     }
 }
-impl StructTupleB {
-    #[doc(hidden)]
-    pub const fn spec_name() -> &'static str {
+impl soroban_sdk::SpecName for StructTupleB {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::StructTupleB";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -1856,7 +1851,7 @@ impl StructTupleB {
             NAME
         };
         CHECKED_NAME
-    }
+    };
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -1869,7 +1864,7 @@ impl StructTupleB {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    StructTupleB::spec_name(),
+                    <StructTupleB as soroban_sdk::SpecName>::SPEC_NAME,
                 ),
                 fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
@@ -2252,9 +2247,8 @@ impl ::core::cmp::PartialEq for StructTupleC {
         self.1 == other.1 && self.0 == other.0
     }
 }
-impl StructTupleC {
-    #[doc(hidden)]
-    pub const fn spec_name() -> &'static str {
+impl soroban_sdk::SpecName for StructTupleC {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::StructTupleC";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -2269,7 +2263,7 @@ impl StructTupleC {
             NAME
         };
         CHECKED_NAME
-    }
+    };
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -2282,7 +2276,7 @@ impl StructTupleC {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    StructTupleC::spec_name(),
+                    <StructTupleC as soroban_sdk::SpecName>::SPEC_NAME,
                 ),
                 fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
@@ -2676,9 +2670,8 @@ impl ::core::cmp::PartialEq for EnumA {
         __self_discr == __arg1_discr
     }
 }
-impl EnumA {
-    #[doc(hidden)]
-    pub const fn spec_name() -> &'static str {
+impl soroban_sdk::SpecName for EnumA {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::EnumA";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -2693,7 +2686,7 @@ impl EnumA {
             NAME
         };
         CHECKED_NAME
-    }
+    };
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -2704,7 +2697,9 @@ impl EnumA {
             soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(EnumA::spec_name()),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <EnumA as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::VoidV0(
                         soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseVoidV0 {
@@ -3196,9 +3191,8 @@ impl ::core::cmp::PartialEq for EnumB {
             }
     }
 }
-impl EnumB {
-    #[doc(hidden)]
-    pub const fn spec_name() -> &'static str {
+impl soroban_sdk::SpecName for EnumB {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::EnumB";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -3213,7 +3207,7 @@ impl EnumB {
             NAME
         };
         CHECKED_NAME
-    }
+    };
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -3224,7 +3218,9 @@ impl EnumB {
             soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(EnumB::spec_name()),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <EnumB as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::VoidV0(
                         soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseVoidV0 {
@@ -3845,9 +3841,8 @@ impl ::core::cmp::PartialEq for EnumC {
             }
     }
 }
-impl EnumC {
-    #[doc(hidden)]
-    pub const fn spec_name() -> &'static str {
+impl soroban_sdk::SpecName for EnumC {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::EnumC";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -3862,7 +3857,7 @@ impl EnumC {
             NAME
         };
         CHECKED_NAME
-    }
+    };
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -3872,7 +3867,7 @@ impl EnumC {
         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
         lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
         name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-            EnumC::spec_name(),
+            <EnumC as soroban_sdk::SpecName>::SPEC_NAME,
         ),
         cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
             &[
@@ -3895,7 +3890,7 @@ impl EnumC {
                         &[
                             soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                    <StructA>::spec_name(),
+                                    <StructA as soroban_sdk::SpecName>::SPEC_NAME,
                                 ),
                             }),
                         ],
@@ -3912,7 +3907,7 @@ impl EnumC {
                         &[
                             soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                    <StructTupleA>::spec_name(),
+                                    <StructTupleA as soroban_sdk::SpecName>::SPEC_NAME,
                                 ),
                             }),
                         ],
@@ -4457,9 +4452,8 @@ impl ::core::cmp::PartialEq for EnumIntA {
         __self_discr == __arg1_discr
     }
 }
-impl EnumIntA {
-    #[doc(hidden)]
-    pub const fn spec_name() -> &'static str {
+impl soroban_sdk::SpecName for EnumIntA {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::EnumIntA";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -4474,7 +4468,7 @@ impl EnumIntA {
             NAME
         };
         CHECKED_NAME
-    }
+    };
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -4486,7 +4480,7 @@ impl EnumIntA {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    EnumIntA::spec_name(),
+                    <EnumIntA as soroban_sdk::SpecName>::SPEC_NAME,
                 ),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtEnumCaseV0 {
@@ -4843,9 +4837,8 @@ impl ::core::cmp::PartialEq for EnumIntB {
         __self_discr == __arg1_discr
     }
 }
-impl EnumIntB {
-    #[doc(hidden)]
-    pub const fn spec_name() -> &'static str {
+impl soroban_sdk::SpecName for EnumIntB {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::EnumIntB";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -4860,7 +4853,7 @@ impl EnumIntB {
             NAME
         };
         CHECKED_NAME
-    }
+    };
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -4872,7 +4865,7 @@ impl EnumIntB {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    EnumIntB::spec_name(),
+                    <EnumIntB as soroban_sdk::SpecName>::SPEC_NAME,
                 ),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtEnumCaseV0 {
@@ -5229,9 +5222,8 @@ impl ::core::cmp::PartialEq for EnumIntC {
         __self_discr == __arg1_discr
     }
 }
-impl EnumIntC {
-    #[doc(hidden)]
-    pub const fn spec_name() -> &'static str {
+impl soroban_sdk::SpecName for EnumIntC {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::EnumIntC";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -5246,7 +5238,7 @@ impl EnumIntC {
             NAME
         };
         CHECKED_NAME
-    }
+    };
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -5258,7 +5250,7 @@ impl EnumIntC {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    EnumIntC::spec_name(),
+                    <EnumIntC as soroban_sdk::SpecName>::SPEC_NAME,
                 ),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtEnumCaseV0 {
@@ -5615,9 +5607,8 @@ impl ::core::cmp::PartialEq for ErrorA {
         __self_discr == __arg1_discr
     }
 }
-impl ErrorA {
-    #[doc(hidden)]
-    pub const fn spec_name() -> &'static str {
+impl soroban_sdk::SpecName for ErrorA {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::ErrorA";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -5632,7 +5623,7 @@ impl ErrorA {
             NAME
         };
         CHECKED_NAME
-    }
+    };
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -5643,7 +5634,9 @@ impl ErrorA {
             soroban_sdk::xdr::r#const::ScSpecUdtErrorEnumV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(ErrorA::spec_name()),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <ErrorA as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtErrorEnumCaseV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -5829,9 +5822,8 @@ impl ::core::cmp::PartialEq for ErrorB {
         __self_discr == __arg1_discr
     }
 }
-impl ErrorB {
-    #[doc(hidden)]
-    pub const fn spec_name() -> &'static str {
+impl soroban_sdk::SpecName for ErrorB {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::ErrorB";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -5846,7 +5838,7 @@ impl ErrorB {
             NAME
         };
         CHECKED_NAME
-    }
+    };
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -5857,7 +5849,9 @@ impl ErrorB {
             soroban_sdk::xdr::r#const::ScSpecUdtErrorEnumV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(ErrorB::spec_name()),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <ErrorB as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtErrorEnumCaseV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -6043,9 +6037,8 @@ impl ::core::cmp::PartialEq for ErrorC {
         __self_discr == __arg1_discr
     }
 }
-impl ErrorC {
-    #[doc(hidden)]
-    pub const fn spec_name() -> &'static str {
+impl soroban_sdk::SpecName for ErrorC {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::ErrorC";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -6060,7 +6053,7 @@ impl ErrorC {
             NAME
         };
         CHECKED_NAME
-    }
+    };
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -6071,7 +6064,9 @@ impl ErrorC {
             soroban_sdk::xdr::r#const::ScSpecUdtErrorEnumV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(ErrorC::spec_name()),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <ErrorC as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtErrorEnumCaseV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -6253,9 +6248,8 @@ impl ::core::cmp::PartialEq for EventA {
         self.f1 == other.f1 && self.f2 == other.f2
     }
 }
-impl EventA {
-    #[doc(hidden)]
-    pub const fn spec_name() -> &'static str {
+impl soroban_sdk::SpecName for EventA {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::EventA";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -6270,7 +6264,7 @@ impl EventA {
             NAME
         };
         CHECKED_NAME
-    }
+    };
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -6280,7 +6274,9 @@ impl EventA {
         soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(EventA::spec_name()),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <EventA as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
             prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::r#const::ScSymbol(
                     soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"event_a"),
@@ -6386,9 +6382,8 @@ impl ::core::cmp::PartialEq for EventB {
         self.f3 == other.f3 && self.f1 == other.f1 && self.f2 == other.f2
     }
 }
-impl EventB {
-    #[doc(hidden)]
-    pub const fn spec_name() -> &'static str {
+impl soroban_sdk::SpecName for EventB {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::EventB";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -6403,7 +6398,7 @@ impl EventB {
             NAME
         };
         CHECKED_NAME
-    }
+    };
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -6413,7 +6408,9 @@ impl EventB {
         soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(EventB::spec_name()),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <EventB as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
             prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::r#const::ScSymbol(
                     soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"event_b"),
@@ -6529,9 +6526,8 @@ impl ::core::cmp::PartialEq for EventC {
         self.f2 == other.f2 && self.f3 == other.f3 && self.f1 == other.f1
     }
 }
-impl EventC {
-    #[doc(hidden)]
-    pub const fn spec_name() -> &'static str {
+impl soroban_sdk::SpecName for EventC {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::EventC";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -6546,7 +6542,7 @@ impl EventC {
             NAME
         };
         CHECKED_NAME
-    }
+    };
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -6556,7 +6552,9 @@ impl EventC {
         soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(EventC::spec_name()),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <EventC as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
             prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::r#const::ScSymbol(
                     soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"event_c"),
@@ -6655,9 +6653,8 @@ impl ::core::cmp::PartialEq for EventD {
         true
     }
 }
-impl EventD {
-    #[doc(hidden)]
-    pub const fn spec_name() -> &'static str {
+impl soroban_sdk::SpecName for EventD {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::EventD";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -6672,7 +6669,7 @@ impl EventD {
             NAME
         };
         CHECKED_NAME
-    }
+    };
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -6682,7 +6679,9 @@ impl EventD {
         soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(EventD::spec_name()),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <EventD as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
             prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::r#const::ScSymbol(
                     soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"event_d"),

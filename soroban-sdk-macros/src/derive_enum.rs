@@ -157,7 +157,7 @@ pub fn derive_type_enum(
 
     // The fully qualified name the spec knows this type by, emitted for every
     // type so that a reference to it from anywhere can reach it.
-    let spec_name = spec_name_gen(enum_ident, None, None, None);
+    let spec_name = spec_name_gen(path, enum_ident, None, None, None);
 
     // Generated code spec. The spec entry is rendered as the equivalent
     // const::ScSpecEntry, which the contract crate encodes to XDR at compile time.
@@ -199,7 +199,7 @@ pub fn derive_type_enum(
             #path::xdr::r#const::ScSpecEntry::UdtUnionV0(#path::xdr::r#const::ScSpecUdtUnionV0 {
                 doc: #doc,
                 lib: #lib,
-                name: #path::xdr::r#const::StringM::try_from_str_or_panic(#enum_ident::spec_name()),
+                name: #path::xdr::r#const::StringM::try_from_str_or_panic(<#enum_ident as #path::SpecName>::SPEC_NAME),
                 cases: #path::xdr::r#const::VecM::try_from_slice_or_panic(&[#(#cases),*]),
             })
         };

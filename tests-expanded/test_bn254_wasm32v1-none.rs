@@ -13,9 +13,8 @@ pub struct MockProof {
     pub g1: Vec<Bn254G1Affine>,
     pub g2: Vec<Bn254G2Affine>,
 }
-impl MockProof {
-    #[doc(hidden)]
-    pub const fn spec_name() -> &'static str {
+impl soroban_sdk::SpecName for MockProof {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_bn254::MockProof";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -30,7 +29,7 @@ impl MockProof {
             NAME
         };
         CHECKED_NAME
-    }
+    };
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -43,7 +42,7 @@ impl MockProof {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    MockProof::spec_name(),
+                    <MockProof as soroban_sdk::SpecName>::SPEC_NAME,
                 ),
                 fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
@@ -196,7 +195,7 @@ impl Contract {
                         type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                             soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                    <MockProof>::spec_name(),
+                                    <MockProof as soroban_sdk::SpecName>::SPEC_NAME,
                                 ),
                             },
                         ),

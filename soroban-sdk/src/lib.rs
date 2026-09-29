@@ -1236,6 +1236,10 @@ mod spec_shaking;
 #[doc(hidden)]
 pub use spec_shaking::SpecShakingMarker;
 
+mod spec_name;
+#[doc(hidden)]
+pub use spec_name::SpecName;
+
 #[doc(hidden)]
 #[deprecated(note = "use storage")]
 pub mod data {

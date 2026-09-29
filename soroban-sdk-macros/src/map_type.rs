@@ -364,7 +364,7 @@ pub fn const_view_type_def(path: &Path, t: &ScSpecTypeDef, rust: Option<&Type>) 
         // the reference was mapped from is how that type is reached.
         ScSpecTypeDef::Udt(_) => Some(match rust.map(unref) {
             Some(ty) => {
-                quote!((#xdr::r#const::ScSpecTypeUdt { name: #xdr::r#const::StringM::try_from_str_or_panic(<#ty>::spec_name()) }))
+                quote!((#xdr::r#const::ScSpecTypeUdt { name: #xdr::r#const::StringM::try_from_str_or_panic(<#ty as #path::SpecName>::SPEC_NAME) }))
             }
             None => quote!(
                 (compile_error!(
@@ -437,9 +437,9 @@ fn type_args(t: &Type) -> Vec<&Type> {
     }
 }
 
-/// Emits the `spec_name` const fn on a user-defined type: the name the
-/// contract spec knows it by, which is its Rust path — the module it is defined
-/// in, then its own name.
+/// Emits the `SpecName` impl for a user-defined type: the name the contract
+/// spec knows it by, which is its Rust path — the module it is defined in, then
+/// its own name.
 ///
 /// The module path is only known where the type is defined, and a macro cannot
 /// see it, so `module_path!` is emitted for the compiler to expand in place
@@ -457,6 +457,7 @@ fn type_args(t: &Type) -> Vec<&Type> {
 /// with a single error naming the type, rather than with the XDR length error
 /// that encoding the name would hit in every spec entry that uses it.
 pub fn spec_name_gen(
+    path: &Path,
     ident: &Ident,
     gen_impl: Option<TokenStream2>,
     gen_types: Option<TokenStream2>,
@@ -485,12 +486,11 @@ pub fn spec_name_gen(
         };
     };
     quote! {
-        impl #gen_impl #ident #gen_types #gen_where {
-            #[doc(hidden)]
-            pub const fn spec_name() -> &'static str {
+        impl #gen_impl #path::SpecName for #ident #gen_types #gen_where {
+            const SPEC_NAME: &'static str = {
                 #checked_name
                 CHECKED_NAME
-            }
+            };
         }
     }
 }
@@ -950,7 +950,7 @@ mod test_const_view {
             quote!(soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                 soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                        <MyType>::spec_name()
+                        <MyType as soroban_sdk::SpecName>::SPEC_NAME
                     )
                 }
             )),
@@ -970,7 +970,7 @@ mod test_const_view {
             quote!(soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                 soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                        <MyType>::spec_name()
+                        <MyType as soroban_sdk::SpecName>::SPEC_NAME
                     )
                 }
             )),
@@ -990,7 +990,7 @@ mod test_const_view {
             quote!(soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                 soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                        <crate::inner::MyType>::spec_name()
+                        <crate::inner::MyType as soroban_sdk::SpecName>::SPEC_NAME
                     )
                 }
             )),
@@ -1010,7 +1010,7 @@ mod test_const_view {
             "expected a compile_error, got {rendered}"
         );
         assert!(
-            !rendered.contains("spec_name"),
+            !rendered.contains("SPEC_NAME"),
             "expected no name to be rendered, got {rendered}"
         );
     }
@@ -1058,7 +1058,7 @@ mod test_const_view {
                                                         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                                                             soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                                                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                                                    <MyType>::spec_name()
+                                                                    <MyType as soroban_sdk::SpecName>::SPEC_NAME
                                                                 )
                                                             }
                                                         )

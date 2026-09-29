@@ -460,9 +460,8 @@ mod addcontract {
             }
         }
     }
-    impl ContractExecutableRef {
-        #[doc(hidden)]
-        pub const fn spec_name() -> &'static str {
+    impl soroban_sdk::SpecName for ContractExecutableRef {
+        const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::addcontract::ContractExecutableRef";
             const CHECKED_NAME: &str = {
                 if !(NAME.len() <= 1024usize) {
@@ -477,7 +476,7 @@ mod addcontract {
                 NAME
             };
             CHECKED_NAME
-        }
+        };
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -490,7 +489,7 @@ mod addcontract {
                     doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                        ContractExecutableRef::spec_name(),
+                        <ContractExecutableRef as soroban_sdk::SpecName>::SPEC_NAME,
                     ),
                     fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                         soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
@@ -988,9 +987,8 @@ mod addcontract {
             }
         }
     }
-    impl ContractContext {
-        #[doc(hidden)]
-        pub const fn spec_name() -> &'static str {
+    impl soroban_sdk::SpecName for ContractContext {
+        const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::addcontract::ContractContext";
             const CHECKED_NAME: &str = {
                 if !(NAME.len() <= 1024usize) {
@@ -1005,7 +1003,7 @@ mod addcontract {
                 NAME
             };
             CHECKED_NAME
-        }
+        };
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -1018,7 +1016,7 @@ mod addcontract {
                     doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                        ContractContext::spec_name(),
+                        <ContractContext as soroban_sdk::SpecName>::SPEC_NAME,
                     ),
                     fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                         soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
@@ -1579,9 +1577,8 @@ mod addcontract {
             }
         }
     }
-    impl SubContractInvocation {
-        #[doc(hidden)]
-        pub const fn spec_name() -> &'static str {
+    impl soroban_sdk::SpecName for SubContractInvocation {
+        const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::addcontract::SubContractInvocation";
             const CHECKED_NAME: &str = {
                 if !(NAME.len() <= 1024usize) {
@@ -1596,7 +1593,7 @@ mod addcontract {
                 NAME
             };
             CHECKED_NAME
-        }
+        };
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -1607,7 +1604,7 @@ mod addcontract {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                SubContractInvocation::spec_name(),
+                <SubContractInvocation as soroban_sdk::SpecName>::SPEC_NAME,
             ),
             fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
                 &[
@@ -1620,7 +1617,7 @@ mod addcontract {
                         ),
                         type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                             name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                <ContractContext>::spec_name(),
+                                <ContractContext as soroban_sdk::SpecName>::SPEC_NAME,
                             ),
                         }),
                     },
@@ -1635,7 +1632,7 @@ mod addcontract {
                             &soroban_sdk::xdr::r#const::ScSpecTypeVec {
                                 element_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                        <InvokerContractAuthEntry>::spec_name(),
+                                        <InvokerContractAuthEntry as soroban_sdk::SpecName>::SPEC_NAME,
                                     ),
                                 }),
                             },
@@ -2116,9 +2113,8 @@ mod addcontract {
             }
         }
     }
-    impl CreateContractHostFnContext {
-        #[doc(hidden)]
-        pub const fn spec_name() -> &'static str {
+    impl soroban_sdk::SpecName for CreateContractHostFnContext {
+        const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::addcontract::CreateContractHostFnContext";
             const CHECKED_NAME: &str = {
                 if !(NAME.len() <= 1024usize) {
@@ -2133,7 +2129,7 @@ mod addcontract {
                 NAME
             };
             CHECKED_NAME
-        }
+        };
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -2146,7 +2142,7 @@ mod addcontract {
                     doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                        CreateContractHostFnContext::spec_name(),
+                        <CreateContractHostFnContext as soroban_sdk::SpecName>::SPEC_NAME,
                     ),
                     fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                         soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
@@ -2157,7 +2153,7 @@ mod addcontract {
                             type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                                 soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                        <ContractExecutable>::spec_name(),
+                                        <ContractExecutable as soroban_sdk::SpecName>::SPEC_NAME,
                                     ),
                                 },
                             ),
@@ -2668,9 +2664,8 @@ mod addcontract {
             }
         }
     }
-    impl CreateContractWithConstructorHostFnContext {
-        #[doc(hidden)]
-        pub const fn spec_name() -> &'static str {
+    impl soroban_sdk::SpecName for CreateContractWithConstructorHostFnContext {
+        const SPEC_NAME: &'static str = {
             const NAME: &str =
                 "::test_import_contract::addcontract::CreateContractWithConstructorHostFnContext";
             const CHECKED_NAME: &str = {
@@ -2686,7 +2681,7 @@ mod addcontract {
                 NAME
             };
             CHECKED_NAME
-        }
+        };
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -2694,51 +2689,54 @@ mod addcontract {
         CreateContractWithConstructorHostFnContext::spec_xdr().len()] =
         CreateContractWithConstructorHostFnContext::spec_xdr();
     impl CreateContractWithConstructorHostFnContext {
-        const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
-            soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
-                soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
-                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                    lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                    name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                        CreateContractWithConstructorHostFnContext::spec_name(),
-                    ),
-                    fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
-                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                b"constructor_args",
+        const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
+            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+            lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+            fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                &[
+                    soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"",
+                        ),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"constructor_args",
+                        ),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Vec(
+                            &soroban_sdk::xdr::r#const::ScSpecTypeVec {
+                                element_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Val,
+                            },
+                        ),
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"",
+                        ),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"executable",
+                        ),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                                <ContractExecutable as soroban_sdk::SpecName>::SPEC_NAME,
                             ),
-                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Vec(
-                                &soroban_sdk::xdr::r#const::ScSpecTypeVec {
-                                    element_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Val,
-                                },
-                            ),
-                        },
-                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
-                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                b"executable",
-                            ),
-                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
-                                soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                                    name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                        <ContractExecutable>::spec_name(),
-                                    ),
-                                },
-                            ),
-                        },
-                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
-                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                b"salt",
-                            ),
-                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
-                                soroban_sdk::xdr::r#const::ScSpecTypeBytesN { n: 32u32 },
-                            ),
-                        },
-                    ]),
-                },
-            );
+                        }),
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"",
+                        ),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"salt",
+                        ),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(soroban_sdk::xdr::r#const::ScSpecTypeBytesN {
+                            n: 32u32,
+                        }),
+                    },
+                ],
+            ),
+        });
         pub const fn spec_xdr(
         ) -> [u8; CreateContractWithConstructorHostFnContext::__SPEC_XDR_ENTRY.const_xdr_len()]
         {
@@ -3348,9 +3346,8 @@ mod addcontract {
             }
         }
     }
-    impl ContractExecutable {
-        #[doc(hidden)]
-        pub const fn spec_name() -> &'static str {
+    impl soroban_sdk::SpecName for ContractExecutable {
+        const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::addcontract::ContractExecutable";
             const CHECKED_NAME: &str = {
                 if !(NAME.len() <= 1024usize) {
@@ -3365,7 +3362,7 @@ mod addcontract {
                 NAME
             };
             CHECKED_NAME
-        }
+        };
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -3376,7 +3373,7 @@ mod addcontract {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                ContractExecutable::spec_name(),
+                <ContractExecutable as soroban_sdk::SpecName>::SPEC_NAME,
             ),
             cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
                 &[
@@ -3406,7 +3403,7 @@ mod addcontract {
                             &[
                                 soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                        <ContractExecutableRef>::spec_name(),
+                                        <ContractExecutableRef as soroban_sdk::SpecName>::SPEC_NAME,
                                     ),
                                 }),
                             ],
@@ -4040,9 +4037,8 @@ mod addcontract {
             }
         }
     }
-    impl Context {
-        #[doc(hidden)]
-        pub const fn spec_name() -> &'static str {
+    impl soroban_sdk::SpecName for Context {
+        const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::addcontract::Context";
             const CHECKED_NAME: &str = {
                 if !(NAME.len() <= 1024usize) {
@@ -4057,7 +4053,7 @@ mod addcontract {
                 NAME
             };
             CHECKED_NAME
-        }
+        };
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -4067,7 +4063,7 @@ mod addcontract {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                Context::spec_name(),
+                <Context as soroban_sdk::SpecName>::SPEC_NAME,
             ),
             cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
                 &[
@@ -4082,7 +4078,7 @@ mod addcontract {
                             &[
                                 soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                        <ContractContext>::spec_name(),
+                                        <ContractContext as soroban_sdk::SpecName>::SPEC_NAME,
                                     ),
                                 }),
                             ],
@@ -4099,7 +4095,7 @@ mod addcontract {
                             &[
                                 soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                        <CreateContractHostFnContext>::spec_name(),
+                                        <CreateContractHostFnContext as soroban_sdk::SpecName>::SPEC_NAME,
                                     ),
                                 }),
                             ],
@@ -4116,7 +4112,7 @@ mod addcontract {
                             &[
                                 soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                        <CreateContractWithConstructorHostFnContext>::spec_name(),
+                                        <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecName>::SPEC_NAME,
                                     ),
                                 }),
                             ],
@@ -4842,9 +4838,8 @@ mod addcontract {
             }
         }
     }
-    impl InvokerContractAuthEntry {
-        #[doc(hidden)]
-        pub const fn spec_name() -> &'static str {
+    impl soroban_sdk::SpecName for InvokerContractAuthEntry {
+        const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::addcontract::InvokerContractAuthEntry";
             const CHECKED_NAME: &str = {
                 if !(NAME.len() <= 1024usize) {
@@ -4859,7 +4854,7 @@ mod addcontract {
                 NAME
             };
             CHECKED_NAME
-        }
+        };
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -4870,7 +4865,7 @@ mod addcontract {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                InvokerContractAuthEntry::spec_name(),
+                <InvokerContractAuthEntry as soroban_sdk::SpecName>::SPEC_NAME,
             ),
             cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
                 &[
@@ -4885,7 +4880,7 @@ mod addcontract {
                             &[
                                 soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                        <SubContractInvocation>::spec_name(),
+                                        <SubContractInvocation as soroban_sdk::SpecName>::SPEC_NAME,
                                     ),
                                 }),
                             ],
@@ -4902,7 +4897,7 @@ mod addcontract {
                             &[
                                 soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                        <CreateContractHostFnContext>::spec_name(),
+                                        <CreateContractHostFnContext as soroban_sdk::SpecName>::SPEC_NAME,
                                     ),
                                 }),
                             ],
@@ -4919,7 +4914,7 @@ mod addcontract {
                             &[
                                 soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                        <CreateContractWithConstructorHostFnContext>::spec_name(),
+                                        <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecName>::SPEC_NAME,
                                     ),
                                 }),
                             ],
@@ -5622,9 +5617,8 @@ mod addcontract {
             }
         }
     }
-    impl Executable {
-        #[doc(hidden)]
-        pub const fn spec_name() -> &'static str {
+    impl soroban_sdk::SpecName for Executable {
+        const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::addcontract::Executable";
             const CHECKED_NAME: &str = {
                 if !(NAME.len() <= 1024usize) {
@@ -5639,7 +5633,7 @@ mod addcontract {
                 NAME
             };
             CHECKED_NAME
-        }
+        };
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -5651,7 +5645,7 @@ mod addcontract {
                     doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                        Executable::spec_name(),
+                        <Executable as soroban_sdk::SpecName>::SPEC_NAME,
                     ),
                     cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                         soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(
@@ -6216,9 +6210,8 @@ mod addcontract {
             ::core::option::Option::Some(::core::cmp::Ordering::Equal)
         }
     }
-    impl Error {
-        #[doc(hidden)]
-        pub const fn spec_name() -> &'static str {
+    impl soroban_sdk::SpecName for Error {
+        const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::addcontract::Error";
             const CHECKED_NAME: &str = {
                 if !(NAME.len() <= 1024usize) {
@@ -6233,7 +6226,7 @@ mod addcontract {
                 NAME
             };
             CHECKED_NAME
-        }
+        };
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -6245,7 +6238,7 @@ mod addcontract {
                     doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                        Error::spec_name(),
+                        <Error as soroban_sdk::SpecName>::SPEC_NAME,
                     ),
                     cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                         soroban_sdk::xdr::r#const::ScSpecUdtErrorEnumCaseV0 {
@@ -6419,9 +6412,8 @@ mod addcontract {
             ::core::option::Option::Some(::core::cmp::Ordering::Equal)
         }
     }
-    impl MyError {
-        #[doc(hidden)]
-        pub const fn spec_name() -> &'static str {
+    impl soroban_sdk::SpecName for MyError {
+        const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::addcontract::MyError";
             const CHECKED_NAME: &str = {
                 if !(NAME.len() <= 1024usize) {
@@ -6436,7 +6428,7 @@ mod addcontract {
                 NAME
             };
             CHECKED_NAME
-        }
+        };
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -6448,7 +6440,7 @@ mod addcontract {
                     doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                        MyError::spec_name(),
+                        <MyError as soroban_sdk::SpecName>::SPEC_NAME,
                     ),
                     cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                         soroban_sdk::xdr::r#const::ScSpecUdtErrorEnumCaseV0 {
@@ -7341,9 +7333,8 @@ mod eventscontract {
             }
         }
     }
-    impl ContractExecutableRef {
-        #[doc(hidden)]
-        pub const fn spec_name() -> &'static str {
+    impl soroban_sdk::SpecName for ContractExecutableRef {
+        const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::eventscontract::ContractExecutableRef";
             const CHECKED_NAME: &str = {
                 if !(NAME.len() <= 1024usize) {
@@ -7358,7 +7349,7 @@ mod eventscontract {
                 NAME
             };
             CHECKED_NAME
-        }
+        };
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -7371,7 +7362,7 @@ mod eventscontract {
                     doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                        ContractExecutableRef::spec_name(),
+                        <ContractExecutableRef as soroban_sdk::SpecName>::SPEC_NAME,
                     ),
                     fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                         soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
@@ -7869,9 +7860,8 @@ mod eventscontract {
             }
         }
     }
-    impl ContractContext {
-        #[doc(hidden)]
-        pub const fn spec_name() -> &'static str {
+    impl soroban_sdk::SpecName for ContractContext {
+        const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::eventscontract::ContractContext";
             const CHECKED_NAME: &str = {
                 if !(NAME.len() <= 1024usize) {
@@ -7886,7 +7876,7 @@ mod eventscontract {
                 NAME
             };
             CHECKED_NAME
-        }
+        };
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -7899,7 +7889,7 @@ mod eventscontract {
                     doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                        ContractContext::spec_name(),
+                        <ContractContext as soroban_sdk::SpecName>::SPEC_NAME,
                     ),
                     fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                         soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
@@ -8460,9 +8450,8 @@ mod eventscontract {
             }
         }
     }
-    impl SubContractInvocation {
-        #[doc(hidden)]
-        pub const fn spec_name() -> &'static str {
+    impl soroban_sdk::SpecName for SubContractInvocation {
+        const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::eventscontract::SubContractInvocation";
             const CHECKED_NAME: &str = {
                 if !(NAME.len() <= 1024usize) {
@@ -8477,7 +8466,7 @@ mod eventscontract {
                 NAME
             };
             CHECKED_NAME
-        }
+        };
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -8488,7 +8477,7 @@ mod eventscontract {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                SubContractInvocation::spec_name(),
+                <SubContractInvocation as soroban_sdk::SpecName>::SPEC_NAME,
             ),
             fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
                 &[
@@ -8501,7 +8490,7 @@ mod eventscontract {
                         ),
                         type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                             name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                <ContractContext>::spec_name(),
+                                <ContractContext as soroban_sdk::SpecName>::SPEC_NAME,
                             ),
                         }),
                     },
@@ -8516,7 +8505,7 @@ mod eventscontract {
                             &soroban_sdk::xdr::r#const::ScSpecTypeVec {
                                 element_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                        <InvokerContractAuthEntry>::spec_name(),
+                                        <InvokerContractAuthEntry as soroban_sdk::SpecName>::SPEC_NAME,
                                     ),
                                 }),
                             },
@@ -8997,9 +8986,8 @@ mod eventscontract {
             }
         }
     }
-    impl CreateContractHostFnContext {
-        #[doc(hidden)]
-        pub const fn spec_name() -> &'static str {
+    impl soroban_sdk::SpecName for CreateContractHostFnContext {
+        const SPEC_NAME: &'static str = {
             const NAME: &str =
                 "::test_import_contract::eventscontract::CreateContractHostFnContext";
             const CHECKED_NAME: &str = {
@@ -9015,7 +9003,7 @@ mod eventscontract {
                 NAME
             };
             CHECKED_NAME
-        }
+        };
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -9028,7 +9016,7 @@ mod eventscontract {
                     doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                        CreateContractHostFnContext::spec_name(),
+                        <CreateContractHostFnContext as soroban_sdk::SpecName>::SPEC_NAME,
                     ),
                     fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                         soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
@@ -9039,7 +9027,7 @@ mod eventscontract {
                             type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
                                 soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                        <ContractExecutable>::spec_name(),
+                                        <ContractExecutable as soroban_sdk::SpecName>::SPEC_NAME,
                                     ),
                                 },
                             ),
@@ -9550,9 +9538,8 @@ mod eventscontract {
             }
         }
     }
-    impl CreateContractWithConstructorHostFnContext {
-        #[doc(hidden)]
-        pub const fn spec_name() -> &'static str {
+    impl soroban_sdk::SpecName for CreateContractWithConstructorHostFnContext {
+        const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::eventscontract::CreateContractWithConstructorHostFnContext";
             const CHECKED_NAME: &str = {
                 if !(NAME.len() <= 1024usize) {
@@ -9567,7 +9554,7 @@ mod eventscontract {
                 NAME
             };
             CHECKED_NAME
-        }
+        };
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -9575,51 +9562,54 @@ mod eventscontract {
         CreateContractWithConstructorHostFnContext::spec_xdr().len()] =
         CreateContractWithConstructorHostFnContext::spec_xdr();
     impl CreateContractWithConstructorHostFnContext {
-        const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
-            soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
-                soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
-                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                    lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                    name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                        CreateContractWithConstructorHostFnContext::spec_name(),
-                    ),
-                    fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
-                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                b"constructor_args",
+        const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
+            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+            lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+            fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                &[
+                    soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"",
+                        ),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"constructor_args",
+                        ),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Vec(
+                            &soroban_sdk::xdr::r#const::ScSpecTypeVec {
+                                element_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Val,
+                            },
+                        ),
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"",
+                        ),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"executable",
+                        ),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                                <ContractExecutable as soroban_sdk::SpecName>::SPEC_NAME,
                             ),
-                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Vec(
-                                &soroban_sdk::xdr::r#const::ScSpecTypeVec {
-                                    element_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Val,
-                                },
-                            ),
-                        },
-                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
-                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                b"executable",
-                            ),
-                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
-                                soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                                    name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                        <ContractExecutable>::spec_name(),
-                                    ),
-                                },
-                            ),
-                        },
-                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
-                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                b"salt",
-                            ),
-                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
-                                soroban_sdk::xdr::r#const::ScSpecTypeBytesN { n: 32u32 },
-                            ),
-                        },
-                    ]),
-                },
-            );
+                        }),
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"",
+                        ),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"salt",
+                        ),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(soroban_sdk::xdr::r#const::ScSpecTypeBytesN {
+                            n: 32u32,
+                        }),
+                    },
+                ],
+            ),
+        });
         pub const fn spec_xdr(
         ) -> [u8; CreateContractWithConstructorHostFnContext::__SPEC_XDR_ENTRY.const_xdr_len()]
         {
@@ -10229,9 +10219,8 @@ mod eventscontract {
             }
         }
     }
-    impl ContractExecutable {
-        #[doc(hidden)]
-        pub const fn spec_name() -> &'static str {
+    impl soroban_sdk::SpecName for ContractExecutable {
+        const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::eventscontract::ContractExecutable";
             const CHECKED_NAME: &str = {
                 if !(NAME.len() <= 1024usize) {
@@ -10246,7 +10235,7 @@ mod eventscontract {
                 NAME
             };
             CHECKED_NAME
-        }
+        };
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -10257,7 +10246,7 @@ mod eventscontract {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                ContractExecutable::spec_name(),
+                <ContractExecutable as soroban_sdk::SpecName>::SPEC_NAME,
             ),
             cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
                 &[
@@ -10287,7 +10276,7 @@ mod eventscontract {
                             &[
                                 soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                        <ContractExecutableRef>::spec_name(),
+                                        <ContractExecutableRef as soroban_sdk::SpecName>::SPEC_NAME,
                                     ),
                                 }),
                             ],
@@ -10921,9 +10910,8 @@ mod eventscontract {
             }
         }
     }
-    impl Context {
-        #[doc(hidden)]
-        pub const fn spec_name() -> &'static str {
+    impl soroban_sdk::SpecName for Context {
+        const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::eventscontract::Context";
             const CHECKED_NAME: &str = {
                 if !(NAME.len() <= 1024usize) {
@@ -10938,7 +10926,7 @@ mod eventscontract {
                 NAME
             };
             CHECKED_NAME
-        }
+        };
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -10948,7 +10936,7 @@ mod eventscontract {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                Context::spec_name(),
+                <Context as soroban_sdk::SpecName>::SPEC_NAME,
             ),
             cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
                 &[
@@ -10963,7 +10951,7 @@ mod eventscontract {
                             &[
                                 soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                        <ContractContext>::spec_name(),
+                                        <ContractContext as soroban_sdk::SpecName>::SPEC_NAME,
                                     ),
                                 }),
                             ],
@@ -10980,7 +10968,7 @@ mod eventscontract {
                             &[
                                 soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                        <CreateContractHostFnContext>::spec_name(),
+                                        <CreateContractHostFnContext as soroban_sdk::SpecName>::SPEC_NAME,
                                     ),
                                 }),
                             ],
@@ -10997,7 +10985,7 @@ mod eventscontract {
                             &[
                                 soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                        <CreateContractWithConstructorHostFnContext>::spec_name(),
+                                        <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecName>::SPEC_NAME,
                                     ),
                                 }),
                             ],
@@ -11723,9 +11711,8 @@ mod eventscontract {
             }
         }
     }
-    impl InvokerContractAuthEntry {
-        #[doc(hidden)]
-        pub const fn spec_name() -> &'static str {
+    impl soroban_sdk::SpecName for InvokerContractAuthEntry {
+        const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::eventscontract::InvokerContractAuthEntry";
             const CHECKED_NAME: &str = {
                 if !(NAME.len() <= 1024usize) {
@@ -11740,7 +11727,7 @@ mod eventscontract {
                 NAME
             };
             CHECKED_NAME
-        }
+        };
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -11751,7 +11738,7 @@ mod eventscontract {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                InvokerContractAuthEntry::spec_name(),
+                <InvokerContractAuthEntry as soroban_sdk::SpecName>::SPEC_NAME,
             ),
             cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
                 &[
@@ -11766,7 +11753,7 @@ mod eventscontract {
                             &[
                                 soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                        <SubContractInvocation>::spec_name(),
+                                        <SubContractInvocation as soroban_sdk::SpecName>::SPEC_NAME,
                                     ),
                                 }),
                             ],
@@ -11783,7 +11770,7 @@ mod eventscontract {
                             &[
                                 soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                        <CreateContractHostFnContext>::spec_name(),
+                                        <CreateContractHostFnContext as soroban_sdk::SpecName>::SPEC_NAME,
                                     ),
                                 }),
                             ],
@@ -11800,7 +11787,7 @@ mod eventscontract {
                             &[
                                 soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
                                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                        <CreateContractWithConstructorHostFnContext>::spec_name(),
+                                        <CreateContractWithConstructorHostFnContext as soroban_sdk::SpecName>::SPEC_NAME,
                                     ),
                                 }),
                             ],
@@ -12503,9 +12490,8 @@ mod eventscontract {
             }
         }
     }
-    impl Executable {
-        #[doc(hidden)]
-        pub const fn spec_name() -> &'static str {
+    impl soroban_sdk::SpecName for Executable {
+        const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::eventscontract::Executable";
             const CHECKED_NAME: &str = {
                 if !(NAME.len() <= 1024usize) {
@@ -12520,7 +12506,7 @@ mod eventscontract {
                 NAME
             };
             CHECKED_NAME
-        }
+        };
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -12532,7 +12518,7 @@ mod eventscontract {
                     doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                        Executable::spec_name(),
+                        <Executable as soroban_sdk::SpecName>::SPEC_NAME,
                     ),
                     cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                         soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(
@@ -13154,9 +13140,8 @@ mod eventscontract {
             }
         }
     }
-    impl Transfer {
-        #[doc(hidden)]
-        pub const fn spec_name() -> &'static str {
+    impl soroban_sdk::SpecName for Transfer {
+        const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::eventscontract::Transfer";
             const CHECKED_NAME: &str = {
                 if !(NAME.len() <= 1024usize) {
@@ -13171,7 +13156,7 @@ mod eventscontract {
                 NAME
             };
             CHECKED_NAME
-        }
+        };
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -13183,7 +13168,7 @@ mod eventscontract {
                     doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                        Transfer::spec_name(),
+                        <Transfer as soroban_sdk::SpecName>::SPEC_NAME,
                     ),
                     prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                         soroban_sdk::xdr::r#const::ScSymbol(
@@ -13359,9 +13344,8 @@ mod eventscontract {
             }
         }
     }
-    impl MapValues {
-        #[doc(hidden)]
-        pub const fn spec_name() -> &'static str {
+    impl soroban_sdk::SpecName for MapValues {
+        const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::eventscontract::MapValues";
             const CHECKED_NAME: &str = {
                 if !(NAME.len() <= 1024usize) {
@@ -13376,7 +13360,7 @@ mod eventscontract {
                 NAME
             };
             CHECKED_NAME
-        }
+        };
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -13388,7 +13372,7 @@ mod eventscontract {
                     doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                        MapValues::spec_name(),
+                        <MapValues as soroban_sdk::SpecName>::SPEC_NAME,
                     ),
                     prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                         soroban_sdk::xdr::r#const::ScSymbol(
@@ -13536,9 +13520,8 @@ mod eventscontract {
             }
         }
     }
-    impl VecValues {
-        #[doc(hidden)]
-        pub const fn spec_name() -> &'static str {
+    impl soroban_sdk::SpecName for VecValues {
+        const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::eventscontract::VecValues";
             const CHECKED_NAME: &str = {
                 if !(NAME.len() <= 1024usize) {
@@ -13553,7 +13536,7 @@ mod eventscontract {
                 NAME
             };
             CHECKED_NAME
-        }
+        };
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -13565,7 +13548,7 @@ mod eventscontract {
                     doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                        VecValues::spec_name(),
+                        <VecValues as soroban_sdk::SpecName>::SPEC_NAME,
                     ),
                     prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                         soroban_sdk::xdr::r#const::ScSymbol(
@@ -13710,9 +13693,8 @@ mod eventscontract {
             }
         }
     }
-    impl SingleValue {
-        #[doc(hidden)]
-        pub const fn spec_name() -> &'static str {
+    impl soroban_sdk::SpecName for SingleValue {
+        const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::eventscontract::SingleValue";
             const CHECKED_NAME: &str = {
                 if !(NAME.len() <= 1024usize) {
@@ -13727,7 +13709,7 @@ mod eventscontract {
                 NAME
             };
             CHECKED_NAME
-        }
+        };
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -13740,7 +13722,7 @@ mod eventscontract {
                     doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                        SingleValue::spec_name(),
+                        <SingleValue as soroban_sdk::SpecName>::SPEC_NAME,
                     ),
                     prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                         soroban_sdk::xdr::r#const::ScSymbol(
@@ -13858,9 +13840,8 @@ mod eventscontract {
             ::core::cmp::PartialOrd::partial_cmp(&self.from, &other.from)
         }
     }
-    impl SingleValueVoid {
-        #[doc(hidden)]
-        pub const fn spec_name() -> &'static str {
+    impl soroban_sdk::SpecName for SingleValueVoid {
+        const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::eventscontract::SingleValueVoid";
             const CHECKED_NAME: &str = {
                 if !(NAME.len() <= 1024usize) {
@@ -13875,7 +13856,7 @@ mod eventscontract {
                 NAME
             };
             CHECKED_NAME
-        }
+        };
     }
     #[doc(hidden)]
     #[allow(dead_code)]
@@ -13888,7 +13869,7 @@ mod eventscontract {
                     doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                        SingleValueVoid::spec_name(),
+                        <SingleValueVoid as soroban_sdk::SpecName>::SPEC_NAME,
                     ),
                     prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                         soroban_sdk::xdr::r#const::ScSymbol(
@@ -13967,9 +13948,8 @@ impl ::core::cmp::PartialEq for Error {
         __self_discr == __arg1_discr
     }
 }
-impl Error {
-    #[doc(hidden)]
-    pub const fn spec_name() -> &'static str {
+impl soroban_sdk::SpecName for Error {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_import_contract::Error";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -13984,7 +13964,7 @@ impl Error {
             NAME
         };
         CHECKED_NAME
-    }
+    };
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -13995,7 +13975,9 @@ impl Error {
             soroban_sdk::xdr::r#const::ScSpecUdtErrorEnumV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Error::spec_name()),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <Error as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtErrorEnumCaseV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
