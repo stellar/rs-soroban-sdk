@@ -18,8 +18,5 @@ serde_with = { version = "3.4.0", features = ["hex"] }
 serde_json = "1.0.0"
 thiserror = "1.0"
 
-[dev-dependencies]
-pretty_assertions = "1.2.1"
-
 [features]
 testutils = ["soroban-env-host/testutils"]

@@ -1607,7 +1607,6 @@ dependencies = [
 name = "soroban-ledger-snapshot"
 version = "28.0.0"
 dependencies = [
- "pretty_assertions",
  "serde",
  "serde_json",
  "serde_with",
@@ -1636,7 +1635,6 @@ dependencies = [
  "bytes-lit",
  "crate-git-revision 0.0.9",
  "ctor",
- "curve25519-dalek",
  "derive_arbitrary",
  "ed25519-dalek",
  "expect-test",
@@ -1723,7 +1721,6 @@ version = "28.0.0"
 dependencies = [
  "base64",
  "hex",
- "pretty_assertions",
  "stellar-xdr 28.0.0 (git+https://github.com/stellar/rs-stellar-xdr?rev=e0d289adf4ad2483a10bcc8df743126974d77301)",
  "thiserror",
  "wasmparser",
@@ -1856,7 +1853,6 @@ version = "28.0.0"
 dependencies = [
  "soroban-sdk 28.0.0",
  "soroban-spec 28.0.0",
- "soroban-token-sdk",
  "soroban-token-spec",
 ]
 
