@@ -9,7 +9,7 @@ use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use stellar_xdr::{
     ScSpecEntry, ScSpecEventDataFormat, ScSpecEventParamLocationV0, ScSpecEventParamV0,
-    ScSpecEventV0, StringM, WriteXdr,
+    ScSpecEventV0, StringM, WriteXdr, SCSYMBOL_LIMIT,
 };
 use syn::{
     ext::IdentExt as _, parse2, spanned::Spanned, Data, DeriveInput, Fields, LitStr, Meta, Path,
@@ -120,11 +120,31 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         }))
         .unwrap_or_default();
 
-    let prefix_topics = if let Some(prefix_topics) = &args.topics {
-        prefix_topics.iter().map(|t| t.value()).collect()
+    let prefix_topics: Vec<(String, Span)> = if let Some(prefix_topics) = &args.topics {
+        prefix_topics
+            .iter()
+            .map(|t| (t.value(), t.span()))
+            .collect()
     } else {
-        vec![input.ident.unraw().to_string().to_snake_case()]
+        vec![(
+            input.ident.unraw().to_string().to_snake_case(),
+            input.ident.span(),
+        )]
     };
+
+    // Check prefix topic lengths, as each is published as a symbol.
+    for (topic, span) in &prefix_topics {
+        if topic.len() > SCSYMBOL_LIMIT as usize {
+            errors.push(
+                Error::custom(format!(
+                    "topic `{topic}` has length {} greater than length limit of {SCSYMBOL_LIMIT}",
+                    topic.len()
+                ))
+                .with_span(span),
+            );
+        }
+    }
+    let prefix_topics: Vec<String> = prefix_topics.into_iter().map(|(t, _)| t).collect();
 
     let fields =
         match &input.data {
