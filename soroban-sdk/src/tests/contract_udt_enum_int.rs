@@ -1,8 +1,5 @@
 use crate::{self as soroban_sdk};
-use soroban_sdk::{contract, contracttype, Env, IntoVal, Val};
-
-#[contract]
-pub struct Contract;
+use soroban_sdk::{contracttype, Env, IntoVal, Val};
 
 #[contracttype]
 pub enum Flag {
