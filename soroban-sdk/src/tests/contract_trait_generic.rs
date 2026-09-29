@@ -1,7 +1,8 @@
+use crate as soroban_sdk;
 use soroban_sdk::{contract, contractimpl, contracttrait, Env};
 
-// `#[contractimpl(contracttrait)]` invokes the trait's macro by the trait's
-// path, which cannot carry generic arguments.
+// The generic arguments each impl gives a contracttrait select what the trait's
+// default fns do.
 
 pub trait Provider {
     fn value() -> u32;
@@ -63,4 +64,26 @@ pub struct ContractScale;
 #[contractimpl(contracttrait)]
 impl GenericScale<3> for ContractScale {}
 
-fn main() {}
+#[test]
+fn test_type_argument() {
+    let e = Env::default();
+
+    let contract_id = e.register(ContractOne, ());
+    let client = ContractOneClient::new(&e, &contract_id);
+    assert_eq!(client.value(), 1);
+    assert_eq!(client.doubled(), 2);
+
+    let contract_id = e.register(ContractTwo, ());
+    let client = ContractTwoClient::new(&e, &contract_id);
+    assert_eq!(client.value(), 2);
+    assert_eq!(client.doubled(), 20);
+}
+
+#[test]
+fn test_const_argument() {
+    let e = Env::default();
+    let contract_id = e.register(ContractScale, ());
+    let client = ContractScaleClient::new(&e, &contract_id);
+
+    assert_eq!(client.scale(&2), 6);
+}

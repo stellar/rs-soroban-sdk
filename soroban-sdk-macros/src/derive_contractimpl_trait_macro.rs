@@ -7,7 +7,10 @@ use heck::ToSnakeCase;
 use proc_macro2::{Ident, TokenStream as TokenStream2};
 use quote::ToTokens;
 use quote::{format_ident, quote};
-use syn::{ext::IdentExt as _, parse2, ImplItemFn, ItemTrait, Path, TraitItem, TraitItemFn, Type};
+use syn::{
+    ext::IdentExt as _, parse2, ImplItemFn, ItemTrait, Path, PathArguments, TraitItem, TraitItemFn,
+    Type,
+};
 
 // See soroban-sdk/docs/contracttrait.md for documentation on how this works.
 
@@ -134,9 +137,23 @@ pub fn generate_call_to_contractimpl_for_trait(
             .to_token_stream()
             .to_string()
     });
+    // A macro invocation cannot carry generic arguments, so the trait's macro is
+    // invoked without them, and they are passed in the trait's path instead. The
+    // path is written with a turbofish because the default fns helper parses it
+    // as an expression.
+    let mut macro_path = trait_ident.clone();
+    if let Some(segment) = macro_path.segments.last_mut() {
+        segment.arguments = PathArguments::None;
+    }
+    let mut trait_path = trait_ident.clone();
+    for segment in &mut trait_path.segments {
+        if let PathArguments::AngleBracketed(args) = &mut segment.arguments {
+            args.colon2_token = Some(Default::default());
+        }
+    }
     Ok(quote! {
-        #trait_ident!(
-            #trait_ident,
+        #macro_path!(
+            #trait_path,
             #impl_ident,
             [#(#impl_fns),*],
             #client_ident,

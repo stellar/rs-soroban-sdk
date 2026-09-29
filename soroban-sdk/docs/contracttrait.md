@@ -119,6 +119,8 @@ Pause!(
 );
 ```
 
+The macro is invoked by the trait's path without its generic arguments, because a macro invocation cannot carry them. For an impl such as `impl Pause<u32> for Contract` the call is `Pause!(Pause::<u32>, Contract, ...)`, with the arguments in the trait path passed to the macro, written with a turbofish because the next stage parses it as an expression.
+
 ### Stage 4: The trait macro calls `contractimpl_trait_default_fns_not_overridden`
 
 The `Pause!` macro expands to call the proc macro `contractimpl_trait_default_fns_not_overridden!` with both:
