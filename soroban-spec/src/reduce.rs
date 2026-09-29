@@ -39,9 +39,10 @@ impl Reduced {
     }
 }
 
-/// A spec that defines the same user-defined type or event name more than
-/// once, which a spec of fully qualified names never does, as a name is the
-/// path of the one Rust type that defines it.
+/// A spec that defines the same fully qualified user-defined type or event
+/// name more than once, which never happens, as a qualified name is the path
+/// of the one Rust type that defines it. Simple names are not checked, as specs
+/// from before qualified names can define the same simple name more than once.
 #[derive(thiserror::Error, Debug, Clone, PartialEq, Eq)]
 #[error("contract spec defines the name `{}` more than once", String::from_utf8_lossy(.0))]
 pub struct DuplicateName(pub Vec<u8>);
@@ -72,6 +73,11 @@ impl Rename {
     }
 }
 
+/// Whether the name is qualified by a path, and so is reduced.
+fn is_qualified(name: &[u8]) -> bool {
+    name.windows(2).any(|w| w == b"::")
+}
+
 /// The last `::`-separated segment of a fully qualified type name.
 fn last_segment(name: &[u8]) -> &[u8] {
     name.windows(2)
@@ -96,9 +102,14 @@ fn last_segment(name: &[u8]) -> &[u8] {
 /// spec's name limit, the base is trimmed from its end to make room for the
 /// number.
 ///
+/// A simple name, one without `::`, is not reduced: it keeps its name, and
+/// claims it ahead of the qualified names, so specs from before qualified
+/// names, which can define the same simple name more than once, come back
+/// unchanged.
+///
 /// # Errors
 ///
-/// If the spec defines the same name more than once.
+/// If the spec defines the same qualified name more than once.
 pub fn reduce(spec: &[ScSpecEntry]) -> Result<Reduced, DuplicateName> {
     // The names the spec defines, in definition order, each with the most
     // bytes its entry's name field can hold. Events define a name too: the
@@ -119,17 +130,24 @@ pub fn reduce(spec: &[ScSpecEntry]) -> Result<Reduced, DuplicateName> {
     let mut seen = std::collections::HashSet::new();
     if let Some((name, _)) = defined
         .iter()
+        .filter(|(name, _)| is_qualified(name))
         .find(|(name, _)| !seen.insert(name.as_slice()))
     {
         return Err(DuplicateName(name.clone()));
     }
 
-    // The first type to claim a last segment keeps it, so a type only ever
+    // Simple names keep their names, so they claim them first. Then the first
+    // qualified type to claim a last segment keeps it, so a type only ever
     // loses its own name to one defined before it, never to a number handed
     // to a type that collided with something else.
-    let mut taken = std::collections::HashSet::new();
+    let mut taken: std::collections::HashSet<Vec<u8>> = defined
+        .iter()
+        .filter(|(name, _)| !is_qualified(name))
+        .map(|(name, _)| name.clone())
+        .collect();
     let colliding: Vec<&(Vec<u8>, usize)> = defined
         .iter()
+        .filter(|(name, _)| is_qualified(name))
         .filter(|(name, _)| !taken.insert(last_segment(name).to_vec()))
         .collect();
 
@@ -500,6 +518,39 @@ mod test {
         assert_eq!(
             reduce(&spec),
             Err(DuplicateName(b"::shared::Meta".to_vec()))
+        );
+    }
+
+    #[test]
+    fn a_simple_name_defined_twice_is_unchanged() {
+        let spec = [
+            struct_entry("Meta", &[]),
+            struct_entry("Meta", &[]),
+            struct_entry("Holder", &["Meta"]),
+        ];
+        let reduced = reduce(&spec).unwrap();
+        assert_eq!(reduced.entries().cloned().collect::<Vec<_>>(), spec);
+        assert!(reduced.renames().all(|r| !r.renamed()));
+    }
+
+    #[test]
+    fn a_qualified_name_does_not_take_a_simple_name_defined_after_it() {
+        let spec = [
+            struct_entry("::a::Meta", &[]),
+            struct_entry("Meta", &[]),
+            struct_entry("Holder", &["Meta", "::a::Meta"]),
+        ];
+        let reduced = reduce(&spec).unwrap();
+        assert_eq!(
+            names(reduced.entries()),
+            [
+                (b"Meta2".to_vec(), vec![]),
+                (b"Meta".to_vec(), vec![]),
+                (
+                    b"Holder".to_vec(),
+                    vec![b"Meta".to_vec(), b"Meta2".to_vec()]
+                ),
+            ]
         );
     }
 
