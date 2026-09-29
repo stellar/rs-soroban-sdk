@@ -1,11 +1,11 @@
-error: missing `fn` or `struct` for function or struct definition
-  --> tests/compile_fails/contracttrait_generic_errors.rs:24:6
+error: generic parameters are not supported on traits implemented with `#[contractimpl(contracttrait)]`
+  --> tests/compile_fails/contracttrait_generic_errors.rs:24:14
    |
 24 | impl WithType<u32> for C {}
-   |      ^^^^^^^^
+   |              ^^^^^
 
-error: missing `fn` or `struct` for function or struct definition
-  --> tests/compile_fails/contracttrait_generic_errors.rs:30:10
+error: generic parameters are not supported on traits implemented with `#[contractimpl(contracttrait)]`
+  --> tests/compile_fails/contracttrait_generic_errors.rs:30:22
    |
 30 | impl<'a> WithLifetime<'a> for D {}
-   |          ^^^^^^^^^^^^
+   |                      ^^^^

@@ -7,7 +7,10 @@ use heck::ToSnakeCase;
 use proc_macro2::{Ident, TokenStream as TokenStream2};
 use quote::ToTokens;
 use quote::{format_ident, quote};
-use syn::{ext::IdentExt as _, parse2, ImplItemFn, ItemTrait, Path, TraitItem, TraitItemFn, Type};
+use syn::{
+    ext::IdentExt as _, parse2, ImplItemFn, ItemTrait, Path, PathArguments, TraitItem, TraitItemFn,
+    Type,
+};
 
 // See soroban-sdk/docs/contracttrait.md for documentation on how this works.
 
@@ -118,6 +121,16 @@ pub fn generate_call_to_contractimpl_for_trait(
     args_ident: &str,
     spec_ident: &str,
 ) -> Result<TokenStream2, syn::Error> {
+    // The trait's macro is invoked by the trait's path, and a macro invocation
+    // cannot carry generic arguments.
+    if let Some(segment) = trait_ident.segments.last() {
+        if !matches!(segment.arguments, PathArguments::None) {
+            return Err(syn::Error::new_spanned(
+                &segment.arguments,
+                "generic parameters are not supported on traits implemented with `#[contractimpl(contracttrait)]`",
+            ));
+        }
+    }
     for method in pub_methods {
         reject_items(
             method.attrs.iter().filter(|a| is_attr_cfg_attr(a)),
