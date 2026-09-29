@@ -51,6 +51,9 @@ pub fn derive_pub_fn(
     let mut errors = Vec::<Error>::new();
 
     let call = if let Some(t) = trait_ident {
+        // Lifetimes in the trait's path are declared by the impl, which the
+        // generated function is outside of.
+        let t = syn_ext::path_elide_lifetimes(t);
         quote! { <#impl_ty as #t>::#ident }
     } else {
         quote! { <#impl_ty>::#ident }

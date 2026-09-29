@@ -518,6 +518,62 @@ mod test_path_in_macro_rules {
     }
 }
 
+/// Returns the path with its lifetime arguments, other than `'static`, replaced
+/// with `'_`, for naming a trait outside of the impl that declares the
+/// lifetimes, where they are left for the compiler to infer.
+pub fn path_elide_lifetimes(p: &Path) -> Path {
+    let mut p = p.clone();
+    for segment in &mut p.segments {
+        if let PathArguments::AngleBracketed(args) = &mut segment.arguments {
+            for arg in &mut args.args {
+                if let GenericArgument::Lifetime(lifetime) = arg {
+                    if lifetime.ident != "static" {
+                        *lifetime = Lifetime::new("'_", lifetime.span());
+                    }
+                }
+            }
+        }
+    }
+    p
+}
+
+#[cfg(test)]
+mod test_path_elide_lifetimes {
+    use crate::syn_ext::*;
+    use quote::quote;
+    use syn::parse2;
+
+    fn assert_paths_eq(input: TokenStream, expected: TokenStream) {
+        assert_eq!(
+            path_elide_lifetimes(&parse2(input).unwrap())
+                .to_token_stream()
+                .to_string(),
+            expected.to_string(),
+        );
+    }
+
+    #[test]
+    fn test_unaltered_paths() {
+        let input = quote!(path::to::Trait<u32>);
+        let expected = quote!(path::to::Trait<u32>);
+        assert_paths_eq(input, expected);
+    }
+
+    #[test]
+    fn test_lifetimes() {
+        let input = quote!(path::to::Trait<'a, 'b, u32>);
+        let expected = quote!(path::to::Trait<'_, '_, u32>);
+        assert_paths_eq(input, expected);
+    }
+
+    #[test]
+    fn test_static_lifetime() {
+        let input = quote!(Trait<'static>);
+        let expected = quote!(Trait<'static>);
+        assert_paths_eq(input, expected);
+    }
+}
+
 #[cfg(test)]
 mod test_fns_parse {
     use super::*;

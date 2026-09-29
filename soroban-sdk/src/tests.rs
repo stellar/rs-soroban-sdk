@@ -34,6 +34,7 @@ mod contract_udt_struct;
 mod contract_udt_struct_aliased_import;
 mod contract_udt_struct_tuple;
 mod contractimpl_trait_call_resolution;
+mod contractimpl_trait_lifetime;
 mod contractimport;
 mod contractimport_with_error;
 mod cost_estimate;
