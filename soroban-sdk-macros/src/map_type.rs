@@ -319,6 +319,19 @@ pub fn const_view_type_def(path: &Path, t: &ScSpecTypeDef, rust: Option<&Type>) 
     // a nested reference is paired with the Rust type it was mapped from.
     let args = rust.map(type_args).unwrap_or_default();
     let arg = |i: usize| args.get(i).copied();
+    // A type the macros did not recognise by name, such as a user-defined type
+    // or a type alias, takes its spec type from the type its name resolves to,
+    // which only the compiler can resolve. A user-defined type reports itself
+    // by its fully qualified name, which only its own expansion knows because
+    // only it sees the module it is defined in.
+    if let ScSpecTypeDef::Udt(_) = t {
+        return match rust.map(unref) {
+            Some(ty) => quote!(<#ty as #path::SpecTypeDef>::SPEC_TYPE_DEF),
+            None => quote!(compile_error!(
+                "user-defined type reference has no Rust type to take its spec type from"
+            )),
+        };
+    }
     // Variants that hold a value. The recursive ones sit behind a reference in
     // the const type, matching the Box in the owned type.
     let value = match t {
@@ -358,20 +371,8 @@ pub fn const_view_type_def(path: &Path, t: &ScSpecTypeDef, rust: Option<&Type>) 
             let n = b.n;
             Some(quote!((#xdr::r#const::ScSpecTypeBytesN { n: #n })))
         }
-        // A reference names the type by the fully qualified name that type
-        // reports for itself, which only the referenced type can give because
-        // only its own expansion sees the module it is defined in. The Rust type
-        // the reference was mapped from is how that type is reached.
-        ScSpecTypeDef::Udt(_) => Some(match rust.map(unref) {
-            Some(ty) => {
-                quote!((#xdr::r#const::ScSpecTypeUdt { name: #xdr::r#const::StringM::try_from_str_or_panic(<#ty as #path::SpecName>::SPEC_NAME) }))
-            }
-            None => quote!(
-                (compile_error!(
-                    "user-defined type reference has no Rust type to take its name from"
-                ))
-            ),
-        }),
+        // Handled above, as the spec type is the one the Rust type reports.
+        ScSpecTypeDef::Udt(_) => unreachable!(),
         ScSpecTypeDef::Val
         | ScSpecTypeDef::Bool
         | ScSpecTypeDef::Void
@@ -437,9 +438,10 @@ fn type_args(t: &Type) -> Vec<&Type> {
     }
 }
 
-/// Emits the `SpecName` impl for a user-defined type: the name the contract
-/// spec knows it by, which is its Rust path — the module it is defined in, then
-/// its own name.
+/// Emits the `SpecName` and `SpecTypeDef` impls for a user-defined type: the
+/// name the contract spec knows it by, which is its Rust path — the module it
+/// is defined in, then its own name — and the spec type that refers to it by
+/// that name.
 ///
 /// The module path is only known where the type is defined, and a macro cannot
 /// see it, so `module_path!` is emitted for the compiler to expand in place
@@ -491,6 +493,14 @@ pub fn spec_name_gen(
                 #checked_name
                 CHECKED_NAME
             };
+        }
+        impl #gen_impl #path::SpecTypeDef for #ident #gen_types #gen_where {
+            const SPEC_TYPE_DEF: #path::xdr::r#const::ScSpecTypeDef =
+                #path::xdr::r#const::ScSpecTypeDef::Udt(#path::xdr::r#const::ScSpecTypeUdt {
+                    name: #path::xdr::r#const::StringM::try_from_str_or_panic(
+                        <Self as #path::SpecName>::SPEC_NAME,
+                    ),
+                });
         }
     }
 }
@@ -747,6 +757,11 @@ mod test_const_view {
                     name: "Foo".try_into().unwrap(),
                 }),
             };
+            // A user-defined type renders as the spec type its Rust type
+            // reports, not as a variant, and is covered by the tests below.
+            if t == ScSpecType::Udt {
+                continue;
+            }
             let holds_value = matches!(
                 t,
                 ScSpecType::Option
@@ -755,7 +770,6 @@ mod test_const_view {
                     | ScSpecType::Map
                     | ScSpecType::Tuple
                     | ScSpecType::BytesN
-                    | ScSpecType::Udt
             );
             let rendered = const_view_type_def(&p, &def, Some(&rust)).to_string();
             let expect_prefix = format!(
@@ -947,13 +961,7 @@ mod test_const_view {
         let rust: Type = parse_quote!(MyType);
         assert_tokens(
             const_view_type_def(&path(), &def, Some(&rust)),
-            quote!(soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
-                soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                    name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                        <MyType as soroban_sdk::SpecName>::SPEC_NAME
-                    )
-                }
-            )),
+            quote!(<MyType as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF),
         );
     }
 
@@ -967,13 +975,7 @@ mod test_const_view {
         let rust: Type = parse_quote!(&&MyType);
         assert_tokens(
             const_view_type_def(&path(), &def, Some(&rust)),
-            quote!(soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
-                soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                    name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                        <MyType as soroban_sdk::SpecName>::SPEC_NAME
-                    )
-                }
-            )),
+            quote!(<MyType as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF),
         );
     }
 
@@ -987,13 +989,7 @@ mod test_const_view {
         let rust: Type = parse_quote!(crate::inner::MyType);
         assert_tokens(
             const_view_type_def(&path(), &def, Some(&rust)),
-            quote!(soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
-                soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                    name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                        <crate::inner::MyType as soroban_sdk::SpecName>::SPEC_NAME
-                    )
-                }
-            )),
+            quote!(<crate::inner::MyType as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF),
         );
     }
 
@@ -1010,7 +1006,7 @@ mod test_const_view {
             "expected a compile_error, got {rendered}"
         );
         assert!(
-            !rendered.contains("SPEC_NAME"),
+            !rendered.contains("SPEC_TYPE_DEF"),
             "expected no name to be rendered, got {rendered}"
         );
     }
@@ -1055,13 +1051,7 @@ mod test_const_view {
                                                         soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
                                                             soroban_sdk::xdr::r#const::ScSpecTypeBytesN { n: 4u32 }
                                                         ),
-                                                        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
-                                                            soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                                                                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                                                    <MyType as soroban_sdk::SpecName>::SPEC_NAME
-                                                                )
-                                                            }
-                                                        )
+                                                        <MyType as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF
                                                     ]
                                                 )
                                         }

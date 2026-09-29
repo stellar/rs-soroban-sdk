@@ -160,6 +160,14 @@ impl soroban_sdk::SpecName for Transfer {
         CHECKED_NAME
     };
 }
+impl soroban_sdk::SpecTypeDef for Transfer {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_EVENT_TRANSFER: [u8; Transfer::spec_xdr().len()] = Transfer::spec_xdr();
@@ -278,6 +286,14 @@ impl soroban_sdk::SpecName for SingleValue {
         CHECKED_NAME
     };
 }
+impl soroban_sdk::SpecTypeDef for SingleValue {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_EVENT_SINGLEVALUE: [u8; SingleValue::spec_xdr().len()] = SingleValue::spec_xdr();
@@ -363,6 +379,14 @@ impl soroban_sdk::SpecName for SingleValueVoid {
         };
         CHECKED_NAME
     };
+}
+impl soroban_sdk::SpecTypeDef for SingleValueVoid {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -453,6 +477,14 @@ impl soroban_sdk::SpecName for VecValues {
         };
         CHECKED_NAME
     };
+}
+impl soroban_sdk::SpecTypeDef for VecValues {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -556,6 +588,14 @@ impl soroban_sdk::SpecName for MapValues {
         };
         CHECKED_NAME
     };
+}
+impl soroban_sdk::SpecTypeDef for MapValues {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
 }
 #[doc(hidden)]
 #[allow(dead_code)]

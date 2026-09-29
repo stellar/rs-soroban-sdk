@@ -175,6 +175,14 @@ impl soroban_sdk::SpecName for Flag {
         CHECKED_NAME
     };
 }
+impl soroban_sdk::SpecTypeDef for Flag {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_FLAG: [u8; Flag::spec_xdr().len()] = Flag::spec_xdr();
@@ -574,6 +582,14 @@ impl soroban_sdk::SpecName for Error {
         CHECKED_NAME
     };
 }
+impl soroban_sdk::SpecTypeDef for Error {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_ERROR: [u8; Error::spec_xdr().len()] = Error::spec_xdr();
@@ -778,13 +794,7 @@ impl Contract {
                     soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"flag"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
-                            soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                    <Flag as soroban_sdk::SpecName>::SPEC_NAME,
-                                ),
-                            },
-                        ),
+                        type_: <Flag as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ]),
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[

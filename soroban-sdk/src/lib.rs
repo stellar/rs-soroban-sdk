@@ -1236,9 +1236,9 @@ mod spec_shaking;
 #[doc(hidden)]
 pub use spec_shaking::SpecShakingMarker;
 
-mod spec_name;
+mod spec_type_def;
 #[doc(hidden)]
-pub use spec_name::SpecName;
+pub use spec_type_def::{SpecName, SpecTypeDef};
 
 #[doc(hidden)]
 #[deprecated(note = "use storage")]

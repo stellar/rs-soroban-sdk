@@ -68,6 +68,14 @@ impl soroban_sdk::SpecName for Error {
         CHECKED_NAME
     };
 }
+impl soroban_sdk::SpecTypeDef for Error {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_ERROR: [u8; Error::spec_xdr().len()] = Error::spec_xdr();
@@ -361,63 +369,52 @@ mod __Contract____check_auth__spec {
 impl Contract {
     #[allow(non_upper_case_globals)]
     #[allow(non_snake_case)]
-    const __SPEC_XDR_ENTRY___check_auth: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
-        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-        name: soroban_sdk::xdr::r#const::ScSymbol(
-            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"__check_auth"),
-        ),
-        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
-            &[
-                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                        b"",
-                    ),
-                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                        b"signature_payload",
-                    ),
-                    type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(soroban_sdk::xdr::r#const::ScSpecTypeBytesN {
-                        n: 32u32,
-                    }),
-                },
-                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                        b"",
-                    ),
-                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                        b"signatures",
-                    ),
-                    type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Void,
-                },
-                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
-                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                        b"",
-                    ),
-                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                        b"auth_contexts",
-                    ),
-                    type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Vec(
-                        &soroban_sdk::xdr::r#const::ScSpecTypeVec {
-                            element_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                    <Context as soroban_sdk::SpecName>::SPEC_NAME,
-                                ),
-                            }),
+    const __SPEC_XDR_ENTRY___check_auth: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"__check_auth"),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"signature_payload",
+                        ),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
+                            soroban_sdk::xdr::r#const::ScSpecTypeBytesN { n: 32u32 },
+                        ),
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"signatures",
+                        ),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Void,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"auth_contexts",
+                        ),
+                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Vec(
+                            &soroban_sdk::xdr::r#const::ScSpecTypeVec {
+                                element_type: &<Context as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                            },
+                        ),
+                    },
+                ]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecTypeDef::Result(
+                        &soroban_sdk::xdr::r#const::ScSpecTypeResult {
+                            ok_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Void,
+                            error_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Error,
                         },
                     ),
-                },
-            ],
-        ),
-        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
-            &[
-                soroban_sdk::xdr::r#const::ScSpecTypeDef::Result(
-                    &soroban_sdk::xdr::r#const::ScSpecTypeResult {
-                        ok_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Void,
-                        error_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Error,
-                    },
-                ),
-            ],
-        ),
-    });
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
     #[allow(non_snake_case)]
     pub const fn spec_xdr___check_auth(

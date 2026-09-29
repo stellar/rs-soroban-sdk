@@ -173,6 +173,14 @@ impl soroban_sdk::SpecName for Error {
         CHECKED_NAME
     };
 }
+impl soroban_sdk::SpecTypeDef for Error {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_ERROR: [u8; Error::spec_xdr().len()] = Error::spec_xdr();
@@ -344,6 +352,14 @@ impl soroban_sdk::SpecName for MyError {
         };
         CHECKED_NAME
     };
+}
+impl soroban_sdk::SpecTypeDef for MyError {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
 }
 #[doc(hidden)]
 #[allow(dead_code)]
@@ -616,13 +632,7 @@ impl Contract {
                     soroban_sdk::xdr::r#const::ScSpecTypeDef::Result(
                         &soroban_sdk::xdr::r#const::ScSpecTypeResult {
                             ok_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::U64,
-                            error_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
-                                soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                                    name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                                        <MyError as soroban_sdk::SpecName>::SPEC_NAME,
-                                    ),
-                                },
-                            ),
+                            error_type: &<MyError as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                         },
                     ),
                 ]),
