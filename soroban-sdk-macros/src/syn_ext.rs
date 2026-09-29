@@ -10,39 +10,9 @@ use syn::{
     parse::{Parse, ParseStream},
     punctuated::Punctuated,
     token::Comma,
-    AngleBracketedGenericArguments, Attribute, GenericArgument, GenericParam, Generics, LitStr,
-    Path, PathArguments, PathSegment, ReturnType, Signature, Token, TypePath,
+    AngleBracketedGenericArguments, Attribute, GenericArgument, LitStr, Path, PathArguments,
+    PathSegment, ReturnType, Signature, Token, TypePath,
 };
-
-/// Errors on type and const generic parameters. Lifetimes are allowed because
-/// they don't appear in the contract spec, but a type or const parameter has no
-/// representation in the spec, so the generated code cannot compile.
-pub fn check_generics_are_lifetimes(generics: &Generics, what: &str) -> Result<(), Error> {
-    let mut errors = generics.params.iter().filter_map(|p| match p {
-        GenericParam::Lifetime(_) => None,
-        GenericParam::Type(t) => Some(Error::new(
-            t.span(),
-            format!(
-                "type parameter `{}` is not supported on {what}, only lifetimes are",
-                t.ident
-            ),
-        )),
-        GenericParam::Const(c) => Some(Error::new(
-            c.span(),
-            format!(
-                "const parameter `{}` is not supported on {what}, only lifetimes are",
-                c.ident
-            ),
-        )),
-    });
-    match errors.next() {
-        None => Ok(()),
-        Some(mut first) => {
-            errors.for_each(|e| first.combine(e));
-            Err(first)
-        }
-    }
-}
 
 /// Gets methods from the implementation that have public visibility. For
 /// methods that are inherently implemented this is methods that have a pub
