@@ -33,8 +33,8 @@ impl ::core::cmp::PartialEq for Value {
         self.value == other.value
     }
 }
-impl Value {
-    const __SPEC_NAME: &'static str = {
+impl soroban_sdk::SpecName for Value {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_workspace_lib::Value";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -54,7 +54,9 @@ impl Value {
 impl soroban_sdk::SpecTypeDef for Value {
     const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Self::__SPEC_NAME),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
         });
 }
 #[doc(hidden)]
@@ -67,7 +69,9 @@ impl Value {
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Value::__SPEC_NAME),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <Value as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
                 fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),

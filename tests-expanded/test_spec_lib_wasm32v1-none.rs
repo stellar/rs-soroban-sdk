@@ -47,8 +47,8 @@ impl ::core::cmp::PartialEq for StructA {
         self.f1 == other.f1 && self.f2 == other.f2
     }
 }
-impl StructA {
-    const __SPEC_NAME: &'static str = {
+impl soroban_sdk::SpecName for StructA {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib::StructA";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -68,7 +68,9 @@ impl StructA {
 impl soroban_sdk::SpecTypeDef for StructA {
     const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Self::__SPEC_NAME),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
         });
 }
 #[doc(hidden)]
@@ -82,7 +84,7 @@ impl StructA {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    StructA::__SPEC_NAME,
+                    <StructA as soroban_sdk::SpecName>::SPEC_NAME,
                 ),
                 fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
@@ -209,8 +211,8 @@ impl ::core::cmp::PartialEq for StructB {
         self.f1 == other.f1 && self.f2 == other.f2
     }
 }
-impl StructB {
-    const __SPEC_NAME: &'static str = {
+impl soroban_sdk::SpecName for StructB {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib::StructB";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -230,7 +232,9 @@ impl StructB {
 impl soroban_sdk::SpecTypeDef for StructB {
     const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Self::__SPEC_NAME),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
         });
 }
 #[doc(hidden)]
@@ -244,7 +248,7 @@ impl StructB {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    StructB::__SPEC_NAME,
+                    <StructB as soroban_sdk::SpecName>::SPEC_NAME,
                 ),
                 fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
@@ -371,8 +375,8 @@ impl ::core::cmp::PartialEq for StructC {
         self.f1 == other.f1 && self.f2 == other.f2
     }
 }
-impl StructC {
-    const __SPEC_NAME: &'static str = {
+impl soroban_sdk::SpecName for StructC {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib::StructC";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -392,7 +396,9 @@ impl StructC {
 impl soroban_sdk::SpecTypeDef for StructC {
     const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Self::__SPEC_NAME),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
         });
 }
 #[doc(hidden)]
@@ -406,7 +412,7 @@ impl StructC {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    StructC::__SPEC_NAME,
+                    <StructC as soroban_sdk::SpecName>::SPEC_NAME,
                 ),
                 fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
@@ -531,8 +537,8 @@ impl ::core::cmp::PartialEq for StructTupleA {
         self.0 == other.0 && self.1 == other.1
     }
 }
-impl StructTupleA {
-    const __SPEC_NAME: &'static str = {
+impl soroban_sdk::SpecName for StructTupleA {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib::StructTupleA";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -552,7 +558,9 @@ impl StructTupleA {
 impl soroban_sdk::SpecTypeDef for StructTupleA {
     const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Self::__SPEC_NAME),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
         });
 }
 #[doc(hidden)]
@@ -567,7 +575,7 @@ impl StructTupleA {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    StructTupleA::__SPEC_NAME,
+                    <StructTupleA as soroban_sdk::SpecName>::SPEC_NAME,
                 ),
                 fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
@@ -684,8 +692,8 @@ impl ::core::cmp::PartialEq for StructTupleB {
         self.0 == other.0 && self.1 == other.1
     }
 }
-impl StructTupleB {
-    const __SPEC_NAME: &'static str = {
+impl soroban_sdk::SpecName for StructTupleB {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib::StructTupleB";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -705,7 +713,9 @@ impl StructTupleB {
 impl soroban_sdk::SpecTypeDef for StructTupleB {
     const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Self::__SPEC_NAME),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
         });
 }
 #[doc(hidden)]
@@ -720,7 +730,7 @@ impl StructTupleB {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    StructTupleB::__SPEC_NAME,
+                    <StructTupleB as soroban_sdk::SpecName>::SPEC_NAME,
                 ),
                 fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
@@ -838,8 +848,8 @@ impl ::core::cmp::PartialEq for StructTupleC {
         self.1 == other.1 && self.0 == other.0
     }
 }
-impl StructTupleC {
-    const __SPEC_NAME: &'static str = {
+impl soroban_sdk::SpecName for StructTupleC {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib::StructTupleC";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -859,7 +869,9 @@ impl StructTupleC {
 impl soroban_sdk::SpecTypeDef for StructTupleC {
     const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Self::__SPEC_NAME),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
         });
 }
 #[doc(hidden)]
@@ -874,7 +886,7 @@ impl StructTupleC {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    StructTupleC::__SPEC_NAME,
+                    <StructTupleC as soroban_sdk::SpecName>::SPEC_NAME,
                 ),
                 fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
@@ -1003,8 +1015,8 @@ impl ::core::cmp::PartialEq for EnumA {
         __self_discr == __arg1_discr
     }
 }
-impl EnumA {
-    const __SPEC_NAME: &'static str = {
+impl soroban_sdk::SpecName for EnumA {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib::EnumA";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -1024,7 +1036,9 @@ impl EnumA {
 impl soroban_sdk::SpecTypeDef for EnumA {
     const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Self::__SPEC_NAME),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
         });
 }
 #[doc(hidden)]
@@ -1037,7 +1051,9 @@ impl EnumA {
             soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(EnumA::__SPEC_NAME),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <EnumA as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::VoidV0(
                         soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseVoidV0 {
@@ -1223,8 +1239,8 @@ impl ::core::cmp::PartialEq for EnumB {
             }
     }
 }
-impl EnumB {
-    const __SPEC_NAME: &'static str = {
+impl soroban_sdk::SpecName for EnumB {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib::EnumB";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -1244,7 +1260,9 @@ impl EnumB {
 impl soroban_sdk::SpecTypeDef for EnumB {
     const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Self::__SPEC_NAME),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
         });
 }
 #[doc(hidden)]
@@ -1257,7 +1275,9 @@ impl EnumB {
             soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(EnumB::__SPEC_NAME),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <EnumB as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::VoidV0(
                         soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseVoidV0 {
@@ -1463,8 +1483,8 @@ impl ::core::cmp::PartialEq for EnumC {
             }
     }
 }
-impl EnumC {
-    const __SPEC_NAME: &'static str = {
+impl soroban_sdk::SpecName for EnumC {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib::EnumC";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -1484,7 +1504,9 @@ impl EnumC {
 impl soroban_sdk::SpecTypeDef for EnumC {
     const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Self::__SPEC_NAME),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
         });
 }
 #[doc(hidden)]
@@ -1497,7 +1519,9 @@ impl EnumC {
             soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(EnumC::__SPEC_NAME),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <EnumC as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::VoidV0(
                         soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseVoidV0 {
@@ -1688,8 +1712,8 @@ impl ::core::cmp::PartialEq for EnumIntA {
         __self_discr == __arg1_discr
     }
 }
-impl EnumIntA {
-    const __SPEC_NAME: &'static str = {
+impl soroban_sdk::SpecName for EnumIntA {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib::EnumIntA";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -1709,7 +1733,9 @@ impl EnumIntA {
 impl soroban_sdk::SpecTypeDef for EnumIntA {
     const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Self::__SPEC_NAME),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
         });
 }
 #[doc(hidden)]
@@ -1723,7 +1749,7 @@ impl EnumIntA {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    EnumIntA::__SPEC_NAME,
+                    <EnumIntA as soroban_sdk::SpecName>::SPEC_NAME,
                 ),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtEnumCaseV0 {
@@ -1848,8 +1874,8 @@ impl ::core::cmp::PartialEq for EnumIntB {
         __self_discr == __arg1_discr
     }
 }
-impl EnumIntB {
-    const __SPEC_NAME: &'static str = {
+impl soroban_sdk::SpecName for EnumIntB {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib::EnumIntB";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -1869,7 +1895,9 @@ impl EnumIntB {
 impl soroban_sdk::SpecTypeDef for EnumIntB {
     const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Self::__SPEC_NAME),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
         });
 }
 #[doc(hidden)]
@@ -1883,7 +1911,7 @@ impl EnumIntB {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    EnumIntB::__SPEC_NAME,
+                    <EnumIntB as soroban_sdk::SpecName>::SPEC_NAME,
                 ),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtEnumCaseV0 {
@@ -2008,8 +2036,8 @@ impl ::core::cmp::PartialEq for EnumIntC {
         __self_discr == __arg1_discr
     }
 }
-impl EnumIntC {
-    const __SPEC_NAME: &'static str = {
+impl soroban_sdk::SpecName for EnumIntC {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib::EnumIntC";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -2029,7 +2057,9 @@ impl EnumIntC {
 impl soroban_sdk::SpecTypeDef for EnumIntC {
     const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Self::__SPEC_NAME),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
         });
 }
 #[doc(hidden)]
@@ -2043,7 +2073,7 @@ impl EnumIntC {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    EnumIntC::__SPEC_NAME,
+                    <EnumIntC as soroban_sdk::SpecName>::SPEC_NAME,
                 ),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtEnumCaseV0 {
@@ -2168,8 +2198,8 @@ impl ::core::cmp::PartialEq for ErrorA {
         __self_discr == __arg1_discr
     }
 }
-impl ErrorA {
-    const __SPEC_NAME: &'static str = {
+impl soroban_sdk::SpecName for ErrorA {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib::ErrorA";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -2189,7 +2219,9 @@ impl ErrorA {
 impl soroban_sdk::SpecTypeDef for ErrorA {
     const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Self::__SPEC_NAME),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
         });
 }
 #[doc(hidden)]
@@ -2203,7 +2235,7 @@ impl ErrorA {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    ErrorA::__SPEC_NAME,
+                    <ErrorA as soroban_sdk::SpecName>::SPEC_NAME,
                 ),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtErrorEnumCaseV0 {
@@ -2398,8 +2430,8 @@ impl ::core::cmp::PartialEq for ErrorB {
         __self_discr == __arg1_discr
     }
 }
-impl ErrorB {
-    const __SPEC_NAME: &'static str = {
+impl soroban_sdk::SpecName for ErrorB {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib::ErrorB";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -2419,7 +2451,9 @@ impl ErrorB {
 impl soroban_sdk::SpecTypeDef for ErrorB {
     const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Self::__SPEC_NAME),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
         });
 }
 #[doc(hidden)]
@@ -2433,7 +2467,7 @@ impl ErrorB {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    ErrorB::__SPEC_NAME,
+                    <ErrorB as soroban_sdk::SpecName>::SPEC_NAME,
                 ),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtErrorEnumCaseV0 {
@@ -2628,8 +2662,8 @@ impl ::core::cmp::PartialEq for ErrorC {
         __self_discr == __arg1_discr
     }
 }
-impl ErrorC {
-    const __SPEC_NAME: &'static str = {
+impl soroban_sdk::SpecName for ErrorC {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib::ErrorC";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -2649,7 +2683,9 @@ impl ErrorC {
 impl soroban_sdk::SpecTypeDef for ErrorC {
     const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Self::__SPEC_NAME),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
         });
 }
 #[doc(hidden)]
@@ -2663,7 +2699,7 @@ impl ErrorC {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                    ErrorC::__SPEC_NAME,
+                    <ErrorC as soroban_sdk::SpecName>::SPEC_NAME,
                 ),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtErrorEnumCaseV0 {
@@ -2854,8 +2890,8 @@ impl ::core::cmp::PartialEq for EventA {
         self.f1 == other.f1 && self.f2 == other.f2
     }
 }
-impl EventA {
-    const __SPEC_NAME: &'static str = {
+impl soroban_sdk::SpecName for EventA {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib::EventA";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -2875,7 +2911,9 @@ impl EventA {
 impl soroban_sdk::SpecTypeDef for EventA {
     const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Self::__SPEC_NAME),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
         });
 }
 #[doc(hidden)]
@@ -2887,7 +2925,9 @@ impl EventA {
         soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(EventA::__SPEC_NAME),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <EventA as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
             prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::r#const::ScSymbol(
                     soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"event_a"),
@@ -3003,8 +3043,8 @@ impl ::core::cmp::PartialEq for EventB {
         self.f3 == other.f3 && self.f1 == other.f1 && self.f2 == other.f2
     }
 }
-impl EventB {
-    const __SPEC_NAME: &'static str = {
+impl soroban_sdk::SpecName for EventB {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib::EventB";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -3024,7 +3064,9 @@ impl EventB {
 impl soroban_sdk::SpecTypeDef for EventB {
     const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Self::__SPEC_NAME),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
         });
 }
 #[doc(hidden)]
@@ -3036,7 +3078,9 @@ impl EventB {
         soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(EventB::__SPEC_NAME),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <EventB as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
             prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::r#const::ScSymbol(
                     soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"event_b"),
@@ -3163,8 +3207,8 @@ impl ::core::cmp::PartialEq for EventC {
         self.f2 == other.f2 && self.f3 == other.f3 && self.f1 == other.f1
     }
 }
-impl EventC {
-    const __SPEC_NAME: &'static str = {
+impl soroban_sdk::SpecName for EventC {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib::EventC";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -3184,7 +3228,9 @@ impl EventC {
 impl soroban_sdk::SpecTypeDef for EventC {
     const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Self::__SPEC_NAME),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
         });
 }
 #[doc(hidden)]
@@ -3196,7 +3242,9 @@ impl EventC {
         soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(EventC::__SPEC_NAME),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <EventC as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
             prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::r#const::ScSymbol(
                     soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"event_c"),
@@ -3306,8 +3354,8 @@ impl ::core::cmp::PartialEq for EventD {
         true
     }
 }
-impl EventD {
-    const __SPEC_NAME: &'static str = {
+impl soroban_sdk::SpecName for EventD {
+    const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib::EventD";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= 1024usize) {
@@ -3327,7 +3375,9 @@ impl EventD {
 impl soroban_sdk::SpecTypeDef for EventD {
     const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
         soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(Self::__SPEC_NAME),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
         });
 }
 #[doc(hidden)]
@@ -3339,7 +3389,9 @@ impl EventD {
         soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(EventD::__SPEC_NAME),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <EventD as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
             prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                 soroban_sdk::xdr::r#const::ScSymbol(
                     soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"event_d"),

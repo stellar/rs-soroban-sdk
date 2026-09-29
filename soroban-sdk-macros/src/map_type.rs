@@ -437,10 +437,10 @@ fn type_args(t: &Type) -> Vec<&Type> {
     }
 }
 
-/// Emits, for a user-defined type, the `__SPEC_NAME` const holding the name the
-/// contract spec knows it by, which is its Rust path — the module it is defined
-/// in, then its own name — and the `SpecTypeDef` impl that refers to it by that
-/// name. The type's own spec entry takes its name from `__SPEC_NAME` too.
+/// Emits the `SpecName` and `SpecTypeDef` impls for a user-defined type: the
+/// name the contract spec knows it by, which is its Rust path — the module it
+/// is defined in, then its own name — and the spec type that refers to it by
+/// that name.
 ///
 /// The module path is only known where the type is defined, and a macro cannot
 /// see it, so `module_path!` is emitted for the compiler to expand in place
@@ -487,8 +487,8 @@ pub fn spec_type_def_gen(
         };
     };
     quote! {
-        impl #gen_impl #ident #gen_types #gen_where {
-            const __SPEC_NAME: &'static str = {
+        impl #gen_impl #path::SpecName for #ident #gen_types #gen_where {
+            const SPEC_NAME: &'static str = {
                 #checked_name
                 CHECKED_NAME
             };
@@ -496,7 +496,9 @@ pub fn spec_type_def_gen(
         impl #gen_impl #path::SpecTypeDef for #ident #gen_types #gen_where {
             const SPEC_TYPE_DEF: #path::xdr::r#const::ScSpecTypeDef =
                 #path::xdr::r#const::ScSpecTypeDef::Udt(#path::xdr::r#const::ScSpecTypeUdt {
-                    name: #path::xdr::r#const::StringM::try_from_str_or_panic(Self::__SPEC_NAME),
+                    name: #path::xdr::r#const::StringM::try_from_str_or_panic(
+                        <Self as #path::SpecName>::SPEC_NAME,
+                    ),
                 });
         }
     }
