@@ -80,7 +80,6 @@ pub fn derive_type_struct_tuple(
     let spec_gen = {
         let doc = const_view_string(path, &spec.doc);
         let lib = const_view_string(path, &spec.lib);
-        let name = quote!(#path::xdr::r#const::StringM::try_from_str_or_panic(#ident::spec_name()));
         // Each field's Rust type, so a reference to a user-defined type in a
         // field resolves to the name that type reports for itself.
         let fields = spec
@@ -97,7 +96,7 @@ pub fn derive_type_struct_tuple(
             #path::xdr::r#const::ScSpecEntry::UdtStructV0(#path::xdr::r#const::ScSpecUdtStructV0 {
                 doc: #doc,
                 lib: #lib,
-                name: #name,
+                name: #path::xdr::r#const::StringM::try_from_str_or_panic(#ident::spec_name()),
                 fields: #path::xdr::r#const::VecM::try_from_slice_or_panic(&[#(#fields),*]),
             })
         };

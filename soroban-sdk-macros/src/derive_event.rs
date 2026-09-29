@@ -228,7 +228,6 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     let spec_entry = {
         let doc = const_view_string(path, &spec.doc);
         let lib = const_view_string(path, &spec.lib);
-        let name = quote!(#path::xdr::r#const::StringM::try_from_str_or_panic(#ident::spec_name()));
         let prefix_topics = spec
             .prefix_topics
             .iter()
@@ -256,7 +255,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
             #path::xdr::r#const::ScSpecEntry::EventV0(#path::xdr::r#const::ScSpecEventV0 {
                 doc: #doc,
                 lib: #lib,
-                name: #name,
+                name: #path::xdr::r#const::StringM::try_from_str_or_panic(#ident::spec_name()),
                 prefix_topics: #path::xdr::r#const::VecM::try_from_slice_or_panic(&[#(#prefix_topics),*]),
                 params: #path::xdr::r#const::VecM::try_from_slice_or_panic(&[#(#params),*]),
                 data_format: #path::xdr::ScSpecEventDataFormat::#data_format,
