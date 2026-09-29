@@ -1,8 +1,8 @@
-use crate::{default_crate_path, syn_ext::check_generics_are_lifetimes};
+use crate::default_crate_path;
 use darling::{ast::NestedMeta, Error, FromMeta};
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
-use syn::{ext::IdentExt as _, parse2, ItemTrait, Path, TraitItem};
+use syn::{ext::IdentExt as _, parse2, ItemTrait, Path};
 
 // See soroban-sdk/docs/contracttrait.md for documentation on how this works.
 
@@ -36,25 +36,8 @@ fn derive_or_err(metadata: TokenStream2, input: TokenStream2) -> Result<TokenStr
     let args = NestedMeta::parse_meta_list(metadata.into())?;
     let args = Args::from_list(&args)?;
     let input: ItemTrait = parse2(input)?;
+
     let path = &args.crate_path;
-
-    let mut errors = Error::accumulator();
-    errors.handle(
-        check_generics_are_lifetimes(&input.generics, "contract traits").map_err(Error::from),
-    );
-    for item in &input.items {
-        if let TraitItem::Fn(f) = item {
-            errors.handle(
-                check_generics_are_lifetimes(&f.sig.generics, "contract functions")
-                    .map_err(Error::from),
-            );
-        }
-    }
-    // The errors are reported alongside everything the trait would otherwise
-    // generate, so that code using the trait, its client, or its args still
-    // resolves and only these errors are reported.
-    let errors = errors.finish().err().map(|e| e.write_errors());
-
     let spec_name = args
         .spec_name
         .unwrap_or_else(|| format!("{}Spec", input.ident.unraw()));
@@ -68,7 +51,6 @@ fn derive_or_err(metadata: TokenStream2, input: TokenStream2) -> Result<TokenStr
         .unwrap_or_else(|| format!("{}Client", input.ident.unraw()));
 
     Ok(quote! {
-        #errors
         pub struct #spec_ident;
         #[#path::contractspecfn(crate_path = #path, name = #spec_name, export = #spec_export)]
         #[#path::contractargs(name = #args_name)]

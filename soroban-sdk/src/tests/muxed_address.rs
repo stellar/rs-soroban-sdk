@@ -3,8 +3,11 @@ use soroban_sdk_macros::{contract, contractimpl, contracttype};
 use crate::testutils::{Address as _, MuxedAddress as _};
 use crate::{self as soroban_sdk, Bytes, String};
 use crate::{
-    env::xdr::{AccountId, ScAddress, Uint256},
-    Address, Env, MuxedAddress, TryFromVal,
+    env::xdr::{
+        AccountId, ClaimableBalanceId, Hash, PoolId, ScAddress, ScBytes, ScError, ScMap, ScString,
+        ScSymbol, ScVal, ScVec, Uint256,
+    },
+    Address, ConversionError, Env, MuxedAddress, TryFromVal,
 };
 
 #[derive(Clone, Debug, Eq, PartialEq)]
@@ -52,6 +55,72 @@ fn test_contract_address_to_muxed_address_conversion() {
     let muxed_address: MuxedAddress = address.clone().into();
     assert_eq!(muxed_address.address(), address);
     assert_eq!(muxed_address.id(), None);
+}
+
+#[test]
+fn test_try_from_scval() {
+    let env = Env::default();
+    let account = Address::from_str(
+        &env,
+        "GA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJVSGZ",
+    );
+    let contract = Address::from_str(
+        &env,
+        "CA7QYNF7SOWQ3GLR2BGMZEHXAVIRZA4KVWLTJJFC7MGXUA74P7UJUWDA",
+    );
+    let muxed_account = MuxedAddress::generate(&env);
+
+    for muxed_address in [account.into(), contract.into(), muxed_account] {
+        let sc_val = ScVal::from(&muxed_address);
+        assert_eq!(
+            MuxedAddress::try_from_val(&env, &sc_val),
+            Ok(muxed_address.clone())
+        );
+        let ScVal::Address(sc_address) = sc_val else {
+            panic!("expected ScVal::Address");
+        };
+        assert_eq!(
+            MuxedAddress::try_from_val(&env, &sc_address),
+            Ok(muxed_address)
+        );
+    }
+}
+
+#[test]
+fn test_try_from_scval_of_other_type_errors() {
+    let env = Env::default();
+    let sc_vals = [
+        ScVal::Void,
+        ScVal::Bool(true),
+        ScVal::U32(1),
+        ScVal::I64(1),
+        ScVal::Symbol(ScSymbol("a".try_into().unwrap())),
+        ScVal::String(ScString("a".try_into().unwrap())),
+        ScVal::Bytes(ScBytes::default()),
+        ScVal::Vec(Some(ScVec::default())),
+        ScVal::Map(Some(ScMap::default())),
+        ScVal::Error(ScError::Contract(1)),
+        // Addresses of the kinds that the host does not support.
+        ScVal::Address(ScAddress::ClaimableBalance(
+            ClaimableBalanceId::ClaimableBalanceIdTypeV0(Hash([0; 32])),
+        )),
+        ScVal::Address(ScAddress::LiquidityPool(PoolId(Hash([0; 32])))),
+    ];
+
+    // Converting an ScVal that is not an address, or is an unsupported kind
+    // of address, is an error for MuxedAddress, the same as for Address.
+    for sc_val in sc_vals {
+        assert_eq!(
+            Address::try_from_val(&env, &sc_val),
+            Err(ConversionError),
+            "{sc_val:?}"
+        );
+        assert_eq!(
+            MuxedAddress::try_from_val(&env, &sc_val),
+            Err(ConversionError),
+            "{sc_val:?}"
+        );
+    }
 }
 
 #[test]
