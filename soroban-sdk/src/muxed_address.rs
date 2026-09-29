@@ -352,23 +352,7 @@ impl From<MuxedAddress> for ScVal {
 impl TryFromVal<Env, ScVal> for MuxedAddress {
     type Error = ConversionError;
     fn try_from_val(env: &Env, val: &ScVal) -> Result<Self, Self::Error> {
-        let v = Val::try_from_val(env, val)?;
-        match val {
-            ScVal::Address(sc_address) => match sc_address {
-                ScAddress::Account(_) | ScAddress::Contract(_) => {
-                    Ok(AddressObject::try_from_val(env, &v)?
-                        .try_into_val(env)
-                        .unwrap_infallible())
-                }
-                ScAddress::MuxedAccount(_) => Ok(MuxedAddressObject::try_from_val(env, &v)?
-                    .try_into_val(env)
-                    .unwrap_infallible()),
-                ScAddress::ClaimableBalance(_) | ScAddress::LiquidityPool(_) => {
-                    panic!("unsupported ScAddress type")
-                }
-            },
-            _ => panic!("incorrect scval type"),
-        }
+        MuxedAddress::try_from_val(env, &Val::try_from_val(env, val)?)
     }
 }
 
