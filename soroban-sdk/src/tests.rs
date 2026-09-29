@@ -13,6 +13,7 @@ mod contract_assert;
 mod contract_custom_account_impl;
 mod contract_docs;
 mod contract_duration;
+mod contract_error_references;
 mod contract_event;
 mod contract_executable_ref;
 mod contract_fn;

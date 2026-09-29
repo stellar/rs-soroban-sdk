@@ -339,7 +339,7 @@ impl Contract {
                     soroban_sdk::xdr::r#const::ScSpecTypeDef::Result(
                         &soroban_sdk::xdr::r#const::ScSpecTypeResult {
                             ok_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::U64,
-                            error_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Error,
+                            error_type: &<Error as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                         },
                     ),
                 ]),
@@ -394,7 +394,7 @@ impl Contract {
                                     element_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::U64,
                                 },
                             ),
-                            error_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Error,
+                            error_type: &<Error as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                         },
                     ),
                 ]),

@@ -409,7 +409,7 @@ impl Contract {
                     soroban_sdk::xdr::r#const::ScSpecTypeDef::Result(
                         &soroban_sdk::xdr::r#const::ScSpecTypeResult {
                             ok_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Void,
-                            error_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Error,
+                            error_type: &<Error as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                         },
                     ),
                 ]),

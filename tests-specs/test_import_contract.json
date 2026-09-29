@@ -50,7 +50,11 @@
         {
           "result": {
             "ok_type": "u64",
-            "error_type": "error"
+            "error_type": {
+              "udt": {
+                "name": "::test_import_contract::Error"
+              }
+            }
           }
         }
       ]
@@ -81,7 +85,11 @@
         {
           "result": {
             "ok_type": "u64",
-            "error_type": "error"
+            "error_type": {
+              "udt": {
+                "name": "::test_import_contract::Error"
+              }
+            }
           }
         }
       ]

@@ -18,7 +18,11 @@
         {
           "result": {
             "ok_type": "symbol",
-            "error_type": "error"
+            "error_type": {
+              "udt": {
+                "name": "::test_errors::Error"
+              }
+            }
           }
         }
       ]
