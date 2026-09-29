@@ -75,6 +75,7 @@ fn test_stellar_asset_spec_includes_token_spec() -> Result<(), Error> {
             })
             .collect::<Result<Vec<_>, _>>()?;
     let token_entries: HashSet<ScSpecEntry> = soroban_spec::reduce::reduce(&token_entries)
+        .unwrap()
         .into_entries()
         .collect();
 
@@ -92,6 +93,7 @@ fn test_stellar_asset_spec_includes_token_spec() -> Result<(), Error> {
             .collect::<Result<Vec<_>, _>>()?;
     let stellar_asset_entries: HashSet<ScSpecEntry> =
         soroban_spec::reduce::reduce(&stellar_asset_entries)
+            .unwrap()
             .into_entries()
             .collect();
 

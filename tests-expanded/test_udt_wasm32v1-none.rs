@@ -1413,7 +1413,7 @@ impl Contract {
                                         &<RecursiveEnum as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                                 },
                             ),
-                            error_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Error,
+                            error_type: &<Error as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                         },
                     ),
                 ]),

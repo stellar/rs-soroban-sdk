@@ -40,7 +40,11 @@
         {
           "result": {
             "ok_type": "u64",
-            "error_type": "error"
+            "error_type": {
+              "udt": {
+                "name": "::test_add_u64::Error"
+              }
+            }
           }
         }
       ]

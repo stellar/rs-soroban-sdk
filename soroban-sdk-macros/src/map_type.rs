@@ -103,7 +103,6 @@ pub fn map_type(t: &Type, allow_ref: bool, allow_hash: bool) -> Result<ScSpecTyp
                     "bool" => Ok(ScSpecTypeDef::Bool),
                     "Symbol" => Ok(ScSpecTypeDef::Symbol),
                     "String" => Ok(ScSpecTypeDef::String),
-                    "Error" => Ok(ScSpecTypeDef::Error),
                     "Bytes" => Ok(ScSpecTypeDef::Bytes),
                     "Address" => Ok(ScSpecTypeDef::Address),
                     "MuxedAddress" => Ok(ScSpecTypeDef::MuxedAddress),
@@ -458,7 +457,7 @@ fn type_args(t: &Type) -> Vec<&Type> {
 /// time. The check is part of evaluating the name, so an over-long name fails
 /// with a single error naming the type, rather than with the XDR length error
 /// that encoding the name would hit in every spec entry that uses it.
-pub fn spec_name_gen(
+pub fn spec_type_def_gen(
     path: &Path,
     ident: &Ident,
     gen_impl: Option<TokenStream2>,

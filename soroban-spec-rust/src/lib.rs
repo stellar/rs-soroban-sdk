@@ -107,14 +107,18 @@ pub fn generate_without_file_with_options(
     specs: &[ScSpecEntry],
     opts: &GenerateOptions,
 ) -> Result<TokenStream, GenerateError> {
+    // The error override applies only to specs that name their error enum
+    // `Error` unqualified, so it runs before the names are reduced.
+    let specs = apply_error_udt_override(specs);
     // The spec names each user-defined type by its fully qualified name
     // (`mycrate::mymod::MyType`), while the generated code names it by a bare
     // identifier, so the names are reduced to simple names before generation,
     // rewriting references to keep them matched up with the types they refer
     // to. Reducing an already-simple spec changes nothing, so a caller that
     // reduced first (to report on the renames) generates the same code.
-    let specs: Vec<ScSpecEntry> = soroban_spec::reduce::reduce(specs).into_entries().collect();
-    let specs = apply_error_udt_override(&specs);
+    let specs: Vec<ScSpecEntry> = soroban_spec::reduce::reduce(&specs)?
+        .into_entries()
+        .collect();
     let specs: &[ScSpecEntry] = &specs;
 
     let mut spec_fns = Vec::new();
@@ -171,10 +175,12 @@ pub fn generate_without_file_with_options(
     })
 }
 
-/// The `#[contractimpl]` macro emits any type named `Error` in a contract's
+/// Contracts built with earlier SDKs emit any type named `Error` in their
 /// function signatures as the built-in `ScSpecTypeDef::Error` in the spec,
 /// regardless of whether the contract defined its own error enum named `Error`
-/// or used `soroban_sdk::Error` directly. To let clients of contracts that
+/// or used `soroban_sdk::Error` directly. Current SDKs emit a contract's own
+/// error enum as a reference to its fully qualified name, which this pass
+/// leaves alone. To let clients of contracts that
 /// define their own `Error` enum see the user-defined type instead of
 /// `soroban_sdk::Error`, this pass rewrites every `ScSpecTypeDef::Error`
 /// reference in the spec to `Udt { name: "Error" }` whenever the spec also
@@ -515,11 +521,9 @@ pub enum MyError {
     }
 
     /// Test that shows the raw spec entries from the wasm.
-    /// Verifies that the on-the-wire spec format is unchanged: a contract
-    /// error enum named `Error` is still emitted as the built-in
-    /// `ScSpecTypeDef::Error` in function signatures (the user-defined-vs-SDK
-    /// disambiguation happens at client generation time, not here). A
-    /// differently-named error enum (`MyError`) is emitted as a UDT reference.
+    /// Verifies that a contract error enum is emitted as a UDT reference to
+    /// its qualified name in function signatures, whether it is named `Error`
+    /// or something else (`MyError`).
     #[test]
     fn test_add_u64_spec_entries() {
         use super::ScSpecEntry;
@@ -546,10 +550,16 @@ pub enum MyError {
             matches!(r.ok_type.as_ref(), ScSpecTypeDef::U64),
             "ok_type should be U64"
         );
-        assert!(
-            matches!(r.error_type.as_ref(), ScSpecTypeDef::Error),
-            "error_type should be the built-in Error in the wasm spec, got {:?}",
-            r.error_type
+        let ScSpecTypeDef::Udt(u) = r.error_type.as_ref() else {
+            panic!(
+                "error_type should be a UDT for Error, got {:?}",
+                r.error_type
+            );
+        };
+        assert_eq!(
+            u.name.to_utf8_string().unwrap(),
+            "::test_add_u64::Error",
+            "error_type should be Error UDT"
         );
 
         // Find the safe_add_two function spec
@@ -745,7 +755,7 @@ pub enum Error {
 
     /// Two user-defined error enums sharing the simple name `Error`
     /// (`a::Error`, `b::Error`), taken end-to-end through name
-    /// reduction, the error-udt override, and code generation.
+    /// reduction and code generation.
     #[test]
     fn test_two_error_enums_sharing_a_simple_name() {
         use stellar_xdr::{
@@ -816,8 +826,8 @@ pub enum Error {
         );
         // Each function is asserted by name so the reference is clearly tied to
         // its own type: `use_a` follows `a::Error` to `Error`, `use_b` follows
-        // `b::Error` to `Error2`, and `use_builtin`'s built-in error resolves
-        // through the error-udt override to the enum that claimed `Error`.
+        // `b::Error` to `Error2`, and `use_builtin`'s built-in error stays
+        // `soroban_sdk::Error`, as the enums have qualified names.
         assert!(
             code.contains("fn use_a(env: soroban_sdk::Env) -> Result<u32, Error>;"),
             "{code}"
@@ -827,7 +837,9 @@ pub enum Error {
             "{code}"
         );
         assert!(
-            code.contains("fn use_builtin(env: soroban_sdk::Env) -> Result<u32, Error>;"),
+            code.contains(
+                "fn use_builtin(env: soroban_sdk::Env) -> Result<u32, soroban_sdk::Error>;"
+            ),
             "{code}"
         );
     }

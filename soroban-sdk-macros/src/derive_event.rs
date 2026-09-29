@@ -4,7 +4,7 @@ use crate::{
     doc::docs_from_attrs,
     export_arg_error,
     map_type::{
-        const_view_string, const_view_symbol, const_view_type_def, map_type, spec_name_gen,
+        const_view_string, const_view_symbol, const_view_type_def, map_type, spec_type_def_gen,
     },
     shaking, symbol,
 };
@@ -15,6 +15,7 @@ use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use stellar_xdr::{
     ScSpecEventDataFormat, ScSpecEventParamLocationV0, ScSpecEventParamV0, ScSpecEventV0, StringM,
+    SCSYMBOL_LIMIT,
 };
 use syn::{
     ext::IdentExt as _, parse2, spanned::Spanned, Data, DeriveInput, Fields, LitStr, Meta, Path,
@@ -125,11 +126,31 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         }))
         .unwrap_or_default();
 
-    let prefix_topics = if let Some(prefix_topics) = &args.topics {
-        prefix_topics.iter().map(|t| t.value()).collect()
+    let prefix_topics: Vec<(String, Span)> = if let Some(prefix_topics) = &args.topics {
+        prefix_topics
+            .iter()
+            .map(|t| (t.value(), t.span()))
+            .collect()
     } else {
-        vec![input.ident.unraw().to_string().to_snake_case()]
+        vec![(
+            input.ident.unraw().to_string().to_snake_case(),
+            input.ident.span(),
+        )]
     };
+
+    // Check prefix topic lengths, as each is published as a symbol.
+    for (topic, span) in &prefix_topics {
+        if topic.len() > SCSYMBOL_LIMIT as usize {
+            errors.push(
+                Error::custom(format!(
+                    "topic `{topic}` has length {} greater than length limit of {SCSYMBOL_LIMIT}",
+                    topic.len()
+                ))
+                .with_span(span),
+            );
+        }
+    }
+    let prefix_topics: Vec<String> = prefix_topics.into_iter().map(|(t, _)| t).collect();
 
     let fields =
         match &input.data {
@@ -387,7 +408,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     // Output.
     // Unlike other user-defined types, an event struct can carry generics
     // (e.g. a lifetime on borrowed fields), so the impl repeats them.
-    let spec_name = spec_name_gen(
+    let spec_type_def = spec_type_def_gen(
         path,
         ident,
         Some(quote!(#gen_impl)),
@@ -395,7 +416,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         Some(quote!(#gen_where)),
     );
     let output = quote! {
-        #spec_name
+        #spec_type_def
 
         #spec_gen
 

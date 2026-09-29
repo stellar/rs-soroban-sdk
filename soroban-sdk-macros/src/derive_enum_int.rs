@@ -11,7 +11,7 @@ use stellar_xdr::ScSpecUdtEnumCaseV0;
 
 use crate::{
     doc::docs_from_attrs,
-    map_type::{const_view_string, spec_name_gen},
+    map_type::{const_view_string, spec_type_def_gen},
 };
 
 // TODO: Add conversions to/from ScVal types.
@@ -81,7 +81,7 @@ pub fn derive_type_enum_int(
     // const::ScSpecEntry, which the contract crate encodes to XDR at compile time.
     // The fully qualified name the spec knows this type by, emitted for every
     // type so that a reference to it from anywhere can reach it.
-    let spec_name = spec_name_gen(path, enum_ident, None, None, None);
+    let spec_type_def = spec_type_def_gen(path, enum_ident, None, None, None);
 
     let spec_gen = {
         let doc = const_view_string(path, &spec.doc);
@@ -122,7 +122,7 @@ pub fn derive_type_enum_int(
 
     // Output.
     let mut output = quote! {
-        #spec_name
+        #spec_type_def
 
         #spec_gen
 

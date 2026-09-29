@@ -18,6 +18,8 @@ pub enum GenerateError {
     InvalidUtf8,
     #[error("invalid Rust identifier: {0:?}")]
     InvalidIdent(String),
+    #[error(transparent)]
+    DuplicateName(#[from] soroban_spec::reduce::DuplicateName),
 }
 
 /// Options for controlling code generation behavior.
@@ -53,12 +55,30 @@ pub struct GenerateOptions {}
 
 /// Constructs a token stream containing a single struct that mirrors the struct
 /// spec.
+///
+/// # Warning
+///
+/// Unlike [`generate`](crate::generate) and the other generators that take a
+/// whole spec, this does not reduce fully qualified type names
+/// (`::mycrate::mymod::MyType`) to simple names. A spec from a contract built
+/// with fully qualified names must be reduced with
+/// [`soroban_spec::reduce::reduce`] first, otherwise generation fails with
+/// [`GenerateError::InvalidIdent`].
 pub fn generate_struct(spec: &ScSpecUdtStructV0) -> Result<TokenStream, GenerateError> {
     generate_struct_with_options(spec, &GenerateOptions::default())
 }
 
 /// Constructs a token stream containing a single struct that mirrors the struct
 /// spec, with configurable options.
+///
+/// # Warning
+///
+/// Unlike [`generate`](crate::generate) and the other generators that take a
+/// whole spec, this does not reduce fully qualified type names
+/// (`::mycrate::mymod::MyType`) to simple names. A spec from a contract built
+/// with fully qualified names must be reduced with
+/// [`soroban_spec::reduce::reduce`] first, otherwise generation fails with
+/// [`GenerateError::InvalidIdent`].
 pub fn generate_struct_with_options(
     spec: &ScSpecUdtStructV0,
     _opts: &GenerateOptions,
@@ -111,12 +131,30 @@ pub fn generate_struct_with_options(
 
 /// Constructs a token stream containing a single enum that mirrors the union
 /// spec.
+///
+/// # Warning
+///
+/// Unlike [`generate`](crate::generate) and the other generators that take a
+/// whole spec, this does not reduce fully qualified type names
+/// (`::mycrate::mymod::MyType`) to simple names. A spec from a contract built
+/// with fully qualified names must be reduced with
+/// [`soroban_spec::reduce::reduce`] first, otherwise generation fails with
+/// [`GenerateError::InvalidIdent`].
 pub fn generate_union(spec: &ScSpecUdtUnionV0) -> Result<TokenStream, GenerateError> {
     generate_union_with_options(spec, &GenerateOptions::default())
 }
 
 /// Constructs a token stream containing a single enum that mirrors the union
 /// spec, with configurable options.
+///
+/// # Warning
+///
+/// Unlike [`generate`](crate::generate) and the other generators that take a
+/// whole spec, this does not reduce fully qualified type names
+/// (`::mycrate::mymod::MyType`) to simple names. A spec from a contract built
+/// with fully qualified names must be reduced with
+/// [`soroban_spec::reduce::reduce`] first, otherwise generation fails with
+/// [`GenerateError::InvalidIdent`].
 pub fn generate_union_with_options(
     spec: &ScSpecUdtUnionV0,
     _opts: &GenerateOptions,
@@ -153,12 +191,30 @@ pub fn generate_union_with_options(
 
 /// Constructs a token stream containing a single enum that mirrors the enum
 /// spec.
+///
+/// # Warning
+///
+/// Unlike [`generate`](crate::generate) and the other generators that take a
+/// whole spec, this does not reduce fully qualified type names
+/// (`::mycrate::mymod::MyType`) to simple names. A spec from a contract built
+/// with fully qualified names must be reduced with
+/// [`soroban_spec::reduce::reduce`] first, otherwise generation fails with
+/// [`GenerateError::InvalidIdent`].
 pub fn generate_enum(spec: &ScSpecUdtEnumV0) -> Result<TokenStream, GenerateError> {
     generate_enum_with_options(spec, &GenerateOptions::default())
 }
 
 /// Constructs a token stream containing a single enum that mirrors the enum
 /// spec, with configurable options.
+///
+/// # Warning
+///
+/// Unlike [`generate`](crate::generate) and the other generators that take a
+/// whole spec, this does not reduce fully qualified type names
+/// (`::mycrate::mymod::MyType`) to simple names. A spec from a contract built
+/// with fully qualified names must be reduced with
+/// [`soroban_spec::reduce::reduce`] first, otherwise generation fails with
+/// [`GenerateError::InvalidIdent`].
 pub fn generate_enum_with_options(
     spec: &ScSpecUdtEnumV0,
     _opts: &GenerateOptions,
@@ -182,12 +238,30 @@ pub fn generate_enum_with_options(
 
 /// Constructs a token stream containing a single enum that mirrors the enum
 /// spec, that is intended for use with errors.
+///
+/// # Warning
+///
+/// Unlike [`generate`](crate::generate) and the other generators that take a
+/// whole spec, this does not reduce fully qualified type names
+/// (`::mycrate::mymod::MyType`) to simple names. A spec from a contract built
+/// with fully qualified names must be reduced with
+/// [`soroban_spec::reduce::reduce`] first, otherwise generation fails with
+/// [`GenerateError::InvalidIdent`].
 pub fn generate_error_enum(spec: &ScSpecUdtErrorEnumV0) -> Result<TokenStream, GenerateError> {
     generate_error_enum_with_options(spec, &GenerateOptions::default())
 }
 
 /// Constructs a token stream containing a single enum that mirrors the enum
 /// spec, that is intended for use with errors, with configurable options.
+///
+/// # Warning
+///
+/// Unlike [`generate`](crate::generate) and the other generators that take a
+/// whole spec, this does not reduce fully qualified type names
+/// (`::mycrate::mymod::MyType`) to simple names. A spec from a contract built
+/// with fully qualified names must be reduced with
+/// [`soroban_spec::reduce::reduce`] first, otherwise generation fails with
+/// [`GenerateError::InvalidIdent`].
 pub fn generate_error_enum_with_options(
     spec: &ScSpecUdtErrorEnumV0,
     _opts: &GenerateOptions,
@@ -211,12 +285,30 @@ pub fn generate_error_enum_with_options(
 
 /// Constructs a token stream containing a single struct that mirrors the event
 /// spec.
+///
+/// # Warning
+///
+/// Unlike [`generate`](crate::generate) and the other generators that take a
+/// whole spec, this does not reduce fully qualified type names
+/// (`::mycrate::mymod::MyType`) to simple names. A spec from a contract built
+/// with fully qualified names must be reduced with
+/// [`soroban_spec::reduce::reduce`] first, otherwise generation fails with
+/// [`GenerateError::InvalidIdent`].
 pub fn generate_event(spec: &ScSpecEventV0) -> Result<TokenStream, GenerateError> {
     generate_event_with_options(spec, &GenerateOptions::default())
 }
 
 /// Constructs a token stream containing a single struct that mirrors the event
 /// spec, with configurable options.
+///
+/// # Warning
+///
+/// Unlike [`generate`](crate::generate) and the other generators that take a
+/// whole spec, this does not reduce fully qualified type names
+/// (`::mycrate::mymod::MyType`) to simple names. A spec from a contract built
+/// with fully qualified names must be reduced with
+/// [`soroban_spec::reduce::reduce`] first, otherwise generation fails with
+/// [`GenerateError::InvalidIdent`].
 pub fn generate_event_with_options(
     spec: &ScSpecEventV0,
     _opts: &GenerateOptions,
@@ -252,6 +344,16 @@ pub fn generate_event_with_options(
     })
 }
 
+/// Constructs the Rust type that refers to the spec type.
+///
+/// # Warning
+///
+/// Unlike [`generate`](crate::generate) and the other generators that take a
+/// whole spec, this does not reduce fully qualified type names
+/// (`::mycrate::mymod::MyType`) to simple names. A spec from a contract built
+/// with fully qualified names must be reduced with
+/// [`soroban_spec::reduce::reduce`] first, otherwise generation fails with
+/// [`GenerateError::InvalidIdent`].
 pub fn generate_type_ident(spec: &ScSpecTypeDef) -> Result<TokenStream, GenerateError> {
     match spec {
         ScSpecTypeDef::Val => Ok(quote! { soroban_sdk::Val }),

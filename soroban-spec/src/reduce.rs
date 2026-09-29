@@ -1,11 +1,8 @@
-use stellar_xdr::{ScSpecEntry, ScSpecTypeDef, ScSpecUdtUnionCaseV0};
+use stellar_xdr::{ScSpecEntry, ScSpecTypeDef, ScSpecUdtUnionCaseV0, SC_SPEC_TYPE_NAME_LIMIT};
 
-/// The most bytes a spec type name can hold (`SC_SPEC_TYPE_NAME_LIMIT`), which
-/// bounds the names the numbering below may produce.
-const TYPE_NAME_LIMIT: usize = 1024;
-
-/// The most bytes an event name can hold (`SC_SPEC_TYPE_NAME_LIMIT`).
-const EVENT_NAME_LIMIT: usize = 1024;
+/// The most bytes a spec type or event name can hold, which bounds the names
+/// the numbering below may produce.
+const NAME_LIMIT: usize = SC_SPEC_TYPE_NAME_LIMIT as usize;
 
 /// A spec with its user-defined type names reduced to simple names. Each
 /// entry is paired with how its own name resolved.
@@ -39,6 +36,14 @@ impl Reduced {
     }
 }
 
+/// A spec that defines the same fully qualified user-defined type or event
+/// name more than once, which never happens, as a qualified name is the path
+/// of the one Rust type that defines it. Simple names are not checked, as specs
+/// from before qualified names can define the same simple name more than once.
+#[derive(thiserror::Error, Debug, Clone, PartialEq, Eq)]
+#[error("contract spec defines the name `{}` more than once", String::from_utf8_lossy(.0))]
+pub struct DuplicateName(pub Vec<u8>);
+
 /// How one user-defined type's name resolved during reduction.
 ///
 /// Spec names are byte strings that are not guaranteed to be valid UTF-8, so
@@ -65,6 +70,11 @@ impl Rename {
     }
 }
 
+/// Whether the name is qualified by a path, and so is reduced.
+fn is_qualified(name: &[u8]) -> bool {
+    name.windows(2).any(|w| w == b"::")
+}
+
 /// The last `::`-separated segment of a fully qualified type name.
 fn last_segment(name: &[u8]) -> &[u8] {
     name.windows(2)
@@ -88,7 +98,16 @@ fn last_segment(name: &[u8]) -> &[u8] {
 /// spec does not guarantee valid UTF-8. When a numbered name would exceed the
 /// spec's name limit, the base is trimmed from its end to make room for the
 /// number.
-pub fn reduce(spec: &[ScSpecEntry]) -> Reduced {
+///
+/// A simple name, one without `::`, is not reduced: it keeps its name, and
+/// claims it ahead of the qualified names, so specs from before qualified
+/// names, which can define the same simple name more than once, come back
+/// unchanged.
+///
+/// # Errors
+///
+/// If the spec defines the same qualified name more than once.
+pub fn reduce(spec: &[ScSpecEntry]) -> Result<Reduced, DuplicateName> {
     // The names the spec defines, in definition order, each with the most
     // bytes its entry's name field can hold. Events define a name too: the
     // generated bindings declare a type for each event, so an event and a
@@ -96,21 +115,36 @@ pub fn reduce(spec: &[ScSpecEntry]) -> Reduced {
     let defined: Vec<(Vec<u8>, usize)> = spec
         .iter()
         .filter_map(|entry| match entry {
-            ScSpecEntry::UdtStructV0(s) => Some((s.name.to_vec(), TYPE_NAME_LIMIT)),
-            ScSpecEntry::UdtUnionV0(u) => Some((u.name.to_vec(), TYPE_NAME_LIMIT)),
-            ScSpecEntry::UdtEnumV0(e) => Some((e.name.to_vec(), TYPE_NAME_LIMIT)),
-            ScSpecEntry::UdtErrorEnumV0(e) => Some((e.name.to_vec(), TYPE_NAME_LIMIT)),
-            ScSpecEntry::EventV0(e) => Some((e.name.to_vec(), EVENT_NAME_LIMIT)),
+            ScSpecEntry::UdtStructV0(s) => Some((s.name.to_vec(), NAME_LIMIT)),
+            ScSpecEntry::UdtUnionV0(u) => Some((u.name.to_vec(), NAME_LIMIT)),
+            ScSpecEntry::UdtEnumV0(e) => Some((e.name.to_vec(), NAME_LIMIT)),
+            ScSpecEntry::UdtErrorEnumV0(e) => Some((e.name.to_vec(), NAME_LIMIT)),
+            ScSpecEntry::EventV0(e) => Some((e.name.to_vec(), NAME_LIMIT)),
             _ => None,
         })
         .collect();
 
-    // The first type to claim a last segment keeps it, so a type only ever
+    let mut seen = std::collections::HashSet::new();
+    if let Some((name, _)) = defined
+        .iter()
+        .filter(|(name, _)| is_qualified(name))
+        .find(|(name, _)| !seen.insert(name.as_slice()))
+    {
+        return Err(DuplicateName(name.clone()));
+    }
+
+    // Simple names keep their names, so they claim them first. Then the first
+    // qualified type to claim a last segment keeps it, so a type only ever
     // loses its own name to one defined before it, never to a number handed
     // to a type that collided with something else.
-    let mut taken = std::collections::HashSet::new();
+    let mut taken: std::collections::HashSet<Vec<u8>> = defined
+        .iter()
+        .filter(|(name, _)| !is_qualified(name))
+        .map(|(name, _)| name.clone())
+        .collect();
     let colliding: Vec<&(Vec<u8>, usize)> = defined
         .iter()
+        .filter(|(name, _)| is_qualified(name))
         .filter(|(name, _)| !taken.insert(last_segment(name).to_vec()))
         .collect();
 
@@ -120,14 +154,7 @@ pub fn reduce(spec: &[ScSpecEntry]) -> Reduced {
         let mut n = 1u32;
         let simple = loop {
             n += 1;
-            let num = n.to_string();
-            // Keep as much of the base as leaves room for the number within
-            // the limit, trimming bytes off its end when the base is too long
-            // to hold the number too. The limit always exceeds the number's
-            // length, so a fitting name always exists.
-            let keep = limit.saturating_sub(num.len());
-            let mut simple = base[..base.len().min(keep)].to_vec();
-            simple.extend_from_slice(num.as_bytes());
+            let simple = numbered_name(base, n, *limit);
             if taken.insert(simple.clone()) {
                 break simple;
             }
@@ -217,7 +244,19 @@ pub fn reduce(spec: &[ScSpecEntry]) -> Reduced {
             Entry { entry, rename }
         })
         .collect();
-    Reduced(entries)
+    Ok(Reduced(entries))
+}
+
+/// The base followed by the number, keeping as much of the base as leaves room
+/// for the number within the limit, trimming bytes off its end when the base is
+/// too long to hold the number too. The limit always exceeds the number's
+/// length, so a fitting name always exists.
+fn numbered_name(base: &[u8], n: u32, limit: usize) -> Vec<u8> {
+    let num = n.to_string();
+    let keep = limit.saturating_sub(num.len());
+    let mut name = base[..base.len().min(keep)].to_vec();
+    name.extend_from_slice(num.as_bytes());
+    name
 }
 
 /// Rewrites the name of every user-defined type reference in the type.
@@ -247,7 +286,7 @@ fn rewrite_ty(t: &mut ScSpecTypeDef, resolve: &dyn Fn(&[u8]) -> Vec<u8>) {
 
 #[cfg(test)]
 mod test {
-    use super::{reduce, Rename};
+    use super::{numbered_name, reduce, DuplicateName, Rename, NAME_LIMIT};
     use stellar_xdr::{
         ScSpecEntry, ScSpecTypeDef, ScSpecTypeUdt, ScSpecUdtStructFieldV0, ScSpecUdtStructV0,
     };
@@ -329,7 +368,7 @@ mod test {
     #[test]
     fn reduces_a_qualified_name_to_its_last_segment() {
         let spec = [struct_entry("mycrate::mymod::MyType", &[])];
-        let reduced = reduce(&spec);
+        let reduced = reduce(&spec).unwrap();
         assert_eq!(names(reduced.entries()), [(b"MyType".to_vec(), vec![])]);
         assert_eq!(
             reduced.renames().cloned().collect::<Vec<_>>(),
@@ -349,7 +388,7 @@ mod test {
             event_entry("mycrate::mymod::MyEvent", &["mycrate::mymod::MyType"]),
             struct_entry("mycrate::mymod::MyType", &[]),
         ];
-        let reduced = reduce(&spec);
+        let reduced = reduce(&spec).unwrap();
         let entries: Vec<_> = reduced.entries().collect();
         let ScSpecEntry::EventV0(ev) = entries[0] else {
             panic!("first entry should be the event, got {:?}", entries[0]);
@@ -370,7 +409,7 @@ mod test {
             struct_entry("a::Shared", &[]),
             event_entry("b::Shared", &[]),
         ];
-        let reduced = reduce(&spec);
+        let reduced = reduce(&spec).unwrap();
         assert_eq!(
             reduced
                 .renames()
@@ -386,7 +425,7 @@ mod test {
             struct_entry("mycrate::mymod::MyType", &["mycrate::myothermod::MyType"]),
             struct_entry("mycrate::myothermod::MyType", &["mycrate::mymod::MyType"]),
         ];
-        let reduced = reduce(&spec);
+        let reduced = reduce(&spec).unwrap();
         assert_eq!(
             names(reduced.entries()),
             [
@@ -408,7 +447,7 @@ mod test {
             struct_entry("b::MyType2", &[]),
             struct_entry("c::MyType", &[]),
         ];
-        let reduced = reduce(&spec);
+        let reduced = reduce(&spec).unwrap();
         assert_eq!(
             reduced
                 .renames()
@@ -424,7 +463,7 @@ mod test {
             struct_entry("MyType", &["MyOther"]),
             struct_entry("MyOther", &[]),
         ];
-        let reduced = reduce(&spec);
+        let reduced = reduce(&spec).unwrap();
         assert_eq!(reduced.entries().cloned().collect::<Vec<_>>(), spec);
         assert!(reduced.renames().all(|r| !r.renamed()));
     }
@@ -432,7 +471,7 @@ mod test {
     #[test]
     fn a_simple_name_keeps_its_claim_over_a_later_qualified_one() {
         let spec = [struct_entry("MyType", &[]), struct_entry("a::MyType", &[])];
-        let reduced = reduce(&spec);
+        let reduced = reduce(&spec).unwrap();
         assert_eq!(
             reduced
                 .renames()
@@ -445,7 +484,7 @@ mod test {
     #[test]
     fn a_reference_to_an_undefined_type_reduces_without_claiming() {
         let spec = [struct_entry("a::MyType", &["elsewhere::Other"])];
-        let reduced = reduce(&spec);
+        let reduced = reduce(&spec).unwrap();
         assert_eq!(
             names(reduced.entries()),
             [(b"MyType".to_vec(), vec![b"Other".to_vec()])]
@@ -460,7 +499,7 @@ mod test {
         // changing the name and potentially overflowing the name limit.
         let name = b"mycrate::\xff\xfeType";
         let spec = [struct_entry_bytes(name, &[name])];
-        let reduced = reduce(&spec);
+        let reduced = reduce(&spec).unwrap();
         assert_eq!(
             names(reduced.entries()),
             [(b"\xff\xfeType".to_vec(), vec![b"\xff\xfeType".to_vec()])]
@@ -468,20 +507,58 @@ mod test {
     }
 
     #[test]
-    fn a_name_whose_numbered_form_would_overflow_is_trimmed_to_fit() {
-        let long = "x".repeat(1024);
+    fn a_name_defined_twice_is_an_error() {
         let spec = [
-            struct_entry(&long, &[]),
-            struct_entry_bytes(long.as_bytes(), &[]),
+            struct_entry("::shared::Meta", &[]),
+            struct_entry("::shared::Meta", &[]),
         ];
-        let reduced = reduce(&spec);
-        // The first claims the full 1024-byte name; the second cannot fit a
-        // number after it, so the base is trimmed to make room: 1023 bytes of
-        // the name followed by "2", exactly at the limit.
+        assert_eq!(
+            reduce(&spec),
+            Err(DuplicateName(b"::shared::Meta".to_vec()))
+        );
+    }
+
+    #[test]
+    fn a_simple_name_defined_twice_is_unchanged() {
+        let spec = [
+            struct_entry("Meta", &[]),
+            struct_entry("Meta", &[]),
+            struct_entry("Holder", &["Meta"]),
+        ];
+        let reduced = reduce(&spec).unwrap();
+        assert_eq!(reduced.entries().cloned().collect::<Vec<_>>(), spec);
+        assert!(reduced.renames().all(|r| !r.renamed()));
+    }
+
+    #[test]
+    fn a_qualified_name_does_not_take_a_simple_name_defined_after_it() {
+        let spec = [
+            struct_entry("::a::Meta", &[]),
+            struct_entry("Meta", &[]),
+            struct_entry("Holder", &["Meta", "::a::Meta"]),
+        ];
+        let reduced = reduce(&spec).unwrap();
+        assert_eq!(
+            names(reduced.entries()),
+            [
+                (b"Meta2".to_vec(), vec![]),
+                (b"Meta".to_vec(), vec![]),
+                (
+                    b"Holder".to_vec(),
+                    vec![b"Meta".to_vec(), b"Meta2".to_vec()]
+                ),
+            ]
+        );
+    }
+
+    #[test]
+    fn a_numbered_name_that_would_overflow_is_trimmed_to_fit() {
+        // A 1024-byte base cannot fit a number after it, so the base is
+        // trimmed to make room: 1023 bytes of the base followed by "2",
+        // exactly at the limit.
+        let base = "x".repeat(1024).into_bytes();
         let mut expected = "x".repeat(1023).into_bytes();
         expected.push(b'2');
-        let to = reduced.renames().nth(1).unwrap().to.as_slice();
-        assert_eq!(to, expected.as_slice());
-        assert_eq!(to.len(), 1024);
+        assert_eq!(numbered_name(&base, 2, NAME_LIMIT), expected);
     }
 }
