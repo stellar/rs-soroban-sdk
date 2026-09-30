@@ -97,7 +97,14 @@ impl_spec_type_def! {
 // the value is guaranteed to come from a cryptographic hash function.
 
 impl<const N: usize> SpecTypeDef for BytesN<N> {
-    const SPEC_TYPE_DEF: ScSpecTypeDef = ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n: N as u32 });
+    const SPEC_TYPE_DEF: ScSpecTypeDef = {
+        // The spec holds the length as a u32, and a longer BytesN can hold no
+        // value, as its conversions reject lengths that do not fit a u32.
+        if N as u32 as usize != N {
+            None::<()>.expect("BytesN length does not fit in the contract spec's u32 length");
+        }
+        ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n: N as u32 })
+    };
 }
 
 impl<T: SpecTypeDef> SpecTypeDef for Option<T> {
