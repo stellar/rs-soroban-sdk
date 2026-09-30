@@ -2,9 +2,9 @@ use crate::{
     attribute::remove_attributes_from_item,
     default_crate_path,
     doc::docs_from_attrs,
-    export_arg_error,
-    map_type::{const_view_string, const_view_symbol, const_view_type_def, spec_type_def_gen},
-    shaking, symbol,
+    export_arg_error, shaking,
+    spec::{const_view_string, const_view_symbol, const_view_type_def, spec_type_def_gen},
+    symbol,
 };
 use darling::{ast::NestedMeta, util::SpannedValue, Error, FromMeta};
 use heck::ToSnakeCase;

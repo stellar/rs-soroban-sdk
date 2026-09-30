@@ -7,7 +7,7 @@ use stellar_xdr::StringM;
 
 use crate::{
     doc::docs_from_attrs,
-    map_type::{const_view_string, const_view_type_def, spec_type_def_gen},
+    spec::{const_view_string, const_view_type_def, spec_type_def_gen},
 };
 
 // TODO: Add field attribute for including/excluding fields in types.

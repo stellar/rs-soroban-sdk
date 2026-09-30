@@ -11,7 +11,7 @@ use stellar_xdr::ScSpecUdtEnumCaseV0;
 
 use crate::{
     doc::docs_from_attrs,
-    map_type::{const_view_string, spec_type_def_gen},
+    spec::{const_view_string, spec_type_def_gen},
 };
 
 // TODO: Add conversions to/from ScVal types.

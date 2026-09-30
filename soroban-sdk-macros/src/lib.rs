@@ -17,9 +17,9 @@ mod derive_struct;
 mod derive_struct_tuple;
 mod derive_trait;
 mod doc;
-mod map_type;
 mod path;
 mod shaking;
+mod spec;
 mod symbol;
 mod syn_ext;
 
@@ -41,11 +41,11 @@ use derive_trait::derive_trait;
 
 use darling::{ast::NestedMeta, util::SpannedValue, FromMeta};
 use macro_string::MacroString;
-use map_type::check_udt_ident;
 use proc_macro::TokenStream;
 use proc_macro2::{Span, TokenStream as TokenStream2};
 use quote::{format_ident, quote, ToTokens};
 use sha2::{Digest, Sha256};
+use spec::check_udt_ident;
 use std::{fmt::Write, fs};
 use syn::{
     ext::IdentExt as _, parse_macro_input, parse_str, spanned::Spanned, Data, DeriveInput, Error,
