@@ -1147,17 +1147,11 @@ macro_rules! sdk_panic {
     ($_msg:literal) => {
         panic!()
     };
-    () => {
-        panic!()
-    };
 }
 #[cfg(not(target_family = "wasm"))]
 macro_rules! sdk_panic {
     ($msg:literal) => {
         panic!($msg)
-    };
-    () => {
-        panic!()
     };
 }
 
