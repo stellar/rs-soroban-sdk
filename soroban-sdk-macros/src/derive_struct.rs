@@ -88,8 +88,6 @@ pub fn derive_type_struct(
         fields: spec_fields.try_into().unwrap(),
     };
 
-    // The fully qualified name the spec knows this type by, emitted for every
-    // type so that a reference to it from anywhere can reach it.
     let spec_type_def = spec_type_def_gen(path, ident, None, None, None);
 
     // Generated code spec. The spec entry is rendered as the equivalent
