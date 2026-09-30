@@ -15,7 +15,7 @@ use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use stellar_xdr::{
     ScSpecEventDataFormat, ScSpecEventParamLocationV0, ScSpecEventParamV0, ScSpecEventV0, StringM,
-    SCSYMBOL_LIMIT,
+    SCSYMBOL_LIMIT, SC_SPEC_TYPE_NAME_LIMIT,
 };
 use syn::{
     ext::IdentExt as _, parse2, spanned::Spanned, Data, DeriveInput, Fields, LitStr, Meta, Path,
@@ -114,7 +114,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     let path = &args.crate_path;
 
     // Check event name length
-    const EVENT_NAME_LENGTH: u32 = 1024;
+    const EVENT_NAME_LENGTH: u32 = SC_SPEC_TYPE_NAME_LIMIT;
     let event_name = input.ident.unraw().to_string();
     let event_name_len = event_name.len();
     let event_name: StringM<EVENT_NAME_LENGTH> = errors
