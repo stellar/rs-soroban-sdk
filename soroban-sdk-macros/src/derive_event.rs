@@ -78,12 +78,12 @@ impl FromMeta for DataFormat {
     }
 }
 
-impl Into<ScSpecEventDataFormat> for DataFormat {
-    fn into(self) -> ScSpecEventDataFormat {
-        match self {
-            Self::SingleValue => ScSpecEventDataFormat::SingleValue,
-            Self::Vec => ScSpecEventDataFormat::Vec,
-            Self::Map => ScSpecEventDataFormat::Map,
+impl From<DataFormat> for ScSpecEventDataFormat {
+    fn from(data_format: DataFormat) -> Self {
+        match data_format {
+            DataFormat::SingleValue => Self::SingleValue,
+            DataFormat::Vec => Self::Vec,
+            DataFormat::Map => Self::Map,
         }
     }
 }
@@ -252,10 +252,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
                     location: #path::xdr::ScSpecEventParamLocationV0::#location,
                 })
             });
-        let data_format = format_ident!(
-            "{}",
-            Into::<ScSpecEventDataFormat>::into(args.data_format).name()
-        );
+        let data_format = format_ident!("{}", ScSpecEventDataFormat::from(args.data_format).name());
         quote! {
             #path::xdr::r#const::ScSpecEntry::EventV0(#path::xdr::r#const::ScSpecEventV0 {
                 doc: #doc,
