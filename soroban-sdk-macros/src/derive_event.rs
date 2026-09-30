@@ -407,8 +407,6 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     };
 
     // Output.
-    // Unlike other user-defined types, an event struct can carry generics
-    // (e.g. a lifetime on borrowed fields), so the impl repeats them.
     let spec_type_def = spec_type_def_gen(
         path,
         ident,
