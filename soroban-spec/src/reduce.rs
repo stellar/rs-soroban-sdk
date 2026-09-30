@@ -1,3 +1,4 @@
+use crate::names::RESERVED_NAMES;
 use stellar_xdr::{ScSpecEntry, ScSpecTypeDef, ScSpecUdtUnionCaseV0, SC_SPEC_TYPE_NAME_LIMIT};
 
 /// The most bytes a spec type or event name can hold, which bounds the names
@@ -82,7 +83,8 @@ impl Rename {
     }
 
     /// Whether the type could not keep the last segment of its name because
-    /// another type claimed it first.
+    /// another type claimed it first, or because it is the name of an SDK
+    /// type.
     pub fn collision(&self) -> bool {
         self.to != last_segment(&self.from)
     }
@@ -116,8 +118,8 @@ fn last_segment(name: &[u8]) -> &[u8] {
 /// full name sorts first keeps the simple name, and the rest are numbered
 /// (`MyType2`, `MyType3`, …) in the order of their full names, stepping over
 /// names claimed by other types. The names do not depend on the order the
-/// spec defines the types in. A spec whose type names are already simple
-/// comes back unchanged.
+/// spec defines the types in. A spec whose type names are already simple,
+/// and are not the names of SDK types, comes back unchanged.
 ///
 /// A reference by a fully qualified name to a type the spec does not define
 /// is an error. A reference by a simple name is left as it is, whether or not
@@ -138,6 +140,12 @@ fn last_segment(name: &[u8]) -> &[u8] {
 /// claims it ahead of the qualified names, so specs from before qualified
 /// names, which can define the same simple name more than once, come back
 /// unchanged.
+///
+/// The names of SDK types, listed in [`RESERVED_NAMES`], are taken before any
+/// type claims a name, as code generated for a type with one of them would be
+/// rejected or mistaken for the SDK type. A type with one of them is numbered
+/// (`Address2`, …) like any other collision, including a simple name, which
+/// older specs can define, for example as an event name.
 ///
 /// # Errors
 ///
@@ -163,27 +171,44 @@ pub fn reduce(spec: &[ScSpecEntry]) -> Result<Reduced, Error> {
         })
         .collect();
 
-    // Simple names keep their names, so they claim them first. Then the
-    // qualified names claim their last segments in the order of their full
-    // names, rather than the order they are defined in, as the compiler does
-    // not guarantee the order it writes spec entries in. The first to claim a
-    // last segment keeps it, so a type only ever loses its own name to one
-    // that sorts before it, never to a number handed to a type that collided
-    // with something else.
-    let mut taken: std::collections::HashSet<Vec<u8>> = defined
+    // The names of SDK types are taken before any type claims a name, as code
+    // generated for a type with one of them would be rejected, or mistaken for
+    // the SDK type. Simple names keep their names, unless reserved, so they
+    // claim them next. Then the qualified names claim their last segments in
+    // the order of their full names, rather than the order they are defined
+    // in, as the compiler does not guarantee the order it writes spec entries
+    // in. The first to claim a last segment keeps it, so a type only ever
+    // loses its own name to one that sorts before it, never to a number handed
+    // to a type that collided with something else.
+    let reserved = |name: &[u8]| RESERVED_NAMES.iter().any(|r| r.as_bytes() == name);
+    let mut taken: std::collections::HashSet<Vec<u8>> = RESERVED_NAMES
         .iter()
-        .filter(|(name, _)| !is_qualified(name))
-        .map(|(name, _)| name.clone())
+        .map(|r| r.as_bytes().to_vec())
+        .chain(
+            defined
+                .iter()
+                .filter(|(name, _)| !is_qualified(name) && !reserved(name))
+                .map(|(name, _)| name.clone()),
+        )
         .collect();
     let mut qualified: Vec<&(Vec<u8>, usize)> = defined
         .iter()
         .filter(|(name, _)| is_qualified(name))
         .collect();
     qualified.sort_by(|(a, _), (b, _)| unrooted(a).cmp(unrooted(b)));
-    let colliding: Vec<&(Vec<u8>, usize)> = qualified
-        .into_iter()
-        .filter(|(name, _)| !taken.insert(last_segment(name).to_vec()))
+    // A simple name can be defined more than once, and each definition is the
+    // same type to a reference, so a reserved simple name is numbered once.
+    let mut colliding: Vec<&(Vec<u8>, usize)> = defined
+        .iter()
+        .filter(|(name, _)| !is_qualified(name) && reserved(name))
         .collect();
+    colliding.extend(
+        qualified
+            .into_iter()
+            .filter(|(name, _)| !taken.insert(last_segment(name).to_vec())),
+    );
+    colliding.sort_by(|(a, _), (b, _)| unrooted(a).cmp(unrooted(b)));
+    colliding.dedup_by(|(a, _), (b, _)| a == b);
 
     let mut numbered = std::collections::HashMap::new();
     for (name, limit) in colliding {
@@ -864,6 +889,94 @@ mod test {
                 (
                     b"Holder".to_vec(),
                     vec![b"Meta".to_vec(), b"Meta2".to_vec()]
+                ),
+            ]
+        );
+    }
+
+    #[test]
+    fn a_qualified_name_that_is_reserved_is_numbered() {
+        let spec = [
+            struct_entry("::other::Address", &[]),
+            struct_entry("Holder", &["::other::Address"]),
+        ];
+        let reduced = reduce(&spec).unwrap();
+        assert_eq!(
+            names(reduced.entries()),
+            [
+                (b"Address2".to_vec(), vec![]),
+                (b"Holder".to_vec(), vec![b"Address2".to_vec()]),
+            ]
+        );
+        assert!(reduced.renames().next().unwrap().collision());
+    }
+
+    #[test]
+    fn a_simple_event_name_that_is_reserved_is_numbered() {
+        let spec = [event_entry("Symbol", &[])];
+        let reduced = reduce(&spec).unwrap();
+        let entries: Vec<_> = reduced.entries().collect();
+        let ScSpecEntry::EventV0(ev) = entries[0] else {
+            panic!("entry should be the event, got {:?}", entries[0]);
+        };
+        assert_eq!(ev.name.to_vec(), b"Symbol2".to_vec());
+    }
+
+    #[test]
+    fn a_simple_name_that_is_reserved_and_defined_twice_is_numbered_once() {
+        let spec = [
+            struct_entry("Address", &[]),
+            struct_entry("Address", &[]),
+            struct_entry("Holder", &["Address"]),
+        ];
+        let reduced = reduce(&spec).unwrap();
+        assert_eq!(
+            names(reduced.entries()),
+            [
+                (b"Address2".to_vec(), vec![]),
+                (b"Address2".to_vec(), vec![]),
+                (b"Holder".to_vec(), vec![b"Address2".to_vec()]),
+            ]
+        );
+    }
+
+    #[test]
+    fn reserved_names_are_numbered_in_the_order_of_their_full_names() {
+        let spec = [
+            struct_entry("::b::Address", &[]),
+            struct_entry("::a::Address", &[]),
+            struct_entry("Holder", &["::a::Address", "::b::Address"]),
+        ];
+        let reduced = reduce(&spec).unwrap();
+        assert_eq!(
+            names(reduced.entries()),
+            [
+                (b"Address3".to_vec(), vec![]),
+                (b"Address2".to_vec(), vec![]),
+                (
+                    b"Holder".to_vec(),
+                    vec![b"Address2".to_vec(), b"Address3".to_vec()]
+                ),
+            ]
+        );
+    }
+
+    #[test]
+    fn a_reserved_name_is_numbered_past_a_defined_name() {
+        let spec = [
+            struct_entry("::a::Address", &[]),
+            struct_entry("Address2", &[]),
+            struct_entry("Holder", &["::a::Address", "Address2"]),
+        ];
+        let reduced = reduce(&spec).unwrap();
+        assert_eq!(
+            names(reduced.entries()),
+            [
+                (b"Address3".to_vec(), vec![]),
+                (b"Address2".to_vec(), vec![]),
+                (
+                    b"Holder".to_vec(),
+                    vec![b"Address3".to_vec(), b"Address2".to_vec()]
                 ),
             ]
         );

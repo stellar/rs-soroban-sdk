@@ -1571,6 +1571,7 @@ dependencies = [
  "sha2",
  "soroban-env-common",
  "soroban-sdk",
+ "soroban-spec",
  "soroban-spec-rust",
  "stellar-xdr",
  "syn 2.0.103",
