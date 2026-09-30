@@ -1,5 +1,5 @@
 mod syn_ext;
-pub mod r#trait;
+mod r#trait;
 pub mod types;
 
 use std::borrow::Cow;
