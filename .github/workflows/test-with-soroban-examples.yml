@@ -45,9 +45,10 @@ jobs:
     # job, rather than built in each.
     runs-on: ubuntu-latest
     steps:
+    - run: sudo apt-get update && sudo apt-get install -y libudev-dev libdbus-1-dev
     - run: rustup update
     - run: >
-        cargo install --locked --no-default-features
+        cargo install --locked
         --git https://github.com/stellar/stellar-cli
         --rev 99bdf564aab8a12b2212717fc21f375530a2052b
         --root "$RUNNER_TEMP/stellar-cli"
