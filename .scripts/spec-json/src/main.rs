@@ -39,14 +39,36 @@ fn main() {
 /// same location based off its kind and name, even if fields that come before
 /// the name in the entry's structure, such as the doc and lib fields, change.
 ///
-/// Names are compared by their last `::` segment, then in full.
+/// Names are compared by their last `::` segment, then by the doc and lib
+/// fields, then in full. Entries that share a last segment are therefore
+/// ordered as they would be if they had the same name, with the doc and lib
+/// fields, which come before the name in the entry, compared first.
 fn compare(a: &ScSpecEntry, b: &ScSpecEntry) -> Ordering {
-    (a.discriminant(), last_segment(name(a)), name(a), a).cmp(&(
-        b.discriminant(),
-        last_segment(name(b)),
-        name(b),
-        b,
-    ))
+    let key = |e| {
+        let (doc, lib) = doc_and_lib(e);
+        (
+            e.discriminant(),
+            last_segment(name(e)),
+            doc,
+            lib,
+            name(e),
+            e,
+        )
+    };
+    key(a).cmp(&key(b))
+}
+
+/// Returns the doc and lib fields of the entry, with an empty lib for entries
+/// that have none.
+fn doc_and_lib(entry: &ScSpecEntry) -> (&[u8], &[u8]) {
+    match entry {
+        ScSpecEntry::FunctionV0(e) => (e.doc.as_ref(), &[]),
+        ScSpecEntry::UdtStructV0(e) => (e.doc.as_ref(), e.lib.as_ref()),
+        ScSpecEntry::UdtUnionV0(e) => (e.doc.as_ref(), e.lib.as_ref()),
+        ScSpecEntry::UdtEnumV0(e) => (e.doc.as_ref(), e.lib.as_ref()),
+        ScSpecEntry::UdtErrorEnumV0(e) => (e.doc.as_ref(), e.lib.as_ref()),
+        ScSpecEntry::EventV0(e) => (e.doc.as_ref(), e.lib.as_ref()),
+    }
 }
 
 /// Returns the part of the name after its last `::`, or the whole name if it
