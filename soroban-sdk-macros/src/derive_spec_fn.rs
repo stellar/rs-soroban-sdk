@@ -165,8 +165,8 @@ pub fn derive_fn_spec(
         }),
         inputs: spec_args.try_into().unwrap(),
         outputs: spec_result
-            .clone()
-            .map(|r| r.0)
+            .as_ref()
+            .map(|r| r.0.clone())
             .as_slice()
             .try_into()
             .unwrap(),
