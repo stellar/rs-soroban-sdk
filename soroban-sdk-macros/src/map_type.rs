@@ -318,43 +318,27 @@ pub fn const_view_type_def(path: &Path, t: &ScSpecTypeDef, rust: Option<&Type>) 
     // a nested reference is paired with the Rust type it was mapped from.
     let args = rust.map(type_args).unwrap_or_default();
     let arg = |i: usize| args.get(i).copied();
-    // A type the macros did not recognise by name, such as a user-defined type
-    // or a type alias, takes its spec type from the type its name resolves to,
-    // which only the compiler can resolve. A user-defined type reports itself
-    // by its fully qualified name, which only its own expansion knows because
-    // only it sees the module it is defined in.
-    if let ScSpecTypeDef::Udt(_) = t {
-        return match rust.map(unref) {
-            Some(ty) => quote!(<#ty as #path::SpecTypeDef>::SPEC_TYPE_DEF),
-            None => quote!(compile_error!(
-                "user-defined type reference has no Rust type to take its spec type from"
-            )),
-        };
-    }
-    // Variants that hold a value. The recursive ones sit behind a reference in
-    // the const type, matching the Box in the owned type.
-    let value = match t {
+    let def = quote!(#xdr::r#const::ScSpecTypeDef::#variant);
+    // The recursive variants sit behind a reference in the const type, matching
+    // the Box in the owned type.
+    match t {
         ScSpecTypeDef::Option(o) => {
             let value_type = const_view_type_def(path, &o.value_type, arg(0));
-            Some(quote!((&#xdr::r#const::ScSpecTypeOption { value_type: &#value_type })))
+            quote!(#def(&#xdr::r#const::ScSpecTypeOption { value_type: &#value_type }))
         }
         ScSpecTypeDef::Result(r) => {
             let ok_type = const_view_type_def(path, &r.ok_type, arg(0));
             let error_type = const_view_type_def(path, &r.error_type, arg(1));
-            Some(
-                quote!((&#xdr::r#const::ScSpecTypeResult { ok_type: &#ok_type, error_type: &#error_type })),
-            )
+            quote!(#def(&#xdr::r#const::ScSpecTypeResult { ok_type: &#ok_type, error_type: &#error_type }))
         }
         ScSpecTypeDef::Vec(v) => {
             let element_type = const_view_type_def(path, &v.element_type, arg(0));
-            Some(quote!((&#xdr::r#const::ScSpecTypeVec { element_type: &#element_type })))
+            quote!(#def(&#xdr::r#const::ScSpecTypeVec { element_type: &#element_type }))
         }
         ScSpecTypeDef::Map(m) => {
             let key_type = const_view_type_def(path, &m.key_type, arg(0));
             let value_type = const_view_type_def(path, &m.value_type, arg(1));
-            Some(
-                quote!((&#xdr::r#const::ScSpecTypeMap { key_type: &#key_type, value_type: &#value_type })),
-            )
+            quote!(#def(&#xdr::r#const::ScSpecTypeMap { key_type: &#key_type, value_type: &#value_type }))
         }
         ScSpecTypeDef::Tuple(t) => {
             let value_types = t
@@ -362,16 +346,23 @@ pub fn const_view_type_def(path: &Path, t: &ScSpecTypeDef, rust: Option<&Type>) 
                 .iter()
                 .enumerate()
                 .map(|(i, t)| const_view_type_def(path, t, arg(i)));
-            Some(
-                quote!((&#xdr::r#const::ScSpecTypeTuple { value_types: #xdr::r#const::VecM::try_from_slice_or_panic(&[#(#value_types),*]) })),
-            )
+            quote!(#def(&#xdr::r#const::ScSpecTypeTuple { value_types: #xdr::r#const::VecM::try_from_slice_or_panic(&[#(#value_types),*]) }))
         }
         ScSpecTypeDef::BytesN(b) => {
             let n = b.n;
-            Some(quote!((#xdr::r#const::ScSpecTypeBytesN { n: #n })))
+            quote!(#def(#xdr::r#const::ScSpecTypeBytesN { n: #n }))
         }
-        // Handled above, as the spec type is the one the Rust type reports.
-        ScSpecTypeDef::Udt(_) => unreachable!(),
+        // A type the macros did not recognise by name, such as a user-defined
+        // type or a type alias, takes its whole spec type from the type its name
+        // resolves to, which only the compiler can resolve. A user-defined type
+        // reports itself by its fully qualified name, which only its own
+        // expansion knows because only it sees the module it is defined in.
+        ScSpecTypeDef::Udt(_) => match rust.map(unref) {
+            Some(ty) => quote!(<#ty as #path::SpecTypeDef>::SPEC_TYPE_DEF),
+            None => quote!(compile_error!(
+                "user-defined type reference has no Rust type to take its spec type from"
+            )),
+        },
         ScSpecTypeDef::Val
         | ScSpecTypeDef::Bool
         | ScSpecTypeDef::Void
@@ -390,9 +381,8 @@ pub fn const_view_type_def(path: &Path, t: &ScSpecTypeDef, rust: Option<&Type>) 
         | ScSpecTypeDef::String
         | ScSpecTypeDef::Symbol
         | ScSpecTypeDef::Address
-        | ScSpecTypeDef::MuxedAddress => None,
-    };
-    quote!(#xdr::r#const::ScSpecTypeDef::#variant #value)
+        | ScSpecTypeDef::MuxedAddress => def,
+    }
 }
 
 /// The Rust type behind any number of references.
