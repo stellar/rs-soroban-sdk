@@ -12,16 +12,7 @@ use super::types::{generate_type_ident, GenerateError};
 
 /// Constructs a token stream containing a single trait that has a function for
 /// every function spec.
-///
-/// # Warning
-///
-/// Unlike [`generate`](crate::generate) and the other generators that take a
-/// whole spec, this does not reduce fully qualified type names
-/// (`::mycrate::mymod::MyType`) to simple names. A spec from a contract built
-/// with fully qualified names must be reduced with
-/// [`soroban_spec::reduce::reduce`] first, otherwise generation fails with
-/// [`GenerateError::InvalidIdent`].
-pub fn generate_trait(
+pub(crate) fn generate_trait(
     name: &str,
     specs: &[&ScSpecFunctionV0],
 ) -> Result<TokenStream, GenerateError> {
@@ -43,16 +34,7 @@ pub fn generate_trait(
 ///
 /// # Returns
 /// A `TokenStream` containing the generated function definition.
-///
-/// # Warning
-///
-/// Unlike [`generate`](crate::generate) and the other generators that take a
-/// whole spec, this does not reduce fully qualified type names
-/// (`::mycrate::mymod::MyType`) to simple names. A spec from a contract built
-/// with fully qualified names must be reduced with
-/// [`soroban_spec::reduce::reduce`] first, otherwise generation fails with
-/// [`GenerateError::InvalidIdent`].
-pub fn generate_function(s: &ScSpecFunctionV0) -> Result<TokenStream, GenerateError> {
+pub(crate) fn generate_function(s: &ScSpecFunctionV0) -> Result<TokenStream, GenerateError> {
     let fn_ident = str_to_ident(&s.name)?;
     let fn_inputs = s
         .inputs

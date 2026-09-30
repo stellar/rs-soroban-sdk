@@ -28,16 +28,16 @@ pub enum GenerateError {
 /// options can be added without breaking callers.
 ///
 /// ```
-/// use soroban_spec_rust::{types::generate_struct_with_options, GenerateOptions};
-/// use stellar_xdr::ScSpecUdtStructV0;
+/// use soroban_spec_rust::{generate_without_file_with_options, GenerateOptions};
+/// use stellar_xdr::{ScSpecEntry, ScSpecUdtStructV0};
 ///
-/// let spec = ScSpecUdtStructV0 {
+/// let spec = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
 ///     doc: "".try_into().unwrap(),
 ///     lib: "".try_into().unwrap(),
 ///     name: "Point".try_into().unwrap(),
 ///     fields: Default::default(),
-/// };
-/// let tokens = generate_struct_with_options(&spec, &GenerateOptions::default()).unwrap();
+/// });
+/// let tokens = generate_without_file_with_options(&[spec], &GenerateOptions::default()).unwrap();
 /// assert!(tokens.to_string().contains("struct Point"));
 /// ```
 ///
@@ -54,32 +54,8 @@ pub enum GenerateError {
 pub struct GenerateOptions {}
 
 /// Constructs a token stream containing a single struct that mirrors the struct
-/// spec.
-///
-/// # Warning
-///
-/// Unlike [`generate`](crate::generate) and the other generators that take a
-/// whole spec, this does not reduce fully qualified type names
-/// (`::mycrate::mymod::MyType`) to simple names. A spec from a contract built
-/// with fully qualified names must be reduced with
-/// [`soroban_spec::reduce::reduce`] first, otherwise generation fails with
-/// [`GenerateError::InvalidIdent`].
-pub fn generate_struct(spec: &ScSpecUdtStructV0) -> Result<TokenStream, GenerateError> {
-    generate_struct_with_options(spec, &GenerateOptions::default())
-}
-
-/// Constructs a token stream containing a single struct that mirrors the struct
 /// spec, with configurable options.
-///
-/// # Warning
-///
-/// Unlike [`generate`](crate::generate) and the other generators that take a
-/// whole spec, this does not reduce fully qualified type names
-/// (`::mycrate::mymod::MyType`) to simple names. A spec from a contract built
-/// with fully qualified names must be reduced with
-/// [`soroban_spec::reduce::reduce`] first, otherwise generation fails with
-/// [`GenerateError::InvalidIdent`].
-pub fn generate_struct_with_options(
+pub(crate) fn generate_struct_with_options(
     spec: &ScSpecUdtStructV0,
     _opts: &GenerateOptions,
 ) -> Result<TokenStream, GenerateError> {
@@ -130,32 +106,8 @@ pub fn generate_struct_with_options(
 }
 
 /// Constructs a token stream containing a single enum that mirrors the union
-/// spec.
-///
-/// # Warning
-///
-/// Unlike [`generate`](crate::generate) and the other generators that take a
-/// whole spec, this does not reduce fully qualified type names
-/// (`::mycrate::mymod::MyType`) to simple names. A spec from a contract built
-/// with fully qualified names must be reduced with
-/// [`soroban_spec::reduce::reduce`] first, otherwise generation fails with
-/// [`GenerateError::InvalidIdent`].
-pub fn generate_union(spec: &ScSpecUdtUnionV0) -> Result<TokenStream, GenerateError> {
-    generate_union_with_options(spec, &GenerateOptions::default())
-}
-
-/// Constructs a token stream containing a single enum that mirrors the union
 /// spec, with configurable options.
-///
-/// # Warning
-///
-/// Unlike [`generate`](crate::generate) and the other generators that take a
-/// whole spec, this does not reduce fully qualified type names
-/// (`::mycrate::mymod::MyType`) to simple names. A spec from a contract built
-/// with fully qualified names must be reduced with
-/// [`soroban_spec::reduce::reduce`] first, otherwise generation fails with
-/// [`GenerateError::InvalidIdent`].
-pub fn generate_union_with_options(
+pub(crate) fn generate_union_with_options(
     spec: &ScSpecUdtUnionV0,
     _opts: &GenerateOptions,
 ) -> Result<TokenStream, GenerateError> {
@@ -190,32 +142,8 @@ pub fn generate_union_with_options(
 }
 
 /// Constructs a token stream containing a single enum that mirrors the enum
-/// spec.
-///
-/// # Warning
-///
-/// Unlike [`generate`](crate::generate) and the other generators that take a
-/// whole spec, this does not reduce fully qualified type names
-/// (`::mycrate::mymod::MyType`) to simple names. A spec from a contract built
-/// with fully qualified names must be reduced with
-/// [`soroban_spec::reduce::reduce`] first, otherwise generation fails with
-/// [`GenerateError::InvalidIdent`].
-pub fn generate_enum(spec: &ScSpecUdtEnumV0) -> Result<TokenStream, GenerateError> {
-    generate_enum_with_options(spec, &GenerateOptions::default())
-}
-
-/// Constructs a token stream containing a single enum that mirrors the enum
 /// spec, with configurable options.
-///
-/// # Warning
-///
-/// Unlike [`generate`](crate::generate) and the other generators that take a
-/// whole spec, this does not reduce fully qualified type names
-/// (`::mycrate::mymod::MyType`) to simple names. A spec from a contract built
-/// with fully qualified names must be reduced with
-/// [`soroban_spec::reduce::reduce`] first, otherwise generation fails with
-/// [`GenerateError::InvalidIdent`].
-pub fn generate_enum_with_options(
+pub(crate) fn generate_enum_with_options(
     spec: &ScSpecUdtEnumV0,
     _opts: &GenerateOptions,
 ) -> Result<TokenStream, GenerateError> {
@@ -237,32 +165,8 @@ pub fn generate_enum_with_options(
 }
 
 /// Constructs a token stream containing a single enum that mirrors the enum
-/// spec, that is intended for use with errors.
-///
-/// # Warning
-///
-/// Unlike [`generate`](crate::generate) and the other generators that take a
-/// whole spec, this does not reduce fully qualified type names
-/// (`::mycrate::mymod::MyType`) to simple names. A spec from a contract built
-/// with fully qualified names must be reduced with
-/// [`soroban_spec::reduce::reduce`] first, otherwise generation fails with
-/// [`GenerateError::InvalidIdent`].
-pub fn generate_error_enum(spec: &ScSpecUdtErrorEnumV0) -> Result<TokenStream, GenerateError> {
-    generate_error_enum_with_options(spec, &GenerateOptions::default())
-}
-
-/// Constructs a token stream containing a single enum that mirrors the enum
 /// spec, that is intended for use with errors, with configurable options.
-///
-/// # Warning
-///
-/// Unlike [`generate`](crate::generate) and the other generators that take a
-/// whole spec, this does not reduce fully qualified type names
-/// (`::mycrate::mymod::MyType`) to simple names. A spec from a contract built
-/// with fully qualified names must be reduced with
-/// [`soroban_spec::reduce::reduce`] first, otherwise generation fails with
-/// [`GenerateError::InvalidIdent`].
-pub fn generate_error_enum_with_options(
+pub(crate) fn generate_error_enum_with_options(
     spec: &ScSpecUdtErrorEnumV0,
     _opts: &GenerateOptions,
 ) -> Result<TokenStream, GenerateError> {
@@ -284,32 +188,8 @@ pub fn generate_error_enum_with_options(
 }
 
 /// Constructs a token stream containing a single struct that mirrors the event
-/// spec.
-///
-/// # Warning
-///
-/// Unlike [`generate`](crate::generate) and the other generators that take a
-/// whole spec, this does not reduce fully qualified type names
-/// (`::mycrate::mymod::MyType`) to simple names. A spec from a contract built
-/// with fully qualified names must be reduced with
-/// [`soroban_spec::reduce::reduce`] first, otherwise generation fails with
-/// [`GenerateError::InvalidIdent`].
-pub fn generate_event(spec: &ScSpecEventV0) -> Result<TokenStream, GenerateError> {
-    generate_event_with_options(spec, &GenerateOptions::default())
-}
-
-/// Constructs a token stream containing a single struct that mirrors the event
 /// spec, with configurable options.
-///
-/// # Warning
-///
-/// Unlike [`generate`](crate::generate) and the other generators that take a
-/// whole spec, this does not reduce fully qualified type names
-/// (`::mycrate::mymod::MyType`) to simple names. A spec from a contract built
-/// with fully qualified names must be reduced with
-/// [`soroban_spec::reduce::reduce`] first, otherwise generation fails with
-/// [`GenerateError::InvalidIdent`].
-pub fn generate_event_with_options(
+pub(crate) fn generate_event_with_options(
     spec: &ScSpecEventV0,
     _opts: &GenerateOptions,
 ) -> Result<TokenStream, GenerateError> {
@@ -345,16 +225,7 @@ pub fn generate_event_with_options(
 }
 
 /// Constructs the Rust type that refers to the spec type.
-///
-/// # Warning
-///
-/// Unlike [`generate`](crate::generate) and the other generators that take a
-/// whole spec, this does not reduce fully qualified type names
-/// (`::mycrate::mymod::MyType`) to simple names. A spec from a contract built
-/// with fully qualified names must be reduced with
-/// [`soroban_spec::reduce::reduce`] first, otherwise generation fails with
-/// [`GenerateError::InvalidIdent`].
-pub fn generate_type_ident(spec: &ScSpecTypeDef) -> Result<TokenStream, GenerateError> {
+pub(crate) fn generate_type_ident(spec: &ScSpecTypeDef) -> Result<TokenStream, GenerateError> {
     match spec {
         ScSpecTypeDef::Val => Ok(quote! { soroban_sdk::Val }),
         ScSpecTypeDef::U64 => Ok(quote! { u64 }),
@@ -417,8 +288,8 @@ mod test {
     use crate::ToFormattedString;
 
     use super::{
-        generate_enum, generate_error_enum, generate_event, generate_struct, generate_union,
-        GenerateError,
+        generate_enum_with_options, generate_error_enum_with_options, generate_event_with_options,
+        generate_struct_with_options, generate_union_with_options, GenerateError, GenerateOptions,
     };
     use quote::quote;
     use stellar_xdr::{
@@ -430,14 +301,17 @@ mod test {
 
     #[test]
     fn test_generate_event_no_topics_no_fields() {
-        let tokens = generate_event(&ScSpecEventV0 {
-            lib: "".try_into().unwrap(),
-            doc: "".try_into().unwrap(),
-            name: "MyEvent".try_into().unwrap(),
-            prefix_topics: [].try_into().unwrap(),
-            params: [].try_into().unwrap(),
-            data_format: ScSpecEventDataFormat::Map,
-        })
+        let tokens = generate_event_with_options(
+            &ScSpecEventV0 {
+                lib: "".try_into().unwrap(),
+                doc: "".try_into().unwrap(),
+                name: "MyEvent".try_into().unwrap(),
+                prefix_topics: [].try_into().unwrap(),
+                params: [].try_into().unwrap(),
+                data_format: ScSpecEventDataFormat::Map,
+            },
+            &GenerateOptions::default(),
+        )
         .unwrap();
         let expect = quote! {
             #[soroban_sdk::contractevent(topics = [], data_format = "map")]
@@ -452,31 +326,34 @@ mod test {
 
     #[test]
     fn test_generate_event_topics_fields() {
-        let tokens = generate_event(&ScSpecEventV0 {
-            lib: "".try_into().unwrap(),
-            doc: "".try_into().unwrap(),
-            name: "MyEvent".try_into().unwrap(),
-            prefix_topics: [ScSymbol("my_event".try_into().unwrap())]
+        let tokens = generate_event_with_options(
+            &ScSpecEventV0 {
+                lib: "".try_into().unwrap(),
+                doc: "".try_into().unwrap(),
+                name: "MyEvent".try_into().unwrap(),
+                prefix_topics: [ScSymbol("my_event".try_into().unwrap())]
+                    .try_into()
+                    .unwrap(),
+                params: [
+                    ScSpecEventParamV0 {
+                        doc: "".try_into().unwrap(),
+                        name: "from".try_into().unwrap(),
+                        type_: ScSpecTypeDef::U32,
+                        location: ScSpecEventParamLocationV0::Data,
+                    },
+                    ScSpecEventParamV0 {
+                        doc: "".try_into().unwrap(),
+                        name: "to".try_into().unwrap(),
+                        type_: ScSpecTypeDef::U32,
+                        location: ScSpecEventParamLocationV0::TopicList,
+                    },
+                ]
                 .try_into()
                 .unwrap(),
-            params: [
-                ScSpecEventParamV0 {
-                    doc: "".try_into().unwrap(),
-                    name: "from".try_into().unwrap(),
-                    type_: ScSpecTypeDef::U32,
-                    location: ScSpecEventParamLocationV0::Data,
-                },
-                ScSpecEventParamV0 {
-                    doc: "".try_into().unwrap(),
-                    name: "to".try_into().unwrap(),
-                    type_: ScSpecTypeDef::U32,
-                    location: ScSpecEventParamLocationV0::TopicList,
-                },
-            ]
-            .try_into()
-            .unwrap(),
-            data_format: ScSpecEventDataFormat::Map,
-        })
+                data_format: ScSpecEventDataFormat::Map,
+            },
+            &GenerateOptions::default(),
+        )
         .unwrap();
         let expect = quote! {
             #[soroban_sdk::contractevent(topics = ["my_event"], data_format = "map")]
@@ -495,23 +372,26 @@ mod test {
 
     #[test]
     fn test_generate_event_data_format_single_value() {
-        let tokens = generate_event(&ScSpecEventV0 {
-            lib: "".try_into().unwrap(),
-            doc: "".try_into().unwrap(),
-            name: "MyEvent".try_into().unwrap(),
-            prefix_topics: [ScSymbol("my_event".try_into().unwrap())]
+        let tokens = generate_event_with_options(
+            &ScSpecEventV0 {
+                lib: "".try_into().unwrap(),
+                doc: "".try_into().unwrap(),
+                name: "MyEvent".try_into().unwrap(),
+                prefix_topics: [ScSymbol("my_event".try_into().unwrap())]
+                    .try_into()
+                    .unwrap(),
+                params: [ScSpecEventParamV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "amount".try_into().unwrap(),
+                    type_: ScSpecTypeDef::I128,
+                    location: ScSpecEventParamLocationV0::Data,
+                }]
                 .try_into()
                 .unwrap(),
-            params: [ScSpecEventParamV0 {
-                doc: "".try_into().unwrap(),
-                name: "amount".try_into().unwrap(),
-                type_: ScSpecTypeDef::I128,
-                location: ScSpecEventParamLocationV0::Data,
-            }]
-            .try_into()
-            .unwrap(),
-            data_format: ScSpecEventDataFormat::SingleValue,
-        })
+                data_format: ScSpecEventDataFormat::SingleValue,
+            },
+            &GenerateOptions::default(),
+        )
         .unwrap();
         let expect = quote! {
             #[soroban_sdk::contractevent(topics = ["my_event"], data_format = "single-value")]
@@ -528,23 +408,26 @@ mod test {
 
     #[test]
     fn test_generate_event_data_format_vec() {
-        let tokens = generate_event(&ScSpecEventV0 {
-            lib: "".try_into().unwrap(),
-            doc: "".try_into().unwrap(),
-            name: "MyEvent".try_into().unwrap(),
-            prefix_topics: [ScSymbol("my_event".try_into().unwrap())]
+        let tokens = generate_event_with_options(
+            &ScSpecEventV0 {
+                lib: "".try_into().unwrap(),
+                doc: "".try_into().unwrap(),
+                name: "MyEvent".try_into().unwrap(),
+                prefix_topics: [ScSymbol("my_event".try_into().unwrap())]
+                    .try_into()
+                    .unwrap(),
+                params: [ScSpecEventParamV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "amount".try_into().unwrap(),
+                    type_: ScSpecTypeDef::I128,
+                    location: ScSpecEventParamLocationV0::Data,
+                }]
                 .try_into()
                 .unwrap(),
-            params: [ScSpecEventParamV0 {
-                doc: "".try_into().unwrap(),
-                name: "amount".try_into().unwrap(),
-                type_: ScSpecTypeDef::I128,
-                location: ScSpecEventParamLocationV0::Data,
-            }]
-            .try_into()
-            .unwrap(),
-            data_format: ScSpecEventDataFormat::Vec,
-        })
+                data_format: ScSpecEventDataFormat::Vec,
+            },
+            &GenerateOptions::default(),
+        )
         .unwrap();
         let expect = quote! {
             #[soroban_sdk::contractevent(topics = ["my_event"], data_format = "vec")]
@@ -567,7 +450,7 @@ mod test {
             name: vec![0xff, 0xfe].try_into().unwrap(),
             fields: VecM::default(),
         };
-        let result = generate_struct(&spec);
+        let result = generate_struct_with_options(&spec, &GenerateOptions::default());
         assert!(matches!(result, Err(GenerateError::InvalidUtf8)));
     }
 
@@ -579,7 +462,7 @@ mod test {
             name: "not a valid ident".try_into().unwrap(),
             fields: VecM::default(),
         };
-        let result = generate_struct(&spec);
+        let result = generate_struct_with_options(&spec, &GenerateOptions::default());
         assert!(matches!(result, Err(GenerateError::InvalidIdent(_))));
     }
 
@@ -597,7 +480,7 @@ mod test {
             .try_into()
             .unwrap(),
         };
-        let result = generate_struct(&spec);
+        let result = generate_struct_with_options(&spec, &GenerateOptions::default());
         assert!(result.is_err());
     }
 
@@ -606,18 +489,21 @@ mod test {
 
     #[test]
     fn test_generate_struct_ignores_lib() {
-        let tokens = generate_struct(&ScSpecUdtStructV0 {
-            doc: "".try_into().unwrap(),
-            lib: "libname".try_into().unwrap(),
-            name: "Point".try_into().unwrap(),
-            fields: [ScSpecUdtStructFieldV0 {
+        let tokens = generate_struct_with_options(
+            &ScSpecUdtStructV0 {
                 doc: "".try_into().unwrap(),
-                name: "x".try_into().unwrap(),
-                type_: ScSpecTypeDef::U32,
-            }]
-            .try_into()
-            .unwrap(),
-        })
+                lib: "libname".try_into().unwrap(),
+                name: "Point".try_into().unwrap(),
+                fields: [ScSpecUdtStructFieldV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "x".try_into().unwrap(),
+                    type_: ScSpecTypeDef::U32,
+                }]
+                .try_into()
+                .unwrap(),
+            },
+            &GenerateOptions::default(),
+        )
         .unwrap();
         let expect = quote! {
             #[soroban_sdk::contracttype]
@@ -632,17 +518,20 @@ mod test {
 
     #[test]
     fn test_generate_union_ignores_lib() {
-        let tokens = generate_union(&ScSpecUdtUnionV0 {
-            doc: "".try_into().unwrap(),
-            lib: "libname".try_into().unwrap(),
-            name: "MyUnion".try_into().unwrap(),
-            cases: [ScSpecUdtUnionCaseV0::VoidV0(ScSpecUdtUnionCaseVoidV0 {
+        let tokens = generate_union_with_options(
+            &ScSpecUdtUnionV0 {
                 doc: "".try_into().unwrap(),
-                name: "V1".try_into().unwrap(),
-            })]
-            .try_into()
-            .unwrap(),
-        })
+                lib: "libname".try_into().unwrap(),
+                name: "MyUnion".try_into().unwrap(),
+                cases: [ScSpecUdtUnionCaseV0::VoidV0(ScSpecUdtUnionCaseVoidV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "V1".try_into().unwrap(),
+                })]
+                .try_into()
+                .unwrap(),
+            },
+            &GenerateOptions::default(),
+        )
         .unwrap();
         let expect = quote! {
             #[soroban_sdk::contracttype]
@@ -657,18 +546,21 @@ mod test {
 
     #[test]
     fn test_generate_enum_ignores_lib() {
-        let tokens = generate_enum(&ScSpecUdtEnumV0 {
-            doc: "".try_into().unwrap(),
-            lib: "libname".try_into().unwrap(),
-            name: "MyEnum".try_into().unwrap(),
-            cases: [ScSpecUdtEnumCaseV0 {
+        let tokens = generate_enum_with_options(
+            &ScSpecUdtEnumV0 {
                 doc: "".try_into().unwrap(),
-                name: "V1".try_into().unwrap(),
-                value: 1,
-            }]
-            .try_into()
-            .unwrap(),
-        })
+                lib: "libname".try_into().unwrap(),
+                name: "MyEnum".try_into().unwrap(),
+                cases: [ScSpecUdtEnumCaseV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "V1".try_into().unwrap(),
+                    value: 1,
+                }]
+                .try_into()
+                .unwrap(),
+            },
+            &GenerateOptions::default(),
+        )
         .unwrap();
         let expect = quote! {
             #[soroban_sdk::contracttype]
@@ -683,18 +575,21 @@ mod test {
 
     #[test]
     fn test_generate_error_enum_ignores_lib() {
-        let tokens = generate_error_enum(&ScSpecUdtErrorEnumV0 {
-            doc: "".try_into().unwrap(),
-            lib: "libname".try_into().unwrap(),
-            name: "MyError".try_into().unwrap(),
-            cases: [ScSpecUdtErrorEnumCaseV0 {
+        let tokens = generate_error_enum_with_options(
+            &ScSpecUdtErrorEnumV0 {
                 doc: "".try_into().unwrap(),
-                name: "Overflow".try_into().unwrap(),
-                value: 1,
-            }]
-            .try_into()
-            .unwrap(),
-        })
+                lib: "libname".try_into().unwrap(),
+                name: "MyError".try_into().unwrap(),
+                cases: [ScSpecUdtErrorEnumCaseV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "Overflow".try_into().unwrap(),
+                    value: 1,
+                }]
+                .try_into()
+                .unwrap(),
+            },
+            &GenerateOptions::default(),
+        )
         .unwrap();
         let expect = quote! {
             #[soroban_sdk::contracterror]
@@ -709,23 +604,26 @@ mod test {
 
     #[test]
     fn test_generate_event_ignores_lib() {
-        let tokens = generate_event(&ScSpecEventV0 {
-            lib: "libname".try_into().unwrap(),
-            doc: "".try_into().unwrap(),
-            name: "MyEvent".try_into().unwrap(),
-            prefix_topics: [ScSymbol("my_event".try_into().unwrap())]
+        let tokens = generate_event_with_options(
+            &ScSpecEventV0 {
+                lib: "libname".try_into().unwrap(),
+                doc: "".try_into().unwrap(),
+                name: "MyEvent".try_into().unwrap(),
+                prefix_topics: [ScSymbol("my_event".try_into().unwrap())]
+                    .try_into()
+                    .unwrap(),
+                params: [ScSpecEventParamV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "from".try_into().unwrap(),
+                    type_: ScSpecTypeDef::U32,
+                    location: ScSpecEventParamLocationV0::Data,
+                }]
                 .try_into()
                 .unwrap(),
-            params: [ScSpecEventParamV0 {
-                doc: "".try_into().unwrap(),
-                name: "from".try_into().unwrap(),
-                type_: ScSpecTypeDef::U32,
-                location: ScSpecEventParamLocationV0::Data,
-            }]
-            .try_into()
-            .unwrap(),
-            data_format: ScSpecEventDataFormat::Map,
-        })
+                data_format: ScSpecEventDataFormat::Map,
+            },
+            &GenerateOptions::default(),
+        )
         .unwrap();
         let expect = quote! {
             #[soroban_sdk::contractevent(topics = ["my_event"], data_format = "map")]
