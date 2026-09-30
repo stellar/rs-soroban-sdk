@@ -8,8 +8,8 @@ use syn::{
 
 use crate::{
     doc::docs_from_attrs,
-    map_type::{const_view_string, spec_type_def_gen},
     shaking,
+    spec::{const_view_string, spec_type_def_gen},
 };
 
 pub fn derive_type_error_enum_int(

@@ -10,8 +10,8 @@ use stellar_xdr::{StringM, SCSYMBOL_LIMIT};
 
 use crate::{
     doc::docs_from_attrs,
-    map_type::{const_view_string, const_view_type_def, spec_type_def_gen},
     shaking,
+    spec::{const_view_string, const_view_type_def, spec_type_def_gen},
 };
 
 pub fn derive_type_enum(

@@ -11,7 +11,7 @@ use crate::attribute::pass_through_attr_to_gen_code;
 use crate::syn_ext::{self, ty_to_safe_ident_str};
 use crate::{
     doc::docs_from_attrs,
-    map_type::{const_view_string, const_view_symbol, const_view_type_def},
+    spec::{const_view_string, const_view_symbol, const_view_type_def},
 };
 
 pub fn derive_fns_spec<'a>(

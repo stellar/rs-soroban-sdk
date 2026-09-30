@@ -66,8 +66,8 @@ impl SpecShakingMarker for i128 {}
 
 // Reference implementations — use `keep_reachable` because &T is
 // pointer-sized independent of T, so recursive definitions through
-// references could be possible. Currently, limitations of generics
-// within `map_type` prevent this from working, so this is done
+// references could be possible. Currently, user-defined types not
+// supporting generics prevents this from working, so this is done
 // out of caution.
 impl<T: SpecShakingMarker> SpecShakingMarker for &T {
     #[inline(always)]
