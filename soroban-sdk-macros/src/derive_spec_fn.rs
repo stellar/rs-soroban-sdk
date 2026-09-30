@@ -138,18 +138,13 @@ pub fn derive_fn_spec(
 
     // Prepare the output.
     let spec_result = match output {
-        ReturnType::Type(_, ty) => vec![match map_type(ty, true, true) {
-            Ok(spec) => spec,
+        ReturnType::Type(_, ty) => match map_type(ty, true, true) {
+            Ok(spec) => Some((spec, ty.as_ref())),
             Err(e) => {
                 errors.push(e);
-                ScSpecTypeDef::I32
+                None
             }
-        }],
-        ReturnType::Default => vec![],
-    };
-
-    let output_type: Option<&Type> = match output {
-        ReturnType::Type(_, ty) => Some(ty),
+        },
         ReturnType::Default => None,
     };
 
@@ -169,7 +164,12 @@ pub fn derive_fn_spec(
             ScSymbol::default()
         }),
         inputs: spec_args.try_into().unwrap(),
-        outputs: spec_result.try_into().unwrap(),
+        outputs: spec_result
+            .clone()
+            .map(|r| r.0)
+            .as_slice()
+            .try_into()
+            .unwrap(),
     };
 
     // The spec entry rendered as the equivalent const::ScSpecEntry, which the
@@ -187,10 +187,9 @@ pub fn derive_fn_spec(
                 let type_ = const_view_type_def(path, &i.type_, Some(rust));
                 quote!(#path::xdr::r#const::ScSpecFunctionInputV0 { doc: #doc, name: #name, type_: #type_ })
             });
-        let outputs = spec
-            .outputs
+        let outputs = spec_result
             .iter()
-            .map(|o| const_view_type_def(path, o, output_type));
+            .map(|o| const_view_type_def(path, &o.0, Some(o.1)));
         quote! {
             #path::xdr::r#const::ScSpecEntry::FunctionV0(#path::xdr::r#const::ScSpecFunctionV0 {
                 doc: #doc,
