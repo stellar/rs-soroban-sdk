@@ -159,7 +159,7 @@ pub fn reduce(spec: &[ScSpecEntry]) -> Result<Reduced, Error> {
             ScSpecEntry::UdtEnumV0(e) => Some((e.name.to_vec(), NAME_LIMIT)),
             ScSpecEntry::UdtErrorEnumV0(e) => Some((e.name.to_vec(), NAME_LIMIT)),
             ScSpecEntry::EventV0(e) => Some((e.name.to_vec(), NAME_LIMIT)),
-            _ => None,
+            ScSpecEntry::FunctionV0(_) => None,
         })
         .collect();
 
@@ -362,11 +362,20 @@ fn validate(spec: &[ScSpecEntry]) -> Result<(), Error> {
         return Err(Error::InvalidName(name.to_vec()));
     }
 
-    let mut seen = std::collections::HashSet::new();
+    // Simple names can be defined more than once, by specs from before
+    // qualified names, but a qualified name cannot, including one that is a
+    // simple name once its leading `::` is removed, such as `::MyType` beside
+    // `MyType`.
+    let simple: std::collections::HashSet<&[u8]> = defined
+        .iter()
+        .copied()
+        .filter(|name| !is_qualified(name))
+        .collect();
+    let mut qualified = std::collections::HashSet::new();
     if let Some(name) = defined
         .iter()
         .filter(|name| is_qualified(name))
-        .find(|name| !seen.insert(unrooted(name)))
+        .find(|name| simple.contains(unrooted(name)) || !qualified.insert(unrooted(name)))
     {
         return Err(Error::DuplicateName(name.to_vec()));
     }
@@ -374,7 +383,7 @@ fn validate(spec: &[ScSpecEntry]) -> Result<(), Error> {
     if let Some(name) = referred
         .iter()
         .filter(|name| is_qualified(name))
-        .find(|name| !seen.contains(unrooted(name)))
+        .find(|name| !qualified.contains(unrooted(name)) && !simple.contains(unrooted(name)))
     {
         return Err(Error::UndefinedName(name.to_vec()));
     }
@@ -659,6 +668,31 @@ mod test {
         assert_eq!(
             reduce(&spec),
             Err(Error::DuplicateName(b"shared::Meta".to_vec()))
+        );
+    }
+
+    #[test]
+    fn a_simple_name_and_the_same_name_with_a_leading_separator_is_an_error() {
+        let spec = [struct_entry("MyType", &[]), struct_entry("::MyType", &[])];
+        assert_eq!(
+            reduce(&spec),
+            Err(Error::DuplicateName(b"::MyType".to_vec()))
+        );
+    }
+
+    #[test]
+    fn a_reference_with_a_leading_separator_follows_a_simple_name() {
+        let spec = [
+            struct_entry("MyType", &[]),
+            struct_entry("::a::Holder", &["::MyType"]),
+        ];
+        let reduced = reduce(&spec).unwrap();
+        assert_eq!(
+            names(reduced.entries()),
+            [
+                (b"MyType".to_vec(), vec![]),
+                (b"Holder".to_vec(), vec![b"MyType".to_vec()]),
+            ]
         );
     }
 
