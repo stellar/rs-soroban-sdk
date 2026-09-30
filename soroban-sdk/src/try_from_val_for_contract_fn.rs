@@ -18,9 +18,13 @@
 use crate::{env::internal::Env, Error, TryFromVal};
 use core::fmt::Debug;
 
-#[doc(hidden)]
 #[deprecated(
     note = "TryFromValForContractFn is an internal trait and is not safe to use or implement"
+)]
+#[diagnostic::on_unimplemented(
+    message = "`{Self}` cannot be used as a contract function argument",
+    label = "not a contract function argument type",
+    note = "`Hash<N>` can only be used in contexts where there is a guarantee that the hash has been sourced from a secure cryptographic hash function, such as the signature payload of `__check_auth`"
 )]
 pub trait TryFromValForContractFn<E: Env, V: ?Sized>: Sized {
     type Error: Debug + Into<Error>;
@@ -29,6 +33,7 @@ pub trait TryFromValForContractFn<E: Env, V: ?Sized>: Sized {
 
 #[doc(hidden)]
 #[allow(deprecated)]
+#[diagnostic::do_not_recommend]
 impl<E: Env, T, U> TryFromValForContractFn<E, T> for U
 where
     U: TryFromVal<E, T> + crate::SpecShakingMarker,

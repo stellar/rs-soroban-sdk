@@ -4,7 +4,7 @@ use crate::{
 };
 use itertools::MultiUnzip;
 use proc_macro2::TokenStream as TokenStream2;
-use quote::{format_ident, quote};
+use quote::{format_ident, quote, quote_spanned};
 use sha2::{Digest, Sha256};
 use syn::{
     ext::IdentExt as _,
@@ -101,16 +101,6 @@ pub fn derive_pub_fn(
                     errors.push(e);
                 }
 
-                // Error if a Hash is used anywhere but as the signature payload. The
-                // conversion of the argument rejects it too, but naming it here gives
-                // a clear error in the common case of writing the type directly.
-                if !is_check_auth_payload && syn_ext::is_type_named(&pat_ty.ty, "Hash") {
-                    errors.push(Error::new(
-                        pat_ty.ty.span(),
-                        "Hash<N> can only be used in contexts where there is a guarantee that the hash has been sourced from a secure cryptographic hash function",
-                    ));
-                }
-
                 let ident = format_ident!("arg_{}", i);
                 let arg = FnArg::Typed(PatType {
                     attrs: vec![],
@@ -138,7 +128,9 @@ pub fn derive_pub_fn(
                         )
                     }
                 } else {
-                    quote! {
+                    // Spanned to the argument's type so that an error for a type that
+                    // can't be converted points at the type.
+                    quote_spanned! {pat_ty.ty.span()=>
                         <_ as #crate_path::TryFromValForContractFn<#crate_path::Env, #crate_path::Val>>::try_from_val_for_contract_fn(
                             &env,
                             &#ident
