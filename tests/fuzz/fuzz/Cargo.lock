@@ -1343,6 +1343,7 @@ dependencies = [
  "quote",
  "sha2",
  "soroban-env-common",
+ "soroban-spec",
  "soroban-spec-rust",
  "stellar-xdr",
  "syn",
