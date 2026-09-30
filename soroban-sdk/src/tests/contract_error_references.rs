@@ -59,30 +59,23 @@ impl Contract {
     }
 }
 
-fn fn_returning_result_of(name: &str, error_type: ScSpecTypeDef) -> ScSpecEntry {
-    ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
-        doc: "".try_into().unwrap(),
-        name: name.try_into().unwrap(),
-        inputs: vec![].try_into().unwrap(),
-        outputs: vec![ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
-            ok_type: Box::new(ScSpecTypeDef::Void),
-            error_type: Box::new(error_type),
-        }))]
-        .try_into()
-        .unwrap(),
-    })
-}
-
-fn udt(name: &str) -> ScSpecTypeDef {
-    ScSpecTypeDef::Udt(ScSpecTypeUdt {
-        name: name.try_into().unwrap(),
-    })
-}
-
 #[test]
 fn test_sdk_error_is_the_builtin_error_type() {
     let entry = ScSpecEntry::from_xdr(Contract::spec_xdr_sdk(), Limits::none()).unwrap();
-    assert_eq!(entry, fn_returning_result_of("sdk", ScSpecTypeDef::Error));
+    assert_eq!(
+        entry,
+        ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+            doc: "".try_into().unwrap(),
+            name: "sdk".try_into().unwrap(),
+            inputs: vec![].try_into().unwrap(),
+            outputs: vec![ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
+                ok_type: Box::new(ScSpecTypeDef::Void),
+                error_type: Box::new(ScSpecTypeDef::Error),
+            }))]
+            .try_into()
+            .unwrap(),
+        })
+    );
 }
 
 #[test]
@@ -90,27 +83,60 @@ fn test_user_defined_errors_are_referred_to_by_their_own_names() {
     let entry = ScSpecEntry::from_xdr(Contract::spec_xdr_local(), Limits::none()).unwrap();
     assert_eq!(
         entry,
-        fn_returning_result_of(
-            "local",
-            udt("::soroban_sdk::tests::contract_error_references::Error")
-        )
+        ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+            doc: "".try_into().unwrap(),
+            name: "local".try_into().unwrap(),
+            inputs: vec![].try_into().unwrap(),
+            outputs: vec![ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
+                ok_type: Box::new(ScSpecTypeDef::Void),
+                error_type: Box::new(ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                    name: "::soroban_sdk::tests::contract_error_references::Error"
+                        .try_into()
+                        .unwrap(),
+                })),
+            }))]
+            .try_into()
+            .unwrap(),
+        })
     );
 
     let entry = ScSpecEntry::from_xdr(Contract::spec_xdr_a(), Limits::none()).unwrap();
     assert_eq!(
         entry,
-        fn_returning_result_of(
-            "a",
-            udt("::soroban_sdk::tests::contract_error_references::a::Error")
-        )
+        ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+            doc: "".try_into().unwrap(),
+            name: "a".try_into().unwrap(),
+            inputs: vec![].try_into().unwrap(),
+            outputs: vec![ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
+                ok_type: Box::new(ScSpecTypeDef::Void),
+                error_type: Box::new(ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                    name: "::soroban_sdk::tests::contract_error_references::a::Error"
+                        .try_into()
+                        .unwrap(),
+                })),
+            }))]
+            .try_into()
+            .unwrap(),
+        })
     );
 
     let entry = ScSpecEntry::from_xdr(Contract::spec_xdr_b(), Limits::none()).unwrap();
     assert_eq!(
         entry,
-        fn_returning_result_of(
-            "b",
-            udt("::soroban_sdk::tests::contract_error_references::b::Error")
-        )
+        ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+            doc: "".try_into().unwrap(),
+            name: "b".try_into().unwrap(),
+            inputs: vec![].try_into().unwrap(),
+            outputs: vec![ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
+                ok_type: Box::new(ScSpecTypeDef::Void),
+                error_type: Box::new(ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                    name: "::soroban_sdk::tests::contract_error_references::b::Error"
+                        .try_into()
+                        .unwrap(),
+                })),
+            }))]
+            .try_into()
+            .unwrap(),
+        })
     );
 }
