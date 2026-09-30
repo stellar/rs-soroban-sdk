@@ -1,4 +1,4 @@
-use itertools::MultiUnzip;
+use itertools::{izip, MultiUnzip};
 use proc_macro2::{Literal, TokenStream as TokenStream2};
 use quote::{format_ident, quote};
 use syn::{ext::IdentExt as _, Attribute, DataStruct, Ident, Path, Visibility};
@@ -20,7 +20,7 @@ pub fn derive_type_struct_tuple(
     let fields = &data.fields;
     let field_count_usize: usize = fields.len();
 
-    let (field_specs, field_idx_lits, field_types, try_from_xdrs, try_into_xdrs): (Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>) = fields
+    let (field_docs, field_names, field_idx_lits, field_types, try_from_xdrs, try_into_xdrs): (Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>) = fields
         .iter()
         .enumerate()
         .map(|(field_idx, field)| {
@@ -31,10 +31,8 @@ pub fn derive_type_struct_tuple(
             let field_type = &field.ty;
             // The field's doc and name, as the spec holds them. Its type in the
             // spec comes from the Rust type.
-            let field_spec = (
-                docs_from_attrs(&field.attrs),
-                StringM::<30>::try_from(field_name).unwrap_or_default(),
-            );
+            let field_doc = docs_from_attrs(&field.attrs);
+            let field_name = StringM::<30>::try_from(field_name).unwrap_or_default();
             let try_from_xdr = quote! {
                 #field_idx_lit: {
                     let rv: #path::Val = (&vec[#field_idx_lit].clone()).try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?;
@@ -44,7 +42,7 @@ pub fn derive_type_struct_tuple(
             let try_into_xdr = quote! {
                 (&val.#field_idx_lit).try_into().map_err(|_| #path::xdr::Error::Invalid)?
             };
-            (field_spec, field_idx_lit, field_type, try_from_xdr, try_into_xdr)
+            (field_doc, field_name, field_idx_lit, field_type, try_from_xdr, try_into_xdr)
         })
         .multiunzip();
 
@@ -55,10 +53,8 @@ pub fn derive_type_struct_tuple(
         let doc = const_view_string(path, &docs_from_attrs(attrs));
         // Set to empty string always because the field is no longer used.
         let lib = const_view_string(path, &StringM::<80>::default());
-        let fields = field_specs
-            .iter()
-            .zip(field_types.iter().copied())
-            .map(|((field_doc, field_name), rust)| {
+        let fields = izip!(&field_docs, &field_names, &field_types).map(
+            |(field_doc, field_name, rust)| {
                 let doc = const_view_string(path, field_doc);
                 let name = const_view_string(path, field_name);
                 let type_ = const_view_type_def(path, rust);
