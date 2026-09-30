@@ -65,7 +65,7 @@ pub fn derive_fn_spec(
     });
 
     // Prepare the argument inputs.
-    let spec_args: Vec<_> = inputs
+    let (spec_args, arg_types): (Vec<_>, Vec<_>) = inputs
         .iter()
         .skip(if env_input.is_some() { 1 } else { 0 })
         .enumerate()
@@ -77,6 +77,8 @@ pub fn derive_fn_spec(
                     errors.push(Error::new(a.span(), "argument not supported"));
                     "".to_string()
                 };
+
+                let ty = &*pat_type.ty;
 
                 // Strip any underscore prefix characters. Implementations that do not use an
                 // argument will prefix an underscore to the variable name to signal to the
@@ -95,7 +97,7 @@ pub fn derive_fn_spec(
                 // as `__check_auth`.
                 let allow_hash = ident.unraw().to_string() == "__check_auth" && i == 0;
 
-                match map_type(&pat_type.ty, true, allow_hash) {
+                let spec_input = match map_type(&pat_type.ty, true, allow_hash) {
                     Ok(type_) => {
                         let name = name.try_into().unwrap_or_else(|_| {
                             const MAX: u32 = 30;
@@ -119,15 +121,17 @@ pub fn derive_fn_spec(
                             type_: ScSpecTypeDef::I32,
                         }
                     }
-                }
+                };
+                (spec_input, ty)
             }
             FnArg::Receiver(_) => {
                 errors.push(Error::new(a.span(), "self argument not supported"));
-                ScSpecFunctionInputV0 {
+                let spec_input = ScSpecFunctionInputV0 {
                     doc: "".try_into().unwrap(),
                     name: "".try_into().unwrap(),
                     type_: ScSpecTypeDef::I32,
-                }
+                };
+                (spec_input, ty)
             }
         })
         .collect();
@@ -144,18 +148,6 @@ pub fn derive_fn_spec(
         ReturnType::Default => vec![],
     };
 
-    // The Rust types the argument and return spec types were mapped from, so a
-    // reference to a user-defined type resolves to the name that type reports
-    // for itself. Kept element-for-element with `spec_args` above, including the
-    // unsupported receiver, so the two line up.
-    let arg_types: Vec<Option<&Type>> = inputs
-        .iter()
-        .skip(if env_input.is_some() { 1 } else { 0 })
-        .map(|a| match a {
-            FnArg::Typed(pat_type) => Some(&*pat_type.ty),
-            FnArg::Receiver(_) => None,
-        })
-        .collect();
     let output_type: Option<&Type> = match output {
         ReturnType::Type(_, ty) => Some(ty),
         ReturnType::Default => None,
@@ -192,7 +184,7 @@ pub fn derive_fn_spec(
             .map(|(i, rust)| {
                 let doc = const_view_string(path, &i.doc);
                 let name = const_view_string(path, &i.name);
-                let type_ = const_view_type_def(path, &i.type_, rust);
+                let type_ = const_view_type_def(path, &i.type_, Some(rust));
                 quote!(#path::xdr::r#const::ScSpecFunctionInputV0 { doc: #doc, name: #name, type_: #type_ })
             });
         let outputs = spec
