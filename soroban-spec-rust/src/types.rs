@@ -19,7 +19,7 @@ pub enum GenerateError {
     #[error("invalid Rust identifier: {0:?}")]
     InvalidIdent(String),
     #[error(transparent)]
-    DuplicateName(#[from] soroban_spec::reduce::DuplicateName),
+    Reduce(#[from] soroban_spec::reduce::Error),
 }
 
 /// Options for controlling code generation behavior.

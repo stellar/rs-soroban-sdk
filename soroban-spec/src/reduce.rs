@@ -36,13 +36,23 @@ impl Reduced {
     }
 }
 
-/// A spec that defines the same fully qualified user-defined type or event
-/// name more than once, which never happens, as a qualified name is the path
-/// of the one Rust type that defines it. Simple names are not checked, as specs
-/// from before qualified names can define the same simple name more than once.
+/// A spec that cannot be reduced.
+///
+/// The names are byte strings as they appear in the spec.
 #[derive(thiserror::Error, Debug, Clone, PartialEq, Eq)]
-#[error("contract spec defines the name `{}` more than once", String::from_utf8_lossy(.0))]
-pub struct DuplicateName(pub Vec<u8>);
+pub enum Error {
+    /// The spec defines the same fully qualified user-defined type or event
+    /// name more than once, which never happens, as a qualified name is the
+    /// path of the one Rust type that defines it. Simple names are not
+    /// checked, as specs from before qualified names can define the same
+    /// simple name more than once.
+    #[error("contract spec defines the name `{}` more than once", String::from_utf8_lossy(.0))]
+    DuplicateName(Vec<u8>),
+    /// The spec defines or refers to a name whose last segment is empty, such
+    /// as `mycrate::` or an empty name, which no Rust type has.
+    #[error("contract spec contains the name `{}`, whose last segment is empty", String::from_utf8_lossy(.0))]
+    InvalidName(Vec<u8>),
+}
 
 /// How one user-defined type's name resolved during reduction.
 ///
@@ -106,8 +116,11 @@ fn last_segment(name: &[u8]) -> &[u8] {
 ///
 /// # Errors
 ///
-/// If the spec defines the same qualified name more than once.
-pub fn reduce(spec: &[ScSpecEntry]) -> Result<Reduced, DuplicateName> {
+/// - If the spec defines or refers to a name whose last segment is empty.
+/// - If the spec defines the same qualified name more than once.
+pub fn reduce(spec: &[ScSpecEntry]) -> Result<Reduced, Error> {
+    validate(spec)?;
+
     // The names the spec defines, in definition order, each with the most
     // bytes its entry's name field can hold. Events define a name too: the
     // generated bindings declare a type for each event, so an event and a
@@ -123,15 +136,6 @@ pub fn reduce(spec: &[ScSpecEntry]) -> Result<Reduced, DuplicateName> {
             _ => None,
         })
         .collect();
-
-    let mut seen = std::collections::HashSet::new();
-    if let Some((name, _)) = defined
-        .iter()
-        .filter(|(name, _)| is_qualified(name))
-        .find(|(name, _)| !seen.insert(name.as_slice()))
-    {
-        return Err(DuplicateName(name.clone()));
-    }
 
     // Simple names keep their names, so they claim them first. Then the first
     // qualified type to claim a last segment keeps it, so a type only ever
@@ -265,6 +269,100 @@ fn numbered_name(base: &[u8], n: u32, limit: usize) -> Vec<u8> {
     name
 }
 
+/// Checks that the spec's names can be reduced.
+///
+/// The spec can come from an untrusted wasm, so every name is checked before
+/// any is reduced, rather than an invalid name reducing to an empty one that
+/// only fails when something later uses it.
+///
+/// # Errors
+///
+/// - If the spec defines or refers to a name whose last segment is empty,
+///   such as `mycrate::` or an empty name, as no Rust type has such a name.
+/// - If the spec defines the same qualified name more than once.
+fn validate(spec: &[ScSpecEntry]) -> Result<(), Error> {
+    let mut defined = Vec::new();
+    let mut referred = Vec::new();
+    for entry in spec {
+        match entry {
+            ScSpecEntry::FunctionV0(f) => {
+                for input in f.inputs.iter() {
+                    udt_names(&input.type_, &mut referred);
+                }
+                for output in f.outputs.iter() {
+                    udt_names(output, &mut referred);
+                }
+            }
+            ScSpecEntry::UdtStructV0(s) => {
+                defined.push(s.name.as_ref());
+                for field in s.fields.iter() {
+                    udt_names(&field.type_, &mut referred);
+                }
+            }
+            ScSpecEntry::UdtUnionV0(u) => {
+                defined.push(u.name.as_ref());
+                for case in u.cases.iter() {
+                    if let ScSpecUdtUnionCaseV0::TupleV0(t) = case {
+                        for ty in t.type_.iter() {
+                            udt_names(ty, &mut referred);
+                        }
+                    }
+                }
+            }
+            ScSpecEntry::UdtEnumV0(e) => defined.push(e.name.as_ref()),
+            ScSpecEntry::UdtErrorEnumV0(e) => defined.push(e.name.as_ref()),
+            ScSpecEntry::EventV0(e) => {
+                defined.push(e.name.as_ref());
+                for p in e.params.iter() {
+                    udt_names(&p.type_, &mut referred);
+                }
+            }
+        }
+    }
+
+    if let Some(name) = defined
+        .iter()
+        .chain(referred.iter())
+        .find(|name| last_segment(name).is_empty())
+    {
+        return Err(Error::InvalidName(name.to_vec()));
+    }
+
+    let mut seen = std::collections::HashSet::new();
+    if let Some(name) = defined
+        .iter()
+        .filter(|name| is_qualified(name))
+        .find(|name| !seen.insert(**name))
+    {
+        return Err(Error::DuplicateName(name.to_vec()));
+    }
+
+    Ok(())
+}
+
+/// Collects the name of every user-defined type reference in the type.
+fn udt_names<'a>(t: &'a ScSpecTypeDef, names: &mut Vec<&'a [u8]>) {
+    match t {
+        ScSpecTypeDef::Udt(u) => names.push(u.name.as_ref()),
+        ScSpecTypeDef::Option(o) => udt_names(&o.value_type, names),
+        ScSpecTypeDef::Result(r) => {
+            udt_names(&r.ok_type, names);
+            udt_names(&r.error_type, names);
+        }
+        ScSpecTypeDef::Vec(v) => udt_names(&v.element_type, names),
+        ScSpecTypeDef::Map(m) => {
+            udt_names(&m.key_type, names);
+            udt_names(&m.value_type, names);
+        }
+        ScSpecTypeDef::Tuple(tu) => {
+            for vt in tu.value_types.iter() {
+                udt_names(vt, names);
+            }
+        }
+        _ => {}
+    }
+}
+
 /// Rewrites the name of every user-defined type reference in the type.
 fn rewrite_ty(t: &mut ScSpecTypeDef, resolve: &dyn Fn(&[u8]) -> Vec<u8>) {
     match t {
@@ -292,7 +390,7 @@ fn rewrite_ty(t: &mut ScSpecTypeDef, resolve: &dyn Fn(&[u8]) -> Vec<u8>) {
 
 #[cfg(test)]
 mod test {
-    use super::{numbered_name, reduce, DuplicateName, Rename, NAME_LIMIT};
+    use super::{numbered_name, reduce, Error, Rename, NAME_LIMIT};
     use stellar_xdr::{
         ScSpecEntry, ScSpecTypeDef, ScSpecTypeUdt, ScSpecUdtStructFieldV0, ScSpecUdtStructV0,
     };
@@ -520,8 +618,32 @@ mod test {
         ];
         assert_eq!(
             reduce(&spec),
-            Err(DuplicateName(b"::shared::Meta".to_vec()))
+            Err(Error::DuplicateName(b"::shared::Meta".to_vec()))
         );
+    }
+
+    #[test]
+    fn a_defined_name_with_an_empty_last_segment_is_an_error() {
+        let spec = [struct_entry("::mycrate::", &[])];
+        assert_eq!(
+            reduce(&spec),
+            Err(Error::InvalidName(b"::mycrate::".to_vec()))
+        );
+    }
+
+    #[test]
+    fn a_referred_to_name_with_an_empty_last_segment_is_an_error() {
+        let spec = [struct_entry("::mycrate::Holder", &["::mycrate::"])];
+        assert_eq!(
+            reduce(&spec),
+            Err(Error::InvalidName(b"::mycrate::".to_vec()))
+        );
+    }
+
+    #[test]
+    fn an_empty_name_is_an_error() {
+        let spec = [struct_entry("", &[])];
+        assert_eq!(reduce(&spec), Err(Error::InvalidName(b"".to_vec())));
     }
 
     #[test]

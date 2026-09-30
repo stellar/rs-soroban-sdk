@@ -304,6 +304,7 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
                     .filter(|_| args.contracttrait)
                     .map(|trait_ident| {
                         generate_call_to_contractimpl_for_trait(
+                            crate_path,
                             trait_ident,
                             ty,
                             &pub_methods,
@@ -522,6 +523,10 @@ pub fn contracterror(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
     let ident = &input.ident;
     let attrs = &input.attrs;
+    match check_udt_ident(ident, &input.generics) {
+        Ok(()) => {}
+        Err(e) => return e.to_compile_error().into(),
+    }
     // The spec is always emitted and reachability determines what is retained,
     // so the `export` argument is no longer accepted.
     let export_error = export_arg_error(&args.export);
