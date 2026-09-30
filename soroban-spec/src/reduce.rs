@@ -119,49 +119,7 @@ fn last_segment(name: &[u8]) -> &[u8] {
 /// - If the spec defines or refers to a name whose last segment is empty.
 /// - If the spec defines the same qualified name more than once.
 pub fn reduce(spec: &[ScSpecEntry]) -> Result<Reduced, Error> {
-    // The spec can come from an untrusted wasm, so every name is checked
-    // before any is reduced, rather than an invalid name reducing to an empty
-    // one that only fails when something later uses it.
-    let mut names = Vec::new();
-    for entry in spec {
-        match entry {
-            ScSpecEntry::FunctionV0(f) => {
-                for input in f.inputs.iter() {
-                    udt_names(&input.type_, &mut names);
-                }
-                for output in f.outputs.iter() {
-                    udt_names(output, &mut names);
-                }
-            }
-            ScSpecEntry::UdtStructV0(s) => {
-                names.push(s.name.as_ref());
-                for field in s.fields.iter() {
-                    udt_names(&field.type_, &mut names);
-                }
-            }
-            ScSpecEntry::UdtUnionV0(u) => {
-                names.push(u.name.as_ref());
-                for case in u.cases.iter() {
-                    if let ScSpecUdtUnionCaseV0::TupleV0(t) = case {
-                        for ty in t.type_.iter() {
-                            udt_names(ty, &mut names);
-                        }
-                    }
-                }
-            }
-            ScSpecEntry::UdtEnumV0(e) => names.push(e.name.as_ref()),
-            ScSpecEntry::UdtErrorEnumV0(e) => names.push(e.name.as_ref()),
-            ScSpecEntry::EventV0(e) => {
-                names.push(e.name.as_ref());
-                for p in e.params.iter() {
-                    udt_names(&p.type_, &mut names);
-                }
-            }
-        }
-    }
-    if let Some(name) = names.into_iter().find(|name| last_segment(name).is_empty()) {
-        return Err(Error::InvalidName(name.to_vec()));
-    }
+    validate(spec)?;
 
     // The names the spec defines, in definition order, each with the most
     // bytes its entry's name field can hold. Events define a name too: the
@@ -178,15 +136,6 @@ pub fn reduce(spec: &[ScSpecEntry]) -> Result<Reduced, Error> {
             _ => None,
         })
         .collect();
-
-    let mut seen = std::collections::HashSet::new();
-    if let Some((name, _)) = defined
-        .iter()
-        .filter(|(name, _)| is_qualified(name))
-        .find(|(name, _)| !seen.insert(name.as_slice()))
-    {
-        return Err(Error::DuplicateName(name.clone()));
-    }
 
     // Simple names keep their names, so they claim them first. Then the first
     // qualified type to claim a last segment keeps it, so a type only ever
@@ -318,6 +267,77 @@ fn numbered_name(base: &[u8], n: u32, limit: usize) -> Vec<u8> {
     let mut name = base[..keep].to_vec();
     name.extend_from_slice(num.as_bytes());
     name
+}
+
+/// Checks that the spec's names can be reduced.
+///
+/// The spec can come from an untrusted wasm, so every name is checked before
+/// any is reduced, rather than an invalid name reducing to an empty one that
+/// only fails when something later uses it.
+///
+/// # Errors
+///
+/// - If the spec defines or refers to a name whose last segment is empty,
+///   such as `mycrate::` or an empty name, as no Rust type has such a name.
+/// - If the spec defines the same qualified name more than once.
+fn validate(spec: &[ScSpecEntry]) -> Result<(), Error> {
+    let mut defined = Vec::new();
+    let mut referred = Vec::new();
+    for entry in spec {
+        match entry {
+            ScSpecEntry::FunctionV0(f) => {
+                for input in f.inputs.iter() {
+                    udt_names(&input.type_, &mut referred);
+                }
+                for output in f.outputs.iter() {
+                    udt_names(output, &mut referred);
+                }
+            }
+            ScSpecEntry::UdtStructV0(s) => {
+                defined.push(s.name.as_ref());
+                for field in s.fields.iter() {
+                    udt_names(&field.type_, &mut referred);
+                }
+            }
+            ScSpecEntry::UdtUnionV0(u) => {
+                defined.push(u.name.as_ref());
+                for case in u.cases.iter() {
+                    if let ScSpecUdtUnionCaseV0::TupleV0(t) = case {
+                        for ty in t.type_.iter() {
+                            udt_names(ty, &mut referred);
+                        }
+                    }
+                }
+            }
+            ScSpecEntry::UdtEnumV0(e) => defined.push(e.name.as_ref()),
+            ScSpecEntry::UdtErrorEnumV0(e) => defined.push(e.name.as_ref()),
+            ScSpecEntry::EventV0(e) => {
+                defined.push(e.name.as_ref());
+                for p in e.params.iter() {
+                    udt_names(&p.type_, &mut referred);
+                }
+            }
+        }
+    }
+
+    if let Some(name) = defined
+        .iter()
+        .chain(referred.iter())
+        .find(|name| last_segment(name).is_empty())
+    {
+        return Err(Error::InvalidName(name.to_vec()));
+    }
+
+    let mut seen = std::collections::HashSet::new();
+    if let Some(name) = defined
+        .iter()
+        .filter(|name| is_qualified(name))
+        .find(|name| !seen.insert(**name))
+    {
+        return Err(Error::DuplicateName(name.to_vec()));
+    }
+
+    Ok(())
 }
 
 /// Collects the name of every user-defined type reference in the type.
