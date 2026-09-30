@@ -1,13 +1,13 @@
 use itertools::MultiUnzip;
 use proc_macro2::{Literal, TokenStream as TokenStream2};
 use quote::{format_ident, quote};
-use syn::{ext::IdentExt as _, Attribute, DataStruct, Error, Ident, Path, Visibility};
+use syn::{ext::IdentExt as _, Attribute, DataStruct, Ident, Path, Visibility};
 
-use stellar_xdr::{ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, StringM};
+use stellar_xdr::StringM;
 
 use crate::{
     doc::docs_from_attrs,
-    map_type::{const_view_string, const_view_type_def, map_type, spec_type_def_gen},
+    map_type::{const_view_string, const_view_type_def, spec_type_def_gen},
     shaking,
 };
 
@@ -18,9 +18,6 @@ pub fn derive_type_struct_tuple(
     attrs: &[Attribute],
     data: &DataStruct,
 ) -> TokenStream2 {
-    // Collect errors as they are encountered and emit them at the end.
-    let mut errors = Vec::<Error>::new();
-
     let fields = &data.fields;
     let field_count_usize: usize = fields.len();
 
@@ -33,17 +30,12 @@ pub fn derive_type_struct_tuple(
             let field_idx_lit = Literal::usize_unsuffixed(field_idx);
             let field_name = format!("{}", field_idx);
             let field_type = &field.ty;
-            let field_spec = ScSpecUdtStructFieldV0 {
-                doc: docs_from_attrs(&field.attrs),
-                name: field_name.try_into().unwrap_or_else(|_| StringM::default()),
-                type_: match map_type(&field.ty, false, false) {
-                    Ok(t) => t,
-                    Err(e) => {
-                        errors.push(e);
-                        ScSpecTypeDef::I32
-                    }
-                },
-            };
+            // The field's doc and name, as the spec holds them. Its type in the
+            // spec comes from the Rust type.
+            let field_spec = (
+                docs_from_attrs(&field.attrs),
+                StringM::<30>::try_from(field_name).unwrap_or_default(),
+            );
             let try_from_xdr = quote! {
                 #field_idx_lit: {
                     let rv: #path::Val = (&vec[#field_idx_lit].clone()).try_into_val(env).map_err(|_| #path::xdr::Error::Invalid)?;
@@ -57,35 +49,20 @@ pub fn derive_type_struct_tuple(
         })
         .multiunzip();
 
-    // If errors have occurred, render them instead.
-    if !errors.is_empty() {
-        let compile_errors = errors.iter().map(Error::to_compile_error);
-        return quote! { #(#compile_errors)* };
-    }
-
-    // Build the spec entry once.
-    let spec = ScSpecUdtStructV0 {
-        doc: docs_from_attrs(attrs),
-        // set to empty string always because the field is no longer used
-        lib: StringM::default(),
-        name: ident.unraw().to_string().try_into().unwrap(),
-        fields: field_specs.try_into().unwrap(),
-    };
-
     // Generated code spec. The spec entry is rendered as the equivalent
     // const::ScSpecEntry, which the contract crate encodes to XDR at compile time.
     let spec_type_def = spec_type_def_gen(path, ident, None, None, None);
     let spec_gen = {
-        let doc = const_view_string(path, &spec.doc);
-        let lib = const_view_string(path, &spec.lib);
-        let fields = spec
-            .fields
+        let doc = const_view_string(path, &docs_from_attrs(attrs));
+        // Set to empty string always because the field is no longer used.
+        let lib = const_view_string(path, &StringM::<80>::default());
+        let fields = field_specs
             .iter()
             .zip(field_types.iter().copied())
-            .map(|(f, rust)| {
-                let doc = const_view_string(path, &f.doc);
-                let name = const_view_string(path, &f.name);
-                let type_ = const_view_type_def(path, &f.type_, Some(rust));
+            .map(|((field_doc, field_name), rust)| {
+                let doc = const_view_string(path, field_doc);
+                let name = const_view_string(path, field_name);
+                let type_ = const_view_type_def(path, rust);
                 quote!(#path::xdr::r#const::ScSpecUdtStructFieldV0 { doc: #doc, name: #name, type_: #type_ })
             });
         let spec_entry = quote! {

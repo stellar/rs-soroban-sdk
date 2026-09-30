@@ -3,9 +3,7 @@ use crate::{
     default_crate_path,
     doc::docs_from_attrs,
     export_arg_error,
-    map_type::{
-        const_view_string, const_view_symbol, const_view_type_def, map_type, spec_type_def_gen,
-    },
+    map_type::{const_view_string, const_view_symbol, const_view_type_def, spec_type_def_gen},
     shaking, symbol,
 };
 use darling::{ast::NestedMeta, util::SpannedValue, Error, FromMeta};
@@ -14,8 +12,8 @@ use proc_macro2::Span;
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
 use stellar_xdr::{
-    ScSpecEventDataFormat, ScSpecEventParamLocationV0, ScSpecEventParamV0, ScSpecEventV0, StringM,
-    SCSYMBOL_LIMIT, SC_SPEC_TYPE_NAME_LIMIT,
+    ScSpecEventDataFormat, ScSpecEventParamLocationV0, ScSymbol, StringM, SCSYMBOL_LIMIT,
+    SC_SPEC_TYPE_NAME_LIMIT,
 };
 use syn::{
     ext::IdentExt as _, parse2, spanned::Spanned, Data, DeriveInput, Fields, LitStr, Meta, Path,
@@ -49,6 +47,14 @@ impl FromMeta for SparseArg {
             span: item.span(),
         })
     }
+}
+
+/// An event param's location, doc and name, as the spec holds them. Its spec
+/// type comes from the Rust type of its field.
+struct EventParam {
+    location: ScSpecEventParamLocationV0,
+    doc: StringM<1024>,
+    name: StringM<30>,
 }
 
 #[derive(Copy, Clone, Debug, Default)]
@@ -117,14 +123,12 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     const EVENT_NAME_LENGTH: u32 = SC_SPEC_TYPE_NAME_LIMIT;
     let event_name = input.ident.unraw().to_string();
     let event_name_len = event_name.len();
-    let event_name: StringM<EVENT_NAME_LENGTH> = errors
-        .handle(event_name.try_into().map_err(|_| {
+    errors.handle(StringM::<EVENT_NAME_LENGTH>::try_from(event_name).map_err(|_| {
             Error::custom(format!(
                 "event name has length {event_name_len} greater than length limit of {EVENT_NAME_LENGTH}"
             ))
             .with_span(&input.ident.span())
-        }))
-        .unwrap_or_default();
+        }));
 
     let prefix_topics: Vec<(String, Span)> = if let Some(prefix_topics) = &args.topics {
         prefix_topics
@@ -197,16 +201,12 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
                     .with_span(&field.ident.span())
                 }))
                 .unwrap_or_default();
-            let type_ = errors
-                .handle_in(|| Ok(map_type(&field.ty, true, false)?))
-                .unwrap_or_default();
             (
                 ident.clone(),
-                ScSpecEventParamV0 {
+                EventParam {
                     location,
                     doc,
                     name,
-                    type_,
                 },
             )
         })
@@ -219,25 +219,6 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     // what is retained.
     let export_gen =
         quote! { #[cfg_attr(target_family = "wasm", link_section = "contractspecv0")] };
-    let spec = ScSpecEventV0 {
-        data_format: args.data_format.into(),
-        doc: docs_from_attrs(&input.attrs),
-        // set to empty string always because the field is no longer used
-        lib: StringM::default(),
-        name: event_name,
-        prefix_topics: prefix_topics
-            .iter()
-            .map(|t| t.try_into().unwrap())
-            .collect::<Vec<_>>()
-            .try_into()
-            .unwrap(),
-        params: params_with_idents
-            .iter()
-            .map(|(_, p)| p.clone())
-            .collect::<Vec<_>>()
-            .try_into()
-            .unwrap(),
-    };
     let spec_ident = format_ident!(
         "__SPEC_XDR_EVENT_{}",
         input.ident.unraw().to_string().to_uppercase()
@@ -247,22 +228,22 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     // The spec entry rendered as the equivalent const::ScSpecEntry, which the
     // contract crate encodes to XDR at compile time.
     let spec_entry = {
-        let doc = const_view_string(path, &spec.doc);
-        let lib = const_view_string(path, &spec.lib);
-        let prefix_topics = spec
-            .prefix_topics
+        let doc = const_view_string(path, &docs_from_attrs(&input.attrs));
+        // Set to empty string always because the field is no longer used.
+        let lib = const_view_string(path, &StringM::<80>::default());
+        // The prefix topics fit a symbol, as their lengths were checked above.
+        let prefix_topics = prefix_topics
             .iter()
-            .map(|t| const_view_symbol(path, t));
-        // Each param's Rust type, so a reference to a user-defined type in a
-        // param resolves to the name that type reports for itself.
-        let params = spec
-            .params
+            .map(|t| const_view_symbol(path, &ScSymbol(t.as_str().try_into().unwrap())));
+        // Each param's spec type comes from its Rust type.
+        let params = params_with_idents
             .iter()
+            .map(|(_, p)| p)
             .zip(field_types.iter().copied())
             .map(|(p, rust)| {
                 let doc = const_view_string(path, &p.doc);
                 let name = const_view_string(path, &p.name);
-                let type_ = const_view_type_def(path, &p.type_, Some(rust));
+                let type_ = const_view_type_def(path, rust);
                 let location = format_ident!("{}", p.location.name());
                 quote!(#path::xdr::r#const::ScSpecEventParamV0 {
                     doc: #doc,
@@ -271,7 +252,10 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
                     location: #path::xdr::ScSpecEventParamLocationV0::#location,
                 })
             });
-        let data_format = format_ident!("{}", spec.data_format.name());
+        let data_format = format_ident!(
+            "{}",
+            Into::<ScSpecEventDataFormat>::into(args.data_format).name()
+        );
         quote! {
             #path::xdr::r#const::ScSpecEntry::EventV0(#path::xdr::r#const::ScSpecEventV0 {
                 doc: #doc,

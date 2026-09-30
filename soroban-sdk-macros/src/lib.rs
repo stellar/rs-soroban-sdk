@@ -41,7 +41,7 @@ use derive_trait::derive_trait;
 
 use darling::{ast::NestedMeta, util::SpannedValue, FromMeta};
 use macro_string::MacroString;
-use map_type::is_mapped_type_udt;
+use map_type::check_udt_ident;
 use proc_macro::TokenStream;
 use proc_macro2::{Span, TokenStream as TokenStream2};
 use quote::{format_ident, quote, ToTokens};
@@ -460,7 +460,7 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let vis = &input.vis;
     let ident = &input.ident;
     let attrs = &input.attrs;
-    match is_mapped_type_udt(ident, &input.generics) {
+    match check_udt_ident(ident, &input.generics) {
         Ok(()) => {}
         Err(e) => return e.to_compile_error().into(),
     }

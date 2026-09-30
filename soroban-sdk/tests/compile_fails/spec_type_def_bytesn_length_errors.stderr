@@ -1,7 +1,7 @@
 error[E0080]: evaluation panicked: BytesN length does not fit in the contract spec's u32 length
-   --> src/spec_type_def.rs:104:13
+   --> src/spec_type_def.rs:109:13
     |
-104 |             None::<()>.expect("BytesN length does not fit in the contract spec's u32 length");
+109 |             None::<()>.expect("BytesN length does not fit in the contract spec's u32 length");
     |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `<soroban_sdk::BytesN<4294967296> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF` failed here
 
 note: erroneous constant encountered

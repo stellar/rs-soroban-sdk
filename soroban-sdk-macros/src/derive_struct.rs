@@ -3,11 +3,11 @@ use proc_macro2::{Literal, TokenStream as TokenStream2};
 use quote::{format_ident, quote};
 use syn::{ext::IdentExt as _, Attribute, DataStruct, Error, Ident, Path, Visibility};
 
-use stellar_xdr::{ScSpecTypeDef, ScSpecUdtStructFieldV0, ScSpecUdtStructV0, StringM};
+use stellar_xdr::StringM;
 
 use crate::{
     doc::docs_from_attrs,
-    map_type::{const_view_string, const_view_type_def, map_type, spec_type_def_gen},
+    map_type::{const_view_string, const_view_type_def, spec_type_def_gen},
     shaking,
 };
 
@@ -35,21 +35,15 @@ pub fn derive_type_struct(
             let field_name = field_ident.unraw().to_string();
             let field_idx_lit = Literal::usize_unsuffixed(field_num);
             let field_type = &field.ty;
-            let spec_field = ScSpecUdtStructFieldV0 {
-                doc: docs_from_attrs(&field.attrs),
-                name: field_name.clone().try_into().unwrap_or_else(|_| {
-                    const MAX: u32 = 30;
-                    errors.push(Error::new(field_ident.span(), format!("struct field name is too long: {}, max is {MAX}", field_name.len())));
-                    StringM::<MAX>::default()
+            // The field's doc and name, as the spec holds them. Its type in the
+            // spec comes from the Rust type.
+            let spec_field = (
+                docs_from_attrs(&field.attrs),
+                StringM::<30>::try_from(field_name.clone()).unwrap_or_else(|_| {
+                    errors.push(Error::new(field_ident.span(), format!("struct field name is too long: {}, max is 30", field_name.len())));
+                    StringM::default()
                 }),
-                type_: match map_type(&field.ty,false, false) {
-                    Ok(t) => t,
-                    Err(e) => {
-                        errors.push(e);
-                        ScSpecTypeDef::I32
-                    }
-                },
-            };
+            );
             let try_from_xdr = quote! {
                 #field_ident: {
                     let key: #path::xdr::ScVal = #path::xdr::ScSymbol(#field_name.try_into().map_err(|_| #path::xdr::Error::Invalid)?).into();
@@ -79,29 +73,20 @@ pub fn derive_type_struct(
         return quote! { #(#compile_errors)* };
     }
 
-    // Build the spec entry once.
-    let spec = ScSpecUdtStructV0 {
-        doc: docs_from_attrs(attrs),
-        // set to empty string always because the field is no longer used
-        lib: StringM::default(),
-        name: ident.unraw().to_string().try_into().unwrap(),
-        fields: spec_fields.try_into().unwrap(),
-    };
-
     // Generated code spec. The spec entry is rendered as the equivalent
     // const::ScSpecEntry, which the contract crate encodes to XDR at compile time.
     let spec_type_def = spec_type_def_gen(path, ident, None, None, None);
     let spec_gen = {
-        let doc = const_view_string(path, &spec.doc);
-        let lib = const_view_string(path, &spec.lib);
-        let fields = spec
-            .fields
+        let doc = const_view_string(path, &docs_from_attrs(attrs));
+        // Set to empty string always because the field is no longer used.
+        let lib = const_view_string(path, &StringM::<80>::default());
+        let fields = spec_fields
             .iter()
             .zip(field_types.iter().copied())
-            .map(|(f, rust)| {
-            let doc = const_view_string(path, &f.doc);
-            let name = const_view_string(path, &f.name);
-                let type_ = const_view_type_def(path, &f.type_, Some(rust));
+            .map(|((field_doc, field_name), rust)| {
+                let doc = const_view_string(path, field_doc);
+                let name = const_view_string(path, field_name);
+                let type_ = const_view_type_def(path, rust);
                 quote!(#path::xdr::r#const::ScSpecUdtStructFieldV0 { doc: #doc, name: #name, type_: #type_ })
             });
         let spec_entry = quote! {

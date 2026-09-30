@@ -757,3 +757,17 @@ mod test_fns_parse {
         );
     }
 }
+
+/// Whether the type is written with the given name as the last segment of its
+/// path, behind any number of references, such as `Hash<32>` or
+/// `&soroban_sdk::crypto::Hash<32>` for `Hash`.
+pub fn is_type_named(ty: &Type, name: &str) -> bool {
+    match ty {
+        Type::Reference(TypeReference { elem, .. }) => is_type_named(elem, name),
+        Type::Path(TypePath { qself: None, path }) => path
+            .segments
+            .last()
+            .is_some_and(|s| s.ident.unraw() == name),
+        _ => false,
+    }
+}

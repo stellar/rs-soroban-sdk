@@ -1225,7 +1225,7 @@ pub use env::VecObject;
 mod try_from_val_for_contract_fn;
 #[doc(hidden)]
 #[allow(deprecated)]
-pub use try_from_val_for_contract_fn::TryFromValForContractFn;
+pub use try_from_val_for_contract_fn::{TryFromValForCheckAuthPayload, TryFromValForContractFn};
 
 mod into_val_for_contract_fn;
 #[doc(hidden)]

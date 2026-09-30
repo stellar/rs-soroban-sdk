@@ -18,6 +18,7 @@ use crate::{
             Bn254Fp, Bn254Fr, Bn254G1Affine, Bn254G2Affine, BN254_FP_SERIALIZED_SIZE,
             BN254_G1_SERIALIZED_SIZE, BN254_G2_SERIALIZED_SIZE,
         },
+        Hash,
     },
     xdr::r#const::{
         ScSpecTypeBytesN, ScSpecTypeDef, ScSpecTypeMap, ScSpecTypeOption, ScSpecTypeResult,
@@ -93,8 +94,12 @@ impl_spec_type_def! {
     Bn254Fr => ScSpecTypeDef::U256,
 }
 
-// `Hash<N>` is deliberately not implemented: the macros only accept it where
-// the value is guaranteed to come from a cryptographic hash function.
+// A hash is represented in the spec by its underlying data type. Where a hash
+// may be used is restricted by its conversions, not by its spec type: it can
+// only be the signature payload argument of `__check_auth`, or returned.
+impl<const N: usize> SpecTypeDef for Hash<N> {
+    const SPEC_TYPE_DEF: ScSpecTypeDef = <BytesN<N> as SpecTypeDef>::SPEC_TYPE_DEF;
+}
 
 impl<const N: usize> SpecTypeDef for BytesN<N> {
     const SPEC_TYPE_DEF: ScSpecTypeDef = {
@@ -105,6 +110,12 @@ impl<const N: usize> SpecTypeDef for BytesN<N> {
         }
         ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n: N as u32 })
     };
+}
+
+// A reference is represented in the spec by the type it refers to, such as the
+// fields of events that borrow their values.
+impl<T: SpecTypeDef + ?Sized> SpecTypeDef for &T {
+    const SPEC_TYPE_DEF: ScSpecTypeDef = T::SPEC_TYPE_DEF;
 }
 
 impl<T: SpecTypeDef> SpecTypeDef for Option<T> {
