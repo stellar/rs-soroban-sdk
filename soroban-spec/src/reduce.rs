@@ -249,12 +249,18 @@ pub fn reduce(spec: &[ScSpecEntry]) -> Result<Reduced, DuplicateName> {
 
 /// The base followed by the number, keeping as much of the base as leaves room
 /// for the number within the limit, trimming bytes off its end when the base is
-/// too long to hold the number too. The limit always exceeds the number's
-/// length, so a fitting name always exists.
+/// too long to hold the number too. A base that is valid UTF-8 is trimmed at a
+/// character boundary, so that the name stays valid UTF-8. The limit always
+/// exceeds the number's length, so a fitting name always exists.
 fn numbered_name(base: &[u8], n: u32, limit: usize) -> Vec<u8> {
     let num = n.to_string();
-    let keep = limit.saturating_sub(num.len());
-    let mut name = base[..base.len().min(keep)].to_vec();
+    let mut keep = base.len().min(limit.saturating_sub(num.len()));
+    if let Ok(base) = core::str::from_utf8(base) {
+        while !base.is_char_boundary(keep) {
+            keep -= 1;
+        }
+    }
+    let mut name = base[..keep].to_vec();
     name.extend_from_slice(num.as_bytes());
     name
 }
@@ -558,6 +564,18 @@ mod test {
         // exactly at the limit.
         let base = "x".repeat(1024).into_bytes();
         let mut expected = "x".repeat(1023).into_bytes();
+        expected.push(b'2');
+        assert_eq!(numbered_name(&base, 2, NAME_LIMIT), expected);
+    }
+
+    #[test]
+    fn a_numbered_name_is_trimmed_at_a_character_boundary() {
+        // A 1024-byte base ending in the 2-byte "é" cannot fit a number after
+        // it. Trimming to 1023 bytes would split the "é", so the whole "é" is
+        // trimmed instead: 1022 bytes of the base followed by "2".
+        let base = format!("{}é", "x".repeat(1022)).into_bytes();
+        assert_eq!(base.len(), 1024);
+        let mut expected = "x".repeat(1022).into_bytes();
         expected.push(b'2');
         assert_eq!(numbered_name(&base, 2, NAME_LIMIT), expected);
     }
