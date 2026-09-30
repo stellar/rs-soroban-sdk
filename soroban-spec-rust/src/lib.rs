@@ -116,6 +116,13 @@ pub fn generate_without_file_with_options(
     // rewriting references to keep them matched up with the types they refer
     // to. Reducing an already-simple spec changes nothing, so a caller that
     // reduced first (to report on the renames) generates the same code.
+    //
+    // A reduced name can be up to the spec's full name limit, but a generated
+    // type's own spec name is its name qualified by the module the code is
+    // generated into, which is checked against the same limit. A type whose
+    // simple name is within a module path's length of the limit therefore
+    // generates code that fails to compile. This is a known limitation, as
+    // type names that long are not expected.
     let specs: Vec<ScSpecEntry> = soroban_spec::reduce::reduce(&specs)?
         .into_entries()
         .collect();

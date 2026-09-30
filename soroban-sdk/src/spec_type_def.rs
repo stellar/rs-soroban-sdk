@@ -1,12 +1,10 @@
 //! SpecTypeDef is an internal trait that gives the contract spec type of a Rust
-//! type, for spec entries that refer to types the macros cannot map by name.
+//! type.
 //!
-//! The macros map the types they recognise by name, such as `u32` or
-//! `Vec<T>`, to their spec type directly. Any other type, such as a
-//! user-defined type or a type alias, is referred to through this trait, so
-//! that the compiler resolves the type and the spec type comes from the
-//! type the name resolves to. A type alias therefore has the spec type of the
-//! type it aliases.
+//! The macros refer to every type in a spec entry through this trait, rather
+//! than mapping types by name, so that the compiler resolves the type and the
+//! spec type comes from the type the name resolves to. A type alias therefore
+//! has the spec type of the type it aliases.
 
 use crate::{
     crypto::{
