@@ -82,7 +82,7 @@ impl_spec_type_def! {
     Address => ScSpecTypeDef::Address,
     MuxedAddress => ScSpecTypeDef::MuxedAddress,
     // The BLS12-381 and BN254 types are represented in the spec by their
-    // underlying data types, as the macros map them by name.
+    // underlying data types.
     Bls12381Fp => ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n: FP_SERIALIZED_SIZE as u32 }),
     Bls12381Fp2 => ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n: FP2_SERIALIZED_SIZE as u32 }),
     Bls12381G1Affine => ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n: G1_SERIALIZED_SIZE as u32 }),

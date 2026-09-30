@@ -274,6 +274,80 @@ mod test {
 }
 
 #[cfg(test)]
+mod test_reserved_names {
+    #![allow(deprecated)]
+
+    use super::RESERVED_NAMES;
+    use soroban_sdk::{
+        crypto::{
+            bls12_381::{
+                Bls12381Fp, Bls12381Fp2, Bls12381Fr, Bls12381G1Affine, Bls12381G2Affine, Fp, Fp2,
+                Fr, G1Affine, G2Affine,
+            },
+            bn254::{Bn254Fp, Bn254Fr, Bn254G1Affine, Bn254G2Affine},
+            BnScalar, Hash,
+        },
+        Address, Bytes, BytesN, Duration, Error, Map, MuxedAddress, String, Symbol, Timepoint, Val,
+        Vec, I256, U256,
+    };
+
+    /// The names of the given types, which compiles only if each is a type
+    /// with a `SpecTypeDef` impl.
+    macro_rules! spec_type_names {
+        ($($name:ident $(<$($arg:tt),*>)?),* $(,)?) => {{
+            fn has_spec_type_def<T: soroban_sdk::SpecTypeDef>() {}
+            $(has_spec_type_def::<$name $(<$($arg),*>)?>();)*
+            [$(stringify!($name)),*]
+        }};
+    }
+
+    #[test]
+    fn test_reserved_names_are_spec_types() {
+        let names = spec_type_names![
+            Val,
+            bool,
+            u32,
+            i32,
+            u64,
+            i64,
+            u128,
+            i128,
+            U256,
+            I256,
+            Timepoint,
+            Duration,
+            Bytes,
+            BytesN<32>,
+            Hash<32>,
+            String,
+            Symbol,
+            Address,
+            MuxedAddress,
+            Vec<u32>,
+            Map<u32, u32>,
+            Option<u32>,
+            Result<u32, Error>,
+            Fp,
+            Fp2,
+            Fr,
+            G1Affine,
+            G2Affine,
+            Bls12381Fp,
+            Bls12381Fp2,
+            Bls12381Fr,
+            Bls12381G1Affine,
+            Bls12381G2Affine,
+            Bn254Fp,
+            Bn254Fr,
+            Bn254G1Affine,
+            Bn254G2Affine,
+            BnScalar,
+        ];
+        assert_eq!(RESERVED_NAMES, names);
+    }
+}
+
+#[cfg(test)]
 mod test_const_view {
     use super::*;
     use syn::parse_quote;
