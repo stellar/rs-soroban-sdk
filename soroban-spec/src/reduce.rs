@@ -42,8 +42,9 @@ impl Reduced {
 #[derive(thiserror::Error, Debug, Clone, PartialEq, Eq)]
 pub enum Error {
     /// The spec defines the same fully qualified user-defined type or event
-    /// name more than once, which never happens, as a qualified name is the
-    /// path of the one Rust type that defines it. Simple names are not
+    /// name more than once, with or without a leading `::`, which never
+    /// happens, as a qualified name is the path of the one Rust type that
+    /// defines it. Simple names are not
     /// checked, as specs from before qualified names can define the same
     /// simple name more than once.
     #[error("contract spec defines the name `{}` more than once", String::from_utf8_lossy(.0))]
@@ -52,6 +53,13 @@ pub enum Error {
     /// as `mycrate::` or an empty name, which no Rust type has.
     #[error("contract spec contains the name `{}`, whose last segment is empty", String::from_utf8_lossy(.0))]
     InvalidName(Vec<u8>),
+    /// The spec refers to a fully qualified name that it does not define. A
+    /// spec defines every type it refers to, and a reference that reduced to
+    /// its last segment could not be told apart from another type that shares
+    /// it, so it would bind to the wrong type, or to none, in the generated
+    /// code. Simple names are not checked, as they are not reduced.
+    #[error("contract spec refers to the name `{}`, which it does not define", String::from_utf8_lossy(.0))]
+    UndefinedName(Vec<u8>),
 }
 
 /// How one user-defined type's name resolved during reduction.
@@ -85,6 +93,14 @@ fn is_qualified(name: &[u8]) -> bool {
     name.windows(2).any(|w| w == b"::")
 }
 
+/// The name without a leading `::`, which names are compared by, so that a
+/// path from the crate root, such as `::mycrate::MyType` as the SDK writes
+/// it, and the same path without it, such as `mycrate::MyType` as other tools
+/// may write it, name the same type.
+fn unrooted(name: &[u8]) -> &[u8] {
+    name.strip_prefix(b"::").unwrap_or(name)
+}
+
 /// The last `::`-separated segment of a fully qualified type name.
 fn last_segment(name: &[u8]) -> &[u8] {
     name.windows(2)
@@ -96,13 +112,22 @@ fn last_segment(name: &[u8]) -> &[u8] {
 /// form (`mycrate::mymod::MyType`) to its simple name (`MyType`), rewriting
 /// every reference to a type to follow the type to its new name.
 ///
-/// The first type to claim a simple name keeps it, so two types whose names
-/// share a last segment stay distinct: the rest are numbered (`MyType2`,
-/// `MyType3`, …), stepping over names claimed by other types. A spec whose
-/// type names are already simple comes back unchanged.
+/// Two types whose names share a last segment stay distinct: the one whose
+/// full name sorts first keeps the simple name, and the rest are numbered
+/// (`MyType2`, `MyType3`, …) in the order of their full names, stepping over
+/// names claimed by other types. The names do not depend on the order the
+/// spec defines the types in. A spec whose type names are already simple
+/// comes back unchanged.
 ///
-/// A reference to a type the spec does not define is reduced to its last
-/// segment, without claiming a name.
+/// A reference by a fully qualified name to a type the spec does not define
+/// is an error. A reference by a simple name is left as it is, whether or not
+/// the spec defines it.
+///
+/// Names are compared without a leading `::`, so a path written from the
+/// crate root, as the SDK writes names (`::mycrate::MyType`), and the same
+/// path without it, as other tools may write names (`mycrate::MyType`), name
+/// the same type: a reference in either form follows the type to its name,
+/// numbered or not, and defining both forms defines the name twice.
 ///
 /// Names are treated as byte strings throughout and preserved exactly; the
 /// spec does not guarantee valid UTF-8. When a numbered name would exceed the
@@ -118,6 +143,7 @@ fn last_segment(name: &[u8]) -> &[u8] {
 ///
 /// - If the spec defines or refers to a name whose last segment is empty.
 /// - If the spec defines the same qualified name more than once.
+/// - If the spec refers to a qualified name that it does not define.
 pub fn reduce(spec: &[ScSpecEntry]) -> Result<Reduced, Error> {
     validate(spec)?;
 
@@ -137,18 +163,25 @@ pub fn reduce(spec: &[ScSpecEntry]) -> Result<Reduced, Error> {
         })
         .collect();
 
-    // Simple names keep their names, so they claim them first. Then the first
-    // qualified type to claim a last segment keeps it, so a type only ever
-    // loses its own name to one defined before it, never to a number handed
-    // to a type that collided with something else.
+    // Simple names keep their names, so they claim them first. Then the
+    // qualified names claim their last segments in the order of their full
+    // names, rather than the order they are defined in, as the compiler does
+    // not guarantee the order it writes spec entries in. The first to claim a
+    // last segment keeps it, so a type only ever loses its own name to one
+    // that sorts before it, never to a number handed to a type that collided
+    // with something else.
     let mut taken: std::collections::HashSet<Vec<u8>> = defined
         .iter()
         .filter(|(name, _)| !is_qualified(name))
         .map(|(name, _)| name.clone())
         .collect();
-    let colliding: Vec<&(Vec<u8>, usize)> = defined
+    let mut qualified: Vec<&(Vec<u8>, usize)> = defined
         .iter()
         .filter(|(name, _)| is_qualified(name))
+        .collect();
+    qualified.sort_by(|(a, _), (b, _)| unrooted(a).cmp(unrooted(b)));
+    let colliding: Vec<&(Vec<u8>, usize)> = qualified
+        .into_iter()
         .filter(|(name, _)| !taken.insert(last_segment(name).to_vec()))
         .collect();
 
@@ -179,10 +212,10 @@ pub fn reduce(spec: &[ScSpecEntry]) -> Result<Reduced, Error> {
 
     let to: std::collections::HashMap<&[u8], &[u8]> = renames
         .iter()
-        .map(|r| (r.from.as_slice(), r.to.as_slice()))
+        .map(|r| (unrooted(&r.from), r.to.as_slice()))
         .collect();
     let resolve = |name: &[u8]| -> Vec<u8> {
-        to.get(name)
+        to.get(unrooted(name))
             .map_or_else(|| last_segment(name).to_vec(), |t| t.to_vec())
     };
 
@@ -280,6 +313,7 @@ fn numbered_name(base: &[u8], n: u32, limit: usize) -> Vec<u8> {
 /// - If the spec defines or refers to a name whose last segment is empty,
 ///   such as `mycrate::` or an empty name, as no Rust type has such a name.
 /// - If the spec defines the same qualified name more than once.
+/// - If the spec refers to a qualified name that it does not define.
 fn validate(spec: &[ScSpecEntry]) -> Result<(), Error> {
     let mut defined = Vec::new();
     let mut referred = Vec::new();
@@ -332,9 +366,17 @@ fn validate(spec: &[ScSpecEntry]) -> Result<(), Error> {
     if let Some(name) = defined
         .iter()
         .filter(|name| is_qualified(name))
-        .find(|name| !seen.insert(**name))
+        .find(|name| !seen.insert(unrooted(name)))
     {
         return Err(Error::DuplicateName(name.to_vec()));
+    }
+
+    if let Some(name) = referred
+        .iter()
+        .filter(|name| is_qualified(name))
+        .find(|name| !seen.contains(unrooted(name)))
+    {
+        return Err(Error::UndefinedName(name.to_vec()));
     }
 
     Ok(())
@@ -507,8 +549,8 @@ mod test {
     #[test]
     fn an_event_and_a_type_sharing_a_simple_name_are_numbered() {
         // An event defines a name, so an event and a type that reduce to the
-        // same simple name collide: the first to claim it keeps it, the later
-        // one is numbered.
+        // same simple name collide: the one whose full name sorts first keeps
+        // it, the other is numbered.
         let spec = [
             struct_entry("a::Shared", &[]),
             event_entry("b::Shared", &[]),
@@ -540,6 +582,105 @@ mod test {
         let renames: Vec<_> = reduced.renames().collect();
         assert!(!renames[0].collision());
         assert!(renames[1].collision());
+    }
+
+    #[test]
+    fn colliding_names_are_numbered_in_the_order_of_their_full_names() {
+        // The compiler does not guarantee the order it writes spec entries in,
+        // so the same types defined in any order are numbered the same: by
+        // the order of their full names, not the order they are defined in.
+        let spec = [
+            struct_entry("c::MyType", &[]),
+            struct_entry("a::MyType", &[]),
+            struct_entry("b::MyType", &[]),
+        ];
+        let reduced = reduce(&spec).unwrap();
+        assert_eq!(
+            reduced
+                .renames()
+                .map(|r| (r.from.as_slice(), r.to.as_slice()))
+                .collect::<Vec<_>>(),
+            [
+                (b"c::MyType".as_slice(), b"MyType3".as_slice()),
+                (b"a::MyType", b"MyType"),
+                (b"b::MyType", b"MyType2"),
+            ],
+        );
+
+        let spec = [
+            struct_entry("b::MyType", &[]),
+            struct_entry("c::MyType", &[]),
+            struct_entry("a::MyType", &[]),
+        ];
+        let reduced = reduce(&spec).unwrap();
+        assert_eq!(
+            reduced
+                .renames()
+                .map(|r| (r.from.as_slice(), r.to.as_slice()))
+                .collect::<Vec<_>>(),
+            [
+                (b"b::MyType".as_slice(), b"MyType2".as_slice()),
+                (b"c::MyType", b"MyType3"),
+                (b"a::MyType", b"MyType"),
+            ],
+        );
+    }
+
+    #[test]
+    fn a_reference_without_a_leading_separator_follows_a_numbered_type() {
+        // The SDK writes names from the crate root, with a leading `::`, but
+        // other tools may not. A reference written without it still follows
+        // the type it names to that type's numbered name.
+        let spec = [
+            struct_entry("::a::MyType", &[]),
+            struct_entry("::b::MyType", &[]),
+            struct_entry("::c::Holder", &["b::MyType", "::a::MyType"]),
+        ];
+        let reduced = reduce(&spec).unwrap();
+        assert_eq!(
+            names(reduced.entries()),
+            [
+                (b"MyType".to_vec(), vec![]),
+                (b"MyType2".to_vec(), vec![]),
+                (
+                    b"Holder".to_vec(),
+                    vec![b"MyType2".to_vec(), b"MyType".to_vec()]
+                ),
+            ]
+        );
+    }
+
+    #[test]
+    fn a_name_defined_with_and_without_a_leading_separator_is_an_error() {
+        let spec = [
+            struct_entry("::shared::Meta", &[]),
+            struct_entry("shared::Meta", &[]),
+        ];
+        assert_eq!(
+            reduce(&spec),
+            Err(Error::DuplicateName(b"shared::Meta".to_vec()))
+        );
+    }
+
+    #[test]
+    fn colliding_names_are_ordered_without_a_leading_separator() {
+        // `::b::MyType` sorts before `a::MyType` as bytes, as `:` sorts before
+        // letters, but the names are ordered without the leading `::`.
+        let spec = [
+            struct_entry("::b::MyType", &[]),
+            struct_entry("a::MyType", &[]),
+        ];
+        let reduced = reduce(&spec).unwrap();
+        assert_eq!(
+            reduced
+                .renames()
+                .map(|r| (r.from.as_slice(), r.to.as_slice()))
+                .collect::<Vec<_>>(),
+            [
+                (b"::b::MyType".as_slice(), b"MyType2".as_slice()),
+                (b"a::MyType", b"MyType"),
+            ],
+        );
     }
 
     #[test]
@@ -586,8 +727,23 @@ mod test {
     }
 
     #[test]
-    fn a_reference_to_an_undefined_type_reduces_without_claiming() {
-        let spec = [struct_entry("a::MyType", &["elsewhere::Other"])];
+    fn a_qualified_reference_to_an_undefined_type_is_an_error() {
+        // Two undefined types sharing a last segment, or an undefined type
+        // sharing one with a defined type, could not be told apart once
+        // reduced, so a qualified reference must be to a defined type.
+        let spec = [
+            struct_entry("::a::Config", &[]),
+            struct_entry("::a::Holder", &["::a::Config", "::b::Config"]),
+        ];
+        assert_eq!(
+            reduce(&spec),
+            Err(Error::UndefinedName(b"::b::Config".to_vec()))
+        );
+    }
+
+    #[test]
+    fn a_simple_reference_to_an_undefined_type_is_unchanged() {
+        let spec = [struct_entry("a::MyType", &["Other"])];
         let reduced = reduce(&spec).unwrap();
         assert_eq!(
             names(reduced.entries()),
