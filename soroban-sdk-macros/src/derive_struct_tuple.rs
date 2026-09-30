@@ -72,17 +72,12 @@ pub fn derive_type_struct_tuple(
         fields: field_specs.try_into().unwrap(),
     };
 
-    // The fully qualified name the spec knows this type by, emitted for every
-    // type so that a reference to it from anywhere can reach it.
-    let spec_type_def = spec_type_def_gen(path, ident, None, None, None);
-
     // Generated code spec. The spec entry is rendered as the equivalent
     // const::ScSpecEntry, which the contract crate encodes to XDR at compile time.
+    let spec_type_def = spec_type_def_gen(path, ident, None, None, None);
     let spec_gen = {
         let doc = const_view_string(path, &spec.doc);
         let lib = const_view_string(path, &spec.lib);
-        // Each field's Rust type, so a reference to a user-defined type in a
-        // field resolves to the name that type reports for itself.
         let fields = spec
             .fields
             .iter()
