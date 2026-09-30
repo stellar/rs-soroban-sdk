@@ -42,3 +42,12 @@ pub trait SpecShakingMarker {
 // A raw error carries no spec of its own, but is usable with
 // `panic_with_error!` in place of a `#[contracterror]` type.
 impl SpecShakingMarker for crate::Error {}
+
+// A reference to an error is usable with `panic_with_error!` too, and marks the
+// error it refers to.
+impl<T: SpecShakingMarker + ?Sized> SpecShakingMarker for &T {
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        T::spec_shaking_marker()
+    }
+}
