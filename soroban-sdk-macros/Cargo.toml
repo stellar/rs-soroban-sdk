@@ -15,6 +15,7 @@ proc-macro = true
 doctest = false
 
 [dependencies]
+soroban-spec = { workspace = true }
 soroban-spec-rust = { workspace = true }
 soroban-env-common = { workspace = true }
 stellar-xdr = { workspace = true, features = ["std"] }
