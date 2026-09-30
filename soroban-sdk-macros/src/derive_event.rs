@@ -114,7 +114,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     let path = &args.crate_path;
 
     // Check event name length
-    const EVENT_NAME_LENGTH: u32 = SCSYMBOL_LIMIT;
+    const EVENT_NAME_LENGTH: u32 = SC_SPEC_TYPE_NAME_LIMIT;
     let event_name = input.ident.unraw().to_string();
     let event_name_len = event_name.len();
     let event_name: StringM<EVENT_NAME_LENGTH> = errors
