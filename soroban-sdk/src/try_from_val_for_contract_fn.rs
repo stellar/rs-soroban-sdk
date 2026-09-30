@@ -24,6 +24,7 @@ use core::fmt::Debug;
 #[diagnostic::on_unimplemented(
     message = "`{Self}` cannot be used as a contract function argument",
     label = "not a contract function argument type",
+    note = "contract function arguments must be convertible from a `Val`, such as types marked `#[contracttype]`",
     note = "`Hash<N>` can only be used in contexts where there is a guarantee that the hash has been sourced from a secure cryptographic hash function, such as the signature payload of `__check_auth`"
 )]
 pub trait TryFromValForContractFn<E: Env, V: ?Sized>: Sized {
