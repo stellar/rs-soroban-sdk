@@ -37,11 +37,11 @@ impl soroban_sdk::SpecName for Value {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_workspace_lib::Value";
         const CHECKED_NAME: &str = {
-            if !(NAME.len() <= 1024usize) {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `Value` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_workspace_lib::Value`",
+                            "type `Value` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_workspace_lib::Value`",
                         ),
                     );
                 }
@@ -75,7 +75,7 @@ impl Value {
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"value"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::I32,
+                        type_: <i32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ]),
             },

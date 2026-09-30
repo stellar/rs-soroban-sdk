@@ -51,11 +51,11 @@ impl soroban_sdk::SpecName for StructA {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::StructA";
         const CHECKED_NAME: &str = {
-            if !(NAME.len() <= 1024usize) {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `StructA` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib_v3::StructA`",
+                            "type `StructA` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::StructA`",
                         ),
                     );
                 }
@@ -89,12 +89,12 @@ impl StructA {
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"f1"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                        type_: <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"f2"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Bool,
+                        type_: <bool as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ]),
             },
@@ -518,11 +518,11 @@ impl soroban_sdk::SpecName for StructB {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::StructB";
         const CHECKED_NAME: &str = {
-            if !(NAME.len() <= 1024usize) {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `StructB` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib_v3::StructB`",
+                            "type `StructB` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::StructB`",
                         ),
                     );
                 }
@@ -556,12 +556,12 @@ impl StructB {
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"f1"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::I64,
+                        type_: <i64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"f2"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::String,
+                        type_: <soroban_sdk::String as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ]),
             },
@@ -985,11 +985,11 @@ impl soroban_sdk::SpecName for StructC {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::StructC";
         const CHECKED_NAME: &str = {
-            if !(NAME.len() <= 1024usize) {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `StructC` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib_v3::StructC`",
+                            "type `StructC` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::StructC`",
                         ),
                     );
                 }
@@ -1023,16 +1023,12 @@ impl StructC {
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"f1"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Vec(
-                            &soroban_sdk::xdr::r#const::ScSpecTypeVec {
-                                element_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
-                            },
-                        ),
+                        type_: <Vec<u32> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"f2"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Address,
+                        type_: <Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ]),
             },
@@ -1452,11 +1448,11 @@ impl soroban_sdk::SpecName for StructTupleA {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::StructTupleA";
         const CHECKED_NAME: &str = {
-            if !(NAME.len() <= 1024usize) {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `StructTupleA` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib_v3::StructTupleA`",
+                            "type `StructTupleA` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::StructTupleA`",
                         ),
                     );
                 }
@@ -1491,12 +1487,12 @@ impl StructTupleA {
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"0"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::I64,
+                        type_: <i64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"1"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::I64,
+                        type_: <i64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ]),
             },
@@ -1871,11 +1867,11 @@ impl soroban_sdk::SpecName for StructTupleB {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::StructTupleB";
         const CHECKED_NAME: &str = {
-            if !(NAME.len() <= 1024usize) {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `StructTupleB` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib_v3::StructTupleB`",
+                            "type `StructTupleB` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::StructTupleB`",
                         ),
                     );
                 }
@@ -1910,12 +1906,12 @@ impl StructTupleB {
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"0"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U128,
+                        type_: <u128 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"1"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U128,
+                        type_: <u128 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ]),
             },
@@ -2291,11 +2287,11 @@ impl soroban_sdk::SpecName for StructTupleC {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::StructTupleC";
         const CHECKED_NAME: &str = {
-            if !(NAME.len() <= 1024usize) {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `StructTupleC` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib_v3::StructTupleC`",
+                            "type `StructTupleC` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::StructTupleC`",
                         ),
                     );
                 }
@@ -2330,12 +2326,12 @@ impl StructTupleC {
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"0"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Address,
+                        type_: <Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"1"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::I128,
+                        type_: <i128 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ]),
             },
@@ -2722,11 +2718,11 @@ impl soroban_sdk::SpecName for EnumA {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::EnumA";
         const CHECKED_NAME: &str = {
-            if !(NAME.len() <= 1024usize) {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `EnumA` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib_v3::EnumA`",
+                            "type `EnumA` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::EnumA`",
                         ),
                     );
                 }
@@ -3251,11 +3247,11 @@ impl soroban_sdk::SpecName for EnumB {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::EnumB";
         const CHECKED_NAME: &str = {
-            if !(NAME.len() <= 1024usize) {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `EnumB` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib_v3::EnumB`",
+                            "type `EnumB` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::EnumB`",
                         ),
                     );
                 }
@@ -3301,7 +3297,7 @@ impl EnumB {
                                 b"V2",
                             ),
                             type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                                soroban_sdk::xdr::r#const::ScSpecTypeDef::I64,
+                                <i64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                             ]),
                         },
                     ),
@@ -3312,8 +3308,8 @@ impl EnumB {
                                 b"V3",
                             ),
                             type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                                soroban_sdk::xdr::r#const::ScSpecTypeDef::I64,
-                                soroban_sdk::xdr::r#const::ScSpecTypeDef::I64,
+                                <i64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                                <i64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                             ]),
                         },
                     ),
@@ -3909,11 +3905,11 @@ impl soroban_sdk::SpecName for EnumC {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::EnumC";
         const CHECKED_NAME: &str = {
-            if !(NAME.len() <= 1024usize) {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `EnumC` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib_v3::EnumC`",
+                            "type `EnumC` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::EnumC`",
                         ),
                     );
                 }
@@ -4517,11 +4513,11 @@ impl soroban_sdk::SpecName for EnumIntA {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::EnumIntA";
         const CHECKED_NAME: &str = {
-            if !(NAME.len() <= 1024usize) {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `EnumIntA` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib_v3::EnumIntA`",
+                            "type `EnumIntA` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::EnumIntA`",
                         ),
                     );
                 }
@@ -4910,11 +4906,11 @@ impl soroban_sdk::SpecName for EnumIntB {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::EnumIntB";
         const CHECKED_NAME: &str = {
-            if !(NAME.len() <= 1024usize) {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `EnumIntB` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib_v3::EnumIntB`",
+                            "type `EnumIntB` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::EnumIntB`",
                         ),
                     );
                 }
@@ -5303,11 +5299,11 @@ impl soroban_sdk::SpecName for EnumIntC {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::EnumIntC";
         const CHECKED_NAME: &str = {
-            if !(NAME.len() <= 1024usize) {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `EnumIntC` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib_v3::EnumIntC`",
+                            "type `EnumIntC` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::EnumIntC`",
                         ),
                     );
                 }
@@ -5696,11 +5692,11 @@ impl soroban_sdk::SpecName for ErrorA {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::ErrorA";
         const CHECKED_NAME: &str = {
-            if !(NAME.len() <= 1024usize) {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `ErrorA` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib_v3::ErrorA`",
+                            "type `ErrorA` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::ErrorA`",
                         ),
                     );
                 }
@@ -5919,11 +5915,11 @@ impl soroban_sdk::SpecName for ErrorB {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::ErrorB";
         const CHECKED_NAME: &str = {
-            if !(NAME.len() <= 1024usize) {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `ErrorB` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib_v3::ErrorB`",
+                            "type `ErrorB` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::ErrorB`",
                         ),
                     );
                 }
@@ -6142,11 +6138,11 @@ impl soroban_sdk::SpecName for ErrorC {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::ErrorC";
         const CHECKED_NAME: &str = {
-            if !(NAME.len() <= 1024usize) {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `ErrorC` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib_v3::ErrorC`",
+                            "type `ErrorC` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::ErrorC`",
                         ),
                     );
                 }
@@ -6361,11 +6357,11 @@ impl soroban_sdk::SpecName for EventA {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::EventA";
         const CHECKED_NAME: &str = {
-            if !(NAME.len() <= 1024usize) {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `EventA` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib_v3::EventA`",
+                            "type `EventA` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::EventA`",
                         ),
                     );
                 }
@@ -6403,13 +6399,13 @@ impl EventA {
                 soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
                     doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"f1"),
-                    type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Address,
+                    type_: <Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
                 },
                 soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
                     doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"f2"),
-                    type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::String,
+                    type_: <soroban_sdk::String as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
                 },
             ]),
@@ -6503,11 +6499,11 @@ impl soroban_sdk::SpecName for EventB {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::EventB";
         const CHECKED_NAME: &str = {
-            if !(NAME.len() <= 1024usize) {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `EventB` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib_v3::EventB`",
+                            "type `EventB` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::EventB`",
                         ),
                     );
                 }
@@ -6545,19 +6541,19 @@ impl EventB {
                 soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
                     doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"f1"),
-                    type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Address,
+                    type_: <Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
                 },
                 soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
                     doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"f2"),
-                    type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Address,
+                    type_: <Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
                 },
                 soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
                     doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"f3"),
-                    type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::I128,
+                    type_: <i128 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
                 },
             ]),
@@ -6655,11 +6651,11 @@ impl soroban_sdk::SpecName for EventC {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::EventC";
         const CHECKED_NAME: &str = {
-            if !(NAME.len() <= 1024usize) {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `EventC` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib_v3::EventC`",
+                            "type `EventC` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::EventC`",
                         ),
                     );
                 }
@@ -6697,19 +6693,19 @@ impl EventC {
                 soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
                     doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"f1"),
-                    type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Symbol,
+                    type_: <soroban_sdk::Symbol as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
                 },
                 soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
                     doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"f2"),
-                    type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::I64,
+                    type_: <i64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
                 },
                 soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
                     doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                     name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"f3"),
-                    type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::I64,
+                    type_: <i64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
                 },
             ]),
@@ -6790,11 +6786,11 @@ impl soroban_sdk::SpecName for EventD {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_spec_lib_v3::EventD";
         const CHECKED_NAME: &str = {
-            if !(NAME.len() <= 1024usize) {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `EventD` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_spec_lib_v3::EventD`",
+                            "type `EventD` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::EventD`",
                         ),
                     );
                 }

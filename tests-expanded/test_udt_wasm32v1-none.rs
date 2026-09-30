@@ -53,11 +53,11 @@ impl soroban_sdk::SpecName for UdtEnum2 {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_udt::UdtEnum2";
         const CHECKED_NAME: &str = {
-            if !(NAME.len() <= 1024usize) {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UdtEnum2` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_udt::UdtEnum2`",
+                            "type `UdtEnum2` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_udt::UdtEnum2`",
                         ),
                     );
                 }
@@ -213,11 +213,11 @@ impl soroban_sdk::SpecName for UdtEnum {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_udt::UdtEnum";
         const CHECKED_NAME: &str = {
-            if !(NAME.len() <= 1024usize) {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UdtEnum` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_udt::UdtEnum`",
+                            "type `UdtEnum` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_udt::UdtEnum`",
                         ),
                     );
                 }
@@ -446,11 +446,11 @@ impl soroban_sdk::SpecName for UdtTuple {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_udt::UdtTuple";
         const CHECKED_NAME: &str = {
-            if !(NAME.len() <= 1024usize) {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UdtTuple` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_udt::UdtTuple`",
+                            "type `UdtTuple` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_udt::UdtTuple`",
                         ),
                     );
                 }
@@ -485,16 +485,12 @@ impl UdtTuple {
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"0"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::I64,
+                        type_: <i64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"1"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Vec(
-                            &soroban_sdk::xdr::r#const::ScSpecTypeVec {
-                                element_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::I64,
-                            },
-                        ),
+                        type_: <Vec<i64> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ]),
             },
@@ -604,11 +600,11 @@ impl soroban_sdk::SpecName for UdtStruct {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_udt::UdtStruct";
         const CHECKED_NAME: &str = {
-            if !(NAME.len() <= 1024usize) {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UdtStruct` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_udt::UdtStruct`",
+                            "type `UdtStruct` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_udt::UdtStruct`",
                         ),
                     );
                 }
@@ -643,21 +639,17 @@ impl UdtStruct {
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"a"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::I64,
+                        type_: <i64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"b"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::I64,
+                        type_: <i64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"c"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Vec(
-                            &soroban_sdk::xdr::r#const::ScSpecTypeVec {
-                                element_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::I64,
-                            },
-                        ),
+                        type_: <Vec<i64> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ]),
             },
@@ -771,11 +763,11 @@ impl soroban_sdk::SpecName for UdtRecursive {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_udt::UdtRecursive";
         const CHECKED_NAME: &str = {
-            if !(NAME.len() <= 1024usize) {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `UdtRecursive` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_udt::UdtRecursive`",
+                            "type `UdtRecursive` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_udt::UdtRecursive`",
                         ),
                     );
                 }
@@ -811,17 +803,12 @@ impl UdtRecursive {
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"a"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Symbol,
+                        type_: <Symbol as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"b"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Vec(
-                            &soroban_sdk::xdr::r#const::ScSpecTypeVec {
-                                element_type:
-                                    &<UdtRecursive as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                            },
-                        ),
+                        type_: <Vec<UdtRecursive> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ]),
             },
@@ -931,11 +918,11 @@ impl soroban_sdk::SpecName for RecursiveToEnum {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_udt::RecursiveToEnum";
         const CHECKED_NAME: &str = {
-            if !(NAME.len() <= 1024usize) {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `RecursiveToEnum` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_udt::RecursiveToEnum`",
+                            "type `RecursiveToEnum` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_udt::RecursiveToEnum`",
                         ),
                     );
                 }
@@ -971,18 +958,12 @@ impl RecursiveToEnum {
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"a"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Symbol,
+                        type_: <Symbol as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"b"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Map(
-                            &soroban_sdk::xdr::r#const::ScSpecTypeMap {
-                                key_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
-                                value_type:
-                                    &<RecursiveEnum as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                            },
-                        ),
+                        type_: <Map<u32, RecursiveEnum> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ]),
             },
@@ -1099,11 +1080,11 @@ impl soroban_sdk::SpecName for RecursiveEnum {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_udt::RecursiveEnum";
         const CHECKED_NAME: &str = {
-            if !(NAME.len() <= 1024usize) {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `RecursiveEnum` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_udt::RecursiveEnum`",
+                            "type `RecursiveEnum` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_udt::RecursiveEnum`",
                         ),
                     );
                 }
@@ -1319,7 +1300,7 @@ impl Contract {
                     },
                 ]),
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecTypeDef::I64,
+                    <i64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 ]),
             },
         );
@@ -1357,11 +1338,7 @@ impl Contract {
                     },
                 ]),
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecTypeDef::Option(
-                        &soroban_sdk::xdr::r#const::ScSpecTypeOption {
-                            value_type: &<UdtRecursive as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                        },
-                    ),
+                    <Option<UdtRecursive> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 ]),
             },
         );
@@ -1401,22 +1378,14 @@ impl Contract {
                     soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"key"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                        type_: <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ]),
-                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecTypeDef::Result(
-                        &soroban_sdk::xdr::r#const::ScSpecTypeResult {
-                            ok_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Option(
-                                &soroban_sdk::xdr::r#const::ScSpecTypeOption {
-                                    value_type:
-                                        &<RecursiveEnum as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                                },
-                            ),
-                            error_type: &<Error as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                        },
-                    ),
-                ]),
+                outputs:
+                    soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[<Result<
+                        Option<RecursiveEnum>,
+                        Error,
+                    > as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF]),
             },
         );
     #[allow(non_snake_case)]

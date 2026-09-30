@@ -246,11 +246,11 @@ mod addcontract {
         const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::addcontract::ContractExecutableRef";
             const CHECKED_NAME: &str = {
-                if !(NAME.len() <= 1024usize) {
+                if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `ContractExecutableRef` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::ContractExecutableRef`",
+                                "type `ContractExecutableRef` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_import_contract::addcontract::ContractExecutableRef`",
                             ),
                         );
                     }
@@ -290,14 +290,15 @@ mod addcontract {
                             name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                                 b"owner",
                             ),
-                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Address,
+                            type_:
+                                <soroban_sdk::Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                         },
                         soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                             name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                                 b"tag",
                             ),
-                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::String,
+                            type_: <soroban_sdk::String as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                         },
                     ]),
                 },
@@ -455,11 +456,11 @@ mod addcontract {
         const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::addcontract::ContractContext";
             const CHECKED_NAME: &str = {
-                if !(NAME.len() <= 1024usize) {
+                if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `ContractContext` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::ContractContext`",
+                                "type `ContractContext` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_import_contract::addcontract::ContractContext`",
                             ),
                         );
                     }
@@ -485,43 +486,46 @@ mod addcontract {
     static __SPEC_XDR_TYPE_CONTRACTCONTEXT: [u8; ContractContext::spec_xdr().len()] =
         ContractContext::spec_xdr();
     impl ContractContext {
-        const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
-            soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
-                soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
-                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                    lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                    name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                        <ContractContext as soroban_sdk::SpecName>::SPEC_NAME,
-                    ),
-                    fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
-                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                b"args",
-                            ),
-                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Vec(
-                                &soroban_sdk::xdr::r#const::ScSpecTypeVec {
-                                    element_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Val,
-                                },
-                            ),
-                        },
-                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
-                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                b"contract",
-                            ),
-                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Address,
-                        },
-                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
-                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                b"fn_name",
-                            ),
-                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Symbol,
-                        },
-                    ]),
-                },
-            );
+        const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
+            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+            lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <ContractContext as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+            fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                &[
+                    soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"",
+                        ),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"args",
+                        ),
+                        type_: <soroban_sdk::Vec<
+                            soroban_sdk::Val,
+                        > as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"",
+                        ),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"contract",
+                        ),
+                        type_: <soroban_sdk::Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"",
+                        ),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"fn_name",
+                        ),
+                        type_: <soroban_sdk::Symbol as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ],
+            ),
+        });
         pub const fn spec_xdr() -> [u8; ContractContext::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { ContractContext::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
@@ -667,11 +671,11 @@ mod addcontract {
         const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::addcontract::SubContractInvocation";
             const CHECKED_NAME: &str = {
-                if !(NAME.len() <= 1024usize) {
+                if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `SubContractInvocation` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::SubContractInvocation`",
+                                "type `SubContractInvocation` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_import_contract::addcontract::SubContractInvocation`",
                             ),
                         );
                     }
@@ -721,11 +725,9 @@ mod addcontract {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                             b"sub_invocations",
                         ),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Vec(
-                            &soroban_sdk::xdr::r#const::ScSpecTypeVec {
-                                element_type: &<InvokerContractAuthEntry as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                            },
-                        ),
+                        type_: <soroban_sdk::Vec<
+                            InvokerContractAuthEntry,
+                        > as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ],
             ),
@@ -866,11 +868,11 @@ mod addcontract {
         const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::addcontract::CreateContractHostFnContext";
             const CHECKED_NAME: &str = {
-                if !(NAME.len() <= 1024usize) {
+                if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `CreateContractHostFnContext` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::CreateContractHostFnContext`",
+                                "type `CreateContractHostFnContext` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_import_contract::addcontract::CreateContractHostFnContext`",
                             ),
                         );
                     }
@@ -917,9 +919,8 @@ mod addcontract {
                             name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                                 b"salt",
                             ),
-                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
-                                soroban_sdk::xdr::r#const::ScSpecTypeBytesN { n: 32u32 },
-                            ),
+                            type_:
+                                <soroban_sdk::BytesN<32> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                         },
                     ]),
                 },
@@ -1084,11 +1085,11 @@ mod addcontract {
             const NAME: &str =
                 "::test_import_contract::addcontract::CreateContractWithConstructorHostFnContext";
             const CHECKED_NAME: &str = {
-                if !(NAME.len() <= 1024usize) {
+                if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `CreateContractWithConstructorHostFnContext` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::CreateContractWithConstructorHostFnContext`",
+                                "type `CreateContractWithConstructorHostFnContext` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_import_contract::addcontract::CreateContractWithConstructorHostFnContext`",
                             ),
                         );
                     }
@@ -1130,11 +1131,9 @@ mod addcontract {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                             b"constructor_args",
                         ),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Vec(
-                            &soroban_sdk::xdr::r#const::ScSpecTypeVec {
-                                element_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Val,
-                            },
-                        ),
+                        type_: <soroban_sdk::Vec<
+                            soroban_sdk::Val,
+                        > as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
@@ -1152,9 +1151,9 @@ mod addcontract {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                             b"salt",
                         ),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(soroban_sdk::xdr::r#const::ScSpecTypeBytesN {
-                            n: 32u32,
-                        }),
+                        type_: <soroban_sdk::BytesN<
+                            32,
+                        > as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ],
             ),
@@ -1341,11 +1340,11 @@ mod addcontract {
         const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::addcontract::ContractExecutable";
             const CHECKED_NAME: &str = {
-                if !(NAME.len() <= 1024usize) {
+                if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `ContractExecutable` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::ContractExecutable`",
+                                "type `ContractExecutable` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_import_contract::addcontract::ContractExecutable`",
                             ),
                         );
                     }
@@ -1388,9 +1387,9 @@ mod addcontract {
                         ),
                         type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
                             &[
-                                soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(soroban_sdk::xdr::r#const::ScSpecTypeBytesN {
-                                    n: 32u32,
-                                }),
+                                <soroban_sdk::BytesN<
+                                    32,
+                                > as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                             ],
                         ),
                     }),
@@ -1631,11 +1630,11 @@ mod addcontract {
         const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::addcontract::Context";
             const CHECKED_NAME: &str = {
-                if !(NAME.len() <= 1024usize) {
+                if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `Context` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::Context`",
+                                "type `Context` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_import_contract::addcontract::Context`",
                             ),
                         );
                     }
@@ -1961,11 +1960,11 @@ mod addcontract {
         const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::addcontract::InvokerContractAuthEntry";
             const CHECKED_NAME: &str = {
-                if !(NAME.len() <= 1024usize) {
+                if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `InvokerContractAuthEntry` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::InvokerContractAuthEntry`",
+                                "type `InvokerContractAuthEntry` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_import_contract::addcontract::InvokerContractAuthEntry`",
                             ),
                         );
                     }
@@ -2243,11 +2242,11 @@ mod addcontract {
         const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::addcontract::Executable";
             const CHECKED_NAME: &str = {
-                if !(NAME.len() <= 1024usize) {
+                if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `Executable` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::Executable`",
+                                "type `Executable` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_import_contract::addcontract::Executable`",
                             ),
                         );
                     }
@@ -2272,53 +2271,48 @@ mod addcontract {
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_TYPE_EXECUTABLE: [u8; Executable::spec_xdr().len()] = Executable::spec_xdr();
     impl Executable {
-        const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
-            soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(
-                soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
-                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                    lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                    name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                        <Executable as soroban_sdk::SpecName>::SPEC_NAME,
-                    ),
-                    cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(
-                            soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
-                                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                    b"",
-                                ),
-                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                    b"Wasm",
-                                ),
-                                type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                                    soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
-                                        soroban_sdk::xdr::r#const::ScSpecTypeBytesN { n: 32u32 },
-                                    ),
-                                ]),
-                            },
+        const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
+            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+            lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Executable as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+            cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                &[
+                    soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"",
                         ),
-                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::VoidV0(
-                            soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseVoidV0 {
-                                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                    b"",
-                                ),
-                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                    b"StellarAsset",
-                                ),
-                            },
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"Wasm",
                         ),
-                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::VoidV0(
-                            soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseVoidV0 {
-                                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                    b"",
-                                ),
-                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                    b"Account",
-                                ),
-                            },
+                        type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                            &[
+                                <soroban_sdk::BytesN<
+                                    32,
+                                > as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                            ],
                         ),
-                    ]),
-                },
-            );
+                    }),
+                    soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::VoidV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseVoidV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"",
+                        ),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"StellarAsset",
+                        ),
+                    }),
+                    soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::VoidV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseVoidV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"",
+                        ),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"Account",
+                        ),
+                    }),
+                ],
+            ),
+        });
         pub const fn spec_xdr() -> [u8; Executable::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { Executable::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
@@ -2462,11 +2456,11 @@ mod addcontract {
         const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::addcontract::Error";
             const CHECKED_NAME: &str = {
-                if !(NAME.len() <= 1024usize) {
+                if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `Error` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::Error`",
+                                "type `Error` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_import_contract::addcontract::Error`",
                             ),
                         );
                     }
@@ -2682,11 +2676,11 @@ mod addcontract {
         const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::addcontract::MyError";
             const CHECKED_NAME: &str = {
-                if !(NAME.len() <= 1024usize) {
+                if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `MyError` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::addcontract::MyError`",
+                                "type `MyError` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_import_contract::addcontract::MyError`",
                             ),
                         );
                     }
@@ -3262,11 +3256,11 @@ mod eventscontract {
         const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::eventscontract::ContractExecutableRef";
             const CHECKED_NAME: &str = {
-                if !(NAME.len() <= 1024usize) {
+                if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `ContractExecutableRef` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::ContractExecutableRef`",
+                                "type `ContractExecutableRef` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_import_contract::eventscontract::ContractExecutableRef`",
                             ),
                         );
                     }
@@ -3306,14 +3300,15 @@ mod eventscontract {
                             name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                                 b"owner",
                             ),
-                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Address,
+                            type_:
+                                <soroban_sdk::Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                         },
                         soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                             name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                                 b"tag",
                             ),
-                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::String,
+                            type_: <soroban_sdk::String as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                         },
                     ]),
                 },
@@ -3471,11 +3466,11 @@ mod eventscontract {
         const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::eventscontract::ContractContext";
             const CHECKED_NAME: &str = {
-                if !(NAME.len() <= 1024usize) {
+                if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `ContractContext` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::ContractContext`",
+                                "type `ContractContext` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_import_contract::eventscontract::ContractContext`",
                             ),
                         );
                     }
@@ -3501,43 +3496,46 @@ mod eventscontract {
     static __SPEC_XDR_TYPE_CONTRACTCONTEXT: [u8; ContractContext::spec_xdr().len()] =
         ContractContext::spec_xdr();
     impl ContractContext {
-        const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
-            soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
-                soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
-                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                    lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                    name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                        <ContractContext as soroban_sdk::SpecName>::SPEC_NAME,
-                    ),
-                    fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
-                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                b"args",
-                            ),
-                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Vec(
-                                &soroban_sdk::xdr::r#const::ScSpecTypeVec {
-                                    element_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Val,
-                                },
-                            ),
-                        },
-                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
-                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                b"contract",
-                            ),
-                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Address,
-                        },
-                        soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
-                            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                            name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                b"fn_name",
-                            ),
-                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Symbol,
-                        },
-                    ]),
-                },
-            );
+        const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
+            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+            lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <ContractContext as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+            fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                &[
+                    soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"",
+                        ),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"args",
+                        ),
+                        type_: <soroban_sdk::Vec<
+                            soroban_sdk::Val,
+                        > as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"",
+                        ),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"contract",
+                        ),
+                        type_: <soroban_sdk::Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                    soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"",
+                        ),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"fn_name",
+                        ),
+                        type_: <soroban_sdk::Symbol as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ],
+            ),
+        });
         pub const fn spec_xdr() -> [u8; ContractContext::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { ContractContext::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
@@ -3683,11 +3681,11 @@ mod eventscontract {
         const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::eventscontract::SubContractInvocation";
             const CHECKED_NAME: &str = {
-                if !(NAME.len() <= 1024usize) {
+                if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `SubContractInvocation` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::SubContractInvocation`",
+                                "type `SubContractInvocation` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_import_contract::eventscontract::SubContractInvocation`",
                             ),
                         );
                     }
@@ -3737,11 +3735,9 @@ mod eventscontract {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                             b"sub_invocations",
                         ),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Vec(
-                            &soroban_sdk::xdr::r#const::ScSpecTypeVec {
-                                element_type: &<InvokerContractAuthEntry as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                            },
-                        ),
+                        type_: <soroban_sdk::Vec<
+                            InvokerContractAuthEntry,
+                        > as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ],
             ),
@@ -3883,11 +3879,11 @@ mod eventscontract {
             const NAME: &str =
                 "::test_import_contract::eventscontract::CreateContractHostFnContext";
             const CHECKED_NAME: &str = {
-                if !(NAME.len() <= 1024usize) {
+                if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `CreateContractHostFnContext` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::CreateContractHostFnContext`",
+                                "type `CreateContractHostFnContext` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_import_contract::eventscontract::CreateContractHostFnContext`",
                             ),
                         );
                     }
@@ -3934,9 +3930,8 @@ mod eventscontract {
                             name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                                 b"salt",
                             ),
-                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
-                                soroban_sdk::xdr::r#const::ScSpecTypeBytesN { n: 32u32 },
-                            ),
+                            type_:
+                                <soroban_sdk::BytesN<32> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                         },
                     ]),
                 },
@@ -4100,11 +4095,11 @@ mod eventscontract {
         const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::eventscontract::CreateContractWithConstructorHostFnContext";
             const CHECKED_NAME: &str = {
-                if !(NAME.len() <= 1024usize) {
+                if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `CreateContractWithConstructorHostFnContext` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::CreateContractWithConstructorHostFnContext`",
+                                "type `CreateContractWithConstructorHostFnContext` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_import_contract::eventscontract::CreateContractWithConstructorHostFnContext`",
                             ),
                         );
                     }
@@ -4146,11 +4141,9 @@ mod eventscontract {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                             b"constructor_args",
                         ),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Vec(
-                            &soroban_sdk::xdr::r#const::ScSpecTypeVec {
-                                element_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Val,
-                            },
-                        ),
+                        type_: <soroban_sdk::Vec<
+                            soroban_sdk::Val,
+                        > as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
@@ -4168,9 +4161,9 @@ mod eventscontract {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                             b"salt",
                         ),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(soroban_sdk::xdr::r#const::ScSpecTypeBytesN {
-                            n: 32u32,
-                        }),
+                        type_: <soroban_sdk::BytesN<
+                            32,
+                        > as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ],
             ),
@@ -4357,11 +4350,11 @@ mod eventscontract {
         const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::eventscontract::ContractExecutable";
             const CHECKED_NAME: &str = {
-                if !(NAME.len() <= 1024usize) {
+                if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `ContractExecutable` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::ContractExecutable`",
+                                "type `ContractExecutable` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_import_contract::eventscontract::ContractExecutable`",
                             ),
                         );
                     }
@@ -4404,9 +4397,9 @@ mod eventscontract {
                         ),
                         type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
                             &[
-                                soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(soroban_sdk::xdr::r#const::ScSpecTypeBytesN {
-                                    n: 32u32,
-                                }),
+                                <soroban_sdk::BytesN<
+                                    32,
+                                > as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                             ],
                         ),
                     }),
@@ -4647,11 +4640,11 @@ mod eventscontract {
         const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::eventscontract::Context";
             const CHECKED_NAME: &str = {
-                if !(NAME.len() <= 1024usize) {
+                if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `Context` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::Context`",
+                                "type `Context` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_import_contract::eventscontract::Context`",
                             ),
                         );
                     }
@@ -4977,11 +4970,11 @@ mod eventscontract {
         const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::eventscontract::InvokerContractAuthEntry";
             const CHECKED_NAME: &str = {
-                if !(NAME.len() <= 1024usize) {
+                if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `InvokerContractAuthEntry` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::InvokerContractAuthEntry`",
+                                "type `InvokerContractAuthEntry` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_import_contract::eventscontract::InvokerContractAuthEntry`",
                             ),
                         );
                     }
@@ -5259,11 +5252,11 @@ mod eventscontract {
         const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::eventscontract::Executable";
             const CHECKED_NAME: &str = {
-                if !(NAME.len() <= 1024usize) {
+                if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `Executable` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::Executable`",
+                                "type `Executable` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_import_contract::eventscontract::Executable`",
                             ),
                         );
                     }
@@ -5288,53 +5281,48 @@ mod eventscontract {
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_TYPE_EXECUTABLE: [u8; Executable::spec_xdr().len()] = Executable::spec_xdr();
     impl Executable {
-        const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
-            soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(
-                soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
-                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                    lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                    name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
-                        <Executable as soroban_sdk::SpecName>::SPEC_NAME,
-                    ),
-                    cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(
-                            soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
-                                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                    b"",
-                                ),
-                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                    b"Wasm",
-                                ),
-                                type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                                    soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
-                                        soroban_sdk::xdr::r#const::ScSpecTypeBytesN { n: 32u32 },
-                                    ),
-                                ]),
-                            },
+        const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
+            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+            lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Executable as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+            cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                &[
+                    soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"",
                         ),
-                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::VoidV0(
-                            soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseVoidV0 {
-                                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                    b"",
-                                ),
-                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                    b"StellarAsset",
-                                ),
-                            },
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"Wasm",
                         ),
-                        soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::VoidV0(
-                            soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseVoidV0 {
-                                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                    b"",
-                                ),
-                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                    b"Account",
-                                ),
-                            },
+                        type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+                            &[
+                                <soroban_sdk::BytesN<
+                                    32,
+                                > as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                            ],
                         ),
-                    ]),
-                },
-            );
+                    }),
+                    soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::VoidV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseVoidV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"",
+                        ),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"StellarAsset",
+                        ),
+                    }),
+                    soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::VoidV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseVoidV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"",
+                        ),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"Account",
+                        ),
+                    }),
+                ],
+            ),
+        });
         pub const fn spec_xdr() -> [u8; Executable::__SPEC_XDR_ENTRY.const_xdr_len()] {
             const { Executable::__SPEC_XDR_ENTRY.const_to_xdr() }
         }
@@ -5535,11 +5523,11 @@ mod eventscontract {
         const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::eventscontract::Transfer";
             const CHECKED_NAME: &str = {
-                if !(NAME.len() <= 1024usize) {
+                if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `Transfer` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::Transfer`",
+                                "type `Transfer` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_import_contract::eventscontract::Transfer`",
                             ),
                         );
                     }
@@ -5585,7 +5573,8 @@ mod eventscontract {
                             name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                                 b"from",
                             ),
-                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Address,
+                            type_:
+                                <soroban_sdk::Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                             location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
                         },
                         soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
@@ -5593,7 +5582,8 @@ mod eventscontract {
                             name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                                 b"to",
                             ),
-                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Address,
+                            type_:
+                                <soroban_sdk::Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                             location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
                         },
                         soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
@@ -5601,7 +5591,7 @@ mod eventscontract {
                             name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                                 b"amount",
                             ),
-                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::I128,
+                            type_: <i128 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                             location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
                         },
                         soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
@@ -5609,11 +5599,7 @@ mod eventscontract {
                             name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                                 b"to_muxed_id",
                             ),
-                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Option(
-                                &soroban_sdk::xdr::r#const::ScSpecTypeOption {
-                                    value_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::U64,
-                                },
-                            ),
+                            type_: <Option<u64> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                             location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
                         },
                     ]),
@@ -5757,11 +5743,11 @@ mod eventscontract {
         const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::eventscontract::MapValues";
             const CHECKED_NAME: &str = {
-                if !(NAME.len() <= 1024usize) {
+                if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `MapValues` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::MapValues`",
+                                "type `MapValues` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_import_contract::eventscontract::MapValues`",
                             ),
                         );
                     }
@@ -5807,19 +5793,20 @@ mod eventscontract {
                             name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                                 b"from",
                             ),
-                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Address,
+                            type_:
+                                <soroban_sdk::Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                             location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
                         },
                         soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
                             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                             name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"a"),
-                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                            type_: <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                             location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
                         },
                         soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
                             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                             name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"b"),
-                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                            type_: <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                             location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
                         },
                     ]),
@@ -5951,11 +5938,11 @@ mod eventscontract {
         const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::eventscontract::VecValues";
             const CHECKED_NAME: &str = {
-                if !(NAME.len() <= 1024usize) {
+                if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `VecValues` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::VecValues`",
+                                "type `VecValues` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_import_contract::eventscontract::VecValues`",
                             ),
                         );
                     }
@@ -6001,19 +5988,20 @@ mod eventscontract {
                             name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                                 b"from",
                             ),
-                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Address,
+                            type_:
+                                <soroban_sdk::Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                             location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
                         },
                         soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
                             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                             name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"a"),
-                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                            type_: <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                             location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
                         },
                         soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
                             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                             name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"b"),
-                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                            type_: <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                             location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
                         },
                     ]),
@@ -6142,11 +6130,11 @@ mod eventscontract {
         const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::eventscontract::SingleValue";
             const CHECKED_NAME: &str = {
-                if !(NAME.len() <= 1024usize) {
+                if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `SingleValue` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::SingleValue`",
+                                "type `SingleValue` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_import_contract::eventscontract::SingleValue`",
                             ),
                         );
                     }
@@ -6193,7 +6181,8 @@ mod eventscontract {
                             name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                                 b"from",
                             ),
-                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Address,
+                            type_:
+                                <soroban_sdk::Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                             location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
                         },
                         soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
@@ -6201,7 +6190,7 @@ mod eventscontract {
                             name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                                 b"amount",
                             ),
-                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::I128,
+                            type_: <i128 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                             location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
                         },
                     ]),
@@ -6307,11 +6296,11 @@ mod eventscontract {
         const SPEC_NAME: &'static str = {
             const NAME: &str = "::test_import_contract::eventscontract::SingleValueVoid";
             const CHECKED_NAME: &str = {
-                if !(NAME.len() <= 1024usize) {
+                if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                     {
                         ::core::panicking::panic_fmt(
                             format_args!(
-                                "type `SingleValueVoid` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::eventscontract::SingleValueVoid`",
+                                "type `SingleValueVoid` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_import_contract::eventscontract::SingleValueVoid`",
                             ),
                         );
                     }
@@ -6358,7 +6347,8 @@ mod eventscontract {
                             name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                                 b"from",
                             ),
-                            type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Address,
+                            type_:
+                                <soroban_sdk::Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                             location: soroban_sdk::xdr::ScSpecEventParamLocationV0::TopicList,
                         },
                     ]),
@@ -6433,11 +6423,11 @@ impl soroban_sdk::SpecName for Error {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_import_contract::Error";
         const CHECKED_NAME: &str = {
-            if !(NAME.len() <= 1024usize) {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `Error` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_import_contract::Error`",
+                            "type `Error` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_import_contract::Error`",
                         ),
                     );
                 }
@@ -6673,21 +6663,21 @@ impl Contract {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                             b"contract_id",
                         ),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Address,
+                        type_: <Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                     soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"x"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U64,
+                        type_: <u64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                     soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"y"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U64,
+                        type_: <u64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ]),
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecTypeDef::U64,
+                    <u64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 ]),
             },
         );
@@ -6723,26 +6713,21 @@ impl Contract {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                             b"contract_id",
                         ),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Address,
+                        type_: <Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                     soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"x"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U64,
+                        type_: <u64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                     soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"y"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U64,
+                        type_: <u64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ]),
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecTypeDef::Result(
-                        &soroban_sdk::xdr::r#const::ScSpecTypeResult {
-                            ok_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::U64,
-                            error_type: &<Error as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                        },
-                    ),
+                    <Result<u64, Error> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 ]),
             },
         );
@@ -6781,26 +6766,21 @@ impl Contract {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                             b"contract_id",
                         ),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Address,
+                        type_: <Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                     soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"x"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U64,
+                        type_: <u64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                     soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"y"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U64,
+                        type_: <u64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ]),
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecTypeDef::Result(
-                        &soroban_sdk::xdr::r#const::ScSpecTypeResult {
-                            ok_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::U64,
-                            error_type: &<Error as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                        },
-                    ),
+                    <Result<u64, Error> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 ]),
             },
         );

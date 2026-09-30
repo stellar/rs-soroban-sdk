@@ -140,11 +140,11 @@ impl soroban_sdk::SpecName for Flag {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_errors::Flag";
         const CHECKED_NAME: &str = {
-            if !(NAME.len() <= 1024usize) {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `Flag` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_errors::Flag`",
+                            "type `Flag` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_errors::Flag`",
                         ),
                     );
                 }
@@ -547,11 +547,11 @@ impl soroban_sdk::SpecName for Error {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_errors::Error";
         const CHECKED_NAME: &str = {
-            if !(NAME.len() <= 1024usize) {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `Error` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_errors::Error`",
+                            "type `Error` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_errors::Error`",
                         ),
                     );
                 }
@@ -777,12 +777,7 @@ impl Contract {
                     },
                 ]),
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecTypeDef::Result(
-                        &soroban_sdk::xdr::r#const::ScSpecTypeResult {
-                            ok_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Symbol,
-                            error_type: &<Error as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                        },
-                    ),
+                    <Result<Symbol, Error> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 ]),
             },
         );
@@ -813,7 +808,7 @@ impl Contract {
                 ),
                 inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecTypeDef::Bool,
+                    <bool as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 ]),
             },
         );

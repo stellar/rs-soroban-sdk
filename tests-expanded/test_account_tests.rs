@@ -54,11 +54,11 @@ impl soroban_sdk::SpecName for Error {
     const SPEC_NAME: &'static str = {
         const NAME: &str = "::test_account::Error";
         const CHECKED_NAME: &str = {
-            if !(NAME.len() <= 1024usize) {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `Error` full name including its module path is too long, the limit is 1024 bytes, shorten its module path or name: `::test_account::Error`",
+                            "type `Error` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_account::Error`",
                         ),
                     );
                 }
@@ -361,36 +361,25 @@ impl Contract {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                             b"signature_payload",
                         ),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
-                            soroban_sdk::xdr::r#const::ScSpecTypeBytesN { n: 32u32 },
-                        ),
+                        type_: <Hash<32> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                     soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                             b"signatures",
                         ),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Void,
+                        type_: <() as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                     soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                             b"auth_contexts",
                         ),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Vec(
-                            &soroban_sdk::xdr::r#const::ScSpecTypeVec {
-                                element_type: &<Context as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                            },
-                        ),
+                        type_: <Vec<Context> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ]),
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecTypeDef::Result(
-                        &soroban_sdk::xdr::r#const::ScSpecTypeResult {
-                            ok_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Void,
-                            error_type: &<Error as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
-                        },
-                    ),
+                    <Result<(), Error> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 ]),
             },
         );
@@ -429,10 +418,10 @@ pub fn __Contract____check_auth__invoke_raw(
         <Contract as CustomAccountInterface>::__check_auth(
             env.clone(),
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                <_ as soroban_sdk::TryFromValForContractFn<
+                <_ as soroban_sdk::TryFromValForCheckAuthPayload<
                     soroban_sdk::Env,
                     soroban_sdk::Val,
-                >>::try_from_val_for_contract_fn(&env, &arg_0),
+                >>::try_from_val_for_check_auth_payload(&env, &arg_0),
             ),
             <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                 <_ as soroban_sdk::TryFromValForContractFn<

@@ -1,0 +1,5 @@
+error: Hash<N> can only be used in contexts where there is a guarantee that the hash has been sourced from a secure cryptographic hash function
+  --> tests/compile_fails/hash_arg_errors.rs:11:21
+   |
+11 |     pub fn f(_hash: Hash<32>) {}
+   |                     ^^^^

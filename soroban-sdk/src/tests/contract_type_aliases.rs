@@ -6,7 +6,11 @@ use crate::{self as soroban_sdk};
 use soroban_sdk::{
     contract, contractimpl, contracttype, testutils::Address as _, Address, BytesN, Env, Vec,
 };
-use stellar_xdr::{Limits, ReadXdr, ScSpecEntry, ScSpecTypeDef};
+use stellar_xdr::{
+    Limits, ReadXdr, ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeBytesN,
+    ScSpecTypeDef, ScSpecTypeOption, ScSpecTypeTuple, ScSpecTypeUdt, ScSpecTypeVec,
+    ScSpecUdtStructFieldV0, ScSpecUdtStructV0,
+};
 
 pub type Amount = i128;
 pub type Owner = Address;
@@ -35,18 +39,6 @@ pub struct Aliased {
     pub held: Held,
 }
 
-#[contracttype]
-#[derive(Clone, Debug, Eq, PartialEq)]
-pub struct Direct {
-    pub amount: i128,
-    pub owner: Address,
-    pub id: BytesN<32>,
-    pub amounts: Vec<i128>,
-    pub pair: (i128, Address),
-    pub maybe: Option<i128>,
-    pub held: Holding,
-}
-
 #[contract]
 pub struct Contract;
 
@@ -56,44 +48,94 @@ impl Contract {
         let _ = (b, c);
         a
     }
+}
 
-    pub fn direct(a: i128, b: Vec<i128>, c: Holding) -> i128 {
-        let _ = (b, c);
-        a
+const HOLDING: &str = "::soroban_sdk::tests::contract_type_aliases::Holding";
+
+fn udt(name: &str) -> ScSpecTypeDef {
+    ScSpecTypeDef::Udt(ScSpecTypeUdt {
+        name: name.try_into().unwrap(),
+    })
+}
+
+fn field(name: &str, type_: ScSpecTypeDef) -> ScSpecUdtStructFieldV0 {
+    ScSpecUdtStructFieldV0 {
+        doc: "".try_into().unwrap(),
+        name: name.try_into().unwrap(),
+        type_,
     }
 }
 
-fn field_types(xdr: &[u8]) -> std::vec::Vec<ScSpecTypeDef> {
-    match ScSpecEntry::from_xdr(xdr, Limits::none()).unwrap() {
-        ScSpecEntry::UdtStructV0(s) => s.fields.iter().map(|f| f.type_.clone()).collect(),
-        e => panic!("unexpected entry {e:?}"),
-    }
-}
-
-fn fn_types(xdr: &[u8]) -> (std::vec::Vec<ScSpecTypeDef>, std::vec::Vec<ScSpecTypeDef>) {
-    match ScSpecEntry::from_xdr(xdr, Limits::none()).unwrap() {
-        ScSpecEntry::FunctionV0(f) => (
-            f.inputs.iter().map(|i| i.type_.clone()).collect(),
-            f.outputs.to_vec(),
-        ),
-        e => panic!("unexpected entry {e:?}"),
+fn input(name: &str, type_: ScSpecTypeDef) -> ScSpecFunctionInputV0 {
+    ScSpecFunctionInputV0 {
+        doc: "".try_into().unwrap(),
+        name: name.try_into().unwrap(),
+        type_,
     }
 }
 
 #[test]
-fn test_struct_fields_with_aliases_have_the_aliased_spec_types() {
-    assert_eq!(
-        field_types(&Aliased::spec_xdr()),
-        field_types(&Direct::spec_xdr())
-    );
+fn test_struct_spec() {
+    let entry = ScSpecEntry::from_xdr(Aliased::spec_xdr(), Limits::none()).unwrap();
+    let expect = ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
+        doc: "".try_into().unwrap(),
+        lib: "".try_into().unwrap(),
+        name: "::soroban_sdk::tests::contract_type_aliases::Aliased"
+            .try_into()
+            .unwrap(),
+        fields: vec![
+            field("amount", ScSpecTypeDef::I128),
+            field(
+                "amounts",
+                ScSpecTypeDef::Vec(Box::new(ScSpecTypeVec {
+                    element_type: Box::new(ScSpecTypeDef::I128),
+                })),
+            ),
+            field("held", udt(HOLDING)),
+            field("id", ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n: 32 })),
+            field(
+                "maybe",
+                ScSpecTypeDef::Option(Box::new(ScSpecTypeOption {
+                    value_type: Box::new(ScSpecTypeDef::I128),
+                })),
+            ),
+            field("owner", ScSpecTypeDef::Address),
+            field(
+                "pair",
+                ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
+                    value_types: vec![ScSpecTypeDef::I128, ScSpecTypeDef::Address]
+                        .try_into()
+                        .unwrap(),
+                })),
+            ),
+        ]
+        .try_into()
+        .unwrap(),
+    });
+    assert_eq!(entry, expect);
 }
 
 #[test]
-fn test_fn_with_aliases_has_the_aliased_spec_types() {
-    assert_eq!(
-        fn_types(&Contract::spec_xdr_aliased()),
-        fn_types(&Contract::spec_xdr_direct())
-    );
+fn test_fn_spec() {
+    let entry = ScSpecEntry::from_xdr(Contract::spec_xdr_aliased(), Limits::none()).unwrap();
+    let expect = ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+        doc: "".try_into().unwrap(),
+        name: "aliased".try_into().unwrap(),
+        inputs: vec![
+            input("a", ScSpecTypeDef::I128),
+            input(
+                "b",
+                ScSpecTypeDef::Vec(Box::new(ScSpecTypeVec {
+                    element_type: Box::new(ScSpecTypeDef::I128),
+                })),
+            ),
+            input("c", udt(HOLDING)),
+        ]
+        .try_into()
+        .unwrap(),
+        outputs: vec![ScSpecTypeDef::I128].try_into().unwrap(),
+    });
+    assert_eq!(entry, expect);
 }
 
 #[test]

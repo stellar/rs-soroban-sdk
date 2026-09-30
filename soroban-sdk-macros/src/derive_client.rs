@@ -5,18 +5,12 @@ use syn::{Error, FnArg, LitStr, Path, Type, TypePath, TypeReference};
 
 use syn::ext::IdentExt as _;
 
-use crate::{
-    attribute::pass_through_attr_to_gen_code, map_type::map_type, stellar_xdr::ScSpecTypeDef,
-    symbol, syn_ext,
-};
+use crate::{attribute::pass_through_attr_to_gen_code, symbol, syn_ext};
 
+/// Whether the argument's type is written as `MuxedAddress`, so that the client
+/// can accept anything that converts into one.
 fn is_muxed_address_type(arg: &FnArg) -> bool {
-    if let FnArg::Typed(pat_type) = arg {
-        if let Ok(ScSpecTypeDef::MuxedAddress) = map_type(&pat_type.ty, true, false) {
-            return true;
-        }
-    }
-    false
+    matches!(arg, FnArg::Typed(pat_type) if syn_ext::is_type_named(&pat_type.ty, "MuxedAddress"))
 }
 
 pub fn derive_client_type(crate_path: &Path, ty: &str, name: &str) -> TokenStream {

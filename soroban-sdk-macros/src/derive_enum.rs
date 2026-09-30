@@ -6,14 +6,11 @@ use syn::{
     Visibility,
 };
 
-use stellar_xdr::{
-    Error as XdrError, ScSpecTypeDef, ScSpecUdtUnionCaseTupleV0, ScSpecUdtUnionCaseV0,
-    ScSpecUdtUnionCaseVoidV0, ScSpecUdtUnionV0, StringM, VecM, SCSYMBOL_LIMIT,
-};
+use stellar_xdr::{StringM, SCSYMBOL_LIMIT};
 
 use crate::{
     doc::docs_from_attrs,
-    map_type::{const_view_string, const_view_type_def, map_type, spec_type_def_gen},
+    map_type::{const_view_string, const_view_type_def, spec_type_def_gen},
 };
 
 pub fn derive_type_enum(
@@ -100,7 +97,6 @@ pub fn derive_type_enum(
                     case_ident,
                     &variant.attrs,
                     &variant.fields,
-                    &mut errors,
                 );
                 (
                     spec_case,
@@ -146,46 +142,27 @@ pub fn derive_type_enum(
         return quote! { #(#compile_errors)* };
     }
 
-    // Build the spec entry once.
-    let spec = ScSpecUdtUnionV0 {
-        doc: docs_from_attrs(attrs),
-        // set to empty string always because the field is no longer used
-        lib: StringM::default(),
-        name: enum_ident.unraw().to_string().try_into().unwrap(),
-        cases: spec_cases.try_into().unwrap(),
-    };
-
-    // The fully qualified name the spec knows this type by, emitted for every
-    // type so that a reference to it from anywhere can reach it.
-    let spec_type_def = spec_type_def_gen(path, enum_ident, None, None, None);
-
     // Generated code spec. The spec entry is rendered as the equivalent
     // const::ScSpecEntry, which the contract crate encodes to XDR at compile time.
+    let spec_type_def = spec_type_def_gen(path, enum_ident, None, None, None);
     let spec_gen = {
-        let doc = const_view_string(path, &spec.doc);
-        let lib = const_view_string(path, &spec.lib);
-        // Each case's Rust field types, so a reference to a user-defined type in
-        // a case resolves to the name that type reports for itself.
-        let cases = spec
-            .cases
+        let doc = const_view_string(path, &docs_from_attrs(attrs));
+        // Set to empty string always because the field is no longer used.
+        let lib = const_view_string(path, &StringM::<80>::default());
+        let cases = spec_cases
             .iter()
             .zip(&variant_field_types)
-            .map(|(c, field_types)| match c {
-                ScSpecUdtUnionCaseV0::VoidV0(c) => {
-                    let doc = const_view_string(path, &c.doc);
-                    let name = const_view_string(path, &c.name);
+            .map(|(c, field_types)| {
+                let doc = const_view_string(path, &c.doc);
+                let name = const_view_string(path, &c.name);
+                if !c.tuple {
                     quote!(#path::xdr::r#const::ScSpecUdtUnionCaseV0::VoidV0(
                         #path::xdr::r#const::ScSpecUdtUnionCaseVoidV0 { doc: #doc, name: #name }
                     ))
-                }
-                ScSpecUdtUnionCaseV0::TupleV0(c) => {
-                    let doc = const_view_string(path, &c.doc);
-                    let name = const_view_string(path, &c.name);
-                    let type_ = c
-                        .type_
+                } else {
+                    let type_ = field_types
                         .iter()
-                        .zip(field_types.iter().copied())
-                        .map(|(t, rust)| const_view_type_def(path, t, Some(rust)));
+                        .map(|rust| const_view_type_def(path, rust));
                     quote!(#path::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(
                         #path::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
                             doc: #doc,
@@ -341,8 +318,17 @@ pub fn derive_type_enum(
     output
 }
 
+/// A union case's doc and name, as the spec holds them, and whether it is a
+/// tuple case. The spec types of a tuple case's values come from the Rust types
+/// of its fields.
+struct SpecCase {
+    doc: StringM<1024>,
+    name: StringM<60>,
+    tuple: bool,
+}
+
 struct VariantTokens {
-    spec_case: ScSpecUdtUnionCaseV0,
+    spec_case: SpecCase,
     try_from: TokenStream2,
     try_into: TokenStream2,
     try_from_xdr: TokenStream2,
@@ -358,10 +344,11 @@ fn map_empty_variant(
     case_ident: &Ident,
     attrs: &[Attribute],
 ) -> VariantTokens {
-    let spec_case = ScSpecUdtUnionCaseV0::VoidV0(ScSpecUdtUnionCaseVoidV0 {
+    let spec_case = SpecCase {
         doc: docs_from_attrs(attrs),
         name: case_name.try_into().unwrap_or_else(|_| StringM::default()),
-    });
+        tuple: false,
+    };
     let try_from = quote! {
         #case_num_lit => {
             if iter.len() > 0 {
@@ -410,46 +397,11 @@ fn map_tuple_variant(
     case_ident: &Ident,
     attrs: &[Attribute],
     fields: &Fields,
-    errors: &mut Vec<Error>,
 ) -> VariantTokens {
-    let spec_case = {
-        let field_types = fields
-            .iter()
-            .map(|f| match map_type(&f.ty, false, false) {
-                Ok(t) => t,
-                Err(e) => {
-                    errors.push(e);
-                    ScSpecTypeDef::I32
-                }
-            })
-            .collect::<Vec<_>>();
-        let field_types = match VecM::try_from(field_types) {
-            Ok(t) => t,
-            Err(e) => {
-                let v = VecM::default();
-                let max_len = v.max_len();
-                match e {
-                    XdrError::LengthExceedsMax => {
-                        errors.push(Error::new(
-                            fields.span(),
-                            format!(
-                                "enum variant name {} has too many tuple values, max {} supported",
-                                case_ident, max_len
-                            ),
-                        ));
-                    }
-                    e => {
-                        errors.push(Error::new(fields.span(), format!("{e}")));
-                    }
-                }
-                v
-            }
-        };
-        ScSpecUdtUnionCaseV0::TupleV0(ScSpecUdtUnionCaseTupleV0 {
-            doc: docs_from_attrs(attrs),
-            name: case_name.try_into().unwrap_or_else(|_| StringM::default()),
-            type_: field_types,
-        })
+    let spec_case = SpecCase {
+        doc: docs_from_attrs(attrs),
+        name: case_name.try_into().unwrap_or_else(|_| StringM::default()),
+        tuple: true,
     };
 
     let num_fields = fields.iter().len();
