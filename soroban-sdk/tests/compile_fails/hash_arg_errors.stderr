@@ -5,4 +5,5 @@ error[E0277]: `soroban_sdk::crypto::Hash<32>` cannot be used as a contract funct
    |                     ^^^^ not a contract function argument type
    |
    = help: the trait `TryFromValForContractFn<Env, soroban_sdk::Val>` is not implemented for `soroban_sdk::crypto::Hash<32>`
+   = note: contract function arguments must be convertible from a `Val`, such as types marked `#[contracttype]`
    = note: `Hash<N>` can only be used in contexts where there is a guarantee that the hash has been sourced from a secure cryptographic hash function, such as the signature payload of `__check_auth`
