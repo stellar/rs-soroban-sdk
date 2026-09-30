@@ -4,7 +4,9 @@
 //! Entries are sorted by kind and name, then by the entry itself, rather than
 //! printed in the order they appear in the wasm, so that moving an item around
 //! in the source, which changes the order its entry is written to the wasm,
-//! does not change the output.
+//! does not change the output. Names are compared by their last `::` segment
+//! first, so that a type sorts by its own name rather than by the path of the
+//! module it is defined in.
 //!
 //! ```console
 //! cargo run --package spec-json -- contract.wasm
@@ -36,8 +38,24 @@ fn main() {
 /// Comparing by kind and name first ensures that an entry is sorted into the
 /// same location based off its kind and name, even if fields that come before
 /// the name in the entry's structure, such as the doc and lib fields, change.
+///
+/// Names are compared by their last `::` segment, then in full.
 fn compare(a: &ScSpecEntry, b: &ScSpecEntry) -> Ordering {
-    (a.discriminant(), name(a), a).cmp(&(b.discriminant(), name(b), b))
+    (a.discriminant(), last_segment(name(a)), name(a), a).cmp(&(
+        b.discriminant(),
+        last_segment(name(b)),
+        name(b),
+        b,
+    ))
+}
+
+/// Returns the part of the name after its last `::`, or the whole name if it
+/// has none.
+fn last_segment(name: &[u8]) -> &[u8] {
+    match name.windows(2).rposition(|w| w == b"::") {
+        Some(i) => &name[i + 2..],
+        None => name,
+    }
 }
 
 /// Returns the name of the entry.
