@@ -462,6 +462,34 @@
   },
   {
     "udt_struct_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "::test_spec_shaking_v3::wasm_imported::ContractContext",
+      "fields": [
+        {
+          "doc": "",
+          "name": "args",
+          "type": {
+            "vec": {
+              "element_type": "val"
+            }
+          }
+        },
+        {
+          "doc": "",
+          "name": "contract",
+          "type": "address"
+        },
+        {
+          "doc": "",
+          "name": "fn_name",
+          "type": "symbol"
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
       "doc": "Authorization context of a single contract call.\\n\\nThis struct corresponds to a `require_auth_for_args` call for an address\\nfrom `contract` function with `fn_name` name and `args` arguments.",
       "lib": "",
       "name": "::soroban_sdk::auth::ContractContext",
@@ -492,26 +520,17 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v3::wasm_imported::ContractContext",
+      "name": "::test_spec_shaking_v3::wasm_imported::ContractExecutableRef",
       "fields": [
         {
           "doc": "",
-          "name": "args",
-          "type": {
-            "vec": {
-              "element_type": "val"
-            }
-          }
-        },
-        {
-          "doc": "",
-          "name": "contract",
+          "name": "owner",
           "type": "address"
         },
         {
           "doc": "",
-          "name": "fn_name",
-          "type": "symbol"
+          "name": "tag",
+          "type": "string"
         }
       ]
     }
@@ -531,52 +550,6 @@
           "doc": "",
           "name": "tag",
           "type": "string"
-        }
-      ]
-    }
-  },
-  {
-    "udt_struct_v0": {
-      "doc": "",
-      "lib": "",
-      "name": "::test_spec_shaking_v3::wasm_imported::ContractExecutableRef",
-      "fields": [
-        {
-          "doc": "",
-          "name": "owner",
-          "type": "address"
-        },
-        {
-          "doc": "",
-          "name": "tag",
-          "type": "string"
-        }
-      ]
-    }
-  },
-  {
-    "udt_struct_v0": {
-      "doc": "Authorization context for `create_contract` host function that creates a\\nnew contract on behalf of authorizer address.",
-      "lib": "",
-      "name": "::soroban_sdk::auth::CreateContractHostFnContext",
-      "fields": [
-        {
-          "doc": "",
-          "name": "executable",
-          "type": {
-            "udt": {
-              "name": "::soroban_sdk::ContractExecutable"
-            }
-          }
-        },
-        {
-          "doc": "",
-          "name": "salt",
-          "type": {
-            "bytes_n": {
-              "n": 32
-            }
-          }
         }
       ]
     }
@@ -610,19 +583,10 @@
   },
   {
     "udt_struct_v0": {
-      "doc": "Authorization context for `create_contract` host function that creates a\\nnew contract on behalf of authorizer address.\\nThis is the same as `CreateContractHostFnContext`, but also has\\ncontract constructor arguments.",
+      "doc": "Authorization context for `create_contract` host function that creates a\\nnew contract on behalf of authorizer address.",
       "lib": "",
-      "name": "::soroban_sdk::auth::CreateContractWithConstructorHostFnContext",
+      "name": "::soroban_sdk::auth::CreateContractHostFnContext",
       "fields": [
-        {
-          "doc": "",
-          "name": "constructor_args",
-          "type": {
-            "vec": {
-              "element_type": "val"
-            }
-          }
-        },
         {
           "doc": "",
           "name": "executable",
@@ -665,6 +629,42 @@
           "type": {
             "udt": {
               "name": "::test_spec_shaking_v3::wasm_imported::ContractExecutable"
+            }
+          }
+        },
+        {
+          "doc": "",
+          "name": "salt",
+          "type": {
+            "bytes_n": {
+              "n": 32
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "Authorization context for `create_contract` host function that creates a\\nnew contract on behalf of authorizer address.\\nThis is the same as `CreateContractHostFnContext`, but also has\\ncontract constructor arguments.",
+      "lib": "",
+      "name": "::soroban_sdk::auth::CreateContractWithConstructorHostFnContext",
+      "fields": [
+        {
+          "doc": "",
+          "name": "constructor_args",
+          "type": {
+            "vec": {
+              "element_type": "val"
+            }
+          }
+        },
+        {
+          "doc": "",
+          "name": "executable",
+          "type": {
+            "udt": {
+              "name": "::soroban_sdk::ContractExecutable"
             }
           }
         },
@@ -918,37 +918,6 @@
   },
   {
     "udt_struct_v0": {
-      "doc": "Value of contract node in InvokerContractAuthEntry tree.",
-      "lib": "",
-      "name": "::soroban_sdk::auth::SubContractInvocation",
-      "fields": [
-        {
-          "doc": "",
-          "name": "context",
-          "type": {
-            "udt": {
-              "name": "::soroban_sdk::auth::ContractContext"
-            }
-          }
-        },
-        {
-          "doc": "",
-          "name": "sub_invocations",
-          "type": {
-            "vec": {
-              "element_type": {
-                "udt": {
-                  "name": "::soroban_sdk::auth::InvokerContractAuthEntry"
-                }
-              }
-            }
-          }
-        }
-      ]
-    }
-  },
-  {
-    "udt_struct_v0": {
       "doc": "",
       "lib": "",
       "name": "::test_spec_shaking_v3::wasm_imported::SubContractInvocation",
@@ -970,6 +939,37 @@
               "element_type": {
                 "udt": {
                   "name": "::test_spec_shaking_v3::wasm_imported::InvokerContractAuthEntry"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "Value of contract node in InvokerContractAuthEntry tree.",
+      "lib": "",
+      "name": "::soroban_sdk::auth::SubContractInvocation",
+      "fields": [
+        {
+          "doc": "",
+          "name": "context",
+          "type": {
+            "udt": {
+              "name": "::soroban_sdk::auth::ContractContext"
+            }
+          }
+        },
+        {
+          "doc": "",
+          "name": "sub_invocations",
+          "type": {
+            "vec": {
+              "element_type": {
+                "udt": {
+                  "name": "::soroban_sdk::auth::InvokerContractAuthEntry"
                 }
               }
             }
@@ -1450,6 +1450,54 @@
   },
   {
     "udt_union_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "::test_spec_shaking_v3::wasm_imported::Context",
+      "cases": [
+        {
+          "tuple_v0": {
+            "doc": "",
+            "name": "Contract",
+            "type": [
+              {
+                "udt": {
+                  "name": "::test_spec_shaking_v3::wasm_imported::ContractContext"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "tuple_v0": {
+            "doc": "",
+            "name": "CreateContractHostFn",
+            "type": [
+              {
+                "udt": {
+                  "name": "::test_spec_shaking_v3::wasm_imported::CreateContractHostFnContext"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "tuple_v0": {
+            "doc": "",
+            "name": "CreateContractWithCtorHostFn",
+            "type": [
+              {
+                "udt": {
+                  "name": "::test_spec_shaking_v3::wasm_imported::CreateContractWithConstructorHostFnContext"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "udt_union_v0": {
       "doc": "Context of a single authorized call performed by an address.\\n\\nCustom account contracts that implement `__check_auth` special function\\nreceive a list of `Context` values corresponding to all the calls that\\nneed to be authorized.",
       "lib": "",
       "name": "::soroban_sdk::auth::Context",
@@ -1500,16 +1548,16 @@
     "udt_union_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v3::wasm_imported::Context",
+      "name": "::test_spec_shaking_v3::wasm_imported::ContractExecutable",
       "cases": [
         {
           "tuple_v0": {
             "doc": "",
-            "name": "Contract",
+            "name": "Wasm",
             "type": [
               {
-                "udt": {
-                  "name": "::test_spec_shaking_v3::wasm_imported::ContractContext"
+                "bytes_n": {
+                  "n": 32
                 }
               }
             ]
@@ -1518,24 +1566,11 @@
         {
           "tuple_v0": {
             "doc": "",
-            "name": "CreateContractHostFn",
+            "name": "ExternalRef",
             "type": [
               {
                 "udt": {
-                  "name": "::test_spec_shaking_v3::wasm_imported::CreateContractHostFnContext"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "tuple_v0": {
-            "doc": "",
-            "name": "CreateContractWithCtorHostFn",
-            "type": [
-              {
-                "udt": {
-                  "name": "::test_spec_shaking_v3::wasm_imported::CreateContractWithConstructorHostFnContext"
+                  "name": "::test_spec_shaking_v3::wasm_imported::ContractExecutableRef"
                 }
               }
             ]
@@ -1571,41 +1606,6 @@
               {
                 "udt": {
                   "name": "::soroban_sdk::ContractExecutableRef"
-                }
-              }
-            ]
-          }
-        }
-      ]
-    }
-  },
-  {
-    "udt_union_v0": {
-      "doc": "",
-      "lib": "",
-      "name": "::test_spec_shaking_v3::wasm_imported::ContractExecutable",
-      "cases": [
-        {
-          "tuple_v0": {
-            "doc": "",
-            "name": "Wasm",
-            "type": [
-              {
-                "bytes_n": {
-                  "n": 32
-                }
-              }
-            ]
-          }
-        },
-        {
-          "tuple_v0": {
-            "doc": "",
-            "name": "ExternalRef",
-            "type": [
-              {
-                "udt": {
-                  "name": "::test_spec_shaking_v3::wasm_imported::ContractExecutableRef"
                 }
               }
             ]
@@ -1888,54 +1888,6 @@
   },
   {
     "udt_union_v0": {
-      "doc": "A node in the tree of authorizations performed on behalf of the current\\ncontract as invoker of the contracts deeper in the call stack.\\n\\nThis is used as an argument of `authorize_as_current_contract` host function.\\n\\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\\ncurrent contract.",
-      "lib": "",
-      "name": "::soroban_sdk::auth::InvokerContractAuthEntry",
-      "cases": [
-        {
-          "tuple_v0": {
-            "doc": "Invoke a contract.",
-            "name": "Contract",
-            "type": [
-              {
-                "udt": {
-                  "name": "::soroban_sdk::auth::SubContractInvocation"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "tuple_v0": {
-            "doc": "Create a contract passing 0 arguments to constructor.",
-            "name": "CreateContractHostFn",
-            "type": [
-              {
-                "udt": {
-                  "name": "::soroban_sdk::auth::CreateContractHostFnContext"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "tuple_v0": {
-            "doc": "Create a contract passing 0 or more arguments to constructor.",
-            "name": "CreateContractWithCtorHostFn",
-            "type": [
-              {
-                "udt": {
-                  "name": "::soroban_sdk::auth::CreateContractWithConstructorHostFnContext"
-                }
-              }
-            ]
-          }
-        }
-      ]
-    }
-  },
-  {
-    "udt_union_v0": {
       "doc": "",
       "lib": "",
       "name": "::test_spec_shaking_v3::wasm_imported::InvokerContractAuthEntry",
@@ -1974,6 +1926,54 @@
               {
                 "udt": {
                   "name": "::test_spec_shaking_v3::wasm_imported::CreateContractWithConstructorHostFnContext"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "udt_union_v0": {
+      "doc": "A node in the tree of authorizations performed on behalf of the current\\ncontract as invoker of the contracts deeper in the call stack.\\n\\nThis is used as an argument of `authorize_as_current_contract` host function.\\n\\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\\ncurrent contract.",
+      "lib": "",
+      "name": "::soroban_sdk::auth::InvokerContractAuthEntry",
+      "cases": [
+        {
+          "tuple_v0": {
+            "doc": "Invoke a contract.",
+            "name": "Contract",
+            "type": [
+              {
+                "udt": {
+                  "name": "::soroban_sdk::auth::SubContractInvocation"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "tuple_v0": {
+            "doc": "Create a contract passing 0 arguments to constructor.",
+            "name": "CreateContractHostFn",
+            "type": [
+              {
+                "udt": {
+                  "name": "::soroban_sdk::auth::CreateContractHostFnContext"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "tuple_v0": {
+            "doc": "Create a contract passing 0 or more arguments to constructor.",
+            "name": "CreateContractWithCtorHostFn",
+            "type": [
+              {
+                "udt": {
+                  "name": "::soroban_sdk::auth::CreateContractWithConstructorHostFnContext"
                 }
               }
             ]
