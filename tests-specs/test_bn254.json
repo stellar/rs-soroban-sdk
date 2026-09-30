@@ -108,25 +108,6 @@
   },
   {
     "udt_struct_v0": {
-      "doc": "Executable referenced via a persistent storage entry owned by a contract,\\neither this contract or another contract.\\n\\nThe persistent storage entry owned by the `owner` has the `tag` as its key.",
-      "lib": "",
-      "name": "::soroban_sdk::ContractExecutableRef",
-      "fields": [
-        {
-          "doc": "",
-          "name": "owner",
-          "type": "address"
-        },
-        {
-          "doc": "",
-          "name": "tag",
-          "type": "string"
-        }
-      ]
-    }
-  },
-  {
-    "udt_struct_v0": {
       "doc": "Authorization context of a single contract call.\\n\\nThis struct corresponds to a `require_auth_for_args` call for an address\\nfrom `contract` function with `fn_name` name and `args` arguments.",
       "lib": "",
       "name": "::soroban_sdk::auth::ContractContext",
@@ -149,6 +130,25 @@
           "doc": "",
           "name": "fn_name",
           "type": "symbol"
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "Executable referenced via a persistent storage entry owned by a contract,\\neither this contract or another contract.\\n\\nThe persistent storage entry owned by the `owner` has the `tag` as its key.",
+      "lib": "",
+      "name": "::soroban_sdk::ContractExecutableRef",
+      "fields": [
+        {
+          "doc": "",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "doc": "",
+          "name": "tag",
+          "type": "string"
         }
       ]
     }
@@ -218,6 +218,41 @@
   },
   {
     "udt_struct_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "::test_bn254::MockProof",
+      "fields": [
+        {
+          "doc": "",
+          "name": "g1",
+          "type": {
+            "vec": {
+              "element_type": {
+                "bytes_n": {
+                  "n": 64
+                }
+              }
+            }
+          }
+        },
+        {
+          "doc": "",
+          "name": "g2",
+          "type": {
+            "vec": {
+              "element_type": {
+                "bytes_n": {
+                  "n": 128
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
       "doc": "Value of contract node in InvokerContractAuthEntry tree.",
       "lib": "",
       "name": "::soroban_sdk::auth::SubContractInvocation",
@@ -248,35 +283,48 @@
     }
   },
   {
-    "udt_struct_v0": {
-      "doc": "",
+    "udt_union_v0": {
+      "doc": "Context of a single authorized call performed by an address.\\n\\nCustom account contracts that implement `__check_auth` special function\\nreceive a list of `Context` values corresponding to all the calls that\\nneed to be authorized.",
       "lib": "",
-      "name": "::test_bn254::MockProof",
-      "fields": [
+      "name": "::soroban_sdk::auth::Context",
+      "cases": [
         {
-          "doc": "",
-          "name": "g1",
-          "type": {
-            "vec": {
-              "element_type": {
-                "bytes_n": {
-                  "n": 64
+          "tuple_v0": {
+            "doc": "Contract invocation.",
+            "name": "Contract",
+            "type": [
+              {
+                "udt": {
+                  "name": "::soroban_sdk::auth::ContractContext"
                 }
               }
-            }
+            ]
           }
         },
         {
-          "doc": "",
-          "name": "g2",
-          "type": {
-            "vec": {
-              "element_type": {
-                "bytes_n": {
-                  "n": 128
+          "tuple_v0": {
+            "doc": "Contract that has a constructor with no arguments is created.",
+            "name": "CreateContractHostFn",
+            "type": [
+              {
+                "udt": {
+                  "name": "::soroban_sdk::auth::CreateContractHostFnContext"
                 }
               }
-            }
+            ]
+          }
+        },
+        {
+          "tuple_v0": {
+            "doc": "Contract that has a constructor with 1 or more arguments is created.",
+            "name": "CreateContractWithCtorHostFn",
+            "type": [
+              {
+                "udt": {
+                  "name": "::soroban_sdk::auth::CreateContractWithConstructorHostFnContext"
+                }
+              }
+            ]
           }
         }
       ]
@@ -346,54 +394,6 @@
           "void_v0": {
             "doc": "",
             "name": "Account"
-          }
-        }
-      ]
-    }
-  },
-  {
-    "udt_union_v0": {
-      "doc": "Context of a single authorized call performed by an address.\\n\\nCustom account contracts that implement `__check_auth` special function\\nreceive a list of `Context` values corresponding to all the calls that\\nneed to be authorized.",
-      "lib": "",
-      "name": "::soroban_sdk::auth::Context",
-      "cases": [
-        {
-          "tuple_v0": {
-            "doc": "Contract invocation.",
-            "name": "Contract",
-            "type": [
-              {
-                "udt": {
-                  "name": "::soroban_sdk::auth::ContractContext"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "tuple_v0": {
-            "doc": "Contract that has a constructor with no arguments is created.",
-            "name": "CreateContractHostFn",
-            "type": [
-              {
-                "udt": {
-                  "name": "::soroban_sdk::auth::CreateContractHostFnContext"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "tuple_v0": {
-            "doc": "Contract that has a constructor with 1 or more arguments is created.",
-            "name": "CreateContractWithCtorHostFn",
-            "type": [
-              {
-                "udt": {
-                  "name": "::soroban_sdk::auth::CreateContractWithConstructorHostFnContext"
-                }
-              }
-            ]
           }
         }
       ]
