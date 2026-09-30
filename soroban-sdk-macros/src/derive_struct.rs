@@ -1,4 +1,4 @@
-use itertools::Itertools;
+use itertools::{izip, Itertools};
 use proc_macro2::{Literal, TokenStream as TokenStream2};
 use quote::{format_ident, quote};
 use syn::{ext::IdentExt as _, Attribute, DataStruct, Error, Ident, Path, Visibility};
@@ -26,7 +26,7 @@ pub fn derive_type_struct(
     let mut errors = Vec::<Error>::new();
     let fields = &data.fields;
     let field_count_usize: usize = fields.len();
-    let (spec_fields, field_idents, field_names, field_idx_lits, field_types, try_from_xdrs, try_into_xdrs): (Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>) = fields
+    let (field_docs, spec_field_names, field_idents, field_names, field_idx_lits, field_types, try_from_xdrs, try_into_xdrs): (Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>, Vec<_>) = fields
         .iter()
         .sorted_by_key(|field| field.ident.as_ref().unwrap().unraw().to_string())
         .enumerate()
@@ -37,13 +37,11 @@ pub fn derive_type_struct(
             let field_type = &field.ty;
             // The field's doc and name, as the spec holds them. Its type in the
             // spec comes from the Rust type.
-            let spec_field = (
-                docs_from_attrs(&field.attrs),
-                StringM::<30>::try_from(field_name.clone()).unwrap_or_else(|_| {
-                    errors.push(Error::new(field_ident.span(), format!("struct field name is too long: {}, max is 30", field_name.len())));
-                    StringM::default()
-                }),
-            );
+            let field_doc = docs_from_attrs(&field.attrs);
+            let spec_field_name = StringM::<30>::try_from(field_name.clone()).unwrap_or_else(|_| {
+                errors.push(Error::new(field_ident.span(), format!("struct field name is too long: {}, max is 30", field_name.len())));
+                StringM::default()
+            });
             let try_from_xdr = quote! {
                 #field_ident: {
                     let key: #path::xdr::ScVal = #path::xdr::ScSymbol(#field_name.try_into().map_err(|_| #path::xdr::Error::Invalid)?).into();
@@ -63,7 +61,7 @@ pub fn derive_type_struct(
                     val: (&val.#field_ident).try_into().map_err(|_| #path::xdr::Error::Invalid)?,
                 }
             };
-            (spec_field, field_ident, field_name, field_idx_lit, field_type, try_from_xdr, try_into_xdr)
+            (field_doc, spec_field_name, field_ident, field_name, field_idx_lit, field_type, try_from_xdr, try_into_xdr)
         })
         .multiunzip();
 
@@ -80,10 +78,8 @@ pub fn derive_type_struct(
         let doc = const_view_string(path, &docs_from_attrs(attrs));
         // Set to empty string always because the field is no longer used.
         let lib = const_view_string(path, &StringM::<80>::default());
-        let fields = spec_fields
-            .iter()
-            .zip(field_types.iter().copied())
-            .map(|((field_doc, field_name), rust)| {
+        let fields = izip!(&field_docs, &spec_field_names, &field_types).map(
+            |(field_doc, field_name, rust)| {
                 let doc = const_view_string(path, field_doc);
                 let name = const_view_string(path, field_name);
                 let type_ = const_view_type_def(path, rust);
