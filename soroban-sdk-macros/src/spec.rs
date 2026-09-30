@@ -6,6 +6,12 @@ use syn::{ext::IdentExt as _, Error, Generics, Ident, Path, Type, TypeReference}
 /// The names of the soroban_sdk types that a user-defined type cannot take,
 /// so that a reference to a user-defined type can never be mistaken for one of
 /// them by a reader of the contract.
+///
+/// This matters in particular for contracts built with older SDKs that import
+/// contracts built with this one. Older SDKs map a type named like an SDK
+/// type, such as `Address`, to the SDK type rather than to a user-defined
+/// type of the same name, so a contract must not export user-defined types
+/// with these names, or older importers would misread its interface.
 const RESERVED_NAMES: &[&str] = &[
     "Val",
     "bool",
