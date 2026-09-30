@@ -5,7 +5,9 @@
 
 use crate::{self as soroban_sdk};
 use soroban_sdk::{contract, contracterror, contractimpl};
-use stellar_xdr::{Limits, ReadXdr, ScSpecEntry, ScSpecTypeDef, ScSpecTypeResult, ScSpecTypeUdt};
+use stellar_xdr::{
+    Limits, ReadXdr, ScSpecEntry, ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeResult, ScSpecTypeUdt,
+};
 
 pub mod a {
     use crate::{self as soroban_sdk};
@@ -57,17 +59,18 @@ impl Contract {
     }
 }
 
-fn error_type(xdr: &[u8]) -> ScSpecTypeDef {
-    match ScSpecEntry::from_xdr(xdr, Limits::none()).unwrap() {
-        ScSpecEntry::FunctionV0(f) => match &f.outputs[..] {
-            [ScSpecTypeDef::Result(r)] => {
-                let ScSpecTypeResult { error_type, .. } = r.as_ref();
-                error_type.as_ref().clone()
-            }
-            o => panic!("unexpected outputs {o:?}"),
-        },
-        e => panic!("unexpected entry {e:?}"),
-    }
+fn fn_returning_result_of(name: &str, error_type: ScSpecTypeDef) -> ScSpecEntry {
+    ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+        doc: "".try_into().unwrap(),
+        name: name.try_into().unwrap(),
+        inputs: vec![].try_into().unwrap(),
+        outputs: vec![ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
+            ok_type: Box::new(ScSpecTypeDef::Void),
+            error_type: Box::new(error_type),
+        }))]
+        .try_into()
+        .unwrap(),
+    })
 }
 
 fn udt(name: &str) -> ScSpecTypeDef {
@@ -78,21 +81,36 @@ fn udt(name: &str) -> ScSpecTypeDef {
 
 #[test]
 fn test_sdk_error_is_the_builtin_error_type() {
-    assert_eq!(error_type(&Contract::spec_xdr_sdk()), ScSpecTypeDef::Error);
+    let entry = ScSpecEntry::from_xdr(Contract::spec_xdr_sdk(), Limits::none()).unwrap();
+    assert_eq!(entry, fn_returning_result_of("sdk", ScSpecTypeDef::Error));
 }
 
 #[test]
 fn test_user_defined_errors_are_referred_to_by_their_own_names() {
+    let entry = ScSpecEntry::from_xdr(Contract::spec_xdr_local(), Limits::none()).unwrap();
     assert_eq!(
-        error_type(&Contract::spec_xdr_local()),
-        udt("::soroban_sdk::tests::contract_error_references::Error")
+        entry,
+        fn_returning_result_of(
+            "local",
+            udt("::soroban_sdk::tests::contract_error_references::Error")
+        )
     );
+
+    let entry = ScSpecEntry::from_xdr(Contract::spec_xdr_a(), Limits::none()).unwrap();
     assert_eq!(
-        error_type(&Contract::spec_xdr_a()),
-        udt("::soroban_sdk::tests::contract_error_references::a::Error")
+        entry,
+        fn_returning_result_of(
+            "a",
+            udt("::soroban_sdk::tests::contract_error_references::a::Error")
+        )
     );
+
+    let entry = ScSpecEntry::from_xdr(Contract::spec_xdr_b(), Limits::none()).unwrap();
     assert_eq!(
-        error_type(&Contract::spec_xdr_b()),
-        udt("::soroban_sdk::tests::contract_error_references::b::Error")
+        entry,
+        fn_returning_result_of(
+            "b",
+            udt("::soroban_sdk::tests::contract_error_references::b::Error")
+        )
     );
 }
