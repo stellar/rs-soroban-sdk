@@ -1,7 +1,10 @@
 use proc_macro2::{Literal, TokenStream as TokenStream2};
 use quote::{quote, quote_spanned, ToTokens};
 use stellar_xdr::{ScSymbol, StringM, SC_SPEC_TYPE_NAME_LIMIT};
-use syn::{ext::IdentExt as _, Error, Generics, Ident, Path, Type, TypeReference};
+use syn::{
+    ext::IdentExt as _, spanned::Spanned, Error, GenericParam, Generics, Ident, Path, Type,
+    TypeReference,
+};
 
 /// The names of the soroban_sdk types that a user-defined type cannot take,
 /// so that a reference to a user-defined type can never be mistaken for one of
@@ -60,13 +63,8 @@ const RESERVED_NAMES: &[&str] = &[
 /// - If `ident` is longer than the spec's type name limit
 /// - If `generics` has any parameters, as UDTs don't support generics
 pub fn check_udt_ident(ident: &Ident, generics: &Generics) -> Result<(), Error> {
+    check_not_reserved(ident)?;
     let name = ident.unraw().to_string();
-    if RESERVED_NAMES.contains(&name.as_str()) {
-        return Err(Error::new(
-            ident.span(),
-            format!("type `{ident}` conflicts with a soroban_sdk type and cannot be used as a user-defined type"),
-        ));
-    }
     if let Err(e) = StringM::<SC_SPEC_TYPE_NAME_LIMIT>::try_from(name.as_str()) {
         return Err(Error::new(
             ident.span(),
@@ -81,6 +79,46 @@ pub fn check_udt_ident(ident: &Ident, generics: &Generics) -> Result<(), Error> 
                 ident,
                 generics.params.to_token_stream()
             ),
+        ));
+    }
+    Ok(())
+}
+
+/// Checks that an `ident` and `generics` can be a contract event, which the
+/// spec defines by name as it does a user-defined type.
+///
+/// Unlike a user-defined type, an event can have lifetime parameters, so that
+/// its fields can borrow the values they publish. The event name's length is
+/// checked with the rest of the event.
+///
+/// ### Errors
+/// - If `ident` is the name of a soroban_sdk type
+/// - If `generics` has any type or const parameters
+pub fn check_event_ident(ident: &Ident, generics: &Generics) -> Result<(), Error> {
+    check_not_reserved(ident)?;
+    if let Some(param) = generics
+        .params
+        .iter()
+        .find(|p| !matches!(p, GenericParam::Lifetime(_)))
+    {
+        return Err(Error::new(
+            param.span(),
+            format!(
+                "event `{}` contains generic `{}`, which is not supported for contract events, only lifetimes are",
+                ident,
+                param.to_token_stream()
+            ),
+        ));
+    }
+    Ok(())
+}
+
+/// Checks that an `ident` is not the name of a soroban_sdk type.
+fn check_not_reserved(ident: &Ident) -> Result<(), Error> {
+    if RESERVED_NAMES.contains(&ident.unraw().to_string().as_str()) {
+        return Err(Error::new(
+            ident.span(),
+            format!("type `{ident}` conflicts with a soroban_sdk type and cannot be used as a user-defined type"),
         ));
     }
     Ok(())
@@ -246,6 +284,44 @@ mod test {
             err.to_string(),
             "type `r#Vec` conflicts with a soroban_sdk type and cannot be used as a user-defined type"
         );
+    }
+
+    #[test]
+    fn test_check_event_ident_sdk_type_errors() {
+        let input: DeriveInput = parse_quote!(
+            struct Address {
+                pub key: u32,
+            }
+        );
+        let err = check_event_ident(&input.ident, &input.generics).unwrap_err();
+        assert_eq!(
+            err.to_string(),
+            "type `Address` conflicts with a soroban_sdk type and cannot be used as a user-defined type"
+        );
+    }
+
+    #[test]
+    fn test_check_event_ident_type_generic_errors() {
+        let input: DeriveInput = parse_quote!(
+            struct Transfer<'a, T> {
+                pub from: &'a T,
+            }
+        );
+        let err = check_event_ident(&input.ident, &input.generics).unwrap_err();
+        assert_eq!(
+            err.to_string(),
+            "event `Transfer` contains generic `T`, which is not supported for contract events, only lifetimes are"
+        );
+    }
+
+    #[test]
+    fn test_check_event_ident_lifetime_is_allowed() {
+        let input: DeriveInput = parse_quote!(
+            struct Transfer<'a> {
+                pub from: &'a u32,
+            }
+        );
+        assert!(check_event_ident(&input.ident, &input.generics).is_ok());
     }
 
     #[test]

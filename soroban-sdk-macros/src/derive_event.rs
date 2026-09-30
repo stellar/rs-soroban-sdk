@@ -3,7 +3,10 @@ use crate::{
     default_crate_path,
     doc::docs_from_attrs,
     export_arg_error, shaking,
-    spec::{const_view_string, const_view_symbol, const_view_type_def, spec_type_def_gen},
+    spec::{
+        check_event_ident, const_view_string, const_view_symbol, const_view_type_def,
+        spec_type_def_gen,
+    },
     symbol,
 };
 use darling::{ast::NestedMeta, util::SpannedValue, Error, FromMeta};
@@ -118,6 +121,8 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
     let ident = &input.ident;
     let (gen_impl, gen_types, gen_where) = input.generics.split_for_impl();
     let path = &args.crate_path;
+
+    errors.handle(check_event_ident(ident, &input.generics).map_err(Error::from));
 
     // Check event name length
     const EVENT_NAME_LENGTH: u32 = SC_SPEC_TYPE_NAME_LIMIT;
