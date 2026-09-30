@@ -17,6 +17,7 @@ mod contract_error_references;
 mod contract_event;
 mod contract_executable_ref;
 mod contract_fn;
+mod contract_fn_macro_rules;
 mod contract_invoke;
 mod contract_invoke_arg_count;
 mod contract_invoke_panics;
