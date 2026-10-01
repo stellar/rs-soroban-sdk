@@ -149,6 +149,9 @@ jobs:
         version: 0.6.44
     - run: cargo version
     - run: make build-libs
+    - name: Build test wasms in docker on linux arm64
+      if: matrix.sys.target == 'aarch64-unknown-linux-gnu'
+      run: echo TEST_WASMS_DOCKER=1 >> $GITHUB_ENV
     - run: make build-test-wasms TEST_CRATES_RUSTUP_TOOLCHAIN=$RUSTUP_TOOLCHAIN
     - name: Upload test wasms
       uses: actions/upload-artifact@v7
