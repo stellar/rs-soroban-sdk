@@ -4,6 +4,27 @@
 // every small change is captured here. This is the document a developer should
 // read to understand what they need to change when upgrading.
 
+//! # Migrating from v28 to v30
+//!
+//! 1. Contracts must be built with `stellar contract build` from `stellar-cli` v30.0.0 or newer,
+//!    which is now required. The stellar-cli reads the SDK version recorded in the contract's
+//!    `rssdkver` meta to decide how to shake the spec, and the SDK no longer records the
+//!    `rssdk_spec_shaking` meta.
+//!
+//! 2. Contract specs name user-defined types by their fully qualified path, such as
+//!    `::my_contract::types::State`, so that two types sharing a name in different modules no
+//!    longer collide in the spec. The stellar-cli reduces the names to simple names when it builds
+//!    the contract, numbering any that would collide (`State2`, …), and `contractimport!` and the
+//!    generated bindings do the same. No code changes are required for most contracts.
+//!
+//! 3. Spec shaking keeps a type by following the references to it from the contract's functions,
+//!    events, and other kept types. Only events and errors carry markers in the Wasm, as they can be
+//!    used without being referenced by any function. No code changes are required.
+//!
+//! 4. [`contractevent`] and [`contracterror`] reject the names of SDK types, such as `Address` or
+//!    `Symbol`, as [`contracttype`] already did, because a reader of the spec could mistake them for
+//!    the SDK type. Rename any event or error enum named like an SDK type.
+//!
 //! # Migrating from v27 to v28
 //!
 //! 1. [Spec shaking is always on, and the `export` argument has been removed][v28_spec_shaking].
