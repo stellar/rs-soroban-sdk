@@ -33,14 +33,6 @@ test-only:
 			test
 	$(MAKE) elide-wasm
 
-# Replaces wasm in the generated test snapshots and expanded tests with ... so
-# that changes to contract binaries do not cause churn in the generated files.
-# Matches hex strings of wasm in snapshots, and wasm byte string literals in
-# expanded code.
-elide-wasm:
-	find . -path ./target -prune -o \( -path '*/test_snapshots/*.json' -o -path './tests-expanded/*.rs' \) -print0 \
-		| xargs -0 perl -0777 -pi -e 's/"0061736d[0-9a-f]*"/"..."/g; s/b"\\x00asm(?:[^"\\]|\\.)*"/b"..."/gs'
-
 build: build-libs build-test-wasms
 
 build-libs: fmt
@@ -132,3 +124,11 @@ msrv:
 
 version-major:
 	@echo $(VERSION_MAJOR)
+
+# Replaces wasm in the generated test snapshots and expanded tests with ... so
+# that changes to contract binaries do not cause churn in the generated files.
+# Matches hex strings of wasm in snapshots, and wasm byte string literals in
+# expanded code.
+elide-wasm:
+	find . -path ./target -prune -o \( -path '*/test_snapshots/*.json' -o -path './tests-expanded/*.rs' \) -print0 \
+		| xargs -0 perl -0777 -pi -e 's/"0061736d[0-9a-f]*"/"..."/g; s/b"\\x00asm(?:[^"\\]|\\.)*"/b"..."/gs'
