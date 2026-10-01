@@ -37,13 +37,47 @@ build: build-libs build-test-wasms
 build-libs: fmt
 	cargo hack build --release $(foreach c,$(LIB_CRATES),--package $(c))
 
+# Build the test wasms inside a docker container so that the wasms are the same
+# regardless of the host building them. Set TEST_WASMS_DOCKER to empty to build
+# on the host instead, e.g. where docker cannot run linux containers. Build
+# state is kept in docker volumes, and the wasms are copied out after each crate
+# builds because some test crates import the wasms of others.
+TEST_WASMS_DOCKER?=1
+TEST_WASMS_DOCKER_IMAGE?=rust:$(MSRV)
+
 build-test-wasms: fmt
 	# Build the test wasms with MSRV by default, with some meta disabled for
 	# binary stability for tests.
+ifeq ($(TEST_WASMS_DOCKER),)
 	STELLAR_CLI_VERSION=$(VERSION_MAJOR).0.0 \
 	RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
 	RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
-		cargo hack build --release --target wasm32v1-none $(foreach c,$(TEST_CRATES),--package $(c)) ; \
+		cargo hack build --release --target wasm32v1-none $(foreach c,$(TEST_CRATES),--package $(c))
+else
+	mkdir -p target/wasm32v1-none/release
+	docker run --rm \
+		-v "$(CURDIR)":/workspace:ro \
+		-v "$(CURDIR)/target/wasm32v1-none/release":/out \
+		-v soroban-sdk-test-wasms-rustup:/usr/local/rustup \
+		-v soroban-sdk-test-wasms-cargo-registry:/usr/local/cargo/registry \
+		-v soroban-sdk-test-wasms-cargo-git:/usr/local/cargo/git \
+		-v soroban-sdk-test-wasms-target:/target \
+		-w /workspace \
+		-e CARGO_TARGET_DIR=/target \
+		-e STELLAR_CLI_VERSION=$(VERSION_MAJOR).0.0 \
+		-e RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
+		-e RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
+		$(TEST_WASMS_DOCKER_IMAGE) \
+		sh -c ' \
+			set -e; \
+			rustup toolchain install $(TEST_CRATES_RUSTUP_TOOLCHAIN) --profile minimal --target wasm32v1-none; \
+			for c in $(TEST_CRATES); do \
+				cargo build --locked --release --target wasm32v1-none --package $$c; \
+				cp /target/wasm32v1-none/release/*.wasm /out/; \
+				chown $(shell id -u):$(shell id -g) /out/*.wasm; \
+			done; \
+		'
+endif
 	cd target/wasm32v1-none/release/ && \
 		for i in *.wasm ; do \
 			ls -l "$$i"; \
