@@ -20,24 +20,24 @@ fn test_spec_shaking() {
     // Find markers embedded in the WASM data section.
     let markers = soroban_spec::shaking::find_all(WASM);
 
-    // The version the contract records is what selects the shaking rules, so
+    // The SDK that built the contract is what selects the shaking model, so
     // read it rather than assuming one. Built by soroban-sdk 28.0.0 the contract
-    // records version 2, where every used entry carries a marker. Built by the
-    // SDK in this repo it records version 3, where only its events and
-    // panicked-with errors carry markers, and every other type is settled by
-    // reachability. Either way the same entries survive.
+    // records spec shaking version 2, where every used entry carries a marker.
+    // Built by the SDK in this repo it records its version, from which only its
+    // events and panicked-with errors carry markers, and every other type is
+    // settled by reachability. Either way the same entries survive.
     let meta = soroban_meta::read::from_wasm(WASM).unwrap();
-    let version = soroban_spec::shaking::spec_shaking_version_for_meta(&meta);
-    let expected_version = match env!("CARGO_PKG_NAME") {
-        "test_spec_shaking_v2" => soroban_spec::shaking::Version::V2,
-        "test_spec_shaking_v3" => soroban_spec::shaking::Version::V3,
+    let model = soroban_spec::shaking::model_for_meta(&meta);
+    let expected_model = match env!("CARGO_PKG_NAME") {
+        "test_spec_shaking_v2" => soroban_spec::shaking::Model::Markers,
+        "test_spec_shaking_v3" => soroban_spec::shaking::Model::References,
         name => panic!("unexpected package {name}"),
     };
-    assert_eq!(version, expected_version);
+    assert_eq!(model, expected_model);
 
-    // Filter entries by that version's rules.
+    // Filter entries by that model's rules.
     let filtered: Vec<_> =
-        soroban_spec::shaking::filter(entries.iter().cloned(), &markers, version).collect();
+        soroban_spec::shaking::filter(entries.iter().cloned(), &markers, model).collect();
 
     // Collect names of filtered entries by kind for assertions.
     let filtered_names: HashSet<std::string::String> =
@@ -168,13 +168,13 @@ fn test_spec_shaking() {
         );
     }
 
-    match version {
-        soroban_spec::shaking::Version::V1 => panic!("unexpected version {version:?}"),
-        soroban_spec::shaking::Version::V2 => {
+    match model {
+        soroban_spec::shaking::Model::None => panic!("unexpected model {model:?}"),
+        soroban_spec::shaking::Model::Markers => {
             // Every used entry carries a marker.
             assert_eq!(markers.len(), used.len());
         }
-        soroban_spec::shaking::Version::V3 => {
+        soroban_spec::shaking::Model::References => {
             // Only the entries that nothing in a spec references by name carry a
             // marker: the events the contract publishes, and the errors it panics
             // with. Every other type is named by whatever references it and is kept by

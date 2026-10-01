@@ -1,25 +1,29 @@
 /// Spec shaking: removing unused spec entries from contract WASMs.
 ///
-/// ## Meta
+/// ## Models
 ///
-/// The `contractmetav0` section of a WASM may contain an `ScMetaV0` entry
-/// with key [`META_KEY`] (`rssdk_spec_shaking`). The value indicates the spec
-/// shaking version:
+/// How a WASM's spec is shaken depends on the SDK that built it, which the
+/// `contractmetav0` section records. The [`Model`] is chosen in order:
 ///
-/// - Absent or unrecognised — version 1 (no markers, no shaking possible).
-/// - `"2"` — version 2, every used entry has a marker in the data section, so
-///   [`filter`] shakes on markers alone.
-/// - `"3"` — version 3, only events and panicked-with errors have markers, so
-///   [`filter_by_references`] shakes every other type by reachability.
+/// - [`Model::References`] — built by soroban-sdk v30 or later, as its
+///   [`SDK_VERSION_META_KEY`] (`rssdkver`) entry says. The type names are
+///   reduced, and the spec is shaken by following the references to each type
+///   by name, with markers only for events and errors.
+/// - [`Model::Markers`] — the [`META_KEY`] (`rssdk_spec_shaking`) entry is
+///   [`META_VALUE_V2`] (`"2"`). Every used entry has a marker in the data
+///   section, so the spec is shaken by markers alone.
+/// - [`Model::None`] — otherwise. Nothing records how the spec could be
+///   shaken, so it is left alone.
 ///
-/// The version selects the rules, so a tool reads it before shaking and each
-/// wasm is shaken the way it was built. A tool that only knows version 2 would
-/// shake every type out of a version 3 wasm, which is why the version is
-/// bumped rather than the meaning of `"2"` changed; reading an unrecognised
-/// version as 1 is what makes such a tool leave a newer wasm alone.
+/// The model selects the rules, so a tool reads it before shaking and each
+/// wasm is shaken the way it was built. A soroban-sdk v30 or later WASM does
+/// not carry the [`META_KEY`] entry, so a tool that predates
+/// [`Model::References`] finds nothing it recognises and leaves the WASM
+/// alone, rather than shaking every type out of it by markers it no longer
+/// carries.
 ///
-/// Use [`spec_shaking_version_for_meta`] to determine the version from the
-/// contract's meta entries.
+/// Use [`model_for_meta`] to determine the model from the contract's meta
+/// entries.
 ///
 /// ## Markers
 ///
@@ -31,19 +35,19 @@
 /// entry is used, the function is called and the marker is included. When it
 /// is unused, the function is DCE'd along with its marker.
 ///
-/// From version 3, only the entries a spec never references by name carry a
-/// marker: events, which nothing in a spec names, and error enums, which a
-/// contract may use solely by handing them to `panic_with_error!`. Every other
-/// user-defined type is named by whatever references it, so
-/// [`filter_by_references`] settles it by reachability and the wasm carries no
-/// marker for it. A version 2 wasm carries a marker per type and is shaken by
-/// [`filter`] on those markers alone.
+/// Under [`Model::References`], only the entries a spec never references by
+/// name carry a marker: events, which nothing in a spec names, and error
+/// enums, which a contract may use solely by handing them to
+/// `panic_with_error!`. Every other user-defined type is named by whatever
+/// references it, so [`filter`] settles it by reachability and the wasm
+/// carries no marker for it. Under [`Model::Markers`], a wasm carries a marker
+/// per type and [`filter`] shakes on those markers alone.
 ///
 /// Post-processing tools (e.g. stellar-cli) can:
 /// 1. Scan the WASM data section for "SpEcV1" patterns
 /// 2. Extract the hash from each marker
 /// 3. Match against specs in contractspecv0 section (by hashing each spec)
-/// 4. Strip the specs the version's rules do not keep from contractspecv0
+/// 4. Strip the specs the model's rules do not keep from contractspecv0
 ///
 /// Today markers are only used in contracts written in Rust, leveraging how Rust can eliminate
 /// dead code to make the markers a good signal for if a type gets used. It's not known if the
@@ -64,60 +68,70 @@ mod sha256;
 mod sha256_test;
 use sha256::sha256;
 
-/// The contract meta key that indicates the spec shaking version.
+/// The contract meta key that soroban-sdk v28 and v29 record spec shaking
+/// under.
 ///
 /// Stored in the `contractmetav0` section as an [`ScMetaV0`] entry.
 pub const META_KEY: &str = "rssdk_spec_shaking";
 
-/// The meta value for spec shaking version 2.
+/// The [`META_KEY`] value for [`Model::Markers`].
 pub const META_VALUE_V2: &str = "2";
 
-/// The meta value for spec shaking version 3.
-pub const META_VALUE_V3: &str = "3";
+/// The contract meta key that soroban-sdk records its version under, as
+/// `<version>` or `<version>#<git revision>`.
+pub const SDK_VERSION_META_KEY: &str = "rssdkver";
 
-/// The spec shaking version a contract was built with, which selects the rules
-/// [`filter`] shakes it by.
+/// The first soroban-sdk major version whose contracts are shaken by
+/// [`Model::References`].
+pub const REFERENCES_MIN_SDK_MAJOR: u64 = 30;
+
+/// How a contract's spec is shaken, which depends on the SDK that built it
+/// and selects the rules [`filter`] shakes it by.
 ///
-/// A tool reads the version the contract records rather than assuming the
-/// newest it knows, because the version says what a missing marker means. An
-/// unrecognised value reads as [`Version::V1`], so a tool that predates a
-/// version leaves those contracts' specs alone instead of shaking them by
-/// rules that do not apply.
+/// A tool reads the model from the contract rather than assuming the newest
+/// it knows, because the model says what a missing marker means.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub enum Version {
-    /// No markers, so nothing can be shaken.
-    V1,
+pub enum Model {
+    /// Nothing records how the spec could be shaken, so it is left alone.
+    None,
     /// Every used entry carries a marker, so markers alone say what is used.
-    V2,
-    /// Only events and panicked-with errors carry markers; every other type is
-    /// settled by following the references to it.
-    V3,
+    Markers,
+    /// The type names are reduced, functions are kept, events and errors are
+    /// kept by their markers, and every other type is kept by following the
+    /// references to it by name.
+    References,
 }
 
-/// Returns the spec shaking version indicated by the contract meta entries.
+/// Returns the model the contract's spec is shaken by, from its meta entries.
 ///
-/// Looks for an [`ScMetaV0`] entry with key [`META_KEY`]. Returns:
-/// - [`Version::V3`] if the value is [`META_VALUE_V3`] (`"3"`).
-/// - [`Version::V2`] if the value is [`META_VALUE_V2`] (`"2"`).
-/// - [`Version::V1`] otherwise (absent or any other value).
+/// Returns, in order:
+/// - [`Model::References`] if the [`SDK_VERSION_META_KEY`] entry records a
+///   major version of at least [`REFERENCES_MIN_SDK_MAJOR`].
+/// - [`Model::Markers`] if the [`META_KEY`] entry is [`META_VALUE_V2`].
+/// - [`Model::None`] otherwise.
 #[cfg(feature = "std")]
 #[must_use]
-pub fn spec_shaking_version_for_meta(meta: &[ScMetaEntry]) -> Version {
-    for entry in meta {
-        match entry {
-            ScMetaEntry::ScMetaV0(v0) if v0.key.to_utf8_string_lossy() == META_KEY => {
-                let val = v0.val.to_utf8_string_lossy();
-                if val == META_VALUE_V3 {
-                    return Version::V3;
-                }
-                if val == META_VALUE_V2 {
-                    return Version::V2;
-                }
+pub fn model_for_meta(meta: &[ScMetaEntry]) -> Model {
+    let val = |key: &str| {
+        meta.iter().find_map(|entry| match entry {
+            ScMetaEntry::ScMetaV0(v0) if v0.key.to_utf8_string_lossy() == key => {
+                Some(v0.val.to_utf8_string_lossy())
             }
-            _ => {}
-        }
+            ScMetaEntry::ScMetaV0(_) => None,
+        })
+    };
+    let sdk_major = val(SDK_VERSION_META_KEY).and_then(|v| {
+        v.split(['.', '#', '-', '+'])
+            .next()
+            .and_then(|major| major.parse::<u64>().ok())
+    });
+    if sdk_major.is_some_and(|major| major >= REFERENCES_MIN_SDK_MAJOR) {
+        Model::References
+    } else if val(META_KEY).as_deref() == Some(META_VALUE_V2) {
+        Model::Markers
+    } else {
+        Model::None
     }
-    Version::V1
 }
 
 /// Magic bytes that identify a spec marker: `SpEcV1`
@@ -203,19 +217,19 @@ fn find_all_in_data(data: &[u8], markers: &mut HashSet<Marker>) {
 }
 
 /// Filters spec entries down to those the contract actually needs, by the
-/// rules of the spec shaking version it was built with.
+/// rules of the model it is shaken by.
 ///
-/// The version says which entries carry a marker, and so what a missing marker
-/// means, which is why it has to be the contract's own version rather than the
+/// The model says which entries carry a marker, and so what a missing marker
+/// means, which is why it has to be the contract's own model rather than the
 /// newest one known:
 ///
-/// - [`Version::V1`] — nothing carries a marker, so nothing can be shaken and
-///   every entry is kept.
-/// - [`Version::V2`] — every used entry carries a marker, so a marker is the
+/// - [`Model::None`] — nothing records how the spec could be shaken, so every
+///   entry is kept.
+/// - [`Model::Markers`] — every used entry carries a marker, so a marker is the
 ///   whole answer. Functions are always kept; every other entry is kept only
 ///   if the data section carries its marker.
-/// - [`Version::V3`] — only the entries a spec never references by name carry
-///   a marker, so most types are settled by following references:
+/// - [`Model::References`] — only the entries a spec never references by name
+///   carry a marker, so most types are settled by following references:
 ///     - Functions are always kept: they define the contract's API.
 ///     - An event is kept only if the data section carries its marker, which
 ///       it does only where the contract publishes the event. Nothing
@@ -228,7 +242,7 @@ fn find_all_in_data(data: &[u8], markers: &mut HashSet<Marker>) {
 ///       it, following references transitively: a type referenced by a
 ///       function, a kept event, or another kept type.
 ///
-/// Under [`Version::V3`], references are matched to definitions by the name
+/// Under [`Model::References`], references are matched to definitions by the name
 /// the spec gives a type, so this holds names as they are, whether qualified
 /// or simple.
 ///
@@ -236,8 +250,7 @@ fn find_all_in_data(data: &[u8], markers: &mut HashSet<Marker>) {
 ///
 /// * `entries` - The spec entries to filter
 /// * `markers` - Markers extracted from the WASM data section
-/// * `version` - The contract's spec shaking version, from
-///   [`spec_shaking_version_for_meta`]
+/// * `model` - The contract's model, from [`model_for_meta`]
 ///
 /// # Returns
 ///
@@ -247,13 +260,13 @@ fn find_all_in_data(data: &[u8], markers: &mut HashSet<Marker>) {
 pub fn filter<I: IntoIterator<Item = ScSpecEntry>>(
     entries: I,
     markers: &HashSet<Marker>,
-    version: Version,
+    model: Model,
 ) -> impl Iterator<Item = ScSpecEntry> {
     let entries: Vec<ScSpecEntry> = entries.into_iter().collect();
-    let keep = match version {
-        Version::V1 => vec![true; entries.len()],
-        Version::V2 => entries.iter().map(keep_by_marker(markers)).collect(),
-        Version::V3 => keep_flags(&entries, markers),
+    let keep = match model {
+        Model::None => vec![true; entries.len()],
+        Model::Markers => entries.iter().map(keep_by_marker(markers)).collect(),
+        Model::References => keep_flags(&entries, markers),
     };
     entries
         .into_iter()
@@ -261,7 +274,7 @@ pub fn filter<I: IntoIterator<Item = ScSpecEntry>>(
         .filter_map(|(entry, keep)| keep.then_some(entry))
 }
 
-/// Whether an entry is kept under the version 2 rules: functions always, and
+/// Whether an entry is kept under the [`Model::Markers`] rules: functions always, and
 /// every other entry only if the data section carries its marker.
 #[cfg(feature = "std")]
 fn keep_by_marker(markers: &HashSet<Marker>) -> impl Fn(&ScSpecEntry) -> bool + '_ {
@@ -276,8 +289,8 @@ fn keep_by_marker(markers: &HashSet<Marker>) -> impl Fn(&ScSpecEntry) -> bool + 
     }
 }
 
-/// Whether each entry is kept, positionally, per the version 3 rules on
-/// [`filter`].
+/// Whether each entry is kept, positionally, per the [`Model::References`]
+/// rules on [`filter`].
 #[cfg(feature = "std")]
 fn keep_flags(entries: &[ScSpecEntry], markers: &HashSet<Marker>) -> Vec<bool> {
     // The entries that define each type name. A name is normally defined once,
@@ -672,23 +685,23 @@ mod tests {
     }
 
     #[test]
-    fn test_filter_v1_keeps_everything() {
-        // Version 1 contracts carry no markers, so nothing can be shaken and
-        // an entry without a marker is not evidence of anything.
+    fn test_filter_none_keeps_everything() {
+        // Nothing records how the spec could be shaken, so an entry without a
+        // marker is not evidence of anything.
         let entries = vec![
             make_function("foo", vec![ScSpecTypeDef::U32]),
             make_struct("Unreferenced", vec![("field", ScSpecTypeDef::U32)]),
             make_event("Unpublished"),
         ];
 
-        let filtered: Vec<_> = filter(entries.clone(), &HashSet::new(), Version::V1).collect();
+        let filtered: Vec<_> = filter(entries.clone(), &HashSet::new(), Model::None).collect();
 
         assert_eq!(filtered, entries);
     }
 
     #[test]
-    fn test_filter_v2_keeps_entries_with_markers() {
-        // Version 2 shaking: every entry carries a marker, so a marker is the
+    fn test_filter_markers_keeps_entries_with_markers() {
+        // Markers shaking: every entry carries a marker, so a marker is the
         // whole answer and no reference is followed.
         let used_struct = make_struct("UsedStruct", vec![("field", ScSpecTypeDef::U32)]);
         let used_enum = make_enum("UsedEnum");
@@ -710,7 +723,7 @@ mod tests {
             generate_marker_for_entry(&used_event),
         ]);
 
-        let filtered: Vec<_> = filter(entries, &markers, Version::V2).collect();
+        let filtered: Vec<_> = filter(entries, &markers, Model::Markers).collect();
 
         assert_eq!(filtered.len(), 4);
         assert_eq!(struct_names(&filtered), ["UsedStruct"]);
@@ -718,7 +731,7 @@ mod tests {
     }
 
     #[test]
-    fn test_filter_v2_removes_everything_but_functions_without_markers() {
+    fn test_filter_markers_removes_everything_but_functions_without_markers() {
         let entries = vec![
             make_function("foo", vec![ScSpecTypeDef::U32]),
             make_struct("MyStruct", vec![("field", ScSpecTypeDef::U32)]),
@@ -726,30 +739,30 @@ mod tests {
             make_event("Unused"),
         ];
 
-        let filtered: Vec<_> = filter(entries, &HashSet::new(), Version::V2).collect();
+        let filtered: Vec<_> = filter(entries, &HashSet::new(), Model::Markers).collect();
 
         assert_eq!(filtered.len(), 1);
         assert!(matches!(filtered[0], ScSpecEntry::FunctionV0(_)));
     }
 
     #[test]
-    fn test_filter_v2_ignores_references_a_marker_does_not_back() {
-        // The version 2 rules do not follow references: a type a function
-        // names is still dropped without a marker of its own. This is what
-        // makes the version, not the algorithm, the thing that has to be
-        // right for a given wasm.
+    fn test_filter_markers_ignores_references_a_marker_does_not_back() {
+        // The markers rules do not follow references: a type a function names
+        // is still dropped without a marker of its own. This is what makes the
+        // model, not the algorithm, the thing that has to be right for a given
+        // wasm.
         let entries = vec![
             make_function("foo", vec![udt("Referenced")]),
             make_struct("Referenced", vec![("field", ScSpecTypeDef::U32)]),
         ];
 
-        let filtered: Vec<_> = filter(entries, &HashSet::new(), Version::V2).collect();
+        let filtered: Vec<_> = filter(entries, &HashSet::new(), Model::Markers).collect();
 
         assert_eq!(struct_names(&filtered), Vec::<String>::new());
     }
 
     #[test]
-    fn test_filter_v3_keeps_used_events() {
+    fn test_filter_references_keeps_used_events() {
         let transfer_event = make_event("Transfer");
         let mint_event = make_event("Mint");
 
@@ -764,7 +777,7 @@ mod tests {
         markers.insert(generate_marker_for_entry(&transfer_event));
         markers.insert(generate_marker_for_entry(&mint_event));
 
-        let filtered: Vec<_> = filter(entries, &markers, Version::V3).collect();
+        let filtered: Vec<_> = filter(entries, &markers, Model::References).collect();
 
         // Should have: 1 function + 2 used events
         assert_eq!(filtered.len(), 3);
@@ -772,7 +785,7 @@ mod tests {
     }
 
     #[test]
-    fn test_filter_v3_removes_all_events_if_no_markers() {
+    fn test_filter_references_removes_all_events_if_no_markers() {
         let entries = vec![
             make_function("foo", vec![ScSpecTypeDef::U32]),
             make_event("Transfer"),
@@ -781,7 +794,7 @@ mod tests {
 
         let markers = HashSet::new();
 
-        let filtered: Vec<_> = filter(entries, &markers, Version::V3).collect();
+        let filtered: Vec<_> = filter(entries, &markers, Model::References).collect();
 
         // Should have: 1 function, 0 events
         assert_eq!(filtered.len(), 1);
@@ -789,7 +802,7 @@ mod tests {
     }
 
     #[test]
-    fn test_filter_v3_removes_types_no_entry_references() {
+    fn test_filter_references_removes_types_no_entry_references() {
         let entries = vec![
             make_function("foo", vec![ScSpecTypeDef::U32]),
             make_struct("MyStruct", vec![("field", ScSpecTypeDef::U32)]),
@@ -799,7 +812,7 @@ mod tests {
 
         let markers = HashSet::new();
 
-        let filtered: Vec<_> = filter(entries, &markers, Version::V3).collect();
+        let filtered: Vec<_> = filter(entries, &markers, Model::References).collect();
 
         // Should have: only the function. Nothing names the types, and the
         // event has no marker.
@@ -808,7 +821,7 @@ mod tests {
     }
 
     #[test]
-    fn test_filter_v3_keeps_a_type_a_function_references_without_a_marker() {
+    fn test_filter_references_keeps_a_type_a_function_references_without_a_marker() {
         // A type is kept because a function names it, not because the data
         // section holds a marker for it: types carry no markers at all.
         let entries = vec![
@@ -817,13 +830,13 @@ mod tests {
             make_struct("UnusedStruct", vec![("field", ScSpecTypeDef::U32)]),
         ];
 
-        let filtered: Vec<_> = filter(entries, &HashSet::new(), Version::V3).collect();
+        let filtered: Vec<_> = filter(entries, &HashSet::new(), Model::References).collect();
 
         assert_eq!(struct_names(&filtered), ["UsedStruct"]);
     }
 
     #[test]
-    fn test_filter_v3_keeps_a_type_a_function_references_through_a_container() {
+    fn test_filter_references_keeps_a_type_a_function_references_through_a_container() {
         // A reference nested in a container still names the type.
         let entries = vec![
             make_function(
@@ -837,13 +850,13 @@ mod tests {
             make_struct("Nested", vec![("field", ScSpecTypeDef::U32)]),
         ];
 
-        let filtered: Vec<_> = filter(entries, &HashSet::new(), Version::V3).collect();
+        let filtered: Vec<_> = filter(entries, &HashSet::new(), Model::References).collect();
 
         assert_eq!(struct_names(&filtered), ["Nested"]);
     }
 
     #[test]
-    fn test_filter_v3_follows_references_between_types() {
+    fn test_filter_references_follows_references_between_types() {
         // Reachability is transitive: a function names the outer type, which
         // names the middle type, which names the inner one.
         let entries = vec![
@@ -855,13 +868,13 @@ mod tests {
             make_struct("AlsoOrphan", vec![("field", ScSpecTypeDef::U32)]),
         ];
 
-        let filtered: Vec<_> = filter(entries, &HashSet::new(), Version::V3).collect();
+        let filtered: Vec<_> = filter(entries, &HashSet::new(), Model::References).collect();
 
         assert_eq!(struct_names(&filtered), ["Outer", "Middle", "Inner"]);
     }
 
     #[test]
-    fn test_filter_v3_follows_a_reference_cycle_between_types() {
+    fn test_filter_references_follows_a_reference_cycle_between_types() {
         // A recursive definition must not send the walk round forever.
         let entries = vec![
             make_function("foo", vec![udt("Root")]),
@@ -869,13 +882,13 @@ mod tests {
             make_struct("Node", vec![("field", udt("Root"))]),
         ];
 
-        let filtered: Vec<_> = filter(entries, &HashSet::new(), Version::V3).collect();
+        let filtered: Vec<_> = filter(entries, &HashSet::new(), Model::References).collect();
 
         assert_eq!(struct_names(&filtered), ["Root", "Node"]);
     }
 
     #[test]
-    fn test_filter_v3_keeps_a_type_a_kept_event_references() {
+    fn test_filter_references_keeps_a_type_a_kept_event_references() {
         // A published event carries the types its params name along with it,
         // and an unpublished one takes them nowhere.
         let published = make_event_with_params("Published", vec![udt("InPublished")]);
@@ -888,14 +901,14 @@ mod tests {
 
         let markers = HashSet::from([generate_marker_for_entry(&published)]);
 
-        let filtered: Vec<_> = filter(entries, &markers, Version::V3).collect();
+        let filtered: Vec<_> = filter(entries, &markers, Model::References).collect();
 
         assert_eq!(event_names(&filtered), ["Published"]);
         assert_eq!(struct_names(&filtered), ["InPublished"]);
     }
 
     #[test]
-    fn test_filter_v3_keeps_an_error_with_a_marker_nothing_references() {
+    fn test_filter_references_keeps_an_error_with_a_marker_nothing_references() {
         // An error handed to `panic_with_error!` is named by nothing in the
         // spec, so its marker is the only evidence it is used.
         let panicked = make_error_enum("Panicked");
@@ -907,13 +920,13 @@ mod tests {
 
         let markers = HashSet::from([generate_marker_for_entry(&panicked)]);
 
-        let filtered: Vec<_> = filter(entries, &markers, Version::V3).collect();
+        let filtered: Vec<_> = filter(entries, &markers, Model::References).collect();
 
         assert_eq!(error_enum_names(&filtered), ["Panicked"]);
     }
 
     #[test]
-    fn test_filter_v3_keeps_an_error_a_function_references_without_a_marker() {
+    fn test_filter_references_keeps_an_error_a_function_references_without_a_marker() {
         // An error a function returns is named by the spec, so it is kept
         // whether or not the contract also panics with it.
         let entries = vec![
@@ -928,13 +941,13 @@ mod tests {
             make_error_enum("UnusedError"),
         ];
 
-        let filtered: Vec<_> = filter(entries, &HashSet::new(), Version::V3).collect();
+        let filtered: Vec<_> = filter(entries, &HashSet::new(), Model::References).collect();
 
         assert_eq!(error_enum_names(&filtered), ["ReturnedError"]);
     }
 
     #[test]
-    fn test_filter_v3_keeps_every_definition_of_a_referenced_name() {
+    fn test_filter_references_keeps_every_definition_of_a_referenced_name() {
         // A spec can carry the same type twice, from a library linked in more
         // than one form. A reference to the name reaches both, and the caller
         // deduplicates identical entries afterwards.
@@ -944,13 +957,13 @@ mod tests {
             make_struct("Twice", vec![("b", ScSpecTypeDef::U32)]),
         ];
 
-        let filtered: Vec<_> = filter(entries, &HashSet::new(), Version::V3).collect();
+        let filtered: Vec<_> = filter(entries, &HashSet::new(), Model::References).collect();
 
         assert_eq!(struct_names(&filtered), ["Twice", "Twice"]);
     }
 
     #[test]
-    fn test_filter_v3_matches_a_reference_by_its_qualified_name() {
+    fn test_filter_references_matches_a_reference_by_its_qualified_name() {
         // Names are matched as they are: a qualified reference names the
         // qualified definition, and not a simple name that ends the same way.
         let entries = vec![
@@ -959,51 +972,74 @@ mod tests {
             make_struct("MyType", vec![("b", ScSpecTypeDef::U32)]),
         ];
 
-        let filtered: Vec<_> = filter(entries, &HashSet::new(), Version::V3).collect();
+        let filtered: Vec<_> = filter(entries, &HashSet::new(), Model::References).collect();
 
         assert_eq!(struct_names(&filtered), ["mycrate::mymod::MyType"]);
     }
 
-    #[test]
-    fn test_spec_shaking_version_absent() {
-        let meta = vec![];
-        assert_eq!(spec_shaking_version_for_meta(&meta), Version::V1);
+    fn meta(entries: &[(&str, &str)]) -> Vec<ScMetaEntry> {
+        entries
+            .iter()
+            .map(|(key, val)| {
+                ScMetaEntry::ScMetaV0(ScMetaV0 {
+                    key: (*key).try_into().unwrap(),
+                    val: (*val).try_into().unwrap(),
+                })
+            })
+            .collect()
     }
 
     #[test]
-    fn test_spec_shaking_version_other_keys() {
-        let meta = vec![ScMetaEntry::ScMetaV0(ScMetaV0 {
-            key: "rssdkver".try_into().unwrap(),
-            val: "1.0.0".try_into().unwrap(),
-        })];
-        assert_eq!(spec_shaking_version_for_meta(&meta), Version::V1);
+    fn test_model_none_without_meta() {
+        assert_eq!(model_for_meta(&meta(&[])), Model::None);
     }
 
     #[test]
-    fn test_spec_shaking_version_v2() {
-        let meta = vec![ScMetaEntry::ScMetaV0(ScMetaV0 {
-            key: META_KEY.try_into().unwrap(),
-            val: META_VALUE_V2.try_into().unwrap(),
-        })];
-        assert_eq!(spec_shaking_version_for_meta(&meta), Version::V2);
+    fn test_model_none_for_sdk_before_30_without_shaking_meta() {
+        let meta = meta(&[(SDK_VERSION_META_KEY, "29.1.0#abcdef")]);
+        assert_eq!(model_for_meta(&meta), Model::None);
     }
 
     #[test]
-    fn test_spec_shaking_version_v3() {
-        let meta = vec![ScMetaEntry::ScMetaV0(ScMetaV0 {
-            key: META_KEY.try_into().unwrap(),
-            val: META_VALUE_V3.try_into().unwrap(),
-        })];
-        assert_eq!(spec_shaking_version_for_meta(&meta), Version::V3);
+    fn test_model_markers_for_shaking_meta_v2() {
+        let meta = meta(&[(SDK_VERSION_META_KEY, "28.0.0#abcdef"), (META_KEY, "2")]);
+        assert_eq!(model_for_meta(&meta), Model::Markers);
     }
 
     #[test]
-    fn test_spec_shaking_version_unknown_value() {
-        let meta = vec![ScMetaEntry::ScMetaV0(ScMetaV0 {
-            key: META_KEY.try_into().unwrap(),
-            val: "99".try_into().unwrap(),
-        })];
-        assert_eq!(spec_shaking_version_for_meta(&meta), Version::V1);
+    fn test_model_none_for_unknown_shaking_meta() {
+        let meta = meta(&[(SDK_VERSION_META_KEY, "29.0.0#abcdef"), (META_KEY, "3")]);
+        assert_eq!(model_for_meta(&meta), Model::None);
+    }
+
+    #[test]
+    fn test_model_references_for_sdk_30() {
+        let meta = meta(&[(SDK_VERSION_META_KEY, "30.0.0#abcdef")]);
+        assert_eq!(model_for_meta(&meta), Model::References);
+    }
+
+    #[test]
+    fn test_model_references_for_sdk_after_30_without_revision() {
+        let meta = meta(&[(SDK_VERSION_META_KEY, "31.2.3")]);
+        assert_eq!(model_for_meta(&meta), Model::References);
+    }
+
+    #[test]
+    fn test_model_references_for_sdk_30_prerelease() {
+        let meta = meta(&[(SDK_VERSION_META_KEY, "30.0.0-rc.1#abcdef")]);
+        assert_eq!(model_for_meta(&meta), Model::References);
+    }
+
+    #[test]
+    fn test_model_references_for_sdk_30_ahead_of_shaking_meta() {
+        let meta = meta(&[(SDK_VERSION_META_KEY, "30.0.0#abcdef"), (META_KEY, "2")]);
+        assert_eq!(model_for_meta(&meta), Model::References);
+    }
+
+    #[test]
+    fn test_model_none_for_unparseable_sdk_version() {
+        let meta = meta(&[(SDK_VERSION_META_KEY, "abc")]);
+        assert_eq!(model_for_meta(&meta), Model::None);
     }
 }
 

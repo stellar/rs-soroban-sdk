@@ -12353,15 +12353,15 @@ mod test {
         let entries = soroban_spec::read::from_wasm(WASM).unwrap();
         let markers = soroban_spec::shaking::find_all(WASM);
         let meta = soroban_meta::read::from_wasm(WASM).unwrap();
-        let version = soroban_spec::shaking::spec_shaking_version_for_meta(&meta);
-        let expected_version = match "test_spec_shaking_v2" {
-            "test_spec_shaking_v2" => soroban_spec::shaking::Version::V2,
-            "test_spec_shaking_v3" => soroban_spec::shaking::Version::V3,
+        let model = soroban_spec::shaking::model_for_meta(&meta);
+        let expected_model = match "test_spec_shaking_v2" {
+            "test_spec_shaking_v2" => soroban_spec::shaking::Model::Markers,
+            "test_spec_shaking_v3" => soroban_spec::shaking::Model::References,
             name => {
                 ::core::panicking::panic_fmt(format_args!("unexpected package {0}", name));
             }
         };
-        match (&version, &expected_version) {
+        match (&model, &expected_model) {
             (left_val, right_val) => {
                 if !(*left_val == *right_val) {
                     let kind = ::core::panicking::AssertKind::Eq;
@@ -12375,7 +12375,7 @@ mod test {
             }
         };
         let filtered: Vec<_> =
-            soroban_spec::shaking::filter(entries.iter().cloned(), &markers, version).collect();
+            soroban_spec::shaking::filter(entries.iter().cloned(), &markers, model).collect();
         let filtered_names: HashSet<std::string::String> =
             filtered.iter().filter_map(entry_name).collect();
         let fn_names: Vec<std::string::String> = filtered
@@ -12486,11 +12486,11 @@ mod test {
                 }
             }
         }
-        match version {
-            soroban_spec::shaking::Version::V1 => {
-                ::core::panicking::panic_fmt(format_args!("unexpected version {0:?}", version));
+        match model {
+            soroban_spec::shaking::Model::None => {
+                ::core::panicking::panic_fmt(format_args!("unexpected model {0:?}", model));
             }
-            soroban_spec::shaking::Version::V2 => {
+            soroban_spec::shaking::Model::Markers => {
                 match (&markers.len(), &used.len()) {
                     (left_val, right_val) => {
                         if !(*left_val == *right_val) {
@@ -12505,7 +12505,7 @@ mod test {
                     }
                 };
             }
-            soroban_spec::shaking::Version::V3 => {
+            soroban_spec::shaking::Model::References => {
                 let mut marked: Vec<std::string::String> = entries
                     .iter()
                     .filter(|e| {
