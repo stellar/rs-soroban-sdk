@@ -31,13 +31,15 @@ test-only:
 			--exclude-features hazmat-crypto \
 			--exclude-features hazmat-address \
 			test
-	$(MAKE) elide-wasm-in-test-snapshots
+	$(MAKE) elide-wasm
 
-# Replaces the hex of wasm contract code in test snapshots with ... so that
-# changes to contract binaries do not cause churn in the test snapshots.
-elide-wasm-in-test-snapshots:
-	find . -path ./target -prune -o -path '*/test_snapshots/*.json' -print0 \
-		| xargs -0 perl -pi -e 's/("code": ")0061736d[0-9a-f]*"/$$1..."/g'
+# Replaces wasm in the generated test snapshots and expanded tests with ... so
+# that changes to contract binaries do not cause churn in the generated files.
+# Matches the hex of wasm contract code in snapshots, and wasm byte string
+# literals in expanded code.
+elide-wasm:
+	find . -path ./target -prune -o \( -path '*/test_snapshots/*.json' -o -path './tests-expanded/*.rs' \) -print0 \
+		| xargs -0 perl -0777 -pi -e 's/("code": ")0061736d[0-9a-f]*"/$$1..."/g; s/b"\\x00asm(?:[^"\\]|\\.)*"/b"..."/gs'
 
 build: build-libs build-test-wasms
 
@@ -72,10 +74,6 @@ readme:
 		| jq -r '.index[.root|tostring].docs' \
 		> README.md
 
-# Replaces the contents of wasm byte string literals in expanded code with ...
-# so that changes to contract binaries do not cause churn in the expanded code.
-ELIDE_WASM = perl -0777 -pe 's/b"\\x00asm(?:[^"\\]|\\.)*"/b"..."/gs'
-
 # Expands the generated code within each test vector contract that lives in the
 # tests/ directory. Serves to surface visible changes in generated code that
 # may not be obvious when making changes to sdk macros.
@@ -89,13 +87,14 @@ expand-tests: build-test-wasms
 		echo "Expanding $$package for linux target including tests"; \
     RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
       RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
-      cargo expand --package $$package --tests --target x86_64-unknown-linux-gnu | rustfmt | $(ELIDE_WASM) > tests-expanded/$${package}_tests.rs; \
+      cargo expand --package $$package --tests --target x86_64-unknown-linux-gnu | rustfmt > tests-expanded/$${package}_tests.rs; \
 		echo "Expanding $$package for wasm32v1-none target without tests"; \
     STELLAR_CLI_VERSION=$(VERSION_MAJOR).0.0 \
     RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
       RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
-			cargo expand --package $$package --release --target wasm32v1-none | rustfmt | $(ELIDE_WASM) > tests-expanded/$${package}_wasm32v1-none.rs; \
+			cargo expand --package $$package --release --target wasm32v1-none | rustfmt > tests-expanded/$${package}_wasm32v1-none.rs; \
 	done
+	$(MAKE) elide-wasm
 
 # Dumps the contractspecv0 section of each test vector contract in the tests/
 # directory, as built by build-test-wasms and so before any spec shaking, as a
