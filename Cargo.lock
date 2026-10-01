@@ -1123,7 +1123,7 @@ dependencies = [
 
 [[package]]
 name = "proc_macros"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
  "quote",
  "syn 2.0.103",
@@ -1605,7 +1605,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-ledger-snapshot"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
  "serde",
  "serde_json",
@@ -1617,7 +1617,7 @@ dependencies = [
 
 [[package]]
 name = "soroban-meta"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
  "stellar-xdr 28.0.0 (git+https://github.com/stellar/rs-stellar-xdr?rev=e0d289adf4ad2483a10bcc8df743126974d77301)",
  "thiserror",
@@ -1627,6 +1627,25 @@ dependencies = [
 [[package]]
 name = "soroban-sdk"
 version = "28.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e4946477e75667215a25b652b0febb446485686c944d364c117c903e3fb98bab"
+dependencies = [
+ "bytes-lit",
+ "crate-git-revision 0.0.9",
+ "rand",
+ "rustc_version",
+ "serde",
+ "serde_json",
+ "soroban-env-guest 28.0.2",
+ "soroban-env-host 28.0.2",
+ "soroban-sdk-macros 28.0.0",
+ "stellar-strkey 0.0.16",
+ "visibility",
+]
+
+[[package]]
+name = "soroban-sdk"
+version = "30.0.0"
 dependencies = [
  "arbitrary",
  "ark-bls12-381",
@@ -1651,50 +1670,12 @@ dependencies = [
  "soroban-env-guest 29.0.0",
  "soroban-env-host 29.0.0",
  "soroban-ledger-snapshot",
- "soroban-sdk-macros 28.0.0",
- "soroban-spec 28.0.0",
+ "soroban-sdk-macros 30.0.0",
+ "soroban-spec 30.0.0",
  "stellar-strkey 0.0.18",
  "stellar-xdr 28.0.0 (git+https://github.com/stellar/rs-stellar-xdr?rev=e0d289adf4ad2483a10bcc8df743126974d77301)",
  "trybuild",
  "visibility",
-]
-
-[[package]]
-name = "soroban-sdk"
-version = "28.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e4946477e75667215a25b652b0febb446485686c944d364c117c903e3fb98bab"
-dependencies = [
- "bytes-lit",
- "crate-git-revision 0.0.9",
- "rand",
- "rustc_version",
- "serde",
- "serde_json",
- "soroban-env-guest 28.0.2",
- "soroban-env-host 28.0.2",
- "soroban-sdk-macros 28.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "stellar-strkey 0.0.16",
- "visibility",
-]
-
-[[package]]
-name = "soroban-sdk-macros"
-version = "28.0.0"
-dependencies = [
- "darling",
- "heck",
- "itertools",
- "macro-string",
- "proc-macro2",
- "quote",
- "sha2",
- "soroban-env-common 29.0.0",
- "soroban-sdk 28.0.0",
- "soroban-spec 28.0.0",
- "soroban-spec-rust 28.0.0",
- "stellar-xdr 28.0.0 (git+https://github.com/stellar/rs-stellar-xdr?rev=e0d289adf4ad2483a10bcc8df743126974d77301)",
- "syn 2.0.103",
 ]
 
 [[package]]
@@ -1711,21 +1692,29 @@ dependencies = [
  "quote",
  "sha2",
  "soroban-env-common 28.0.2",
- "soroban-spec 28.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "soroban-spec-rust 28.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "soroban-spec 28.0.0",
+ "soroban-spec-rust 28.0.0",
  "stellar-xdr 28.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "syn 2.0.103",
 ]
 
 [[package]]
-name = "soroban-spec"
-version = "28.0.0"
+name = "soroban-sdk-macros"
+version = "30.0.0"
 dependencies = [
- "base64",
- "hex",
+ "darling",
+ "heck",
+ "itertools",
+ "macro-string",
+ "proc-macro2",
+ "quote",
+ "sha2",
+ "soroban-env-common 29.0.0",
+ "soroban-sdk 30.0.0",
+ "soroban-spec 30.0.0",
+ "soroban-spec-rust 30.0.0",
  "stellar-xdr 28.0.0 (git+https://github.com/stellar/rs-stellar-xdr?rev=e0d289adf4ad2483a10bcc8df743126974d77301)",
- "thiserror",
- "wasmparser",
+ "syn 2.0.103",
 ]
 
 [[package]]
@@ -1742,18 +1731,14 @@ dependencies = [
 ]
 
 [[package]]
-name = "soroban-spec-rust"
-version = "28.0.0"
+name = "soroban-spec"
+version = "30.0.0"
 dependencies = [
- "pretty_assertions",
- "prettyplease",
- "proc-macro2",
- "quote",
- "sha2",
- "soroban-spec 28.0.0",
+ "base64",
+ "hex",
  "stellar-xdr 28.0.0 (git+https://github.com/stellar/rs-stellar-xdr?rev=e0d289adf4ad2483a10bcc8df743126974d77301)",
- "syn 2.0.103",
  "thiserror",
+ "wasmparser",
 ]
 
 [[package]]
@@ -1766,24 +1751,39 @@ dependencies = [
  "proc-macro2",
  "quote",
  "sha2",
- "soroban-spec 28.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "soroban-spec 28.0.0",
  "stellar-xdr 28.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "syn 2.0.103",
  "thiserror",
 ]
 
 [[package]]
-name = "soroban-token-sdk"
-version = "28.0.0"
+name = "soroban-spec-rust"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "pretty_assertions",
+ "prettyplease",
+ "proc-macro2",
+ "quote",
+ "sha2",
+ "soroban-spec 30.0.0",
+ "stellar-xdr 28.0.0 (git+https://github.com/stellar/rs-stellar-xdr?rev=e0d289adf4ad2483a10bcc8df743126974d77301)",
+ "syn 2.0.103",
+ "thiserror",
+]
+
+[[package]]
+name = "soroban-token-sdk"
+version = "30.0.0"
+dependencies = [
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
 name = "soroban-token-spec"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
  "soroban-token-sdk",
 ]
 
@@ -1814,10 +1814,10 @@ dependencies = [
 
 [[package]]
 name = "spec-json"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
  "serde_json",
- "soroban-spec 28.0.0",
+ "soroban-spec 30.0.0",
  "stellar-xdr 28.0.0 (git+https://github.com/stellar/rs-stellar-xdr?rev=e0d289adf4ad2483a10bcc8df743126974d77301)",
 ]
 
@@ -1851,10 +1851,10 @@ checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 
 [[package]]
 name = "stellar-asset-spec"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
- "soroban-spec 28.0.0",
+ "soroban-sdk 30.0.0",
+ "soroban-spec 30.0.0",
  "soroban-token-spec",
 ]
 
@@ -1991,363 +1991,363 @@ dependencies = [
 
 [[package]]
 name = "test_account"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
 name = "test_add_i128"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
 name = "test_add_u128"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
 name = "test_add_u64"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
 name = "test_alloc"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
 name = "test_associated_type_chained"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
 name = "test_associated_types"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
 name = "test_associated_types_contracttrait"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
 name = "test_attributes"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
- "soroban-spec 28.0.0",
+ "soroban-sdk 30.0.0",
+ "soroban-spec 30.0.0",
 ]
 
 [[package]]
 name = "test_auth"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
 name = "test_bls"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
 name = "test_bn254"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
  "hex",
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
 name = "test_constructor"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
 name = "test_constructor_with_auth"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
 name = "test_contract_data"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
 name = "test_contracttrait_impl_full"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
  "test_contracttrait_trait",
 ]
 
 [[package]]
 name = "test_contracttrait_impl_partial"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
  "test_contracttrait_trait",
 ]
 
 [[package]]
 name = "test_contracttrait_path_crate"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
 name = "test_contracttrait_path_global"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
  "test_contracttrait_trait",
 ]
 
 [[package]]
 name = "test_contracttrait_path_relative"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
 name = "test_contracttrait_path_self"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
 name = "test_contracttrait_path_super"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
 name = "test_contracttrait_trait"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
  "stellar-xdr 28.0.0 (git+https://github.com/stellar/rs-stellar-xdr?rev=e0d289adf4ad2483a10bcc8df743126974d77301)",
 ]
 
 [[package]]
 name = "test_empty"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
 name = "test_empty2"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
 name = "test_errors"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
 name = "test_events"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
 name = "test_events_ref"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
 name = "test_fuzz"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
 name = "test_fuzz_afl"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
 name = "test_generics"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
 name = "test_import_contract"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
 name = "test_invoke_contract"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
 name = "test_logging"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
 name = "test_macros"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
  "proc_macros",
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
 name = "test_modular"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
 name = "test_multiimpl"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
 name = "test_mutability"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
 name = "test_spec_import_v2"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "soroban-sdk 28.0.0",
  "test_spec_lib_v2",
 ]
 
 [[package]]
 name = "test_spec_import_v3"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
  "test_spec_lib_v3",
 ]
 
 [[package]]
 name = "test_spec_lib_v2"
-version = "28.0.0"
-dependencies = [
- "soroban-sdk 28.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
-name = "test_spec_lib_v3"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
  "soroban-sdk 28.0.0",
 ]
 
 [[package]]
+name = "test_spec_lib_v3"
+version = "30.0.0"
+dependencies = [
+ "soroban-sdk 30.0.0",
+]
+
+[[package]]
 name = "test_spec_shaking_v2"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
  "soroban-meta",
- "soroban-sdk 28.0.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "soroban-spec 28.0.0",
+ "soroban-sdk 28.0.0",
+ "soroban-spec 30.0.0",
  "stellar-xdr 28.0.0 (git+https://github.com/stellar/rs-stellar-xdr?rev=e0d289adf4ad2483a10bcc8df743126974d77301)",
  "test_spec_lib_v2",
 ]
 
 [[package]]
 name = "test_spec_shaking_v3"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
  "soroban-meta",
- "soroban-sdk 28.0.0",
- "soroban-spec 28.0.0",
+ "soroban-sdk 30.0.0",
+ "soroban-spec 30.0.0",
  "stellar-xdr 28.0.0 (git+https://github.com/stellar/rs-stellar-xdr?rev=e0d289adf4ad2483a10bcc8df743126974d77301)",
  "test_spec_lib_v3",
 ]
 
 [[package]]
 name = "test_tuples"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
 name = "test_udt"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
 name = "test_workspace_contract"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
  "test_workspace_lib",
 ]
 
 [[package]]
 name = "test_workspace_lib"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
 name = "test_zero"
-version = "28.0.0"
+version = "30.0.0"
 dependencies = [
- "soroban-sdk 28.0.0",
+ "soroban-sdk 30.0.0",
 ]
 
 [[package]]
