@@ -2179,37 +2179,10 @@ impl Env {
             .join(&test_name_path)
             .with_extension(format!("{number}.json"));
 
-        // Write test snapshots to file, with wasm code elided so that changes to
-        // contract binaries do not cause churn in the test snapshot files.
+        // Write test snapshots to file.
         eprintln!("Writing test snapshot file for test {test_name:?} to {p:?}.");
-        let mut json = std::vec::Vec::new();
-        snapshot.write(&mut json).unwrap();
-        let json = elide_wasm_code(&std::string::String::from_utf8(json).unwrap());
-        if let Some(dir) = p.parent() {
-            std::fs::create_dir_all(dir).unwrap();
-        }
-        std::fs::write(p, json).unwrap();
+        snapshot.write_file(p).unwrap();
     }
-}
-
-/// Replaces the hex of any contract code that is wasm with `...` in a JSON
-/// encoded snapshot.
-#[cfg(any(test, feature = "testutils"))]
-fn elide_wasm_code(json: &str) -> std::string::String {
-    // The code field followed by the hex encoding of the wasm magic "\0asm".
-    const WASM_CODE_FIELD: &str = "\"code\": \"0061736d";
-    const CODE_FIELD_PREFIX_LEN: usize = "\"code\": \"".len();
-    let mut out = std::string::String::with_capacity(json.len());
-    let mut rest = json;
-    while let Some(i) = rest.find(WASM_CODE_FIELD) {
-        let start = i + CODE_FIELD_PREFIX_LEN;
-        out.push_str(&rest[..start]);
-        out.push_str("...");
-        rest = &rest[start..];
-        rest = &rest[rest.find('"').unwrap_or(rest.len())..];
-    }
-    out.push_str(rest);
-    out
 }
 
 #[doc(hidden)]

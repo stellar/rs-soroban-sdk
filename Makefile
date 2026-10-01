@@ -31,6 +31,13 @@ test-only:
 			--exclude-features hazmat-crypto \
 			--exclude-features hazmat-address \
 			test
+	$(MAKE) elide-wasm-in-test-snapshots
+
+# Replaces the hex of wasm contract code in test snapshots with ... so that
+# changes to contract binaries do not cause churn in the test snapshots.
+elide-wasm-in-test-snapshots:
+	find . -path ./target -prune -o -path '*/test_snapshots/*.json' -print0 \
+		| xargs -0 perl -pi -e 's/("code": ")0061736d[0-9a-f]*"/$$1..."/g'
 
 build: build-libs build-test-wasms
 
