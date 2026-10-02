@@ -120,20 +120,20 @@ pub fn derive_pub_fn(
                     Type::Reference(TypeReference { .. }) => quote!(&),
                     _ => quote!(),
                 };
+                // Spanned to the argument's type so that an error for a type that
+                // can't be converted points at the type. The `env` is quoted
+                // outside the span, so that it keeps the hygiene of the `env`
+                // the generated function declares, rather than taking the
+                // hygiene of the type, which may come from a user's macro.
+                let env = quote!(env);
                 let convert = if is_check_auth_payload {
-                    quote! {
+                    quote_spanned! {pat_ty.ty.span()=>
                         <_ as #crate_path::TryFromValForCheckAuthPayload<#crate_path::Env, #crate_path::Val>>::try_from_val_for_check_auth_payload(
-                            &env,
+                            &#env,
                             &#ident
                         )
                     }
                 } else {
-                    // Spanned to the argument's type so that an error for a type that
-                    // can't be converted points at the type. The `env` is quoted
-                    // outside the span, so that it keeps the hygiene of the `env`
-                    // the generated function declares, rather than taking the
-                    // hygiene of the type, which may come from a user's macro.
-                    let env = quote!(env);
                     quote_spanned! {pat_ty.ty.span()=>
                         <_ as #crate_path::TryFromValForContractFn<#crate_path::Env, #crate_path::Val>>::try_from_val_for_contract_fn(
                             &#env,
