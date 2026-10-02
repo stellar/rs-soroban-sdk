@@ -7,12 +7,10 @@ TEST_CRATES_RUSTUP_TOOLCHAIN?=$(MSRV)
 # Build the test wasms inside a docker container so that the wasms are the same
 # regardless of the host building them. Set TEST_WASMS_BUILD_WITH_DOCKER to
 # empty to build on the host instead, e.g. where docker cannot run linux
-# containers. Build state is kept in docker volumes, with the target volume
-# separate per checkout so concurrent builds don't mix outputs. Each crate's
-# wasm is copied out after it builds because some test crates import the wasms
-# of others. The workspace is mounted read-only, so the docker build uses
-# --locked and fails if Cargo.lock is out of date rather than updating it like
-# the host build does.
+# containers. The workspace is mounted read-only with its target dir mounted
+# writable, so the wasms are built in place, and the rustup and cargo caches
+# are kept in docker volumes. The docker build uses --locked and fails if
+# Cargo.lock is out of date rather than updating it like the host build does.
 TEST_WASMS_BUILD_WITH_DOCKER?=1
 
 VERSION_MAJOR = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.name == "soroban-sdk") | .version | split(".")[0]')
@@ -60,30 +58,25 @@ ifeq ($(TEST_WASMS_BUILD_WITH_DOCKER),)
 			cargo build --release --target wasm32v1-none --package $$c || exit 1; \
 	done
 else
-	mkdir -p target/wasm32v1-none/release
+	mkdir -p target
 	docker run --rm \
 		-v "$(CURDIR)":/workspace:ro \
-		-v "$(CURDIR)/target/wasm32v1-none/release":/workspace/target/wasm32v1-none/release \
+		-v "$(CURDIR)/target":/workspace/target \
 		-v soroban-sdk-test-wasms-rustup:/usr/local/rustup \
 		-v soroban-sdk-test-wasms-cargo-registry:/usr/local/cargo/registry \
 		-v soroban-sdk-test-wasms-cargo-git:/usr/local/cargo/git \
-		-v soroban-sdk-test-wasms-target-$(shell printf %s "$(CURDIR)" | cksum | cut -d" " -f1):/target \
 		-w /workspace \
-		-e CARGO_TARGET_DIR=/target \
 		-e STELLAR_CLI_VERSION=$(VERSION_MAJOR).0.0 \
 		-e RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
 		-e RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
 		rust:$(MSRV) \
 		sh -c ' \
 			set -e; \
+			trap "chown -R $(shell id -u):$(shell id -g) /workspace/target" EXIT; \
 			rustup toolchain install $(TEST_CRATES_RUSTUP_TOOLCHAIN) --profile minimal --target wasm32v1-none; \
 			for c in $(TEST_CRATES); do \
 				echo "cargo build --locked --release --target wasm32v1-none --package $$c"; \
 				cargo build --locked --release --target wasm32v1-none --package $$c; \
-				if [ -f /target/wasm32v1-none/release/$$c.wasm ]; then \
-					cp /target/wasm32v1-none/release/$$c.wasm /workspace/target/wasm32v1-none/release/; \
-					chown $(shell id -u):$(shell id -g) /workspace/target/wasm32v1-none/release/$$c.wasm; \
-				fi; \
 			done; \
 		'
 endif
