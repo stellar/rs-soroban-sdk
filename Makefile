@@ -40,8 +40,10 @@ build-libs: fmt
 # Set TEST_WASMS_DOCKER to non-empty to build the test wasms inside a docker
 # container so that the wasms are the same regardless of the host building
 # them. Off by default, building on the host. Build state is kept in docker
-# volumes, and the wasms are copied out after each crate builds because some
-# test crates import the wasms of others.
+# volumes, and each crate's wasm is copied out after it builds because some
+# test crates import the wasms of others. The workspace is mounted read-only, so
+# the docker build uses --locked and fails if Cargo.lock is out of date rather
+# than updating it like the host build does.
 TEST_WASMS_DOCKER?=
 TEST_WASMS_DOCKER_IMAGE?=rust:$(MSRV)
 
@@ -73,8 +75,10 @@ else
 			rustup toolchain install $(TEST_CRATES_RUSTUP_TOOLCHAIN) --profile minimal --target wasm32v1-none; \
 			for c in $(TEST_CRATES); do \
 				cargo build --locked --release --target wasm32v1-none --package $$c; \
-				cp /target/wasm32v1-none/release/*.wasm /out/; \
-				chown $(shell id -u):$(shell id -g) /out/*.wasm; \
+				if [ -f /target/wasm32v1-none/release/$$c.wasm ]; then \
+					cp /target/wasm32v1-none/release/$$c.wasm /out/; \
+					chown $(shell id -u):$(shell id -g) /out/$$c.wasm; \
+				fi; \
 			done; \
 		'
 endif
