@@ -151,7 +151,7 @@ jobs:
     - run: make build-libs
     - name: Build test wasms on the host where docker cannot run linux containers
       if: runner.os != 'Linux'
-      run: echo TEST_WASMS_DOCKER= >> $GITHUB_ENV
+      run: echo TEST_WASMS_BUILD_WITH_DOCKER= >> $GITHUB_ENV
     - run: make build-test-wasms TEST_CRATES_RUSTUP_TOOLCHAIN=$RUSTUP_TOOLCHAIN
     - name: Upload test wasms
       uses: actions/upload-artifact@v7

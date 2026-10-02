@@ -4,6 +4,16 @@ TEST_CRATES = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.pack
 MSRV = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.name == "soroban-sdk") | .rust_version')
 TEST_CRATES_RUSTUP_TOOLCHAIN?=$(MSRV)
 
+# Build the test wasms inside a docker container so that the wasms are the same
+# regardless of the host building them. Set TEST_WASMS_BUILD_WITH_DOCKER to
+# empty to build on the host instead, e.g. where docker cannot run linux
+# containers. Build state is kept in docker volumes, and each crate's wasm is
+# copied out after it builds because some test crates import the wasms of
+# others. The workspace is mounted read-only, so the docker build uses --locked
+# and fails if Cargo.lock is out of date rather than updating it like the host
+# build does.
+TEST_WASMS_BUILD_WITH_DOCKER?=1
+
 VERSION_MAJOR = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.name == "soroban-sdk") | .version | split(".")[0]')
 
 CARGO_DOC_ARGS?=--open
@@ -37,19 +47,10 @@ build: build-libs build-test-wasms
 build-libs: fmt
 	cargo hack build --release $(foreach c,$(LIB_CRATES),--package $(c))
 
-# Build the test wasms inside a docker container so that the wasms are the same
-# regardless of the host building them. Set TEST_WASMS_DOCKER to empty to build
-# on the host instead, e.g. where docker cannot run linux containers. Build
-# state is kept in docker volumes, and each crate's wasm is copied out after it
-# builds because some test crates import the wasms of others. The workspace is
-# mounted read-only, so the docker build uses --locked and fails if Cargo.lock
-# is out of date rather than updating it like the host build does.
-TEST_WASMS_DOCKER?=1
-
 build-test-wasms: fmt
 	# Build the test wasms with MSRV by default, with some meta disabled for
 	# binary stability for tests.
-ifeq ($(TEST_WASMS_DOCKER),)
+ifeq ($(TEST_WASMS_BUILD_WITH_DOCKER),)
 	for c in $(TEST_CRATES); do \
 		STELLAR_CLI_VERSION=$(VERSION_MAJOR).0.0 \
 		RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
@@ -70,7 +71,7 @@ else
 		-e STELLAR_CLI_VERSION=$(VERSION_MAJOR).0.0 \
 		-e RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
 		-e RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
-		rust:$(MSRV) \
+		rust:$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
 		sh -c ' \
 			set -e; \
 			rustup toolchain install $(TEST_CRATES_RUSTUP_TOOLCHAIN) --profile minimal --target wasm32v1-none; \
