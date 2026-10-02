@@ -16,6 +16,9 @@
 //! `Address`, `Bytes`, `BytesN`, `Duration`, `Hash`, `Map`, `MuxedAddress`, `String`, `Symbol`,
 //! `Timepoint`, `Vec`, `U256`, `I256`, and the BLS12-381 and BN254 types.
 //!
+//! The exception is `Error`. Contracts commonly name their error enum `Error`, so it is not
+//! rejected, even though [`Error`] is also a soroban-sdk type.
+//!
 //! ## Migrating
 //!
 //! Rename any event or error enum named like a soroban-sdk type. Renaming an event changes the
@@ -24,6 +27,7 @@
 //!
 //! [`Address`]: crate::Address
 //! [`Symbol`]: crate::Symbol
+//! [`Error`]: crate::Error
 //! [`contracttype`]: crate::contracttype
 //! [`contractevent`]: crate::contractevent
 //! [`contracterror`]: crate::contracterror
