@@ -75,7 +75,7 @@ pub fn generate_from_wasm(
 /// Returns the major version of the soroban-sdk recorded in the contract's
 /// `rssdkver` meta, such as `30` for `30.0.0#abc123`, or `None` if the meta has
 /// no `rssdkver` entry or its version can't be read.
-fn sdk_major_version_from_meta(meta: &[ScMetaEntry]) -> Option<u32> {
+pub fn sdk_major_version_from_meta(meta: &[ScMetaEntry]) -> Option<u32> {
     meta.iter().find_map(|entry| match entry {
         ScMetaEntry::ScMetaV0(v0) if v0.key.as_slice() == b"rssdkver" => v0
             .val
