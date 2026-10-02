@@ -52,28 +52,6 @@ impl Contract {
 
 const HOLDING: &str = "::soroban_sdk::tests::contract_type_aliases::Holding";
 
-fn udt(name: &str) -> ScSpecTypeDef {
-    ScSpecTypeDef::Udt(ScSpecTypeUdt {
-        name: name.try_into().unwrap(),
-    })
-}
-
-fn field(name: &str, type_: ScSpecTypeDef) -> ScSpecUdtStructFieldV0 {
-    ScSpecUdtStructFieldV0 {
-        doc: "".try_into().unwrap(),
-        name: name.try_into().unwrap(),
-        type_,
-    }
-}
-
-fn input(name: &str, type_: ScSpecTypeDef) -> ScSpecFunctionInputV0 {
-    ScSpecFunctionInputV0 {
-        doc: "".try_into().unwrap(),
-        name: name.try_into().unwrap(),
-        type_,
-    }
-}
-
 #[test]
 fn test_struct_spec() {
     let entry = ScSpecEntry::from_xdr(Aliased::spec_xdr(), Limits::none()).unwrap();
@@ -84,30 +62,51 @@ fn test_struct_spec() {
             .try_into()
             .unwrap(),
         fields: vec![
-            field("amount", ScSpecTypeDef::I128),
-            field(
-                "amounts",
-                ScSpecTypeDef::Vec(Box::new(ScSpecTypeVec {
+            ScSpecUdtStructFieldV0 {
+                doc: "".try_into().unwrap(),
+                name: "amount".try_into().unwrap(),
+                type_: ScSpecTypeDef::I128,
+            },
+            ScSpecUdtStructFieldV0 {
+                doc: "".try_into().unwrap(),
+                name: "amounts".try_into().unwrap(),
+                type_: ScSpecTypeDef::Vec(Box::new(ScSpecTypeVec {
                     element_type: Box::new(ScSpecTypeDef::I128),
                 })),
-            ),
-            field("held", udt(HOLDING)),
-            field("id", ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n: 32 })),
-            field(
-                "maybe",
-                ScSpecTypeDef::Option(Box::new(ScSpecTypeOption {
+            },
+            ScSpecUdtStructFieldV0 {
+                doc: "".try_into().unwrap(),
+                name: "held".try_into().unwrap(),
+                type_: ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                    name: HOLDING.try_into().unwrap(),
+                }),
+            },
+            ScSpecUdtStructFieldV0 {
+                doc: "".try_into().unwrap(),
+                name: "id".try_into().unwrap(),
+                type_: ScSpecTypeDef::BytesN(ScSpecTypeBytesN { n: 32 }),
+            },
+            ScSpecUdtStructFieldV0 {
+                doc: "".try_into().unwrap(),
+                name: "maybe".try_into().unwrap(),
+                type_: ScSpecTypeDef::Option(Box::new(ScSpecTypeOption {
                     value_type: Box::new(ScSpecTypeDef::I128),
                 })),
-            ),
-            field("owner", ScSpecTypeDef::Address),
-            field(
-                "pair",
-                ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
+            },
+            ScSpecUdtStructFieldV0 {
+                doc: "".try_into().unwrap(),
+                name: "owner".try_into().unwrap(),
+                type_: ScSpecTypeDef::Address,
+            },
+            ScSpecUdtStructFieldV0 {
+                doc: "".try_into().unwrap(),
+                name: "pair".try_into().unwrap(),
+                type_: ScSpecTypeDef::Tuple(Box::new(ScSpecTypeTuple {
                     value_types: vec![ScSpecTypeDef::I128, ScSpecTypeDef::Address]
                         .try_into()
                         .unwrap(),
                 })),
-            ),
+            },
         ]
         .try_into()
         .unwrap(),
@@ -122,14 +121,25 @@ fn test_fn_spec() {
         doc: "".try_into().unwrap(),
         name: "aliased".try_into().unwrap(),
         inputs: vec![
-            input("a", ScSpecTypeDef::I128),
-            input(
-                "b",
-                ScSpecTypeDef::Vec(Box::new(ScSpecTypeVec {
+            ScSpecFunctionInputV0 {
+                doc: "".try_into().unwrap(),
+                name: "a".try_into().unwrap(),
+                type_: ScSpecTypeDef::I128,
+            },
+            ScSpecFunctionInputV0 {
+                doc: "".try_into().unwrap(),
+                name: "b".try_into().unwrap(),
+                type_: ScSpecTypeDef::Vec(Box::new(ScSpecTypeVec {
                     element_type: Box::new(ScSpecTypeDef::I128),
                 })),
-            ),
-            input("c", udt(HOLDING)),
+            },
+            ScSpecFunctionInputV0 {
+                doc: "".try_into().unwrap(),
+                name: "c".try_into().unwrap(),
+                type_: ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                    name: HOLDING.try_into().unwrap(),
+                }),
+            },
         ]
         .try_into()
         .unwrap(),
