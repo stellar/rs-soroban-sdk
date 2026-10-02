@@ -15,6 +15,7 @@ proc-macro = true
 doctest = false
 
 [dependencies]
+soroban-spec = { workspace = true }
 soroban-spec-rust = { workspace = true }
 soroban-env-common = { workspace = true }
 stellar-xdr = { workspace = true, features = ["std"] }
@@ -26,6 +27,9 @@ darling = "0.20.10"
 macro-string = "0.1.4"
 sha2 = "0.10.7"
 heck = "0.5.0"
+
+[dev-dependencies]
+soroban-sdk = { path = "../soroban-sdk", features = ["testutils"] }
 
 [features]
 testutils = []

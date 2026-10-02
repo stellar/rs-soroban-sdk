@@ -43,6 +43,32 @@ impl ::core::cmp::PartialEq for Error {
         true
     }
 }
+impl soroban_sdk::SpecName for Error {
+    const SPEC_NAME: &'static str = {
+        const NAME: &str = "::test_add_u64::Error";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `Error` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_add_u64::Error`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
+    };
+}
+impl soroban_sdk::SpecTypeDef for Error {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -53,7 +79,9 @@ impl Error {
             soroban_sdk::xdr::r#const::ScSpecUdtErrorEnumV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"Error"),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <Error as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtErrorEnumCaseV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -204,6 +232,32 @@ impl ::core::cmp::PartialEq for MyError {
         true
     }
 }
+impl soroban_sdk::SpecName for MyError {
+    const SPEC_NAME: &'static str = {
+        const NAME: &str = "::test_add_u64::MyError";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `MyError` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_add_u64::MyError`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
+    };
+}
+impl soroban_sdk::SpecTypeDef for MyError {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -214,7 +268,9 @@ impl MyError {
             soroban_sdk::xdr::r#const::ScSpecUdtErrorEnumV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"MyError"),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <MyError as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtErrorEnumCaseV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -382,16 +438,16 @@ impl Contract {
                     soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"a"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U64,
+                        type_: <u64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                     soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"b"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U64,
+                        type_: <u64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ]),
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecTypeDef::U64,
+                    <u64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 ]),
             },
         );
@@ -425,21 +481,16 @@ impl Contract {
                     soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"a"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U64,
+                        type_: <u64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                     soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"b"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U64,
+                        type_: <u64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ]),
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecTypeDef::Result(
-                        &soroban_sdk::xdr::r#const::ScSpecTypeResult {
-                            ok_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::U64,
-                            error_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Error,
-                        },
-                    ),
+                    <Result<u64, Error> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 ]),
             },
         );
@@ -473,28 +524,16 @@ impl Contract {
                     soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"a"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U64,
+                        type_: <u64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                     soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"b"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U64,
+                        type_: <u64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ]),
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecTypeDef::Result(
-                        &soroban_sdk::xdr::r#const::ScSpecTypeResult {
-                            ok_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::U64,
-                            error_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
-                                soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                                    name:
-                                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                            b"MyError",
-                                        ),
-                                },
-                            ),
-                        },
-                    ),
+                    <Result<u64, MyError> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 ]),
             },
         );

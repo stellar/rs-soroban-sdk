@@ -4,6 +4,9 @@
 #[cfg(test)]
 extern crate std;
 
+pub mod names;
 #[cfg(feature = "std")]
 pub mod read;
+#[cfg(feature = "std")]
+pub mod reduce;
 pub mod shaking;

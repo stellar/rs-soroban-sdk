@@ -1,8 +1,6 @@
 use proc_macro2::TokenStream as TokenStream2;
 use quote::{format_ident, quote};
-use stellar_xdr::{
-    ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef, ScSymbol, StringM, SCSYMBOL_LIMIT,
-};
+use stellar_xdr::{ScSymbol, StringM, SCSYMBOL_LIMIT};
 use syn::TypeReference;
 use syn::{
     ext::IdentExt as _, punctuated::Punctuated, spanned::Spanned, token::Comma, Attribute, Error,
@@ -13,7 +11,7 @@ use crate::attribute::pass_through_attr_to_gen_code;
 use crate::syn_ext::{self, ty_to_safe_ident_str};
 use crate::{
     doc::docs_from_attrs,
-    map_type::{const_view_string, const_view_symbol, const_view_type_def, map_type},
+    spec::{const_view_string, const_view_symbol, const_view_type_def},
 };
 
 pub fn derive_fns_spec<'a>(
@@ -65,11 +63,10 @@ pub fn derive_fn_spec(
     });
 
     // Prepare the argument inputs.
-    let spec_args: Vec<_> = inputs
+    let (spec_args, arg_types): (Vec<_>, Vec<_>) = inputs
         .iter()
         .skip(if env_input.is_some() { 1 } else { 0 })
-        .enumerate()
-        .map(|(i, a)| match a {
+        .map(|a| match a {
             FnArg::Typed(pat_type) => {
                 let name = if let Pat::Ident(pat_ident) = *pat_type.pat.clone() {
                     pat_ident.ident.unraw().to_string()
@@ -77,6 +74,8 @@ pub fn derive_fn_spec(
                     errors.push(Error::new(a.span(), "argument not supported"));
                     "".to_string()
                 };
+
+                let ty = &*pat_type.ty;
 
                 // Strip any underscore prefix characters. Implementations that do not use an
                 // argument will prefix an underscore to the variable name to signal to the
@@ -88,93 +87,60 @@ pub fn derive_fn_spec(
                 // use all the inputs.
                 let name = name.trim_start_matches("_");
 
-                // If fn is a __check_auth implementation, allow the first argument,
-                // signature_payload of type Bytes (32 size), to be a Hash. Compare on
-                // the Soroban-facing name so a raw-identifier spelling like
-                // `r#__check_auth` can't bypass this special-case and then still export
-                // as `__check_auth`.
-                let allow_hash = ident.unraw().to_string() == "__check_auth" && i == 0;
-
-                match map_type(&pat_type.ty, true, allow_hash) {
-                    Ok(type_) => {
-                        let name = name.try_into().unwrap_or_else(|_| {
-                            const MAX: u32 = 30;
-                            errors.push(Error::new(
-                                a.span(),
-                                format!("argument name too long, max length {} characters", MAX),
-                            ));
-                            StringM::<MAX>::default()
-                        });
-                        ScSpecFunctionInputV0 {
-                            doc: "".try_into().unwrap(),
-                            name,
-                            type_,
-                        }
-                    }
-                    Err(e) => {
-                        errors.push(e);
-                        ScSpecFunctionInputV0 {
-                            doc: "".try_into().unwrap(),
-                            name: "arg".try_into().unwrap(),
-                            type_: ScSpecTypeDef::I32,
-                        }
-                    }
-                }
+                // The input's name, as the spec holds it. Its spec type comes from
+                // the Rust type.
+                let name = name.try_into().unwrap_or_else(|_| {
+                    const MAX: u32 = 30;
+                    errors.push(Error::new(
+                        a.span(),
+                        format!("argument name too long, max length {} characters", MAX),
+                    ));
+                    StringM::<MAX>::default()
+                });
+                (name, ty)
             }
             FnArg::Receiver(_) => {
                 errors.push(Error::new(a.span(), "self argument not supported"));
-                ScSpecFunctionInputV0 {
-                    doc: "".try_into().unwrap(),
-                    name: "".try_into().unwrap(),
-                    type_: ScSpecTypeDef::I32,
-                }
+                (StringM::default(), ty)
             }
         })
         .collect();
 
     // Prepare the output.
     let spec_result = match output {
-        ReturnType::Type(_, ty) => vec![match map_type(ty, true, true) {
-            Ok(spec) => spec,
-            Err(e) => {
-                errors.push(e);
-                ScSpecTypeDef::I32
-            }
-        }],
-        ReturnType::Default => vec![],
+        ReturnType::Type(_, ty) => Some(ty.as_ref()),
+        ReturnType::Default => None,
     };
 
     // Generated code spec.
     let name = &ident.unraw().to_string();
-    let spec = ScSpecFunctionV0 {
-        doc: docs_from_attrs(attrs),
-        name: name.try_into().unwrap_or_else(|_| {
-            errors.push(Error::new(
-                ident.span(),
-                format!(
-                    "contract function name is too long: {}, max is {}",
-                    name.len(),
-                    SCSYMBOL_LIMIT,
-                ),
-            ));
-            ScSymbol::default()
-        }),
-        inputs: spec_args.try_into().unwrap(),
-        outputs: spec_result.try_into().unwrap(),
-    };
+    let fn_name: ScSymbol = name.try_into().unwrap_or_else(|_| {
+        errors.push(Error::new(
+            ident.span(),
+            format!(
+                "contract function name is too long: {}, max is {}",
+                name.len(),
+                SCSYMBOL_LIMIT,
+            ),
+        ));
+        ScSymbol::default()
+    });
 
     // The spec entry rendered as the equivalent const::ScSpecEntry, which the
     // contract crate encodes to XDR at compile time.
     let spec_entry = {
-        let doc = const_view_string(path, &spec.doc);
-        let name = const_view_symbol(path, &spec.name);
-        let inputs = spec.inputs.iter().map(|i| {
-            let doc = const_view_string(path, &i.doc);
-            let name = const_view_string(path, &i.name);
-            let type_ = const_view_type_def(path, &i.type_);
-            quote!(#path::xdr::r#const::ScSpecFunctionInputV0 { doc: #doc, name: #name, type_: #type_ })
-        });
-        let outputs = spec.outputs.iter().map(|o| const_view_type_def(path, o));
+        let doc = const_view_string(path, &docs_from_attrs(attrs));
+        let name = const_view_symbol(path, &fn_name);
+        let inputs = spec_args
+            .iter()
+            .zip(arg_types.iter().copied())
+            .map(|(input_name, rust)| {
+                let doc = const_view_string(path, &StringM::<1024>::default());
+                let name = const_view_string(path, input_name);
+                let type_ = const_view_type_def(path, rust);
+                quote!(#path::xdr::r#const::ScSpecFunctionInputV0 { doc: #doc, name: #name, type_: #type_ })
+            });
+        let outputs = spec_result.iter().map(|o| const_view_type_def(path, o));
         quote! {
             #path::xdr::r#const::ScSpecEntry::FunctionV0(#path::xdr::r#const::ScSpecFunctionV0 {
                 doc: #doc,
