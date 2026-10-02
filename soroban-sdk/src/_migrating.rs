@@ -6,23 +6,29 @@
 
 //! # Migrating from v28 to v30
 //!
-//! - Contracts must now be built with the `stellar contract build` command from a version of the
-//!   stellar-cli of equal major version or greater.
+//! - [Contracts must now be built with the `stellar contract build` command from a version of the
+//!   stellar-cli of equal major version or greater][v30_cli_version].
 //!
-//! - Duplicate type, event, and error names in specs are now identified and given unique names in
-//!   the spec by adding numbers to the end of the names. When upgrading the SDK on an existing
-//!   contract that has duplicate names, you can expect to see the contract spec change.
+//! - [Duplicate type, event, and error names in specs are now identified and given unique names in
+//!   the spec by adding numbers to the end of the names][v30_duplicate_names]. When upgrading the
+//!   SDK on an existing contract that has duplicate names, you can expect to see the contract spec
+//!   change.
 //!
-//! - It is now an error to name types, events, and errors with type names that are already used by
-//!   types within the soroban-sdk.
+//! - [It is now an error to name types, events, and errors with type names that are already used
+//!   by types within the soroban-sdk][v30_sdk_type_names].
 //!
 //! The following changes are largely internal details, but are included here for visibility for
 //! tool builders who may be inspecting Wasm and contract spec internal data.
 //!
-//! - Changes were made to the soroban-sdk and the coupled stellar-cli so that the generation of the
-//!   contract spec uses absolute names for types, and uses that information to optimise spec
+//! - [Changes were made to the soroban-sdk and the coupled stellar-cli so that the generation of
+//!   the contract spec uses absolute names for types, and uses that information to optimise spec
 //!   shaking. As a result, spec markers are now only included in the contract Wasm for spec entries
-//!   that are events or errors triggered by panics.
+//!   that are events or errors triggered by panics][v30_spec_markers].
+//!
+//! [v30_cli_version]: v30_cli_version
+//! [v30_duplicate_names]: v30_duplicate_names
+//! [v30_sdk_type_names]: v30_sdk_type_names
+//! [v30_spec_markers]: v30_spec_markers
 //!
 //! # Migrating from v27 to v28
 //!
@@ -471,3 +477,7 @@ pub mod v28_contractevent_packing;
 pub mod v28_contracttype_unpacking;
 pub mod v28_native_contract_code;
 pub mod v28_spec_shaking;
+pub mod v30_cli_version;
+pub mod v30_duplicate_names;
+pub mod v30_sdk_type_names;
+pub mod v30_spec_markers;
