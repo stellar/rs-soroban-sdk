@@ -4,6 +4,15 @@ TEST_CRATES = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.pack
 MSRV = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.name == "soroban-sdk") | .rust_version')
 TEST_CRATES_RUSTUP_TOOLCHAIN?=$(MSRV)
 
+# Build the test wasms inside a docker container so that the wasms are the same
+# regardless of the host building them. Set TEST_WASMS_BUILD_WITH_DOCKER to
+# empty to build on the host instead, e.g. where docker cannot run linux
+# containers. The workspace is mounted read-only with its target dir mounted
+# writable, so the wasms are built in place, and the rustup and cargo caches
+# are kept in docker volumes. The docker build uses --locked and fails if
+# Cargo.lock is out of date rather than updating it like the host build does.
+TEST_WASMS_BUILD_WITH_DOCKER?=1
+
 VERSION_MAJOR = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.name == "soroban-sdk") | .version | split(".")[0]')
 
 CARGO_DOC_ARGS?=--open
@@ -40,10 +49,37 @@ build-libs: fmt
 build-test-wasms: fmt
 	# Build the test wasms with MSRV by default, with some meta disabled for
 	# binary stability for tests.
-	STELLAR_CLI_VERSION=$(VERSION_MAJOR).0.0 \
-	RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
-	RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
-		cargo hack build --release --target wasm32v1-none $(foreach c,$(TEST_CRATES),--package $(c)) ; \
+ifeq ($(TEST_WASMS_BUILD_WITH_DOCKER),)
+	for c in $(TEST_CRATES); do \
+		echo "cargo build --release --target wasm32v1-none --package $$c"; \
+		STELLAR_CLI_VERSION=$(VERSION_MAJOR).0.0 \
+		RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
+		RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
+			cargo build --release --target wasm32v1-none --package $$c || exit 1; \
+	done
+else
+	mkdir -p target
+	docker run --rm \
+		-v "$(CURDIR)":/workspace:ro \
+		-v "$(CURDIR)/target":/workspace/target \
+		-v soroban-sdk-test-wasms-rustup:/usr/local/rustup \
+		-v soroban-sdk-test-wasms-cargo-registry:/usr/local/cargo/registry \
+		-v soroban-sdk-test-wasms-cargo-git:/usr/local/cargo/git \
+		-w /workspace \
+		-e STELLAR_CLI_VERSION=$(VERSION_MAJOR).0.0 \
+		-e RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
+		-e RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
+		rust:$(MSRV) \
+		sh -c ' \
+			set -e; \
+			trap "chown -R $(shell id -u):$(shell id -g) /workspace/target" EXIT; \
+			rustup toolchain install $(TEST_CRATES_RUSTUP_TOOLCHAIN) --profile minimal --target wasm32v1-none; \
+			for c in $(TEST_CRATES); do \
+				echo "cargo build --locked --release --target wasm32v1-none --package $$c"; \
+				cargo build --locked --release --target wasm32v1-none --package $$c; \
+			done; \
+		'
+endif
 	cd target/wasm32v1-none/release/ && \
 		for i in *.wasm ; do \
 			ls -l "$$i"; \
