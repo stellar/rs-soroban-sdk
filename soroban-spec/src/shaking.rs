@@ -1,32 +1,53 @@
 /// Spec shaking: removing unused spec entries from contract WASMs.
 ///
-/// ## Meta
+/// ## Models
 ///
-/// The `contractmetav0` section of a WASM may contain an [`ScMetaV0`] entry
-/// with key [`META_KEY`] (`rssdk_spec_shaking`). The value indicates the spec
-/// shaking version:
+/// How a WASM's spec is shaken depends on the SDK that built it, which the
+/// `contractmetav0` section records. The [`Model`] is chosen in order:
 ///
-/// - Absent or `"1"` — version 1 (no markers, no shaking possible).
-/// - `"2"` — version 2, markers are embedded in the data section.
+/// - [`Model::References`] — built by soroban-sdk v30 or later, as its
+///   [`SDK_VERSION_META_KEY`] (`rssdkver`) entry says. The type names are
+///   reduced, and the spec is shaken by following the references to each type
+///   by name, with markers only for events and errors.
+/// - [`Model::Markers`] — the [`META_KEY`] (`rssdk_spec_shaking`) entry is
+///   [`META_VALUE_V2`] (`"2"`). Every used entry has a marker in the data
+///   section, so the spec is shaken by markers alone.
+/// - [`Model::None`] — otherwise. Nothing records how the spec could be
+///   shaken, so it is left alone.
 ///
-/// Use [`spec_shaking_version_for_meta`] to determine the version from the
-/// contract's meta entries.
+/// The model selects the rules, so a tool reads it before shaking and each
+/// wasm is shaken the way it was built. A soroban-sdk v30 or later WASM does
+/// not carry the [`META_KEY`] entry, so a tool that predates
+/// [`Model::References`] finds nothing it recognises and leaves the WASM
+/// alone, rather than shaking every type out of it by markers it no longer
+/// carries.
 ///
-/// ## Markers (version 2)
+/// Use [`model_for_meta`] to determine the model from the contract's meta
+/// entries.
+///
+/// ## Markers
 ///
 /// The marker is a byte array in the data section with a distinctive pattern:
 /// - 6 bytes: "SpEcV1" prefix
 /// - 8 bytes: first 64 bits of SHA256 hash of the spec entry XDR
 ///
-/// Markers are embedded in conversion/usage functions with a volatile read. When the type is used,
-/// the function is called and the marker is included. When the type is unused, the function is
-/// DCE'd along with its marker.
+/// Markers are embedded in usage functions with a volatile read. When the
+/// entry is used, the function is called and the marker is included. When it
+/// is unused, the function is DCE'd along with its marker.
+///
+/// Under [`Model::References`], only the entries a spec never references by
+/// name carry a marker: events, which nothing in a spec names, and error
+/// enums, which a contract may use solely by handing them to
+/// `panic_with_error!`. Every other user-defined type is named by whatever
+/// references it, so [`filter`] settles it by reachability and the wasm
+/// carries no marker for it. Under [`Model::Markers`], a wasm carries a marker
+/// per type and [`filter`] shakes on those markers alone.
 ///
 /// Post-processing tools (e.g. stellar-cli) can:
 /// 1. Scan the WASM data section for "SpEcV1" patterns
 /// 2. Extract the hash from each marker
 /// 3. Match against specs in contractspecv0 section (by hashing each spec)
-/// 4. Strip unused specs from contractspecv0
+/// 4. Strip the specs the model's rules do not keep from contractspecv0
 ///
 /// Today markers are only used in contracts written in Rust, leveraging how Rust can eliminate
 /// dead code to make the markers a good signal for if a type gets used. It's not known if the
@@ -35,42 +56,82 @@
 /// the stellar-cli to achieve accurately scoped contract specs.
 
 #[cfg(feature = "std")]
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 #[cfg(feature = "std")]
-use stellar_xdr::{Limits, ScMetaEntry, ScSpecEntry, WriteXdr};
+use stellar_xdr::{
+    Limits, ScMetaEntry, ScSpecEntry, ScSpecTypeDef, ScSpecUdtUnionCaseV0, WriteXdr,
+};
 
 mod sha256;
 #[cfg(test)]
 mod sha256_test;
 use sha256::sha256;
 
-/// The contract meta key that indicates the spec shaking version.
+/// The contract meta key that soroban-sdk v28 and v29 record spec shaking
+/// under.
 ///
 /// Stored in the `contractmetav0` section as an [`ScMetaV0`] entry.
 pub const META_KEY: &str = "rssdk_spec_shaking";
 
-/// The meta value for spec shaking version 2.
+/// The [`META_KEY`] value for [`Model::Markers`].
 pub const META_VALUE_V2: &str = "2";
 
-/// Returns the spec shaking version indicated by the contract meta entries.
+/// The contract meta key that soroban-sdk records its version under, as
+/// `<version>` or `<version>#<git revision>`.
+pub const SDK_VERSION_META_KEY: &str = "rssdkver";
+
+/// The first soroban-sdk major version whose contracts are shaken by
+/// [`Model::References`].
+pub const REFERENCES_MIN_SDK_MAJOR: u64 = 30;
+
+/// How a contract's spec is shaken, which depends on the SDK that built it
+/// and selects the rules [`filter`] shakes it by.
 ///
-/// Looks for an [`ScMetaV0`] entry with key [`META_KEY`]. Returns:
-/// - `2` if the value is [`META_VALUE_V2`] (`"2"`).
-/// - `1` otherwise (absent or any other value).
+/// A tool reads the model from the contract rather than assuming the newest
+/// it knows, because the model says what a missing marker means.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Model {
+    /// Nothing records how the spec could be shaken, so it is left alone.
+    None,
+    /// Every used entry carries a marker, so markers alone say what is used.
+    Markers,
+    /// The type names are reduced, functions are kept, events and errors are
+    /// kept by their markers, and every other type is kept by following the
+    /// references to it by name.
+    References,
+}
+
+/// Returns the model the contract's spec is shaken by, from its meta entries.
+///
+/// Returns, in order:
+/// - [`Model::References`] if the [`SDK_VERSION_META_KEY`] entry records a
+///   major version of at least [`REFERENCES_MIN_SDK_MAJOR`].
+/// - [`Model::Markers`] if the [`META_KEY`] entry is [`META_VALUE_V2`].
+/// - [`Model::None`] otherwise.
 #[cfg(feature = "std")]
-pub fn spec_shaking_version_for_meta(meta: &[ScMetaEntry]) -> u32 {
-    for entry in meta {
-        match entry {
-            ScMetaEntry::ScMetaV0(v0) if v0.key.to_utf8_string_lossy() == META_KEY => {
-                if v0.val.to_utf8_string_lossy() == META_VALUE_V2 {
-                    return 2;
-                }
+#[must_use]
+pub fn model_for_meta(meta: &[ScMetaEntry]) -> Model {
+    let val = |key: &str| {
+        meta.iter().find_map(|entry| match entry {
+            ScMetaEntry::ScMetaV0(v0) if v0.key.to_utf8_string_lossy() == key => {
+                Some(v0.val.to_utf8_string_lossy())
             }
-            _ => {}
-        }
+            ScMetaEntry::ScMetaV0(_) => None,
+        })
+    };
+    let sdk_major = val(SDK_VERSION_META_KEY).and_then(|v| {
+        v.split(['.', '#', '-', '+'])
+            .next()
+            .and_then(|major| major.parse::<u64>().ok())
+    });
+    if sdk_major.is_some_and(|major| major >= REFERENCES_MIN_SDK_MAJOR) {
+        Model::References
+    } else if val(META_KEY).as_deref() == Some(META_VALUE_V2) {
+        Model::Markers
+    } else {
+        Model::None
     }
-    1
 }
 
 /// Magic bytes that identify a spec marker: `SpEcV1`
@@ -112,9 +173,9 @@ pub fn generate_marker_for_entry(entry: &ScSpecEntry) -> Marker {
 
 /// Finds all spec markers in a WASM binary's data section.
 ///
-/// The SDK embeds markers in the data section for each spec entry that is
-/// actually used in the contract. These markers survive dead code elimination
-/// only if the corresponding type/event is used.
+/// The SDK embeds markers in the data section for each event and error enum
+/// that is actually used in the contract. These markers survive dead code
+/// elimination only if the corresponding event or error is used.
 ///
 /// Marker format:
 /// - 6 bytes: `SpEcV1` magic
@@ -155,29 +216,69 @@ fn find_all_in_data(data: &[u8], markers: &mut HashSet<Marker>) {
     }
 }
 
-/// Filters spec entries based on markers found in the WASM data section.
+/// Filters spec entries down to those the contract actually needs, by the
+/// rules of the model it is shaken by.
 ///
-/// This removes any spec entries (types, events) that don't have corresponding
-/// markers in the data section. The SDK embeds markers for types/events that
-/// are actually used, and these markers survive dead code elimination.
+/// The model says which entries carry a marker, and so what a missing marker
+/// means, which is why it has to be the contract's own model rather than the
+/// newest one known:
 ///
-/// Functions are always kept as they define the contract's API.
+/// - [`Model::None`] — nothing records how the spec could be shaken, so every
+///   entry is kept.
+/// - [`Model::Markers`] — every used entry carries a marker, so a marker is the
+///   whole answer. Functions are always kept; every other entry is kept only
+///   if the data section carries its marker.
+/// - [`Model::References`] — only the entries a spec never references by name
+///   carry a marker, so most types are settled by following references:
+///     - Functions are always kept: they define the contract's API.
+///     - An event is kept only if the data section carries its marker, which
+///       it does only where the contract publishes the event. Nothing
+///       references an event, so a marker is the only evidence one is used.
+///     - An error enum is kept if the data section carries its marker, which
+///       it does where the error is handed to `panic_with_error!`, or if a
+///       kept entry references it, as a function returning it in a `Result`
+///       does.
+///     - Every other user-defined type is kept only if a kept entry references
+///       it, following references transitively: a type referenced by a
+///       function, a kept event, or another kept type.
+///
+/// Under [`Model::References`], references are matched to definitions by the name
+/// the spec gives a type, so this holds names as they are, whether qualified
+/// or simple.
 ///
 /// # Arguments
 ///
 /// * `entries` - The spec entries to filter
 /// * `markers` - Markers extracted from the WASM data section
+/// * `model` - The contract's model, from [`model_for_meta`]
 ///
 /// # Returns
 ///
-/// Iterator of filtered entries with only used types/events remaining.
+/// Iterator of the kept entries, in the order they were given.
 #[cfg(feature = "std")]
 #[allow(clippy::implicit_hasher)]
-pub fn filter<'a, I: IntoIterator<Item = ScSpecEntry> + 'a>(
+pub fn filter<I: IntoIterator<Item = ScSpecEntry>>(
     entries: I,
-    markers: &'a HashSet<Marker>,
-) -> impl Iterator<Item = ScSpecEntry> + 'a {
-    entries.into_iter().filter(move |entry| {
+    markers: &HashSet<Marker>,
+    model: Model,
+) -> impl Iterator<Item = ScSpecEntry> {
+    let entries: Vec<ScSpecEntry> = entries.into_iter().collect();
+    let keep = match model {
+        Model::None => vec![true; entries.len()],
+        Model::Markers => entries.iter().map(keep_by_marker(markers)).collect(),
+        Model::References => keep_by_references_and_markers(&entries, markers),
+    };
+    entries
+        .into_iter()
+        .zip(keep)
+        .filter_map(|(entry, keep)| keep.then_some(entry))
+}
+
+/// Whether an entry is kept under the [`Model::Markers`] rules: functions always, and
+/// every other entry only if the data section carries its marker.
+#[cfg(feature = "std")]
+fn keep_by_marker(markers: &HashSet<Marker>) -> impl Fn(&ScSpecEntry) -> bool + '_ {
+    move |entry| {
         // Always keep functions - they're the contract's API
         if matches!(entry, ScSpecEntry::FunctionV0(_)) {
             return true;
@@ -185,16 +286,157 @@ pub fn filter<'a, I: IntoIterator<Item = ScSpecEntry> + 'a>(
         // For all other entries (types, events), check if marker exists
         let marker = generate_marker_for_entry(entry);
         markers.contains(&marker)
-    })
+    }
+}
+
+/// Whether each entry is kept, positionally, per the [`Model::References`]
+/// rules on [`filter`].
+#[cfg(feature = "std")]
+fn keep_by_references_and_markers(entries: &[ScSpecEntry], markers: &HashSet<Marker>) -> Vec<bool> {
+    // The entries that define each type name. A name is normally defined once,
+    // but a spec can carry the same type twice, from a library linked in more
+    // than one form, and then a reference reaches both.
+    let mut defs: HashMap<&[u8], Vec<usize>> = HashMap::new();
+    for (i, entry) in entries.iter().enumerate() {
+        if let Some(name) = type_name(entry) {
+            defs.entry(name).or_default().push(i);
+        }
+    }
+
+    // Seed with the entries kept on their own account: functions, and the
+    // events and errors the data section holds a marker for.
+    let mut pending: Vec<usize> = (0..entries.len())
+        .filter(|&i| match &entries[i] {
+            ScSpecEntry::FunctionV0(_) => true,
+            entry @ (ScSpecEntry::EventV0(_) | ScSpecEntry::UdtErrorEnumV0(_)) => {
+                markers.contains(&generate_marker_for_entry(entry))
+            }
+            ScSpecEntry::UdtStructV0(_)
+            | ScSpecEntry::UdtUnionV0(_)
+            | ScSpecEntry::UdtEnumV0(_) => false,
+        })
+        .collect();
+
+    // Keep each pending entry, and follow its references to the entries they
+    // name. An entry already kept has had its references followed.
+    let mut keep = vec![false; entries.len()];
+    while let Some(i) = pending.pop() {
+        if keep[i] {
+            continue;
+        }
+        keep[i] = true;
+        for name in referenced_type_names(&entries[i]) {
+            pending.extend(defs.get(name).into_iter().flatten());
+        }
+    }
+
+    keep
+}
+
+/// The name of the user-defined type the entry defines, or `None` for an entry
+/// that defines no type a reference can name (a function or an event).
+#[cfg(feature = "std")]
+fn type_name(entry: &ScSpecEntry) -> Option<&[u8]> {
+    match entry {
+        ScSpecEntry::UdtStructV0(s) => Some(s.name.as_slice()),
+        ScSpecEntry::UdtUnionV0(u) => Some(u.name.as_slice()),
+        ScSpecEntry::UdtEnumV0(e) => Some(e.name.as_slice()),
+        ScSpecEntry::UdtErrorEnumV0(e) => Some(e.name.as_slice()),
+        ScSpecEntry::FunctionV0(_) | ScSpecEntry::EventV0(_) => None,
+    }
+}
+
+/// The names of every user-defined type the entry references.
+#[cfg(feature = "std")]
+fn referenced_type_names(entry: &ScSpecEntry) -> Vec<&[u8]> {
+    let mut names = Vec::new();
+    match entry {
+        ScSpecEntry::FunctionV0(f) => {
+            for input in f.inputs.iter() {
+                collect_type_names(&input.type_, &mut names);
+            }
+            for output in f.outputs.iter() {
+                collect_type_names(output, &mut names);
+            }
+        }
+        ScSpecEntry::UdtStructV0(s) => {
+            for field in s.fields.iter() {
+                collect_type_names(&field.type_, &mut names);
+            }
+        }
+        ScSpecEntry::UdtUnionV0(u) => {
+            for case in u.cases.iter() {
+                if let ScSpecUdtUnionCaseV0::TupleV0(t) = case {
+                    for type_ in t.type_.iter() {
+                        collect_type_names(type_, &mut names);
+                    }
+                }
+            }
+        }
+        ScSpecEntry::EventV0(e) => {
+            for param in e.params.iter() {
+                collect_type_names(&param.type_, &mut names);
+            }
+        }
+        ScSpecEntry::UdtEnumV0(_) | ScSpecEntry::UdtErrorEnumV0(_) => {}
+    }
+    names
+}
+
+/// Collects the name of every user-defined type the type def references,
+/// descending through the containers that hold other types.
+#[cfg(feature = "std")]
+fn collect_type_names<'a>(type_: &'a ScSpecTypeDef, names: &mut Vec<&'a [u8]>) {
+    match type_ {
+        ScSpecTypeDef::Udt(u) => names.push(u.name.as_slice()),
+        ScSpecTypeDef::Option(o) => collect_type_names(&o.value_type, names),
+        ScSpecTypeDef::Result(r) => {
+            collect_type_names(&r.ok_type, names);
+            collect_type_names(&r.error_type, names);
+        }
+        ScSpecTypeDef::Vec(v) => collect_type_names(&v.element_type, names),
+        ScSpecTypeDef::Map(m) => {
+            collect_type_names(&m.key_type, names);
+            collect_type_names(&m.value_type, names);
+        }
+        ScSpecTypeDef::Tuple(t) => {
+            for value_type in t.value_types.iter() {
+                collect_type_names(value_type, names);
+            }
+        }
+        ScSpecTypeDef::Val
+        | ScSpecTypeDef::Bool
+        | ScSpecTypeDef::Void
+        | ScSpecTypeDef::Error
+        | ScSpecTypeDef::U32
+        | ScSpecTypeDef::I32
+        | ScSpecTypeDef::U64
+        | ScSpecTypeDef::I64
+        | ScSpecTypeDef::Timepoint
+        | ScSpecTypeDef::Duration
+        | ScSpecTypeDef::U128
+        | ScSpecTypeDef::I128
+        | ScSpecTypeDef::U256
+        | ScSpecTypeDef::I256
+        | ScSpecTypeDef::Bytes
+        | ScSpecTypeDef::String
+        | ScSpecTypeDef::Symbol
+        | ScSpecTypeDef::Address
+        | ScSpecTypeDef::MuxedAddress
+        | ScSpecTypeDef::BytesN(_) => {}
+    }
 }
 
 #[cfg(all(test, feature = "std"))]
 mod tests {
     use super::*;
     use stellar_xdr::{
-        ScMetaV0, ScSpecEntry, ScSpecEventDataFormat, ScSpecEventV0, ScSpecFunctionInputV0,
-        ScSpecFunctionV0, ScSpecTypeDef, ScSpecUdtEnumCaseV0, ScSpecUdtEnumV0,
-        ScSpecUdtStructFieldV0, ScSpecUdtStructV0, StringM, VecM,
+        ScMetaV0, ScSpecEntry, ScSpecEventDataFormat, ScSpecEventParamLocationV0,
+        ScSpecEventParamV0, ScSpecEventV0, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef,
+        ScSpecTypeMap, ScSpecTypeOption, ScSpecTypeResult, ScSpecTypeUdt, ScSpecTypeVec,
+        ScSpecUdtEnumCaseV0, ScSpecUdtEnumV0, ScSpecUdtErrorEnumCaseV0, ScSpecUdtErrorEnumV0,
+        ScSpecUdtStructFieldV0, ScSpecUdtStructV0, ScSpecUdtUnionCaseTupleV0,
+        ScSpecUdtUnionCaseVoidV0, ScSpecUdtUnionV0, StringM, VecM,
     };
 
     fn make_function(name: &str, input_types: Vec<ScSpecTypeDef>) -> ScSpecEntry {
@@ -250,6 +492,88 @@ mod tests {
             }]
             .try_into()
             .unwrap(),
+        })
+    }
+
+    fn make_function_with_output(name: &str, output: ScSpecTypeDef) -> ScSpecEntry {
+        ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+            doc: StringM::default(),
+            name: name.try_into().unwrap(),
+            inputs: VecM::default(),
+            outputs: vec![output].try_into().unwrap(),
+        })
+    }
+
+    fn make_error_enum(name: &str) -> ScSpecEntry {
+        ScSpecEntry::UdtErrorEnumV0(ScSpecUdtErrorEnumV0 {
+            doc: StringM::default(),
+            lib: StringM::default(),
+            name: name.try_into().unwrap(),
+            cases: vec![ScSpecUdtErrorEnumCaseV0 {
+                doc: StringM::default(),
+                name: "Case".try_into().unwrap(),
+                value: 1,
+            }]
+            .try_into()
+            .unwrap(),
+        })
+    }
+
+    fn udt(name: &str) -> ScSpecTypeDef {
+        ScSpecTypeDef::Udt(ScSpecTypeUdt {
+            name: name.try_into().unwrap(),
+        })
+    }
+
+    fn struct_names(entries: &[ScSpecEntry]) -> Vec<String> {
+        entries
+            .iter()
+            .filter_map(|e| match e {
+                ScSpecEntry::UdtStructV0(s) => Some(s.name.to_utf8_string_lossy()),
+                _ => None,
+            })
+            .collect()
+    }
+
+    fn error_enum_names(entries: &[ScSpecEntry]) -> Vec<String> {
+        entries
+            .iter()
+            .filter_map(|e| match e {
+                ScSpecEntry::UdtErrorEnumV0(e) => Some(e.name.to_utf8_string_lossy()),
+                _ => None,
+            })
+            .collect()
+    }
+
+    fn event_names(entries: &[ScSpecEntry]) -> Vec<String> {
+        entries
+            .iter()
+            .filter_map(|e| match e {
+                ScSpecEntry::EventV0(e) => Some(e.name.to_utf8_string_lossy()),
+                _ => None,
+            })
+            .collect()
+    }
+
+    fn make_event_with_params(name: &str, param_types: Vec<ScSpecTypeDef>) -> ScSpecEntry {
+        ScSpecEntry::EventV0(ScSpecEventV0 {
+            doc: StringM::default(),
+            lib: StringM::default(),
+            name: name.try_into().unwrap(),
+            prefix_topics: VecM::default(),
+            params: param_types
+                .into_iter()
+                .enumerate()
+                .map(|(i, type_)| ScSpecEventParamV0 {
+                    doc: StringM::default(),
+                    name: format!("p{i}").try_into().unwrap(),
+                    type_,
+                    location: ScSpecEventParamLocationV0::Data,
+                })
+                .collect::<Vec<_>>()
+                .try_into()
+                .unwrap(),
+            data_format: ScSpecEventDataFormat::SingleValue,
         })
     }
 
@@ -362,81 +686,24 @@ mod tests {
     }
 
     #[test]
-    fn test_filter_keeps_used_events() {
-        let transfer_event = make_event("Transfer");
-        let mint_event = make_event("Mint");
-
+    fn test_filter_none_keeps_everything() {
+        // Nothing records how the spec could be shaken, so an entry without a
+        // marker is not evidence of anything.
         let entries = vec![
             make_function("foo", vec![ScSpecTypeDef::U32]),
-            transfer_event.clone(),
-            mint_event.clone(),
-            make_event("Unused"),
+            make_struct("Unreferenced", vec![("field", ScSpecTypeDef::U32)]),
+            make_event("Unpublished"),
         ];
 
-        let mut markers = HashSet::new();
-        markers.insert(generate_marker_for_entry(&transfer_event));
-        markers.insert(generate_marker_for_entry(&mint_event));
+        let filtered: Vec<_> = filter(entries.clone(), &HashSet::new(), Model::None).collect();
 
-        let filtered: Vec<_> = filter(entries, &markers).collect();
-
-        // Should have: 1 function + 2 used events
-        assert_eq!(filtered.len(), 3);
-
-        let event_names: Vec<_> = filtered
-            .iter()
-            .filter_map(|e| {
-                if let ScSpecEntry::EventV0(event) = e {
-                    Some(event.name.to_utf8_string_lossy())
-                } else {
-                    None
-                }
-            })
-            .collect();
-
-        assert!(event_names.contains(&"Transfer".to_string()));
-        assert!(event_names.contains(&"Mint".to_string()));
-        assert!(!event_names.contains(&"Unused".to_string()));
+        assert_eq!(filtered, entries);
     }
 
     #[test]
-    fn test_filter_removes_all_events_if_no_markers() {
-        let entries = vec![
-            make_function("foo", vec![ScSpecTypeDef::U32]),
-            make_event("Transfer"),
-            make_event("Mint"),
-        ];
-
-        let markers = HashSet::new();
-
-        let filtered: Vec<_> = filter(entries, &markers).collect();
-
-        // Should have: 1 function, 0 events
-        assert_eq!(filtered.len(), 1);
-        assert!(matches!(filtered[0], ScSpecEntry::FunctionV0(_)));
-    }
-
-    #[test]
-    fn test_filter_removes_all_types_if_no_markers() {
-        let entries = vec![
-            make_function("foo", vec![ScSpecTypeDef::U32]),
-            make_struct("MyStruct", vec![("field", ScSpecTypeDef::U32)]),
-            make_enum("MyEnum"),
-            make_event("Unused"),
-        ];
-
-        let markers = HashSet::new(); // No markers
-
-        let filtered: Vec<_> = filter(entries, &markers).collect();
-
-        // Should have: only functions (always kept), no types or events
-        assert_eq!(filtered.len(), 1);
-        assert!(filtered
-            .iter()
-            .all(|e| matches!(e, ScSpecEntry::FunctionV0(_))));
-    }
-
-    #[test]
-    fn test_filter_keeps_types_with_markers() {
+    fn test_filter_markers_keeps_entries_with_markers() {
+        // Markers shaking: every entry carries a marker, so a marker is the
+        // whole answer and no reference is followed.
         let used_struct = make_struct("UsedStruct", vec![("field", ScSpecTypeDef::U32)]);
         let used_enum = make_enum("UsedEnum");
         let used_event = make_event("UsedEvent");
@@ -451,85 +718,442 @@ mod tests {
             make_event("UnusedEvent"),
         ];
 
-        let mut markers = HashSet::new();
-        markers.insert(generate_marker_for_entry(&used_struct));
-        markers.insert(generate_marker_for_entry(&used_enum));
-        markers.insert(generate_marker_for_entry(&used_event));
+        let markers = HashSet::from([
+            generate_marker_for_entry(&used_struct),
+            generate_marker_for_entry(&used_enum),
+            generate_marker_for_entry(&used_event),
+        ]);
 
-        let filtered: Vec<_> = filter(entries, &markers).collect();
+        let filtered: Vec<_> = filter(entries, &markers, Model::Markers).collect();
 
-        // Should have: 1 function + 1 struct + 1 enum + 1 event
         assert_eq!(filtered.len(), 4);
+        assert_eq!(struct_names(&filtered), ["UsedStruct"]);
+        assert_eq!(event_names(&filtered), ["UsedEvent"]);
+    }
 
-        // Check specific entries
-        let struct_names: Vec<_> = filtered
+    #[test]
+    fn test_filter_markers_removes_everything_but_functions_without_markers() {
+        let entries = vec![
+            make_function("foo", vec![ScSpecTypeDef::U32]),
+            make_struct("MyStruct", vec![("field", ScSpecTypeDef::U32)]),
+            make_enum("MyEnum"),
+            make_event("Unused"),
+        ];
+
+        let filtered: Vec<_> = filter(entries, &HashSet::new(), Model::Markers).collect();
+
+        assert_eq!(filtered.len(), 1);
+        assert!(matches!(filtered[0], ScSpecEntry::FunctionV0(_)));
+    }
+
+    #[test]
+    fn test_filter_markers_ignores_references_a_marker_does_not_back() {
+        // The markers rules do not follow references: a type a function names
+        // is still dropped without a marker of its own. This is what makes the
+        // model, not the algorithm, the thing that has to be right for a given
+        // wasm.
+        let entries = vec![
+            make_function("foo", vec![udt("Referenced")]),
+            make_struct("Referenced", vec![("field", ScSpecTypeDef::U32)]),
+        ];
+
+        let filtered: Vec<_> = filter(entries, &HashSet::new(), Model::Markers).collect();
+
+        assert_eq!(struct_names(&filtered), Vec::<String>::new());
+    }
+
+    #[test]
+    fn test_filter_references_keeps_used_events() {
+        let transfer_event = make_event("Transfer");
+        let mint_event = make_event("Mint");
+
+        let entries = vec![
+            make_function("foo", vec![ScSpecTypeDef::U32]),
+            transfer_event.clone(),
+            mint_event.clone(),
+            make_event("Unused"),
+        ];
+
+        let mut markers = HashSet::new();
+        markers.insert(generate_marker_for_entry(&transfer_event));
+        markers.insert(generate_marker_for_entry(&mint_event));
+
+        let filtered: Vec<_> = filter(entries, &markers, Model::References).collect();
+
+        // Should have: 1 function + 2 used events
+        assert_eq!(filtered.len(), 3);
+        assert_eq!(event_names(&filtered), ["Transfer", "Mint"]);
+    }
+
+    #[test]
+    fn test_filter_references_removes_all_events_if_no_markers() {
+        let entries = vec![
+            make_function("foo", vec![ScSpecTypeDef::U32]),
+            make_event("Transfer"),
+            make_event("Mint"),
+        ];
+
+        let markers = HashSet::new();
+
+        let filtered: Vec<_> = filter(entries, &markers, Model::References).collect();
+
+        // Should have: 1 function, 0 events
+        assert_eq!(filtered.len(), 1);
+        assert!(matches!(filtered[0], ScSpecEntry::FunctionV0(_)));
+    }
+
+    #[test]
+    fn test_filter_references_removes_types_no_entry_references() {
+        let entries = vec![
+            make_function("foo", vec![ScSpecTypeDef::U32]),
+            make_struct("MyStruct", vec![("field", ScSpecTypeDef::U32)]),
+            make_enum("MyEnum"),
+            make_event("Unused"),
+        ];
+
+        let markers = HashSet::new();
+
+        let filtered: Vec<_> = filter(entries, &markers, Model::References).collect();
+
+        // Should have: only the function. Nothing names the types, and the
+        // event has no marker.
+        assert_eq!(filtered.len(), 1);
+        assert!(matches!(filtered[0], ScSpecEntry::FunctionV0(_)));
+    }
+
+    #[test]
+    fn test_filter_references_keeps_a_type_a_function_references_without_a_marker() {
+        // A type is kept because a function names it, not because the data
+        // section holds a marker for it: types carry no markers at all.
+        let entries = vec![
+            make_function("foo", vec![udt("UsedStruct")]),
+            make_struct("UsedStruct", vec![("field", ScSpecTypeDef::U32)]),
+            make_struct("UnusedStruct", vec![("field", ScSpecTypeDef::U32)]),
+        ];
+
+        let filtered: Vec<_> = filter(entries, &HashSet::new(), Model::References).collect();
+
+        assert_eq!(struct_names(&filtered), ["UsedStruct"]);
+    }
+
+    #[test]
+    fn test_filter_references_keeps_a_type_a_function_references_through_a_container() {
+        // A reference nested in a container still names the type.
+        let entries = vec![
+            make_function(
+                "foo",
+                vec![ScSpecTypeDef::Vec(Box::new(ScSpecTypeVec {
+                    element_type: Box::new(ScSpecTypeDef::Option(Box::new(ScSpecTypeOption {
+                        value_type: Box::new(udt("Nested")),
+                    }))),
+                }))],
+            ),
+            make_struct("Nested", vec![("field", ScSpecTypeDef::U32)]),
+        ];
+
+        let filtered: Vec<_> = filter(entries, &HashSet::new(), Model::References).collect();
+
+        assert_eq!(struct_names(&filtered), ["Nested"]);
+    }
+
+    #[test]
+    fn test_filter_references_follows_references_between_types() {
+        // Reachability is transitive: a function names the outer type, which
+        // names the middle type, which names the inner one.
+        let entries = vec![
+            make_function("foo", vec![udt("Outer")]),
+            make_struct("Outer", vec![("field", udt("Middle"))]),
+            make_struct("Middle", vec![("field", udt("Inner"))]),
+            make_struct("Inner", vec![("field", ScSpecTypeDef::U32)]),
+            make_struct("Orphan", vec![("field", udt("AlsoOrphan"))]),
+            make_struct("AlsoOrphan", vec![("field", ScSpecTypeDef::U32)]),
+        ];
+
+        let filtered: Vec<_> = filter(entries, &HashSet::new(), Model::References).collect();
+
+        assert_eq!(struct_names(&filtered), ["Outer", "Middle", "Inner"]);
+    }
+
+    #[test]
+    fn test_filter_references_follows_a_reference_cycle_between_types() {
+        // A recursive definition must not send the walk round forever.
+        let entries = vec![
+            make_function("foo", vec![udt("Root")]),
+            make_struct("Root", vec![("field", udt("Node"))]),
+            make_struct("Node", vec![("field", udt("Root"))]),
+        ];
+
+        let filtered: Vec<_> = filter(entries, &HashSet::new(), Model::References).collect();
+
+        assert_eq!(struct_names(&filtered), ["Root", "Node"]);
+    }
+
+    #[test]
+    fn test_filter_references_follows_a_type_that_references_itself() {
+        // A type that holds a container of itself names itself, which must
+        // not send the walk round forever.
+        let entries = vec![
+            make_function("foo", vec![udt("Tree")]),
+            make_struct(
+                "Tree",
+                vec![(
+                    "children",
+                    ScSpecTypeDef::Vec(Box::new(ScSpecTypeVec {
+                        element_type: Box::new(udt("Tree")),
+                    })),
+                )],
+            ),
+        ];
+
+        let filtered: Vec<_> = filter(entries, &HashSet::new(), Model::References).collect();
+
+        assert_eq!(struct_names(&filtered), ["Tree"]);
+    }
+
+    #[test]
+    fn test_filter_references_follows_a_reference_cycle_through_containers() {
+        // A cycle through an option, a union case, and a map: Root names Node
+        // in an option, a case of the Node union holds a map of Leaf, and Leaf
+        // names Root in a vec.
+        let entries = vec![
+            make_function("foo", vec![udt("Root")]),
+            make_struct(
+                "Root",
+                vec![(
+                    "node",
+                    ScSpecTypeDef::Option(Box::new(ScSpecTypeOption {
+                        value_type: Box::new(udt("Node")),
+                    })),
+                )],
+            ),
+            ScSpecEntry::UdtUnionV0(ScSpecUdtUnionV0 {
+                doc: StringM::default(),
+                lib: StringM::default(),
+                name: "Node".try_into().unwrap(),
+                cases: vec![
+                    ScSpecUdtUnionCaseV0::VoidV0(ScSpecUdtUnionCaseVoidV0 {
+                        doc: StringM::default(),
+                        name: "Empty".try_into().unwrap(),
+                    }),
+                    ScSpecUdtUnionCaseV0::TupleV0(ScSpecUdtUnionCaseTupleV0 {
+                        doc: StringM::default(),
+                        name: "Branch".try_into().unwrap(),
+                        type_: vec![ScSpecTypeDef::Map(Box::new(ScSpecTypeMap {
+                            key_type: Box::new(ScSpecTypeDef::Symbol),
+                            value_type: Box::new(udt("Leaf")),
+                        }))]
+                        .try_into()
+                        .unwrap(),
+                    }),
+                ]
+                .try_into()
+                .unwrap(),
+            }),
+            make_struct(
+                "Leaf",
+                vec![(
+                    "roots",
+                    ScSpecTypeDef::Vec(Box::new(ScSpecTypeVec {
+                        element_type: Box::new(udt("Root")),
+                    })),
+                )],
+            ),
+        ];
+
+        let filtered: Vec<_> = filter(entries, &HashSet::new(), Model::References).collect();
+
+        assert_eq!(struct_names(&filtered), ["Root", "Leaf"]);
+        assert!(filtered.iter().any(
+            |e| matches!(e, ScSpecEntry::UdtUnionV0(u) if u.name.to_utf8_string_lossy() == "Node")
+        ));
+    }
+
+    #[test]
+    fn test_filter_references_removes_a_reference_cycle_nothing_reaches() {
+        // Types that name each other, or themselves, are not kept by those
+        // names alone: nothing outside the cycle reaches them.
+        let entries = vec![
+            make_function("foo", vec![udt("Used")]),
+            make_struct("Used", vec![("field", ScSpecTypeDef::U32)]),
+            make_struct("CycleA", vec![("b", udt("CycleB"))]),
+            make_struct(
+                "CycleB",
+                vec![(
+                    "a",
+                    ScSpecTypeDef::Vec(Box::new(ScSpecTypeVec {
+                        element_type: Box::new(udt("CycleA")),
+                    })),
+                )],
+            ),
+            make_struct(
+                "SelfCycle",
+                vec![(
+                    "children",
+                    ScSpecTypeDef::Vec(Box::new(ScSpecTypeVec {
+                        element_type: Box::new(udt("SelfCycle")),
+                    })),
+                )],
+            ),
+        ];
+
+        let filtered: Vec<_> = filter(entries, &HashSet::new(), Model::References).collect();
+
+        assert_eq!(struct_names(&filtered), ["Used"]);
+    }
+
+    #[test]
+    fn test_filter_references_keeps_a_type_a_kept_event_references() {
+        // A published event carries the types its params name along with it,
+        // and an unpublished one takes them nowhere.
+        let published = make_event_with_params("Published", vec![udt("InPublished")]);
+        let entries = vec![
+            published.clone(),
+            make_event_with_params("Unpublished", vec![udt("InUnpublished")]),
+            make_struct("InPublished", vec![("field", ScSpecTypeDef::U32)]),
+            make_struct("InUnpublished", vec![("field", ScSpecTypeDef::U32)]),
+        ];
+
+        let markers = HashSet::from([generate_marker_for_entry(&published)]);
+
+        let filtered: Vec<_> = filter(entries, &markers, Model::References).collect();
+
+        assert_eq!(event_names(&filtered), ["Published"]);
+        assert_eq!(struct_names(&filtered), ["InPublished"]);
+    }
+
+    #[test]
+    fn test_filter_references_keeps_an_error_with_a_marker_nothing_references() {
+        // An error handed to `panic_with_error!` is named by nothing in the
+        // spec, so its marker is the only evidence it is used.
+        let panicked = make_error_enum("Panicked");
+        let entries = vec![
+            make_function("foo", vec![ScSpecTypeDef::U32]),
+            panicked.clone(),
+            make_error_enum("Unused"),
+        ];
+
+        let markers = HashSet::from([generate_marker_for_entry(&panicked)]);
+
+        let filtered: Vec<_> = filter(entries, &markers, Model::References).collect();
+
+        assert_eq!(error_enum_names(&filtered), ["Panicked"]);
+    }
+
+    #[test]
+    fn test_filter_references_keeps_an_error_a_function_references_without_a_marker() {
+        // An error a function returns is named by the spec, so it is kept
+        // whether or not the contract also panics with it.
+        let entries = vec![
+            make_function_with_output(
+                "foo",
+                ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
+                    ok_type: Box::new(ScSpecTypeDef::U32),
+                    error_type: Box::new(udt("ReturnedError")),
+                })),
+            ),
+            make_error_enum("ReturnedError"),
+            make_error_enum("UnusedError"),
+        ];
+
+        let filtered: Vec<_> = filter(entries, &HashSet::new(), Model::References).collect();
+
+        assert_eq!(error_enum_names(&filtered), ["ReturnedError"]);
+    }
+
+    #[test]
+    fn test_filter_references_keeps_every_definition_of_a_referenced_name() {
+        // A spec can carry the same type twice, from a library linked in more
+        // than one form. A reference to the name reaches both, and the caller
+        // deduplicates identical entries afterwards.
+        let entries = vec![
+            make_function("foo", vec![udt("Twice")]),
+            make_struct("Twice", vec![("a", ScSpecTypeDef::U32)]),
+            make_struct("Twice", vec![("b", ScSpecTypeDef::U32)]),
+        ];
+
+        let filtered: Vec<_> = filter(entries, &HashSet::new(), Model::References).collect();
+
+        assert_eq!(struct_names(&filtered), ["Twice", "Twice"]);
+    }
+
+    #[test]
+    fn test_filter_references_matches_a_reference_by_its_qualified_name() {
+        // Names are matched as they are: a qualified reference names the
+        // qualified definition, and not a simple name that ends the same way.
+        let entries = vec![
+            make_function("foo", vec![udt("mycrate::mymod::MyType")]),
+            make_struct("mycrate::mymod::MyType", vec![("a", ScSpecTypeDef::U32)]),
+            make_struct("MyType", vec![("b", ScSpecTypeDef::U32)]),
+        ];
+
+        let filtered: Vec<_> = filter(entries, &HashSet::new(), Model::References).collect();
+
+        assert_eq!(struct_names(&filtered), ["mycrate::mymod::MyType"]);
+    }
+
+    fn meta(entries: &[(&str, &str)]) -> Vec<ScMetaEntry> {
+        entries
             .iter()
-            .filter_map(|e| {
-                if let ScSpecEntry::UdtStructV0(s) = e {
-                    Some(s.name.to_utf8_string_lossy())
-                } else {
-                    None
-                }
+            .map(|(key, val)| {
+                ScMetaEntry::ScMetaV0(ScMetaV0 {
+                    key: (*key).try_into().unwrap(),
+                    val: (*val).try_into().unwrap(),
+                })
             })
-            .collect();
-        assert_eq!(struct_names, vec!["UsedStruct"]);
-
-        let enum_names: Vec<_> = filtered
-            .iter()
-            .filter_map(|e| {
-                if let ScSpecEntry::UdtEnumV0(s) = e {
-                    Some(s.name.to_utf8_string_lossy())
-                } else {
-                    None
-                }
-            })
-            .collect();
-        assert_eq!(enum_names, vec!["UsedEnum"]);
-
-        let event_names: Vec<_> = filtered
-            .iter()
-            .filter_map(|e| {
-                if let ScSpecEntry::EventV0(s) = e {
-                    Some(s.name.to_utf8_string_lossy())
-                } else {
-                    None
-                }
-            })
-            .collect();
-        assert_eq!(event_names, vec!["UsedEvent"]);
+            .collect()
     }
 
     #[test]
-    fn test_spec_shaking_version_absent() {
-        let meta = vec![];
-        assert_eq!(spec_shaking_version_for_meta(&meta), 1);
+    fn test_model_none_without_meta() {
+        assert_eq!(model_for_meta(&meta(&[])), Model::None);
     }
 
     #[test]
-    fn test_spec_shaking_version_other_keys() {
-        let meta = vec![ScMetaEntry::ScMetaV0(ScMetaV0 {
-            key: "rssdkver".try_into().unwrap(),
-            val: "1.0.0".try_into().unwrap(),
-        })];
-        assert_eq!(spec_shaking_version_for_meta(&meta), 1);
+    fn test_model_none_for_sdk_before_30_without_shaking_meta() {
+        let meta = meta(&[(SDK_VERSION_META_KEY, "29.1.0#abcdef")]);
+        assert_eq!(model_for_meta(&meta), Model::None);
     }
 
     #[test]
-    fn test_spec_shaking_version_v2() {
-        let meta = vec![ScMetaEntry::ScMetaV0(ScMetaV0 {
-            key: META_KEY.try_into().unwrap(),
-            val: META_VALUE_V2.try_into().unwrap(),
-        })];
-        assert_eq!(spec_shaking_version_for_meta(&meta), 2);
+    fn test_model_markers_for_shaking_meta_v2() {
+        let meta = meta(&[(SDK_VERSION_META_KEY, "28.0.0#abcdef"), (META_KEY, "2")]);
+        assert_eq!(model_for_meta(&meta), Model::Markers);
     }
 
     #[test]
-    fn test_spec_shaking_version_unknown_value() {
-        let meta = vec![ScMetaEntry::ScMetaV0(ScMetaV0 {
-            key: META_KEY.try_into().unwrap(),
-            val: "99".try_into().unwrap(),
-        })];
-        assert_eq!(spec_shaking_version_for_meta(&meta), 1);
+    fn test_model_none_for_unknown_shaking_meta() {
+        let meta = meta(&[(SDK_VERSION_META_KEY, "29.0.0#abcdef"), (META_KEY, "3")]);
+        assert_eq!(model_for_meta(&meta), Model::None);
+    }
+
+    #[test]
+    fn test_model_references_for_sdk_30() {
+        let meta = meta(&[(SDK_VERSION_META_KEY, "30.0.0#abcdef")]);
+        assert_eq!(model_for_meta(&meta), Model::References);
+    }
+
+    #[test]
+    fn test_model_references_for_sdk_after_30_without_revision() {
+        let meta = meta(&[(SDK_VERSION_META_KEY, "31.2.3")]);
+        assert_eq!(model_for_meta(&meta), Model::References);
+    }
+
+    #[test]
+    fn test_model_references_for_sdk_30_prerelease() {
+        let meta = meta(&[(SDK_VERSION_META_KEY, "30.0.0-rc.1#abcdef")]);
+        assert_eq!(model_for_meta(&meta), Model::References);
+    }
+
+    #[test]
+    fn test_model_references_for_sdk_30_ahead_of_shaking_meta() {
+        let meta = meta(&[(SDK_VERSION_META_KEY, "30.0.0#abcdef"), (META_KEY, "2")]);
+        assert_eq!(model_for_meta(&meta), Model::References);
+    }
+
+    #[test]
+    fn test_model_none_for_unparseable_sdk_version() {
+        let meta = meta(&[(SDK_VERSION_META_KEY, "abc")]);
+        assert_eq!(model_for_meta(&meta), Model::None);
     }
 }
 
