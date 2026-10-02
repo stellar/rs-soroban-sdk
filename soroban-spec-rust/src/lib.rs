@@ -13,11 +13,8 @@ use syn::Error;
 
 use soroban_spec::read::{from_wasm, FromWasmError};
 
-use types::{
-    generate_enum_with_options, generate_error_enum_with_options, generate_event_with_options,
-    generate_struct_with_options, generate_union_with_options,
-};
-pub use types::{GenerateError, GenerateOptions};
+pub use types::GenerateError;
+use types::{generate_enum, generate_error_enum, generate_event, generate_struct, generate_union};
 
 // IMPORTANT: The "docs" fields of spec entries are not output in Rust token
 // streams as rustdocs, because rustdocs can contain Rust code, and that code
@@ -52,19 +49,12 @@ pub fn generate_from_file(
     Ok(code)
 }
 
+/// Generates the code for a contract from its wasm, recognising the version
+/// of the soroban-sdk that built it from its `rssdkver` meta.
 pub fn generate_from_wasm(
     wasm: &[u8],
     file: &str,
     verify_sha256: Option<&str>,
-) -> Result<TokenStream, GenerateFromFileError> {
-    generate_from_wasm_with_options(wasm, file, verify_sha256, &GenerateOptions::default())
-}
-
-pub fn generate_from_wasm_with_options(
-    wasm: &[u8],
-    file: &str,
-    verify_sha256: Option<&str>,
-    opts: &GenerateOptions,
 ) -> Result<TokenStream, GenerateFromFileError> {
     let sha256 = Sha256::digest(wasm);
     let sha256 = format!("{:x}", sha256);
@@ -75,12 +65,9 @@ pub fn generate_from_wasm_with_options(
     }
 
     let spec = from_wasm(wasm).map_err(GenerateFromFileError::GetSpec)?;
-    let mut opts = opts.clone();
-    if opts.sdk_major_version.is_none() {
-        let meta = soroban_meta::read::from_wasm(wasm).map_err(GenerateFromFileError::GetMeta)?;
-        opts.sdk_major_version = sdk_major_version_from_meta(&meta);
-    }
-    let code = generate_with_options(&spec, file, &sha256, &opts)
+    let meta = soroban_meta::read::from_wasm(wasm).map_err(GenerateFromFileError::GetMeta)?;
+    let sdk_major_version = sdk_major_version_from_meta(&meta);
+    let code = generate(&spec, file, &sha256, sdk_major_version)
         .map_err(GenerateFromFileError::Generate)?;
     Ok(code)
 }
@@ -88,9 +75,9 @@ pub fn generate_from_wasm_with_options(
 /// Returns the major version of the soroban-sdk recorded in the contract's
 /// `rssdkver` meta, such as `30` for `30.0.0#abc123`, or `None` if the meta has
 /// no `rssdkver` entry or its version can't be read.
-fn sdk_major_version_from_meta(meta: &[ScMetaEntry]) -> Option<u32> {
+pub fn sdk_major_version_from_meta(meta: &[ScMetaEntry]) -> Option<u32> {
     meta.iter().find_map(|entry| match entry {
-        ScMetaEntry::ScMetaV0(v0) if v0.key.to_utf8_string_lossy() == "rssdkver" => v0
+        ScMetaEntry::ScMetaV0(v0) if v0.key.as_slice() == b"rssdkver" => v0
             .val
             .to_utf8_string_lossy()
             .split('.')
@@ -100,42 +87,38 @@ fn sdk_major_version_from_meta(meta: &[ScMetaEntry]) -> Option<u32> {
     })
 }
 
+/// Generates the code for a contract from its spec.
+///
+/// `sdk_major_version` is the major version of the soroban-sdk that built the
+/// contract, as recorded in its `rssdkver` meta, or `None` if not known, which
+/// is treated as a version prior to 30.
 pub fn generate(
     specs: &[ScSpecEntry],
     file: &str,
     sha256: &str,
+    sdk_major_version: Option<u32>,
 ) -> Result<TokenStream, GenerateError> {
-    generate_with_options(specs, file, sha256, &GenerateOptions::default())
-}
-
-pub fn generate_with_options(
-    specs: &[ScSpecEntry],
-    file: &str,
-    sha256: &str,
-    opts: &GenerateOptions,
-) -> Result<TokenStream, GenerateError> {
-    let generated = generate_without_file_with_options(specs, opts)?;
+    let generated = generate_without_file(specs, sdk_major_version)?;
     Ok(quote! {
         pub const WASM: &[u8] = soroban_sdk::contractfile!(file = #file, sha256 = #sha256);
         #generated
     })
 }
 
-pub fn generate_without_file(specs: &[ScSpecEntry]) -> Result<TokenStream, GenerateError> {
-    generate_without_file_with_options(specs, &GenerateOptions::default())
-}
-
-pub fn generate_without_file_with_options(
+/// Generates the code for a contract from its spec, without the constant that
+/// embeds its wasm.
+///
+/// `sdk_major_version` is the major version of the soroban-sdk that built the
+/// contract, as recorded in its `rssdkver` meta, or `None` if not known, which
+/// is treated as a version prior to 30.
+pub fn generate_without_file(
     specs: &[ScSpecEntry],
-    opts: &GenerateOptions,
+    sdk_major_version: Option<u32>,
 ) -> Result<TokenStream, GenerateError> {
     // The error override applies only to specs from SDKs prior to 30, which
     // name their error enum `Error` unqualified, so it runs before the names
     // are reduced.
-    let specs = if opts
-        .sdk_major_version
-        .is_none_or(|v| v < ERROR_UDT_OVERRIDE_BEFORE_SDK_MAJOR)
-    {
+    let specs = if sdk_major_version.is_none_or(|v| v < ERROR_UDT_OVERRIDE_BEFORE_SDK_MAJOR) {
         apply_error_udt_override(specs)
     } else {
         Cow::Borrowed(specs)
@@ -180,23 +163,23 @@ pub fn generate_without_file_with_options(
     let trait_ = r#trait::generate_trait(trait_name, &spec_fns)?;
     let structs = spec_structs
         .iter()
-        .map(|s| generate_struct_with_options(s, opts))
+        .map(|s| generate_struct(s))
         .collect::<Result<Vec<_>, _>>()?;
     let unions = spec_unions
         .iter()
-        .map(|s| generate_union_with_options(s, opts))
+        .map(|s| generate_union(s))
         .collect::<Result<Vec<_>, _>>()?;
     let enums = spec_enums
         .iter()
-        .map(|s| generate_enum_with_options(s, opts))
+        .map(|s| generate_enum(s))
         .collect::<Result<Vec<_>, _>>()?;
     let error_enums = spec_error_enums
         .iter()
-        .map(|s| generate_error_enum_with_options(s, opts))
+        .map(|s| generate_error_enum(s))
         .collect::<Result<Vec<_>, _>>()?;
     let events = spec_events
         .iter()
-        .map(|s| generate_event_with_options(s, opts))
+        .map(|s| generate_event(s))
         .collect::<Result<Vec<_>, _>>()?;
 
     Ok(quote! {
@@ -376,7 +359,7 @@ mod test {
     #[test]
     fn example() {
         let entries = from_wasm(EXAMPLE_WASM).unwrap();
-        let rust = generate(&entries, "<file>", "<sha256>")
+        let rust = generate(&entries, "<file>", "<sha256>", None)
             .unwrap()
             .to_formatted_string()
             .unwrap();
@@ -509,7 +492,7 @@ pub enum UdtEnum2 {
     #[test]
     fn test_add_u64_result_types() {
         let entries = from_wasm(ADD_U64_WASM).unwrap();
-        let rust = generate(&entries, "<file>", "<sha256>")
+        let rust = generate(&entries, "<file>", "<sha256>", None)
             .unwrap()
             .to_formatted_string()
             .unwrap();
@@ -697,7 +680,7 @@ pub enum MyError {
             .unwrap(),
         };
         let entries = [ScSpecEntry::FunctionV0(func)];
-        let rust = generate(&entries, "<file>", "<sha256>")
+        let rust = generate(&entries, "<file>", "<sha256>", None)
             .unwrap()
             .to_formatted_string()
             .unwrap();
@@ -751,7 +734,7 @@ pub trait Contract {
             ScSpecEntry::FunctionV0(func),
             ScSpecEntry::UdtErrorEnumV0(error_enum),
         ];
-        let rust = generate(&entries, "<file>", "<sha256>")
+        let rust = generate(&entries, "<file>", "<sha256>", None)
             .unwrap()
             .to_formatted_string()
             .unwrap();
@@ -824,7 +807,7 @@ pub enum Error {
             ScSpecEntry::FunctionV0(own_error_fn),
             ScSpecEntry::UdtErrorEnumV0(error_enum),
         ];
-        let rust = generate(&entries, "<file>", "<sha256>")
+        let rust = generate(&entries, "<file>", "<sha256>", None)
             .unwrap()
             .to_formatted_string()
             .unwrap();
@@ -882,7 +865,7 @@ pub enum Error {
             ScSpecEntry::FunctionV0(func),
             ScSpecEntry::UdtErrorEnumV0(error_enum),
         ];
-        let rust = generate(&entries, "<file>", "<sha256>")
+        let rust = generate(&entries, "<file>", "<sha256>", None)
             .unwrap()
             .to_formatted_string()
             .unwrap();
@@ -958,7 +941,7 @@ pub enum Error {
             func("use_builtin", ScSpecTypeDef::Error),
         ];
 
-        let code = super::generate_without_file(&entries)
+        let code = super::generate_without_file(&entries, None)
             .unwrap()
             .to_formatted_string()
             .unwrap();
@@ -1047,10 +1030,7 @@ pub enum Error {
                 .unwrap(),
             }),
         ];
-        let opts = super::GenerateOptions {
-            sdk_major_version: Some(22),
-        };
-        let rust = super::generate_without_file_with_options(&entries, &opts)
+        let rust = super::generate_without_file(&entries, Some(22))
             .unwrap()
             .to_formatted_string()
             .unwrap();
@@ -1119,10 +1099,7 @@ pub enum Error {
                 .unwrap(),
             }),
         ];
-        let opts = super::GenerateOptions {
-            sdk_major_version: Some(22),
-        };
-        let rust = super::generate_without_file_with_options(&entries, &opts)
+        let rust = super::generate_without_file(&entries, Some(22))
             .unwrap()
             .to_formatted_string()
             .unwrap();
@@ -1160,10 +1137,7 @@ pub enum MyError {
             .try_into()
             .unwrap(),
         })];
-        let opts = super::GenerateOptions {
-            sdk_major_version: Some(22),
-        };
-        let rust = super::generate_without_file_with_options(&entries, &opts)
+        let rust = super::generate_without_file(&entries, Some(22))
             .unwrap()
             .to_formatted_string()
             .unwrap();
@@ -1227,10 +1201,7 @@ pub trait Contract {
                 .unwrap(),
             }),
         ];
-        let opts = super::GenerateOptions {
-            sdk_major_version: Some(30),
-        };
-        let rust = super::generate_without_file_with_options(&entries, &opts)
+        let rust = super::generate_without_file(&entries, Some(30))
             .unwrap()
             .to_formatted_string()
             .unwrap();
@@ -1286,10 +1257,7 @@ pub enum Error {
                 .unwrap(),
             }),
         ];
-        let opts = super::GenerateOptions {
-            sdk_major_version: Some(30),
-        };
-        let rust = super::generate_without_file_with_options(&entries, &opts)
+        let rust = super::generate_without_file(&entries, Some(30))
             .unwrap()
             .to_formatted_string()
             .unwrap();
@@ -1358,10 +1326,7 @@ pub enum Error {
                 .unwrap(),
             }),
         ];
-        let opts = super::GenerateOptions {
-            sdk_major_version: Some(30),
-        };
-        let rust = super::generate_without_file_with_options(&entries, &opts)
+        let rust = super::generate_without_file(&entries, Some(30))
             .unwrap()
             .to_formatted_string()
             .unwrap();
@@ -1419,10 +1384,7 @@ pub enum Error {
                 .unwrap(),
             }),
         ];
-        let opts = super::GenerateOptions {
-            sdk_major_version: Some(30),
-        };
-        let rust = super::generate_without_file_with_options(&entries, &opts)
+        let rust = super::generate_without_file(&entries, Some(30))
             .unwrap()
             .to_formatted_string()
             .unwrap();
