@@ -24,6 +24,11 @@ pub use types::{GenerateError, GenerateOptions};
 // will be executed. Generated code may be generated from untrusted Wasm
 // containing untrusted spec docs.
 
+/// The first major version of the soroban-sdk whose specs the error override
+/// does not apply to, as those SDKs name a contract's own error enum distinctly
+/// from `soroban_sdk::Error`.
+const ERROR_UDT_OVERRIDE_BEFORE_SDK_MAJOR: u32 = 30;
+
 #[derive(thiserror::Error, Debug)]
 pub enum GenerateFromFileError {
     #[error("reading file: {0}")]
@@ -244,11 +249,6 @@ pub fn generate_without_file_with_options(
         #(#events)*
     })
 }
-
-/// The first major version of the soroban-sdk whose specs the error override
-/// does not apply to, as those SDKs name a contract's own error enum distinctly
-/// from `soroban_sdk::Error`.
-const ERROR_UDT_OVERRIDE_BEFORE_SDK_MAJOR: u32 = 30;
 
 /// Contracts built with earlier SDKs emit any type named `Error` in their
 /// function signatures as the built-in `ScSpecTypeDef::Error` in the spec,
