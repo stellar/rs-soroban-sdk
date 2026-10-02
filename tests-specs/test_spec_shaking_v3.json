@@ -355,6 +355,24 @@
   {
     "function_v0": {
       "doc": "",
+      "name": "with_self_recursion",
+      "inputs": [
+        {
+          "doc": "",
+          "name": "r",
+          "type": {
+            "udt": {
+              "name": "::test_spec_shaking_v3::UsedSelfRef"
+            }
+          }
+        }
+      ],
+      "outputs": []
+    }
+  },
+  {
+    "function_v0": {
+      "doc": "",
       "name": "with_tuple",
       "inputs": [
         {
@@ -982,6 +1000,46 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
+      "name": "::test_spec_shaking_v3::UnusedCycleA",
+      "fields": [
+        {
+          "doc": "",
+          "name": "b",
+          "type": {
+            "udt": {
+              "name": "::test_spec_shaking_v3::UnusedCycleB"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "::test_spec_shaking_v3::UnusedCycleB",
+      "fields": [
+        {
+          "doc": "",
+          "name": "a",
+          "type": {
+            "vec": {
+              "element_type": {
+                "udt": {
+                  "name": "::test_spec_shaking_v3::UnusedCycleA"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "",
+      "lib": "",
       "name": "::test_spec_shaking_v3::UnusedEventDataType",
       "fields": [
         {
@@ -1060,6 +1118,28 @@
           "type": {
             "udt": {
               "name": "::test_spec_shaking_v3::UnusedInner"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "::test_spec_shaking_v3::UnusedSelfRef",
+      "fields": [
+        {
+          "doc": "",
+          "name": "children",
+          "type": {
+            "vec": {
+              "element_type": {
+                "udt": {
+                  "name": "::test_spec_shaking_v3::UnusedSelfRef"
+                }
+              }
             }
           }
         }
@@ -1338,6 +1418,28 @@
           "doc": "",
           "name": "data",
           "type": "u32"
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "::test_spec_shaking_v3::UsedSelfRef",
+      "fields": [
+        {
+          "doc": "",
+          "name": "children",
+          "type": {
+            "vec": {
+              "element_type": {
+                "udt": {
+                  "name": "::test_spec_shaking_v3::UsedSelfRef"
+                }
+              }
+            }
+          }
         }
       ]
     }

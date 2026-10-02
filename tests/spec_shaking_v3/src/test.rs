@@ -65,6 +65,7 @@ fn test_spec_shaking() {
         "with_vec_nested",
         "with_map",
         "with_recursion",
+        "with_self_recursion",
         "publish_simple",
         "publish_topic_type",
         "publish_data_type",
@@ -149,6 +150,8 @@ fn test_spec_shaking() {
         "UsedRecursiveNode",
         "UsedRecursiveLeaf",
         "UsedLeaf",
+        // self-referencing type used as fn param
+        "UsedSelfRef",
         // SDK internal types, which participate in normal shaking when they
         // are reachable.
         "Context",
@@ -220,6 +223,11 @@ fn test_spec_shaking() {
         // Types that only reference each other, reached from nowhere.
         "UnusedOuter",
         "UnusedInner",
+        // Types in a reference cycle, and a type referencing itself, reached
+        // from nowhere.
+        "UnusedCycleA",
+        "UnusedCycleB",
+        "UnusedSelfRef",
         "UnusedPubError",
         // Types used only in non-contractimpl fns (not at contract boundary)
         "UnusedNonContractFnParam",

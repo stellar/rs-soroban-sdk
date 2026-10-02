@@ -433,9 +433,10 @@ mod tests {
     use stellar_xdr::{
         ScMetaV0, ScSpecEntry, ScSpecEventDataFormat, ScSpecEventParamLocationV0,
         ScSpecEventParamV0, ScSpecEventV0, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef,
-        ScSpecTypeOption, ScSpecTypeResult, ScSpecTypeUdt, ScSpecTypeVec, ScSpecUdtEnumCaseV0,
-        ScSpecUdtEnumV0, ScSpecUdtErrorEnumCaseV0, ScSpecUdtErrorEnumV0, ScSpecUdtStructFieldV0,
-        ScSpecUdtStructV0, StringM, VecM,
+        ScSpecTypeMap, ScSpecTypeOption, ScSpecTypeResult, ScSpecTypeUdt, ScSpecTypeVec,
+        ScSpecUdtEnumCaseV0, ScSpecUdtEnumV0, ScSpecUdtErrorEnumCaseV0, ScSpecUdtErrorEnumV0,
+        ScSpecUdtStructFieldV0, ScSpecUdtStructV0, ScSpecUdtUnionCaseTupleV0,
+        ScSpecUdtUnionCaseVoidV0, ScSpecUdtUnionV0, StringM, VecM,
     };
 
     fn make_function(name: &str, input_types: Vec<ScSpecTypeDef>) -> ScSpecEntry {
@@ -885,6 +886,119 @@ mod tests {
         let filtered: Vec<_> = filter(entries, &HashSet::new(), Model::References).collect();
 
         assert_eq!(struct_names(&filtered), ["Root", "Node"]);
+    }
+
+    #[test]
+    fn test_filter_references_follows_a_type_that_references_itself() {
+        // A type that holds a container of itself names itself, which must
+        // not send the walk round forever.
+        let entries = vec![
+            make_function("foo", vec![udt("Tree")]),
+            make_struct(
+                "Tree",
+                vec![(
+                    "children",
+                    ScSpecTypeDef::Vec(Box::new(ScSpecTypeVec {
+                        element_type: Box::new(udt("Tree")),
+                    })),
+                )],
+            ),
+        ];
+
+        let filtered: Vec<_> = filter(entries, &HashSet::new(), Model::References).collect();
+
+        assert_eq!(struct_names(&filtered), ["Tree"]);
+    }
+
+    #[test]
+    fn test_filter_references_follows_a_reference_cycle_through_containers() {
+        // A cycle through an option, a union case, and a map: Root names Node
+        // in an option, a case of the Node union holds a map of Leaf, and Leaf
+        // names Root in a vec.
+        let entries = vec![
+            make_function("foo", vec![udt("Root")]),
+            make_struct(
+                "Root",
+                vec![(
+                    "node",
+                    ScSpecTypeDef::Option(Box::new(ScSpecTypeOption {
+                        value_type: Box::new(udt("Node")),
+                    })),
+                )],
+            ),
+            ScSpecEntry::UdtUnionV0(ScSpecUdtUnionV0 {
+                doc: StringM::default(),
+                lib: StringM::default(),
+                name: "Node".try_into().unwrap(),
+                cases: vec![
+                    ScSpecUdtUnionCaseV0::VoidV0(ScSpecUdtUnionCaseVoidV0 {
+                        doc: StringM::default(),
+                        name: "Empty".try_into().unwrap(),
+                    }),
+                    ScSpecUdtUnionCaseV0::TupleV0(ScSpecUdtUnionCaseTupleV0 {
+                        doc: StringM::default(),
+                        name: "Branch".try_into().unwrap(),
+                        type_: vec![ScSpecTypeDef::Map(Box::new(ScSpecTypeMap {
+                            key_type: Box::new(ScSpecTypeDef::Symbol),
+                            value_type: Box::new(udt("Leaf")),
+                        }))]
+                        .try_into()
+                        .unwrap(),
+                    }),
+                ]
+                .try_into()
+                .unwrap(),
+            }),
+            make_struct(
+                "Leaf",
+                vec![(
+                    "roots",
+                    ScSpecTypeDef::Vec(Box::new(ScSpecTypeVec {
+                        element_type: Box::new(udt("Root")),
+                    })),
+                )],
+            ),
+        ];
+
+        let filtered: Vec<_> = filter(entries, &HashSet::new(), Model::References).collect();
+
+        assert_eq!(struct_names(&filtered), ["Root", "Leaf"]);
+        assert!(filtered.iter().any(
+            |e| matches!(e, ScSpecEntry::UdtUnionV0(u) if u.name.to_utf8_string_lossy() == "Node")
+        ));
+    }
+
+    #[test]
+    fn test_filter_references_removes_a_reference_cycle_nothing_reaches() {
+        // Types that name each other, or themselves, are not kept by those
+        // names alone: nothing outside the cycle reaches them.
+        let entries = vec![
+            make_function("foo", vec![udt("Used")]),
+            make_struct("Used", vec![("field", ScSpecTypeDef::U32)]),
+            make_struct("CycleA", vec![("b", udt("CycleB"))]),
+            make_struct(
+                "CycleB",
+                vec![(
+                    "a",
+                    ScSpecTypeDef::Vec(Box::new(ScSpecTypeVec {
+                        element_type: Box::new(udt("CycleA")),
+                    })),
+                )],
+            ),
+            make_struct(
+                "SelfCycle",
+                vec![(
+                    "children",
+                    ScSpecTypeDef::Vec(Box::new(ScSpecTypeVec {
+                        element_type: Box::new(udt("SelfCycle")),
+                    })),
+                )],
+            ),
+        ];
+
+        let filtered: Vec<_> = filter(entries, &HashSet::new(), Model::References).collect();
+
+        assert_eq!(struct_names(&filtered), ["Used"]);
     }
 
     #[test]
