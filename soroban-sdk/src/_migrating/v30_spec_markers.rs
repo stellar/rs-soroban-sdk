@@ -3,10 +3,11 @@
 //! This change is largely an internal detail, included for visibility for tool builders who may be
 //! inspecting Wasm and contract spec internal data.
 //!
-//! In v28 and v29 the SDK embedded a marker in the Wasm data section for every type, event, and
-//! error used by the contract (see [v28_spec_shaking]), and the stellar-cli kept the spec entries
-//! that had a marker and removed the others. The SDK recorded this in the `rssdk_spec_shaking`
-//! contract meta entry with the value `2`.
+//! In v26 and v27 under a feature flag, and in v28 and v29 always, the SDK embedded a marker in the
+//! Wasm data section for every type, event, and error used by the contract (see
+//! [v28_spec_shaking]), and the stellar-cli kept the spec entries that had a marker and removed the
+//! others. The SDK recorded this in the `rssdk_spec_shaking` contract meta entry with the value
+//! `2`.
 //!
 //! In v30 the SDK names every type in the spec by its full Rust path (see [v30_duplicate_names]),
 //! so a reference to a type in the spec identifies it exactly. The stellar-cli uses this to shake
