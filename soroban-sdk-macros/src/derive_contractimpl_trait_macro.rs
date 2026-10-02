@@ -1,13 +1,16 @@
 use crate::{
     attribute::{is_attr_cfg, is_attr_cfg_attr, is_attr_doc, reject_items},
-    default_crate_path,
+    default_crate_path, syn_ext,
 };
 use darling::{ast::NestedMeta, Error, FromMeta};
 use heck::ToSnakeCase;
 use proc_macro2::{Ident, TokenStream as TokenStream2};
 use quote::ToTokens;
 use quote::{format_ident, quote};
-use syn::{ext::IdentExt as _, parse2, ImplItemFn, ItemTrait, Path, TraitItem, TraitItemFn, Type};
+use syn::{
+    ext::IdentExt as _, parse2, ImplItemFn, ItemTrait, Path, PathArguments, TraitItem, TraitItemFn,
+    Type,
+};
 
 // See soroban-sdk/docs/contracttrait.md for documentation on how this works.
 
@@ -74,6 +77,10 @@ fn derive(input: &ItemTrait) -> TokenStream2 {
     }
 
     let macro_ident = macro_ident(&input.ident);
+    let generics = syn_ext::trait_generic_type_params(input)
+        .iter()
+        .map(|i| i.to_string())
+        .collect::<Vec<_>>();
 
     let output = quote! {
         #[doc(hidden)]
@@ -93,6 +100,7 @@ fn derive(input: &ItemTrait) -> TokenStream2 {
                     crate_path = $($crate_path)+,
                     trait_ident = $trait_ident,
                     trait_default_fns = [#(#fns),*],
+                    trait_generics = [#(#generics),*],
                     impl_ident = $impl_ident,
                     impl_fns = $impl_fns,
                     client_name = $client_name,
@@ -138,8 +146,20 @@ pub fn generate_call_to_contractimpl_for_trait(
             .to_token_stream()
             .to_string()
     });
+    // The trait's macro has the trait's name without any generic args. The trait path is passed
+    // to the macro with any generic args in turbofish form so that it parses as an expression.
+    let mut macro_path = trait_ident.clone();
+    let mut trait_ident = trait_ident.clone();
+    if let Some(last) = macro_path.segments.last_mut() {
+        last.arguments = PathArguments::None;
+    }
+    if let Some(PathArguments::AngleBracketed(a)) =
+        trait_ident.segments.last_mut().map(|s| &mut s.arguments)
+    {
+        a.colon2_token = Some(Default::default());
+    }
     Ok(quote! {
-        #trait_ident!(
+        #macro_path!(
             [#crate_path],
             #trait_ident,
             #impl_ident,

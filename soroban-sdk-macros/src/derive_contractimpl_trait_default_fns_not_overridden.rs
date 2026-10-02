@@ -8,8 +8,10 @@ use crate::{
 };
 use darling::{ast::NestedMeta, Error, FromMeta};
 use proc_macro2::{Ident, TokenStream as TokenStream2};
-use quote::quote;
+use quote::{quote, ToTokens};
+use std::collections::HashMap;
 use syn::{ext::IdentExt as _, Attribute, LitStr, Path, Type};
+use syn::{parse::Parser, parse2, punctuated::Punctuated, GenericArgument, PathArguments};
 
 // See soroban-sdk/docs/contracttrait.md for documentation on how this works.
 
@@ -19,6 +21,8 @@ struct Args {
     crate_path: Path,
     trait_ident: Path,
     trait_default_fns: Vec<LitStr>,
+    #[darling(default)]
+    trait_generics: Vec<LitStr>,
     impl_ident: Ident,
     impl_fns: Vec<LitStr>,
     client_name: String,
@@ -53,6 +57,7 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
 
     let trait_default_fns = syn_ext::strs_to_fns(&args.trait_default_fns)?;
     let impl_fns = syn_ext::strs_to_fns(&args.impl_fns)?;
+    let trait_default_fns = substitute_trait_generics(args, trait_default_fns)?;
 
     // Filter the list of default fns down to only default fns that have not been redefined /
     // overridden in the input fns.
@@ -129,4 +134,52 @@ fn cfg_condition(attrs: &[Attribute]) -> Result<Option<TokenStream2>, Error> {
         [cfg] => Some(quote! { #cfg }),
         _ => Some(quote! { all(#(#cfgs),*) }),
     })
+}
+
+/// Replaces the trait's generic type params in the default fns' signatures with the impl's type
+/// args, so the signatures can be used where the generic params aren't in scope.
+fn substitute_trait_generics(
+    args: &Args,
+    fns: Vec<syn_ext::Fn>,
+) -> Result<Vec<syn_ext::Fn>, Error> {
+    if args.trait_generics.is_empty() {
+        return Ok(fns);
+    }
+    let params = args
+        .trait_generics
+        .iter()
+        .map(|p| p.parse::<Ident>().map_err(Error::from))
+        .collect::<Result<Vec<_>, Error>>()?;
+    let type_args = match args.trait_ident.segments.last().map(|s| &s.arguments) {
+        Some(PathArguments::AngleBracketed(a)) => a
+            .args
+            .iter()
+            .filter_map(|a| match a {
+                GenericArgument::Type(t) => Some(t.to_token_stream()),
+                _ => None,
+            })
+            .collect::<Vec<_>>(),
+        _ => vec![],
+    };
+    if params.len() != type_args.len() {
+        return Err(Error::custom(format!(
+            "expected {} generic type argument(s) on the trait, found {}",
+            params.len(),
+            type_args.len()
+        ))
+        .with_span(&args.trait_ident));
+    }
+    let map: HashMap<Ident, TokenStream2> = params.into_iter().zip(type_args).collect();
+    fns.into_iter()
+        .map(|f| {
+            let inputs = syn_ext::replace_idents(f.inputs.to_token_stream(), &map);
+            let output = syn_ext::replace_idents(f.output.to_token_stream(), &map);
+            Ok(syn_ext::Fn {
+                ident: f.ident,
+                attrs: f.attrs,
+                inputs: Punctuated::parse_terminated.parse2(inputs)?,
+                output: parse2(output)?,
+            })
+        })
+        .collect()
 }

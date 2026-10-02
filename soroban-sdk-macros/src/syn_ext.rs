@@ -1,4 +1,4 @@
-use proc_macro2::TokenStream;
+use proc_macro2::{Group, TokenStream, TokenTree};
 use quote::{format_ident, quote, ToTokens};
 use std::collections::HashMap;
 use syn::{
@@ -165,14 +165,22 @@ impl HasFnsItem {
 
     pub fn fns(&self) -> Vec<Fn> {
         match self {
-            HasFnsItem::Trait(t) => trait_methods(t)
-                .map(|m| Fn {
-                    ident: m.sig.ident.clone(),
-                    attrs: m.attrs.clone(),
-                    inputs: m.sig.inputs.clone(),
-                    output: m.sig.output.clone(),
-                })
-                .collect(),
+            HasFnsItem::Trait(t) => {
+                // Functions that mention the trait's generic type params are left out because the
+                // generic params aren't in scope where the trait's spec, args and client are
+                // generated, and a spec can't express a generic type. They're still generated
+                // for each impl with the impl's type args in place of the params.
+                let generics = trait_generic_type_params(t);
+                trait_methods(t)
+                    .filter(|m| !fn_mentions_idents(&m.sig.inputs, &m.sig.output, &generics))
+                    .map(|m| Fn {
+                        ident: m.sig.ident.clone(),
+                        attrs: m.attrs.clone(),
+                        inputs: m.sig.inputs.clone(),
+                        output: m.sig.output.clone(),
+                    })
+                    .collect()
+            }
             HasFnsItem::Impl(i) => impl_pub_methods(i)
                 .iter()
                 .map(|m| Fn {
@@ -695,4 +703,60 @@ pub fn is_type_named(ty: &Type, name: &str) -> bool {
             .is_some_and(|s| s.ident.unraw() == name),
         _ => false,
     }
+}
+
+/// Returns the idents of the trait's generic type params.
+pub fn trait_generic_type_params(t: &ItemTrait) -> Vec<Ident> {
+    t.generics.type_params().map(|p| p.ident.clone()).collect()
+}
+
+/// Returns true if any of the function's argument types or its return type mention any of the
+/// idents.
+pub fn fn_mentions_idents(
+    inputs: &Punctuated<FnArg, Comma>,
+    output: &ReturnType,
+    idents: &[Ident],
+) -> bool {
+    if idents.is_empty() {
+        return false;
+    }
+    let input_types = inputs.iter().filter_map(|arg| match arg {
+        FnArg::Typed(pat_type) => Some(pat_type.ty.to_token_stream()),
+        FnArg::Receiver(_) => None,
+    });
+    let output = match output {
+        ReturnType::Default => None,
+        ReturnType::Type(_, ty) => Some(ty.to_token_stream()),
+    };
+    input_types
+        .chain(output)
+        .any(|ts| tokens_mention_idents(ts, idents))
+}
+
+fn tokens_mention_idents(ts: TokenStream, idents: &[Ident]) -> bool {
+    ts.into_iter().any(|tt| match tt {
+        TokenTree::Ident(i) => idents.contains(&i),
+        TokenTree::Group(g) => tokens_mention_idents(g.stream(), idents),
+        _ => false,
+    })
+}
+
+/// Replaces each ident in the token stream that has an entry in the map with the entry's tokens.
+pub fn replace_idents(ts: TokenStream, map: &HashMap<Ident, TokenStream>) -> TokenStream {
+    ts.into_iter()
+        .flat_map(|tt| -> TokenStream {
+            match tt {
+                TokenTree::Ident(i) => match map.get(&i) {
+                    Some(replacement) => replacement.clone(),
+                    None => TokenTree::Ident(i).into(),
+                },
+                TokenTree::Group(g) => {
+                    let mut ng = Group::new(g.delimiter(), replace_idents(g.stream(), map));
+                    ng.set_span(g.span());
+                    TokenTree::Group(ng).into()
+                }
+                tt => tt.into(),
+            }
+        })
+        .collect()
 }
