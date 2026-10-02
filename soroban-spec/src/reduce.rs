@@ -1,4 +1,4 @@
-use crate::names::RESERVED_NAMES;
+use crate::names::{GENERATED_NAMES, RESERVED_NAMES};
 use stellar_xdr::{ScSpecEntry, ScSpecTypeDef, ScSpecUdtUnionCaseV0, SC_SPEC_TYPE_NAME_LIMIT};
 
 /// The most bytes a spec type or event name can hold, which bounds the names
@@ -143,9 +143,12 @@ fn last_segment(name: &[u8]) -> &[u8] {
 ///
 /// The names of SDK types, listed in [`RESERVED_NAMES`], are taken before any
 /// type claims a name, as code generated for a type with one of them would be
-/// rejected or mistaken for the SDK type. A type with one of them is numbered
-/// (`Address2`, …) like any other collision, including a simple name, which
-/// older specs can define, for example as an event name.
+/// rejected or mistaken for the SDK type. So are the names of the items
+/// generated alongside the types, listed in [`GENERATED_NAMES`], as a type
+/// with one of them would collide with the generated item. A type with one of
+/// them is numbered (`Address2`, `Client2`, …) like any other collision,
+/// including a simple name, which older specs can define, for example as an
+/// event name.
 ///
 /// # Errors
 ///
@@ -173,16 +176,23 @@ pub fn reduce(spec: &[ScSpecEntry]) -> Result<Reduced, Error> {
 
     // The names of SDK types are taken before any type claims a name, as code
     // generated for a type with one of them would be rejected, or mistaken for
-    // the SDK type. Simple names keep their names, unless reserved, so they
+    // the SDK type, and so are the names of the generated items, as a type with
+    // one of them would collide with the item. Simple names keep their names, unless reserved, so they
     // claim them next. Then the qualified names claim their last segments in
     // the order of their full names, rather than the order they are defined
     // in, as the compiler does not guarantee the order it writes spec entries
     // in. The first to claim a last segment keeps it, so a type only ever
     // loses its own name to one that sorts before it, never to a number handed
     // to a type that collided with something else.
-    let reserved = |name: &[u8]| RESERVED_NAMES.iter().any(|r| r.as_bytes() == name);
+    let reserved = |name: &[u8]| {
+        RESERVED_NAMES
+            .iter()
+            .chain(GENERATED_NAMES)
+            .any(|r| r.as_bytes() == name)
+    };
     let mut taken: std::collections::HashSet<Vec<u8>> = RESERVED_NAMES
         .iter()
+        .chain(GENERATED_NAMES)
         .map(|r| r.as_bytes().to_vec())
         .chain(
             defined
@@ -909,6 +919,60 @@ mod test {
             ]
         );
         assert!(reduced.renames().next().unwrap().collision());
+    }
+
+    #[test]
+    fn a_qualified_name_that_is_generated_is_numbered() {
+        let spec = [
+            struct_entry("::other::Contract", &[]),
+            struct_entry("::other::Client", &[]),
+            struct_entry("::other::Args", &[]),
+            struct_entry("::other::WASM", &[]),
+            struct_entry(
+                "Holder",
+                &[
+                    "::other::Contract",
+                    "::other::Client",
+                    "::other::Args",
+                    "::other::WASM",
+                ],
+            ),
+        ];
+        let reduced = reduce(&spec).unwrap();
+        assert_eq!(
+            names(reduced.entries()),
+            [
+                (b"Contract2".to_vec(), vec![]),
+                (b"Client2".to_vec(), vec![]),
+                (b"Args2".to_vec(), vec![]),
+                (b"WASM2".to_vec(), vec![]),
+                (
+                    b"Holder".to_vec(),
+                    vec![
+                        b"Contract2".to_vec(),
+                        b"Client2".to_vec(),
+                        b"Args2".to_vec(),
+                        b"WASM2".to_vec(),
+                    ]
+                ),
+            ]
+        );
+    }
+
+    #[test]
+    fn a_simple_name_that_is_generated_is_numbered() {
+        let spec = [
+            struct_entry("Client", &[]),
+            struct_entry("Holder", &["Client"]),
+        ];
+        let reduced = reduce(&spec).unwrap();
+        assert_eq!(
+            names(reduced.entries()),
+            [
+                (b"Client2".to_vec(), vec![]),
+                (b"Holder".to_vec(), vec![b"Client2".to_vec()]),
+            ]
+        );
     }
 
     #[test]

@@ -54,3 +54,13 @@ pub const RESERVED_NAMES: &[&str] = &[
     "Bn254G2Affine",
     "BnScalar",
 ];
+
+/// The names of the items that `soroban-spec-rust` generates alongside the
+/// types of a contract's spec: the contract trait, its client and args, and
+/// the constant that embeds its wasm.
+///
+/// Tools that generate code from a spec, such as `contractimport!`, rename a
+/// type with one of these names, so that the generated type does not collide
+/// with the generated items. Unlike [`RESERVED_NAMES`], a contract can define
+/// a type with one of these names.
+pub const GENERATED_NAMES: &[&str] = &["Contract", "Client", "Args", "WASM"];

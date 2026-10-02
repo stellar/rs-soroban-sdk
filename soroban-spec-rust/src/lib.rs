@@ -939,6 +939,64 @@ pub enum Error {
     /// Two user-defined error enums sharing the simple name `Error`
     /// (`a::Error`, `b::Error`), taken end-to-end through name
     /// reduction and code generation.
+    /// A type named like an item generated alongside the types, such as the
+    /// `Client`, is renamed so that it does not collide with the item.
+    #[test]
+    fn test_type_named_like_a_generated_item_is_renamed() {
+        use stellar_xdr::{
+            ScSpecEntry, ScSpecFunctionInputV0, ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeUdt,
+            ScSpecUdtStructFieldV0, ScSpecUdtStructV0,
+        };
+
+        let entries = [
+            ScSpecEntry::UdtStructV0(ScSpecUdtStructV0 {
+                doc: "".try_into().unwrap(),
+                lib: "".try_into().unwrap(),
+                name: "mycrate::Client".try_into().unwrap(),
+                fields: [ScSpecUdtStructFieldV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "id".try_into().unwrap(),
+                    type_: ScSpecTypeDef::U32,
+                }]
+                .try_into()
+                .unwrap(),
+            }),
+            ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+                doc: "".try_into().unwrap(),
+                name: "register".try_into().unwrap(),
+                inputs: [ScSpecFunctionInputV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "client".try_into().unwrap(),
+                    type_: ScSpecTypeDef::Udt(ScSpecTypeUdt {
+                        name: "mycrate::Client".try_into().unwrap(),
+                    }),
+                }]
+                .try_into()
+                .unwrap(),
+                outputs: [].try_into().unwrap(),
+            }),
+        ];
+        let rust = generate(&entries, "<file>", "<sha256>", None)
+            .unwrap()
+            .to_formatted_string()
+            .unwrap();
+        assert_eq!(
+            rust,
+            r#"pub const WASM: &[u8] = soroban_sdk::contractfile!(file = "<file>", sha256 = "<sha256>");
+#[soroban_sdk::contractargs(name = "Args")]
+#[soroban_sdk::contractclient(name = "Client")]
+pub trait Contract {
+    fn register(env: soroban_sdk::Env, client: Client2);
+}
+#[soroban_sdk::contracttype]
+#[derive(Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub struct Client2 {
+    pub id: u32,
+}
+"#,
+        );
+    }
+
     #[test]
     fn test_two_error_enums_sharing_a_simple_name() {
         use stellar_xdr::{
