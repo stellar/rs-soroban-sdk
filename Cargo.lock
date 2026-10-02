@@ -1766,6 +1766,7 @@ dependencies = [
  "proc-macro2",
  "quote",
  "sha2",
+ "soroban-meta",
  "soroban-spec 30.0.0",
  "stellar-xdr 28.0.0 (git+https://github.com/stellar/rs-stellar-xdr?rev=e0d289adf4ad2483a10bcc8df743126974d77301)",
  "syn 2.0.103",

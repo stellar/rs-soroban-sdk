@@ -47,11 +47,21 @@ pub enum GenerateError {
 /// ```compile_fail
 /// use soroban_spec_rust::GenerateOptions;
 ///
-/// let options = GenerateOptions {};
+/// let options = GenerateOptions {
+///     sdk_major_version: None,
+/// };
 /// ```
-#[derive(Default)]
+#[derive(Clone, Default)]
 #[non_exhaustive]
-pub struct GenerateOptions {}
+pub struct GenerateOptions {
+    /// The major version of the soroban-sdk that built the contract the spec
+    /// is from, as recorded in the contract's `rssdkver` meta. `None` when not
+    /// known, which is treated as a version prior to 30.
+    ///
+    /// Generating from a wasm file fills this in from the file's meta when it
+    /// is `None`.
+    pub sdk_major_version: Option<u32>,
+}
 
 /// Constructs a token stream containing a single struct that mirrors the struct
 /// spec, with configurable options.
