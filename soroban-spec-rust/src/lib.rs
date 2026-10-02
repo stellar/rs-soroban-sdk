@@ -1101,6 +1101,74 @@ pub enum Error {
         );
     }
 
+    /// Unknown SDK version, with the same spec as the old SDK case above. An
+    /// unknown version is treated as a new SDK (30 or later), so the error
+    /// override is not applied and the built-in `ScSpecTypeDef::Error` is
+    /// generated as `soroban_sdk::Error`.
+    #[test]
+    fn test_error_unknown_sdk_own_error_named_error() {
+        use stellar_xdr::{
+            ScSpecEntry, ScSpecFunctionV0, ScSpecTypeDef, ScSpecTypeResult,
+            ScSpecUdtErrorEnumCaseV0, ScSpecUdtErrorEnumV0,
+        };
+
+        let entries = [
+            ScSpecEntry::UdtErrorEnumV0(ScSpecUdtErrorEnumV0 {
+                doc: "".try_into().unwrap(),
+                lib: "".try_into().unwrap(),
+                name: "Error".try_into().unwrap(),
+                cases: [ScSpecUdtErrorEnumCaseV0 {
+                    doc: "".try_into().unwrap(),
+                    name: "Overflow".try_into().unwrap(),
+                    value: 1,
+                }]
+                .try_into()
+                .unwrap(),
+            }),
+            ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+                doc: "".try_into().unwrap(),
+                name: "own_error".try_into().unwrap(),
+                inputs: [].try_into().unwrap(),
+                outputs: [ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
+                    ok_type: Box::new(ScSpecTypeDef::U64),
+                    error_type: Box::new(ScSpecTypeDef::Error),
+                }))]
+                .try_into()
+                .unwrap(),
+            }),
+            ScSpecEntry::FunctionV0(ScSpecFunctionV0 {
+                doc: "".try_into().unwrap(),
+                name: "sdk_error".try_into().unwrap(),
+                inputs: [].try_into().unwrap(),
+                outputs: [ScSpecTypeDef::Result(Box::new(ScSpecTypeResult {
+                    ok_type: Box::new(ScSpecTypeDef::U64),
+                    error_type: Box::new(ScSpecTypeDef::Error),
+                }))]
+                .try_into()
+                .unwrap(),
+            }),
+        ];
+        let rust = super::generate_without_file(&entries, None)
+            .unwrap()
+            .to_formatted_string()
+            .unwrap();
+        assert_eq!(
+            rust,
+            r#"#[soroban_sdk::contractargs(name = "Args")]
+#[soroban_sdk::contractclient(name = "Client")]
+pub trait Contract {
+    fn own_error(env: soroban_sdk::Env) -> Result<u64, soroban_sdk::Error>;
+    fn sdk_error(env: soroban_sdk::Env) -> Result<u64, soroban_sdk::Error>;
+}
+#[soroban_sdk::contracterror]
+#[derive(Debug, Copy, Clone, Eq, PartialEq, Ord, PartialOrd)]
+pub enum Error {
+    Overflow = 1,
+}
+"#,
+        );
+    }
+
     /// Old SDK, with the contract's own error enum named something other than
     /// `Error`. The own error enum is referred to by name, and
     /// `soroban_sdk::Error` stays `soroban_sdk::Error`.
