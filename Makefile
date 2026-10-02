@@ -45,16 +45,17 @@ build-libs: fmt
 # mounted read-only, so the docker build uses --locked and fails if Cargo.lock
 # is out of date rather than updating it like the host build does.
 TEST_WASMS_DOCKER?=1
-TEST_WASMS_DOCKER_IMAGE?=rust:$(MSRV)
 
 build-test-wasms: fmt
 	# Build the test wasms with MSRV by default, with some meta disabled for
 	# binary stability for tests.
 ifeq ($(TEST_WASMS_DOCKER),)
-	STELLAR_CLI_VERSION=$(VERSION_MAJOR).0.0 \
-	RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
-	RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
-		cargo hack build --release --target wasm32v1-none $(foreach c,$(TEST_CRATES),--package $(c))
+	for c in $(TEST_CRATES); do \
+		STELLAR_CLI_VERSION=$(VERSION_MAJOR).0.0 \
+		RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
+		RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
+			cargo build --release --target wasm32v1-none --package $$c || exit 1; \
+	done
 else
 	mkdir -p target/wasm32v1-none/release
 	docker run --rm \
@@ -69,7 +70,7 @@ else
 		-e STELLAR_CLI_VERSION=$(VERSION_MAJOR).0.0 \
 		-e RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
 		-e RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
-		$(TEST_WASMS_DOCKER_IMAGE) \
+		rust:$(MSRV) \
 		sh -c ' \
 			set -e; \
 			rustup toolchain install $(TEST_CRATES_RUSTUP_TOOLCHAIN) --profile minimal --target wasm32v1-none; \
