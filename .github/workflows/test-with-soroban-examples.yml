@@ -50,7 +50,7 @@ jobs:
     - run: >
         cargo install --locked
         --git https://github.com/stellar/stellar-cli
-        --rev 1d2e103f639fcc082a0b9421ebbd1c4773ecdd74
+        --rev 5429a9eb30ccdb651aaa4c455e4e088c3c40ef78
         --root "$RUNNER_TEMP/stellar-cli"
         stellar-cli
     - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
