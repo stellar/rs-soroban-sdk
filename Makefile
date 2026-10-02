@@ -52,6 +52,7 @@ build-test-wasms: fmt
 	# binary stability for tests.
 ifeq ($(TEST_WASMS_BUILD_WITH_DOCKER),)
 	for c in $(TEST_CRATES); do \
+		echo "cargo build --release --target wasm32v1-none --package $$c"; \
 		STELLAR_CLI_VERSION=$(VERSION_MAJOR).0.0 \
 		RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
 		RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
@@ -76,6 +77,7 @@ else
 			set -e; \
 			rustup toolchain install $(TEST_CRATES_RUSTUP_TOOLCHAIN) --profile minimal --target wasm32v1-none; \
 			for c in $(TEST_CRATES); do \
+				echo "cargo build --locked --release --target wasm32v1-none --package $$c"; \
 				cargo build --locked --release --target wasm32v1-none --package $$c; \
 				if [ -f /target/wasm32v1-none/release/$$c.wasm ]; then \
 					cp /target/wasm32v1-none/release/$$c.wasm /workspace/target/wasm32v1-none/release/; \
