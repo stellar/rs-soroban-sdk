@@ -71,7 +71,7 @@ else
 		-e STELLAR_CLI_VERSION=$(VERSION_MAJOR).0.0 \
 		-e RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
 		-e RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
-		rust:$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
+		rust:$(MSRV) \
 		sh -c ' \
 			set -e; \
 			rustup toolchain install $(TEST_CRATES_RUSTUP_TOOLCHAIN) --profile minimal --target wasm32v1-none; \
