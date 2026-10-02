@@ -266,7 +266,7 @@ pub fn filter<I: IntoIterator<Item = ScSpecEntry>>(
     let keep = match model {
         Model::None => vec![true; entries.len()],
         Model::Markers => entries.iter().map(keep_by_marker(markers)).collect(),
-        Model::References => keep_flags(&entries, markers),
+        Model::References => keep_by_references_and_markers(&entries, markers),
     };
     entries
         .into_iter()
@@ -292,7 +292,7 @@ fn keep_by_marker(markers: &HashSet<Marker>) -> impl Fn(&ScSpecEntry) -> bool + 
 /// Whether each entry is kept, positionally, per the [`Model::References`]
 /// rules on [`filter`].
 #[cfg(feature = "std")]
-fn keep_flags(entries: &[ScSpecEntry], markers: &HashSet<Marker>) -> Vec<bool> {
+fn keep_by_references_and_markers(entries: &[ScSpecEntry], markers: &HashSet<Marker>) -> Vec<bool> {
     // The entries that define each type name. A name is normally defined once,
     // but a spec can carry the same type twice, from a library linked in more
     // than one form, and then a reference reaches both.
