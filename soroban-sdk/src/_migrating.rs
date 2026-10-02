@@ -6,24 +6,23 @@
 
 //! # Migrating from v28 to v30
 //!
-//! 1. Contracts must be built with `stellar contract build` from `stellar-cli` v30.0.0 or newer,
-//!    which is now required. The stellar-cli reads the SDK version recorded in the contract's
-//!    `rssdkver` meta to decide how to shake the spec, and the SDK no longer records the
-//!    `rssdk_spec_shaking` meta.
+//! - Contracts must now be built with the `stellar contract build` command from a version of the
+//!   stellar-cli of equal major version or greater.
 //!
-//! 2. Contract specs name user-defined types by their fully qualified path, such as
-//!    `::my_contract::types::State`, so that two types sharing a name in different modules no
-//!    longer collide in the spec. The stellar-cli reduces the names to simple names when it builds
-//!    the contract, numbering any that would collide (`State2`, …), and `contractimport!` and the
-//!    generated bindings do the same. No code changes are required for most contracts.
+//! - Duplicate type, event, and error names in specs are now identified and given unique names in
+//!   the spec by adding numbers to the end of the names. When upgrading the SDK on an existing
+//!   contract that has duplicate names, you can expect to see the contract spec change.
 //!
-//! 3. Spec shaking keeps a type by following the references to it from the contract's functions,
-//!    events, and other kept types. Only events and errors carry markers in the Wasm, as they can be
-//!    used without being referenced by any function. No code changes are required.
+//! - It is now an error to name types, events, and errors with type names that are already used by
+//!   types within the soroban-sdk.
 //!
-//! 4. [`contractevent`] and [`contracterror`] reject the names of SDK types, such as `Address` or
-//!    `Symbol`, as [`contracttype`] already did, because a reader of the spec could mistake them for
-//!    the SDK type. Rename any event or error enum named like an SDK type.
+//! The following changes are largely internal details, but are included here for visibility for
+//! tool builders who may be inspecting Wasm and contract spec internal data.
+//!
+//! - Changes were made to the soroban-sdk and the coupled stellar-cli so that the generation of the
+//!   contract spec uses absolute names for types, and uses that information to optimise spec
+//!   shaking. As a result, spec markers are now only included in the contract Wasm for spec entries
+//!   that are events or errors triggered by panics.
 //!
 //! # Migrating from v27 to v28
 //!
