@@ -8,11 +8,12 @@
 //! stellar-cli kept the spec entries that had a marker and removed the others. The SDK recorded
 //! this in the `rssdk_spec_shaking` contract meta entry with the value `2`.
 //!
-//! In v30 the SDK names every type in the spec by its full Rust path (see [v30_duplicate_names]),
-//! so a reference to a type in the spec identifies it exactly. The stellar-cli uses this to shake
-//! the spec by following references: it keeps every function, every type a kept function, event,
-//! or type refers to, and removes the rest. Only the entries that nothing in the spec refers to
-//! need markers:
+//! In v30 the SDK writes the spec with every type named by its full Rust path, so a reference to a
+//! type in the spec identifies it exactly. When building, the stellar-cli uses this to shake the
+//! spec by following references: it keeps every function, every type a kept function, event, or
+//! type refers to, and removes the rest. Only then does it reduce the names to short names (see
+//! [v30_duplicate_names]), so the spec in the built Wasm does not contain the full paths. Only the
+//! entries that nothing in the spec refers to need markers:
 //!
 //! - **Events**, as no spec entry refers to an event. The marker is triggered inside the
 //!   `publish()` call.
