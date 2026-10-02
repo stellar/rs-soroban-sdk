@@ -15,7 +15,6 @@ concurrency:
 
 env:
   ARTIFACT_RETENTION_DAYS_FOR_TEST_WASMS: 7
-  SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2: 1
 
 defaults:
   run:
@@ -25,7 +24,7 @@ jobs:
 
   complete:
     if: always()
-    needs: [fmt, check-git-rev-deps, build, test, expand-test-wasms, build-fuzz, docs, readme, migration-docs]
+    needs: [fmt, check-git-rev-deps, build, test, expand-test-wasms, spec-snapshots, build-fuzz, fuzz-corpus, docs, readme, migration-docs]
     runs-on: ubuntu-slim
     steps:
     - if: contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled')
@@ -35,6 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       sys: ${{ steps.sys.outputs.sys }}
+      version-major: ${{ steps.version-major.outputs.version-major }}
     steps:
     - id: sys
       run: |
@@ -66,11 +66,14 @@ jobs:
           ]'
         fi
         echo "sys=$(<<< $sys jq -c)" >> $GITHUB_OUTPUT
+    - uses: actions/checkout@v3
+    - id: version-major
+      run: echo "version-major=$(make version-major)" >> $GITHUB_OUTPUT
 
   fmt:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v7
     - run: rustup update
     - run: cargo fmt --all --check
 
@@ -84,15 +87,15 @@ jobs:
     # Prevent sudden announcement of a new advisory from failing ci:
     continue-on-error: ${{ matrix.checks == 'advisories' }}
     steps:
-    - uses: actions/checkout@v3
-    - uses: EmbarkStudios/cargo-deny-action@3fd3802e88374d3fe9159b834c7714ec57d6c979
+    - uses: actions/checkout@v7
+    - uses: EmbarkStudios/cargo-deny-action@3c6349835b2b7b196a839186cb8b78e02f7b5f25 # v2.1.1
       with:
         command: check ${{ matrix.checks }}
 
   check-git-rev-deps:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v7
     - uses: stellar/actions/rust-check-git-rev-deps@main
 
   build:
@@ -104,7 +107,7 @@ jobs:
         sys: ${{ fromJSON(needs.setup.outputs.sys) }}
     runs-on: ${{ matrix.sys.os }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v7
     - name: Install minimum supported rust version
       if: matrix.rust == 'msrv'
       run: |
@@ -140,15 +143,15 @@ jobs:
       if: matrix.rust == 'msrv'
       run: echo RUSTFLAGS='-Dwarnings' >> $GITHUB_ENV
     - run: echo CARGO_BUILD_TARGET='${{ matrix.sys.target }}' >> $GITHUB_ENV
-    - uses: stellar/binaries@v45
+    - uses: stellar/binaries@v88
       with:
         name: cargo-hack
-        version: 0.5.28
+        version: 0.6.44
     - run: cargo version
     - run: make build-libs
     - run: make build-test-wasms TEST_CRATES_RUSTUP_TOOLCHAIN=$RUSTUP_TOOLCHAIN
     - name: Upload test wasms
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: test-wasms-${{ matrix.rust }}-${{ matrix.sys.target }}
         path: target/wasm32v1-none/release/test_*.wasm
@@ -163,7 +166,7 @@ jobs:
         sys: ${{ fromJSON(needs.setup.outputs.sys) }}
     runs-on: ${{ matrix.sys.os }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v7
     - name: Install minimum supported rust version
       if: matrix.rust == 'msrv'
       run: |
@@ -199,12 +202,12 @@ jobs:
       if: matrix.rust == 'msrv'
       run: echo RUSTFLAGS='-Dwarnings' >> $GITHUB_ENV
     - run: echo CARGO_BUILD_TARGET='${{ matrix.sys.target }}' >> $GITHUB_ENV
-    - uses: stellar/binaries@v45
+    - uses: stellar/binaries@v88
       with:
         name: cargo-hack
-        version: 0.5.28
+        version: 0.6.44
     - name: Restore test wasms for tests from one of the msrv builds
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v8
       with:
         name: test-wasms-msrv-x86_64-unknown-linux-gnu
         path: target/wasm32v1-none/release/
@@ -227,10 +230,10 @@ jobs:
   build-fuzz:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v7
     - uses: stellar/actions/rust-cache@main
     - run: rustup install nightly
-    - uses: stellar/binaries@v45
+    - uses: stellar/binaries@v88
       with:
         name: cargo-fuzz
         version: 0.13.1
@@ -245,10 +248,24 @@ jobs:
     - name: Check no diffs exist
       run: git add -N . && git diff HEAD --exit-code
 
-  docs:
+  fuzz-corpus:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
+    - uses: stellar/actions/rust-cache@main
+    - run: rustup install nightly
+    - uses: stellar/binaries@v45
+      with:
+        name: cargo-fuzz
+        version: 0.13.1
+    - run: make fuzz-corpus
+    - name: Check no diffs exist
+      run: git add -N . && git diff HEAD --exit-code
+
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v7
     - uses: stellar/actions/rust-cache@main
     - run: rustup install nightly
     - run: make doc
@@ -258,7 +275,7 @@ jobs:
   readme:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v7
     - uses: stellar/actions/rust-cache@main
     - run: rustup install nightly
     - run: make readme
@@ -267,7 +284,7 @@ jobs:
   migration-docs:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v7
     - uses: stellar/actions/rust-cache@main
     - run: rustup update
     - run: |
@@ -278,7 +295,7 @@ jobs:
   expand-test-wasms:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v7
     - uses: stellar/actions/rust-cache@main
     - name: Install minimum supported rust version
       run: |
@@ -286,19 +303,35 @@ jobs:
         rustup install $msrv
         rustup target add --toolchain $msrv wasm32v1-none
         rustup component add rustfmt
-    - uses: stellar/binaries@v45
+    - uses: stellar/binaries@v88
       with:
         name: cargo-hack
-        version: 0.5.28
-    - uses: stellar/binaries@v45
+        version: 0.6.44
+    - uses: stellar/binaries@v88
       with:
         name: cargo-expand
-        version: 1.0.116
+        version: 1.0.122
     - run: make expand-tests
     - name: Check no diffs exist
       run: git add -N . && git diff HEAD --exit-code
 
+  spec-snapshots:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v5
+    - uses: stellar/actions/rust-cache@main
+    - name: Restore test wasms from one of the msrv builds
+      uses: actions/download-artifact@v5
+      with:
+        name: test-wasms-msrv-x86_64-unknown-linux-gnu
+        path: target/wasm32v1-none/release/
+    - run: make spec-snapshots-from-built-wasms
+    - name: Check no diffs exist
+      run: git add -N . && git diff HEAD --exit-code
+
   publish-dry-run:
+    needs: setup
     if: github.event_name == 'push' || startsWith(github.head_ref, 'release/')
     strategy:
       matrix:
@@ -306,7 +339,7 @@ jobs:
         - os: ubuntu-latest
           target: wasm32v1-none
           cargo-hack-feature-options: --manifest-path Cargo.toml --exclude soroban-meta --exclude soroban-spec --exclude soroban-spec-rust --exclude soroban-ledger-snapshot --exclude-features testutils,docs,default,std --feature-powerset
-          env: SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2=1
+          env: STELLAR_CLI_VERSION=${{ needs.setup.outputs.version-major }}.0.0
         - os: ubuntu-latest
           target: x86_64-unknown-linux-gnu
           cargo-hack-feature-options: '--feature-powerset --exclude-features docs'

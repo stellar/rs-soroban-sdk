@@ -20,6 +20,10 @@ pub mod storage;
 
 pub mod cost_estimate;
 
+mod client_call;
+#[doc(hidden)]
+pub use client_call::{ClientCallScope, ClientInternalConfig};
+
 use crate::{xdr, ConstructorArgs, Env, Val, Vec};
 use soroban_ledger_snapshot::LedgerSnapshot;
 
@@ -295,7 +299,7 @@ pub use crate::env::internal::LedgerInfo;
 /// Returns a default `LedgerInfo` suitable for testing.
 pub(crate) fn default_ledger_info() -> LedgerInfo {
     LedgerInfo {
-        protocol_version: 28,
+        protocol_version: 29,
         sequence_number: 0,
         timestamp: 0,
         network_id: [0; 32],
@@ -684,7 +688,7 @@ impl StellarAssetIssuer {
     ///
     /// Use this to test interactions between trustlines/balances and the issuer flags.
     fn overwrite_issuer_flags(&self, flags: u32) {
-        if u64::from(flags) > xdr::MASK_ACCOUNT_FLAGS_V17 {
+        if flags > xdr::MASK_ACCOUNT_FLAGS_V17 {
             panic!(
                 "issuer flags value must be at most {}",
                 xdr::MASK_ACCOUNT_FLAGS_V17

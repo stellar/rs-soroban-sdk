@@ -52,10 +52,25 @@ impl ::core::cmp::Ord for Error {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-static __SPEC_XDR_TYPE_ERROR: [u8; 44usize] = Error::spec_xdr();
+static __SPEC_XDR_TYPE_ERROR: [u8; Error::spec_xdr().len()] = Error::spec_xdr();
 impl Error {
-    pub const fn spec_xdr() -> [u8; 44usize] {
-        *b"\0\0\0\x04\0\0\0\0\0\0\0\0\0\0\0\x05Error\0\0\0\0\0\0\x01\0\0\0\0\0\0\0\x04Fail\0\0\0\x01"
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::UdtErrorEnumV0(
+            soroban_sdk::xdr::r#const::ScSpecUdtErrorEnumV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"Error"),
+                cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecUdtErrorEnumCaseV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"Fail"),
+                        value: 1u32,
+                    },
+                ]),
+            },
+        );
+    pub const fn spec_xdr() -> [u8; Error::__SPEC_XDR_ENTRY.const_xdr_len()] {
+        const { Error::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
 impl soroban_sdk::SpecShakingMarker for Error {
@@ -174,23 +189,14 @@ pub struct ContractClient<'a> {
     pub env: soroban_sdk::Env,
     pub address: soroban_sdk::Address,
     #[doc(hidden)]
-    set_auths: Option<&'a [soroban_sdk::xdr::SorobanAuthorizationEntry]>,
-    #[doc(hidden)]
-    mock_auths: Option<&'a [soroban_sdk::testutils::MockAuth<'a>]>,
-    #[doc(hidden)]
-    mock_all_auths: bool,
-    #[doc(hidden)]
-    allow_non_root_auth: bool,
+    config: soroban_sdk::testutils::ClientInternalConfig<'a>,
 }
 impl<'a> ContractClient<'a> {
     pub fn new(env: &soroban_sdk::Env, address: &soroban_sdk::Address) -> Self {
         Self {
             env: env.clone(),
             address: address.clone(),
-            set_auths: None,
-            mock_auths: None,
-            mock_all_auths: false,
-            allow_non_root_auth: false,
+            config: soroban_sdk::testutils::ClientInternalConfig::default(),
         }
     }
     /// Set authorizations in the environment which will be consumed by
@@ -205,10 +211,7 @@ impl<'a> ContractClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            set_auths: Some(auths),
-            mock_auths: self.mock_auths.clone(),
-            mock_all_auths: false,
-            allow_non_root_auth: false,
+            config: self.config.set_auths(auths),
         }
     }
     /// Mock authorizations in the environment which will cause matching invokes
@@ -220,10 +223,7 @@ impl<'a> ContractClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            set_auths: self.set_auths.clone(),
-            mock_auths: Some(mock_auths),
-            mock_all_auths: false,
-            allow_non_root_auth: false,
+            config: self.config.mock_auths(mock_auths),
         }
     }
     /// Mock all calls to the `Address::require_auth` and
@@ -236,10 +236,7 @@ impl<'a> ContractClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            set_auths: None,
-            mock_auths: None,
-            mock_all_auths: true,
-            allow_non_root_auth: false,
+            config: self.config.mock_all_auths(),
         }
     }
     /// A version of `mock_all_auths` that allows authorizations that
@@ -255,10 +252,7 @@ impl<'a> ContractClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            set_auths: None,
-            mock_auths: None,
-            mock_all_auths: true,
-            allow_non_root_auth: true,
+            config: self.config.mock_all_auths_allowing_non_root_auth(),
         }
     }
 }
@@ -320,13 +314,74 @@ mod __Contract____check_auth__spec {
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
     #[allow(non_snake_case)]
-    static __SPEC_XDR_FN___CHECK_AUTH: [u8; 148usize] = super::Contract::spec_xdr___check_auth();
+    static __SPEC_XDR_FN___CHECK_AUTH: [u8; super::Contract::spec_xdr___check_auth().len()] =
+        super::Contract::spec_xdr___check_auth();
 }
 impl Contract {
+    #[allow(non_upper_case_globals)]
+    #[allow(non_snake_case)]
+    const __SPEC_XDR_ENTRY___check_auth: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+        name: soroban_sdk::xdr::r#const::ScSymbol(
+            soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"__check_auth"),
+        ),
+        inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"signature_payload",
+                    ),
+                    type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(soroban_sdk::xdr::r#const::ScSpecTypeBytesN {
+                        n: 32u32,
+                    }),
+                },
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"signatures",
+                    ),
+                    type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Void,
+                },
+                soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"",
+                    ),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"auth_contexts",
+                    ),
+                    type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Vec(
+                        &soroban_sdk::xdr::r#const::ScSpecTypeVec {
+                            element_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                                    b"Context",
+                                ),
+                            }),
+                        },
+                    ),
+                },
+            ],
+        ),
+        outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
+            &[
+                soroban_sdk::xdr::r#const::ScSpecTypeDef::Result(
+                    &soroban_sdk::xdr::r#const::ScSpecTypeResult {
+                        ok_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Void,
+                        error_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Error,
+                    },
+                ),
+            ],
+        ),
+    });
     #[allow(non_snake_case)]
     #[allow(non_snake_case)]
-    pub const fn spec_xdr___check_auth() -> [u8; 148usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x0c__check_auth\0\0\0\x03\0\0\0\0\0\0\0\x11signature_payload\0\0\0\0\0\x03\xee\0\0\0 \0\0\0\0\0\0\0\nsignatures\0\0\0\0\0\x02\0\0\0\0\0\0\0\rauth_contexts\0\0\0\0\0\x03\xea\0\0\x07\xd0\0\0\0\x07Context\0\0\0\0\x01\0\0\x03\xe9\0\0\0\x02\0\0\0\x03"
+    pub const fn spec_xdr___check_auth(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY___check_auth.const_xdr_len()] {
+        const { Contract::__SPEC_XDR_ENTRY___check_auth.const_to_xdr() }
     }
 }
 impl<'a> ContractClient<'a> {}
@@ -456,23 +511,14 @@ mod test {
         pub env: soroban_sdk::Env,
         pub address: soroban_sdk::Address,
         #[doc(hidden)]
-        set_auths: Option<&'a [soroban_sdk::xdr::SorobanAuthorizationEntry]>,
-        #[doc(hidden)]
-        mock_auths: Option<&'a [soroban_sdk::testutils::MockAuth<'a>]>,
-        #[doc(hidden)]
-        mock_all_auths: bool,
-        #[doc(hidden)]
-        allow_non_root_auth: bool,
+        config: soroban_sdk::testutils::ClientInternalConfig<'a>,
     }
     impl<'a> TestContractClient<'a> {
         pub fn new(env: &soroban_sdk::Env, address: &soroban_sdk::Address) -> Self {
             Self {
                 env: env.clone(),
                 address: address.clone(),
-                set_auths: None,
-                mock_auths: None,
-                mock_all_auths: false,
-                allow_non_root_auth: false,
+                config: soroban_sdk::testutils::ClientInternalConfig::default(),
             }
         }
         /// Set authorizations in the environment which will be consumed by
@@ -487,10 +533,7 @@ mod test {
             Self {
                 env: self.env.clone(),
                 address: self.address.clone(),
-                set_auths: Some(auths),
-                mock_auths: self.mock_auths.clone(),
-                mock_all_auths: false,
-                allow_non_root_auth: false,
+                config: self.config.set_auths(auths),
             }
         }
         /// Mock authorizations in the environment which will cause matching invokes
@@ -502,10 +545,7 @@ mod test {
             Self {
                 env: self.env.clone(),
                 address: self.address.clone(),
-                set_auths: self.set_auths.clone(),
-                mock_auths: Some(mock_auths),
-                mock_all_auths: false,
-                allow_non_root_auth: false,
+                config: self.config.mock_auths(mock_auths),
             }
         }
         /// Mock all calls to the `Address::require_auth` and
@@ -518,10 +558,7 @@ mod test {
             Self {
                 env: self.env.clone(),
                 address: self.address.clone(),
-                set_auths: None,
-                mock_auths: None,
-                mock_all_auths: true,
-                allow_non_root_auth: false,
+                config: self.config.mock_all_auths(),
             }
         }
         /// A version of `mock_all_auths` that allows authorizations that
@@ -537,10 +574,7 @@ mod test {
             Self {
                 env: self.env.clone(),
                 address: self.address.clone(),
-                set_auths: None,
-                mock_auths: None,
-                mock_all_auths: true,
-                allow_non_root_auth: true,
+                config: self.config.mock_all_auths_allowing_non_root_auth(),
             }
         }
     }

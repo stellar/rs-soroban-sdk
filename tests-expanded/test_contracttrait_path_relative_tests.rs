@@ -21,23 +21,14 @@ pub mod traits {
         pub env: soroban_sdk::Env,
         pub address: soroban_sdk::Address,
         #[doc(hidden)]
-        set_auths: Option<&'a [soroban_sdk::xdr::SorobanAuthorizationEntry]>,
-        #[doc(hidden)]
-        mock_auths: Option<&'a [soroban_sdk::testutils::MockAuth<'a>]>,
-        #[doc(hidden)]
-        mock_all_auths: bool,
-        #[doc(hidden)]
-        allow_non_root_auth: bool,
+        config: soroban_sdk::testutils::ClientInternalConfig<'a>,
     }
     impl<'a> RelativePathTraitClient<'a> {
         pub fn new(env: &soroban_sdk::Env, address: &soroban_sdk::Address) -> Self {
             Self {
                 env: env.clone(),
                 address: address.clone(),
-                set_auths: None,
-                mock_auths: None,
-                mock_all_auths: false,
-                allow_non_root_auth: false,
+                config: soroban_sdk::testutils::ClientInternalConfig::default(),
             }
         }
         /// Set authorizations in the environment which will be consumed by
@@ -52,10 +43,7 @@ pub mod traits {
             Self {
                 env: self.env.clone(),
                 address: self.address.clone(),
-                set_auths: Some(auths),
-                mock_auths: self.mock_auths.clone(),
-                mock_all_auths: false,
-                allow_non_root_auth: false,
+                config: self.config.set_auths(auths),
             }
         }
         /// Mock authorizations in the environment which will cause matching invokes
@@ -67,10 +55,7 @@ pub mod traits {
             Self {
                 env: self.env.clone(),
                 address: self.address.clone(),
-                set_auths: self.set_auths.clone(),
-                mock_auths: Some(mock_auths),
-                mock_all_auths: false,
-                allow_non_root_auth: false,
+                config: self.config.mock_auths(mock_auths),
             }
         }
         /// Mock all calls to the `Address::require_auth` and
@@ -83,10 +68,7 @@ pub mod traits {
             Self {
                 env: self.env.clone(),
                 address: self.address.clone(),
-                set_auths: None,
-                mock_auths: None,
-                mock_all_auths: true,
-                allow_non_root_auth: false,
+                config: self.config.mock_all_auths(),
             }
         }
         /// A version of `mock_all_auths` that allows authorizations that
@@ -102,45 +84,20 @@ pub mod traits {
             Self {
                 env: self.env.clone(),
                 address: self.address.clone(),
-                set_auths: None,
-                mock_auths: None,
-                mock_all_auths: true,
-                allow_non_root_auth: true,
+                config: self.config.mock_all_auths_allowing_non_root_auth(),
             }
         }
     }
     impl<'a> RelativePathTraitClient<'a> {
         pub fn relative_path_method(&self) -> u32 {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.invoke_contract(
                 &self.address,
                 &{ soroban_sdk::Symbol::new(&self.env, "relative_path_method") },
                 ::soroban_sdk::Vec::new(&self.env),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
         pub fn try_relative_path_method(
@@ -152,36 +109,14 @@ pub mod traits {
             >,
             Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
         > {
-            use core::ops::Not;
-            let old_auth_manager = self
-                .env
-                .in_contract()
-                .not()
-                .then(|| self.env.host().snapshot_auth_manager().unwrap());
-            {
-                if let Some(set_auths) = self.set_auths {
-                    self.env.set_auths(set_auths);
-                }
-                if let Some(mock_auths) = self.mock_auths {
-                    self.env.mock_auths(mock_auths);
-                }
-                if self.mock_all_auths {
-                    if self.allow_non_root_auth {
-                        self.env.mock_all_auths_allowing_non_root_auth();
-                    } else {
-                        self.env.mock_all_auths();
-                    }
-                }
-            }
+            let _call_scope =
+                soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
             use soroban_sdk::{FromVal, IntoVal};
             let res = self.env.try_invoke_contract(
                 &self.address,
                 &{ soroban_sdk::Symbol::new(&self.env, "relative_path_method") },
                 ::soroban_sdk::Vec::new(&self.env),
             );
-            if let Some(old_auth_manager) = old_auth_manager {
-                self.env.host().set_auth_manager(old_auth_manager).unwrap();
-            }
             res
         }
     }
@@ -195,9 +130,27 @@ pub mod traits {
         }
     }
     impl RelativePathTraitSpec {
+        #[allow(non_upper_case_globals)]
+        const __SPEC_XDR_ENTRY_relative_path_method: soroban_sdk::xdr::r#const::ScSpecEntry =
+            soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+                soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::ScSymbol(
+                        soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                            b"relative_path_method",
+                        ),
+                    ),
+                    inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+                    outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                        soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                    ]),
+                },
+            );
         #[allow(non_snake_case)]
-        pub const fn spec_xdr_relative_path_method() -> [u8; 44usize] {
-            *b"\0\0\0\0\0\0\0\0\0\0\0\x14relative_path_method\0\0\0\0\0\0\0\x01\0\0\0\x04"
+        pub const fn spec_xdr_relative_path_method(
+        ) -> [u8; RelativePathTraitSpec::__SPEC_XDR_ENTRY_relative_path_method.const_xdr_len()]
+        {
+            const { RelativePathTraitSpec::__SPEC_XDR_ENTRY_relative_path_method.const_to_xdr() }
         }
     }
 }
@@ -209,23 +162,14 @@ pub struct ContractRelativePathClient<'a> {
     pub env: soroban_sdk::Env,
     pub address: soroban_sdk::Address,
     #[doc(hidden)]
-    set_auths: Option<&'a [soroban_sdk::xdr::SorobanAuthorizationEntry]>,
-    #[doc(hidden)]
-    mock_auths: Option<&'a [soroban_sdk::testutils::MockAuth<'a>]>,
-    #[doc(hidden)]
-    mock_all_auths: bool,
-    #[doc(hidden)]
-    allow_non_root_auth: bool,
+    config: soroban_sdk::testutils::ClientInternalConfig<'a>,
 }
 impl<'a> ContractRelativePathClient<'a> {
     pub fn new(env: &soroban_sdk::Env, address: &soroban_sdk::Address) -> Self {
         Self {
             env: env.clone(),
             address: address.clone(),
-            set_auths: None,
-            mock_auths: None,
-            mock_all_auths: false,
-            allow_non_root_auth: false,
+            config: soroban_sdk::testutils::ClientInternalConfig::default(),
         }
     }
     /// Set authorizations in the environment which will be consumed by
@@ -240,10 +184,7 @@ impl<'a> ContractRelativePathClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            set_auths: Some(auths),
-            mock_auths: self.mock_auths.clone(),
-            mock_all_auths: false,
-            allow_non_root_auth: false,
+            config: self.config.set_auths(auths),
         }
     }
     /// Mock authorizations in the environment which will cause matching invokes
@@ -255,10 +196,7 @@ impl<'a> ContractRelativePathClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            set_auths: self.set_auths.clone(),
-            mock_auths: Some(mock_auths),
-            mock_all_auths: false,
-            allow_non_root_auth: false,
+            config: self.config.mock_auths(mock_auths),
         }
     }
     /// Mock all calls to the `Address::require_auth` and
@@ -271,10 +209,7 @@ impl<'a> ContractRelativePathClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            set_auths: None,
-            mock_auths: None,
-            mock_all_auths: true,
-            allow_non_root_auth: false,
+            config: self.config.mock_all_auths(),
         }
     }
     /// A version of `mock_all_auths` that allows authorizations that
@@ -290,10 +225,7 @@ impl<'a> ContractRelativePathClient<'a> {
         Self {
             env: self.env.clone(),
             address: self.address.clone(),
-            set_auths: None,
-            mock_auths: None,
-            mock_all_auths: true,
-            allow_non_root_auth: true,
+            config: self.config.mock_all_auths_allowing_non_root_auth(),
         }
     }
 }
@@ -388,47 +320,42 @@ mod __ContractRelativePath__relative_path_method__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    static __SPEC_XDR_FN_RELATIVE_PATH_METHOD: [u8; 44usize] =
+    static __SPEC_XDR_FN_RELATIVE_PATH_METHOD: [u8;
+        super::ContractRelativePath::spec_xdr_relative_path_method().len()] =
         super::ContractRelativePath::spec_xdr_relative_path_method();
 }
 impl ContractRelativePath {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_relative_path_method: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"relative_path_method",
+                    ),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                ]),
+            },
+        );
     #[allow(non_snake_case)]
-    pub const fn spec_xdr_relative_path_method() -> [u8; 44usize] {
-        *b"\0\0\0\0\0\0\0\0\0\0\0\x14relative_path_method\0\0\0\0\0\0\0\x01\0\0\0\x04"
+    pub const fn spec_xdr_relative_path_method(
+    ) -> [u8; ContractRelativePath::__SPEC_XDR_ENTRY_relative_path_method.const_xdr_len()] {
+        const { ContractRelativePath::__SPEC_XDR_ENTRY_relative_path_method.const_to_xdr() }
     }
 }
 impl<'a> ContractRelativePathClient<'a> {
     pub fn relative_path_method(&self) -> u32 {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.invoke_contract(
             &self.address,
             &{ soroban_sdk::Symbol::new(&self.env, "relative_path_method") },
             ::soroban_sdk::Vec::new(&self.env),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
     pub fn try_relative_path_method(
@@ -437,36 +364,13 @@ impl<'a> ContractRelativePathClient<'a> {
         Result<u32, <u32 as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
         Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
     > {
-        use core::ops::Not;
-        let old_auth_manager = self
-            .env
-            .in_contract()
-            .not()
-            .then(|| self.env.host().snapshot_auth_manager().unwrap());
-        {
-            if let Some(set_auths) = self.set_auths {
-                self.env.set_auths(set_auths);
-            }
-            if let Some(mock_auths) = self.mock_auths {
-                self.env.mock_auths(mock_auths);
-            }
-            if self.mock_all_auths {
-                if self.allow_non_root_auth {
-                    self.env.mock_all_auths_allowing_non_root_auth();
-                } else {
-                    self.env.mock_all_auths();
-                }
-            }
-        }
+        let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
         let res = self.env.try_invoke_contract(
             &self.address,
             &{ soroban_sdk::Symbol::new(&self.env, "relative_path_method") },
             ::soroban_sdk::Vec::new(&self.env),
         );
-        if let Some(old_auth_manager) = old_auth_manager {
-            self.env.host().set_auth_manager(old_auth_manager).unwrap();
-        }
         res
     }
 }

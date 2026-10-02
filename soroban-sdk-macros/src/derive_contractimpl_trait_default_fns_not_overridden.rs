@@ -81,6 +81,12 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
         })
         .collect::<Result<Vec<_>, Error>>()?;
 
+    // With no default fns left there is nothing to generate, and the empty
+    // registration ctor would otherwise clash with an empty impl's own.
+    if fns.is_empty() {
+        return Ok(quote! {});
+    }
+
     let mut output = quote! {};
     output.extend(derive_pub_fns(
         &args.crate_path,
@@ -89,7 +95,12 @@ fn derive(args: &Args) -> Result<TokenStream2, Error> {
         Some(trait_ident),
         &args.client_name,
     ));
-    output.extend(derive_fns_spec(&args.spec_name, &fns, spec_export));
+    output.extend(derive_fns_spec(
+        &args.crate_path,
+        &args.spec_name,
+        &fns,
+        spec_export,
+    ));
     output.extend(derive_client_impl(
         &args.crate_path,
         &args.client_name,
