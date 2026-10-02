@@ -37,14 +37,14 @@ build: build-libs build-test-wasms
 build-libs: fmt
 	cargo hack build --release $(foreach c,$(LIB_CRATES),--package $(c))
 
-# Set TEST_WASMS_DOCKER to non-empty to build the test wasms inside a docker
-# container so that the wasms are the same regardless of the host building
-# them. Off by default, building on the host. Build state is kept in docker
-# volumes, and each crate's wasm is copied out after it builds because some
-# test crates import the wasms of others. The workspace is mounted read-only, so
-# the docker build uses --locked and fails if Cargo.lock is out of date rather
-# than updating it like the host build does.
-TEST_WASMS_DOCKER?=
+# Build the test wasms inside a docker container so that the wasms are the same
+# regardless of the host building them. Set TEST_WASMS_DOCKER to empty to build
+# on the host instead, e.g. where docker cannot run linux containers. Build
+# state is kept in docker volumes, and each crate's wasm is copied out after it
+# builds because some test crates import the wasms of others. The workspace is
+# mounted read-only, so the docker build uses --locked and fails if Cargo.lock
+# is out of date rather than updating it like the host build does.
+TEST_WASMS_DOCKER?=1
 TEST_WASMS_DOCKER_IMAGE?=rust:$(MSRV)
 
 build-test-wasms: fmt
