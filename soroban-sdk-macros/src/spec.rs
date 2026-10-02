@@ -133,9 +133,6 @@ pub fn spec_type_def_gen(
         "type `{}` full name including its module path is longer than the contract spec's type name limit, shorten its module path or name: `::",
         ident.unraw(),
     ));
-    let gen_impl = gen_impl.unwrap_or_default();
-    let gen_types = gen_types.unwrap_or_default();
-    let gen_where = gen_where.unwrap_or_default();
     // Spanned to the type's name so that the error points at the type. The name
     // is held in consts rather than a local, because a local's name would be
     // resolved in the type's module and so could clash with a const there.
