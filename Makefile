@@ -61,7 +61,7 @@ else
 	mkdir -p target/wasm32v1-none/release
 	docker run --rm \
 		-v "$(CURDIR)":/workspace:ro \
-		-v "$(CURDIR)/target/wasm32v1-none/release":/out \
+		-v "$(CURDIR)/target/wasm32v1-none/release":/workspace/target/wasm32v1-none/release \
 		-v soroban-sdk-test-wasms-rustup:/usr/local/rustup \
 		-v soroban-sdk-test-wasms-cargo-registry:/usr/local/cargo/registry \
 		-v soroban-sdk-test-wasms-cargo-git:/usr/local/cargo/git \
@@ -78,8 +78,8 @@ else
 			for c in $(TEST_CRATES); do \
 				cargo build --locked --release --target wasm32v1-none --package $$c; \
 				if [ -f /target/wasm32v1-none/release/$$c.wasm ]; then \
-					cp /target/wasm32v1-none/release/$$c.wasm /out/; \
-					chown $(shell id -u):$(shell id -g) /out/$$c.wasm; \
+					cp /target/wasm32v1-none/release/$$c.wasm /workspace/target/wasm32v1-none/release/; \
+					chown $(shell id -u):$(shell id -g) /workspace/target/wasm32v1-none/release/$$c.wasm; \
 				fi; \
 			done; \
 		'
