@@ -66,7 +66,7 @@ jobs:
           ]'
         fi
         echo "sys=$(<<< $sys jq -c)" >> $GITHUB_OUTPUT
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v7
     - id: version-major
       run: echo "version-major=$(make version-major)" >> $GITHUB_OUTPUT
 
@@ -251,10 +251,10 @@ jobs:
   fuzz-corpus:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v7
     - uses: stellar/actions/rust-cache@main
     - run: rustup install nightly
-    - uses: stellar/binaries@v45
+    - uses: stellar/binaries@v88
       with:
         name: cargo-fuzz
         version: 0.13.1
@@ -319,10 +319,10 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v5
+    - uses: actions/checkout@v7
     - uses: stellar/actions/rust-cache@main
     - name: Restore test wasms from one of the msrv builds
-      uses: actions/download-artifact@v5
+      uses: actions/download-artifact@v8
       with:
         name: test-wasms-msrv-x86_64-unknown-linux-gnu
         path: target/wasm32v1-none/release/
