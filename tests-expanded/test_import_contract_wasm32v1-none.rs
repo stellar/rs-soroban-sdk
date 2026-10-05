@@ -5898,6 +5898,7 @@ mod eventscontract {
     }
     impl soroban_sdk::Event for Transfer {
         fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+            <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             use soroban_sdk::IntoVal;
             (
                 &{
@@ -5928,7 +5929,6 @@ mod eventscontract {
     }
     impl Transfer {
         pub fn publish(&self, env: &soroban_sdk::Env) {
-            <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <_ as soroban_sdk::Event>::publish(self, env);
         }
     }
@@ -6108,6 +6108,7 @@ mod eventscontract {
     }
     impl soroban_sdk::Event for MapValues {
         fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+            <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             use soroban_sdk::IntoVal;
             (&{ soroban_sdk::Symbol::new(env, "map_values") }, {
                 let v: soroban_sdk::Val = self.from.into_val(env);
@@ -6126,7 +6127,6 @@ mod eventscontract {
     }
     impl MapValues {
         pub fn publish(&self, env: &soroban_sdk::Env) {
-            <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <_ as soroban_sdk::Event>::publish(self, env);
         }
     }
@@ -6306,6 +6306,7 @@ mod eventscontract {
     }
     impl soroban_sdk::Event for VecValues {
         fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+            <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             use soroban_sdk::IntoVal;
             (&{ soroban_sdk::Symbol::new(env, "vec_values") }, {
                 let v: soroban_sdk::Val = self.from.into_val(env);
@@ -6330,7 +6331,6 @@ mod eventscontract {
     }
     impl VecValues {
         pub fn publish(&self, env: &soroban_sdk::Env) {
-            <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <_ as soroban_sdk::Event>::publish(self, env);
         }
     }
@@ -6497,6 +6497,7 @@ mod eventscontract {
     }
     impl soroban_sdk::Event for SingleValue {
         fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+            <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             use soroban_sdk::IntoVal;
             (&{ soroban_sdk::Symbol::new(env, "single_value") }, {
                 let v: soroban_sdk::Val = self.from.into_val(env);
@@ -6511,7 +6512,6 @@ mod eventscontract {
     }
     impl SingleValue {
         pub fn publish(&self, env: &soroban_sdk::Env) {
-            <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <_ as soroban_sdk::Event>::publish(self, env);
         }
     }
@@ -6656,6 +6656,7 @@ mod eventscontract {
     }
     impl soroban_sdk::Event for SingleValueVoid {
         fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+            <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             use soroban_sdk::IntoVal;
             (&{ soroban_sdk::Symbol::new(env, "single_value_void") }, {
                 let v: soroban_sdk::Val = self.from.into_val(env);
@@ -6669,7 +6670,6 @@ mod eventscontract {
     }
     impl SingleValueVoid {
         pub fn publish(&self, env: &soroban_sdk::Env) {
-            <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <_ as soroban_sdk::Event>::publish(self, env);
         }
     }

@@ -409,6 +409,10 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
 
         impl #gen_impl #path::Event for #ident #gen_types #gen_where {
             fn topics(&self, env: &#path::Env) -> #path::Vec<#path::Val> {
+                // Called here, rather than only in publish, so that every way
+                // of publishing the event keeps its spec, because they all
+                // get the event's topics.
+                #spec_shaking_call
                 #topics_to_vec_val
             }
             fn data(&self, env: &#path::Env) -> #path::Val {
@@ -418,7 +422,6 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
 
         impl #gen_impl #ident #gen_types #gen_where {
             pub fn publish(&self, env: &#path::Env) {
-                #spec_shaking_call
                 <_ as #path::Event>::publish(self, env);
             }
         }

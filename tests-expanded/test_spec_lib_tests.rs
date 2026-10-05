@@ -6508,6 +6508,7 @@ impl soroban_sdk::SpecShakingMarker for EventA {
 }
 impl soroban_sdk::Event for EventA {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         use soroban_sdk::IntoVal;
         (
             &{
@@ -6533,7 +6534,6 @@ impl soroban_sdk::Event for EventA {
 }
 impl EventA {
     pub fn publish(&self, env: &soroban_sdk::Env) {
-        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
@@ -6660,6 +6660,7 @@ impl soroban_sdk::SpecShakingMarker for EventB {
 }
 impl soroban_sdk::Event for EventB {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         use soroban_sdk::IntoVal;
         (
             &{
@@ -6689,7 +6690,6 @@ impl soroban_sdk::Event for EventB {
 }
 impl EventB {
     pub fn publish(&self, env: &soroban_sdk::Env) {
-        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
@@ -6816,6 +6816,7 @@ impl soroban_sdk::SpecShakingMarker for EventC {
 }
 impl soroban_sdk::Event for EventC {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         use soroban_sdk::IntoVal;
         (
             &{
@@ -6841,7 +6842,6 @@ impl soroban_sdk::Event for EventC {
 }
 impl EventC {
     pub fn publish(&self, env: &soroban_sdk::Env) {
-        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
@@ -6932,6 +6932,7 @@ impl soroban_sdk::SpecShakingMarker for EventD {
 }
 impl soroban_sdk::Event for EventD {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         use soroban_sdk::IntoVal;
         (&{
             #[allow(deprecated)]
@@ -6951,7 +6952,6 @@ impl soroban_sdk::Event for EventD {
 }
 impl EventD {
     pub fn publish(&self, env: &soroban_sdk::Env) {
-        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }

@@ -126,6 +126,7 @@ impl soroban_sdk::SpecShakingMarker for Transfer {
 }
 impl soroban_sdk::Event for Transfer {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         use soroban_sdk::IntoVal;
         (
             &{
@@ -156,7 +157,6 @@ impl soroban_sdk::Event for Transfer {
 }
 impl Transfer {
     pub fn publish(&self, env: &soroban_sdk::Env) {
-        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
@@ -247,6 +247,7 @@ impl soroban_sdk::SpecShakingMarker for SingleValue {
 }
 impl soroban_sdk::Event for SingleValue {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         use soroban_sdk::IntoVal;
         (&{ soroban_sdk::Symbol::new(env, "single_value") }, {
             let v: soroban_sdk::Val = self.from.into_val(env);
@@ -261,7 +262,6 @@ impl soroban_sdk::Event for SingleValue {
 }
 impl SingleValue {
     pub fn publish(&self, env: &soroban_sdk::Env) {
-        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
@@ -355,6 +355,7 @@ impl soroban_sdk::SpecShakingMarker for SingleValueVoid {
 }
 impl soroban_sdk::Event for SingleValueVoid {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         use soroban_sdk::IntoVal;
         (&{ soroban_sdk::Symbol::new(env, "single_value_void") }, {
             let v: soroban_sdk::Val = self.from.into_val(env);
@@ -368,7 +369,6 @@ impl soroban_sdk::Event for SingleValueVoid {
 }
 impl SingleValueVoid {
     pub fn publish(&self, env: &soroban_sdk::Env) {
-        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
@@ -467,6 +467,7 @@ impl soroban_sdk::SpecShakingMarker for VecValues {
 }
 impl soroban_sdk::Event for VecValues {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         use soroban_sdk::IntoVal;
         (&{ soroban_sdk::Symbol::new(env, "vec_values") }, {
             let v: soroban_sdk::Val = self.from.into_val(env);
@@ -491,7 +492,6 @@ impl soroban_sdk::Event for VecValues {
 }
 impl VecValues {
     pub fn publish(&self, env: &soroban_sdk::Env) {
-        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
@@ -590,6 +590,7 @@ impl soroban_sdk::SpecShakingMarker for MapValues {
 }
 impl soroban_sdk::Event for MapValues {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         use soroban_sdk::IntoVal;
         (&{ soroban_sdk::Symbol::new(env, "map_values") }, {
             let v: soroban_sdk::Val = self.from.into_val(env);
@@ -608,7 +609,6 @@ impl soroban_sdk::Event for MapValues {
 }
 impl MapValues {
     pub fn publish(&self, env: &soroban_sdk::Env) {
-        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }

@@ -209,6 +209,7 @@ impl<'a> soroban_sdk::SpecShakingMarker for Transfer<'a> {
 }
 impl<'a> soroban_sdk::Event for Transfer<'a> {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         use soroban_sdk::IntoVal;
         (
             &{
@@ -239,7 +240,6 @@ impl<'a> soroban_sdk::Event for Transfer<'a> {
 }
 impl<'a> Transfer<'a> {
     pub fn publish(&self, env: &soroban_sdk::Env) {
-        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
