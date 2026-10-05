@@ -1,13 +1,7 @@
 version: 2
 updates:
   - package-ecosystem: "cargo"
-    directories:
-      - "/"
-      - "/soroban-ledger-snapshot"
-      - "/soroban-sdk-macros"
-      - "/soroban-sdk"
-      - "/soroban-spec-rust"
-      - "/soroban-spec"
+    directory: "/"
     schedule:
       interval: "weekly"
       day: "sunday"
