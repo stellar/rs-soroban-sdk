@@ -6,7 +6,7 @@ extern crate core;
 use core::prelude::rust_2021::*;
 use soroban_sdk::{
     assert_with_error, contract, contracterror, contractevent, contractimpl, contracttype,
-    panic_with_error, Env, Map, Symbol, Vec,
+    panic_with_error, Env, Event, Map, Symbol, Vec,
 };
 pub struct Contract;
 ///ContractArgs is a type for building arg lists for functions defined in "Contract".
@@ -2260,7 +2260,6 @@ impl soroban_sdk::Event for UsedEventSimple {
 }
 impl UsedEventSimple {
     pub fn publish(&self, env: &soroban_sdk::Env) {
-        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
@@ -2573,7 +2572,6 @@ impl soroban_sdk::Event for UsedEventWithTopicType {
 }
 impl UsedEventWithTopicType {
     pub fn publish(&self, env: &soroban_sdk::Env) {
-        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
@@ -2897,7 +2895,6 @@ impl soroban_sdk::Event for UsedEventWithDataType {
 }
 impl UsedEventWithDataType {
     pub fn publish(&self, env: &soroban_sdk::Env) {
-        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
@@ -3364,7 +3361,6 @@ impl soroban_sdk::Event for UsedEventWithNestedTopic {
 }
 impl UsedEventWithNestedTopic {
     pub fn publish(&self, env: &soroban_sdk::Env) {
-        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
@@ -3831,7 +3827,6 @@ impl soroban_sdk::Event for UsedEventWithNestedData {
 }
 impl UsedEventWithNestedData {
     pub fn publish(&self, env: &soroban_sdk::Env) {
-        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
@@ -4445,7 +4440,586 @@ impl<'a> soroban_sdk::Event for UsedEventWithRefs<'a> {
 }
 impl<'a> UsedEventWithRefs<'a> {
     pub fn publish(&self, env: &soroban_sdk::Env) {
-        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <_ as soroban_sdk::Event>::publish(self, env);
+    }
+}
+pub struct UsedPublishEventDataType {
+    pub val: u32,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UsedPublishEventDataType {
+    #[inline]
+    fn clone(&self) -> UsedPublishEventDataType {
+        UsedPublishEventDataType {
+            val: ::core::clone::Clone::clone(&self.val),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UsedPublishEventDataType {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field1_finish(
+            f,
+            "UsedPublishEventDataType",
+            "val",
+            &&self.val,
+        )
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UsedPublishEventDataType {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<u32>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UsedPublishEventDataType {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UsedPublishEventDataType {
+    #[inline]
+    fn eq(&self, other: &UsedPublishEventDataType) -> bool {
+        self.val == other.val
+    }
+}
+impl soroban_sdk::SpecName for UsedPublishEventDataType {
+    const SPEC_NAME: &'static str = {
+        const NAME: &str = "::test_spec_shaking_v2::UsedPublishEventDataType";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedPublishEventDataType` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_shaking_v2::UsedPublishEventDataType`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
+    };
+}
+impl soroban_sdk::SpecTypeDef for UsedPublishEventDataType {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
+}
+#[doc(hidden)]
+#[allow(dead_code)]
+#[link_section = "contractspecv0"]
+static __SPEC_XDR_TYPE_USEDPUBLISHEVENTDATATYPE: [u8; UsedPublishEventDataType::spec_xdr().len()] =
+    UsedPublishEventDataType::spec_xdr();
+impl UsedPublishEventDataType {
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
+            soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <UsedPublishEventDataType as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"val"),
+                        type_: <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+            },
+        );
+    pub const fn spec_xdr() -> [u8; UsedPublishEventDataType::__SPEC_XDR_ENTRY.const_xdr_len()] {
+        const { UsedPublishEventDataType::__SPEC_XDR_ENTRY.const_to_xdr() }
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UsedPublishEventDataType {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        {
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
+                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
+                    &UsedPublishEventDataType::spec_xdr(),
+                );
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedPublishEventDataType {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
+        let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
+            .map_err(|_| ConversionError)?;
+        Ok(Self {
+            val: vals[0]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedPublishEventDataType> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UsedPublishEventDataType,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let vals: [Val; 1usize] = [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
+        Ok(env
+            .map_new_from_slices(&KEYS, &vals)
+            .map_err(|_| ConversionError)?
+            .into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedPublishEventDataType> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UsedPublishEventDataType,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedPublishEventDataType>>::try_from_val(
+            env, *val,
+        )
+    }
+}
+pub struct UsedEventViaPublishEvent {
+    pub payload: UsedPublishEventDataType,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UsedEventViaPublishEvent {
+    #[inline]
+    fn clone(&self) -> UsedEventViaPublishEvent {
+        UsedEventViaPublishEvent {
+            payload: ::core::clone::Clone::clone(&self.payload),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UsedEventViaPublishEvent {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field1_finish(
+            f,
+            "UsedEventViaPublishEvent",
+            "payload",
+            &&self.payload,
+        )
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UsedEventViaPublishEvent {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<UsedPublishEventDataType>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UsedEventViaPublishEvent {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UsedEventViaPublishEvent {
+    #[inline]
+    fn eq(&self, other: &UsedEventViaPublishEvent) -> bool {
+        self.payload == other.payload
+    }
+}
+impl soroban_sdk::SpecName for UsedEventViaPublishEvent {
+    const SPEC_NAME: &'static str = {
+        const NAME: &str = "::test_spec_shaking_v2::UsedEventViaPublishEvent";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedEventViaPublishEvent` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_shaking_v2::UsedEventViaPublishEvent`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
+    };
+}
+impl soroban_sdk::SpecTypeDef for UsedEventViaPublishEvent {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
+}
+#[doc(hidden)]
+#[allow(dead_code)]
+#[link_section = "contractspecv0"]
+static __SPEC_XDR_EVENT_USEDEVENTVIAPUBLISHEVENT: [u8; UsedEventViaPublishEvent::spec_xdr().len()] =
+    UsedEventViaPublishEvent::spec_xdr();
+impl UsedEventViaPublishEvent {
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
+            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+            lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <UsedEventViaPublishEvent as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+            prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"used_event_via_publish_event",
+                    ),
+                ),
+            ]),
+            params: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"payload"),
+                    type_: <UsedPublishEventDataType as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                },
+            ]),
+            data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
+        });
+    pub const fn spec_xdr() -> [u8; UsedEventViaPublishEvent::__SPEC_XDR_ENTRY.const_xdr_len()] {
+        const { UsedEventViaPublishEvent::__SPEC_XDR_ENTRY.const_to_xdr() }
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UsedEventViaPublishEvent {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <UsedPublishEventDataType as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        {
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
+                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
+                    &UsedEventViaPublishEvent::spec_xdr(),
+                );
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
+impl soroban_sdk::Event for UsedEventViaPublishEvent {
+    fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+        use soroban_sdk::IntoVal;
+        (&{ soroban_sdk::Symbol::new(env, "used_event_via_publish_event") },).into_val(env)
+    }
+    fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
+        use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
+        const KEYS: [&'static str; 1usize] = ["payload"];
+        let vals: [soroban_sdk::Val; 1usize] = [self.payload.into_val(env)];
+        env.sparse_map_new_from_slices(&KEYS, &vals)
+            .unwrap_infallible()
+            .into()
+    }
+}
+impl UsedEventViaPublishEvent {
+    pub fn publish(&self, env: &soroban_sdk::Env) {
+        <_ as soroban_sdk::Event>::publish(self, env);
+    }
+}
+pub struct UsedTraitPublishDataType {
+    pub val: u32,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UsedTraitPublishDataType {
+    #[inline]
+    fn clone(&self) -> UsedTraitPublishDataType {
+        UsedTraitPublishDataType {
+            val: ::core::clone::Clone::clone(&self.val),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UsedTraitPublishDataType {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field1_finish(
+            f,
+            "UsedTraitPublishDataType",
+            "val",
+            &&self.val,
+        )
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UsedTraitPublishDataType {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<u32>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UsedTraitPublishDataType {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UsedTraitPublishDataType {
+    #[inline]
+    fn eq(&self, other: &UsedTraitPublishDataType) -> bool {
+        self.val == other.val
+    }
+}
+impl soroban_sdk::SpecName for UsedTraitPublishDataType {
+    const SPEC_NAME: &'static str = {
+        const NAME: &str = "::test_spec_shaking_v2::UsedTraitPublishDataType";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedTraitPublishDataType` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_shaking_v2::UsedTraitPublishDataType`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
+    };
+}
+impl soroban_sdk::SpecTypeDef for UsedTraitPublishDataType {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
+}
+#[doc(hidden)]
+#[allow(dead_code)]
+#[link_section = "contractspecv0"]
+static __SPEC_XDR_TYPE_USEDTRAITPUBLISHDATATYPE: [u8; UsedTraitPublishDataType::spec_xdr().len()] =
+    UsedTraitPublishDataType::spec_xdr();
+impl UsedTraitPublishDataType {
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
+            soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <UsedTraitPublishDataType as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
+                fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                    soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
+                        doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"val"),
+                        type_: <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    },
+                ]),
+            },
+        );
+    pub const fn spec_xdr() -> [u8; UsedTraitPublishDataType::__SPEC_XDR_ENTRY.const_xdr_len()] {
+        const { UsedTraitPublishDataType::__SPEC_XDR_ENTRY.const_to_xdr() }
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UsedTraitPublishDataType {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        {
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
+                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
+                    &UsedTraitPublishDataType::spec_xdr(),
+                );
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedTraitPublishDataType {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
+        let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
+            .map_err(|_| ConversionError)?;
+        Ok(Self {
+            val: vals[0]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedTraitPublishDataType> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UsedTraitPublishDataType,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let vals: [Val; 1usize] = [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
+        Ok(env
+            .map_new_from_slices(&KEYS, &vals)
+            .map_err(|_| ConversionError)?
+            .into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedTraitPublishDataType> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UsedTraitPublishDataType,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedTraitPublishDataType>>::try_from_val(
+            env, *val,
+        )
+    }
+}
+pub struct UsedEventViaTraitPublish {
+    pub payload: UsedTraitPublishDataType,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UsedEventViaTraitPublish {
+    #[inline]
+    fn clone(&self) -> UsedEventViaTraitPublish {
+        UsedEventViaTraitPublish {
+            payload: ::core::clone::Clone::clone(&self.payload),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UsedEventViaTraitPublish {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field1_finish(
+            f,
+            "UsedEventViaTraitPublish",
+            "payload",
+            &&self.payload,
+        )
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UsedEventViaTraitPublish {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<UsedTraitPublishDataType>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UsedEventViaTraitPublish {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UsedEventViaTraitPublish {
+    #[inline]
+    fn eq(&self, other: &UsedEventViaTraitPublish) -> bool {
+        self.payload == other.payload
+    }
+}
+impl soroban_sdk::SpecName for UsedEventViaTraitPublish {
+    const SPEC_NAME: &'static str = {
+        const NAME: &str = "::test_spec_shaking_v2::UsedEventViaTraitPublish";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `UsedEventViaTraitPublish` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_shaking_v2::UsedEventViaTraitPublish`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
+    };
+}
+impl soroban_sdk::SpecTypeDef for UsedEventViaTraitPublish {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
+}
+#[doc(hidden)]
+#[allow(dead_code)]
+#[link_section = "contractspecv0"]
+static __SPEC_XDR_EVENT_USEDEVENTVIATRAITPUBLISH: [u8; UsedEventViaTraitPublish::spec_xdr().len()] =
+    UsedEventViaTraitPublish::spec_xdr();
+impl UsedEventViaTraitPublish {
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
+            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+            lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <UsedEventViaTraitPublish as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+            prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"used_event_via_trait_publish",
+                    ),
+                ),
+            ]),
+            params: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"payload"),
+                    type_: <UsedTraitPublishDataType as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                },
+            ]),
+            data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
+        });
+    pub const fn spec_xdr() -> [u8; UsedEventViaTraitPublish::__SPEC_XDR_ENTRY.const_xdr_len()] {
+        const { UsedEventViaTraitPublish::__SPEC_XDR_ENTRY.const_to_xdr() }
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UsedEventViaTraitPublish {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <UsedTraitPublishDataType as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        {
+            static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
+                soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
+                    &UsedEventViaTraitPublish::spec_xdr(),
+                );
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
+impl soroban_sdk::Event for UsedEventViaTraitPublish {
+    fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+        use soroban_sdk::IntoVal;
+        (&{ soroban_sdk::Symbol::new(env, "used_event_via_trait_publish") },).into_val(env)
+    }
+    fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
+        use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
+        const KEYS: [&'static str; 1usize] = ["payload"];
+        let vals: [soroban_sdk::Val; 1usize] = [self.payload.into_val(env)];
+        env.sparse_map_new_from_slices(&KEYS, &vals)
+            .unwrap_infallible()
+            .into()
+    }
+}
+impl UsedEventViaTraitPublish {
+    pub fn publish(&self, env: &soroban_sdk::Env) {
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
@@ -12402,7 +12976,6 @@ mod wasm_imported {
     }
     impl EventA {
         pub fn publish(&self, env: &soroban_sdk::Env) {
-            <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <_ as soroban_sdk::Event>::publish(self, env);
         }
     }
@@ -12608,7 +13181,6 @@ mod wasm_imported {
     }
     impl EventB {
         pub fn publish(&self, env: &soroban_sdk::Env) {
-            <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <_ as soroban_sdk::Event>::publish(self, env);
         }
     }
@@ -12807,7 +13379,6 @@ mod wasm_imported {
     }
     impl EventC {
         pub fn publish(&self, env: &soroban_sdk::Env) {
-            <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <_ as soroban_sdk::Event>::publish(self, env);
         }
     }
@@ -12943,7 +13514,6 @@ mod wasm_imported {
     }
     impl EventD {
         pub fn publish(&self, env: &soroban_sdk::Env) {
-            <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
             <_ as soroban_sdk::Event>::publish(self, env);
         }
     }
@@ -13595,7 +14165,6 @@ impl soroban_sdk::Event for UnusedEvent {
 }
 impl UnusedEvent {
     pub fn publish(&self, env: &soroban_sdk::Env) {
-        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
@@ -14569,6 +15138,17 @@ impl Contract {
             payload: &payload,
         }
         .publish(&env);
+    }
+    pub fn publish_via_publish_event(env: Env) {
+        env.events().publish_event(&UsedEventViaPublishEvent {
+            payload: UsedPublishEventDataType { val: 1 },
+        });
+    }
+    pub fn publish_via_trait_publish(env: Env) {
+        let event = UsedEventViaTraitPublish {
+            payload: UsedTraitPublishDataType { val: 1 },
+        };
+        <_ as Event>::publish(&event, &env);
     }
 }
 #[doc(hidden)]
@@ -15559,6 +16139,74 @@ impl Contract {
         const { Contract::__SPEC_XDR_ENTRY_publish_ref_event.const_to_xdr() }
     }
 }
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+mod __Contract__publish_via_publish_event__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
+    #[link_section = "contractspecv0"]
+    static __SPEC_XDR_FN_PUBLISH_VIA_PUBLISH_EVENT: [u8;
+        super::Contract::spec_xdr_publish_via_publish_event().len()] =
+        super::Contract::spec_xdr_publish_via_publish_event();
+}
+impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_publish_via_publish_event: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"publish_via_publish_event",
+                    ),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+            },
+        );
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_publish_via_publish_event(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_publish_via_publish_event.const_xdr_len()] {
+        const { Contract::__SPEC_XDR_ENTRY_publish_via_publish_event.const_to_xdr() }
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+mod __Contract__publish_via_trait_publish__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
+    #[link_section = "contractspecv0"]
+    static __SPEC_XDR_FN_PUBLISH_VIA_TRAIT_PUBLISH: [u8;
+        super::Contract::spec_xdr_publish_via_trait_publish().len()] =
+        super::Contract::spec_xdr_publish_via_trait_publish();
+}
+impl Contract {
+    #[allow(non_upper_case_globals)]
+    const __SPEC_XDR_ENTRY_publish_via_trait_publish: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::FunctionV0(
+            soroban_sdk::xdr::r#const::ScSpecFunctionV0 {
+                doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                name: soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
+                        b"publish_via_trait_publish",
+                    ),
+                ),
+                inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+                outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
+            },
+        );
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_publish_via_trait_publish(
+    ) -> [u8; Contract::__SPEC_XDR_ENTRY_publish_via_trait_publish.const_xdr_len()] {
+        const { Contract::__SPEC_XDR_ENTRY_publish_via_trait_publish.const_to_xdr() }
+    }
+}
 impl<'a> ContractClient<'a> {
     pub fn with_param(&self, _s: &UsedParamStruct, _ie: &UsedParamIntEnum) -> () {
         use core::ops::Not;
@@ -16259,6 +16907,54 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    pub fn publish_via_publish_event(&self) -> () {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "publish_via_publish_event") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
+    pub fn try_publish_via_publish_event(
+        &self,
+    ) -> Result<
+        Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "publish_via_publish_event") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
+    pub fn publish_via_trait_publish(&self) -> () {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "publish_via_trait_publish") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
+    pub fn try_publish_via_trait_publish(
+        &self,
+    ) -> Result<
+        Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "publish_via_trait_publish") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
 }
 impl ContractArgs {
     #[inline(always)]
@@ -16403,6 +17099,16 @@ impl ContractArgs {
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn publish_ref_event<'i>() -> () {
+        ()
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn publish_via_publish_event<'i>() -> () {
+        ()
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn publish_via_trait_publish<'i>() -> () {
         ()
     }
 }
@@ -17107,6 +17813,54 @@ pub fn __Contract__publish_ref_event__invoke_raw(env: soroban_sdk::Env) -> sorob
 pub extern "C" fn __Contract__publish_ref_event__invoke_raw_extern() -> soroban_sdk::Val {
     #[allow(deprecated)]
     __Contract__publish_ref_event__invoke_raw(soroban_sdk::Env::default())
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(
+    note = "use `ContractClient::new(&env, &contract_id).publish_via_publish_event` instead"
+)]
+#[allow(deprecated)]
+pub fn __Contract__publish_via_publish_event__invoke_raw(
+    env: soroban_sdk::Env,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::publish_via_publish_event(env.clone()),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(
+    note = "use `ContractClient::new(&env, &contract_id).publish_via_publish_event` instead"
+)]
+#[export_name = "publish_via_publish_event"]
+pub extern "C" fn __Contract__publish_via_publish_event__invoke_raw_extern() -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__publish_via_publish_event__invoke_raw(soroban_sdk::Env::default())
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(
+    note = "use `ContractClient::new(&env, &contract_id).publish_via_trait_publish` instead"
+)]
+#[allow(deprecated)]
+pub fn __Contract__publish_via_trait_publish__invoke_raw(
+    env: soroban_sdk::Env,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::publish_via_trait_publish(env.clone()),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(
+    note = "use `ContractClient::new(&env, &contract_id).publish_via_trait_publish` instead"
+)]
+#[export_name = "publish_via_trait_publish"]
+pub extern "C" fn __Contract__publish_via_trait_publish__invoke_raw_extern() -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__publish_via_trait_publish__invoke_raw(soroban_sdk::Env::default())
 }
 #[allow(dead_code)]
 fn non_contract_fn(_s: UnusedNonContractFnParam) -> UnusedNonContractFnReturn {
