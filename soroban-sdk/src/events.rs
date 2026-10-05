@@ -62,6 +62,13 @@ pub trait Event {
     fn topics(&self, env: &Env) -> Vec<Val>;
     fn data(&self, env: &Env) -> Val;
 
+    /// Include this event's spec in the WASM binary. Called by
+    /// [`Events::publish_event`] so that every way of publishing an event keeps
+    /// its spec. Implemented by [`contractevent`][crate::contractevent].
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker(&self) {}
+
     fn publish(&self, env: &Env) {
         env.events().publish_event(self);
     }
@@ -101,6 +108,7 @@ impl Events {
     #[inline(always)]
     pub fn publish_event(&self, e: &(impl Event + ?Sized)) {
         let env = self.env();
+        e.spec_shaking_marker();
         internal::Env::contract_event(env, e.topics(env).to_object(), e.data(env))
             .unwrap_infallible();
     }

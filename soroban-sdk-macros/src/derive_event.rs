@@ -414,11 +414,13 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
             fn data(&self, env: &#path::Env) -> #path::Val {
                 #data_to_val
             }
+            fn spec_shaking_marker(&self) {
+                #spec_shaking_call
+            }
         }
 
         impl #gen_impl #ident #gen_types #gen_where {
             pub fn publish(&self, env: &#path::Env) {
-                #spec_shaking_call
                 <_ as #path::Event>::publish(self, env);
             }
         }
