@@ -62,9 +62,15 @@ pub trait Event {
     fn topics(&self, env: &Env) -> Vec<Val>;
     fn data(&self, env: &Env) -> Val;
 
-    /// This is an internal function that should not be implemented or called without a deep knowledge about how the contract type, event, and spec shaking functionality is integrated into the contract build pipeline. Include this event's spec in the WASM binary. Called by
-    /// [`Events::publish_event`] so that every way of publishing an event keeps
-    /// its spec. Implemented by [`contractevent`][crate::contractevent]. For types implementing Event that do not need to be included in the spec, such as a tuple representations of an event, this methods default implementation is sufficient and can be ignored.
+    /// This is an internal function that should not be implemented or called
+    /// without a deep knowledge about how the contract type, event, and spec
+    /// shaking functionality is integrated into the contract build pipeline.
+    /// Include this event's spec in the WASM binary. Called by
+    /// [`Events::publish_event`] so that every way of publishing an event keeps its
+    /// spec. Implemented by [`contractevent`][crate::contractevent]. For types
+    /// implementing Event that do not need to be included in the spec, such as a
+    /// tuple representations of an event, this methods default implementation is
+    /// sufficient and can be ignored.
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker(&self) {}
