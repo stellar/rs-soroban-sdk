@@ -93,16 +93,16 @@
                   "ext": "v0",
                   "cost_inputs": {
                     "ext": "v0",
-                    "n_instructions": 1689,
+                    "n_instructions": 1705,
                     "n_functions": 20,
                     "n_globals": 4,
                     "n_table_entries": 4,
                     "n_types": 13,
-                    "n_data_segments": 1,
+                    "n_data_segments": 4,
                     "n_elem_segments": 1,
                     "n_imports": 13,
                     "n_exports": 7,
-                    "n_data_segment_bytes": 232
+                    "n_data_segment_bytes": 4561
                   }
                 }
               },

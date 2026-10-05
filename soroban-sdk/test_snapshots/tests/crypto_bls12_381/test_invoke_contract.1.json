@@ -136,11 +136,11 @@
                     "n_globals": 4,
                     "n_table_entries": 2,
                     "n_types": 9,
-                    "n_data_segments": 1,
+                    "n_data_segments": 4,
                     "n_elem_segments": 1,
                     "n_imports": 17,
                     "n_exports": 8,
-                    "n_data_segment_bytes": 148
+                    "n_data_segment_bytes": 3949
                   }
                 }
               },
