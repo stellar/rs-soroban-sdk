@@ -4787,6 +4787,7 @@ impl soroban_sdk::Event for UsedEventSimple {
             .unwrap_infallible()
             .into()
     }
+    #[allow(deprecated)]
     fn spec_shaking_marker(&self) {
         <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
@@ -5322,6 +5323,7 @@ impl soroban_sdk::Event for UsedEventWithTopicType {
             .unwrap_infallible()
             .into()
     }
+    #[allow(deprecated)]
     fn spec_shaking_marker(&self) {
         <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
@@ -5953,6 +5955,7 @@ impl soroban_sdk::Event for UsedEventWithDataType {
             .unwrap_infallible()
             .into()
     }
+    #[allow(deprecated)]
     fn spec_shaking_marker(&self) {
         <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
@@ -6955,6 +6958,7 @@ impl soroban_sdk::Event for UsedEventWithNestedTopic {
             .unwrap_infallible()
             .into()
     }
+    #[allow(deprecated)]
     fn spec_shaking_marker(&self) {
         <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
@@ -7953,6 +7957,7 @@ impl soroban_sdk::Event for UsedEventWithNestedData {
             .unwrap_infallible()
             .into()
     }
+    #[allow(deprecated)]
     fn spec_shaking_marker(&self) {
         <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
@@ -9326,6 +9331,7 @@ impl<'a> soroban_sdk::Event for UsedEventWithRefs<'a> {
             .unwrap_infallible()
             .into()
     }
+    #[allow(deprecated)]
     fn spec_shaking_marker(&self) {
         <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
@@ -9885,6 +9891,7 @@ impl soroban_sdk::Event for UsedEventViaPublishEvent {
             .unwrap_infallible()
             .into()
     }
+    #[allow(deprecated)]
     fn spec_shaking_marker(&self) {
         <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
@@ -10444,6 +10451,7 @@ impl soroban_sdk::Event for UsedEventViaTraitPublish {
             .unwrap_infallible()
             .into()
     }
+    #[allow(deprecated)]
     fn spec_shaking_marker(&self) {
         <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
@@ -28515,6 +28523,7 @@ mod wasm_imported {
                 .unwrap_infallible()
                 .into()
         }
+        #[allow(deprecated)]
         fn spec_shaking_marker(&self) {
             <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         }
@@ -28716,6 +28725,7 @@ mod wasm_imported {
                 .unwrap_infallible()
                 .into()
         }
+        #[allow(deprecated)]
         fn spec_shaking_marker(&self) {
             <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         }
@@ -28910,6 +28920,7 @@ mod wasm_imported {
                 .unwrap_infallible()
                 .into()
         }
+        #[allow(deprecated)]
         fn spec_shaking_marker(&self) {
             <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         }
@@ -29040,6 +29051,7 @@ mod wasm_imported {
                 .unwrap_infallible()
                 .into()
         }
+        #[allow(deprecated)]
         fn spec_shaking_marker(&self) {
             <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         }
@@ -30509,6 +30521,7 @@ impl soroban_sdk::Event for UnusedEvent {
             .unwrap_infallible()
             .into()
     }
+    #[allow(deprecated)]
     fn spec_shaking_marker(&self) {
         <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }

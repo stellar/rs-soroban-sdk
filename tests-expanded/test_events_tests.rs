@@ -236,6 +236,7 @@ impl soroban_sdk::Event for Transfer {
             .unwrap_infallible()
             .into()
     }
+    #[allow(deprecated)]
     fn spec_shaking_marker(&self) {
         <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
@@ -335,6 +336,7 @@ impl soroban_sdk::Event for SingleValue {
         use soroban_sdk::IntoVal;
         self.amount.into_val(env)
     }
+    #[allow(deprecated)]
     fn spec_shaking_marker(&self) {
         <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
@@ -436,6 +438,7 @@ impl soroban_sdk::Event for SingleValueVoid {
     fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
         soroban_sdk::Val::VOID.to_val()
     }
+    #[allow(deprecated)]
     fn spec_shaking_marker(&self) {
         <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
@@ -553,6 +556,7 @@ impl soroban_sdk::Event for VecValues {
         )
             .into_val(env)
     }
+    #[allow(deprecated)]
     fn spec_shaking_marker(&self) {
         <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
@@ -664,6 +668,7 @@ impl soroban_sdk::Event for MapValues {
             .unwrap_infallible()
             .into()
     }
+    #[allow(deprecated)]
     fn spec_shaking_marker(&self) {
         <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }

@@ -414,6 +414,7 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
             fn data(&self, env: &#path::Env) -> #path::Val {
                 #data_to_val
             }
+            #[allow(deprecated)]
             fn spec_shaking_marker(&self) {
                 #spec_shaking_call
             }

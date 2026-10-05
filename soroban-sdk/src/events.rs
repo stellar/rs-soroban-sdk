@@ -73,6 +73,9 @@ pub trait Event {
     /// event/type structure, this methods default implementation is sufficient and
     /// can be ignored.
     #[doc(hidden)]
+    #[deprecated(
+        note = "Event::spec_shaking_marker is an internal function and is not safe to use or implement"
+    )]
     #[inline(always)]
     fn spec_shaking_marker(&self) {}
 
@@ -115,6 +118,7 @@ impl Events {
     #[inline(always)]
     pub fn publish_event(&self, e: &(impl Event + ?Sized)) {
         let env = self.env();
+        #[allow(deprecated)]
         e.spec_shaking_marker();
         internal::Env::contract_event(env, e.topics(env).to_object(), e.data(env))
             .unwrap_infallible();

@@ -2988,6 +2988,7 @@ impl soroban_sdk::Event for EventA {
             .unwrap_infallible()
             .into()
     }
+    #[allow(deprecated)]
     fn spec_shaking_marker(&self) {
         <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
@@ -3154,6 +3155,7 @@ impl soroban_sdk::Event for EventB {
             .unwrap_infallible()
             .into()
     }
+    #[allow(deprecated)]
     fn spec_shaking_marker(&self) {
         <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
@@ -3316,6 +3318,7 @@ impl soroban_sdk::Event for EventC {
             .unwrap_infallible()
             .into()
     }
+    #[allow(deprecated)]
     fn spec_shaking_marker(&self) {
         <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
@@ -3437,6 +3440,7 @@ impl soroban_sdk::Event for EventD {
             .unwrap_infallible()
             .into()
     }
+    #[allow(deprecated)]
     fn spec_shaking_marker(&self) {
         <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }

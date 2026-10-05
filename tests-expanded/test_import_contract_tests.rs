@@ -13089,6 +13089,7 @@ mod eventscontract {
                 .unwrap_infallible()
                 .into()
         }
+        #[allow(deprecated)]
         fn spec_shaking_marker(&self) {
             <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         }
@@ -13282,6 +13283,7 @@ mod eventscontract {
                 .unwrap_infallible()
                 .into()
         }
+        #[allow(deprecated)]
         fn spec_shaking_marker(&self) {
             <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         }
@@ -13481,6 +13483,7 @@ mod eventscontract {
             )
                 .into_val(env)
         }
+        #[allow(deprecated)]
         fn spec_shaking_marker(&self) {
             <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         }
@@ -13657,6 +13660,7 @@ mod eventscontract {
             use soroban_sdk::IntoVal;
             self.amount.into_val(env)
         }
+        #[allow(deprecated)]
         fn spec_shaking_marker(&self) {
             <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         }
@@ -13810,6 +13814,7 @@ mod eventscontract {
         fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
             soroban_sdk::Val::VOID.to_val()
         }
+        #[allow(deprecated)]
         fn spec_shaking_marker(&self) {
             <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         }
