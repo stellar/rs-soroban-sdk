@@ -60,6 +60,7 @@ ifeq ($(TEST_WASMS_BUILD_WITH_DOCKER),)
 else
 	mkdir -p target
 	docker run --rm \
+		--platform linux/amd64 \
 		-v "$(CURDIR)":/workspace:ro \
 		-v "$(CURDIR)/target":/workspace/target \
 		-v soroban-sdk-test-wasms-rustup:/usr/local/rustup \
