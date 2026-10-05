@@ -68,9 +68,10 @@ pub trait Event {
     /// Include this event's spec in the WASM binary. Called by
     /// [`Events::publish_event`] so that every way of publishing an event keeps its
     /// spec. Implemented by [`contractevent`][crate::contractevent]. For types
-    /// implementing Event that do not need to be included in the spec, such as a
-    /// tuple representations of an event, this methods default implementation is
-    /// sufficient and can be ignored.
+    /// implementing Event that do not need to be included in the spec, such as
+    /// custom representations of an event that aren't tied to a contract spec
+    /// event/type structure, this methods default implementation is sufficient and
+    /// can be ignored.
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker(&self) {}
