@@ -16,6 +16,32 @@ pub struct DummyProof {
     pub g2: Bls12381G2Affine,
     pub fr: Bls12381Fr,
 }
+impl soroban_sdk::SpecName for DummyProof {
+    const SPEC_NAME: &'static str = {
+        const NAME: &str = "::test_bls::DummyProof";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `DummyProof` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_bls::DummyProof`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
+    };
+}
+impl soroban_sdk::SpecTypeDef for DummyProof {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -26,40 +52,34 @@ impl DummyProof {
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"DummyProof"),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <DummyProof as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
                 fields: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"fp"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
-                            soroban_sdk::xdr::r#const::ScSpecTypeBytesN { n: 48u32 },
-                        ),
+                        type_: <Bls12381Fp as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"fp2"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
-                            soroban_sdk::xdr::r#const::ScSpecTypeBytesN { n: 96u32 },
-                        ),
+                        type_: <Bls12381Fp2 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"fr"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U256,
+                        type_: <Bls12381Fr as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"g1"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
-                            soroban_sdk::xdr::r#const::ScSpecTypeBytesN { n: 96u32 },
-                        ),
+                        type_: <Bls12381G1Affine as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                     soroban_sdk::xdr::r#const::ScSpecUdtStructFieldV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"g2"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
-                            soroban_sdk::xdr::r#const::ScSpecTypeBytesN { n: 192u32 },
-                        ),
+                        type_: <Bls12381G2Affine as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ]),
             },
@@ -239,20 +259,16 @@ impl Contract {
                     soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"p"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
-                            soroban_sdk::xdr::r#const::ScSpecTypeBytesN { n: 96u32 },
-                        ),
+                        type_: <Bls12381G1Affine as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                     soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"s"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U256,
+                        type_: <Bls12381Fr as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ]),
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
-                        soroban_sdk::xdr::r#const::ScSpecTypeBytesN { n: 96u32 },
-                    ),
+                    <Bls12381G1Affine as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 ]),
             },
         );
@@ -286,20 +302,16 @@ impl Contract {
                     soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"p"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
-                            soroban_sdk::xdr::r#const::ScSpecTypeBytesN { n: 192u32 },
-                        ),
+                        type_: <Bls12381G2Affine as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                     soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"s"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U256,
+                        type_: <Bls12381Fr as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ]),
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecTypeDef::BytesN(
-                        soroban_sdk::xdr::r#const::ScSpecTypeBytesN { n: 192u32 },
-                    ),
+                    <Bls12381G2Affine as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 ]),
             },
         );
@@ -333,17 +345,11 @@ impl Contract {
                     soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"proof"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
-                            soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                    b"DummyProof",
-                                ),
-                            },
-                        ),
+                        type_: <DummyProof as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ]),
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecTypeDef::Bool,
+                    <bool as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 ]),
             },
         );
@@ -380,20 +386,16 @@ impl Contract {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                             b"values",
                         ),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Vec(
-                            &soroban_sdk::xdr::r#const::ScSpecTypeVec {
-                                element_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::U256,
-                            },
-                        ),
+                        type_: <Vec<Bls12381Fr> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                     soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"index"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                        type_: <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ]),
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecTypeDef::U256,
+                    <Bls12381Fr as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 ]),
             },
         );

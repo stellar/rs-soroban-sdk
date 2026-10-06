@@ -29,6 +29,32 @@ pub enum DataKey {
     Temp(u32),
     Instance(u32),
 }
+impl soroban_sdk::SpecName for DataKey {
+    const SPEC_NAME: &'static str = {
+        const NAME: &str = "::test_constructor::DataKey";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `DataKey` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_constructor::DataKey`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
+    };
+}
+impl soroban_sdk::SpecTypeDef for DataKey {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
+}
 #[doc(hidden)]
 #[allow(dead_code)]
 #[link_section = "contractspecv0"]
@@ -39,7 +65,9 @@ impl DataKey {
             soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                 lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"DataKey"),
+                name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                    <DataKey as soroban_sdk::SpecName>::SPEC_NAME,
+                ),
                 cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                     soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseV0::TupleV0(
                         soroban_sdk::xdr::r#const::ScSpecUdtUnionCaseTupleV0 {
@@ -48,7 +76,7 @@ impl DataKey {
                                 b"Persistent",
                             ),
                             type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                                soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                                <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                             ]),
                         },
                     ),
@@ -59,7 +87,7 @@ impl DataKey {
                                 b"Temp",
                             ),
                             type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                                soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                                <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                             ]),
                         },
                     ),
@@ -70,7 +98,7 @@ impl DataKey {
                                 b"Instance",
                             ),
                             type_: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                                soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                                <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                             ]),
                         },
                     ),
@@ -239,14 +267,14 @@ impl Contract {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                             b"init_key",
                         ),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                        type_: <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                     soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                             b"init_value",
                         ),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::I64,
+                        type_: <i64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ]),
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
@@ -283,21 +311,11 @@ impl Contract {
                     soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"key"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
-                            soroban_sdk::xdr::r#const::ScSpecTypeUdt {
-                                name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
-                                    b"DataKey",
-                                ),
-                            },
-                        ),
+                        type_: <DataKey as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ]),
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecTypeDef::Option(
-                        &soroban_sdk::xdr::r#const::ScSpecTypeOption {
-                            value_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::I64,
-                        },
-                    ),
+                    <Option<i64> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 ]),
             },
         );

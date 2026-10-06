@@ -16,9 +16,9 @@ mod derive_struct;
 mod derive_struct_tuple;
 mod derive_trait;
 mod doc;
-mod map_type;
 mod path;
 mod shaking;
+mod spec;
 mod symbol;
 mod syn_ext;
 
@@ -40,11 +40,11 @@ use derive_trait::derive_trait;
 
 use darling::{ast::NestedMeta, util::SpannedValue, FromMeta};
 use macro_string::MacroString;
-use map_type::is_mapped_type_udt;
 use proc_macro::TokenStream;
 use proc_macro2::{Span, TokenStream as TokenStream2};
 use quote::{format_ident, quote, ToTokens};
 use sha2::{Digest, Sha256};
+use spec::check_udt_ident;
 use std::{fmt::Write, fs};
 use syn::{
     ext::IdentExt as _, parse_macro_input, parse_str, spanned::Spanned, Data, DeriveInput, Error,
@@ -460,7 +460,7 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let vis = &input.vis;
     let ident = &input.ident;
     let attrs = &input.attrs;
-    match is_mapped_type_udt(ident, &input.generics) {
+    match check_udt_ident(ident, &input.generics) {
         Ok(()) => {}
         Err(e) => return e.to_compile_error().into(),
     }
@@ -522,6 +522,10 @@ pub fn contracterror(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
     let ident = &input.ident;
     let attrs = &input.attrs;
+    match check_udt_ident(ident, &input.generics) {
+        Ok(()) => {}
+        Err(e) => return e.to_compile_error().into(),
+    }
     // The spec is always emitted and reachability determines what is retained,
     // so the `export` argument is no longer accepted.
     let export_error = export_arg_error(&args.export);
