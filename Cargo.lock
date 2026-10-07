@@ -1561,6 +1561,7 @@ dependencies = [
  "stellar-xdr",
  "trybuild",
  "visibility",
+ "wasmparser",
 ]
 
 [[package]]
