@@ -21,8 +21,8 @@ fn test_cost_estimate_with_storage() {
     client.put(&symbol_short!("k1"), &symbol_short!("v1"));
     expect![[r#"
         InvocationResources {
-            instructions: 237131,
-            mem_bytes: 1126737,
+            instructions: 237703,
+            mem_bytes: 1130075,
             disk_read_entries: 0,
             memory_read_entries: 3,
             write_entries: 1,
@@ -37,8 +37,8 @@ fn test_cost_estimate_with_storage() {
     .assert_eq(format!("{:#?}", e.cost_estimate().resources()).as_str());
     expect![[r#"
         FeeEstimate {
-            total: 10000,
-            instructions: 166,
+            total: 10001,
+            instructions: 167,
             disk_read_entries: 1563,
             write_entries: 2500,
             disk_read_bytes: 0,
@@ -54,8 +54,8 @@ fn test_cost_estimate_with_storage() {
     assert_eq!(client.get(&symbol_short!("k1")), Some(symbol_short!("v1")));
     expect![[r#"
         InvocationResources {
-            instructions: 235125,
-            mem_bytes: 1125786,
+            instructions: 235697,
+            mem_bytes: 1129124,
             disk_read_entries: 0,
             memory_read_entries: 3,
             write_entries: 0,
@@ -87,8 +87,8 @@ fn test_cost_estimate_with_storage() {
     client.del(&symbol_short!("k1"));
     expect![[r#"
         InvocationResources {
-            instructions: 232678,
-            mem_bytes: 1125974,
+            instructions: 233250,
+            mem_bytes: 1129312,
             disk_read_entries: 0,
             memory_read_entries: 3,
             write_entries: 1,
@@ -103,8 +103,8 @@ fn test_cost_estimate_with_storage() {
     .assert_eq(format!("{:#?}", e.cost_estimate().resources()).as_str());
     expect![[r#"
         FeeEstimate {
-            total: 4226,
-            instructions: 163,
+            total: 4227,
+            instructions: 164,
             disk_read_entries: 1563,
             write_entries: 2500,
             disk_read_bytes: 0,
@@ -120,8 +120,8 @@ fn test_cost_estimate_with_storage() {
     assert_eq!(client.get(&symbol_short!("k1")), None);
     expect![[r#"
         InvocationResources {
-            instructions: 232945,
-            mem_bytes: 1125618,
+            instructions: 233517,
+            mem_bytes: 1128956,
             disk_read_entries: 0,
             memory_read_entries: 3,
             write_entries: 0,
@@ -161,8 +161,8 @@ fn test_cost_estimate_budget() {
     // Budget breakdown corresponds to the last invocation only.
     expect![[r#"
         ===============================================================================================================================================================================
-        Cpu limit: 400000000; used: 251580
-        Mem limit: 41943040; used: 1145243
+        Cpu limit: 400000000; used: 252152
+        Mem limit: 41943040; used: 1148581
         ===============================================================================================================================================================================
         CostType                           iterations     input          cpu_insns      mem_bytes      const_term_cpu      lin_term_cpu        const_term_mem      lin_term_mem        
         WasmInsnExec                       284            None           1136           0              4                   0                   0                   0                   
@@ -203,11 +203,11 @@ fn test_cost_estimate_budget() {
         InstantiateWasmGlobals             1              Some(3)        251            160            0                   10711               0                   6833                
         InstantiateWasmTableEntries        1              Some(0)        0              0              0                   3300                0                   1025                
         InstantiateWasmTypes               1              None           0              0              0                   0                   0                   0                   
-        InstantiateWasmDataSegments        1              Some(0)        0              0              0                   23038               0                   129632              
+        InstantiateWasmDataSegments        1              Some(3)        539            3038           0                   23038               0                   129632              
         InstantiateWasmElemSegments        1              Some(0)        0              0              0                   42488               0                   13665               
         InstantiateWasmImports             1              Some(4)        25905          3051           0                   828974              0                   97637               
         InstantiateWasmExports             1              Some(7)        16247          501            0                   297100              0                   9176                
-        InstantiateWasmDataSegmentBytes    1              Some(0)        0              0              0                   14                  0                   126                 
+        InstantiateWasmDataSegmentBytes    1              Some(305)      33             300            0                   14                  0                   126                 
         Sec1DecodePointUncompressed        0              None           0              0              1882                0                   0                   0                   
         VerifyEcdsaSecp256r1Sig            0              None           0              0              3000906             0                   0                   0                   
         Bls12381EncodeFp                   0              None           0              0              661                 0                   0                   0                   

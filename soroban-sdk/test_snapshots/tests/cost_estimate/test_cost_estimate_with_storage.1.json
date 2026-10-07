@@ -33,7 +33,7 @@
     []
   ],
   "ledger": {
-    "protocol_version": 28,
+    "protocol_version": 29,
     "sequence_number": 0,
     "timestamp": 0,
     "network_id": "0000000000000000000000000000000000000000000000000000000000000000",
@@ -100,11 +100,11 @@
                     "n_globals": 3,
                     "n_table_entries": 0,
                     "n_types": 5,
-                    "n_data_segments": 0,
+                    "n_data_segments": 3,
                     "n_elem_segments": 0,
                     "n_imports": 4,
                     "n_exports": 7,
-                    "n_data_segment_bytes": 0
+                    "n_data_segment_bytes": 305
                   }
                 }
               },
