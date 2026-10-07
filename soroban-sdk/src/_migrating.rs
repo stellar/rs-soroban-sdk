@@ -4,7 +4,7 @@
 // every small change is captured here. This is the document a developer should
 // read to understand what they need to change when upgrading.
 
-//! # Migrating from v28 to v30
+//! # Migrating from v29 to v30
 //!
 //! - [Contracts must now be built with the `stellar contract build` command from a version of the
 //!   stellar-cli of equal major version or greater][v30_cli_version].
@@ -29,6 +29,10 @@
 //! [v30_duplicate_names]: v30_duplicate_names
 //! [v30_sdk_type_names]: v30_sdk_type_names
 //! [v30_spec_markers]: v30_spec_markers
+//!
+//! # Migrating from v28 to v29
+//!
+//! None
 //!
 //! # Migrating from v27 to v28
 //!
