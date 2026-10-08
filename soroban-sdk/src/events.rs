@@ -70,7 +70,7 @@ pub trait Event {
     /// spec. Implemented by [`contractevent`][crate::contractevent]. For types
     /// implementing Event that do not need to be included in the spec, such as
     /// custom representations of an event that aren't tied to a contract spec
-    /// event/type structure, this methods default implementation is sufficient and
+    /// event/type structure, this method's default implementation is sufficient and
     /// can be ignored.
     #[doc(hidden)]
     #[deprecated(
