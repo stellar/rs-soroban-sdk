@@ -89,13 +89,7 @@
 //!    references. Custom accounts built with an earlier SDK cannot unpack the new variant and will
 //!    panic when attempting to unpack when the executable is an external ref.
 //!
-//! 7. The [`contract`] macro only accepts unit structs without generics, e.g.
-//!    `pub struct Contract;`. Fields on a contract type were never read by the SDK, and generics
-//!    did not compile with [`contractimpl`]. Remove any fields or generics from the contract type.
-//!
 //! [`Env::upload`]: crate::Env::upload
-//! [`contract`]: crate::contract
-//! [`contractimpl`]: crate::contractimpl
 //! [v28_contracttype_unpacking]: v28_contracttype_unpacking
 //! [v28_contractevent_packing]: v28_contractevent_packing
 //! [v28_check_auth_executable]: v28_check_auth_executable
