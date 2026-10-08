@@ -177,13 +177,9 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
             "contract type must not have generics",
         ));
     }
-    if !errors.is_empty() {
-        let compile_errors = errors.iter().map(Error::to_compile_error);
-        return quote! { #(#compile_errors)* }.into();
-    }
-
     let ty = &item.ident;
     let ty_str = ty.unraw().to_string();
+    let (impl_generics, ty_generics, where_clause) = item.generics.split_for_impl();
 
     let client_ident = format!("{ty_str}Client");
     let fn_set_registry_ident = format_ident!("__{}_fn_set_registry", ty_str.to_lowercase());
@@ -191,7 +187,9 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let client = derive_client_type(&args.crate_path, &ty_str, &client_ident);
     let args_ident = format!("{ty_str}Args");
     let contract_args = derive_args_type(&ty_str, &args_ident);
+    let compile_errors = errors.iter().map(Error::to_compile_error);
     let mut output = quote! {
+        #(#compile_errors)*
         #input2
         #contract_args
         #client
@@ -219,14 +217,14 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 }
             }
 
-            impl #crate_path::testutils::ContractFunctionRegister for #ty {
+            impl #impl_generics #crate_path::testutils::ContractFunctionRegister for #ty #ty_generics #where_clause {
                 fn register(name: &'static str, func: &'static #fn_set_registry_ident::F) {
                     #fn_set_registry_ident::register(name, func);
                 }
             }
 
             #[doc(hidden)]
-            impl #crate_path::testutils::ContractFunctionSet for #ty {
+            impl #impl_generics #crate_path::testutils::ContractFunctionSet for #ty #ty_generics #where_clause {
                 fn call(&self, func: &str, env: #crate_path::Env, args: &[#crate_path::Val]) -> Option<#crate_path::Val> {
                     #fn_set_registry_ident::call(func, env, args)
                 }
