@@ -433,6 +433,10 @@ pub use soroban_sdk_macros::contractimport;
 /// deployed the combination of all contract functions and all contracts within
 /// a crate will be seen as a single contract.
 ///
+/// The type must be a unit struct. The macro gives it an `env` field holding
+/// the [`Env`] the contract is invoked with, accessible with `env()`. Contract
+/// functions may take `&self` to access it.
+///
 /// ### Examples
 ///
 /// Define a contract with one function, `hello`, and call it from within a test
@@ -448,6 +452,39 @@ pub use soroban_sdk_macros::contractimport;
 /// impl HelloContract {
 ///     pub fn hello(env: Env, to: Symbol) -> Vec<Symbol> {
 ///         vec![&env, symbol_short!("Hello"), to]
+///     }
+/// }
+///
+/// #[test]
+/// fn test() {
+/// # }
+/// # #[cfg(feature = "testutils")]
+/// # fn main() {
+///     let env = Env::default();
+///     let contract_id = env.register(HelloContract, ());
+///     let client = HelloContractClient::new(&env, &contract_id);
+///
+///     let words = client.hello(&symbol_short!("Dev"));
+///
+///     assert_eq!(words, vec![&env, symbol_short!("Hello"), symbol_short!("Dev"),]);
+/// }
+/// # #[cfg(not(feature = "testutils"))]
+/// # fn main() { }
+/// ```
+///
+/// Define a contract function that uses the env of the contract through
+/// `&self`.
+///
+/// ```
+/// use soroban_sdk::{contract, contractimpl, vec, symbol_short, Env, Symbol, Vec};
+///
+/// #[contract]
+/// pub struct HelloContract;
+///
+/// #[contractimpl]
+/// impl HelloContract {
+///     pub fn hello(&self, to: Symbol) -> Vec<Symbol> {
+///         vec![self.env(), symbol_short!("Hello"), to]
 ///     }
 /// }
 ///

@@ -209,7 +209,24 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &Error> for soroban_sdk::Val {
         <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, Error>>::try_from_val(env, *val)
     }
 }
-pub struct Contract;
+pub struct Contract {
+    env: soroban_sdk::Env,
+}
+impl Contract {
+    pub fn env(&self) -> &soroban_sdk::Env {
+        &self.env
+    }
+    #[doc(hidden)]
+    pub fn __soroban_new(env: soroban_sdk::Env) -> Self {
+        Self { env }
+    }
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub struct __ContractContractValue;
+///Value of the [`Contract`] contract, for registering the contract.
+#[allow(non_upper_case_globals)]
+pub const Contract: __ContractContractValue = __ContractContractValue;
 ///ContractArgs is a type for building arg lists for functions defined in "Contract".
 pub struct ContractArgs;
 ///ContractClient is a client for calling the contract defined in "Contract".
@@ -309,7 +326,7 @@ impl soroban_sdk::testutils::ContractFunctionRegister for Contract {
     }
 }
 #[doc(hidden)]
-impl soroban_sdk::testutils::ContractFunctionSet for Contract {
+impl soroban_sdk::testutils::ContractFunctionSet for __ContractContractValue {
     fn call(
         &self,
         func: &str,
@@ -509,7 +526,24 @@ mod test {
         testutils::{MockAuth, MockAuthInvoke},
         Env, IntoVal,
     };
-    struct TestContract;
+    struct TestContract {
+        env: soroban_sdk::Env,
+    }
+    impl TestContract {
+        pub fn env(&self) -> &soroban_sdk::Env {
+            &self.env
+        }
+        #[doc(hidden)]
+        pub fn __soroban_new(env: soroban_sdk::Env) -> Self {
+            Self { env }
+        }
+    }
+    #[doc(hidden)]
+    #[allow(non_camel_case_types)]
+    struct __TestContractContractValue;
+    ///Value of the [`TestContract`] contract, for registering the contract.
+    #[allow(non_upper_case_globals)]
+    const TestContract: __TestContractContractValue = __TestContractContractValue;
     ///TestContractArgs is a type for building arg lists for functions defined in "TestContract".
     pub struct TestContractArgs;
     ///TestContractClient is a client for calling the contract defined in "TestContract".
@@ -609,7 +643,7 @@ mod test {
         }
     }
     #[doc(hidden)]
-    impl soroban_sdk::testutils::ContractFunctionSet for TestContract {
+    impl soroban_sdk::testutils::ContractFunctionSet for __TestContractContractValue {
         fn call(
             &self,
             func: &str,

@@ -94,7 +94,24 @@ pub mod traits {
         }
     }
 }
-pub struct ContractCratePath;
+pub struct ContractCratePath {
+    env: soroban_sdk::Env,
+}
+impl ContractCratePath {
+    pub fn env(&self) -> &soroban_sdk::Env {
+        &self.env
+    }
+    #[doc(hidden)]
+    pub fn __soroban_new(env: soroban_sdk::Env) -> Self {
+        Self { env }
+    }
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub struct __ContractCratePathContractValue;
+///Value of the [`ContractCratePath`] contract, for registering the contract.
+#[allow(non_upper_case_globals)]
+pub const ContractCratePath: __ContractCratePathContractValue = __ContractCratePathContractValue;
 ///ContractCratePathArgs is a type for building arg lists for functions defined in "ContractCratePath".
 pub struct ContractCratePathArgs;
 ///ContractCratePathClient is a client for calling the contract defined in "ContractCratePath".

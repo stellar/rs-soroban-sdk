@@ -14,7 +14,7 @@ impl ContractBraces {
 #[test]
 fn test_braces() {
     let e = Env::default();
-    let id = e.register(ContractBraces {}, ());
+    let id = e.register(ContractBraces, ());
     let client = ContractBracesClient::new(&e, &id);
     assert_eq!(client.add(&1, &2), 3);
 }

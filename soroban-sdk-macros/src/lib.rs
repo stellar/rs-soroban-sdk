@@ -190,10 +190,50 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let ty = &item.ident;
     let ty_str = ty.unraw().to_string();
     let (impl_generics, ty_generics, where_clause) = item.generics.split_for_impl();
+    let attrs = &item.attrs;
+    let vis = &item.vis;
+    let crate_path = &args.crate_path;
+
+    // The value type that stands in for the contract type where a value is
+    // needed, such as `env.register(Contract, ())`, as the contract type itself
+    // can only be constructed with an env.
+    let value_ident = format_ident!("__{}ContractValue", ty_str);
+    let value_doc = format!("Value of the [`{ty_str}`] contract, for registering the contract.");
+
+    // When the type is invalid, it is emitted as written so that impls of it
+    // still resolve, and only the errors are reported.
+    let input2 = if !errors.is_empty() {
+        quote! { #item }
+    } else {
+        quote! {
+        #(#attrs)*
+        #vis struct #ty {
+            env: #crate_path::Env,
+        }
+
+        impl #ty {
+            pub fn env(&self) -> &#crate_path::Env {
+                &self.env
+            }
+
+            #[doc(hidden)]
+            pub fn __soroban_new(env: #crate_path::Env) -> Self {
+                Self { env }
+            }
+        }
+
+        #[doc(hidden)]
+        #[allow(non_camel_case_types)]
+        #vis struct #value_ident;
+
+        #[doc = #value_doc]
+        #[allow(non_upper_case_globals)]
+        #vis const #ty: #value_ident = #value_ident;
+        }
+    };
 
     let client_ident = format!("{ty_str}Client");
     let fn_set_registry_ident = format_ident!("__{}_fn_set_registry", ty_str.to_lowercase());
-    let crate_path = &args.crate_path;
     let client = derive_client_type(&args.crate_path, &ty_str, &client_ident);
     let args_ident = format!("{ty_str}Args");
     let contract_args = derive_args_type(&ty_str, &args_ident);
@@ -233,13 +273,17 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
                 }
             }
 
-            #[doc(hidden)]
-            impl #impl_generics #crate_path::testutils::ContractFunctionSet for #ty #ty_generics #where_clause {
-                fn call(&self, func: &str, env: #crate_path::Env, args: &[#crate_path::Val]) -> Option<#crate_path::Val> {
-                    #fn_set_registry_ident::call(func, env, args)
-                }
-            }
         });
+        if errors.is_empty() {
+            output.extend(quote! {
+                #[doc(hidden)]
+                impl #crate_path::testutils::ContractFunctionSet for #value_ident {
+                    fn call(&self, func: &str, env: #crate_path::Env, args: &[#crate_path::Val]) -> Option<#crate_path::Val> {
+                        #fn_set_registry_ident::call(func, env, args)
+                    }
+                }
+            });
+        }
     }
     output.into()
 }

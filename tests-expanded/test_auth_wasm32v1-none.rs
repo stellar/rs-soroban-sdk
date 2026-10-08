@@ -5,7 +5,24 @@ extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
 use soroban_sdk::{contract, contractimpl, Address, Env, IntoVal};
-pub struct ContractA;
+pub struct ContractA {
+    env: soroban_sdk::Env,
+}
+impl ContractA {
+    pub fn env(&self) -> &soroban_sdk::Env {
+        &self.env
+    }
+    #[doc(hidden)]
+    pub fn __soroban_new(env: soroban_sdk::Env) -> Self {
+        Self { env }
+    }
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub struct __ContractAContractValue;
+///Value of the [`ContractA`] contract, for registering the contract.
+#[allow(non_upper_case_globals)]
+pub const ContractA: __ContractAContractValue = __ContractAContractValue;
 ///ContractAArgs is a type for building arg lists for functions defined in "ContractA".
 pub struct ContractAArgs;
 ///ContractAClient is a client for calling the contract defined in "ContractA".
@@ -138,7 +155,24 @@ pub extern "C" fn __ContractA__fn1__invoke_raw_extern(arg_0: soroban_sdk::Val) -
     #[allow(deprecated)]
     __ContractA__fn1__invoke_raw(soroban_sdk::Env::default(), arg_0)
 }
-pub struct ContractB;
+pub struct ContractB {
+    env: soroban_sdk::Env,
+}
+impl ContractB {
+    pub fn env(&self) -> &soroban_sdk::Env {
+        &self.env
+    }
+    #[doc(hidden)]
+    pub fn __soroban_new(env: soroban_sdk::Env) -> Self {
+        Self { env }
+    }
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub struct __ContractBContractValue;
+///Value of the [`ContractB`] contract, for registering the contract.
+#[allow(non_upper_case_globals)]
+pub const ContractB: __ContractBContractValue = __ContractBContractValue;
 ///ContractBArgs is a type for building arg lists for functions defined in "ContractB".
 pub struct ContractBArgs;
 ///ContractBClient is a client for calling the contract defined in "ContractB".

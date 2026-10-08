@@ -25,6 +25,7 @@ mod contract_invoke_arg_count;
 mod contract_invoke_panics;
 mod contract_meta;
 mod contract_overlapping_type_fn_names;
+mod contract_self;
 mod contract_snapshot;
 mod contract_store;
 mod contract_timepoint;

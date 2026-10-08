@@ -9,7 +9,24 @@ use soroban_sdk::{
     I256, U256,
 };
 use test_contracttrait_trait::{MyEnumUnit, MyEnumVariants, MyStruct};
-pub struct ContractGlobalPath;
+pub struct ContractGlobalPath {
+    env: soroban_sdk::Env,
+}
+impl ContractGlobalPath {
+    pub fn env(&self) -> &soroban_sdk::Env {
+        &self.env
+    }
+    #[doc(hidden)]
+    pub fn __soroban_new(env: soroban_sdk::Env) -> Self {
+        Self { env }
+    }
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub struct __ContractGlobalPathContractValue;
+///Value of the [`ContractGlobalPath`] contract, for registering the contract.
+#[allow(non_upper_case_globals)]
+pub const ContractGlobalPath: __ContractGlobalPathContractValue = __ContractGlobalPathContractValue;
 ///ContractGlobalPathArgs is a type for building arg lists for functions defined in "ContractGlobalPath".
 pub struct ContractGlobalPathArgs;
 ///ContractGlobalPathClient is a client for calling the contract defined in "ContractGlobalPath".

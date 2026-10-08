@@ -154,7 +154,25 @@ pub mod traits {
         }
     }
 }
-pub struct ContractRelativePath;
+pub struct ContractRelativePath {
+    env: soroban_sdk::Env,
+}
+impl ContractRelativePath {
+    pub fn env(&self) -> &soroban_sdk::Env {
+        &self.env
+    }
+    #[doc(hidden)]
+    pub fn __soroban_new(env: soroban_sdk::Env) -> Self {
+        Self { env }
+    }
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub struct __ContractRelativePathContractValue;
+///Value of the [`ContractRelativePath`] contract, for registering the contract.
+#[allow(non_upper_case_globals)]
+pub const ContractRelativePath: __ContractRelativePathContractValue =
+    __ContractRelativePathContractValue;
 ///ContractRelativePathArgs is a type for building arg lists for functions defined in "ContractRelativePath".
 pub struct ContractRelativePathArgs;
 ///ContractRelativePathClient is a client for calling the contract defined in "ContractRelativePath".
@@ -254,7 +272,7 @@ impl soroban_sdk::testutils::ContractFunctionRegister for ContractRelativePath {
     }
 }
 #[doc(hidden)]
-impl soroban_sdk::testutils::ContractFunctionSet for ContractRelativePath {
+impl soroban_sdk::testutils::ContractFunctionSet for __ContractRelativePathContractValue {
     fn call(
         &self,
         func: &str,

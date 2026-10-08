@@ -8,7 +8,24 @@ use soroban_sdk::{
     contract, contracterror, contractimpl, contracttype, panic_with_error, symbol_short, Env,
     Symbol,
 };
-pub struct Contract;
+pub struct Contract {
+    env: soroban_sdk::Env,
+}
+impl Contract {
+    pub fn env(&self) -> &soroban_sdk::Env {
+        &self.env
+    }
+    #[doc(hidden)]
+    pub fn __soroban_new(env: soroban_sdk::Env) -> Self {
+        Self { env }
+    }
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub struct __ContractContractValue;
+///Value of the [`Contract`] contract, for registering the contract.
+#[allow(non_upper_case_globals)]
+pub const Contract: __ContractContractValue = __ContractContractValue;
 ///ContractArgs is a type for building arg lists for functions defined in "Contract".
 pub struct ContractArgs;
 ///ContractClient is a client for calling the contract defined in "Contract".

@@ -89,7 +89,14 @@
 //!    references. Custom accounts built with an earlier SDK cannot unpack the new variant and will
 //!    panic when attempting to unpack when the executable is an external ref.
 //!
+//! 7. Contract types have an `env` field. The [`contract`] macro gives the type an `env` field,
+//!    accessible with `env()`, and [`contractimpl`] functions may take `&self` to access it.
+//!    Functions named `env` on a contract type must be renamed, as they conflict with the
+//!    generated `env()` function.
+//!
 //! [`Env::upload`]: crate::Env::upload
+//! [`contract`]: crate::contract
+//! [`contractimpl`]: crate::contractimpl
 //! [v28_contracttype_unpacking]: v28_contracttype_unpacking
 //! [v28_contractevent_packing]: v28_contractevent_packing
 //! [v28_check_auth_executable]: v28_check_auth_executable

@@ -696,3 +696,8 @@ pub fn is_type_named(ty: &Type, name: &str) -> bool {
         _ => false,
     }
 }
+
+/// Returns the number of leading receiver args (`self`, `&self`) in the inputs.
+pub fn fn_inputs_receiver_count(inputs: &Punctuated<FnArg, Comma>) -> usize {
+    usize::from(matches!(inputs.first(), Some(FnArg::Receiver(_))))
+}

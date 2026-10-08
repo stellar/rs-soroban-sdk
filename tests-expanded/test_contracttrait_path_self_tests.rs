@@ -145,7 +145,24 @@ impl SelfPathTraitSpec {
         const { SelfPathTraitSpec::__SPEC_XDR_ENTRY_self_path_method.const_to_xdr() }
     }
 }
-pub struct ContractSelfPath;
+pub struct ContractSelfPath {
+    env: soroban_sdk::Env,
+}
+impl ContractSelfPath {
+    pub fn env(&self) -> &soroban_sdk::Env {
+        &self.env
+    }
+    #[doc(hidden)]
+    pub fn __soroban_new(env: soroban_sdk::Env) -> Self {
+        Self { env }
+    }
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub struct __ContractSelfPathContractValue;
+///Value of the [`ContractSelfPath`] contract, for registering the contract.
+#[allow(non_upper_case_globals)]
+pub const ContractSelfPath: __ContractSelfPathContractValue = __ContractSelfPathContractValue;
 ///ContractSelfPathArgs is a type for building arg lists for functions defined in "ContractSelfPath".
 pub struct ContractSelfPathArgs;
 ///ContractSelfPathClient is a client for calling the contract defined in "ContractSelfPath".
@@ -245,7 +262,7 @@ impl soroban_sdk::testutils::ContractFunctionRegister for ContractSelfPath {
     }
 }
 #[doc(hidden)]
-impl soroban_sdk::testutils::ContractFunctionSet for ContractSelfPath {
+impl soroban_sdk::testutils::ContractFunctionSet for __ContractSelfPathContractValue {
     fn call(
         &self,
         func: &str,

@@ -146,7 +146,8 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
             );
 
             // Check for the Env argument.
-            let env_input = f.inputs.first().and_then(|a| match a {
+            let receiver_count = syn_ext::fn_inputs_receiver_count(&f.inputs);
+            let env_input = f.inputs.iter().nth(receiver_count).and_then(|a| match a {
                 FnArg::Typed(pat_type) => {
                     let mut ty = &*pat_type.ty;
                     if let Type::Reference(TypeReference { elem, .. }) = ty {
@@ -173,7 +174,7 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
             let (fn_input_types, fn_input_conversions): (Vec<_>, Vec<_>) = f
                 .inputs
                 .iter()
-                .skip(if env_input.is_some() { 1 } else { 0 })
+                .skip(receiver_count + if env_input.is_some() { 1 } else { 0 })
                 .map(|t| {
                     let ident = match syn_ext::fn_arg_ident(t) {
                         Ok(ident) => ident,

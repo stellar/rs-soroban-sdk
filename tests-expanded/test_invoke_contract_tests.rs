@@ -5,7 +5,24 @@ extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
 use soroban_sdk::{contract, contractimpl, symbol_short, vec, Address, Env, IntoVal};
-pub struct Contract;
+pub struct Contract {
+    env: soroban_sdk::Env,
+}
+impl Contract {
+    pub fn env(&self) -> &soroban_sdk::Env {
+        &self.env
+    }
+    #[doc(hidden)]
+    pub fn __soroban_new(env: soroban_sdk::Env) -> Self {
+        Self { env }
+    }
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub struct __ContractContractValue;
+///Value of the [`Contract`] contract, for registering the contract.
+#[allow(non_upper_case_globals)]
+pub const Contract: __ContractContractValue = __ContractContractValue;
 ///ContractArgs is a type for building arg lists for functions defined in "Contract".
 pub struct ContractArgs;
 ///ContractClient is a client for calling the contract defined in "Contract".
@@ -105,7 +122,7 @@ impl soroban_sdk::testutils::ContractFunctionRegister for Contract {
     }
 }
 #[doc(hidden)]
-impl soroban_sdk::testutils::ContractFunctionSet for Contract {
+impl soroban_sdk::testutils::ContractFunctionSet for __ContractContractValue {
     fn call(
         &self,
         func: &str,
@@ -335,7 +352,24 @@ fn __Contract____70a46203e4054de1ddff57b7a47699d47775f2dc3cd806328562e85117ee975
         );
     }
 }
-pub struct AddContract;
+pub struct AddContract {
+    env: soroban_sdk::Env,
+}
+impl AddContract {
+    pub fn env(&self) -> &soroban_sdk::Env {
+        &self.env
+    }
+    #[doc(hidden)]
+    pub fn __soroban_new(env: soroban_sdk::Env) -> Self {
+        Self { env }
+    }
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub struct __AddContractContractValue;
+///Value of the [`AddContract`] contract, for registering the contract.
+#[allow(non_upper_case_globals)]
+pub const AddContract: __AddContractContractValue = __AddContractContractValue;
 ///AddContractArgs is a type for building arg lists for functions defined in "AddContract".
 pub struct AddContractArgs;
 ///AddContractClient is a client for calling the contract defined in "AddContract".
@@ -435,7 +469,7 @@ impl soroban_sdk::testutils::ContractFunctionRegister for AddContract {
     }
 }
 #[doc(hidden)]
-impl soroban_sdk::testutils::ContractFunctionSet for AddContract {
+impl soroban_sdk::testutils::ContractFunctionSet for __AddContractContractValue {
     fn call(
         &self,
         func: &str,

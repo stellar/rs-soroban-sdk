@@ -1,0 +1,11 @@
+error: self argument not supported, use `&self` instead
+ --> tests/compile_fails/contract_self_errors.rs:8:21
+  |
+8 |     pub fn by_value(self) {}
+  |                     ^^^^
+
+error: self argument not supported, use `&self` instead
+  --> tests/compile_fails/contract_self_errors.rs:16:23
+   |
+16 |     pub fn by_mut_ref(&mut self) {}
+   |                       ^

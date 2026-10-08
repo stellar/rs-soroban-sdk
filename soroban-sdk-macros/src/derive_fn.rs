@@ -55,8 +55,25 @@ pub fn derive_pub_fn(
         quote! { <#impl_ty>::#ident }
     };
 
+    // Prepare the self input. Only `&self` is supported, which is passed a
+    // contract value constructed with the env.
+    let receiver_count = syn_ext::fn_inputs_receiver_count(inputs);
+    let self_call = match inputs.first() {
+        Some(FnArg::Receiver(r)) if r.reference.is_some() && r.mutability.is_none() => {
+            quote! { &<#impl_ty>::__soroban_new(env.clone()), }
+        }
+        Some(a @ FnArg::Receiver(_)) => {
+            errors.push(Error::new(
+                a.span(),
+                "self argument not supported, use `&self` instead",
+            ));
+            quote! {}
+        }
+        _ => quote! {},
+    };
+
     // Prepare the env input.
-    let env_input = inputs.first().and_then(|a| match a {
+    let env_input = inputs.iter().nth(receiver_count).and_then(|a| match a {
         FnArg::Typed(pat_type) => {
             let mut is_ref = false;
             let mut ty = &*pat_type.ty;
@@ -84,7 +101,7 @@ pub fn derive_pub_fn(
     // Prepare the argument inputs.
     let (wrap_args, passthrough_calls, wrap_calls): (Vec<_>, Vec<_>, Vec<_>) = inputs
         .iter()
-        .skip(if env_input.is_some() { 1 } else { 0 })
+        .skip(receiver_count + if env_input.is_some() { 1 } else { 0 })
         .enumerate()
         .map(|(i, a)| match a {
             FnArg::Typed(pat_ty) => {
@@ -220,6 +237,7 @@ pub fn derive_pub_fn(
         pub fn #invoke_raw(env: #crate_path::Env, #(#wrap_args),*) -> #crate_path::Val {
             #crate_path::IntoValForContractFn::into_val_for_contract_fn(
                 #call(
+                    #self_call
                     #env_call
                     #(#wrap_calls),*
                 ),

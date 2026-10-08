@@ -5,7 +5,24 @@ extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
 use soroban_sdk::{contract, contractimpl, Address, Env, IntoVal};
-pub struct ContractA;
+pub struct ContractA {
+    env: soroban_sdk::Env,
+}
+impl ContractA {
+    pub fn env(&self) -> &soroban_sdk::Env {
+        &self.env
+    }
+    #[doc(hidden)]
+    pub fn __soroban_new(env: soroban_sdk::Env) -> Self {
+        Self { env }
+    }
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub struct __ContractAContractValue;
+///Value of the [`ContractA`] contract, for registering the contract.
+#[allow(non_upper_case_globals)]
+pub const ContractA: __ContractAContractValue = __ContractAContractValue;
 ///ContractAArgs is a type for building arg lists for functions defined in "ContractA".
 pub struct ContractAArgs;
 ///ContractAClient is a client for calling the contract defined in "ContractA".
@@ -105,7 +122,7 @@ impl soroban_sdk::testutils::ContractFunctionRegister for ContractA {
     }
 }
 #[doc(hidden)]
-impl soroban_sdk::testutils::ContractFunctionSet for ContractA {
+impl soroban_sdk::testutils::ContractFunctionSet for __ContractAContractValue {
     fn call(
         &self,
         func: &str,
@@ -616,7 +633,24 @@ mod test_a {
     }
     mod auth_approve {
         use super::*;
-        pub struct Contract;
+        pub struct Contract {
+            env: soroban_sdk::Env,
+        }
+        impl Contract {
+            pub fn env(&self) -> &soroban_sdk::Env {
+                &self.env
+            }
+            #[doc(hidden)]
+            pub fn __soroban_new(env: soroban_sdk::Env) -> Self {
+                Self { env }
+            }
+        }
+        #[doc(hidden)]
+        #[allow(non_camel_case_types)]
+        pub struct __ContractContractValue;
+        ///Value of the [`Contract`] contract, for registering the contract.
+        #[allow(non_upper_case_globals)]
+        pub const Contract: __ContractContractValue = __ContractContractValue;
         ///ContractArgs is a type for building arg lists for functions defined in "Contract".
         pub struct ContractArgs;
         ///ContractClient is a client for calling the contract defined in "Contract".
@@ -722,7 +756,7 @@ mod test_a {
             }
         }
         #[doc(hidden)]
-        impl soroban_sdk::testutils::ContractFunctionSet for Contract {
+        impl soroban_sdk::testutils::ContractFunctionSet for __ContractContractValue {
             fn call(
                 &self,
                 func: &str,
@@ -915,7 +949,24 @@ mod test_a {
     }
     mod auth_decline {
         use super::*;
-        pub struct Contract;
+        pub struct Contract {
+            env: soroban_sdk::Env,
+        }
+        impl Contract {
+            pub fn env(&self) -> &soroban_sdk::Env {
+                &self.env
+            }
+            #[doc(hidden)]
+            pub fn __soroban_new(env: soroban_sdk::Env) -> Self {
+                Self { env }
+            }
+        }
+        #[doc(hidden)]
+        #[allow(non_camel_case_types)]
+        pub struct __ContractContractValue;
+        ///Value of the [`Contract`] contract, for registering the contract.
+        #[allow(non_upper_case_globals)]
+        pub const Contract: __ContractContractValue = __ContractContractValue;
         ///ContractArgs is a type for building arg lists for functions defined in "Contract".
         pub struct ContractArgs;
         ///ContractClient is a client for calling the contract defined in "Contract".
@@ -1021,7 +1072,7 @@ mod test_a {
             }
         }
         #[doc(hidden)]
-        impl soroban_sdk::testutils::ContractFunctionSet for Contract {
+        impl soroban_sdk::testutils::ContractFunctionSet for __ContractContractValue {
             fn call(
                 &self,
                 func: &str,
@@ -1438,7 +1489,24 @@ mod test_a {
         }
     }
 }
-pub struct ContractB;
+pub struct ContractB {
+    env: soroban_sdk::Env,
+}
+impl ContractB {
+    pub fn env(&self) -> &soroban_sdk::Env {
+        &self.env
+    }
+    #[doc(hidden)]
+    pub fn __soroban_new(env: soroban_sdk::Env) -> Self {
+        Self { env }
+    }
+}
+#[doc(hidden)]
+#[allow(non_camel_case_types)]
+pub struct __ContractBContractValue;
+///Value of the [`ContractB`] contract, for registering the contract.
+#[allow(non_upper_case_globals)]
+pub const ContractB: __ContractBContractValue = __ContractBContractValue;
 ///ContractBArgs is a type for building arg lists for functions defined in "ContractB".
 pub struct ContractBArgs;
 ///ContractBClient is a client for calling the contract defined in "ContractB".
@@ -1538,7 +1606,7 @@ impl soroban_sdk::testutils::ContractFunctionRegister for ContractB {
     }
 }
 #[doc(hidden)]
-impl soroban_sdk::testutils::ContractFunctionSet for ContractB {
+impl soroban_sdk::testutils::ContractFunctionSet for __ContractBContractValue {
     fn call(
         &self,
         func: &str,
@@ -2168,7 +2236,24 @@ mod test_b {
     }
     mod auth_approve {
         use super::*;
-        pub struct Contract;
+        pub struct Contract {
+            env: soroban_sdk::Env,
+        }
+        impl Contract {
+            pub fn env(&self) -> &soroban_sdk::Env {
+                &self.env
+            }
+            #[doc(hidden)]
+            pub fn __soroban_new(env: soroban_sdk::Env) -> Self {
+                Self { env }
+            }
+        }
+        #[doc(hidden)]
+        #[allow(non_camel_case_types)]
+        pub struct __ContractContractValue;
+        ///Value of the [`Contract`] contract, for registering the contract.
+        #[allow(non_upper_case_globals)]
+        pub const Contract: __ContractContractValue = __ContractContractValue;
         ///ContractArgs is a type for building arg lists for functions defined in "Contract".
         pub struct ContractArgs;
         ///ContractClient is a client for calling the contract defined in "Contract".
@@ -2274,7 +2359,7 @@ mod test_b {
             }
         }
         #[doc(hidden)]
-        impl soroban_sdk::testutils::ContractFunctionSet for Contract {
+        impl soroban_sdk::testutils::ContractFunctionSet for __ContractContractValue {
             fn call(
                 &self,
                 func: &str,
@@ -2467,7 +2552,24 @@ mod test_b {
     }
     mod auth_decline {
         use super::*;
-        pub struct Contract;
+        pub struct Contract {
+            env: soroban_sdk::Env,
+        }
+        impl Contract {
+            pub fn env(&self) -> &soroban_sdk::Env {
+                &self.env
+            }
+            #[doc(hidden)]
+            pub fn __soroban_new(env: soroban_sdk::Env) -> Self {
+                Self { env }
+            }
+        }
+        #[doc(hidden)]
+        #[allow(non_camel_case_types)]
+        pub struct __ContractContractValue;
+        ///Value of the [`Contract`] contract, for registering the contract.
+        #[allow(non_upper_case_globals)]
+        pub const Contract: __ContractContractValue = __ContractContractValue;
         ///ContractArgs is a type for building arg lists for functions defined in "Contract".
         pub struct ContractArgs;
         ///ContractClient is a client for calling the contract defined in "Contract".
@@ -2573,7 +2675,7 @@ mod test_b {
             }
         }
         #[doc(hidden)]
-        impl soroban_sdk::testutils::ContractFunctionSet for Contract {
+        impl soroban_sdk::testutils::ContractFunctionSet for __ContractContractValue {
             fn call(
                 &self,
                 func: &str,

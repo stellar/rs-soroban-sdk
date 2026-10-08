@@ -39,7 +39,8 @@ pub fn derive_fn_spec(
     let mut errors = Vec::<Error>::new();
 
     // Prepare the env input.
-    let env_input = inputs.first().and_then(|a| match a {
+    let receiver_count = syn_ext::fn_inputs_receiver_count(inputs);
+    let env_input = inputs.iter().nth(receiver_count).and_then(|a| match a {
         FnArg::Typed(pat_type) => {
             let mut ty = &*pat_type.ty;
             if let Type::Reference(TypeReference { elem, .. }) = ty {
@@ -65,7 +66,7 @@ pub fn derive_fn_spec(
     // Prepare the argument inputs.
     let (spec_args, arg_types): (Vec<_>, Vec<_>) = inputs
         .iter()
-        .skip(if env_input.is_some() { 1 } else { 0 })
+        .skip(receiver_count + if env_input.is_some() { 1 } else { 0 })
         .map(|a| match a {
             FnArg::Typed(pat_type) => {
                 let name = if let Pat::Ident(pat_ident) = *pat_type.pat.clone() {
