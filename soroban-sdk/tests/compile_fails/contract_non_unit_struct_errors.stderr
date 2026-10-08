@@ -19,6 +19,12 @@ error: contract type must not have fields, e.g. `pub struct Contract;` or `pub s
 13 | pub struct ContractEmptyTuple();
    |                              ^^
 
+error: contract type must not have generics
+  --> tests/compile_fails/contract_non_unit_struct_errors.rs:16:32
+   |
+16 | pub struct ContractWithGenerics<T> {
+   |                                ^^^
+
 error: contract type must not have fields, e.g. `pub struct Contract;` or `pub struct Contract {}`
   --> tests/compile_fails/contract_non_unit_struct_errors.rs:16:36
    |
@@ -29,10 +35,10 @@ error: contract type must not have fields, e.g. `pub struct Contract;` or `pub s
    | |_^
 
 error: contract type must not have generics
-  --> tests/compile_fails/contract_non_unit_struct_errors.rs:16:32
+  --> tests/compile_fails/contract_non_unit_struct_errors.rs:21:32
    |
-16 | pub struct ContractWithGenerics<T> {
-   |                                ^^^
+21 | pub struct ContractWithLifetime<'a> {
+   |                                ^^^^
 
 error: contract type must not have fields, e.g. `pub struct Contract;` or `pub struct Contract {}`
   --> tests/compile_fails/contract_non_unit_struct_errors.rs:21:37
@@ -42,9 +48,3 @@ error: contract type must not have fields, e.g. `pub struct Contract;` or `pub s
 22 | |     _a: PhantomData<&'a ()>,
 23 | | }
    | |_^
-
-error: contract type must not have generics
-  --> tests/compile_fails/contract_non_unit_struct_errors.rs:21:32
-   |
-21 | pub struct ContractWithLifetime<'a> {
-   |                                ^^^^
