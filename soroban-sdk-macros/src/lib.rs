@@ -167,8 +167,9 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
         }
     };
 
-    // The SDK never constructs the contract type, so fields and generics on it
-    // are unusable. Only `struct Contract;` and `struct Contract {}` are accepted.
+    // The contract type is constructed with only the env field the SDK gives
+    // it, so it must not have fields or generics of its own. Only
+    // `struct Contract;` and `struct Contract {}` are accepted.
     let mut errors = Vec::<Error>::new();
     if !item.generics.params.is_empty() {
         errors.push(Error::new_spanned(
