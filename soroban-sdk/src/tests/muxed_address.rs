@@ -523,7 +523,8 @@ fn test_muxed_contract_component_getters() {
 #[test]
 fn test_accept_muxed_contract_argument_in_contract() {
     let env = Env::default();
-    let client = MuxedAddressContractClient::new(&env, &env.register(MuxedAddressContract, ()));
+    let contract_id = env.register(MuxedAddressContract, ());
+    let client = MuxedAddressContractClient::new(&env, &contract_id);
 
     let muxed_contract = MuxedAddress::new(Address::generate(&env), 1);
     let muxed_account = MuxedAddress::new(MuxedAddress::generate(&env), 2);
