@@ -437,3 +437,102 @@ fn test_from_str_muxed_strkey_too_long() {
     let strkey = "MA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAAAAAAAAAPCICBKUXX";
     MuxedAddress::from_str(&env, strkey);
 }
+
+// Muxed contract address tests
+
+const CONTRACT_STRKEY: &str = "CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE";
+const MUXED_CONTRACT_STRKEY: &str =
+    "WA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAAAAAAAAAPCIA6IG";
+
+#[test]
+fn test_from_str_muxed_contract() {
+    let env = Env::default();
+    let muxed = MuxedAddress::from_str(&env, MUXED_CONTRACT_STRKEY);
+    assert_eq!(muxed.address(), Address::from_str(&env, CONTRACT_STRKEY));
+    assert_eq!(muxed.id(), Some(123456));
+}
+
+#[test]
+fn test_from_string_muxed_contract() {
+    let env = Env::default();
+    let muxed = MuxedAddress::from_string(&String::from_str(&env, MUXED_CONTRACT_STRKEY));
+    assert_eq!(muxed.address(), Address::from_str(&env, CONTRACT_STRKEY));
+    assert_eq!(muxed.id(), Some(123456));
+}
+
+#[test]
+fn test_from_string_bytes_muxed_contract() {
+    let env = Env::default();
+    let strkey_bytes = Bytes::from_slice(&env, MUXED_CONTRACT_STRKEY.as_bytes());
+    let muxed = MuxedAddress::from_string_bytes(&strkey_bytes);
+    assert_eq!(muxed.address(), Address::from_str(&env, CONTRACT_STRKEY));
+    assert_eq!(muxed.id(), Some(123456));
+}
+
+#[test]
+fn test_to_strkey_muxed_contract() {
+    let env = Env::default();
+    let muxed = MuxedAddress::from_str(&env, MUXED_CONTRACT_STRKEY);
+    assert_eq!(
+        muxed.to_strkey(),
+        String::from_str(&env, MUXED_CONTRACT_STRKEY)
+    );
+}
+
+#[test]
+fn test_from_str_muxed_contract_debug_roundtrip() {
+    let env = Env::default();
+    let muxed = MuxedAddress::from_str(&env, MUXED_CONTRACT_STRKEY);
+    assert_eq!(
+        format!("{:?}", muxed),
+        format!("MuxedContract({MUXED_CONTRACT_STRKEY})")
+    );
+}
+
+#[test]
+#[should_panic]
+fn test_address_from_str_muxed_contract_panics() {
+    let env = Env::default();
+    Address::from_str(&env, MUXED_CONTRACT_STRKEY);
+}
+
+#[test]
+fn test_muxed_contract_component_getters() {
+    let env = Env::default();
+    let contract = Address::generate(&env);
+
+    let muxed = MuxedAddress::new(&contract, 7);
+    assert_eq!(muxed.address(), contract);
+    assert_eq!(muxed.id(), Some(7));
+
+    let muxed_with_another_id = MuxedAddress::new(muxed.clone(), u64::MAX);
+    assert_eq!(muxed_with_another_id.address(), contract);
+    assert_eq!(muxed_with_another_id.id(), Some(u64::MAX));
+    assert_ne!(muxed, muxed_with_another_id);
+
+    let sc_val = ScVal::from(&muxed);
+    assert!(matches!(
+        sc_val,
+        ScVal::Address(ScAddress::MuxedContract(_))
+    ));
+    assert_eq!(MuxedAddress::try_from_val(&env, &sc_val), Ok(muxed));
+}
+
+#[test]
+fn test_accept_muxed_contract_argument_in_contract() {
+    let env = Env::default();
+    let client = MuxedAddressContractClient::new(&env, &env.register(MuxedAddressContract, ()));
+
+    let muxed_contract = MuxedAddress::new(Address::generate(&env), 1);
+    let muxed_account = MuxedAddress::new(MuxedAddress::generate(&env), 2);
+    assert_eq!(
+        client.get_muxed_ids(&muxed_contract, &muxed_account),
+        (Some(1), Some(2))
+    );
+
+    let udt = Udt {
+        address: muxed_contract,
+        amount: 42,
+    };
+    assert_eq!(client.echo_udt(&udt), udt.clone());
+}

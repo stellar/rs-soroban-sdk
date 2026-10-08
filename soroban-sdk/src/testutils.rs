@@ -299,7 +299,7 @@ pub use crate::env::internal::LedgerInfo;
 /// Returns a default `LedgerInfo` suitable for testing.
 pub(crate) fn default_ledger_info() -> LedgerInfo {
     LedgerInfo {
-        protocol_version: 29,
+        protocol_version: 30,
         sequence_number: 0,
         timestamp: 0,
         network_id: [0; 32],
@@ -603,15 +603,16 @@ pub trait Address {
 pub trait MuxedAddress {
     /// Create a new MuxedAddress with arbitrary `Address` and id parts.
     ///
-    /// Note, that since currently only accounts can be multiplexed, the
-    /// underlying `Address` will be an account (not contract) address.
+    /// The underlying `Address` will be an account address. To create a
+    /// multiplexed contract address, pass a contract `Address` to
+    /// `MuxedAddress::new`.
     fn generate(env: &Env) -> crate::MuxedAddress;
 
     /// Returns a new `MuxedAddress` that has the same `Address` part as the
     /// provided `address` and the provided multiplexing id.
     ///
-    /// `address` can be either an `Address` or `MuxedAddress` and it has to
-    /// be an account (non-contract) address.
+    /// `address` can be either an `Address` or `MuxedAddress`, and either an
+    /// account or a contract address.
     ///
     /// Note on usage: the simplest way to test `MuxedAddress` is to generate
     /// an arbitrary valid address with `MuxedAddress::generate`, then

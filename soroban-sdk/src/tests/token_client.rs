@@ -169,3 +169,49 @@ fn test_mock_auth() {
 
     assert_eq!(client.allowance(&from, &spender), 20);
 }
+
+#[test]
+fn test_transfer_to_muxed_contract() {
+    use crate::{
+        env::xdr::{ContractEventBody, ScMap, ScMapEntry, ScSymbol, ScVal},
+        testutils::{Events, MuxedAddress as _},
+        token::StellarAssetClient,
+        MuxedAddress,
+    };
+
+    let env = Env::default();
+    env.mock_all_auths();
+
+    let admin = Address::generate(&env);
+    let sac = env.register_stellar_asset_contract_v2(admin);
+    let token = TokenClient::new(&env, &sac.address());
+    let from = Address::generate(&env);
+    StellarAssetClient::new(&env, &sac.address()).mint(&from, &100);
+
+    let to_contract = env.register(TestContract, ());
+    let to = MuxedAddress::new(&to_contract, 123456);
+    token.transfer(&from, &to, &40);
+
+    let events = env.events().all().filter_by_contract(&sac.address());
+    let ContractEventBody::V0(body) = &events.events().last().unwrap().body;
+    assert_eq!(
+        body.data,
+        ScVal::Map(Some(ScMap(
+            [
+                ScMapEntry {
+                    key: ScVal::Symbol(ScSymbol("amount".try_into().unwrap())),
+                    val: 40i128.into(),
+                },
+                ScMapEntry {
+                    key: ScVal::Symbol(ScSymbol("to_muxed_id".try_into().unwrap())),
+                    val: 123456u64.into(),
+                },
+            ]
+            .try_into()
+            .unwrap()
+        )))
+    );
+
+    assert_eq!(token.balance(&from), 60);
+    assert_eq!(token.balance(&to_contract), 40);
+}
