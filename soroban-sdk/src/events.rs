@@ -58,26 +58,16 @@ impl Debug for Events {
 #[cfg(any(test, feature = "testutils"))]
 use crate::{testutils, xdr, FromVal};
 
-pub trait Event {
+/// Event is implemented by [`contractevent`][crate::contractevent].
+///
+/// Events also implement [`SpecShakingMarker`][crate::SpecShakingMarker], which
+/// [`Events::publish_event`] calls so that every way of publishing an event keeps
+/// the event's spec in the WASM binary. Types implementing Event that are not
+/// tied to a contract spec event can implement it with an empty impl block to
+/// use its no-op default.
+pub trait Event: crate::SpecShakingMarker {
     fn topics(&self, env: &Env) -> Vec<Val>;
     fn data(&self, env: &Env) -> Val;
-
-    /// This is an internal function that should not be implemented or called
-    /// without a deep knowledge about how the contract type, event, and spec
-    /// shaking functionality is integrated into the contract build pipeline.
-    /// Include this event's spec in the WASM binary. Called by
-    /// [`Events::publish_event`] so that every way of publishing an event keeps its
-    /// spec. Implemented by [`contractevent`][crate::contractevent]. For types
-    /// implementing Event that do not need to be included in the spec, such as
-    /// custom representations of an event that aren't tied to a contract spec
-    /// event/type structure, this method's default implementation is sufficient and
-    /// can be ignored.
-    #[doc(hidden)]
-    #[deprecated(
-        note = "Event::spec_shaking_marker is an internal function and is not safe to use or implement"
-    )]
-    #[inline(always)]
-    fn spec_shaking_marker(&self) {}
 
     fn publish(&self, env: &Env) {
         env.events().publish_event(self);
@@ -116,10 +106,9 @@ impl Events {
 
     /// Publish an event defined using the [`contractevent`][crate::contractevent] macro.
     #[inline(always)]
-    pub fn publish_event(&self, e: &(impl Event + ?Sized)) {
+    pub fn publish_event<E: Event + ?Sized>(&self, e: &E) {
         let env = self.env();
-        #[allow(deprecated)]
-        e.spec_shaking_marker();
+        E::spec_shaking_marker();
         internal::Env::contract_event(env, e.topics(env).to_object(), e.data(env))
             .unwrap_infallible();
     }
