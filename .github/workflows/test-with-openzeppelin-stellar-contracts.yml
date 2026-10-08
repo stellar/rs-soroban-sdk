@@ -28,7 +28,11 @@ jobs:
     - name: Find workspace member Cargo.toml files.
       id: dirs
       run: |
-        dirs=$(cargo metadata --no-deps --format-version 1 | jq -r --arg pwd "$(pwd)" '.workspace_members[] as $id | .packages[] | select(.id == $id) | .manifest_path | sub("^\($pwd)/"; "") | sub("/Cargo.toml$"; "")' | jq -Rnc '[inputs | "\(.)"]')
+        # Members that are not tested against the local soroban-sdk:
+        # - examples/upgradeable/v1 is pinned to an old soroban-sdk release on
+        #   purpose, standing for a contract deployed before an upgrade.
+        exclude='["examples/upgradeable/v1"]'
+        dirs=$(cargo metadata --no-deps --format-version 1 | jq -r --arg pwd "$(pwd)" --argjson exclude "$exclude" '.workspace_members[] as $id | .packages[] | select(.id == $id) | .manifest_path | sub("^\($pwd)/"; "") | sub("/Cargo.toml$"; "") | select(IN($exclude[]) | not)' | jq -Rnc '[inputs | "\(.)"]')
         echo "dirs=$dirs" | tee -a $GITHUB_OUTPUT
     outputs:
       dirs: ${{ steps.dirs.outputs.dirs }}
@@ -90,10 +94,17 @@ jobs:
         # ^26). Relabel the local crates with the version the destination already
         # resolves so the patch satisfies the requirement, collapsing every
         # soroban-sdk edge onto the local checkout's code regardless of the bump.
+        # The destination can resolve more than one soroban-sdk version (a member
+        # pinned to an old release on purpose), so use the version most workspace
+        # members depend on directly.
         dest_version=$(
           cargo metadata --manifest-path stellar-contracts/Cargo.toml --format-version 1 \
-            | jq -r '.packages[] | select(.name == "soroban-sdk") | .version' \
-            | head -n1
+            | jq -r '
+                .workspace_members as $ws
+                | [.resolve.nodes[] | select(.id | IN($ws[])) | .deps[] | select(.name == "soroban_sdk") | .pkg] as $ids
+                | [.packages[] | select(.id | IN($ids[])) | {id, version}] as $pkgs
+                | [$ids[] as $id | $pkgs[] | select(.id == $id) | .version]
+                | group_by(.) | max_by(length) | .[0] // empty'
         )
         local_version=$(
           cargo metadata --manifest-path rs-soroban-sdk/Cargo.toml --format-version 1 --no-deps \
@@ -196,12 +207,19 @@ jobs:
           done < "$RUNNER_TEMP/sdk-crates.tsv"
           # Build the -p specs from crates the committed lock already references.
           # All crates share one workspace version, so a single --precise re-resolves
-          # everything in one pass (no stale intermediate locks).
+          # everything in one pass (no stale intermediate locks). The lock can hold
+          # more than one version of a crate (a member pinned to an old release on
+          # purpose), so qualify each spec with the locked version in the same
+          # major as the local checkout, the one the rest of the workspace uses.
           specs=()
           precise=
           while IFS=$'\t' read -r crate dir version; do
-            if grep -q "^name = \"$crate\"\$" Cargo.lock; then
-              specs+=( -p "$crate" )
+            locked=$(
+              awk -v name="name = \"$crate\"" '$0 == name { getline; gsub(/^version = "|"$/, ""); print }' Cargo.lock \
+                | grep "^${version%%.*}\." | head -n1
+            ) || true
+            if [ -n "$locked" ]; then
+              specs+=( -p "$crate@$locked" )
               precise=$version
             fi
           done < "$RUNNER_TEMP/sdk-crates.tsv"
