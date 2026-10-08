@@ -390,18 +390,33 @@ impl crate::testutils::MuxedAddress for MuxedAddress {
     }
 
     fn new<T: Into<MuxedAddress>>(address: T, id: u64) -> crate::MuxedAddress {
-        use crate::env::internal::xdr::{AccountId, MuxedContract, MuxedEd25519Account, PublicKey};
         let address: MuxedAddress = address.into();
         let sc_val = ScVal::try_from_val(&address.env, address.as_val()).unwrap();
         let muxed_sc_address = match sc_val {
             ScVal::Address(address) => match address {
-                ScAddress::MuxedAccount(MuxedEd25519Account { ed25519, .. })
-                | ScAddress::Account(AccountId(PublicKey::PublicKeyTypeEd25519(ed25519))) => {
-                    ScAddress::MuxedAccount(MuxedEd25519Account { id, ed25519 })
+                ScAddress::MuxedAccount(muxed_account) => {
+                    ScAddress::MuxedAccount(crate::env::internal::xdr::MuxedEd25519Account {
+                        id,
+                        ed25519: muxed_account.ed25519,
+                    })
                 }
-                ScAddress::MuxedContract(MuxedContract { contract_id, .. })
-                | ScAddress::Contract(contract_id) => {
-                    ScAddress::MuxedContract(MuxedContract { id, contract_id })
+                ScAddress::Account(crate::env::internal::xdr::AccountId(
+                    crate::env::internal::xdr::PublicKey::PublicKeyTypeEd25519(ed25519),
+                )) => ScAddress::MuxedAccount(crate::env::internal::xdr::MuxedEd25519Account {
+                    id,
+                    ed25519,
+                }),
+                ScAddress::MuxedContract(muxed_contract) => {
+                    ScAddress::MuxedContract(crate::env::internal::xdr::MuxedContract {
+                        id,
+                        contract_id: muxed_contract.contract_id,
+                    })
+                }
+                ScAddress::Contract(contract_id) => {
+                    ScAddress::MuxedContract(crate::env::internal::xdr::MuxedContract {
+                        id,
+                        contract_id,
+                    })
                 }
                 ScAddress::ClaimableBalance(_) | ScAddress::LiquidityPool(_) => unreachable!(),
             },
