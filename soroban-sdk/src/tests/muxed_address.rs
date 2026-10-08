@@ -440,60 +440,62 @@ fn test_from_str_muxed_strkey_too_long() {
 
 // Muxed contract address tests
 
-const CONTRACT_STRKEY: &str = "CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE";
-const MUXED_CONTRACT_STRKEY: &str =
-    "WA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAAAAAAAAAPCIA6IG";
-
 #[test]
 fn test_from_str_muxed_contract() {
     let env = Env::default();
-    let muxed = MuxedAddress::from_str(&env, MUXED_CONTRACT_STRKEY);
-    assert_eq!(muxed.address(), Address::from_str(&env, CONTRACT_STRKEY));
+    let muxed_strkey = "WA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAAAAAAAAAPCIA6IG";
+    let base_strkey = "CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE";
+    let muxed = MuxedAddress::from_str(&env, muxed_strkey);
+    assert_eq!(muxed.address(), Address::from_str(&env, base_strkey));
     assert_eq!(muxed.id(), Some(123456));
 }
 
 #[test]
 fn test_from_string_muxed_contract() {
     let env = Env::default();
-    let muxed = MuxedAddress::from_string(&String::from_str(&env, MUXED_CONTRACT_STRKEY));
-    assert_eq!(muxed.address(), Address::from_str(&env, CONTRACT_STRKEY));
+    let muxed_strkey = String::from_str(
+        &env,
+        "WA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAAAAAAAAAPCIA6IG",
+    );
+    let base_strkey = "CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE";
+    let muxed = MuxedAddress::from_string(&muxed_strkey);
+    assert_eq!(muxed.address(), Address::from_str(&env, base_strkey));
     assert_eq!(muxed.id(), Some(123456));
 }
 
 #[test]
 fn test_from_string_bytes_muxed_contract() {
     let env = Env::default();
-    let strkey_bytes = Bytes::from_slice(&env, MUXED_CONTRACT_STRKEY.as_bytes());
+    let muxed_strkey = "WA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAAAAAAAAAPCIA6IG";
+    let base_strkey = "CA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAXE";
+    let strkey_bytes = Bytes::from_slice(&env, muxed_strkey.as_bytes());
     let muxed = MuxedAddress::from_string_bytes(&strkey_bytes);
-    assert_eq!(muxed.address(), Address::from_str(&env, CONTRACT_STRKEY));
+    assert_eq!(muxed.address(), Address::from_str(&env, base_strkey));
     assert_eq!(muxed.id(), Some(123456));
 }
 
 #[test]
 fn test_to_strkey_muxed_contract() {
     let env = Env::default();
-    let muxed = MuxedAddress::from_str(&env, MUXED_CONTRACT_STRKEY);
-    assert_eq!(
-        muxed.to_strkey(),
-        String::from_str(&env, MUXED_CONTRACT_STRKEY)
-    );
+    let strkey = "WA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAAAAAAAAAPCIA6IG";
+    let muxed = MuxedAddress::from_str(&env, strkey);
+    assert_eq!(muxed.to_strkey(), String::from_str(&env, strkey));
 }
 
 #[test]
 fn test_from_str_muxed_contract_debug_roundtrip() {
     let env = Env::default();
-    let muxed = MuxedAddress::from_str(&env, MUXED_CONTRACT_STRKEY);
-    assert_eq!(
-        format!("{:?}", muxed),
-        format!("MuxedContract({MUXED_CONTRACT_STRKEY})")
-    );
+    let strkey = "WA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAAAAAAAAAPCIA6IG";
+    let muxed = MuxedAddress::from_str(&env, strkey);
+    assert_eq!(format!("{:?}", muxed), format!("MuxedContract({strkey})"));
 }
 
 #[test]
 #[should_panic]
 fn test_address_from_str_muxed_contract_panics() {
     let env = Env::default();
-    Address::from_str(&env, MUXED_CONTRACT_STRKEY);
+    let strkey = "WA3D5KRYM6CB7OWQ6TWYRR3Z4T7GNZLKERYNZGGA5SOAOPIFY6YQGAAAAAAAAAPCIA6IG";
+    Address::from_str(&env, strkey);
 }
 
 #[test]
