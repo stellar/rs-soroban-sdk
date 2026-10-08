@@ -1,0 +1,17 @@
+error: contract type must be a unit struct without generics, e.g. `pub struct Contract;`
+ --> tests/compile_fails/contract_non_unit_struct_errors.rs:4:1
+  |
+4 | pub struct ContractWithFields {
+  | ^^^
+
+error: contract type must be a unit struct without generics, e.g. `pub struct Contract;`
+ --> tests/compile_fails/contract_non_unit_struct_errors.rs:9:1
+  |
+9 | pub struct ContractTuple(u32);
+  | ^^^
+
+error: contract type must be a unit struct without generics, e.g. `pub struct Contract;`
+  --> tests/compile_fails/contract_non_unit_struct_errors.rs:12:1
+   |
+12 | pub struct ContractWithGenerics<T>(T);
+   | ^^^
