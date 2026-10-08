@@ -159,18 +159,27 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
 
     // The SDK never constructs the contract type, so fields and generics on it
     // are unusable. Only `struct Contract;` and `struct Contract {}` are accepted.
+    let mut errors = Vec::<Error>::new();
     let fields_ok = match &item.fields {
         Fields::Unit => true,
         Fields::Named(named) => named.named.is_empty(),
         Fields::Unnamed(_) => false,
     };
-    if !fields_ok || !item.generics.params.is_empty() {
-        return Error::new(
-            item.span(),
-            "contract type must be a struct without fields or generics, e.g. `pub struct Contract;` or `pub struct Contract {}`",
-        )
-        .into_compile_error()
-        .into();
+    if !fields_ok {
+        errors.push(Error::new_spanned(
+            &item.fields,
+            "contract type must not have fields, e.g. `pub struct Contract;` or `pub struct Contract {}`",
+        ));
+    }
+    if !item.generics.params.is_empty() {
+        errors.push(Error::new_spanned(
+            &item.generics,
+            "contract type must not have generics",
+        ));
+    }
+    if !errors.is_empty() {
+        let compile_errors = errors.iter().map(Error::to_compile_error);
+        return quote! { #(#compile_errors)* }.into();
     }
 
     let ty = &item.ident;

@@ -1,23 +1,32 @@
-error: contract type must be a struct without fields or generics, e.g. `pub struct Contract;` or `pub struct Contract {}`
- --> tests/compile_fails/contract_non_unit_struct_errors.rs:4:1
+error: contract type must not have fields, e.g. `pub struct Contract;` or `pub struct Contract {}`
+ --> tests/compile_fails/contract_non_unit_struct_errors.rs:4:31
   |
-4 | pub struct ContractWithFields {
-  | ^^^
+4 |   pub struct ContractWithFields {
+  |  _______________________________^
+5 | |     a: u32,
+6 | | }
+  | |_^
 
-error: contract type must be a struct without fields or generics, e.g. `pub struct Contract;` or `pub struct Contract {}`
- --> tests/compile_fails/contract_non_unit_struct_errors.rs:9:1
+error: contract type must not have fields, e.g. `pub struct Contract;` or `pub struct Contract {}`
+ --> tests/compile_fails/contract_non_unit_struct_errors.rs:9:25
   |
 9 | pub struct ContractTuple(u32);
-  | ^^^
+  |                         ^^^^^
 
-error: contract type must be a struct without fields or generics, e.g. `pub struct Contract;` or `pub struct Contract {}`
-  --> tests/compile_fails/contract_non_unit_struct_errors.rs:12:1
+error: contract type must not have fields, e.g. `pub struct Contract;` or `pub struct Contract {}`
+  --> tests/compile_fails/contract_non_unit_struct_errors.rs:12:30
    |
 12 | pub struct ContractEmptyTuple();
-   | ^^^
+   |                              ^^
 
-error: contract type must be a struct without fields or generics, e.g. `pub struct Contract;` or `pub struct Contract {}`
-  --> tests/compile_fails/contract_non_unit_struct_errors.rs:15:1
+error: contract type must not have generics
+  --> tests/compile_fails/contract_non_unit_struct_errors.rs:15:32
    |
-15 | pub struct ContractWithGenerics<T>(T);
-   | ^^^
+15 | pub struct ContractWithGenerics<T> {}
+   |                                ^^^
+
+error: contract type must not have generics
+  --> tests/compile_fails/contract_non_unit_struct_errors.rs:18:32
+   |
+18 | pub struct ContractWithLifetime<'a> {}
+   |                                ^^^^

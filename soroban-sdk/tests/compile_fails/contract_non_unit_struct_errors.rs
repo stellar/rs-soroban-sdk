@@ -12,6 +12,9 @@ pub struct ContractTuple(u32);
 pub struct ContractEmptyTuple();
 
 #[contract]
-pub struct ContractWithGenerics<T>(T);
+pub struct ContractWithGenerics<T> {}
+
+#[contract]
+pub struct ContractWithLifetime<'a> {}
 
 fn main() {}
