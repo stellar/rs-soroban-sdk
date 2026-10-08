@@ -28,11 +28,7 @@ jobs:
     - name: Find workspace member Cargo.toml files.
       id: dirs
       run: |
-        # Members that are not tested against the local soroban-sdk:
-        # - examples/upgradeable/v1 is pinned to an old soroban-sdk release on
-        #   purpose, standing for a contract deployed before an upgrade.
-        exclude='["examples/upgradeable/v1"]'
-        dirs=$(cargo metadata --no-deps --format-version 1 | jq -r --arg pwd "$(pwd)" --argjson exclude "$exclude" '.workspace_members[] as $id | .packages[] | select(.id == $id) | .manifest_path | sub("^\($pwd)/"; "") | sub("/Cargo.toml$"; "") | select(IN($exclude[]) | not)' | jq -Rnc '[inputs | "\(.)"]')
+        dirs=$(cargo metadata --no-deps --format-version 1 | jq -r --arg pwd "$(pwd)" '.workspace_members[] as $id | .packages[] | select(.id == $id) | .manifest_path | sub("^\($pwd)/"; "") | sub("/Cargo.toml$"; "")' | jq -Rnc '[inputs | "\(.)"]')
         echo "dirs=$dirs" | tee -a $GITHUB_OUTPUT
     outputs:
       dirs: ${{ steps.dirs.outputs.dirs }}
@@ -81,157 +77,71 @@ jobs:
         is_a_contract=$(cargo metadata --no-deps --format-version 1 | jq -r --arg pwd "$(pwd)" '.packages[] | select(.manifest_path == "\($pwd)/Cargo.toml") | (any(.dependencies[]; .name == "soroban-sdk") and any(.targets[]; any(.crate_types[]; . == "cdylib")))')
         echo "is-a-contract=$is_a_contract" | tee -a $GITHUB_OUTPUT
 
-    - name: Align the local soroban-sdk version with the destination
-      working-directory: ${{ github.workspace }}
-      run: |
-        # The destination workspace pins soroban-sdk (and the other published
-        # rs-soroban-sdk crates) to a released version, and pulls crates such as
-        # soroban-poseidon from crates.io that depend on that same major. When the
-        # local checkout has bumped to a newer major (for example a 27.0.0-rc
-        # release), the [patch.crates-io] + `cargo update --precise` step below can't
-        # redirect those transitive soroban-sdk edges, because Cargo only applies a
-        # patch when the local version satisfies the requirement (soroban-poseidon's
-        # ^26). Relabel the local crates with the version the destination already
-        # resolves so the patch satisfies the requirement, collapsing every
-        # soroban-sdk edge onto the local checkout's code regardless of the bump.
-        # The destination can resolve more than one soroban-sdk version (a member
-        # pinned to an old release on purpose), so use the version most workspace
-        # members depend on directly.
-        dest_version=$(
-          cargo metadata --manifest-path stellar-contracts/Cargo.toml --format-version 1 \
-            | jq -r '
-                .workspace_members as $ws
-                | [.resolve.nodes[] | select(.id | IN($ws[])) | .deps[] | select(.name == "soroban_sdk") | .pkg] as $ids
-                | [.packages[] | select(.id | IN($ids[])) | {id, version}] as $pkgs
-                | [$ids[] as $id | $pkgs[] | select(.id == $id) | .version]
-                | group_by(.) | max_by(length) | .[0] // empty'
-        )
-        local_version=$(
-          cargo metadata --manifest-path rs-soroban-sdk/Cargo.toml --format-version 1 --no-deps \
-            | jq -r '.packages[] | select(.name == "soroban-sdk") | .version'
-        )
-        echo "destination soroban-sdk version: ${dest_version:?could not determine destination soroban-sdk version}"
-        echo "local soroban-sdk version: $local_version"
-        if [ "$dest_version" != "$local_version" ]; then
-          escaped=$(printf '%s' "$local_version" | sed 's/[.]/\\./g')
-          sed -i "s|\"$escaped\"|\"$dest_version\"|g" rs-soroban-sdk/Cargo.toml
-          echo "Relabelled local rs-soroban-sdk crates from $local_version to $dest_version"
-        fi
-
     - name: Set the stellar-cli major version the local soroban-sdk requires
       working-directory: ${{ github.workspace }}
       run: echo "STELLAR_CLI_VERSION=$(make --no-print-directory -C rs-soroban-sdk version-major).0.0" >> $GITHUB_ENV
 
-    - name: Collect publishable rs-soroban-sdk crates
+    - name: Make a copy of the local checkout for each destination soroban-sdk version
+      working-directory: ${{ github.workspace }}
+      run: |
+        # The destination can resolve more than one soroban-sdk version: the version
+        # its workspace uses, and older ones pulled in by members pinned to an old
+        # release on purpose (along with crates.io crates built for that release).
+        # Cargo only applies a [patch] when the patched version satisfies the
+        # requirement, so for each soroban-sdk version in the destination's lock make
+        # a copy of the local checkout relabelled with that version. Patching each
+        # version onto its copy moves every soroban-sdk edge onto the local checkout's
+        # code, whatever version it asked for.
+        local_version=$(
+          cargo metadata --manifest-path rs-soroban-sdk/Cargo.toml --format-version 1 --no-deps \
+            | jq -r '.packages[] | select(.name == "soroban-sdk") | .version'
+        )
+        escaped=$(printf '%s' "$local_version" | sed 's/[.]/\\./g')
+        cargo metadata --manifest-path stellar-contracts/Cargo.toml --format-version 1 --locked \
+          | jq -r '.packages[] | select(.name == "soroban-sdk") | .version' \
+          | sort -u > "$RUNNER_TEMP/sdk-versions"
+        while read -r version; do
+          cp -r rs-soroban-sdk "rs-soroban-sdk-$version"
+          sed -i "s|\"$escaped\"|\"$version\"|g" "rs-soroban-sdk-$version/Cargo.toml"
+          # soroban-sdk no longer has this feature, but stellar-contracts v0.7.x
+          # manifests and the crates published from them enable it, and cargo refuses
+          # to resolve a dependency on a feature that does not exist. Define it as a
+          # no-op.
+          grep -q '^experimental_spec_shaking_v2 =' "rs-soroban-sdk-$version/soroban-sdk/Cargo.toml" \
+            || sed -i '/^\[features\]$/a experimental_spec_shaking_v2 = []' "rs-soroban-sdk-$version/soroban-sdk/Cargo.toml"
+          echo "Copied local rs-soroban-sdk crates relabelled from $local_version to $version"
+        done < "$RUNNER_TEMP/sdk-versions"
+
+    - name: Patch soroban-sdk crates to the local copies
       working-directory: stellar-contracts
       run: |
-        # Collect the publishable rs-soroban-sdk crates, their directories, and their
-        # versions once, from the authoritative cargo metadata, deriving the path from
-        # manifest_path rather than assuming the package name matches the directory
-        # name. Alongside each, record the version the destination's committed lock
-        # resolves for it in the same major (empty if not referenced), read before
-        # the steps below rewrite the destination's manifests. The lock can hold
-        # more than one version of a crate (a member pinned to an old release on
-        # purpose), and this is the one the rest of the workspace uses. The list
-        # (name<TAB>dir<TAB>version<TAB>locked) is reused by the patching steps
-        # below.
-        locked=$(cargo metadata --format-version 1 --locked | jq -c '[.packages[] | {name, version}]')
-        (cd ../rs-soroban-sdk && cargo metadata --format-version 1 --no-deps) \
-          | jq -r --argjson locked "$locked" '
-              def major: split(".")[0];
-              .packages[] | select(.publish != [])
-              | .name as $name | (.version | major) as $major
-              | ([$locked[] | select(.name == $name and (.version | major) == $major) | .version][0] // "") as $locked_version
-              | "\($name)\t\(.manifest_path | sub("/Cargo.toml$"; ""))\t\(.version)\t\($locked_version)"' \
-          > "$RUNNER_TEMP/sdk-crates.tsv"
-
-    - name: Patch workspace dependencies
-      working-directory: stellar-contracts
-      run: |
-        while IFS=$'\t' read -r crate dir _; do
-          rel_path=$(realpath --relative-to="." "$dir")
-          sed -i 's|'"$crate"' = "\([^"]*\)"|'"$crate"' = { path = "'"$rel_path"'" }|g' Cargo.toml
-          sed -i 's|'"$crate"' = { \(.*\)version = "[^"]*"\(.*\)|'"$crate"' = { \1path = "'"$rel_path"'" \2|g' Cargo.toml
-        done < "$RUNNER_TEMP/sdk-crates.tsv"
-
-    - name: Remove the experimental_spec_shaking_v2 feature
-      working-directory: stellar-contracts
-      run: |
-        # soroban-sdk no longer has this feature, but stellar-contracts v0.7.x manifests
-        # enable it, and cargo refuses to resolve a dependency on a feature that does not
-        # exist, so every job would fail before building anything. Strip each reference:
-        # array elements that enable the feature (bare, or as `<crate>/<feature>`) and any
-        # single-line definition of it in a [features] table.
-        python3 - <<'PY'
-        import pathlib, re
-
-        FEATURE = "experimental_spec_shaking_v2"
-        # An array element enabling the feature, plus a trailing comma and any whitespace.
-        element = re.compile(r'"[A-Za-z0-9_-]*/?' + FEATURE + r'"\s*,?\s*')
-        # A single-line definition of the feature in a [features] table.
-        definition = re.compile(r'^[ \t]*' + FEATURE + r'[ \t]*=[ \t]*\[[^\]]*\][ \t]*\r?\n', re.M)
-
-        for manifest in sorted(pathlib.Path(".").rglob("Cargo.toml")):
-            before = manifest.read_text()
-            after = element.sub("", definition.sub("", before))
-            # Tidy a dangling comma left when the feature was the last array element.
-            after = re.sub(r",(\s*\])", r"\1", after)
-            if after != before:
-                manifest.write_text(after)
-                print(f"patched {manifest}")
-        PY
-        # Fail here rather than leaving cargo to fail later with a resolution error that
-        # does not say which manifest is at fault. Matches only outside comments, so a
-        # comment that mentions the feature does not fail the job.
-        if grep -rn --include=Cargo.toml -E '^[^#]*experimental_spec_shaking_v2' .; then
-          echo "::error::experimental_spec_shaking_v2 is still referenced above"
+        # Point each publishable rs-soroban-sdk crate, at each destination soroban-sdk
+        # version, at the matching local copy with a [patch.crates-io] entry. Every
+        # edge, direct or transitive (such as soroban-poseidon's), resolves through
+        # the patch, so only local code gets linked and there is no duplicate
+        # `panic_impl` lang item (E0152, #1723). Each copy carries exactly the version
+        # the lock resolves, so the lock moves onto it without `cargo update`.
+        crates=$(
+          (cd ../rs-soroban-sdk && cargo metadata --format-version 1 --no-deps) \
+            | jq -r --arg root "$(realpath ../rs-soroban-sdk)" \
+                '.packages[] | select(.publish != []) | "\(.name)\t\(.manifest_path | sub("^\($root)/"; "") | sub("/Cargo.toml$"; ""))"'
+        )
+        # Don't emit a second [patch.crates-io] header if one already exists upstream.
+        grep -q '^\[patch\.crates-io\]' Cargo.toml || printf '\n[patch.crates-io]\n' >> Cargo.toml
+        while read -r version; do
+          while IFS=$'\t' read -r crate dir; do
+            echo "$crate-${version//./_} = { package = \"$crate\", path = \"../rs-soroban-sdk-$version/$dir\" }" >> Cargo.toml
+          done <<< "$crates"
+        done < "$RUNNER_TEMP/sdk-versions"
+        # Fail here if any soroban-sdk still comes from crates.io, rather than later
+        # with a duplicate lang item that doesn't say why.
+        registry=$(
+          cargo metadata --format-version 1 \
+            | jq -r '.packages[] | select(.name == "soroban-sdk" and .source != null) | .version'
+        )
+        if [ -n "$registry" ]; then
+          echo "::error::soroban-sdk $registry still resolves from crates.io"
           exit 1
-        fi
-
-    - name: Patch transitive crates.io dependencies
-      working-directory: stellar-contracts
-      run: |
-        # Crates such as soroban-poseidon are pulled from crates.io and depend on
-        # soroban-sdk from crates.io. The [workspace.dependencies] path rewrite above
-        # only redirects directly named dependency edges, so those transitive copies
-        # stay on crates.io and two soroban-sdk crates get linked -> duplicate
-        # `panic_impl` lang item (E0152, #1723). Collapse them in two moves, both over
-        # the crate list collected in "Patch workspace dependencies":
-        #   1. Add a [patch.crates-io] table pointing each crate at the local checkout.
-        #      A [patch] entry adds the path crate's version to crates.io resolution,
-        #      but on its own it leaves a transitive edge the lock pinned to a
-        #      different registry version untouched.
-        #   2. Pin each patched crate that the lock already references to the local
-        #      checkout's version with `cargo update --precise`, so the transitive
-        #      edges move onto it. Pinning (rather than letting cargo pick the highest
-        #      compatible version) stops a newer *published* SDK from being chosen for a
-        #      transitive edge and re-splitting the graph. (When the local checkout is
-        #      an incompatible major, the "Align the local soroban-sdk version with the
-        #      destination" step above first relabels it to the destination's version,
-        #      so these requirements stay satisfiable; see #1723.)
-        if [ -s "$RUNNER_TEMP/sdk-crates.tsv" ]; then
-          # Don't emit a second [patch.crates-io] header if one already exists upstream.
-          grep -q '^\[patch\.crates-io\]' Cargo.toml || printf '\n[patch.crates-io]\n' >> Cargo.toml
-          while IFS=$'\t' read -r crate dir _; do
-            rel_path=$(realpath --relative-to="." "$dir")
-            echo "$crate = { path = \"$rel_path\" }" >> Cargo.toml
-          done < "$RUNNER_TEMP/sdk-crates.tsv"
-          # Build the -p specs from crates the committed lock already references.
-          # All crates share one workspace version, so a single --precise re-resolves
-          # everything in one pass (no stale intermediate locks). Each spec is
-          # qualified with the locked version collected above, since the lock can
-          # hold more than one version of a crate.
-          specs=()
-          precise=
-          while IFS=$'\t' read -r crate dir version locked; do
-            if [ -n "$locked" ]; then
-              specs+=( -p "$crate@$locked" )
-              precise=$version
-            fi
-          done < "$RUNNER_TEMP/sdk-crates.tsv"
-          if [ "${#specs[@]}" -gt 0 ]; then
-            cargo update "${specs[@]}" --precise "$precise"
-          fi
         fi
 
     - name: Diff
