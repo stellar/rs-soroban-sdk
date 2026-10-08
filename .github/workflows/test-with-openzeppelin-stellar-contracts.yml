@@ -126,11 +126,19 @@ jobs:
             | jq -r --arg root "$(realpath ../rs-soroban-sdk)" \
                 '.packages[] | select(.publish != []) | "\(.name)\t\(.manifest_path | sub("^\($root)/"; "") | sub("/Cargo.toml$"; ""))"'
         )
+        # Only patch a crate at a version when the lock references that crate in the
+        # same major, as cargo warns about every patch left unused in the graph.
+        locked=$(
+          cargo metadata --format-version 1 --locked \
+            | jq -r '.packages[] | "\(.name)@\(.version | split(".")[0])"' | sort -u
+        )
         # Don't emit a second [patch.crates-io] header if one already exists upstream.
         grep -q '^\[patch\.crates-io\]' Cargo.toml || printf '\n[patch.crates-io]\n' >> Cargo.toml
         while read -r version; do
           while IFS=$'\t' read -r crate dir; do
-            echo "$crate-${version//./_} = { package = \"$crate\", path = \"../rs-soroban-sdk-$version/$dir\" }" >> Cargo.toml
+            if grep -qxF "$crate@${version%%.*}" <<< "$locked"; then
+              echo "$crate-${version//./_} = { package = \"$crate\", path = \"../rs-soroban-sdk-$version/$dir\" }" >> Cargo.toml
+            fi
           done <<< "$crates"
         done < "$RUNNER_TEMP/sdk-versions"
         # Fail here if any soroban-sdk still comes from crates.io, rather than later
