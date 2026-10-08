@@ -158,11 +158,16 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
     let item = parse_macro_input!(input as ItemStruct);
 
     // The SDK never constructs the contract type, so fields and generics on it
-    // are unusable.
-    if !matches!(item.fields, Fields::Unit) || !item.generics.params.is_empty() {
+    // are unusable. Only `struct Contract;` and `struct Contract {}` are accepted.
+    let fields_ok = match &item.fields {
+        Fields::Unit => true,
+        Fields::Named(named) => named.named.is_empty(),
+        Fields::Unnamed(_) => false,
+    };
+    if !fields_ok || !item.generics.params.is_empty() {
         return Error::new(
             item.span(),
-            "contract type must be a unit struct without generics, e.g. `pub struct Contract;`",
+            "contract type must be a struct without fields or generics, e.g. `pub struct Contract;` or `pub struct Contract {}`",
         )
         .into_compile_error()
         .into();

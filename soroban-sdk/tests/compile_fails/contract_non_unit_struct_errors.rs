@@ -9,6 +9,9 @@ pub struct ContractWithFields {
 pub struct ContractTuple(u32);
 
 #[contract]
+pub struct ContractEmptyTuple();
+
+#[contract]
 pub struct ContractWithGenerics<T>(T);
 
 fn main() {}
