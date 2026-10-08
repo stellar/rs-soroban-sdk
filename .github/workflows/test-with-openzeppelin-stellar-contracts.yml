@@ -128,16 +128,27 @@ jobs:
         # Collect the publishable rs-soroban-sdk crates, their directories, and their
         # versions once, from the authoritative cargo metadata, deriving the path from
         # manifest_path rather than assuming the package name matches the directory
-        # name. The list (name<TAB>dir<TAB>version) is reused by the patching steps
+        # name. Alongside each, record the version the destination's committed lock
+        # resolves for it in the same major (empty if not referenced), read before
+        # the steps below rewrite the destination's manifests. The lock can hold
+        # more than one version of a crate (a member pinned to an old release on
+        # purpose), and this is the one the rest of the workspace uses. The list
+        # (name<TAB>dir<TAB>version<TAB>locked) is reused by the patching steps
         # below.
+        locked=$(cargo metadata --format-version 1 --locked | jq -c '[.packages[] | {name, version}]')
         (cd ../rs-soroban-sdk && cargo metadata --format-version 1 --no-deps) \
-          | jq -r '.packages[] | select(.publish != []) | "\(.name)\t\(.manifest_path | sub("/Cargo.toml$"; ""))\t\(.version)"' \
+          | jq -r --argjson locked "$locked" '
+              def major: split(".")[0];
+              .packages[] | select(.publish != [])
+              | .name as $name | (.version | major) as $major
+              | ([$locked[] | select(.name == $name and (.version | major) == $major) | .version][0] // "") as $locked_version
+              | "\($name)\t\(.manifest_path | sub("/Cargo.toml$"; ""))\t\(.version)\t\($locked_version)"' \
           > "$RUNNER_TEMP/sdk-crates.tsv"
 
     - name: Patch workspace dependencies
       working-directory: stellar-contracts
       run: |
-        while IFS=$'\t' read -r crate dir version; do
+        while IFS=$'\t' read -r crate dir _; do
           rel_path=$(realpath --relative-to="." "$dir")
           sed -i 's|'"$crate"' = "\([^"]*\)"|'"$crate"' = { path = "'"$rel_path"'" }|g' Cargo.toml
           sed -i 's|'"$crate"' = { \(.*\)version = "[^"]*"\(.*\)|'"$crate"' = { \1path = "'"$rel_path"'" \2|g' Cargo.toml
@@ -201,23 +212,18 @@ jobs:
         if [ -s "$RUNNER_TEMP/sdk-crates.tsv" ]; then
           # Don't emit a second [patch.crates-io] header if one already exists upstream.
           grep -q '^\[patch\.crates-io\]' Cargo.toml || printf '\n[patch.crates-io]\n' >> Cargo.toml
-          while IFS=$'\t' read -r crate dir version; do
+          while IFS=$'\t' read -r crate dir _; do
             rel_path=$(realpath --relative-to="." "$dir")
             echo "$crate = { path = \"$rel_path\" }" >> Cargo.toml
           done < "$RUNNER_TEMP/sdk-crates.tsv"
           # Build the -p specs from crates the committed lock already references.
           # All crates share one workspace version, so a single --precise re-resolves
-          # everything in one pass (no stale intermediate locks). The lock can hold
-          # more than one version of a crate (a member pinned to an old release on
-          # purpose), so qualify each spec with the locked version in the same
-          # major as the local checkout, the one the rest of the workspace uses.
+          # everything in one pass (no stale intermediate locks). Each spec is
+          # qualified with the locked version collected above, since the lock can
+          # hold more than one version of a crate.
           specs=()
           precise=
-          while IFS=$'\t' read -r crate dir version; do
-            locked=$(
-              awk -v name="name = \"$crate\"" '$0 == name { getline; gsub(/^version = "|"$/, ""); print }' Cargo.lock \
-                | grep "^${version%%.*}\." | head -n1
-            ) || true
+          while IFS=$'\t' read -r crate dir version locked; do
             if [ -n "$locked" ]; then
               specs+=( -p "$crate@$locked" )
               precise=$version
