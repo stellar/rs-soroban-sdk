@@ -155,7 +155,17 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
 
     let input2: TokenStream2 = input.clone().into();
 
-    let item = parse_macro_input!(input as ItemStruct);
+    let item = match syn::parse::<ItemStruct>(input) {
+        Ok(item) => item,
+        Err(e) => {
+            let e = Error::new(
+                e.span(),
+                "contract must be a struct, e.g. `pub struct Contract;`",
+            )
+            .into_compile_error();
+            return quote! { #e #input2 }.into();
+        }
+    };
 
     // The SDK never constructs the contract type, so fields and generics on it
     // are unusable. Only `struct Contract;` and `struct Contract {}` are accepted.
@@ -163,7 +173,7 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
     if !item.generics.params.is_empty() {
         errors.push(Error::new_spanned(
             &item.generics,
-            "contract type must not have generics",
+            "contract struct must not have generics",
         ));
     }
     let fields_ok = match &item.fields {
@@ -174,7 +184,7 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
     if !fields_ok {
         errors.push(Error::new_spanned(
             &item.fields,
-            "contract type must not have fields, e.g. `pub struct Contract;` or `pub struct Contract {}`",
+            "contract struct must not have fields, e.g. `pub struct Contract;`",
         ));
     }
     let ty = &item.ident;

@@ -22,4 +22,12 @@ pub struct ContractWithLifetime<'a> {
     _a: PhantomData<&'a ()>,
 }
 
+#[contract]
+pub enum ContractEnum {}
+
+#[contract]
+pub union ContractUnion {
+    a: u32,
+}
+
 fn main() {}
