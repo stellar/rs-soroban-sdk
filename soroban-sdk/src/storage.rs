@@ -400,6 +400,13 @@ impl Persistent {
     /// The TTL will then become `extend_to`.
     ///
     /// The TTL is the number of ledgers between the current ledger and the final ledger the data can still be accessed.
+    ///
+    /// If `extend_to` is large enough that the current ledger sequence number plus `extend_to`
+    /// overflows a `u32`, the behaviour depends on the protocol version of the network the
+    /// contract is running on, regardless of the SDK version the contract was built with:
+    /// - Prior to protocol 29, the call fails with an internal error.
+    /// - From protocol 29, the TTL is extended to the max TTL, the same as for any other
+    ///   `extend_to` greater than the max TTL.
     pub fn extend_ttl<K>(&self, key: &K, threshold: u32, extend_to: u32)
     where
         K: IntoVal<Env, Val>,
@@ -614,6 +621,13 @@ impl Instance {
     /// current TTL's are.
     ///
     /// The TTL is the number of ledgers between the current ledger and the final ledger the data can still be accessed.
+    ///
+    /// If `extend_to` is large enough that the current ledger sequence number plus `extend_to`
+    /// overflows a `u32`, the behaviour depends on the protocol version of the network the
+    /// contract is running on, regardless of the SDK version the contract was built with:
+    /// - Prior to protocol 29, the call fails with an internal error.
+    /// - From protocol 29, the TTL is extended to the max TTL, the same as for any other
+    ///   `extend_to` greater than the max TTL.
     pub fn extend_ttl(&self, threshold: u32, extend_to: u32) {
         internal::Env::extend_current_contract_instance_and_code_ttl(
             &self.storage.env,
