@@ -180,6 +180,24 @@ pub fn const_view_symbol(path: &Path, s: &ScSymbol) -> TokenStream2 {
     quote!(#xdr::r#const::ScSymbol(#s))
 }
 
+/// Renders a `__spec_link` associated fn for a type, for its generated
+/// conversions to and from `Val` to call.
+///
+/// The type's spec entry is a static in the object file of the crate that
+/// defines the type, and when a contract is built without LTO the linker only
+/// includes that object file if the contract references a symbol in it. The
+/// conversions are inlined into the contract, so without a call into the
+/// defining crate the object file, and the spec entry, can be left out. The fn
+/// is never inlined so that calling it references a symbol in the defining
+/// crate. It is empty, and with LTO the calls to it are optimised away.
+pub fn spec_link_fn() -> TokenStream2 {
+    quote! {
+        #[doc(hidden)]
+        #[inline(never)]
+        pub fn __spec_link() {}
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::*;

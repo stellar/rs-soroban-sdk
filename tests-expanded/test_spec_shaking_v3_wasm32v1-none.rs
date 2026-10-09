@@ -106,6 +106,9 @@ impl soroban_sdk::SpecTypeDef for UsedParamStruct {
 static __SPEC_XDR_TYPE_USEDPARAMSTRUCT: [u8; UsedParamStruct::spec_xdr().len()] =
     UsedParamStruct::spec_xdr();
 impl UsedParamStruct {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -140,6 +143,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedParamSt
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedParamStruct::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 2usize] = ["a", "nested"];
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -162,6 +166,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedParamStruct> for soroban_sdk:
         env: &soroban_sdk::Env,
         val: &UsedParamStruct,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedParamStruct::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 2usize] = ["a", "nested"];
         let vals: [Val; 2usize] = [
@@ -272,6 +277,9 @@ impl soroban_sdk::SpecTypeDef for UsedReturnEnum {
 static __SPEC_XDR_TYPE_USEDRETURNENUM: [u8; UsedReturnEnum::spec_xdr().len()] =
     UsedReturnEnum::spec_xdr();
 impl UsedReturnEnum {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(
             soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
@@ -313,6 +321,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedReturnE
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedReturnEnum::__spec_link();
         use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
         const CASES: &'static [&'static str] = &["A", "B"];
         let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -357,6 +366,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedReturnEnum> for soroban_sdk::
         env: &soroban_sdk::Env,
         val: &UsedReturnEnum,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedReturnEnum::__spec_link();
         use soroban_sdk::{TryFromVal, TryIntoVal};
         match val {
             UsedReturnEnum::A(ref value0) => {
@@ -462,6 +472,9 @@ impl soroban_sdk::SpecTypeDef for UsedParamIntEnum {
 static __SPEC_XDR_TYPE_USEDPARAMINTENUM: [u8; UsedParamIntEnum::spec_xdr().len()] =
     UsedParamIntEnum::spec_xdr();
 impl UsedParamIntEnum {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtEnumV0(
             soroban_sdk::xdr::r#const::ScSpecUdtEnumV0 {
@@ -495,6 +508,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedParamIn
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedParamIntEnum::__spec_link();
         use soroban_sdk::TryIntoVal;
         let discriminant: u32 = val.try_into_val(env)?;
         Ok(match discriminant {
@@ -511,6 +525,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedParamIntEnum> for soroban_sdk
         env: &soroban_sdk::Env,
         val: &UsedParamIntEnum,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedParamIntEnum::__spec_link();
         Ok(match val {
             UsedParamIntEnum::X => 1u32.into(),
             UsedParamIntEnum::Y => 2u32.into(),
@@ -1239,6 +1254,9 @@ impl soroban_sdk::SpecTypeDef for UsedNestedInStruct {
 static __SPEC_XDR_TYPE_USEDNESTEDINSTRUCT: [u8; UsedNestedInStruct::spec_xdr().len()] =
     UsedNestedInStruct::spec_xdr();
 impl UsedNestedInStruct {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -1266,6 +1284,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedNestedI
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedNestedInStruct::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["val"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -1285,6 +1304,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedNestedInStruct> for soroban_s
         env: &soroban_sdk::Env,
         val: &UsedNestedInStruct,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedNestedInStruct::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["val"];
         let vals: [Val; 1usize] = [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
@@ -1375,6 +1395,9 @@ impl soroban_sdk::SpecTypeDef for UsedVecElement {
 static __SPEC_XDR_TYPE_USEDVECELEMENT: [u8; UsedVecElement::spec_xdr().len()] =
     UsedVecElement::spec_xdr();
 impl UsedVecElement {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -1402,6 +1425,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedVecElem
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedVecElement::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["data"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -1421,6 +1445,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedVecElement> for soroban_sdk::
         env: &soroban_sdk::Env,
         val: &UsedVecElement,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedVecElement::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["data"];
         let vals: [Val; 1usize] = [(&val.data).try_into_val(env).map_err(|_| ConversionError)?];
@@ -1515,6 +1540,9 @@ impl soroban_sdk::SpecTypeDef for UsedMapKey {
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_USEDMAPKEY: [u8; UsedMapKey::spec_xdr().len()] = UsedMapKey::spec_xdr();
 impl UsedMapKey {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtEnumV0(
             soroban_sdk::xdr::r#const::ScSpecUdtEnumV0 {
@@ -1548,6 +1576,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedMapKey 
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedMapKey::__spec_link();
         use soroban_sdk::TryIntoVal;
         let discriminant: u32 = val.try_into_val(env)?;
         Ok(match discriminant {
@@ -1564,6 +1593,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedMapKey> for soroban_sdk::Val 
         env: &soroban_sdk::Env,
         val: &UsedMapKey,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedMapKey::__spec_link();
         Ok(match val {
             UsedMapKey::K1 => 1u32.into(),
             UsedMapKey::K2 => 2u32.into(),
@@ -1648,6 +1678,9 @@ impl soroban_sdk::SpecTypeDef for UsedMapVal {
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_USEDMAPVAL: [u8; UsedMapVal::spec_xdr().len()] = UsedMapVal::spec_xdr();
 impl UsedMapVal {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -1675,6 +1708,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedMapVal 
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedMapVal::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["v"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -1694,6 +1728,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedMapVal> for soroban_sdk::Val 
         env: &soroban_sdk::Env,
         val: &UsedMapVal,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedMapVal::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["v"];
         let vals: [Val; 1usize] = [(&val.v).try_into_val(env).map_err(|_| ConversionError)?];
@@ -1787,6 +1822,9 @@ impl soroban_sdk::SpecTypeDef for UsedOptionElement {
 static __SPEC_XDR_TYPE_USEDOPTIONELEMENT: [u8; UsedOptionElement::spec_xdr().len()] =
     UsedOptionElement::spec_xdr();
 impl UsedOptionElement {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -1814,6 +1852,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedOptionE
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedOptionElement::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["data"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -1833,6 +1872,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedOptionElement> for soroban_sd
         env: &soroban_sdk::Env,
         val: &UsedOptionElement,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedOptionElement::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["data"];
         let vals: [Val; 1usize] = [(&val.data).try_into_val(env).map_err(|_| ConversionError)?];
@@ -1921,6 +1961,9 @@ impl soroban_sdk::SpecTypeDef for UsedResultOk {
 static __SPEC_XDR_TYPE_USEDRESULTOK: [u8; UsedResultOk::spec_xdr().len()] =
     UsedResultOk::spec_xdr();
 impl UsedResultOk {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -1948,6 +1991,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedResultO
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedResultOk::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["data"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -1967,6 +2011,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedResultOk> for soroban_sdk::Va
         env: &soroban_sdk::Env,
         val: &UsedResultOk,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedResultOk::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["data"];
         let vals: [Val; 1usize] = [(&val.data).try_into_val(env).map_err(|_| ConversionError)?];
@@ -2212,6 +2257,9 @@ impl soroban_sdk::SpecTypeDef for UsedEventTopicType {
 static __SPEC_XDR_TYPE_USEDEVENTTOPICTYPE: [u8; UsedEventTopicType::spec_xdr().len()] =
     UsedEventTopicType::spec_xdr();
 impl UsedEventTopicType {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtEnumV0(
             soroban_sdk::xdr::r#const::ScSpecUdtEnumV0 {
@@ -2247,6 +2295,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventTo
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedEventTopicType::__spec_link();
         use soroban_sdk::TryIntoVal;
         let discriminant: u32 = val.try_into_val(env)?;
         Ok(match discriminant {
@@ -2263,6 +2312,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedEventTopicType> for soroban_s
         env: &soroban_sdk::Env,
         val: &UsedEventTopicType,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedEventTopicType::__spec_link();
         Ok(match val {
             UsedEventTopicType::Transfer => 1u32.into(),
             UsedEventTopicType::Mint => 2u32.into(),
@@ -2512,6 +2562,9 @@ impl soroban_sdk::SpecTypeDef for UsedEventDataType {
 static __SPEC_XDR_TYPE_USEDEVENTDATATYPE: [u8; UsedEventDataType::spec_xdr().len()] =
     UsedEventDataType::spec_xdr();
 impl UsedEventDataType {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -2544,6 +2597,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventDa
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedEventDataType::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 2usize] = ["x", "y"];
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -2566,6 +2620,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedEventDataType> for soroban_sd
         env: &soroban_sdk::Env,
         val: &UsedEventDataType,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedEventDataType::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 2usize] = ["x", "y"];
         let vals: [Val; 2usize] = [
@@ -2815,6 +2870,9 @@ impl soroban_sdk::SpecTypeDef for UsedEventTopicOuter {
 static __SPEC_XDR_TYPE_USEDEVENTTOPICOUTER: [u8; UsedEventTopicOuter::spec_xdr().len()] =
     UsedEventTopicOuter::spec_xdr();
 impl UsedEventTopicOuter {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -2842,6 +2900,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventTo
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedEventTopicOuter::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["inner"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -2861,6 +2920,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedEventTopicOuter> for soroban_
         env: &soroban_sdk::Env,
         val: &UsedEventTopicOuter,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedEventTopicOuter::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["inner"];
         let vals: [Val; 1usize] = [(&val.inner)
@@ -2958,6 +3018,9 @@ impl soroban_sdk::SpecTypeDef for UsedEventTopicInner {
 static __SPEC_XDR_TYPE_USEDEVENTTOPICINNER: [u8; UsedEventTopicInner::spec_xdr().len()] =
     UsedEventTopicInner::spec_xdr();
 impl UsedEventTopicInner {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -2985,6 +3048,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventTo
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedEventTopicInner::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["val"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -3004,6 +3068,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedEventTopicInner> for soroban_
         env: &soroban_sdk::Env,
         val: &UsedEventTopicInner,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedEventTopicInner::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["val"];
         let vals: [Val; 1usize] = [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
@@ -3252,6 +3317,9 @@ impl soroban_sdk::SpecTypeDef for UsedEventDataOuter {
 static __SPEC_XDR_TYPE_USEDEVENTDATAOUTER: [u8; UsedEventDataOuter::spec_xdr().len()] =
     UsedEventDataOuter::spec_xdr();
 impl UsedEventDataOuter {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -3279,6 +3347,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventDa
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedEventDataOuter::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["inner"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -3298,6 +3367,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedEventDataOuter> for soroban_s
         env: &soroban_sdk::Env,
         val: &UsedEventDataOuter,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedEventDataOuter::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["inner"];
         let vals: [Val; 1usize] = [(&val.inner)
@@ -3395,6 +3465,9 @@ impl soroban_sdk::SpecTypeDef for UsedEventDataInner {
 static __SPEC_XDR_TYPE_USEDEVENTDATAINNER: [u8; UsedEventDataInner::spec_xdr().len()] =
     UsedEventDataInner::spec_xdr();
 impl UsedEventDataInner {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -3422,6 +3495,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedEventDa
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedEventDataInner::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["val"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -3441,6 +3515,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedEventDataInner> for soroban_s
         env: &soroban_sdk::Env,
         val: &UsedEventDataInner,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedEventDataInner::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["val"];
         let vals: [Val; 1usize] = [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
@@ -3691,6 +3766,9 @@ impl soroban_sdk::SpecTypeDef for UsedRefTopicType {
 static __SPEC_XDR_TYPE_USEDREFTOPICTYPE: [u8; UsedRefTopicType::spec_xdr().len()] =
     UsedRefTopicType::spec_xdr();
 impl UsedRefTopicType {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtEnumV0(
             soroban_sdk::xdr::r#const::ScSpecUdtEnumV0 {
@@ -3724,6 +3802,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRefTopi
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedRefTopicType::__spec_link();
         use soroban_sdk::TryIntoVal;
         let discriminant: u32 = val.try_into_val(env)?;
         Ok(match discriminant {
@@ -3740,6 +3819,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedRefTopicType> for soroban_sdk
         env: &soroban_sdk::Env,
         val: &UsedRefTopicType,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedRefTopicType::__spec_link();
         Ok(match val {
             UsedRefTopicType::Send => 1u32.into(),
             UsedRefTopicType::Recv => 2u32.into(),
@@ -3830,6 +3910,9 @@ impl soroban_sdk::SpecTypeDef for UsedRefDataType {
 static __SPEC_XDR_TYPE_USEDREFDATATYPE: [u8; UsedRefDataType::spec_xdr().len()] =
     UsedRefDataType::spec_xdr();
 impl UsedRefDataType {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -3859,6 +3942,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRefData
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedRefDataType::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["nested"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -3878,6 +3962,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedRefDataType> for soroban_sdk:
         env: &soroban_sdk::Env,
         val: &UsedRefDataType,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedRefDataType::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["nested"];
         let vals: [Val; 1usize] = [(&val.nested)
@@ -3968,6 +4053,9 @@ impl soroban_sdk::SpecTypeDef for UsedRefDataInner {
 static __SPEC_XDR_TYPE_USEDREFDATAINNER: [u8; UsedRefDataInner::spec_xdr().len()] =
     UsedRefDataInner::spec_xdr();
 impl UsedRefDataInner {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -3995,6 +4083,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRefData
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedRefDataInner::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["val"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -4014,6 +4103,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedRefDataInner> for soroban_sdk
         env: &soroban_sdk::Env,
         val: &UsedRefDataInner,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedRefDataInner::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["val"];
         let vals: [Val; 1usize] = [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
@@ -4255,6 +4345,9 @@ impl soroban_sdk::SpecTypeDef for UsedTupleElement {
 static __SPEC_XDR_TYPE_USEDTUPLEELEMENT: [u8; UsedTupleElement::spec_xdr().len()] =
     UsedTupleElement::spec_xdr();
 impl UsedTupleElement {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -4282,6 +4375,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedTupleEl
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedTupleElement::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["val"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -4301,6 +4395,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedTupleElement> for soroban_sdk
         env: &soroban_sdk::Env,
         val: &UsedTupleElement,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedTupleElement::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["val"];
         let vals: [Val; 1usize] = [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
@@ -4394,6 +4489,9 @@ impl soroban_sdk::SpecTypeDef for UsedTupleReturnElement {
 static __SPEC_XDR_TYPE_USEDTUPLERETURNELEMENT: [u8; UsedTupleReturnElement::spec_xdr().len()] =
     UsedTupleReturnElement::spec_xdr();
 impl UsedTupleReturnElement {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -4421,6 +4519,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedTupleRe
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedTupleReturnElement::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["val"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -4440,6 +4539,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedTupleReturnElement> for sorob
         env: &soroban_sdk::Env,
         val: &UsedTupleReturnElement,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedTupleReturnElement::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["val"];
         let vals: [Val; 1usize] = [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
@@ -4535,6 +4635,9 @@ impl soroban_sdk::SpecTypeDef for UsedVecInnerVecElement {
 static __SPEC_XDR_TYPE_USEDVECINNERVECELEMENT: [u8; UsedVecInnerVecElement::spec_xdr().len()] =
     UsedVecInnerVecElement::spec_xdr();
 impl UsedVecInnerVecElement {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -4562,6 +4665,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedVecInne
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedVecInnerVecElement::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["val"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -4581,6 +4685,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedVecInnerVecElement> for sorob
         env: &soroban_sdk::Env,
         val: &UsedVecInnerVecElement,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedVecInnerVecElement::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["val"];
         let vals: [Val; 1usize] = [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
@@ -4676,6 +4781,9 @@ impl soroban_sdk::SpecTypeDef for UsedVecInnerElement {
 static __SPEC_XDR_TYPE_USEDVECINNERELEMENT: [u8; UsedVecInnerElement::spec_xdr().len()] =
     UsedVecInnerElement::spec_xdr();
 impl UsedVecInnerElement {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -4703,6 +4811,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedVecInne
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedVecInnerElement::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["val"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -4722,6 +4831,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedVecInnerElement> for soroban_
         env: &soroban_sdk::Env,
         val: &UsedVecInnerElement,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedVecInnerElement::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["val"];
         let vals: [Val; 1usize] = [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
@@ -4827,6 +4937,9 @@ impl soroban_sdk::SpecTypeDef for UsedVecElementNested {
 static __SPEC_XDR_TYPE_USEDVECELEMENTNESTED: [u8; UsedVecElementNested::spec_xdr().len()] =
     UsedVecElementNested::spec_xdr();
 impl UsedVecElementNested {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -4867,6 +4980,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedVecElem
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedVecElementNested::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 3usize] = ["inner", "val", "vec_inner"];
         let mut vals: [Val; 3usize] = [Val::VOID.to_val(); 3usize];
@@ -4892,6 +5006,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedVecElementNested> for soroban
         env: &soroban_sdk::Env,
         val: &UsedVecElementNested,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedVecElementNested::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 3usize] = ["inner", "val", "vec_inner"];
         let vals: [Val; 3usize] = [
@@ -4990,6 +5105,9 @@ impl soroban_sdk::SpecTypeDef for UsedNonPubStruct {
 static __SPEC_XDR_TYPE_USEDNONPUBSTRUCT: [u8; UsedNonPubStruct::spec_xdr().len()] =
     UsedNonPubStruct::spec_xdr();
 impl UsedNonPubStruct {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -5017,6 +5135,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedNonPubS
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedNonPubStruct::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["val"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -5036,6 +5155,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedNonPubStruct> for soroban_sdk
         env: &soroban_sdk::Env,
         val: &UsedNonPubStruct,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedNonPubStruct::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["val"];
         let vals: [Val; 1usize] = [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
@@ -5333,6 +5453,9 @@ impl soroban_sdk::SpecTypeDef for UsedRecursiveRoot {
 static __SPEC_XDR_TYPE_USEDRECURSIVEROOT: [u8; UsedRecursiveRoot::spec_xdr().len()] =
     UsedRecursiveRoot::spec_xdr();
 impl UsedRecursiveRoot {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -5360,6 +5483,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRecursi
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedRecursiveRoot::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["val"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -5379,6 +5503,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedRecursiveRoot> for soroban_sd
         env: &soroban_sdk::Env,
         val: &UsedRecursiveRoot,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedRecursiveRoot::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["val"];
         let vals: [Val; 1usize] = [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
@@ -5494,6 +5619,9 @@ impl soroban_sdk::SpecTypeDef for UsedRecursiveNode {
 static __SPEC_XDR_TYPE_USEDRECURSIVENODE: [u8; UsedRecursiveNode::spec_xdr().len()] =
     UsedRecursiveNode::spec_xdr();
 impl UsedRecursiveNode {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(
             soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
@@ -5539,6 +5667,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRecursi
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedRecursiveNode::__spec_link();
         use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
         const CASES: &'static [&'static str] = &["NotRecursive", "Recursive"];
         let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -5583,6 +5712,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedRecursiveNode> for soroban_sd
         env: &soroban_sdk::Env,
         val: &UsedRecursiveNode,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedRecursiveNode::__spec_link();
         use soroban_sdk::{TryFromVal, TryIntoVal};
         match val {
             UsedRecursiveNode::NotRecursive(ref value0) => {
@@ -5686,6 +5816,9 @@ impl soroban_sdk::SpecTypeDef for UsedRecursiveLeaf {
 static __SPEC_XDR_TYPE_USEDRECURSIVELEAF: [u8; UsedRecursiveLeaf::spec_xdr().len()] =
     UsedRecursiveLeaf::spec_xdr();
 impl UsedRecursiveLeaf {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -5713,6 +5846,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedRecursi
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedRecursiveLeaf::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["val"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -5732,6 +5866,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedRecursiveLeaf> for soroban_sd
         env: &soroban_sdk::Env,
         val: &UsedRecursiveLeaf,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedRecursiveLeaf::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["val"];
         let vals: [Val; 1usize] = [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
@@ -5819,6 +5954,9 @@ impl soroban_sdk::SpecTypeDef for UsedLeaf {
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_USEDLEAF: [u8; UsedLeaf::spec_xdr().len()] = UsedLeaf::spec_xdr();
 impl UsedLeaf {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -5846,6 +5984,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedLeaf {
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedLeaf::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["val"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -5865,6 +6004,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedLeaf> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &UsedLeaf,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedLeaf::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["val"];
         let vals: [Val; 1usize] = [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
@@ -5957,6 +6097,9 @@ impl soroban_sdk::SpecTypeDef for UsedSelfRef {
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_USEDSELFREF: [u8; UsedSelfRef::spec_xdr().len()] = UsedSelfRef::spec_xdr();
 impl UsedSelfRef {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -5986,6 +6129,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedSelfRef
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedSelfRef::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["children"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -6005,6 +6149,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedSelfRef> for soroban_sdk::Val
         env: &soroban_sdk::Env,
         val: &UsedSelfRef,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UsedSelfRef::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["children"];
         let vals: [Val; 1usize] = [(&val.children)
@@ -6422,6 +6567,9 @@ mod wasm_imported {
     static __SPEC_XDR_TYPE_CONTRACTEXECUTABLEREF: [u8; ContractExecutableRef::spec_xdr().len()] =
         ContractExecutableRef::spec_xdr();
     impl ContractExecutableRef {
+        #[doc(hidden)]
+        #[inline(never)]
+        pub fn __spec_link() {}
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
             soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
                 soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -6459,6 +6607,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            ContractExecutableRef::__spec_link();
             use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
             const KEYS: [&'static str; 2usize] = ["owner", "tag"];
             let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -6481,6 +6630,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &ContractExecutableRef,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            ContractExecutableRef::__spec_link();
             use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
             const KEYS: [&'static str; 2usize] = ["owner", "tag"];
             let vals: [Val; 2usize] = [
@@ -6632,6 +6782,9 @@ mod wasm_imported {
     static __SPEC_XDR_TYPE_CONTRACTCONTEXT: [u8; ContractContext::spec_xdr().len()] =
         ContractContext::spec_xdr();
     impl ContractContext {
+        #[doc(hidden)]
+        #[inline(never)]
+        pub fn __spec_link() {}
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -6682,6 +6835,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            ContractContext::__spec_link();
             use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
             const KEYS: [&'static str; 3usize] = ["args", "contract", "fn_name"];
             let mut vals: [Val; 3usize] = [Val::VOID.to_val(); 3usize];
@@ -6707,6 +6861,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &ContractContext,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            ContractContext::__spec_link();
             use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
             const KEYS: [&'static str; 3usize] = ["args", "contract", "fn_name"];
             let vals: [Val; 3usize] = [
@@ -6847,6 +7002,9 @@ mod wasm_imported {
     static __SPEC_XDR_TYPE_SUBCONTRACTINVOCATION: [u8; SubContractInvocation::spec_xdr().len()] =
         SubContractInvocation::spec_xdr();
     impl SubContractInvocation {
+        #[doc(hidden)]
+        #[inline(never)]
+        pub fn __spec_link() {}
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -6888,6 +7046,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            SubContractInvocation::__spec_link();
             use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
             const KEYS: [&'static str; 2usize] = ["context", "sub_invocations"];
             let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -6910,6 +7069,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &SubContractInvocation,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            SubContractInvocation::__spec_link();
             use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
             const KEYS: [&'static str; 2usize] = ["context", "sub_invocations"];
             let vals: [Val; 2usize] = [
@@ -7044,6 +7204,9 @@ mod wasm_imported {
     static __SPEC_XDR_TYPE_CREATECONTRACTHOSTFNCONTEXT: [u8;
         CreateContractHostFnContext::spec_xdr().len()] = CreateContractHostFnContext::spec_xdr();
     impl CreateContractHostFnContext {
+        #[doc(hidden)]
+        #[inline(never)]
+        pub fn __spec_link() {}
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
             soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
                 soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -7082,6 +7245,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            CreateContractHostFnContext::__spec_link();
             use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
             const KEYS: [&'static str; 2usize] = ["executable", "salt"];
             let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -7104,6 +7268,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &CreateContractHostFnContext,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            CreateContractHostFnContext::__spec_link();
             use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
             const KEYS: [&'static str; 2usize] = ["executable", "salt"];
             let vals: [Val; 2usize] = [
@@ -7262,6 +7427,9 @@ mod wasm_imported {
         CreateContractWithConstructorHostFnContext::spec_xdr().len()] =
         CreateContractWithConstructorHostFnContext::spec_xdr();
     impl CreateContractWithConstructorHostFnContext {
+        #[doc(hidden)]
+        #[inline(never)]
+        pub fn __spec_link() {}
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -7318,6 +7486,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            CreateContractWithConstructorHostFnContext::__spec_link();
             use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
             const KEYS: [&'static str; 3usize] = ["constructor_args", "executable", "salt"];
             let mut vals: [Val; 3usize] = [Val::VOID.to_val(); 3usize];
@@ -7345,6 +7514,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &CreateContractWithConstructorHostFnContext,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            CreateContractWithConstructorHostFnContext::__spec_link();
             use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
             const KEYS: [&'static str; 3usize] = ["constructor_args", "executable", "salt"];
             let vals: [Val; 3usize] = [
@@ -7474,6 +7644,9 @@ mod wasm_imported {
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_TYPE_STRUCTA: [u8; StructA::spec_xdr().len()] = StructA::spec_xdr();
     impl StructA {
+        #[doc(hidden)]
+        #[inline(never)]
+        pub fn __spec_link() {}
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
             soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
                 soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -7510,6 +7683,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            StructA::__spec_link();
             use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
             const KEYS: [&'static str; 2usize] = ["f1", "f2"];
             let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -7532,6 +7706,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &StructA,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            StructA::__spec_link();
             use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
             const KEYS: [&'static str; 2usize] = ["f1", "f2"];
             let vals: [Val; 2usize] = [
@@ -7651,6 +7826,9 @@ mod wasm_imported {
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_TYPE_STRUCTB: [u8; StructB::spec_xdr().len()] = StructB::spec_xdr();
     impl StructB {
+        #[doc(hidden)]
+        #[inline(never)]
+        pub fn __spec_link() {}
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
             soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
                 soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -7687,6 +7865,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            StructB::__spec_link();
             use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
             const KEYS: [&'static str; 2usize] = ["f1", "f2"];
             let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -7709,6 +7888,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &StructB,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            StructB::__spec_link();
             use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
             const KEYS: [&'static str; 2usize] = ["f1", "f2"];
             let vals: [Val; 2usize] = [
@@ -7828,6 +8008,9 @@ mod wasm_imported {
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_TYPE_STRUCTC: [u8; StructC::spec_xdr().len()] = StructC::spec_xdr();
     impl StructC {
+        #[doc(hidden)]
+        #[inline(never)]
+        pub fn __spec_link() {}
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
             soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
                 soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -7866,6 +8049,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            StructC::__spec_link();
             use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
             const KEYS: [&'static str; 2usize] = ["f1", "f2"];
             let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -7888,6 +8072,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &StructC,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            StructC::__spec_link();
             use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
             const KEYS: [&'static str; 2usize] = ["f1", "f2"];
             let vals: [Val; 2usize] = [
@@ -8005,6 +8190,9 @@ mod wasm_imported {
     static __SPEC_XDR_TYPE_STRUCTTUPLEA: [u8; StructTupleA::spec_xdr().len()] =
         StructTupleA::spec_xdr();
     impl StructTupleA {
+        #[doc(hidden)]
+        #[inline(never)]
+        pub fn __spec_link() {}
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
             soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
                 soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -8038,6 +8226,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            StructTupleA::__spec_link();
             use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val, VecObject};
             let vec: VecObject = (*val).try_into().map_err(|_| ConversionError)?;
             let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -8056,6 +8245,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &StructTupleA,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            StructTupleA::__spec_link();
             use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
             let vals: [Val; 2usize] = [
                 (&val.0).try_into_val(env).map_err(|_| ConversionError)?,
@@ -8172,6 +8362,9 @@ mod wasm_imported {
     static __SPEC_XDR_TYPE_STRUCTTUPLEB: [u8; StructTupleB::spec_xdr().len()] =
         StructTupleB::spec_xdr();
     impl StructTupleB {
+        #[doc(hidden)]
+        #[inline(never)]
+        pub fn __spec_link() {}
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
             soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
                 soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -8205,6 +8398,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            StructTupleB::__spec_link();
             use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val, VecObject};
             let vec: VecObject = (*val).try_into().map_err(|_| ConversionError)?;
             let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -8223,6 +8417,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &StructTupleB,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            StructTupleB::__spec_link();
             use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
             let vals: [Val; 2usize] = [
                 (&val.0).try_into_val(env).map_err(|_| ConversionError)?,
@@ -8340,6 +8535,9 @@ mod wasm_imported {
     static __SPEC_XDR_TYPE_STRUCTTUPLEC: [u8; StructTupleC::spec_xdr().len()] =
         StructTupleC::spec_xdr();
     impl StructTupleC {
+        #[doc(hidden)]
+        #[inline(never)]
+        pub fn __spec_link() {}
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
             soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
                 soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -8374,6 +8572,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            StructTupleC::__spec_link();
             use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val, VecObject};
             let vec: VecObject = (*val).try_into().map_err(|_| ConversionError)?;
             let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -8392,6 +8591,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &StructTupleC,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            StructTupleC::__spec_link();
             use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
             let vals: [Val; 2usize] = [
                 (&val.0).try_into_val(env).map_err(|_| ConversionError)?,
@@ -8552,6 +8752,9 @@ mod wasm_imported {
     static __SPEC_XDR_TYPE_CONTRACTEXECUTABLE: [u8; ContractExecutable::spec_xdr().len()] =
         ContractExecutable::spec_xdr();
     impl ContractExecutable {
+        #[doc(hidden)]
+        #[inline(never)]
+        pub fn __spec_link() {}
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -8602,6 +8805,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            ContractExecutable::__spec_link();
             use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
             const CASES: &'static [&'static str] = &["Wasm", "ExternalRef"];
             let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -8647,6 +8851,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &ContractExecutable,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            ContractExecutable::__spec_link();
             use soroban_sdk::{TryFromVal, TryIntoVal};
             match val {
                 ContractExecutable::Wasm(ref value0) => {
@@ -8841,6 +9046,9 @@ mod wasm_imported {
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_TYPE_CONTEXT: [u8; Context::spec_xdr().len()] = Context::spec_xdr();
     impl Context {
+        #[doc(hidden)]
+        #[inline(never)]
+        pub fn __spec_link() {}
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -8902,6 +9110,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            Context::__spec_link();
             use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
             const CASES: &'static [&'static str] = &[
                 "Contract",
@@ -8961,6 +9170,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &Context,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            Context::__spec_link();
             use soroban_sdk::{TryFromVal, TryIntoVal};
             match val {
                 Context::Contract(ref value0) => {
@@ -9172,6 +9382,9 @@ mod wasm_imported {
     static __SPEC_XDR_TYPE_INVOKERCONTRACTAUTHENTRY: [u8; InvokerContractAuthEntry::spec_xdr()
         .len()] = InvokerContractAuthEntry::spec_xdr();
     impl InvokerContractAuthEntry {
+        #[doc(hidden)]
+        #[inline(never)]
+        pub fn __spec_link() {}
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -9234,6 +9447,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            InvokerContractAuthEntry::__spec_link();
             use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
             const CASES: &'static [&'static str] = &[
                 "Contract",
@@ -9293,6 +9507,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &InvokerContractAuthEntry,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            InvokerContractAuthEntry::__spec_link();
             use soroban_sdk::{TryFromVal, TryIntoVal};
             match val {
                 InvokerContractAuthEntry::Contract(ref value0) => {
@@ -9453,6 +9668,9 @@ mod wasm_imported {
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_TYPE_EXECUTABLE: [u8; Executable::spec_xdr().len()] = Executable::spec_xdr();
     impl Executable {
+        #[doc(hidden)]
+        #[inline(never)]
+        pub fn __spec_link() {}
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry = soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
             doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
             lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
@@ -9506,6 +9724,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            Executable::__spec_link();
             use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
             const CASES: &'static [&'static str] = &["Wasm", "StellarAsset", "Account"];
             let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -9553,6 +9772,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &Executable,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            Executable::__spec_link();
             use soroban_sdk::{TryFromVal, TryIntoVal};
             match val {
                 Executable::Wasm(ref value0) => {
@@ -9684,6 +9904,9 @@ mod wasm_imported {
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_TYPE_ENUMA: [u8; EnumA::spec_xdr().len()] = EnumA::spec_xdr();
     impl EnumA {
+        #[doc(hidden)]
+        #[inline(never)]
+        pub fn __spec_link() {}
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
             soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(
                 soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
@@ -9737,6 +9960,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            EnumA::__spec_link();
             use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
             const CASES: &'static [&'static str] = &["V1", "V2", "V3"];
             let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -9780,6 +10004,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &EnumA,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            EnumA::__spec_link();
             use soroban_sdk::{TryFromVal, TryIntoVal};
             match val {
                 EnumA::V1 => {
@@ -9951,6 +10176,9 @@ mod wasm_imported {
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_TYPE_ENUMB: [u8; EnumB::spec_xdr().len()] = EnumB::spec_xdr();
     impl EnumB {
+        #[doc(hidden)]
+        #[inline(never)]
+        pub fn __spec_link() {}
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
             soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(
                 soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
@@ -10011,6 +10239,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            EnumB::__spec_link();
             use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
             const CASES: &'static [&'static str] = &["V1", "V2", "V3"];
             let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -10065,6 +10294,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &EnumB,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            EnumB::__spec_link();
             use soroban_sdk::{TryFromVal, TryIntoVal};
             match val {
                 EnumB::V1 => {
@@ -10227,6 +10457,9 @@ mod wasm_imported {
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_TYPE_ENUMC: [u8; EnumC::spec_xdr().len()] = EnumC::spec_xdr();
     impl EnumC {
+        #[doc(hidden)]
+        #[inline(never)]
+        pub fn __spec_link() {}
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
             soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(
                 soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
@@ -10286,6 +10519,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            EnumC::__spec_link();
             use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
             const CASES: &'static [&'static str] = &["V1", "V2", "V3"];
             let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -10337,6 +10571,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &EnumC,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            EnumC::__spec_link();
             use soroban_sdk::{TryFromVal, TryIntoVal};
             match val {
                 EnumC::V1 => {
@@ -10468,6 +10703,9 @@ mod wasm_imported {
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_TYPE_ENUMINTA: [u8; EnumIntA::spec_xdr().len()] = EnumIntA::spec_xdr();
     impl EnumIntA {
+        #[doc(hidden)]
+        #[inline(never)]
+        pub fn __spec_link() {}
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
             soroban_sdk::xdr::r#const::ScSpecEntry::UdtEnumV0(
                 soroban_sdk::xdr::r#const::ScSpecUdtEnumV0 {
@@ -10512,6 +10750,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            EnumIntA::__spec_link();
             use soroban_sdk::TryIntoVal;
             let discriminant: u32 = val.try_into_val(env)?;
             Ok(match discriminant {
@@ -10529,6 +10768,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &EnumIntA,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            EnumIntA::__spec_link();
             Ok(match val {
                 EnumIntA::V1 => 1u32.into(),
                 EnumIntA::V2 => 2u32.into(),
@@ -10643,6 +10883,9 @@ mod wasm_imported {
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_TYPE_ENUMINTB: [u8; EnumIntB::spec_xdr().len()] = EnumIntB::spec_xdr();
     impl EnumIntB {
+        #[doc(hidden)]
+        #[inline(never)]
+        pub fn __spec_link() {}
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
             soroban_sdk::xdr::r#const::ScSpecEntry::UdtEnumV0(
                 soroban_sdk::xdr::r#const::ScSpecUdtEnumV0 {
@@ -10687,6 +10930,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            EnumIntB::__spec_link();
             use soroban_sdk::TryIntoVal;
             let discriminant: u32 = val.try_into_val(env)?;
             Ok(match discriminant {
@@ -10704,6 +10948,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &EnumIntB,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            EnumIntB::__spec_link();
             Ok(match val {
                 EnumIntB::V1 => 10u32.into(),
                 EnumIntB::V2 => 20u32.into(),
@@ -10818,6 +11063,9 @@ mod wasm_imported {
     #[link_section = "contractspecv0"]
     static __SPEC_XDR_TYPE_ENUMINTC: [u8; EnumIntC::spec_xdr().len()] = EnumIntC::spec_xdr();
     impl EnumIntC {
+        #[doc(hidden)]
+        #[inline(never)]
+        pub fn __spec_link() {}
         const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
             soroban_sdk::xdr::r#const::ScSpecEntry::UdtEnumV0(
                 soroban_sdk::xdr::r#const::ScSpecUdtEnumV0 {
@@ -10862,6 +11110,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &soroban_sdk::Val,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            EnumIntC::__spec_link();
             use soroban_sdk::TryIntoVal;
             let discriminant: u32 = val.try_into_val(env)?;
             Ok(match discriminant {
@@ -10879,6 +11128,7 @@ mod wasm_imported {
             env: &soroban_sdk::Env,
             val: &EnumIntC,
         ) -> Result<Self, soroban_sdk::ConversionError> {
+            EnumIntC::__spec_link();
             Ok(match val {
                 EnumIntC::V1 => 100u32.into(),
                 EnumIntC::V2 => 200u32.into(),
@@ -12451,6 +12701,9 @@ impl soroban_sdk::SpecTypeDef for UnusedStruct {
 static __SPEC_XDR_TYPE_UNUSEDSTRUCT: [u8; UnusedStruct::spec_xdr().len()] =
     UnusedStruct::spec_xdr();
 impl UnusedStruct {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -12478,6 +12731,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedStruc
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UnusedStruct::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["x"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -12497,6 +12751,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UnusedStruct> for soroban_sdk::Va
         env: &soroban_sdk::Env,
         val: &UnusedStruct,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UnusedStruct::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["x"];
         let vals: [Val; 1usize] = [(&val.x).try_into_val(env).map_err(|_| ConversionError)?];
@@ -12597,6 +12852,9 @@ impl soroban_sdk::SpecTypeDef for UnusedEnum {
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_UNUSEDENUM: [u8; UnusedEnum::spec_xdr().len()] = UnusedEnum::spec_xdr();
 impl UnusedEnum {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(
             soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
@@ -12635,6 +12893,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedEnum 
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UnusedEnum::__spec_link();
         use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
         const CASES: &'static [&'static str] = &["A", "B"];
         let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -12675,6 +12934,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UnusedEnum> for soroban_sdk::Val 
         env: &soroban_sdk::Env,
         val: &UnusedEnum,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UnusedEnum::__spec_link();
         use soroban_sdk::{TryFromVal, TryIntoVal};
         match val {
             UnusedEnum::A => {
@@ -12778,6 +13038,9 @@ impl soroban_sdk::SpecTypeDef for UnusedIntEnum {
 static __SPEC_XDR_TYPE_UNUSEDINTENUM: [u8; UnusedIntEnum::spec_xdr().len()] =
     UnusedIntEnum::spec_xdr();
 impl UnusedIntEnum {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtEnumV0(
             soroban_sdk::xdr::r#const::ScSpecUdtEnumV0 {
@@ -12811,6 +13074,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedIntEn
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UnusedIntEnum::__spec_link();
         use soroban_sdk::TryIntoVal;
         let discriminant: u32 = val.try_into_val(env)?;
         Ok(match discriminant {
@@ -12827,6 +13091,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UnusedIntEnum> for soroban_sdk::V
         env: &soroban_sdk::Env,
         val: &UnusedIntEnum,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UnusedIntEnum::__spec_link();
         Ok(match val {
             UnusedIntEnum::U1 => 1u32.into(),
             UnusedIntEnum::U2 => 2u32.into(),
@@ -13059,6 +13324,9 @@ impl soroban_sdk::SpecTypeDef for UnusedEventDataType {
 static __SPEC_XDR_TYPE_UNUSEDEVENTDATATYPE: [u8; UnusedEventDataType::spec_xdr().len()] =
     UnusedEventDataType::spec_xdr();
 impl UnusedEventDataType {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -13086,6 +13354,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedEvent
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UnusedEventDataType::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["v"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -13105,6 +13374,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UnusedEventDataType> for soroban_
         env: &soroban_sdk::Env,
         val: &UnusedEventDataType,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UnusedEventDataType::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["v"];
         let vals: [Val; 1usize] = [(&val.v).try_into_val(env).map_err(|_| ConversionError)?];
@@ -13347,6 +13617,9 @@ impl soroban_sdk::SpecTypeDef for UnusedOuter {
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_UNUSEDOUTER: [u8; UnusedOuter::spec_xdr().len()] = UnusedOuter::spec_xdr();
 impl UnusedOuter {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -13374,6 +13647,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedOuter
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UnusedOuter::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["inner"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -13393,6 +13667,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UnusedOuter> for soroban_sdk::Val
         env: &soroban_sdk::Env,
         val: &UnusedOuter,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UnusedOuter::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["inner"];
         let vals: [Val; 1usize] = [(&val.inner)
@@ -13482,6 +13757,9 @@ impl soroban_sdk::SpecTypeDef for UnusedInner {
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_UNUSEDINNER: [u8; UnusedInner::spec_xdr().len()] = UnusedInner::spec_xdr();
 impl UnusedInner {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -13509,6 +13787,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedInner
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UnusedInner::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["v"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -13528,6 +13807,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UnusedInner> for soroban_sdk::Val
         env: &soroban_sdk::Env,
         val: &UnusedInner,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UnusedInner::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["v"];
         let vals: [Val; 1usize] = [(&val.v).try_into_val(env).map_err(|_| ConversionError)?];
@@ -13616,6 +13896,9 @@ impl soroban_sdk::SpecTypeDef for UnusedCycleA {
 static __SPEC_XDR_TYPE_UNUSEDCYCLEA: [u8; UnusedCycleA::spec_xdr().len()] =
     UnusedCycleA::spec_xdr();
 impl UnusedCycleA {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -13643,6 +13926,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedCycle
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UnusedCycleA::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["b"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -13662,6 +13946,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UnusedCycleA> for soroban_sdk::Va
         env: &soroban_sdk::Env,
         val: &UnusedCycleA,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UnusedCycleA::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["b"];
         let vals: [Val; 1usize] = [(&val.b).try_into_val(env).map_err(|_| ConversionError)?];
@@ -13750,6 +14035,9 @@ impl soroban_sdk::SpecTypeDef for UnusedCycleB {
 static __SPEC_XDR_TYPE_UNUSEDCYCLEB: [u8; UnusedCycleB::spec_xdr().len()] =
     UnusedCycleB::spec_xdr();
 impl UnusedCycleB {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -13777,6 +14065,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedCycle
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UnusedCycleB::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["a"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -13796,6 +14085,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UnusedCycleB> for soroban_sdk::Va
         env: &soroban_sdk::Env,
         val: &UnusedCycleB,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UnusedCycleB::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["a"];
         let vals: [Val; 1usize] = [(&val.a).try_into_val(env).map_err(|_| ConversionError)?];
@@ -13889,6 +14179,9 @@ impl soroban_sdk::SpecTypeDef for UnusedSelfRef {
 static __SPEC_XDR_TYPE_UNUSEDSELFREF: [u8; UnusedSelfRef::spec_xdr().len()] =
     UnusedSelfRef::spec_xdr();
 impl UnusedSelfRef {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -13918,6 +14211,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedSelfR
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UnusedSelfRef::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["children"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -13937,6 +14231,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UnusedSelfRef> for soroban_sdk::V
         env: &soroban_sdk::Env,
         val: &UnusedSelfRef,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UnusedSelfRef::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["children"];
         let vals: [Val; 1usize] = [(&val.children)
@@ -14236,6 +14531,9 @@ impl soroban_sdk::SpecTypeDef for UnusedNonContractFnParam {
 static __SPEC_XDR_TYPE_UNUSEDNONCONTRACTFNPARAM: [u8; UnusedNonContractFnParam::spec_xdr().len()] =
     UnusedNonContractFnParam::spec_xdr();
 impl UnusedNonContractFnParam {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -14263,6 +14561,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedNonCo
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UnusedNonContractFnParam::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["x"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -14282,6 +14581,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UnusedNonContractFnParam> for sor
         env: &soroban_sdk::Env,
         val: &UnusedNonContractFnParam,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UnusedNonContractFnParam::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["x"];
         let vals: [Val; 1usize] = [(&val.x).try_into_val(env).map_err(|_| ConversionError)?];
@@ -14377,6 +14677,9 @@ impl soroban_sdk::SpecTypeDef for UnusedNonContractFnReturn {
 static __SPEC_XDR_TYPE_UNUSEDNONCONTRACTFNRETURN: [u8; UnusedNonContractFnReturn::spec_xdr()
     .len()] = UnusedNonContractFnReturn::spec_xdr();
 impl UnusedNonContractFnReturn {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -14404,6 +14707,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedNonCo
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UnusedNonContractFnReturn::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["x"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -14423,6 +14727,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UnusedNonContractFnReturn> for so
         env: &soroban_sdk::Env,
         val: &UnusedNonContractFnReturn,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UnusedNonContractFnReturn::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["x"];
         let vals: [Val; 1usize] = [(&val.x).try_into_val(env).map_err(|_| ConversionError)?];
@@ -14513,6 +14818,9 @@ impl soroban_sdk::SpecTypeDef for UnusedNonPubStruct {
 static __SPEC_XDR_TYPE_UNUSEDNONPUBSTRUCT: [u8; UnusedNonPubStruct::spec_xdr().len()] =
     UnusedNonPubStruct::spec_xdr();
 impl UnusedNonPubStruct {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -14540,6 +14848,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UnusedNonPu
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UnusedNonPubStruct::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["x"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -14559,6 +14868,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UnusedNonPubStruct> for soroban_s
         env: &soroban_sdk::Env,
         val: &UnusedNonPubStruct,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UnusedNonPubStruct::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["x"];
         let vals: [Val; 1usize] = [(&val.x).try_into_val(env).map_err(|_| ConversionError)?];

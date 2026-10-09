@@ -7,7 +7,7 @@ use stellar_xdr::StringM;
 
 use crate::{
     doc::docs_from_attrs,
-    spec::{const_view_string, const_view_type_def, spec_type_def_gen},
+    spec::{const_view_string, const_view_type_def, spec_link_fn, spec_type_def_gen},
 };
 
 // TODO: Add field attribute for including/excluding fields in types.
@@ -73,6 +73,7 @@ pub fn derive_type_struct(
     // Generated code spec. The spec entry is rendered as the equivalent
     // const::ScSpecEntry, which the contract crate encodes to XDR at compile time.
     let spec_type_def = spec_type_def_gen(path, ident, None, None, None);
+    let spec_link = spec_link_fn();
     let spec_gen = {
         let doc = const_view_string(path, &docs_from_attrs(attrs));
         // Set to empty string always because the field is no longer used.
@@ -103,6 +104,8 @@ pub fn derive_type_struct(
             static #spec_ident: [u8; #ident::spec_xdr().len()] = #ident::spec_xdr();
 
             impl #ident {
+                #spec_link
+
                 const __SPEC_XDR_ENTRY: #path::xdr::r#const::ScSpecEntry = #spec_entry;
 
                 pub const fn spec_xdr() -> [u8; #ident::__SPEC_XDR_ENTRY.const_xdr_len()] {
@@ -121,6 +124,7 @@ pub fn derive_type_struct(
         impl #path::TryFromVal<#path::Env, #path::Val> for #ident {
             type Error = #path::ConversionError;
             fn try_from_val(env: &#path::Env, val: &#path::Val) -> Result<Self, #path::ConversionError> {
+                #ident::__spec_link();
                 use #path::{TryIntoVal,EnvBase,ConversionError,Val,MapObject};
                 const KEYS: [&'static str; #field_count_usize] = [#(#field_names),*];
                 let mut vals: [Val; #field_count_usize] = [Val::VOID.to_val(); #field_count_usize];
@@ -135,6 +139,7 @@ pub fn derive_type_struct(
         impl #path::TryFromVal<#path::Env, #ident> for #path::Val {
             type Error = #path::ConversionError;
             fn try_from_val(env: &#path::Env, val: &#ident) -> Result<Self, #path::ConversionError> {
+                #ident::__spec_link();
                 use #path::{TryIntoVal,EnvBase,ConversionError,Val};
                 const KEYS: [&'static str; #field_count_usize] = [#(#field_names),*];
                 let vals: [Val; #field_count_usize] = [

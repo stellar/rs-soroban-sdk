@@ -1,0 +1,15 @@
+[package]
+name = "test_spec_lib_no_lto"
+version.workspace = true
+authors = ["Stellar Development Foundation <info@stellar.org>"]
+license = "Apache-2.0"
+edition = "2021"
+publish = false
+rust-version.workspace = true
+
+[lib]
+crate-type = ["rlib"]
+doctest = false
+
+[dependencies]
+soroban-sdk = {path = "../../soroban-sdk"}

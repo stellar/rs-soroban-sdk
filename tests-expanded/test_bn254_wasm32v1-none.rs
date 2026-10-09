@@ -44,6 +44,9 @@ impl soroban_sdk::SpecTypeDef for MockProof {
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_MOCKPROOF: [u8; MockProof::spec_xdr().len()] = MockProof::spec_xdr();
 impl MockProof {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -76,6 +79,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MockProof {
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        MockProof::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 2usize] = ["g1", "g2"];
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -98,6 +102,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, MockProof> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &MockProof,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        MockProof::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 2usize] = ["g1", "g2"];
         let vals: [Val; 2usize] = [

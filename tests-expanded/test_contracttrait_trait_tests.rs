@@ -79,6 +79,9 @@ impl soroban_sdk::SpecTypeDef for MyStruct {
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_MYSTRUCT: [u8; MyStruct::spec_xdr().len()] = MyStruct::spec_xdr();
 impl MyStruct {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -111,6 +114,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MyStruct {
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        MyStruct::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 2usize] = ["a", "b"];
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -133,6 +137,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, MyStruct> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &MyStruct,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        MyStruct::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 2usize] = ["a", "b"];
         let vals: [Val; 2usize] = [
@@ -548,6 +553,9 @@ impl soroban_sdk::SpecTypeDef for MyEnumUnit {
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_MYENUMUNIT: [u8; MyEnumUnit::spec_xdr().len()] = MyEnumUnit::spec_xdr();
 impl MyEnumUnit {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtEnumV0(
             soroban_sdk::xdr::r#const::ScSpecUdtEnumV0 {
@@ -581,6 +589,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MyEnumUnit 
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        MyEnumUnit::__spec_link();
         use soroban_sdk::TryIntoVal;
         let discriminant: u32 = val.try_into_val(env)?;
         Ok(match discriminant {
@@ -597,6 +606,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, MyEnumUnit> for soroban_sdk::Val 
         env: &soroban_sdk::Env,
         val: &MyEnumUnit,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        MyEnumUnit::__spec_link();
         Ok(match val {
             MyEnumUnit::A => 1u32.into(),
             MyEnumUnit::B => 2u32.into(),
@@ -944,6 +954,9 @@ impl soroban_sdk::SpecTypeDef for MyEnumVariants {
 static __SPEC_XDR_TYPE_MYENUMVARIANTS: [u8; MyEnumVariants::spec_xdr().len()] =
     MyEnumVariants::spec_xdr();
 impl MyEnumVariants {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(
             soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
@@ -997,6 +1010,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for MyEnumVaria
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        MyEnumVariants::__spec_link();
         use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
         const CASES: &'static [&'static str] = &["VarA", "VarB", "VarC"];
         let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -1047,6 +1061,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, MyEnumVariants> for soroban_sdk::
         env: &soroban_sdk::Env,
         val: &MyEnumVariants,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        MyEnumVariants::__spec_link();
         use soroban_sdk::{TryFromVal, TryIntoVal};
         match val {
             MyEnumVariants::VarA => {
