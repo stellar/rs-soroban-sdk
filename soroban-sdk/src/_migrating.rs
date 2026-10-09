@@ -17,6 +17,10 @@
 //! - [It is now an error to name types, events, and errors with type names that are already used
 //!   by types within the soroban-sdk][v30_sdk_type_names].
 //!
+//! - Integer enums defined with [`contracttype`] can no longer be passed to [`panic_with_error!`]
+//!   or [`Env::panic_with_error`]. Their support was accidental. Only [`contracterror`] types are
+//!   intended to be used with [`panic_with_error!`].
+//!
 //! The following changes are largely internal details, but are included here for visibility for
 //! tool builders who may be inspecting Wasm and contract spec internal data.
 //!
@@ -29,6 +33,8 @@
 //! [v30_duplicate_names]: v30_duplicate_names
 //! [v30_sdk_type_names]: v30_sdk_type_names
 //! [v30_spec_markers]: v30_spec_markers
+//! [`panic_with_error!`]: crate::panic_with_error
+//! [`Env::panic_with_error`]: crate::Env::panic_with_error
 //!
 //! # Migrating from v28 to v29
 //!
