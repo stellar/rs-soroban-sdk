@@ -1,7 +1,7 @@
 #![no_std]
 use soroban_sdk::{
     assert_with_error, contract, contracterror, contractevent, contractimpl, contracttype,
-    panic_with_error, Env, Map, Symbol, Vec,
+    panic_with_error, Env, Event, Map, Symbol, Vec,
 };
 
 #[contract]
@@ -207,6 +207,32 @@ pub struct UsedEventWithRefs<'a> {
     #[topic]
     pub kind: &'a UsedRefTopicType,
     pub payload: &'a UsedRefDataType,
+}
+
+// Used as event published with Events::publish_event, with custom type in data
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedPublishEventDataType {
+    pub val: u32,
+}
+
+#[contractevent]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedEventViaPublishEvent {
+    pub payload: UsedPublishEventDataType,
+}
+
+// Used as event published with the Event trait's publish fn, with custom type in data
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedTraitPublishDataType {
+    pub val: u32,
+}
+
+#[contractevent]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedEventViaTraitPublish {
+    pub payload: UsedTraitPublishDataType,
 }
 
 // Used as element in tuple fn param
@@ -487,6 +513,19 @@ impl Contract {
             payload: &payload,
         }
         .publish(&env);
+    }
+
+    pub fn publish_via_publish_event(env: Env) {
+        env.events().publish_event(&UsedEventViaPublishEvent {
+            payload: UsedPublishEventDataType { val: 1 },
+        });
+    }
+
+    pub fn publish_via_trait_publish(env: Env) {
+        let event = UsedEventViaTraitPublish {
+            payload: UsedTraitPublishDataType { val: 1 },
+        };
+        <_ as Event>::publish(&event, &env);
     }
 }
 
