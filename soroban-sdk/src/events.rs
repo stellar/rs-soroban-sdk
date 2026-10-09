@@ -63,8 +63,8 @@ pub trait Event {
     fn data(&self, env: &Env) -> Val;
 
     fn publish(&self, env: &Env) {
-        internal::Env::contract_event(env, self.topics(env).to_object(), self.data(env))
-            .unwrap_infallible();
+        #[allow(deprecated)]
+        env.events().publish(self.topics(env), self.data(env));
     }
 
     /// Convert this event and the given contract_id into a [`xdr::ContractEvent`] object.
