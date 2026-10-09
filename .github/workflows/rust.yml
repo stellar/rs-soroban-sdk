@@ -149,8 +149,8 @@ jobs:
         version: 0.6.44
     - run: cargo version
     - run: make build-libs
-    - name: Build test wasms on the host where docker cannot run linux containers
-      if: runner.os != 'Linux'
+    - name: Build test wasms on the host outside Linux x64
+      if: runner.os != 'Linux' || runner.arch != 'X64'
       run: echo TEST_WASMS_BUILD_WITH_DOCKER= >> $GITHUB_ENV
     - run: make build-test-wasms TEST_CRATES_RUSTUP_TOOLCHAIN=$RUSTUP_TOOLCHAIN
     - name: Upload test wasms
