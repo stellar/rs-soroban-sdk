@@ -104,7 +104,7 @@ impl Events {
     #[inline(always)]
     pub fn publish_event<E: Event + SpecShakingMarker + ?Sized>(&self, e: &E) {
         let env = self.env();
-        E::spec_shaking_marker();
+        <E as SpecShakingMarker>::spec_shaking_marker();
         internal::Env::contract_event(env, e.topics(env).to_object(), e.data(env))
             .unwrap_infallible();
     }
