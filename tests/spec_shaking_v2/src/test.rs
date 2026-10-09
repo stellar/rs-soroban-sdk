@@ -51,6 +51,8 @@ fn test_spec_shaking_v2() {
         "publish_nested_topic",
         "publish_nested_data",
         "publish_ref_event",
+        "publish_via_publish_event",
+        "publish_via_trait_publish",
         "with_lib_struct",
         "with_wasm_imported",
         "with_option",
@@ -114,6 +116,12 @@ fn test_spec_shaking_v2() {
         "UsedRefDataType",
         "UsedRefDataInner",
         "UsedEventWithRefs",
+        // event published with Events::publish_event
+        "UsedPublishEventDataType",
+        "UsedEventViaPublishEvent",
+        // event published with the Event trait's publish fn
+        "UsedTraitPublishDataType",
+        "UsedEventViaTraitPublish",
         // tuple element types in fn params/returns
         "UsedTupleElement",
         "UsedTupleReturnElement",

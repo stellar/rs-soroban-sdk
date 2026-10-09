@@ -63,7 +63,8 @@ pub trait Event {
     fn data(&self, env: &Env) -> Val;
 
     fn publish(&self, env: &Env) {
-        env.events().publish_event(self);
+        internal::Env::contract_event(env, self.topics(env).to_object(), self.data(env))
+            .unwrap_infallible();
     }
 
     /// Convert this event and the given contract_id into a [`xdr::ContractEvent`] object.
@@ -100,9 +101,7 @@ impl Events {
     /// Publish an event defined using the [`contractevent`][crate::contractevent] macro.
     #[inline(always)]
     pub fn publish_event(&self, e: &(impl Event + ?Sized)) {
-        let env = self.env();
-        internal::Env::contract_event(env, e.topics(env).to_object(), e.data(env))
-            .unwrap_infallible();
+        e.publish(self.env());
     }
 
     /// Publish an event.

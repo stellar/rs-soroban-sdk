@@ -236,10 +236,17 @@ impl<'a> soroban_sdk::Event for Transfer<'a> {
             .unwrap_infallible()
             .into()
     }
+    fn publish(&self, env: &soroban_sdk::Env) {
+        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        #[allow(deprecated)]
+        env.events().publish(
+            <Self as soroban_sdk::Event>::topics(self, env),
+            <Self as soroban_sdk::Event>::data(self, env),
+        );
+    }
 }
 impl<'a> Transfer<'a> {
     pub fn publish(&self, env: &soroban_sdk::Env) {
-        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }

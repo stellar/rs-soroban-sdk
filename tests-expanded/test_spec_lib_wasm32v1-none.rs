@@ -2988,10 +2988,17 @@ impl soroban_sdk::Event for EventA {
             .unwrap_infallible()
             .into()
     }
+    fn publish(&self, env: &soroban_sdk::Env) {
+        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        #[allow(deprecated)]
+        env.events().publish(
+            <Self as soroban_sdk::Event>::topics(self, env),
+            <Self as soroban_sdk::Event>::data(self, env),
+        );
+    }
 }
 impl EventA {
     pub fn publish(&self, env: &soroban_sdk::Env) {
-        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
@@ -3152,10 +3159,17 @@ impl soroban_sdk::Event for EventB {
             .unwrap_infallible()
             .into()
     }
+    fn publish(&self, env: &soroban_sdk::Env) {
+        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        #[allow(deprecated)]
+        env.events().publish(
+            <Self as soroban_sdk::Event>::topics(self, env),
+            <Self as soroban_sdk::Event>::data(self, env),
+        );
+    }
 }
 impl EventB {
     pub fn publish(&self, env: &soroban_sdk::Env) {
-        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
@@ -3312,10 +3326,17 @@ impl soroban_sdk::Event for EventC {
             .unwrap_infallible()
             .into()
     }
+    fn publish(&self, env: &soroban_sdk::Env) {
+        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        #[allow(deprecated)]
+        env.events().publish(
+            <Self as soroban_sdk::Event>::topics(self, env),
+            <Self as soroban_sdk::Event>::data(self, env),
+        );
+    }
 }
 impl EventC {
     pub fn publish(&self, env: &soroban_sdk::Env) {
-        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
@@ -3431,10 +3452,17 @@ impl soroban_sdk::Event for EventD {
             .unwrap_infallible()
             .into()
     }
+    fn publish(&self, env: &soroban_sdk::Env) {
+        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        #[allow(deprecated)]
+        env.events().publish(
+            <Self as soroban_sdk::Event>::topics(self, env),
+            <Self as soroban_sdk::Event>::data(self, env),
+        );
+    }
 }
 impl EventD {
     pub fn publish(&self, env: &soroban_sdk::Env) {
-        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }
