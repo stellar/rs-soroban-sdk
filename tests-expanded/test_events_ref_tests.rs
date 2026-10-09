@@ -236,10 +236,6 @@ impl<'a> soroban_sdk::Event for Transfer<'a> {
             .unwrap_infallible()
             .into()
     }
-    #[allow(deprecated)]
-    fn spec_shaking_marker(&self) {
-        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-    }
 }
 impl<'a> Transfer<'a> {
     pub fn publish(&self, env: &soroban_sdk::Env) {

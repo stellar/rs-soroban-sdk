@@ -520,10 +520,6 @@ impl soroban_sdk::Event for AttributeEvent {
             .unwrap_infallible()
             .into()
     }
-    #[allow(deprecated)]
-    fn spec_shaking_marker(&self) {
-        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-    }
 }
 impl AttributeEvent {
     pub fn publish(&self, env: &soroban_sdk::Env) {
