@@ -9,7 +9,11 @@ use syn::{
 
 use stellar_xdr::ScSpecUdtEnumCaseV0;
 
-use crate::{doc::docs_from_attrs, map_type::const_view_string, shaking};
+use crate::{
+    doc::docs_from_attrs,
+    shaking,
+    spec::{const_view_string, spec_type_def_gen},
+};
 
 // TODO: Add conversions to/from ScVal types.
 
@@ -76,10 +80,10 @@ pub fn derive_type_enum_int(
 
     // Generated code spec. The spec entry is rendered as the equivalent
     // const::ScSpecEntry, which the contract crate encodes to XDR at compile time.
+    let spec_type_def = spec_type_def_gen(path, enum_ident, None, None, None);
     let spec_gen = {
         let doc = const_view_string(path, &spec.doc);
         let lib = const_view_string(path, &spec.lib);
-        let name = const_view_string(path, &spec.name);
         let cases = spec.cases.iter().map(|c| {
             let doc = const_view_string(path, &c.doc);
             let name = const_view_string(path, &c.name);
@@ -90,7 +94,7 @@ pub fn derive_type_enum_int(
             #path::xdr::r#const::ScSpecEntry::UdtEnumV0(#path::xdr::r#const::ScSpecUdtEnumV0 {
                 doc: #doc,
                 lib: #lib,
-                name: #name,
+                name: #path::xdr::r#const::StringM::try_from_str_or_panic(<#enum_ident as #path::SpecName>::SPEC_NAME),
                 cases: #path::xdr::r#const::VecM::try_from_slice_or_panic(&[#(#cases),*]),
             })
         };
@@ -126,6 +130,8 @@ pub fn derive_type_enum_int(
 
     // Output.
     let mut output = quote! {
+        #spec_type_def
+
         #spec_gen
 
         #spec_shaking_impl

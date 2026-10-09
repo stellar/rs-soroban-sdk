@@ -145,11 +145,11 @@ impl ContractA {
                     soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"a"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Address,
+                        type_: <Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ]),
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecTypeDef::U64,
+                    <u64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 ]),
             },
         );
@@ -769,7 +769,7 @@ mod test_a {
                                 name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                                     b"signature_payload",
                                 ),
-                                type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Val,
+                                type_: <Val as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                             },
                             soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
@@ -778,7 +778,7 @@ mod test_a {
                                 name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                                     b"signatures",
                                 ),
-                                type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Val,
+                                type_: <Val as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                             },
                             soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
@@ -787,7 +787,7 @@ mod test_a {
                                 name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                                     b"auth_context",
                                 ),
-                                type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Val,
+                                type_: <Val as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                             },
                         ]),
                         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
@@ -827,10 +827,12 @@ mod test_a {
             soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
                 <Contract>::__check_auth(
                     <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                        <_ as soroban_sdk::TryFromValForContractFn<
+                        <_ as soroban_sdk::TryFromValForCheckAuthPayload<
                             soroban_sdk::Env,
                             soroban_sdk::Val,
-                        >>::try_from_val_for_contract_fn(&env, &arg_0),
+                        >>::try_from_val_for_check_auth_payload(
+                            &env, &arg_0
+                        ),
                     ),
                     <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                         <_ as soroban_sdk::TryFromValForContractFn<
@@ -1079,6 +1081,34 @@ mod test_a {
                 ::core::cmp::Ordering::Equal
             }
         }
+        impl soroban_sdk::SpecName for Error {
+            const SPEC_NAME: &'static str = {
+                const NAME: &str = "::test_auth::test_a::auth_decline::Error";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `Error` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_auth::test_a::auth_decline::Error`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
+            };
+        }
+        impl soroban_sdk::SpecTypeDef for Error {
+            const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+                soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                    soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                        ),
+                    },
+                );
+        }
         #[doc(hidden)]
         #[allow(dead_code)]
         static __SPEC_XDR_TYPE_ERROR: [u8; Error::spec_xdr().len()] = Error::spec_xdr();
@@ -1088,7 +1118,9 @@ mod test_a {
                     soroban_sdk::xdr::r#const::ScSpecUdtErrorEnumV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"Error"),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                            <Error as soroban_sdk::SpecName>::SPEC_NAME,
+                        ),
                         cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                             soroban_sdk::xdr::r#const::ScSpecUdtErrorEnumCaseV0 {
                                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
@@ -1259,7 +1291,7 @@ mod test_a {
                                 name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                                     b"signature_payload",
                                 ),
-                                type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Val,
+                                type_: <Val as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                             },
                             soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
@@ -1268,7 +1300,7 @@ mod test_a {
                                 name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                                     b"signatures",
                                 ),
-                                type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Val,
+                                type_: <Val as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                             },
                             soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
@@ -1277,16 +1309,11 @@ mod test_a {
                                 name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                                     b"auth_context",
                                 ),
-                                type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Val,
+                                type_: <Val as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                             },
                         ]),
                         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                            soroban_sdk::xdr::r#const::ScSpecTypeDef::Result(
-                                &soroban_sdk::xdr::r#const::ScSpecTypeResult {
-                                    ok_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Void,
-                                    error_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Error,
-                                },
-                            ),
+                            <Result<(), Error> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                         ]),
                     },
                 );
@@ -1324,10 +1351,12 @@ mod test_a {
             soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
                 <Contract>::__check_auth(
                     <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                        <_ as soroban_sdk::TryFromValForContractFn<
+                        <_ as soroban_sdk::TryFromValForCheckAuthPayload<
                             soroban_sdk::Env,
                             soroban_sdk::Val,
-                        >>::try_from_val_for_contract_fn(&env, &arg_0),
+                        >>::try_from_val_for_check_auth_payload(
+                            &env, &arg_0
+                        ),
                     ),
                     <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                         <_ as soroban_sdk::TryFromValForContractFn<
@@ -1550,16 +1579,16 @@ impl ContractB {
                     soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"a"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Address,
+                        type_: <Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                     soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"sub"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Address,
+                        type_: <Address as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ]),
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecTypeDef::U64,
+                    <u64 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 ]),
             },
         );
@@ -2292,7 +2321,7 @@ mod test_b {
                                 name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                                     b"signature_payload",
                                 ),
-                                type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Val,
+                                type_: <Val as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                             },
                             soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
@@ -2301,7 +2330,7 @@ mod test_b {
                                 name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                                     b"signatures",
                                 ),
-                                type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Val,
+                                type_: <Val as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                             },
                             soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
@@ -2310,7 +2339,7 @@ mod test_b {
                                 name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                                     b"auth_context",
                                 ),
-                                type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Val,
+                                type_: <Val as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                             },
                         ]),
                         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
@@ -2350,10 +2379,12 @@ mod test_b {
             soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
                 <Contract>::__check_auth(
                     <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                        <_ as soroban_sdk::TryFromValForContractFn<
+                        <_ as soroban_sdk::TryFromValForCheckAuthPayload<
                             soroban_sdk::Env,
                             soroban_sdk::Val,
-                        >>::try_from_val_for_contract_fn(&env, &arg_0),
+                        >>::try_from_val_for_check_auth_payload(
+                            &env, &arg_0
+                        ),
                     ),
                     <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                         <_ as soroban_sdk::TryFromValForContractFn<
@@ -2602,6 +2633,34 @@ mod test_b {
                 ::core::cmp::Ordering::Equal
             }
         }
+        impl soroban_sdk::SpecName for Error {
+            const SPEC_NAME: &'static str = {
+                const NAME: &str = "::test_auth::test_b::auth_decline::Error";
+                const CHECKED_NAME: &str = {
+                    if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                        {
+                            ::core::panicking::panic_fmt(
+                                format_args!(
+                                    "type `Error` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_auth::test_b::auth_decline::Error`",
+                                ),
+                            );
+                        }
+                    }
+                    NAME
+                };
+                CHECKED_NAME
+            };
+        }
+        impl soroban_sdk::SpecTypeDef for Error {
+            const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+                soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(
+                    soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                            <Self as soroban_sdk::SpecName>::SPEC_NAME,
+                        ),
+                    },
+                );
+        }
         #[doc(hidden)]
         #[allow(dead_code)]
         static __SPEC_XDR_TYPE_ERROR: [u8; Error::spec_xdr().len()] = Error::spec_xdr();
@@ -2611,7 +2670,9 @@ mod test_b {
                     soroban_sdk::xdr::r#const::ScSpecUdtErrorEnumV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
-                        name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"Error"),
+                        name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                            <Error as soroban_sdk::SpecName>::SPEC_NAME,
+                        ),
                         cases: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
                             soroban_sdk::xdr::r#const::ScSpecUdtErrorEnumCaseV0 {
                                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
@@ -2782,7 +2843,7 @@ mod test_b {
                                 name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                                     b"signature_payload",
                                 ),
-                                type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Val,
+                                type_: <Val as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                             },
                             soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
@@ -2791,7 +2852,7 @@ mod test_b {
                                 name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                                     b"signatures",
                                 ),
-                                type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Val,
+                                type_: <Val as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                             },
                             soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                                 doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
@@ -2800,16 +2861,11 @@ mod test_b {
                                 name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                                     b"auth_context",
                                 ),
-                                type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Val,
+                                type_: <Val as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                             },
                         ]),
                         outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                            soroban_sdk::xdr::r#const::ScSpecTypeDef::Result(
-                                &soroban_sdk::xdr::r#const::ScSpecTypeResult {
-                                    ok_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Void,
-                                    error_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Error,
-                                },
-                            ),
+                            <Result<(), Error> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                         ]),
                     },
                 );
@@ -2847,10 +2903,12 @@ mod test_b {
             soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
                 <Contract>::__check_auth(
                     <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
-                        <_ as soroban_sdk::TryFromValForContractFn<
+                        <_ as soroban_sdk::TryFromValForCheckAuthPayload<
                             soroban_sdk::Env,
                             soroban_sdk::Val,
-                        >>::try_from_val_for_contract_fn(&env, &arg_0),
+                        >>::try_from_val_for_check_auth_payload(
+                            &env, &arg_0
+                        ),
                     ),
                     <_ as soroban_sdk::unwrap::UnwrapOptimized>::unwrap_optimized(
                         <_ as soroban_sdk::TryFromValForContractFn<

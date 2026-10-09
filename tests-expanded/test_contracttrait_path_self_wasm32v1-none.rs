@@ -78,7 +78,7 @@ impl SelfPathTraitSpec {
                 ),
                 inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                    <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 ]),
             },
         );
@@ -158,7 +158,7 @@ impl ContractSelfPath {
                 ),
                 inputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
+                    <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 ]),
             },
         );

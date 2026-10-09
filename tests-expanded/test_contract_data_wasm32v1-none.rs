@@ -60,12 +60,12 @@ impl Contract {
                     soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"key"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Symbol,
+                        type_: <Symbol as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                     soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"val"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Symbol,
+                        type_: <Symbol as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ]),
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),
@@ -101,15 +101,11 @@ impl Contract {
                     soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"key"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Symbol,
+                        type_: <Symbol as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ]),
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecTypeDef::Option(
-                        &soroban_sdk::xdr::r#const::ScSpecTypeOption {
-                            value_type: &soroban_sdk::xdr::r#const::ScSpecTypeDef::Symbol,
-                        },
-                    ),
+                    <Option<Symbol> as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 ]),
             },
         );
@@ -143,7 +139,7 @@ impl Contract {
                     soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"key"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Symbol,
+                        type_: <Symbol as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ]),
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[]),

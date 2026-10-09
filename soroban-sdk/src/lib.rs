@@ -1219,7 +1219,7 @@ pub use env::VecObject;
 mod try_from_val_for_contract_fn;
 #[doc(hidden)]
 #[allow(deprecated)]
-pub use try_from_val_for_contract_fn::TryFromValForContractFn;
+pub use try_from_val_for_contract_fn::{TryFromValForCheckAuthPayload, TryFromValForContractFn};
 
 mod into_val_for_contract_fn;
 #[doc(hidden)]
@@ -1229,6 +1229,10 @@ pub use into_val_for_contract_fn::IntoValForContractFn;
 mod spec_shaking;
 #[doc(hidden)]
 pub use spec_shaking::SpecShakingMarker;
+
+mod spec_type_def;
+#[doc(hidden)]
+pub use spec_type_def::{SpecName, SpecTypeDef};
 
 #[doc(hidden)]
 #[deprecated(note = "use storage")]

@@ -60,11 +60,11 @@ impl Contract {
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(
                             b"void_arg",
                         ),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Void,
+                        type_: <() as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ]),
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecTypeDef::Void,
+                    <() as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 ]),
             },
         );
@@ -98,24 +98,11 @@ impl Contract {
                     soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"arg"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Tuple(
-                            &soroban_sdk::xdr::r#const::ScSpecTypeTuple {
-                                value_types:
-                                    soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                                        soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
-                                    ]),
-                            },
-                        ),
+                        type_: <(u32,) as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ]),
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecTypeDef::Tuple(
-                        &soroban_sdk::xdr::r#const::ScSpecTypeTuple {
-                            value_types: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
-                                &[soroban_sdk::xdr::r#const::ScSpecTypeDef::U32],
-                            ),
-                        },
-                    ),
+                    <(u32,) as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 ]),
             },
         );
@@ -149,28 +136,11 @@ impl Contract {
                     soroban_sdk::xdr::r#const::ScSpecFunctionInputV0 {
                         doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
                         name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"arg"),
-                        type_: soroban_sdk::xdr::r#const::ScSpecTypeDef::Tuple(
-                            &soroban_sdk::xdr::r#const::ScSpecTypeTuple {
-                                value_types:
-                                    soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                                        soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
-                                        soroban_sdk::xdr::r#const::ScSpecTypeDef::I64,
-                                    ]),
-                            },
-                        ),
+                        type_: <(u32, i64) as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                     },
                 ]),
                 outputs: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
-                    soroban_sdk::xdr::r#const::ScSpecTypeDef::Tuple(
-                        &soroban_sdk::xdr::r#const::ScSpecTypeTuple {
-                            value_types: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(
-                                &[
-                                    soroban_sdk::xdr::r#const::ScSpecTypeDef::U32,
-                                    soroban_sdk::xdr::r#const::ScSpecTypeDef::I64,
-                                ],
-                            ),
-                        },
-                    ),
+                    <(u32, i64) as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
                 ]),
             },
         );

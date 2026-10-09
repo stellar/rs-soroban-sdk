@@ -26,11 +26,11 @@ use soroban_sdk::{
     vec, Address, Bytes, BytesN, ConversionError, Duration, Env, Error, IntoVal, Map, MuxedAddress,
     String, Symbol, Timepoint, TryFromVal, Val, Vec, I256, U256,
 };
-// TryFromValForContractFn is deprecated for use outside the SDK, but it is the
-// conversion a contract function performs, and so is what these tests convert
-// with where a type has no TryFromVal.
+// TryFromValForCheckAuthPayload is deprecated for use outside the SDK, but it
+// is the conversion a __check_auth function performs on its signature payload,
+// and so is what these tests convert with for Hash, which has no TryFromVal.
 #[allow(deprecated)]
-use soroban_sdk::TryFromValForContractFn;
+use soroban_sdk::TryFromValForCheckAuthPayload;
 
 #[test]
 fn test_void() {
@@ -168,15 +168,15 @@ fn test_tuple_from_vec_of_other_len_panics() {
 fn test_crypto_hash() {
     let env = Env::default();
 
-    // Hash has no public TryFromVal, but a contract function converts the vals
-    // its caller supplies into it through TryFromValForContractFn, so that
-    // conversion is tested in the same way.
+    // Hash has no public TryFromVal, but a __check_auth function converts the
+    // signature payload its caller supplies into it through
+    // TryFromValForCheckAuthPayload, so that conversion is tested in the same
+    // way.
     for (name, val) in vals(&env) {
-        let converted =
-            <Hash<32> as TryFromValForContractFn<Env, Val>>::try_from_val_for_contract_fn(
-                &env, &val,
-            )
-            .is_ok();
+        let converted = <Hash<32> as TryFromValForCheckAuthPayload<Env, Val>>::try_from_val_for_check_auth_payload(
+            &env, &val,
+        )
+        .is_ok();
         assert_eq!(
             converted,
             name == "bytes32",
