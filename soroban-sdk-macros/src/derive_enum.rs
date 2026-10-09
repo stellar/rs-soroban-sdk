@@ -1,6 +1,6 @@
 use itertools::MultiUnzip;
 use proc_macro2::{Literal, TokenStream as TokenStream2};
-use quote::{format_ident, quote, ToTokens};
+use quote::{format_ident, quote};
 use syn::{
     ext::IdentExt as _, spanned::Spanned, Attribute, DataEnum, Error, Fields, Ident, Path,
     Visibility,
@@ -10,7 +10,6 @@ use stellar_xdr::{StringM, SCSYMBOL_LIMIT};
 
 use crate::{
     doc::docs_from_attrs,
-    shaking,
     spec::{const_view_string, const_view_type_def, spec_type_def_gen},
 };
 
@@ -201,31 +200,11 @@ pub fn derive_type_enum(
         }
     };
 
-    // SpecShakingMarker impl.
-    let spec_shaking_impl = {
-        // Flatten all variant field types for shaking calls, deduplicating
-        // to avoid redundant calls for types that appear in multiple variants.
-        let all_field_types =
-            itertools::Itertools::unique_by(variant_field_types.iter().flatten(), |t| {
-                t.to_token_stream().to_string()
-            });
-        shaking::generate_marker_impl(
-            path,
-            quote!(#enum_ident),
-            all_field_types.cloned(),
-            None,
-            None,
-            None,
-        )
-    };
-
     // Output.
     let mut output = quote! {
         #spec_type_def
 
         #spec_gen
-
-        #spec_shaking_impl
 
         impl #path::TryFromVal<#path::Env, #path::Val> for #enum_ident {
             type Error = #path::ConversionError;

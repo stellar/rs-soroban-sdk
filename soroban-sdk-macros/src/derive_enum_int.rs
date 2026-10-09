@@ -11,7 +11,6 @@ use stellar_xdr::ScSpecUdtEnumCaseV0;
 
 use crate::{
     doc::docs_from_attrs,
-    shaking,
     spec::{const_view_string, spec_type_def_gen},
 };
 
@@ -118,23 +117,11 @@ pub fn derive_type_enum_int(
         }
     };
 
-    // SpecShakingMarker impl.
-    let spec_shaking_impl = shaking::generate_marker_impl(
-        path,
-        quote!(#enum_ident),
-        std::iter::empty(),
-        None,
-        None,
-        None,
-    );
-
     // Output.
     let mut output = quote! {
         #spec_type_def
 
         #spec_gen
-
-        #spec_shaking_impl
 
         impl #path::TryFromVal<#path::Env, #path::Val> for #enum_ident {
             type Error = #path::ConversionError;

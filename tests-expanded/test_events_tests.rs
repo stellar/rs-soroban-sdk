@@ -200,12 +200,7 @@ impl Transfer {
 impl soroban_sdk::SpecShakingMarker for Transfer {
     #[doc(hidden)]
     #[inline(always)]
-    fn spec_shaking_marker() {
-        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Option<u64> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-    }
+    fn spec_shaking_marker() {}
 }
 impl soroban_sdk::Event for Transfer {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
@@ -315,10 +310,7 @@ impl SingleValue {
 impl soroban_sdk::SpecShakingMarker for SingleValue {
     #[doc(hidden)]
     #[inline(always)]
-    fn spec_shaking_marker() {
-        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-    }
+    fn spec_shaking_marker() {}
 }
 impl soroban_sdk::Event for SingleValue {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
@@ -416,9 +408,7 @@ impl SingleValueVoid {
 impl soroban_sdk::SpecShakingMarker for SingleValueVoid {
     #[doc(hidden)]
     #[inline(always)]
-    fn spec_shaking_marker() {
-        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-    }
+    fn spec_shaking_marker() {}
 }
 impl soroban_sdk::Event for SingleValueVoid {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
@@ -518,11 +508,7 @@ impl VecValues {
 impl soroban_sdk::SpecShakingMarker for VecValues {
     #[doc(hidden)]
     #[inline(always)]
-    fn spec_shaking_marker() {
-        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-    }
+    fn spec_shaking_marker() {}
 }
 impl soroban_sdk::Event for VecValues {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
@@ -633,11 +619,7 @@ impl MapValues {
 impl soroban_sdk::SpecShakingMarker for MapValues {
     #[doc(hidden)]
     #[inline(always)]
-    fn spec_shaking_marker() {
-        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-    }
+    fn spec_shaking_marker() {}
 }
 impl soroban_sdk::Event for MapValues {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {

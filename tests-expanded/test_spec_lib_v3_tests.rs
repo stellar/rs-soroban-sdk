@@ -49,13 +49,13 @@ impl ::core::cmp::PartialEq for StructA {
 }
 impl soroban_sdk::SpecName for StructA {
     const SPEC_NAME: &'static str = {
-        const NAME: &str = "::test_spec_lib::StructA";
+        const NAME: &str = "::test_spec_lib_v3::StructA";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `StructA` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib::StructA`",
+                            "type `StructA` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::StructA`",
                         ),
                     );
                 }
@@ -101,14 +101,6 @@ impl StructA {
         );
     pub const fn spec_xdr() -> [u8; StructA::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { StructA::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for StructA {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <bool as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructA {
@@ -524,13 +516,13 @@ impl ::core::cmp::PartialEq for StructB {
 }
 impl soroban_sdk::SpecName for StructB {
     const SPEC_NAME: &'static str = {
-        const NAME: &str = "::test_spec_lib::StructB";
+        const NAME: &str = "::test_spec_lib_v3::StructB";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `StructB` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib::StructB`",
+                            "type `StructB` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::StructB`",
                         ),
                     );
                 }
@@ -576,14 +568,6 @@ impl StructB {
         );
     pub const fn spec_xdr() -> [u8; StructB::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { StructB::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for StructB {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <soroban_sdk::String as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructB {
@@ -999,13 +983,13 @@ impl ::core::cmp::PartialEq for StructC {
 }
 impl soroban_sdk::SpecName for StructC {
     const SPEC_NAME: &'static str = {
-        const NAME: &str = "::test_spec_lib::StructC";
+        const NAME: &str = "::test_spec_lib_v3::StructC";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `StructC` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib::StructC`",
+                            "type `StructC` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::StructC`",
                         ),
                     );
                 }
@@ -1051,14 +1035,6 @@ impl StructC {
         );
     pub const fn spec_xdr() -> [u8; StructC::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { StructC::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for StructC {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <Vec<u32> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructC {
@@ -1470,13 +1446,13 @@ impl ::core::cmp::PartialEq for StructTupleA {
 }
 impl soroban_sdk::SpecName for StructTupleA {
     const SPEC_NAME: &'static str = {
-        const NAME: &str = "::test_spec_lib::StructTupleA";
+        const NAME: &str = "::test_spec_lib_v3::StructTupleA";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `StructTupleA` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib::StructTupleA`",
+                            "type `StructTupleA` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::StructTupleA`",
                         ),
                     );
                 }
@@ -1523,14 +1499,6 @@ impl StructTupleA {
         );
     pub const fn spec_xdr() -> [u8; StructTupleA::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { StructTupleA::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for StructTupleA {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleA {
@@ -1897,13 +1865,13 @@ impl ::core::cmp::PartialEq for StructTupleB {
 }
 impl soroban_sdk::SpecName for StructTupleB {
     const SPEC_NAME: &'static str = {
-        const NAME: &str = "::test_spec_lib::StructTupleB";
+        const NAME: &str = "::test_spec_lib_v3::StructTupleB";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `StructTupleB` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib::StructTupleB`",
+                            "type `StructTupleB` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::StructTupleB`",
                         ),
                     );
                 }
@@ -1950,14 +1918,6 @@ impl StructTupleB {
         );
     pub const fn spec_xdr() -> [u8; StructTupleB::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { StructTupleB::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for StructTupleB {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <u128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <u128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleB {
@@ -2325,13 +2285,13 @@ impl ::core::cmp::PartialEq for StructTupleC {
 }
 impl soroban_sdk::SpecName for StructTupleC {
     const SPEC_NAME: &'static str = {
-        const NAME: &str = "::test_spec_lib::StructTupleC";
+        const NAME: &str = "::test_spec_lib_v3::StructTupleC";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `StructTupleC` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib::StructTupleC`",
+                            "type `StructTupleC` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::StructTupleC`",
                         ),
                     );
                 }
@@ -2378,14 +2338,6 @@ impl StructTupleC {
         );
     pub const fn spec_xdr() -> [u8; StructTupleC::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { StructTupleC::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for StructTupleC {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for StructTupleC {
@@ -2764,13 +2716,13 @@ impl ::core::cmp::PartialEq for EnumA {
 }
 impl soroban_sdk::SpecName for EnumA {
     const SPEC_NAME: &'static str = {
-        const NAME: &str = "::test_spec_lib::EnumA";
+        const NAME: &str = "::test_spec_lib_v3::EnumA";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `EnumA` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib::EnumA`",
+                            "type `EnumA` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::EnumA`",
                         ),
                     );
                 }
@@ -2831,11 +2783,6 @@ impl EnumA {
     pub const fn spec_xdr() -> [u8; EnumA::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { EnumA::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
-}
-impl soroban_sdk::SpecShakingMarker for EnumA {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {}
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumA {
     type Error = soroban_sdk::ConversionError;
@@ -3298,13 +3245,13 @@ impl ::core::cmp::PartialEq for EnumB {
 }
 impl soroban_sdk::SpecName for EnumB {
     const SPEC_NAME: &'static str = {
-        const NAME: &str = "::test_spec_lib::EnumB";
+        const NAME: &str = "::test_spec_lib_v3::EnumB";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `EnumB` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib::EnumB`",
+                            "type `EnumB` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::EnumB`",
                         ),
                     );
                 }
@@ -3371,13 +3318,6 @@ impl EnumB {
         );
     pub const fn spec_xdr() -> [u8; EnumB::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { EnumB::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for EnumB {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumB {
@@ -3963,13 +3903,13 @@ impl ::core::cmp::PartialEq for EnumC {
 }
 impl soroban_sdk::SpecName for EnumC {
     const SPEC_NAME: &'static str = {
-        const NAME: &str = "::test_spec_lib::EnumC";
+        const NAME: &str = "::test_spec_lib_v3::EnumC";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `EnumC` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib::EnumC`",
+                            "type `EnumC` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::EnumC`",
                         ),
                     );
                 }
@@ -4035,14 +3975,6 @@ impl EnumC {
         );
     pub const fn spec_xdr() -> [u8; EnumC::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { EnumC::__SPEC_XDR_ENTRY.const_to_xdr() }
-    }
-}
-impl soroban_sdk::SpecShakingMarker for EnumC {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {
-        <StructA as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <StructTupleA as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
     }
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumC {
@@ -4579,13 +4511,13 @@ impl ::core::cmp::PartialEq for EnumIntA {
 }
 impl soroban_sdk::SpecName for EnumIntA {
     const SPEC_NAME: &'static str = {
-        const NAME: &str = "::test_spec_lib::EnumIntA";
+        const NAME: &str = "::test_spec_lib_v3::EnumIntA";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `EnumIntA` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib::EnumIntA`",
+                            "type `EnumIntA` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::EnumIntA`",
                         ),
                     );
                 }
@@ -4637,11 +4569,6 @@ impl EnumIntA {
     pub const fn spec_xdr() -> [u8; EnumIntA::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { EnumIntA::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
-}
-impl soroban_sdk::SpecShakingMarker for EnumIntA {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {}
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntA {
     type Error = soroban_sdk::ConversionError;
@@ -4977,13 +4904,13 @@ impl ::core::cmp::PartialEq for EnumIntB {
 }
 impl soroban_sdk::SpecName for EnumIntB {
     const SPEC_NAME: &'static str = {
-        const NAME: &str = "::test_spec_lib::EnumIntB";
+        const NAME: &str = "::test_spec_lib_v3::EnumIntB";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `EnumIntB` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib::EnumIntB`",
+                            "type `EnumIntB` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::EnumIntB`",
                         ),
                     );
                 }
@@ -5035,11 +4962,6 @@ impl EnumIntB {
     pub const fn spec_xdr() -> [u8; EnumIntB::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { EnumIntB::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
-}
-impl soroban_sdk::SpecShakingMarker for EnumIntB {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {}
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntB {
     type Error = soroban_sdk::ConversionError;
@@ -5375,13 +5297,13 @@ impl ::core::cmp::PartialEq for EnumIntC {
 }
 impl soroban_sdk::SpecName for EnumIntC {
     const SPEC_NAME: &'static str = {
-        const NAME: &str = "::test_spec_lib::EnumIntC";
+        const NAME: &str = "::test_spec_lib_v3::EnumIntC";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `EnumIntC` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib::EnumIntC`",
+                            "type `EnumIntC` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::EnumIntC`",
                         ),
                     );
                 }
@@ -5433,11 +5355,6 @@ impl EnumIntC {
     pub const fn spec_xdr() -> [u8; EnumIntC::__SPEC_XDR_ENTRY.const_xdr_len()] {
         const { EnumIntC::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
-}
-impl soroban_sdk::SpecShakingMarker for EnumIntC {
-    #[doc(hidden)]
-    #[inline(always)]
-    fn spec_shaking_marker() {}
 }
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for EnumIntC {
     type Error = soroban_sdk::ConversionError;
@@ -5773,13 +5690,13 @@ impl ::core::cmp::PartialEq for ErrorA {
 }
 impl soroban_sdk::SpecName for ErrorA {
     const SPEC_NAME: &'static str = {
-        const NAME: &str = "::test_spec_lib::ErrorA";
+        const NAME: &str = "::test_spec_lib_v3::ErrorA";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `ErrorA` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib::ErrorA`",
+                            "type `ErrorA` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::ErrorA`",
                         ),
                     );
                 }
@@ -5996,13 +5913,13 @@ impl ::core::cmp::PartialEq for ErrorB {
 }
 impl soroban_sdk::SpecName for ErrorB {
     const SPEC_NAME: &'static str = {
-        const NAME: &str = "::test_spec_lib::ErrorB";
+        const NAME: &str = "::test_spec_lib_v3::ErrorB";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `ErrorB` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib::ErrorB`",
+                            "type `ErrorB` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::ErrorB`",
                         ),
                     );
                 }
@@ -6219,13 +6136,13 @@ impl ::core::cmp::PartialEq for ErrorC {
 }
 impl soroban_sdk::SpecName for ErrorC {
     const SPEC_NAME: &'static str = {
-        const NAME: &str = "::test_spec_lib::ErrorC";
+        const NAME: &str = "::test_spec_lib_v3::ErrorC";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `ErrorC` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib::ErrorC`",
+                            "type `ErrorC` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::ErrorC`",
                         ),
                     );
                 }
@@ -6438,13 +6355,13 @@ impl ::core::cmp::PartialEq for EventA {
 }
 impl soroban_sdk::SpecName for EventA {
     const SPEC_NAME: &'static str = {
-        const NAME: &str = "::test_spec_lib::EventA";
+        const NAME: &str = "::test_spec_lib_v3::EventA";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `EventA` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib::EventA`",
+                            "type `EventA` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::EventA`",
                         ),
                     );
                 }
@@ -6501,10 +6418,7 @@ impl EventA {
 impl soroban_sdk::SpecShakingMarker for EventA {
     #[doc(hidden)]
     #[inline(always)]
-    fn spec_shaking_marker() {
-        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <soroban_sdk::String as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-    }
+    fn spec_shaking_marker() {}
 }
 impl soroban_sdk::Event for EventA {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
@@ -6583,13 +6497,13 @@ impl ::core::cmp::PartialEq for EventB {
 }
 impl soroban_sdk::SpecName for EventB {
     const SPEC_NAME: &'static str = {
-        const NAME: &str = "::test_spec_lib::EventB";
+        const NAME: &str = "::test_spec_lib_v3::EventB";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `EventB` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib::EventB`",
+                            "type `EventB` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::EventB`",
                         ),
                     );
                 }
@@ -6652,11 +6566,7 @@ impl EventB {
 impl soroban_sdk::SpecShakingMarker for EventB {
     #[doc(hidden)]
     #[inline(always)]
-    fn spec_shaking_marker() {
-        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-    }
+    fn spec_shaking_marker() {}
 }
 impl soroban_sdk::Event for EventB {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
@@ -6739,13 +6649,13 @@ impl ::core::cmp::PartialEq for EventC {
 }
 impl soroban_sdk::SpecName for EventC {
     const SPEC_NAME: &'static str = {
-        const NAME: &str = "::test_spec_lib::EventC";
+        const NAME: &str = "::test_spec_lib_v3::EventC";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `EventC` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib::EventC`",
+                            "type `EventC` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::EventC`",
                         ),
                     );
                 }
@@ -6808,11 +6718,7 @@ impl EventC {
 impl soroban_sdk::SpecShakingMarker for EventC {
     #[doc(hidden)]
     #[inline(always)]
-    fn spec_shaking_marker() {
-        <soroban_sdk::Symbol as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <i64 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-    }
+    fn spec_shaking_marker() {}
 }
 impl soroban_sdk::Event for EventC {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
@@ -6878,13 +6784,13 @@ impl ::core::cmp::PartialEq for EventD {
 }
 impl soroban_sdk::SpecName for EventD {
     const SPEC_NAME: &'static str = {
-        const NAME: &str = "::test_spec_lib::EventD";
+        const NAME: &str = "::test_spec_lib_v3::EventD";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `EventD` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib::EventD`",
+                            "type `EventD` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_v3::EventD`",
                         ),
                     );
                 }

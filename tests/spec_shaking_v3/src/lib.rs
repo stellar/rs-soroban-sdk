@@ -289,6 +289,14 @@ pub struct UsedLeaf {
     pub val: u32,
 }
 
+// --- Self-referencing type: a type holding a container of itself ---
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UsedSelfRef {
+    pub children: Vec<UsedSelfRef>,
+}
+
 // --- Lib-imported types (Rust crate dep): rlib statics linked into cdylib ---
 // Only StructC is used in a contract fn; other spec_lib types have spec entries
 // but no markers.
@@ -296,7 +304,9 @@ pub struct UsedLeaf {
 // --- WASM-imported types (contractimport!): only used ones should have markers ---
 
 mod wasm_imported {
-    soroban_sdk::contractimport!(file = "../../target/wasm32v1-none/release/test_spec_import.wasm");
+    soroban_sdk::contractimport!(
+        file = "../../target/wasm32v1-none/release/test_spec_import_v2.wasm"
+    );
 }
 
 // --- Unused types: no markers expected ---
@@ -327,6 +337,58 @@ pub struct UnusedEvent {
     #[topic]
     pub kind: Symbol,
     pub data: u32,
+}
+
+// A type referenced only by an event the contract never publishes. The event
+// is shaken out for want of a marker, and takes the type with it: nothing that
+// survives names it.
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UnusedEventDataType {
+    pub v: u32,
+}
+
+#[contractevent]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UnusedEventWithDataType {
+    #[topic]
+    pub kind: Symbol,
+    pub payload: UnusedEventDataType,
+}
+
+// A chain of types that only reference each other. No function, event, or
+// other reachable type names the outer one, so the whole chain is shaken out.
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UnusedOuter {
+    pub inner: UnusedInner,
+}
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UnusedInner {
+    pub v: u32,
+}
+
+// Types that reference each other in a cycle, and a type that references
+// itself. The references are only within the cycle, so nothing reaches them
+// and they are shaken out.
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UnusedCycleA {
+    pub b: UnusedCycleB,
+}
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UnusedCycleB {
+    pub a: Vec<UnusedCycleA>,
+}
+
+#[contracttype]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct UnusedSelfRef {
+    pub children: Vec<UnusedSelfRef>,
 }
 
 // A pub #[contracterror] enum that is never referenced anywhere — neither in a
@@ -410,6 +472,8 @@ impl Contract {
     }
 
     pub fn with_recursion(_env: Env, _r: UsedRecursiveRoot) {}
+
+    pub fn with_self_recursion(_env: Env, _r: UsedSelfRef) {}
 
     pub fn with_auth_contexts(_env: Env, _c: Vec<soroban_sdk::auth::Context>) {}
 
