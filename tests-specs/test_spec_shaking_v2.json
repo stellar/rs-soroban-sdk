@@ -50,6 +50,22 @@
   {
     "function_v0": {
       "doc": "",
+      "name": "publish_via_publish_event",
+      "inputs": [],
+      "outputs": []
+    }
+  },
+  {
+    "function_v0": {
+      "doc": "",
+      "name": "publish_via_trait_publish",
+      "inputs": [],
+      "outputs": []
+    }
+  },
+  {
+    "function_v0": {
+      "doc": "",
       "name": "with_assert_error",
       "inputs": [
         {
@@ -1214,6 +1230,20 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
+      "name": "::test_spec_shaking_v2::UsedPublishEventDataType",
+      "fields": [
+        {
+          "doc": "",
+          "name": "val",
+          "type": "u32"
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "",
+      "lib": "",
       "name": "::test_spec_shaking_v2::UsedRecursiveLeaf",
       "fields": [
         {
@@ -1291,6 +1321,20 @@
         {
           "doc": "",
           "name": "data",
+          "type": "u32"
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "::test_spec_shaking_v2::UsedTraitPublishDataType",
+      "fields": [
+        {
+          "doc": "",
+          "name": "val",
           "type": "u32"
         }
       ]
@@ -2736,6 +2780,52 @@
           "doc": "",
           "name": "amount",
           "type": "i128",
+          "location": "data"
+        }
+      ],
+      "data_format": "map"
+    }
+  },
+  {
+    "event_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "::test_spec_shaking_v2::UsedEventViaPublishEvent",
+      "prefix_topics": [
+        "used_event_via_publish_event"
+      ],
+      "params": [
+        {
+          "doc": "",
+          "name": "payload",
+          "type": {
+            "udt": {
+              "name": "::test_spec_shaking_v2::UsedPublishEventDataType"
+            }
+          },
+          "location": "data"
+        }
+      ],
+      "data_format": "map"
+    }
+  },
+  {
+    "event_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "::test_spec_shaking_v2::UsedEventViaTraitPublish",
+      "prefix_topics": [
+        "used_event_via_trait_publish"
+      ],
+      "params": [
+        {
+          "doc": "",
+          "name": "payload",
+          "type": {
+            "udt": {
+              "name": "::test_spec_shaking_v2::UsedTraitPublishDataType"
+            }
+          },
           "location": "data"
         }
       ],

@@ -228,7 +228,6 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         "__SPEC_XDR_EVENT_{}",
         input.ident.unraw().to_string().to_uppercase()
     );
-    let spec_shaking_call = quote! { <Self as #path::SpecShakingMarker>::spec_shaking_marker(); };
 
     // The spec entry rendered as the equivalent const::ScSpecEntry, which the
     // contract crate encodes to XDR at compile time.
@@ -418,7 +417,6 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
 
         impl #gen_impl #ident #gen_types #gen_where {
             pub fn publish(&self, env: &#path::Env) {
-                #spec_shaking_call
                 <_ as #path::Event>::publish(self, env);
             }
         }
