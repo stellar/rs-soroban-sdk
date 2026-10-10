@@ -1,6 +1,7 @@
 #[test]
 fn compile_fails() {
     let t = trybuild::TestCases::new();
+    t.compile_fail("tests/compile_fails/contract_non_unit_struct_errors.rs");
     t.compile_fail("tests/compile_fails/contractevent_contracterror_name_errors.rs");
     t.compile_fail("tests/compile_fails/contractevent_sparse_arg_errors.rs");
     t.compile_fail("tests/compile_fails/contractevent_topic_length_errors.rs");
