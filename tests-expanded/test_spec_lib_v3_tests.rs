@@ -5826,10 +5826,15 @@ impl soroban_sdk::SpecShakingMarker for ErrorA {
     #[inline(always)]
     fn spec_shaking_marker() {}
 }
+impl soroban_sdk::SpecAnchor for ErrorA {
+    #[inline(never)]
+    fn spec_anchor() {}
+}
 impl TryFrom<soroban_sdk::Error> for ErrorA {
     type Error = soroban_sdk::Error;
     #[inline(always)]
     fn try_from(error: soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
+        <ErrorA as soroban_sdk::SpecAnchor>::spec_anchor();
         if error.is_type(soroban_sdk::xdr::ScErrorType::Contract) {
             let discriminant = error.get_code();
             Ok(match discriminant {
@@ -5859,6 +5864,7 @@ impl From<ErrorA> for soroban_sdk::Error {
 impl From<&ErrorA> for soroban_sdk::Error {
     #[inline(always)]
     fn from(val: &ErrorA) -> soroban_sdk::Error {
+        <ErrorA as soroban_sdk::SpecAnchor>::spec_anchor();
         match val {
             ErrorA::E1 => soroban_sdk::Error::from_contract_error(1u32),
             ErrorA::E2 => soroban_sdk::Error::from_contract_error(2u32),
@@ -5870,6 +5876,7 @@ impl TryFrom<soroban_sdk::InvokeError> for ErrorA {
     type Error = soroban_sdk::InvokeError;
     #[inline(always)]
     fn try_from(error: soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
+        <ErrorA as soroban_sdk::SpecAnchor>::spec_anchor();
         match error {
             soroban_sdk::InvokeError::Abort => Err(error),
             soroban_sdk::InvokeError::Contract(code) => Ok(match code {
@@ -5897,6 +5904,7 @@ impl From<ErrorA> for soroban_sdk::InvokeError {
 impl From<&ErrorA> for soroban_sdk::InvokeError {
     #[inline(always)]
     fn from(val: &ErrorA) -> soroban_sdk::InvokeError {
+        <ErrorA as soroban_sdk::SpecAnchor>::spec_anchor();
         match val {
             ErrorA::E1 => soroban_sdk::InvokeError::Contract(1u32),
             ErrorA::E2 => soroban_sdk::InvokeError::Contract(2u32),
@@ -6049,10 +6057,15 @@ impl soroban_sdk::SpecShakingMarker for ErrorB {
     #[inline(always)]
     fn spec_shaking_marker() {}
 }
+impl soroban_sdk::SpecAnchor for ErrorB {
+    #[inline(never)]
+    fn spec_anchor() {}
+}
 impl TryFrom<soroban_sdk::Error> for ErrorB {
     type Error = soroban_sdk::Error;
     #[inline(always)]
     fn try_from(error: soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
+        <ErrorB as soroban_sdk::SpecAnchor>::spec_anchor();
         if error.is_type(soroban_sdk::xdr::ScErrorType::Contract) {
             let discriminant = error.get_code();
             Ok(match discriminant {
@@ -6082,6 +6095,7 @@ impl From<ErrorB> for soroban_sdk::Error {
 impl From<&ErrorB> for soroban_sdk::Error {
     #[inline(always)]
     fn from(val: &ErrorB) -> soroban_sdk::Error {
+        <ErrorB as soroban_sdk::SpecAnchor>::spec_anchor();
         match val {
             ErrorB::E1 => soroban_sdk::Error::from_contract_error(10u32),
             ErrorB::E2 => soroban_sdk::Error::from_contract_error(11u32),
@@ -6093,6 +6107,7 @@ impl TryFrom<soroban_sdk::InvokeError> for ErrorB {
     type Error = soroban_sdk::InvokeError;
     #[inline(always)]
     fn try_from(error: soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
+        <ErrorB as soroban_sdk::SpecAnchor>::spec_anchor();
         match error {
             soroban_sdk::InvokeError::Abort => Err(error),
             soroban_sdk::InvokeError::Contract(code) => Ok(match code {
@@ -6120,6 +6135,7 @@ impl From<ErrorB> for soroban_sdk::InvokeError {
 impl From<&ErrorB> for soroban_sdk::InvokeError {
     #[inline(always)]
     fn from(val: &ErrorB) -> soroban_sdk::InvokeError {
+        <ErrorB as soroban_sdk::SpecAnchor>::spec_anchor();
         match val {
             ErrorB::E1 => soroban_sdk::InvokeError::Contract(10u32),
             ErrorB::E2 => soroban_sdk::InvokeError::Contract(11u32),
@@ -6272,10 +6288,15 @@ impl soroban_sdk::SpecShakingMarker for ErrorC {
     #[inline(always)]
     fn spec_shaking_marker() {}
 }
+impl soroban_sdk::SpecAnchor for ErrorC {
+    #[inline(never)]
+    fn spec_anchor() {}
+}
 impl TryFrom<soroban_sdk::Error> for ErrorC {
     type Error = soroban_sdk::Error;
     #[inline(always)]
     fn try_from(error: soroban_sdk::Error) -> Result<Self, soroban_sdk::Error> {
+        <ErrorC as soroban_sdk::SpecAnchor>::spec_anchor();
         if error.is_type(soroban_sdk::xdr::ScErrorType::Contract) {
             let discriminant = error.get_code();
             Ok(match discriminant {
@@ -6305,6 +6326,7 @@ impl From<ErrorC> for soroban_sdk::Error {
 impl From<&ErrorC> for soroban_sdk::Error {
     #[inline(always)]
     fn from(val: &ErrorC) -> soroban_sdk::Error {
+        <ErrorC as soroban_sdk::SpecAnchor>::spec_anchor();
         match val {
             ErrorC::E1 => soroban_sdk::Error::from_contract_error(100u32),
             ErrorC::E2 => soroban_sdk::Error::from_contract_error(101u32),
@@ -6316,6 +6338,7 @@ impl TryFrom<soroban_sdk::InvokeError> for ErrorC {
     type Error = soroban_sdk::InvokeError;
     #[inline(always)]
     fn try_from(error: soroban_sdk::InvokeError) -> Result<Self, soroban_sdk::InvokeError> {
+        <ErrorC as soroban_sdk::SpecAnchor>::spec_anchor();
         match error {
             soroban_sdk::InvokeError::Abort => Err(error),
             soroban_sdk::InvokeError::Contract(code) => Ok(match code {
@@ -6343,6 +6366,7 @@ impl From<ErrorC> for soroban_sdk::InvokeError {
 impl From<&ErrorC> for soroban_sdk::InvokeError {
     #[inline(always)]
     fn from(val: &ErrorC) -> soroban_sdk::InvokeError {
+        <ErrorC as soroban_sdk::SpecAnchor>::spec_anchor();
         match val {
             ErrorC::E1 => soroban_sdk::InvokeError::Contract(100u32),
             ErrorC::E2 => soroban_sdk::InvokeError::Contract(101u32),
@@ -6492,8 +6516,13 @@ impl soroban_sdk::SpecShakingMarker for EventA {
     #[inline(always)]
     fn spec_shaking_marker() {}
 }
+impl soroban_sdk::SpecAnchor for EventA {
+    #[inline(never)]
+    fn spec_anchor() {}
+}
 impl soroban_sdk::Event for EventA {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::IntoVal;
         (
             &{
@@ -6509,6 +6538,7 @@ impl soroban_sdk::Event for EventA {
             .into_val(env)
     }
     fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
+        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 1usize] = ["f2"];
         let vals: [soroban_sdk::Val; 1usize] = [self.f2.into_val(env)];
@@ -6640,8 +6670,13 @@ impl soroban_sdk::SpecShakingMarker for EventB {
     #[inline(always)]
     fn spec_shaking_marker() {}
 }
+impl soroban_sdk::SpecAnchor for EventB {
+    #[inline(never)]
+    fn spec_anchor() {}
+}
 impl soroban_sdk::Event for EventB {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::IntoVal;
         (
             &{
@@ -6661,6 +6696,7 @@ impl soroban_sdk::Event for EventB {
             .into_val(env)
     }
     fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
+        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 1usize] = ["f3"];
         let vals: [soroban_sdk::Val; 1usize] = [self.f3.into_val(env)];
@@ -6792,8 +6828,13 @@ impl soroban_sdk::SpecShakingMarker for EventC {
     #[inline(always)]
     fn spec_shaking_marker() {}
 }
+impl soroban_sdk::SpecAnchor for EventC {
+    #[inline(never)]
+    fn spec_anchor() {}
+}
 impl soroban_sdk::Event for EventC {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::IntoVal;
         (
             &{
@@ -6809,6 +6850,7 @@ impl soroban_sdk::Event for EventC {
             .into_val(env)
     }
     fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
+        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 2usize] = ["f2", "f3"];
         let vals: [soroban_sdk::Val; 2usize] = [self.f2.into_val(env), self.f3.into_val(env)];
@@ -6908,8 +6950,13 @@ impl soroban_sdk::SpecShakingMarker for EventD {
     #[inline(always)]
     fn spec_shaking_marker() {}
 }
+impl soroban_sdk::SpecAnchor for EventD {
+    #[inline(never)]
+    fn spec_anchor() {}
+}
 impl soroban_sdk::Event for EventD {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::IntoVal;
         (&{
             #[allow(deprecated)]
@@ -6919,6 +6966,7 @@ impl soroban_sdk::Event for EventD {
             .into_val(env)
     }
     fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
+        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 0usize] = [];
         let vals: [soroban_sdk::Val; 0usize] = [];

@@ -499,8 +499,13 @@ impl soroban_sdk::SpecShakingMarker for AttributeEvent {
     #[inline(always)]
     fn spec_shaking_marker() {}
 }
+impl soroban_sdk::SpecAnchor for AttributeEvent {
+    #[inline(never)]
+    fn spec_anchor() {}
+}
 impl soroban_sdk::Event for AttributeEvent {
     fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::IntoVal;
         (&{ soroban_sdk::Symbol::new(env, "attribute_event") }, {
             let v: soroban_sdk::Val = self.topic.into_val(env);
@@ -509,6 +514,7 @@ impl soroban_sdk::Event for AttributeEvent {
             .into_val(env)
     }
     fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
+        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
         const KEYS: [&'static str; 1usize] = ["value"];
         let vals: [soroban_sdk::Val; 1usize] = [self.value.into_val(env)];

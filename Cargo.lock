@@ -2167,6 +2167,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_data_error_contract"
+version = "30.0.0"
+dependencies = [
+ "soroban-sdk 30.0.0",
+ "test_data_lib",
+]
+
+[[package]]
+name = "test_data_event_contract"
+version = "30.0.0"
+dependencies = [
+ "soroban-sdk 30.0.0",
+ "test_data_lib",
+]
+
+[[package]]
 name = "test_data_lib"
 version = "30.0.0"
 dependencies = [

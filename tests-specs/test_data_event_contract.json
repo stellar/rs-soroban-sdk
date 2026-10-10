@@ -2,113 +2,15 @@
   {
     "function_v0": {
       "doc": "",
-      "name": "enum_",
+      "name": "event",
       "inputs": [
         {
           "doc": "",
           "name": "v",
-          "type": {
-            "udt": {
-              "name": "::test_data_lib::Enum"
-            }
-          }
+          "type": "u32"
         }
       ],
-      "outputs": [
-        {
-          "udt": {
-            "name": "::test_data_lib::Enum"
-          }
-        }
-      ]
-    }
-  },
-  {
-    "function_v0": {
-      "doc": "",
-      "name": "int_enum",
-      "inputs": [
-        {
-          "doc": "",
-          "name": "v",
-          "type": {
-            "udt": {
-              "name": "::test_data_lib::IntEnum"
-            }
-          }
-        }
-      ],
-      "outputs": [
-        {
-          "udt": {
-            "name": "::test_data_lib::IntEnum"
-          }
-        }
-      ]
-    }
-  },
-  {
-    "function_v0": {
-      "doc": "",
-      "name": "outer",
-      "inputs": [
-        {
-          "doc": "",
-          "name": "v",
-          "type": {
-            "udt": {
-              "name": "::test_data_lib::Outer"
-            }
-          }
-        }
-      ],
-      "outputs": [
-        "u32"
-      ]
-    }
-  },
-  {
-    "function_v0": {
-      "doc": "",
-      "name": "tuple",
-      "inputs": [
-        {
-          "doc": "",
-          "name": "v",
-          "type": {
-            "udt": {
-              "name": "::test_data_lib::Tuple"
-            }
-          }
-        }
-      ],
-      "outputs": [
-        {
-          "udt": {
-            "name": "::test_data_lib::Tuple"
-          }
-        }
-      ]
-    }
-  },
-  {
-    "function_v0": {
-      "doc": "",
-      "name": "wrapper",
-      "inputs": [
-        {
-          "doc": "",
-          "name": "v",
-          "type": {
-            "udt": {
-              "name": "::test_data_contract::Wrapper"
-            }
-          }
-        }
-      ],
-      "outputs": [
-        "u32"
-      ]
+      "outputs": []
     }
   },
   {
@@ -313,24 +215,6 @@
           "doc": "",
           "name": "0",
           "type": "u32"
-        }
-      ]
-    }
-  },
-  {
-    "udt_struct_v0": {
-      "doc": "",
-      "lib": "",
-      "name": "::test_data_contract::Wrapper",
-      "fields": [
-        {
-          "doc": "",
-          "name": "0",
-          "type": {
-            "udt": {
-              "name": "::test_data_lib::Wrapped"
-            }
-          }
         }
       ]
     }

@@ -49,7 +49,7 @@ pub fn derive_type_struct_tuple(
     // Generated code spec. The spec entry is rendered as the equivalent
     // const::ScSpecEntry, which the contract crate encodes to XDR at compile time.
     let spec_type_def = spec_type_def_gen(path, ident, None, None, None);
-    let spec_anchor = spec_anchor_impl(path, ident);
+    let spec_anchor = spec_anchor_impl(path, ident, None, None, None);
     let spec_gen = {
         let doc = const_view_string(path, &docs_from_attrs(attrs));
         // Set to empty string always because the field is no longer used.

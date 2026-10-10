@@ -1,0 +1,17 @@
+[package]
+name = "test_data_error_contract"
+version.workspace = true
+authors = ["Stellar Development Foundation <info@stellar.org>"]
+license = "Apache-2.0"
+edition = "2021"
+publish = false
+rust-version.workspace = true
+
+[lib]
+crate-type = ["cdylib"]
+doctest = false
+
+[dependencies]
+soroban-sdk = {path = "../../soroban-sdk"}
+test_data_lib = {path = "../data_lib"}
+

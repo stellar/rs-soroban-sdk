@@ -180,19 +180,25 @@ pub fn const_view_symbol(path: &Path, s: &ScSymbol) -> TokenStream2 {
     quote!(#xdr::r#const::ScSymbol(#s))
 }
 
-/// Renders the `SpecAnchor` impl for a type, for its generated conversions to
-/// and from `Val` to call.
+/// Renders the `SpecAnchor` impl for a type, error or event, for its
+/// generated conversions to call.
 ///
-/// The type's spec entry is a static in the object file of the crate that
-/// defines the type, and when a contract is built without LTO the linker only
-/// includes that object file if the contract references a symbol in it. The
-/// conversions are inlined into the contract, so without a call into the
+/// The spec entry is a static in the object file of the crate that defines the
+/// type, error or event, and when a contract is built without LTO the linker
+/// only includes that object file if the contract references a symbol in it.
+/// The conversions are inlined into the contract, so without a call into the
 /// defining crate the object file, and the spec entry, can be left out. The fn
 /// is never inlined so that calling it references a symbol in the defining
 /// crate. It is empty, and with LTO the calls to it are optimised away.
-pub fn spec_anchor_impl(path: &Path, ident: &Ident) -> TokenStream2 {
+pub fn spec_anchor_impl(
+    path: &Path,
+    ident: &Ident,
+    gen_impl: Option<TokenStream2>,
+    gen_types: Option<TokenStream2>,
+    gen_where: Option<TokenStream2>,
+) -> TokenStream2 {
     quote! {
-        impl #path::SpecAnchor for #ident {
+        impl #gen_impl #path::SpecAnchor for #ident #gen_types #gen_where {
             #[inline(never)]
             fn spec_anchor() {}
         }

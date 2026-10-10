@@ -9,7 +9,7 @@ use syn::{
 use crate::{
     doc::docs_from_attrs,
     shaking,
-    spec::{const_view_string, spec_type_def_gen},
+    spec::{const_view_string, spec_anchor_impl, spec_type_def_gen},
 };
 
 pub fn derive_type_error_enum_int(
@@ -119,6 +119,9 @@ pub fn derive_type_error_enum_int(
     let spec_shaking_impl =
         shaking::generate_marker_impl(path, quote!(#enum_ident), None, None, None);
 
+    // SpecAnchor impl.
+    let spec_anchor = spec_anchor_impl(path, enum_ident, None, None, None);
+
     // Output.
     quote! {
         #spec_type_def
@@ -127,10 +130,13 @@ pub fn derive_type_error_enum_int(
 
         #spec_shaking_impl
 
+        #spec_anchor
+
         impl TryFrom<#path::Error> for #enum_ident {
             type Error = #path::Error;
             #[inline(always)]
             fn try_from(error: #path::Error) -> Result<Self, #path::Error> {
+                <#enum_ident as #path::SpecAnchor>::spec_anchor();
                 if error.is_type(#path::xdr::ScErrorType::Contract) {
                     let discriminant = error.get_code();
                     Ok(match discriminant {
@@ -161,6 +167,7 @@ pub fn derive_type_error_enum_int(
         impl From<&#enum_ident> for #path::Error {
             #[inline(always)]
             fn from(val: &#enum_ident) -> #path::Error {
+                <#enum_ident as #path::SpecAnchor>::spec_anchor();
                 match val {
                     #(#into_errors,)*
                 }
@@ -171,6 +178,7 @@ pub fn derive_type_error_enum_int(
             type Error = #path::InvokeError;
             #[inline(always)]
             fn try_from(error: #path::InvokeError) -> Result<Self, #path::InvokeError> {
+                <#enum_ident as #path::SpecAnchor>::spec_anchor();
                 match error {
                     #path::InvokeError::Abort => Err(error),
                     #path::InvokeError::Contract(code) => Ok(match code {
@@ -199,6 +207,7 @@ pub fn derive_type_error_enum_int(
         impl From<&#enum_ident> for #path::InvokeError {
             #[inline(always)]
             fn from(val: &#enum_ident) -> #path::InvokeError {
+                <#enum_ident as #path::SpecAnchor>::spec_anchor();
                 match val {
                     #(#into_invoke_errors,)*
                 }

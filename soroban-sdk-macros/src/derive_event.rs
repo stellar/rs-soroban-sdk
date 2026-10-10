@@ -5,7 +5,7 @@ use crate::{
     export_arg_error, shaking,
     spec::{
         check_event_ident, const_view_string, const_view_symbol, const_view_type_def,
-        spec_type_def_gen,
+        spec_anchor_impl, spec_type_def_gen,
     },
     symbol,
 };
@@ -295,6 +295,15 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
         Some(quote!(#gen_where)),
     );
 
+    // SpecAnchor impl.
+    let spec_anchor = spec_anchor_impl(
+        path,
+        ident,
+        Some(quote!(#gen_impl)),
+        Some(quote!(#gen_types)),
+        Some(quote!(#gen_where)),
+    );
+
     // Prepare Topics Conversion to Vec<Val>.
     let prefix_topics_symbols = prefix_topics.iter().map(|t| {
         symbol::short_or_long(
@@ -406,11 +415,15 @@ fn derive_impls(args: &ContractEventArgs, input: &DeriveInput) -> Result<TokenSt
 
         #spec_shaking_impl
 
+        #spec_anchor
+
         impl #gen_impl #path::Event for #ident #gen_types #gen_where {
             fn topics(&self, env: &#path::Env) -> #path::Vec<#path::Val> {
+                <Self as #path::SpecAnchor>::spec_anchor();
                 #topics_to_vec_val
             }
             fn data(&self, env: &#path::Env) -> #path::Val {
+                <Self as #path::SpecAnchor>::spec_anchor();
                 #data_to_val
             }
         }
