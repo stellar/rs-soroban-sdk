@@ -7,8 +7,9 @@ edition = "2021"
 publish = false
 rust-version.workspace = true
 
-# Built without LTO by the build-test-wasms make target, to test that the spec
-# entries of types defined in another crate are linked into the contract.
+# Uses types defined in another crate, so that the check of specs built without
+# LTO, in the spec-snapshots make target, covers spec entries that are only
+# linked into the contract from a dependency crate.
 [lib]
 crate-type = ["cdylib"]
 doctest = false
@@ -17,7 +18,3 @@ doctest = false
 soroban-sdk = {path = "../../soroban-sdk"}
 test_spec_lib_no_lto = {path = "../spec_lib_no_lto"}
 
-[dev-dependencies]
-soroban-sdk = {path = "../../soroban-sdk", features = ["testutils"]}
-soroban-spec = {path = "../../soroban-spec"}
-stellar-xdr = {workspace = true, features = ["std"]}

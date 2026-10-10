@@ -73,9 +73,6 @@ impl soroban_sdk::SpecTypeDef for Wrapper {
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_WRAPPER: [u8; Wrapper::spec_xdr().len()] = Wrapper::spec_xdr();
 impl Wrapper {
-    #[doc(hidden)]
-    #[inline(never)]
-    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -97,6 +94,10 @@ impl Wrapper {
         const { Wrapper::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
+impl soroban_sdk::SpecAnchor for Wrapper {
+    #[inline(never)]
+    fn spec_anchor() {}
+}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Wrapper {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -104,7 +105,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Wrapper {
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        Wrapper::__spec_link();
+        <Wrapper as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val, VecObject};
         let vec: VecObject = (*val).try_into().map_err(|_| ConversionError)?;
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -122,7 +123,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, Wrapper> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &Wrapper,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        Wrapper::__spec_link();
+        <Wrapper as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         let vals: [Val; 1usize] = [(&val.0).try_into_val(env).map_err(|_| ConversionError)?];
         Ok(env
@@ -139,6 +140,11 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, &Wrapper> for soroban_sdk::Val {
         val: &&Wrapper,
     ) -> Result<Self, soroban_sdk::ConversionError> {
         <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, Wrapper>>::try_from_val(env, *val)
+    }
+}
+impl Wrapper {
+    pub fn spec_anchor() -> u32 {
+        0
     }
 }
 pub struct Contract;

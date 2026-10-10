@@ -6,6 +6,14 @@ use test_spec_lib_no_lto::{Enum, IntEnum, Outer, Tuple, Wrapped};
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct Wrapper(pub Wrapped);
 
+impl Wrapper {
+    // An inherent fn with the same name as the SpecAnchor trait's fn, which the
+    // generated conversions call, must not clash with it.
+    pub fn spec_anchor() -> u32 {
+        0
+    }
+}
+
 #[contract]
 pub struct Contract;
 
@@ -31,6 +39,3 @@ impl Contract {
         v.0 .0
     }
 }
-
-#[cfg(test)]
-mod test;

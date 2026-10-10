@@ -1227,6 +1227,10 @@ mod spec_shaking;
 #[doc(hidden)]
 pub use spec_shaking::SpecShakingMarker;
 
+mod spec_anchor;
+#[doc(hidden)]
+pub use spec_anchor::SpecAnchor;
+
 mod spec_type_def;
 #[doc(hidden)]
 pub use spec_type_def::{SpecName, SpecTypeDef};

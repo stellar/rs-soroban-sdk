@@ -76,9 +76,6 @@ impl soroban_sdk::SpecTypeDef for Flag {
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_FLAG: [u8; Flag::spec_xdr().len()] = Flag::spec_xdr();
 impl Flag {
-    #[doc(hidden)]
-    #[inline(never)]
-    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtEnumV0(
             soroban_sdk::xdr::r#const::ScSpecUdtEnumV0 {
@@ -120,6 +117,10 @@ impl Flag {
         const { Flag::__SPEC_XDR_ENTRY.const_to_xdr() }
     }
 }
+impl soroban_sdk::SpecAnchor for Flag {
+    #[inline(never)]
+    fn spec_anchor() {}
+}
 impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Flag {
     type Error = soroban_sdk::ConversionError;
     #[inline(always)]
@@ -127,7 +128,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for Flag {
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        Flag::__spec_link();
+        <Flag as soroban_sdk::SpecAnchor>::spec_anchor();
         use soroban_sdk::TryIntoVal;
         let discriminant: u32 = val.try_into_val(env)?;
         Ok(match discriminant {
@@ -147,7 +148,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, Flag> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &Flag,
     ) -> Result<Self, soroban_sdk::ConversionError> {
-        Flag::__spec_link();
+        <Flag as soroban_sdk::SpecAnchor>::spec_anchor();
         Ok(match val {
             Flag::A => 0u32.into(),
             Flag::B => 1u32.into(),
