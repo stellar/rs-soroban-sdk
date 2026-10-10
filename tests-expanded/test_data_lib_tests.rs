@@ -1,10 +1,10 @@
 #![feature(prelude_import)]
-//! Types used by the test_spec_no_lto contract, which is built without LTO.
+//! A data library: a crate that only provides types, for contracts to use.
 //!
 //! The types are only of the kinds whose conversions to and from `Val` are
-//! inlined into the contract. A named-field struct is left out because its
-//! conversions are not inlined, so using one would make the contract call
-//! into this crate and link it in regardless.
+//! inlined into the contract using them, so that the contract need not call
+//! into this crate at all. A named-field struct is left out because its
+//! conversions are not inlined.
 #![no_std]
 #[macro_use]
 extern crate core;
@@ -57,13 +57,13 @@ impl ::core::cmp::PartialEq for IntEnum {
 }
 impl soroban_sdk::SpecName for IntEnum {
     const SPEC_NAME: &'static str = {
-        const NAME: &str = "::test_spec_lib_no_lto::IntEnum";
+        const NAME: &str = "::test_data_lib::IntEnum";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `IntEnum` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_no_lto::IntEnum`",
+                            "type `IntEnum` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_data_lib::IntEnum`",
                         ),
                     );
                 }
@@ -211,13 +211,13 @@ impl ::core::cmp::PartialEq for Enum {
 }
 impl soroban_sdk::SpecName for Enum {
     const SPEC_NAME: &'static str = {
-        const NAME: &str = "::test_spec_lib_no_lto::Enum";
+        const NAME: &str = "::test_data_lib::Enum";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `Enum` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_no_lto::Enum`",
+                            "type `Enum` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_data_lib::Enum`",
                         ),
                     );
                 }
@@ -397,13 +397,13 @@ impl ::core::cmp::PartialEq for Tuple {
 }
 impl soroban_sdk::SpecName for Tuple {
     const SPEC_NAME: &'static str = {
-        const NAME: &str = "::test_spec_lib_no_lto::Tuple";
+        const NAME: &str = "::test_data_lib::Tuple";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `Tuple` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_no_lto::Tuple`",
+                            "type `Tuple` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_data_lib::Tuple`",
                         ),
                     );
                 }
@@ -541,13 +541,13 @@ impl ::core::cmp::PartialEq for Inner {
 }
 impl soroban_sdk::SpecName for Inner {
     const SPEC_NAME: &'static str = {
-        const NAME: &str = "::test_spec_lib_no_lto::Inner";
+        const NAME: &str = "::test_data_lib::Inner";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `Inner` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_no_lto::Inner`",
+                            "type `Inner` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_data_lib::Inner`",
                         ),
                     );
                 }
@@ -676,13 +676,13 @@ impl ::core::cmp::PartialEq for Outer {
 }
 impl soroban_sdk::SpecName for Outer {
     const SPEC_NAME: &'static str = {
-        const NAME: &str = "::test_spec_lib_no_lto::Outer";
+        const NAME: &str = "::test_data_lib::Outer";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `Outer` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_no_lto::Outer`",
+                            "type `Outer` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_data_lib::Outer`",
                         ),
                     );
                 }
@@ -811,13 +811,13 @@ impl ::core::cmp::PartialEq for Wrapped {
 }
 impl soroban_sdk::SpecName for Wrapped {
     const SPEC_NAME: &'static str = {
-        const NAME: &str = "::test_spec_lib_no_lto::Wrapped";
+        const NAME: &str = "::test_data_lib::Wrapped";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `Wrapped` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_lib_no_lto::Wrapped`",
+                            "type `Wrapped` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_data_lib::Wrapped`",
                         ),
                     );
                 }

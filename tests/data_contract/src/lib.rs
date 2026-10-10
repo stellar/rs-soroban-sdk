@@ -1,6 +1,6 @@
 #![no_std]
 use soroban_sdk::{contract, contractimpl, contracttype};
-use test_spec_lib_no_lto::{Enum, IntEnum, Outer, Tuple, Wrapped};
+use test_data_lib::{Enum, IntEnum, Outer, Tuple, Wrapped};
 
 #[contracttype]
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]

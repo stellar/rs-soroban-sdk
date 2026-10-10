@@ -1,9 +1,9 @@
-//! Types used by the test_spec_no_lto contract, which is built without LTO.
+//! A data library: a crate that only provides types, for contracts to use.
 //!
 //! The types are only of the kinds whose conversions to and from `Val` are
-//! inlined into the contract. A named-field struct is left out because its
-//! conversions are not inlined, so using one would make the contract call
-//! into this crate and link it in regardless.
+//! inlined into the contract using them, so that the contract need not call
+//! into this crate at all. A named-field struct is left out because its
+//! conversions are not inlined.
 #![no_std]
 use soroban_sdk::contracttype;
 

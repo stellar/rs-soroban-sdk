@@ -5,7 +5,7 @@ extern crate core;
 #[prelude_import]
 use core::prelude::rust_2021::*;
 use soroban_sdk::{contract, contractimpl, contracttype};
-use test_spec_lib_no_lto::{Enum, IntEnum, Outer, Tuple, Wrapped};
+use test_data_lib::{Enum, IntEnum, Outer, Tuple, Wrapped};
 pub struct Wrapper(pub Wrapped);
 #[automatically_derived]
 impl ::core::clone::Clone for Wrapper {
@@ -44,13 +44,13 @@ impl ::core::cmp::PartialEq for Wrapper {
 }
 impl soroban_sdk::SpecName for Wrapper {
     const SPEC_NAME: &'static str = {
-        const NAME: &str = "::test_spec_no_lto::Wrapper";
+        const NAME: &str = "::test_data_contract::Wrapper";
         const CHECKED_NAME: &str = {
             if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
                 {
                     ::core::panicking::panic_fmt(
                         format_args!(
-                            "type `Wrapper` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_spec_no_lto::Wrapper`",
+                            "type `Wrapper` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_data_contract::Wrapper`",
                         ),
                     );
                 }
@@ -70,7 +70,6 @@ impl soroban_sdk::SpecTypeDef for Wrapper {
 }
 #[doc(hidden)]
 #[allow(dead_code)]
-#[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_WRAPPER: [u8; Wrapper::spec_xdr().len()] = Wrapper::spec_xdr();
 impl Wrapper {
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
@@ -191,7 +190,6 @@ mod __Contract__int_enum__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    #[link_section = "contractspecv0"]
     static __SPEC_XDR_FN_INT_ENUM: [u8; super::Contract::spec_xdr_int_enum().len()] =
         super::Contract::spec_xdr_int_enum();
 }
@@ -229,7 +227,6 @@ mod __Contract__enum___spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    #[link_section = "contractspecv0"]
     static __SPEC_XDR_FN_ENUM_: [u8; super::Contract::spec_xdr_enum_().len()] =
         super::Contract::spec_xdr_enum_();
 }
@@ -267,7 +264,6 @@ mod __Contract__tuple__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    #[link_section = "contractspecv0"]
     static __SPEC_XDR_FN_TUPLE: [u8; super::Contract::spec_xdr_tuple().len()] =
         super::Contract::spec_xdr_tuple();
 }
@@ -305,7 +301,6 @@ mod __Contract__outer__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    #[link_section = "contractspecv0"]
     static __SPEC_XDR_FN_OUTER: [u8; super::Contract::spec_xdr_outer().len()] =
         super::Contract::spec_xdr_outer();
 }
@@ -343,7 +338,6 @@ mod __Contract__wrapper__spec {
     #[allow(non_snake_case)]
     #[allow(non_upper_case_globals)]
     #[allow(dead_code)]
-    #[link_section = "contractspecv0"]
     static __SPEC_XDR_FN_WRAPPER: [u8; super::Contract::spec_xdr_wrapper().len()] =
         super::Contract::spec_xdr_wrapper();
 }
@@ -596,7 +590,6 @@ pub fn __Contract__int_enum__invoke_raw(
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).int_enum` instead")]
-#[export_name = "int_enum"]
 pub extern "C" fn __Contract__int_enum__invoke_raw_extern(
     arg_0: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
@@ -626,7 +619,6 @@ pub fn __Contract__enum___invoke_raw(
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).enum_` instead")]
-#[export_name = "enum_"]
 pub extern "C" fn __Contract__enum___invoke_raw_extern(
     arg_0: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
@@ -656,7 +648,6 @@ pub fn __Contract__tuple__invoke_raw(
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).tuple` instead")]
-#[export_name = "tuple"]
 pub extern "C" fn __Contract__tuple__invoke_raw_extern(
     arg_0: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
@@ -686,7 +677,6 @@ pub fn __Contract__outer__invoke_raw(
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).outer` instead")]
-#[export_name = "outer"]
 pub extern "C" fn __Contract__outer__invoke_raw_extern(
     arg_0: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
@@ -716,10 +706,16 @@ pub fn __Contract__wrapper__invoke_raw(
 #[doc(hidden)]
 #[allow(non_snake_case)]
 #[deprecated(note = "use `ContractClient::new(&env, &contract_id).wrapper` instead")]
-#[export_name = "wrapper"]
 pub extern "C" fn __Contract__wrapper__invoke_raw_extern(
     arg_0: soroban_sdk::Val,
 ) -> soroban_sdk::Val {
     #[allow(deprecated)]
     __Contract__wrapper__invoke_raw(soroban_sdk::Env::default(), arg_0)
+}
+#[rustc_main]
+#[coverage(off)]
+#[doc(hidden)]
+pub fn main() -> () {
+    extern crate test;
+    test::test_main_static(&[])
 }

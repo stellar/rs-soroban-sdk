@@ -1,5 +1,5 @@
 [package]
-name = "test_spec_no_lto"
+name = "test_data_contract"
 version.workspace = true
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 license = "Apache-2.0"
@@ -7,14 +7,11 @@ edition = "2021"
 publish = false
 rust-version.workspace = true
 
-# Uses types defined in another crate, so that the check of specs built without
-# LTO, in the spec-snapshots make target, covers spec entries that are only
-# linked into the contract from a dependency crate.
 [lib]
 crate-type = ["cdylib"]
 doctest = false
 
 [dependencies]
 soroban-sdk = {path = "../../soroban-sdk"}
-test_spec_lib_no_lto = {path = "../spec_lib_no_lto"}
+test_data_lib = {path = "../data_lib"}
 

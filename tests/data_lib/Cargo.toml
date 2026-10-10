@@ -1,5 +1,5 @@
 [package]
-name = "test_spec_lib_no_lto"
+name = "test_data_lib"
 version.workspace = true
 authors = ["Stellar Development Foundation <info@stellar.org>"]
 license = "Apache-2.0"

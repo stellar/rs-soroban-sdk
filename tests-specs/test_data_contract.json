@@ -9,7 +9,7 @@
           "name": "v",
           "type": {
             "udt": {
-              "name": "::test_spec_lib_no_lto::Enum"
+              "name": "::test_data_lib::Enum"
             }
           }
         }
@@ -17,7 +17,7 @@
       "outputs": [
         {
           "udt": {
-            "name": "::test_spec_lib_no_lto::Enum"
+            "name": "::test_data_lib::Enum"
           }
         }
       ]
@@ -33,7 +33,7 @@
           "name": "v",
           "type": {
             "udt": {
-              "name": "::test_spec_lib_no_lto::IntEnum"
+              "name": "::test_data_lib::IntEnum"
             }
           }
         }
@@ -41,7 +41,7 @@
       "outputs": [
         {
           "udt": {
-            "name": "::test_spec_lib_no_lto::IntEnum"
+            "name": "::test_data_lib::IntEnum"
           }
         }
       ]
@@ -57,7 +57,7 @@
           "name": "v",
           "type": {
             "udt": {
-              "name": "::test_spec_lib_no_lto::Outer"
+              "name": "::test_data_lib::Outer"
             }
           }
         }
@@ -77,7 +77,7 @@
           "name": "v",
           "type": {
             "udt": {
-              "name": "::test_spec_lib_no_lto::Tuple"
+              "name": "::test_data_lib::Tuple"
             }
           }
         }
@@ -85,7 +85,7 @@
       "outputs": [
         {
           "udt": {
-            "name": "::test_spec_lib_no_lto::Tuple"
+            "name": "::test_data_lib::Tuple"
           }
         }
       ]
@@ -101,7 +101,7 @@
           "name": "v",
           "type": {
             "udt": {
-              "name": "::test_spec_no_lto::Wrapper"
+              "name": "::test_data_contract::Wrapper"
             }
           }
         }
@@ -225,7 +225,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib_no_lto::Inner",
+      "name": "::test_data_lib::Inner",
       "fields": [
         {
           "doc": "",
@@ -239,14 +239,14 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib_no_lto::Outer",
+      "name": "::test_data_lib::Outer",
       "fields": [
         {
           "doc": "",
           "name": "0",
           "type": {
             "udt": {
-              "name": "::test_spec_lib_no_lto::Inner"
+              "name": "::test_data_lib::Inner"
             }
           }
         }
@@ -288,7 +288,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib_no_lto::Tuple",
+      "name": "::test_data_lib::Tuple",
       "fields": [
         {
           "doc": "",
@@ -307,7 +307,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib_no_lto::Wrapped",
+      "name": "::test_data_lib::Wrapped",
       "fields": [
         {
           "doc": "",
@@ -321,14 +321,14 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_no_lto::Wrapper",
+      "name": "::test_data_contract::Wrapper",
       "fields": [
         {
           "doc": "",
           "name": "0",
           "type": {
             "udt": {
-              "name": "::test_spec_lib_no_lto::Wrapped"
+              "name": "::test_data_lib::Wrapped"
             }
           }
         }
@@ -422,7 +422,7 @@
     "udt_union_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib_no_lto::Enum",
+      "name": "::test_data_lib::Enum",
       "cases": [
         {
           "tuple_v0": {
@@ -531,7 +531,7 @@
     "udt_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib_no_lto::IntEnum",
+      "name": "::test_data_lib::IntEnum",
       "cases": [
         {
           "doc": "",

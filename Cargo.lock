@@ -2159,6 +2159,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_data_contract"
+version = "30.0.0"
+dependencies = [
+ "soroban-sdk 30.0.0",
+ "test_data_lib",
+]
+
+[[package]]
+name = "test_data_lib"
+version = "30.0.0"
+dependencies = [
+ "soroban-sdk 30.0.0",
+]
+
+[[package]]
 name = "test_empty"
 version = "30.0.0"
 dependencies = [
@@ -2281,13 +2296,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "test_spec_lib_no_lto"
-version = "30.0.0"
-dependencies = [
- "soroban-sdk 30.0.0",
-]
-
-[[package]]
 name = "test_spec_lib_v2"
 version = "30.0.0"
 dependencies = [
@@ -2299,14 +2307,6 @@ name = "test_spec_lib_v3"
 version = "30.0.0"
 dependencies = [
  "soroban-sdk 30.0.0",
-]
-
-[[package]]
-name = "test_spec_no_lto"
-version = "30.0.0"
-dependencies = [
- "soroban-sdk 30.0.0",
- "test_spec_lib_no_lto",
 ]
 
 [[package]]
