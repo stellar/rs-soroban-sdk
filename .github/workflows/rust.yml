@@ -159,8 +159,8 @@ jobs:
     - name: Upload test wasms built without LTO
       uses: actions/upload-artifact@v7
       with:
-        name: test-wasms-no-lto-${{ matrix.rust }}-${{ matrix.sys.target }}
-        path: target/wasm32v1-none/release-no-lto/test_*.wasm
+        name: test-wasms-without-lto-${{ matrix.rust }}-${{ matrix.sys.target }}
+        path: target/wasm32v1-none/release-without-lto/test_*.wasm
         retention-days: ${{ env.ARTIFACT_RETENTION_DAYS_FOR_TEST_WASMS }}
 
   test:
@@ -335,8 +335,8 @@ jobs:
     - name: Restore test wasms built without LTO from one of the msrv builds
       uses: actions/download-artifact@v5
       with:
-        name: test-wasms-no-lto-msrv-x86_64-unknown-linux-gnu
-        path: target/wasm32v1-none/release-no-lto/
+        name: test-wasms-without-lto-msrv-x86_64-unknown-linux-gnu
+        path: target/wasm32v1-none/release-without-lto/
     - run: make spec-snapshots-from-built-wasms
     - name: Check no diffs exist
       run: git add -N . && git diff HEAD --exit-code

@@ -41,20 +41,18 @@ build-test-wasms: fmt
 	# Build the test wasms with MSRV by default, with some meta disabled for
 	# binary stability for tests. The spec shaking v2 var is for the
 	# test_spec_shaking_v2 contract, built with soroban-sdk 28.0.0, which needs it.
-	# The test wasms are built again with LTO off, in the release-no-lto profile,
+	# The test wasms are built again with LTO off, in the release-without-lto profile,
 	# so that their specs can be checked to match the specs built with LTO.
 	STELLAR_CLI_VERSION=$(VERSION_MAJOR).0.0 \
 	SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2=1 \
 	RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
 	RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
 		cargo hack build --release --target wasm32v1-none $(foreach c,$(TEST_CRATES),--package $(c)) ; \
-	CARGO_PROFILE_RELEASE_NO_LTO_INHERITS=release \
-	CARGO_PROFILE_RELEASE_NO_LTO_LTO=false \
 	STELLAR_CLI_VERSION=$(VERSION_MAJOR).0.0 \
 	SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2=1 \
 	RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
 	RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
-		cargo hack build --profile release-no-lto --target wasm32v1-none $(foreach c,$(TEST_CRATES),--package $(c)) ; \
+		cargo hack build --profile release-without-lto --target wasm32v1-none $(foreach c,$(TEST_CRATES),--package $(c)) ; \
 	cd target/wasm32v1-none/release/ && \
 		for i in *.wasm ; do \
 			ls -l "$$i"; \
@@ -122,7 +120,7 @@ spec-snapshots-from-built-wasms:
 	# same object file.
 	for name in $(TEST_CRATES); do \
 		[ -f "target/wasm32v1-none/release/$$name.wasm" ] || continue; \
-		wasm=target/wasm32v1-none/release-no-lto/$$name.wasm; \
+		wasm=target/wasm32v1-none/release-without-lto/$$name.wasm; \
 		echo "Checking spec of $$name built without LTO"; \
 		cargo run --quiet --package spec-json -- $$wasm | diff -u tests-specs/$$name.json - || exit 1; \
 	done

@@ -81,7 +81,9 @@ debug-assertions = true
 
 # The release-without-lto profile is useful for testing build cases when lto
 # are disabled, such as those like the test_zero test vector. See the test_zero
-# README for more details.
+# README for more details. The build-test-wasms make target also builds the
+# test wasms with it, so that their specs can be checked to match the specs
+# built with lto.
 [profile.release-without-lto]
 inherits = "release"
 lto = "off"
