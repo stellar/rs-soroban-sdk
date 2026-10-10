@@ -41,11 +41,19 @@ build-test-wasms: fmt
 	# Build the test wasms with MSRV by default, with some meta disabled for
 	# binary stability for tests. The spec shaking v2 var is for the
 	# test_spec_shaking_v2 contract, built with soroban-sdk 28.0.0, which needs it.
+	# The test_spec_no_lto contract is built again with LTO off, to test that the
+	# spec entries of types defined in other crates are linked into contracts
+	# built without it.
 	STELLAR_CLI_VERSION=$(VERSION_MAJOR).0.0 \
 	SOROBAN_SDK_BUILD_SYSTEM_SUPPORTS_SPEC_SHAKING_V2=1 \
 	RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
 	RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
 		cargo hack build --release --target wasm32v1-none $(foreach c,$(TEST_CRATES),--package $(c)) ; \
+	CARGO_PROFILE_RELEASE_LTO=false \
+	STELLAR_CLI_VERSION=$(VERSION_MAJOR).0.0 \
+	RUSTUP_TOOLCHAIN=$(TEST_CRATES_RUSTUP_TOOLCHAIN) \
+	RUSTFLAGS='--cfg soroban_sdk_internal_no_rssdkver_meta' \
+		cargo build --release --target wasm32v1-none --package test_spec_no_lto ; \
 	cd target/wasm32v1-none/release/ && \
 		for i in *.wasm ; do \
 			ls -l "$$i"; \

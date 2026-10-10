@@ -1,0 +1,23 @@
+[package]
+name = "test_spec_no_lto"
+version.workspace = true
+authors = ["Stellar Development Foundation <info@stellar.org>"]
+license = "Apache-2.0"
+edition = "2021"
+publish = false
+rust-version.workspace = true
+
+# Built without LTO by the build-test-wasms make target, to test that the spec
+# entries of types defined in another crate are linked into the contract.
+[lib]
+crate-type = ["cdylib"]
+doctest = false
+
+[dependencies]
+soroban-sdk = {path = "../../soroban-sdk"}
+test_spec_lib_no_lto = {path = "../spec_lib_no_lto"}
+
+[dev-dependencies]
+soroban-sdk = {path = "../../soroban-sdk", features = ["testutils"]}
+soroban-spec = {path = "../../soroban-spec"}
+stellar-xdr = {workspace = true, features = ["std"]}

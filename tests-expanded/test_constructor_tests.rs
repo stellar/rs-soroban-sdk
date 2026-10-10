@@ -150,6 +150,9 @@ impl soroban_sdk::SpecTypeDef for DataKey {
 #[allow(dead_code)]
 static __SPEC_XDR_TYPE_DATAKEY: [u8; DataKey::spec_xdr().len()] = DataKey::spec_xdr();
 impl DataKey {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(
             soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
@@ -206,6 +209,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for DataKey {
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        DataKey::__spec_link();
         use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
         const CASES: &'static [&'static str] = &["Persistent", "Temp", "Instance"];
         let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -260,6 +264,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, DataKey> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &DataKey,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        DataKey::__spec_link();
         use soroban_sdk::{TryFromVal, TryIntoVal};
         match val {
             DataKey::Persistent(ref value0) => {

@@ -47,6 +47,9 @@ impl soroban_sdk::SpecTypeDef for DummyProof {
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_DUMMYPROOF: [u8; DummyProof::spec_xdr().len()] = DummyProof::spec_xdr();
 impl DummyProof {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -94,6 +97,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for DummyProof 
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        DummyProof::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 5usize] = ["fp", "fp2", "fr", "g1", "g2"];
         let mut vals: [Val; 5usize] = [Val::VOID.to_val(); 5usize];
@@ -125,6 +129,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, DummyProof> for soroban_sdk::Val 
         env: &soroban_sdk::Env,
         val: &DummyProof,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        DummyProof::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 5usize] = ["fp", "fp2", "fr", "g1", "g2"];
         let vals: [Val; 5usize] = [

@@ -80,6 +80,9 @@ impl soroban_sdk::SpecTypeDef for UdtEnum2 {
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_UDTENUM2: [u8; UdtEnum2::spec_xdr().len()] = UdtEnum2::spec_xdr();
 impl UdtEnum2 {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtEnumV0(
             soroban_sdk::xdr::r#const::ScSpecUdtEnumV0 {
@@ -113,6 +116,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtEnum2 {
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UdtEnum2::__spec_link();
         use soroban_sdk::TryIntoVal;
         let discriminant: u32 = val.try_into_val(env)?;
         Ok(match discriminant {
@@ -129,6 +133,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UdtEnum2> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &UdtEnum2,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UdtEnum2::__spec_link();
         Ok(match val {
             UdtEnum2::A => 10u32.into(),
             UdtEnum2::B => 15u32.into(),
@@ -240,6 +245,9 @@ impl soroban_sdk::SpecTypeDef for UdtEnum {
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_UDTENUM: [u8; UdtEnum::spec_xdr().len()] = UdtEnum::spec_xdr();
 impl UdtEnum {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(
             soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
@@ -304,6 +312,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtEnum {
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UdtEnum::__spec_link();
         use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
         const CASES: &'static [&'static str] = &["UdtA", "UdtB", "UdtC", "UdtD"];
         let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -364,6 +373,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UdtEnum> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &UdtEnum,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UdtEnum::__spec_link();
         use soroban_sdk::{TryFromVal, TryIntoVal};
         match val {
             UdtEnum::UdtA => {
@@ -473,6 +483,9 @@ impl soroban_sdk::SpecTypeDef for UdtTuple {
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_UDTTUPLE: [u8; UdtTuple::spec_xdr().len()] = UdtTuple::spec_xdr();
 impl UdtTuple {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -506,6 +519,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtTuple {
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UdtTuple::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val, VecObject};
         let vec: VecObject = (*val).try_into().map_err(|_| ConversionError)?;
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -524,6 +538,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UdtTuple> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &UdtTuple,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UdtTuple::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         let vals: [Val; 2usize] = [
             (&val.0).try_into_val(env).map_err(|_| ConversionError)?,
@@ -627,6 +642,9 @@ impl soroban_sdk::SpecTypeDef for UdtStruct {
 #[link_section = "contractspecv0"]
 static __SPEC_XDR_TYPE_UDTSTRUCT: [u8; UdtStruct::spec_xdr().len()] = UdtStruct::spec_xdr();
 impl UdtStruct {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -664,6 +682,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtStruct {
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UdtStruct::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 3usize] = ["a", "b", "c"];
         let mut vals: [Val; 3usize] = [Val::VOID.to_val(); 3usize];
@@ -689,6 +708,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UdtStruct> for soroban_sdk::Val {
         env: &soroban_sdk::Env,
         val: &UdtStruct,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UdtStruct::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 3usize] = ["a", "b", "c"];
         let vals: [Val; 3usize] = [
@@ -791,6 +811,9 @@ impl soroban_sdk::SpecTypeDef for UdtRecursive {
 static __SPEC_XDR_TYPE_UDTRECURSIVE: [u8; UdtRecursive::spec_xdr().len()] =
     UdtRecursive::spec_xdr();
 impl UdtRecursive {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -823,6 +846,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UdtRecursiv
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UdtRecursive::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 2usize] = ["a", "b"];
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -845,6 +869,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, UdtRecursive> for soroban_sdk::Va
         env: &soroban_sdk::Env,
         val: &UdtRecursive,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        UdtRecursive::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 2usize] = ["a", "b"];
         let vals: [Val; 2usize] = [
@@ -946,6 +971,9 @@ impl soroban_sdk::SpecTypeDef for RecursiveToEnum {
 static __SPEC_XDR_TYPE_RECURSIVETOENUM: [u8; RecursiveToEnum::spec_xdr().len()] =
     RecursiveToEnum::spec_xdr();
 impl RecursiveToEnum {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -978,6 +1006,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for RecursiveTo
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        RecursiveToEnum::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 2usize] = ["a", "b"];
         let mut vals: [Val; 2usize] = [Val::VOID.to_val(); 2usize];
@@ -1000,6 +1029,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, RecursiveToEnum> for soroban_sdk:
         env: &soroban_sdk::Env,
         val: &RecursiveToEnum,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        RecursiveToEnum::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 2usize] = ["a", "b"];
         let vals: [Val; 2usize] = [
@@ -1108,6 +1138,9 @@ impl soroban_sdk::SpecTypeDef for RecursiveEnum {
 static __SPEC_XDR_TYPE_RECURSIVEENUM: [u8; RecursiveEnum::spec_xdr().len()] =
     RecursiveEnum::spec_xdr();
 impl RecursiveEnum {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtUnionV0(
             soroban_sdk::xdr::r#const::ScSpecUdtUnionV0 {
@@ -1150,6 +1183,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for RecursiveEn
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        RecursiveEnum::__spec_link();
         use soroban_sdk::{EnvBase, TryFromVal, TryIntoVal};
         const CASES: &'static [&'static str] = &["NotRecursive", "Recursive"];
         let vec: soroban_sdk::Vec<soroban_sdk::Val> = val.try_into_val(env)?;
@@ -1190,6 +1224,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, RecursiveEnum> for soroban_sdk::V
         env: &soroban_sdk::Env,
         val: &RecursiveEnum,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        RecursiveEnum::__spec_link();
         use soroban_sdk::{TryFromVal, TryIntoVal};
         match val {
             RecursiveEnum::NotRecursive => {

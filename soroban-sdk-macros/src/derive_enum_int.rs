@@ -11,7 +11,7 @@ use stellar_xdr::ScSpecUdtEnumCaseV0;
 
 use crate::{
     doc::docs_from_attrs,
-    spec::{const_view_string, spec_type_def_gen},
+    spec::{const_view_string, spec_link_fn, spec_type_def_gen},
 };
 
 // TODO: Add conversions to/from ScVal types.
@@ -80,6 +80,7 @@ pub fn derive_type_enum_int(
     // Generated code spec. The spec entry is rendered as the equivalent
     // const::ScSpecEntry, which the contract crate encodes to XDR at compile time.
     let spec_type_def = spec_type_def_gen(path, enum_ident, None, None, None);
+    let spec_link = spec_link_fn();
     let spec_gen = {
         let doc = const_view_string(path, &spec.doc);
         let lib = const_view_string(path, &spec.lib);
@@ -108,6 +109,8 @@ pub fn derive_type_enum_int(
             static #spec_ident: [u8; #enum_ident::spec_xdr().len()] = #enum_ident::spec_xdr();
 
             impl #enum_ident {
+                #spec_link
+
                 const __SPEC_XDR_ENTRY: #path::xdr::r#const::ScSpecEntry = #spec_entry;
 
                 pub const fn spec_xdr() -> [u8; #enum_ident::__SPEC_XDR_ENTRY.const_xdr_len()] {
@@ -127,6 +130,7 @@ pub fn derive_type_enum_int(
             type Error = #path::ConversionError;
             #[inline(always)]
             fn try_from_val(env: &#path::Env, val: &#path::Val) -> Result<Self, #path::ConversionError> {
+                #enum_ident::__spec_link();
                 use #path::TryIntoVal;
                 let discriminant: u32 = val.try_into_val(env)?;
                 Ok(match discriminant {
@@ -140,6 +144,7 @@ pub fn derive_type_enum_int(
             type Error = #path::ConversionError;
             #[inline(always)]
             fn try_from_val(env: &#path::Env, val: &#enum_ident) -> Result<Self, #path::ConversionError> {
+                #enum_ident::__spec_link();
                 Ok(match val {
                     #(#try_intos,)*
                 })

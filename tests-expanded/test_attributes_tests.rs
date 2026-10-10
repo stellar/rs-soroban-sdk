@@ -78,6 +78,9 @@ impl soroban_sdk::SpecTypeDef for AttributeType {
 static __SPEC_XDR_TYPE_ATTRIBUTETYPE: [u8; AttributeType::spec_xdr().len()] =
     AttributeType::spec_xdr();
 impl AttributeType {
+    #[doc(hidden)]
+    #[inline(never)]
+    pub fn __spec_link() {}
     const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
         soroban_sdk::xdr::r#const::ScSpecEntry::UdtStructV0(
             soroban_sdk::xdr::r#const::ScSpecUdtStructV0 {
@@ -105,6 +108,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for AttributeTy
         env: &soroban_sdk::Env,
         val: &soroban_sdk::Val,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        AttributeType::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["value"];
         let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
@@ -124,6 +128,7 @@ impl soroban_sdk::TryFromVal<soroban_sdk::Env, AttributeType> for soroban_sdk::V
         env: &soroban_sdk::Env,
         val: &AttributeType,
     ) -> Result<Self, soroban_sdk::ConversionError> {
+        AttributeType::__spec_link();
         use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
         const KEYS: [&'static str; 1usize] = ["value"];
         let vals: [Val; 1usize] = [(&val.value)
