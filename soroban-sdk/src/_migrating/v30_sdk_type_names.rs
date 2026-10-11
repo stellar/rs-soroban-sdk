@@ -22,8 +22,9 @@
 //! ## Migrating
 //!
 //! Rename any event or error enum named like a soroban-sdk type. Renaming an event changes the
-//! name in its spec entry, and renaming an error enum changes the name its spec entry and the
-//! functions that return it use, so clients generated from the spec will see the new name.
+//! name in its spec entry, and renaming an error enum changes the name in its spec entry and in
+//! the spec entries of the functions that return it, so clients generated from the spec will see
+//! the new name.
 //!
 //! [`Address`]: crate::Address
 //! [`Symbol`]: crate::Symbol
