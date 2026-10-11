@@ -41,7 +41,8 @@ pub enum UsedErrorEnum {
     Invalid = 2,
 }
 
-// Used only via panic_with_error! (never appears in a Result return).
+// Used only via panic_with_error!, by reference (never appears in a Result
+// return).
 #[contracterror]
 #[derive(Copy, Clone, Debug, Eq, PartialEq)]
 pub enum UsedPanicErrorEnum {
@@ -468,7 +469,7 @@ impl Contract {
 
     pub fn with_panic_error(env: Env, fail: bool) {
         if fail {
-            panic_with_error!(&env, UsedPanicErrorEnum::Boom);
+            panic_with_error!(&env, &UsedPanicErrorEnum::Boom);
         }
     }
 
