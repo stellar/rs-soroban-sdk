@@ -25,7 +25,9 @@ fn test_spec_shaking() {
     // records spec shaking version 2, where every used entry carries a marker.
     // Built by the SDK in this repo it records its version, from which only its
     // events and panicked-with errors carry markers, and every other type is
-    // settled by reachability. Either way the same entries survive.
+    // settled by reachability. Either way the same entries survive, except
+    // events published with publish_event, which soroban-sdk 28.0.0 does not
+    // mark.
     let meta = soroban_meta::read::from_wasm(WASM).unwrap();
     let model = soroban_spec::shaking::model_for_meta(&meta);
     let expected_model = match env!("CARGO_PKG_NAME") {
@@ -72,6 +74,8 @@ fn test_spec_shaking() {
         "publish_nested_topic",
         "publish_nested_data",
         "publish_ref_event",
+        "publish_via_publish_event",
+        "publish_via_trait_publish",
         "with_lib_struct",
         "with_wasm_imported",
         "with_option",
@@ -171,6 +175,31 @@ fn test_spec_shaking() {
         );
     }
 
+    // Events published with Events::publish_event or the Event trait's publish
+    // fn, and the types they reference. soroban-sdk 28.0.0 does not mark events
+    // published this way, so they survive shaking only when the contract is
+    // built by the SDK in this repo.
+    let used_via_publish_event = [
+        // event published with Events::publish_event
+        "UsedPublishEventDataType",
+        "UsedEventViaPublishEvent",
+        // event published with the Event trait's publish fn
+        "UsedTraitPublishDataType",
+        "UsedEventViaTraitPublish",
+    ];
+    for name in used_via_publish_event {
+        match model {
+            soroban_spec::shaking::Model::Markers => assert!(
+                !filtered_names.contains(name),
+                "type/event {name} published via publish_event should be absent from filtered entries of a soroban-sdk 28.0.0 wasm, but was found"
+            ),
+            _ => assert!(
+                filtered_names.contains(name),
+                "used type/event {name} should be present in filtered entries, but was not found"
+            ),
+        }
+    }
+
     match model {
         soroban_spec::shaking::Model::None => panic!("unexpected model {model:?}"),
         soroban_spec::shaking::Model::Markers => {
@@ -196,6 +225,8 @@ fn test_spec_shaking() {
                     "UsedAssertErrorEnum",
                     // Every published event.
                     "UsedEventSimple",
+                    "UsedEventViaPublishEvent",
+                    "UsedEventViaTraitPublish",
                     "UsedEventWithDataType",
                     "UsedEventWithNestedData",
                     "UsedEventWithNestedTopic",
@@ -269,7 +300,13 @@ fn test_spec_shaking() {
             "unused type/event {name} should be absent from filtered entries, but was found"
         );
     }
-    assert_eq!(all_names.len() - filtered_names.len(), unused.len());
+    match model {
+        soroban_spec::shaking::Model::Markers => assert_eq!(
+            all_names.len() - filtered_names.len(),
+            unused.len() + used_via_publish_event.len()
+        ),
+        _ => assert_eq!(all_names.len() - filtered_names.len(), unused.len()),
+    }
 }
 
 /// Extract the name from a non-function spec entry.

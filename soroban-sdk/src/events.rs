@@ -3,7 +3,7 @@ use core::fmt::Debug;
 
 #[cfg(doc)]
 use crate::{contracttype, Bytes, Map};
-use crate::{env::internal, unwrap::UnwrapInfallible, Env, IntoVal, Val, Vec};
+use crate::{env::internal, unwrap::UnwrapInfallible, Env, IntoVal, SpecShakingMarker, Val, Vec};
 
 /// Events publishes events for the currently executing contract.
 ///
@@ -62,7 +62,10 @@ pub trait Event {
     fn topics(&self, env: &Env) -> Vec<Val>;
     fn data(&self, env: &Env) -> Val;
 
-    fn publish(&self, env: &Env) {
+    fn publish(&self, env: &Env)
+    where
+        Self: Sized + SpecShakingMarker,
+    {
         env.events().publish_event(self);
     }
 
@@ -99,8 +102,9 @@ impl Events {
 
     /// Publish an event defined using the [`contractevent`][crate::contractevent] macro.
     #[inline(always)]
-    pub fn publish_event(&self, e: &(impl Event + ?Sized)) {
+    pub fn publish_event<E: Event + SpecShakingMarker + ?Sized>(&self, e: &E) {
         let env = self.env();
+        <E as SpecShakingMarker>::spec_shaking_marker();
         internal::Env::contract_event(env, e.topics(env).to_object(), e.data(env))
             .unwrap_infallible();
     }
