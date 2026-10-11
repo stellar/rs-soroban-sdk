@@ -647,6 +647,7 @@ pub use soroban_sdk_macros::contractimpl_trait_default_fns_not_overridden;
 /// ```
 pub use soroban_sdk_macros::contractmeta;
 
+pub use soroban_sdk_macros::contractdata;
 /// Generates conversions from the struct/enum from/into a `Val`.
 ///
 /// There are some constraints on the types that are supported:
@@ -1182,6 +1183,7 @@ macro_rules! assert_with_error {
 pub mod unwrap;
 
 mod env;
+pub use env::internal::StorageType;
 
 mod address;
 pub mod address_payload;
@@ -1247,6 +1249,8 @@ mod error;
 pub use error::InvokeError;
 pub mod events;
 pub use events::{Event, Topics};
+pub mod contract_data;
+pub use contract_data::{ContractData, ContractDataKey, FixedContractData, TtlPolicy, UpdateError};
 pub mod executable_refs;
 pub mod iter;
 pub mod ledger;

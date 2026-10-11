@@ -11,6 +11,7 @@ mod cmp_across_env_in_tests;
 mod contract_add_i32;
 mod contract_assert;
 mod contract_custom_account_impl;
+mod contract_data;
 mod contract_docs;
 mod contract_duration;
 mod contract_event;

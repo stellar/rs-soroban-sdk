@@ -4,6 +4,7 @@ mod arbitrary;
 mod attribute;
 mod derive_args;
 mod derive_client;
+mod derive_contract_data;
 mod derive_contractimpl_trait_default_fns_not_overridden;
 mod derive_contractimpl_trait_macro;
 mod derive_enum;
@@ -39,6 +40,7 @@ use derive_struct_tuple::derive_type_struct_tuple;
 use derive_trait::derive_trait;
 
 use darling::{ast::NestedMeta, util::SpannedValue, FromMeta};
+use heck::ToSnakeCase;
 use macro_string::MacroString;
 use map_type::is_mapped_type_udt;
 use proc_macro::TokenStream;
@@ -505,6 +507,16 @@ pub fn contracttype(metadata: TokenStream, input: TokenStream) -> TokenStream {
         #derived
     }
     .into()
+}
+
+/// Declares storage metadata and keys for a contract data type.
+///
+/// Without `namespace`, this additionally implements `FixedContractData` using either `key`
+/// or the type name converted to `snake_case`. When `namespace` is supplied, fields marked
+/// `#[key]` define a dynamic key.
+#[proc_macro_attribute]
+pub fn contractdata(metadata: TokenStream, input: TokenStream) -> TokenStream {
+    derive_contract_data::derive_contract_data(metadata, input)
 }
 
 #[proc_macro_attribute]

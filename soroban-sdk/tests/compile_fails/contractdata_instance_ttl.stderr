@@ -1,0 +1,5 @@
+error: `ttl` is not supported with `storage = instance`; extend the contract instance TTL explicitly with `env.storage().instance().extend_ttl(...)`
+ --> tests/compile_fails/contractdata_instance_ttl.rs:4:8
+  |
+4 | struct Admin(u32);
+  |        ^^^^^
