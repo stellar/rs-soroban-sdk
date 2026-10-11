@@ -15334,7 +15334,7 @@ impl Contract {
     pub fn with_panic_error(env: Env, fail: bool) {
         if fail {
             {
-                (&env).panic_with_error(UsedPanicErrorEnum::Boom);
+                (&env).panic_with_error(&UsedPanicErrorEnum::Boom);
             };
         }
     }
