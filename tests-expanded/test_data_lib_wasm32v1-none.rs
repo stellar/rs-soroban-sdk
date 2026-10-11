@@ -1280,7 +1280,6 @@ impl soroban_sdk::Event for Event {
 }
 impl Event {
     pub fn publish(&self, env: &soroban_sdk::Env) {
-        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }

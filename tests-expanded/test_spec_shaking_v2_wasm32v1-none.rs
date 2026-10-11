@@ -6,7 +6,7 @@ extern crate core;
 use core::prelude::rust_2021::*;
 use soroban_sdk::{
     assert_with_error, contract, contracterror, contractevent, contractimpl, contracttype,
-    panic_with_error, Env, Map, Symbol, Vec,
+    panic_with_error, Env, Event, Map, Symbol, Vec,
 };
 pub struct Contract;
 ///ContractArgs is a type for building arg lists for functions defined in "Contract".
@@ -3043,6 +3043,390 @@ impl<'a> soroban_sdk::Event for UsedEventWithRefs<'a> {
     }
 }
 impl<'a> UsedEventWithRefs<'a> {
+    pub fn publish(&self, env: &soroban_sdk::Env) {
+        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <_ as soroban_sdk::Event>::publish(self, env);
+    }
+}
+pub struct UsedPublishEventDataType {
+    pub val: u32,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UsedPublishEventDataType {
+    #[inline]
+    fn clone(&self) -> UsedPublishEventDataType {
+        UsedPublishEventDataType {
+            val: ::core::clone::Clone::clone(&self.val),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UsedPublishEventDataType {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field1_finish(
+            f,
+            "UsedPublishEventDataType",
+            "val",
+            &&self.val,
+        )
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UsedPublishEventDataType {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<u32>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UsedPublishEventDataType {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UsedPublishEventDataType {
+    #[inline]
+    fn eq(&self, other: &UsedPublishEventDataType) -> bool {
+        self.val == other.val
+    }
+}
+#[doc(hidden)]
+#[allow(dead_code)]
+#[link_section = "contractspecv0"]
+static __SPEC_XDR_TYPE_USEDPUBLISHEVENTDATATYPE: [u8; 60usize] =
+    UsedPublishEventDataType::spec_xdr();
+impl UsedPublishEventDataType {
+    pub const fn spec_xdr() -> [u8; 60usize] {
+        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x18UsedPublishEventDataType\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UsedPublishEventDataType {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1\xf5\x05\xb2\xfa\xe2\x16\x18\x7f";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedPublishEventDataType {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
+        let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
+            .map_err(|_| ConversionError)?;
+        Ok(Self {
+            val: vals[0]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedPublishEventDataType> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UsedPublishEventDataType,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let vals: [Val; 1usize] = [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
+        Ok(env
+            .map_new_from_slices(&KEYS, &vals)
+            .map_err(|_| ConversionError)?
+            .into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedPublishEventDataType> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UsedPublishEventDataType,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedPublishEventDataType>>::try_from_val(
+            env, *val,
+        )
+    }
+}
+pub struct UsedEventViaPublishEvent {
+    pub payload: UsedPublishEventDataType,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UsedEventViaPublishEvent {
+    #[inline]
+    fn clone(&self) -> UsedEventViaPublishEvent {
+        UsedEventViaPublishEvent {
+            payload: ::core::clone::Clone::clone(&self.payload),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UsedEventViaPublishEvent {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field1_finish(
+            f,
+            "UsedEventViaPublishEvent",
+            "payload",
+            &&self.payload,
+        )
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UsedEventViaPublishEvent {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<UsedPublishEventDataType>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UsedEventViaPublishEvent {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UsedEventViaPublishEvent {
+    #[inline]
+    fn eq(&self, other: &UsedEventViaPublishEvent) -> bool {
+        self.payload == other.payload
+    }
+}
+#[doc(hidden)]
+#[allow(dead_code)]
+#[link_section = "contractspecv0"]
+static __SPEC_XDR_EVENT_USEDEVENTVIAPUBLISHEVENT: [u8; 136usize] =
+    UsedEventViaPublishEvent::spec_xdr();
+impl UsedEventViaPublishEvent {
+    pub const fn spec_xdr() -> [u8; 136usize] {
+        *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x18UsedEventViaPublishEvent\0\0\0\x01\0\0\0\x1cused_event_via_publish_event\0\0\0\x01\0\0\0\0\0\0\0\x07payload\0\0\0\x07\xd0\0\0\0\x18UsedPublishEventDataType\0\0\0\0\0\0\0\x02"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UsedEventViaPublishEvent {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <UsedPublishEventDataType as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1\xd4\xe1\xa7\x8eOXdK";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
+impl soroban_sdk::Event for UsedEventViaPublishEvent {
+    fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+        use soroban_sdk::IntoVal;
+        (&{ soroban_sdk::Symbol::new(env, "used_event_via_publish_event") },).into_val(env)
+    }
+    fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
+        use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
+        const KEYS: [&'static str; 1usize] = ["payload"];
+        let vals: [soroban_sdk::Val; 1usize] = [self.payload.into_val(env)];
+        env.sparse_map_new_from_slices(&KEYS, &vals)
+            .unwrap_infallible()
+            .into()
+    }
+}
+impl UsedEventViaPublishEvent {
+    pub fn publish(&self, env: &soroban_sdk::Env) {
+        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        <_ as soroban_sdk::Event>::publish(self, env);
+    }
+}
+pub struct UsedTraitPublishDataType {
+    pub val: u32,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UsedTraitPublishDataType {
+    #[inline]
+    fn clone(&self) -> UsedTraitPublishDataType {
+        UsedTraitPublishDataType {
+            val: ::core::clone::Clone::clone(&self.val),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UsedTraitPublishDataType {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field1_finish(
+            f,
+            "UsedTraitPublishDataType",
+            "val",
+            &&self.val,
+        )
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UsedTraitPublishDataType {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<u32>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UsedTraitPublishDataType {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UsedTraitPublishDataType {
+    #[inline]
+    fn eq(&self, other: &UsedTraitPublishDataType) -> bool {
+        self.val == other.val
+    }
+}
+#[doc(hidden)]
+#[allow(dead_code)]
+#[link_section = "contractspecv0"]
+static __SPEC_XDR_TYPE_USEDTRAITPUBLISHDATATYPE: [u8; 60usize] =
+    UsedTraitPublishDataType::spec_xdr();
+impl UsedTraitPublishDataType {
+    pub const fn spec_xdr() -> [u8; 60usize] {
+        *b"\0\0\0\x01\0\0\0\0\0\0\0\0\0\0\0\x18UsedTraitPublishDataType\0\0\0\x01\0\0\0\0\0\0\0\x03val\0\0\0\0\x04"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UsedTraitPublishDataType {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <u32 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1\xb1P\xbaRn74\x82";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val> for UsedTraitPublishDataType {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &soroban_sdk::Val,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, MapObject, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let mut vals: [Val; 1usize] = [Val::VOID.to_val(); 1usize];
+        let map: MapObject = val.try_into().map_err(|_| ConversionError)?;
+        env.sparse_map_unpack_to_slice(map, &KEYS, &mut vals)
+            .map_err(|_| ConversionError)?;
+        Ok(Self {
+            val: vals[0]
+                .try_into_val(env)
+                .map_err(|_| soroban_sdk::ConversionError)?,
+        })
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, UsedTraitPublishDataType> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &UsedTraitPublishDataType,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        use soroban_sdk::{ConversionError, EnvBase, TryIntoVal, Val};
+        const KEYS: [&'static str; 1usize] = ["val"];
+        let vals: [Val; 1usize] = [(&val.val).try_into_val(env).map_err(|_| ConversionError)?];
+        Ok(env
+            .map_new_from_slices(&KEYS, &vals)
+            .map_err(|_| ConversionError)?
+            .into())
+    }
+}
+impl soroban_sdk::TryFromVal<soroban_sdk::Env, &UsedTraitPublishDataType> for soroban_sdk::Val {
+    type Error = soroban_sdk::ConversionError;
+    #[inline(always)]
+    fn try_from_val(
+        env: &soroban_sdk::Env,
+        val: &&UsedTraitPublishDataType,
+    ) -> Result<Self, soroban_sdk::ConversionError> {
+        <_ as soroban_sdk::TryFromVal<soroban_sdk::Env, UsedTraitPublishDataType>>::try_from_val(
+            env, *val,
+        )
+    }
+}
+pub struct UsedEventViaTraitPublish {
+    pub payload: UsedTraitPublishDataType,
+}
+#[automatically_derived]
+impl ::core::clone::Clone for UsedEventViaTraitPublish {
+    #[inline]
+    fn clone(&self) -> UsedEventViaTraitPublish {
+        UsedEventViaTraitPublish {
+            payload: ::core::clone::Clone::clone(&self.payload),
+        }
+    }
+}
+#[automatically_derived]
+impl ::core::fmt::Debug for UsedEventViaTraitPublish {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field1_finish(
+            f,
+            "UsedEventViaTraitPublish",
+            "payload",
+            &&self.payload,
+        )
+    }
+}
+#[automatically_derived]
+impl ::core::cmp::Eq for UsedEventViaTraitPublish {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<UsedTraitPublishDataType>;
+    }
+}
+#[automatically_derived]
+impl ::core::marker::StructuralPartialEq for UsedEventViaTraitPublish {}
+#[automatically_derived]
+impl ::core::cmp::PartialEq for UsedEventViaTraitPublish {
+    #[inline]
+    fn eq(&self, other: &UsedEventViaTraitPublish) -> bool {
+        self.payload == other.payload
+    }
+}
+#[doc(hidden)]
+#[allow(dead_code)]
+#[link_section = "contractspecv0"]
+static __SPEC_XDR_EVENT_USEDEVENTVIATRAITPUBLISH: [u8; 136usize] =
+    UsedEventViaTraitPublish::spec_xdr();
+impl UsedEventViaTraitPublish {
+    pub const fn spec_xdr() -> [u8; 136usize] {
+        *b"\0\0\0\x05\0\0\0\0\0\0\0\0\0\0\0\x18UsedEventViaTraitPublish\0\0\0\x01\0\0\0\x1cused_event_via_trait_publish\0\0\0\x01\0\0\0\0\0\0\0\x07payload\0\0\0\x07\xd0\0\0\0\x18UsedTraitPublishDataType\0\0\0\0\0\0\0\x02"
+    }
+}
+impl soroban_sdk::SpecShakingMarker for UsedEventViaTraitPublish {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {
+        <UsedTraitPublishDataType as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
+        {
+            static MARKER: [u8; 14usize] = *b"SpEcV1\\9\n\x8a\xd5\xa3.\x9d";
+            let _ = unsafe { ::core::ptr::read_volatile(MARKER.as_ptr()) };
+        }
+    }
+}
+impl soroban_sdk::Event for UsedEventViaTraitPublish {
+    fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+        use soroban_sdk::IntoVal;
+        (&{ soroban_sdk::Symbol::new(env, "used_event_via_trait_publish") },).into_val(env)
+    }
+    fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
+        use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
+        const KEYS: [&'static str; 1usize] = ["payload"];
+        let vals: [soroban_sdk::Val; 1usize] = [self.payload.into_val(env)];
+        env.sparse_map_new_from_slices(&KEYS, &vals)
+            .unwrap_infallible()
+            .into()
+    }
+}
+impl UsedEventViaTraitPublish {
     pub fn publish(&self, env: &soroban_sdk::Env) {
         <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
@@ -11178,6 +11562,17 @@ impl Contract {
         }
         .publish(&env);
     }
+    pub fn publish_via_publish_event(env: Env) {
+        env.events().publish_event(&UsedEventViaPublishEvent {
+            payload: UsedPublishEventDataType { val: 1 },
+        });
+    }
+    pub fn publish_via_trait_publish(env: Env) {
+        let event = UsedEventViaTraitPublish {
+            payload: UsedTraitPublishDataType { val: 1 },
+        };
+        <_ as Event>::publish(&event, &env);
+    }
 }
 #[doc(hidden)]
 #[allow(non_snake_case)]
@@ -11670,6 +12065,42 @@ impl Contract {
     #[allow(non_snake_case)]
     pub const fn spec_xdr_publish_ref_event() -> [u8; 40usize] {
         *b"\0\0\0\0\0\0\0\0\0\0\0\x11publish_ref_event\0\0\0\0\0\0\0\0\0\0\0"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+mod __Contract__publish_via_publish_event__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
+    #[link_section = "contractspecv0"]
+    static __SPEC_XDR_FN_PUBLISH_VIA_PUBLISH_EVENT: [u8; 48usize] =
+        super::Contract::spec_xdr_publish_via_publish_event();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_publish_via_publish_event() -> [u8; 48usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x19publish_via_publish_event\0\0\0\0\0\0\0\0\0\0\0"
+    }
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[allow(dead_code)]
+mod __Contract__publish_via_trait_publish__spec {
+    #[doc(hidden)]
+    #[allow(non_snake_case)]
+    #[allow(non_upper_case_globals)]
+    #[allow(dead_code)]
+    #[link_section = "contractspecv0"]
+    static __SPEC_XDR_FN_PUBLISH_VIA_TRAIT_PUBLISH: [u8; 48usize] =
+        super::Contract::spec_xdr_publish_via_trait_publish();
+}
+impl Contract {
+    #[allow(non_snake_case)]
+    pub const fn spec_xdr_publish_via_trait_publish() -> [u8; 48usize] {
+        *b"\0\0\0\0\0\0\0\0\0\0\0\x19publish_via_trait_publish\0\0\0\0\0\0\0\0\0\0\0"
     }
 }
 impl<'a> ContractClient<'a> {
@@ -12397,6 +12828,54 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    pub fn publish_via_publish_event(&self) -> () {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "publish_via_publish_event") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
+    pub fn try_publish_via_publish_event(
+        &self,
+    ) -> Result<
+        Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "publish_via_publish_event") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
+    pub fn publish_via_trait_publish(&self) -> () {
+        use core::ops::Not;
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "publish_via_trait_publish") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
+    pub fn try_publish_via_trait_publish(
+        &self,
+    ) -> Result<
+        Result<(), <() as soroban_sdk::TryFromVal<soroban_sdk::Env, soroban_sdk::Val>>::Error>,
+        Result<soroban_sdk::Error, soroban_sdk::InvokeError>,
+    > {
+        use soroban_sdk::{FromVal, IntoVal};
+        let res = self.env.try_invoke_contract(
+            &self.address,
+            &{ soroban_sdk::Symbol::new(&self.env, "publish_via_trait_publish") },
+            ::soroban_sdk::Vec::new(&self.env),
+        );
+        res
+    }
 }
 impl ContractArgs {
     #[inline(always)]
@@ -12546,6 +13025,16 @@ impl ContractArgs {
     #[inline(always)]
     #[allow(clippy::unused_unit)]
     pub fn publish_ref_event<'i>() -> () {
+        ()
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn publish_via_publish_event<'i>() -> () {
+        ()
+    }
+    #[inline(always)]
+    #[allow(clippy::unused_unit)]
+    pub fn publish_via_trait_publish<'i>() -> () {
         ()
     }
 }
@@ -13281,6 +13770,54 @@ pub fn __Contract__publish_ref_event__invoke_raw(env: soroban_sdk::Env) -> sorob
 pub extern "C" fn __Contract__publish_ref_event__invoke_raw_extern() -> soroban_sdk::Val {
     #[allow(deprecated)]
     __Contract__publish_ref_event__invoke_raw(soroban_sdk::Env::default())
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(
+    note = "use `ContractClient::new(&env, &contract_id).publish_via_publish_event` instead"
+)]
+#[allow(deprecated)]
+pub fn __Contract__publish_via_publish_event__invoke_raw(
+    env: soroban_sdk::Env,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::publish_via_publish_event(env.clone()),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(
+    note = "use `ContractClient::new(&env, &contract_id).publish_via_publish_event` instead"
+)]
+#[export_name = "publish_via_publish_event"]
+pub extern "C" fn __Contract__publish_via_publish_event__invoke_raw_extern() -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__publish_via_publish_event__invoke_raw(soroban_sdk::Env::default())
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(
+    note = "use `ContractClient::new(&env, &contract_id).publish_via_trait_publish` instead"
+)]
+#[allow(deprecated)]
+pub fn __Contract__publish_via_trait_publish__invoke_raw(
+    env: soroban_sdk::Env,
+) -> soroban_sdk::Val {
+    soroban_sdk::IntoValForContractFn::into_val_for_contract_fn(
+        <Contract>::publish_via_trait_publish(env.clone()),
+        &env,
+    )
+}
+#[doc(hidden)]
+#[allow(non_snake_case)]
+#[deprecated(
+    note = "use `ContractClient::new(&env, &contract_id).publish_via_trait_publish` instead"
+)]
+#[export_name = "publish_via_trait_publish"]
+pub extern "C" fn __Contract__publish_via_trait_publish__invoke_raw_extern() -> soroban_sdk::Val {
+    #[allow(deprecated)]
+    __Contract__publish_via_trait_publish__invoke_raw(soroban_sdk::Env::default())
 }
 #[allow(dead_code)]
 fn non_contract_fn(_s: UnusedNonContractFnParam) -> UnusedNonContractFnReturn {
