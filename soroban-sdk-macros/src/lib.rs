@@ -48,7 +48,7 @@ use spec::check_udt_ident;
 use std::{fmt::Write, fs};
 use syn::{
     ext::IdentExt as _, parse_macro_input, parse_str, spanned::Spanned, Data, DeriveInput, Error,
-    Expr, Fields, ItemImpl, ItemStruct, LitStr, Path, Type,
+    Expr, Fields, ItemImpl, ItemStruct, LitStr, Path, PathArguments, Type,
 };
 use syn_ext::HasFnsItem;
 
@@ -176,6 +176,12 @@ pub fn contract(metadata: TokenStream, input: TokenStream) -> TokenStream {
             "contract struct must not have generics",
         ));
     }
+    if let Some(where_clause) = &item.generics.where_clause {
+        errors.push(Error::new_spanned(
+            where_clause,
+            "contract struct must not have a where clause",
+        ));
+    }
     let fields_ok = match &item.fields {
         Fields::Unit => true,
         Fields::Named(named) => named.named.is_empty(),
@@ -277,6 +283,26 @@ pub fn contractimpl(metadata: TokenStream, input: TokenStream) -> TokenStream {
         let e = Error::new(
             Span::call_site(),
             "`contracttrait` is only supported on an impl block implementing a trait annotated with `#[contracttrait]`",
+        )
+        .into_compile_error();
+        return quote! { #imp #e }.into();
+    }
+
+    // Contract types cannot be generic (see `contract`), and generic self types
+    // cannot be turned into the identifiers generated below. Generics on the
+    // impl itself, such as lifetimes, are still allowed.
+    let self_ty_generic = match &*imp.self_ty {
+        Type::Path(path) => path
+            .path
+            .segments
+            .iter()
+            .any(|s| !matches!(s.arguments, PathArguments::None)),
+        _ => false,
+    };
+    if self_ty_generic {
+        let e = Error::new_spanned(
+            &imp.self_ty,
+            "contractimpl does not support generic contract types",
         )
         .into_compile_error();
         return quote! { #imp #e }.into();
