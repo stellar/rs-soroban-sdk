@@ -473,5 +473,24 @@
       ],
       "data_format": "map"
     }
+  },
+  {
+    "event_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "::test_data_lib::RefEvent",
+      "prefix_topics": [
+        "ref_event"
+      ],
+      "params": [
+        {
+          "doc": "",
+          "name": "v",
+          "type": "u32",
+          "location": "data"
+        }
+      ],
+      "data_format": "map"
+    }
   }
 ]

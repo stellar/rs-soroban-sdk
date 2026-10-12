@@ -6,10 +6,11 @@
 //! into this crate at all. A named-field struct is left out because its
 //! conversions are not inlined.
 //!
-//! The types, the error and the event are each used by a separate contract,
-//! test_data_contract, test_data_error_contract and test_data_event_contract,
-//! because a contract that calls into this crate for one of them links in the
-//! spec entries of all of them.
+//! The types, the error, the event and the event with a lifetime are each used
+//! by a separate contract, test_data_contract, test_data_error_contract,
+//! test_data_event_contract and test_data_ref_event_contract, because a contract
+//! that calls into this crate for one of them links in the spec entries of all
+//! of them.
 #![no_std]
 use soroban_sdk::{contracterror, contractevent, contracttype};
 
@@ -54,4 +55,12 @@ pub enum Error {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Event {
     pub v: u32,
+}
+
+// An event with a lifetime, so that its conversions and its spec anchor are
+// generic over the lifetime.
+#[contractevent]
+#[derive(Clone, Debug, Eq, PartialEq)]
+pub struct RefEvent<'a> {
+    pub v: &'a u32,
 }

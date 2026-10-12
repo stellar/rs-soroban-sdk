@@ -7,10 +7,11 @@
 //! into this crate at all. A named-field struct is left out because its
 //! conversions are not inlined.
 //!
-//! The types, the error and the event are each used by a separate contract,
-//! test_data_contract, test_data_error_contract and test_data_event_contract,
-//! because a contract that calls into this crate for one of them links in the
-//! spec entries of all of them.
+//! The types, the error, the event and the event with a lifetime are each used
+//! by a separate contract, test_data_contract, test_data_error_contract,
+//! test_data_event_contract and test_data_ref_event_contract, because a contract
+//! that calls into this crate for one of them links in the spec entries of all
+//! of them.
 #![no_std]
 #[macro_use]
 extern crate core;
@@ -1255,6 +1256,134 @@ impl soroban_sdk::Event for Event {
     }
 }
 impl Event {
+    pub fn publish(&self, env: &soroban_sdk::Env) {
+        <_ as soroban_sdk::Event>::publish(self, env);
+    }
+}
+pub struct RefEvent<'a> {
+    pub v: &'a u32,
+}
+#[automatically_derived]
+impl<'a> ::core::clone::Clone for RefEvent<'a> {
+    #[inline]
+    fn clone(&self) -> RefEvent<'a> {
+        RefEvent {
+            v: ::core::clone::Clone::clone(&self.v),
+        }
+    }
+}
+#[automatically_derived]
+impl<'a> ::core::fmt::Debug for RefEvent<'a> {
+    #[inline]
+    fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
+        ::core::fmt::Formatter::debug_struct_field1_finish(f, "RefEvent", "v", &&self.v)
+    }
+}
+#[automatically_derived]
+impl<'a> ::core::cmp::Eq for RefEvent<'a> {
+    #[inline]
+    #[doc(hidden)]
+    #[coverage(off)]
+    fn assert_receiver_is_total_eq(&self) -> () {
+        let _: ::core::cmp::AssertParamIsEq<&'a u32>;
+    }
+}
+#[automatically_derived]
+impl<'a> ::core::marker::StructuralPartialEq for RefEvent<'a> {}
+#[automatically_derived]
+impl<'a> ::core::cmp::PartialEq for RefEvent<'a> {
+    #[inline]
+    fn eq(&self, other: &RefEvent<'a>) -> bool {
+        self.v == other.v
+    }
+}
+impl<'a> soroban_sdk::SpecName for RefEvent<'a> {
+    const SPEC_NAME: &'static str = {
+        const NAME: &str = "::test_data_lib::RefEvent";
+        const CHECKED_NAME: &str = {
+            if !(NAME.len() <= soroban_sdk::xdr::SC_SPEC_TYPE_NAME_LIMIT as usize) {
+                {
+                    ::core::panicking::panic_fmt(
+                        format_args!(
+                            "type `RefEvent` full name including its module path is longer than the contract spec\'s type name limit, shorten its module path or name: `::test_data_lib::RefEvent`",
+                        ),
+                    );
+                }
+            }
+            NAME
+        };
+        CHECKED_NAME
+    };
+}
+impl<'a> soroban_sdk::SpecTypeDef for RefEvent<'a> {
+    const SPEC_TYPE_DEF: soroban_sdk::xdr::r#const::ScSpecTypeDef =
+        soroban_sdk::xdr::r#const::ScSpecTypeDef::Udt(soroban_sdk::xdr::r#const::ScSpecTypeUdt {
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <Self as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+        });
+}
+#[doc(hidden)]
+#[allow(dead_code)]
+static __SPEC_XDR_EVENT_REFEVENT: [u8; RefEvent::spec_xdr().len()] = RefEvent::spec_xdr();
+impl<'a> RefEvent<'a> {
+    const __SPEC_XDR_ENTRY: soroban_sdk::xdr::r#const::ScSpecEntry =
+        soroban_sdk::xdr::r#const::ScSpecEntry::EventV0(soroban_sdk::xdr::r#const::ScSpecEventV0 {
+            doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+            lib: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+            name: soroban_sdk::xdr::r#const::StringM::try_from_str_or_panic(
+                <RefEvent as soroban_sdk::SpecName>::SPEC_NAME,
+            ),
+            prefix_topics: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::r#const::ScSymbol(
+                    soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"ref_event"),
+                ),
+            ]),
+            params: soroban_sdk::xdr::r#const::VecM::try_from_slice_or_panic(&[
+                soroban_sdk::xdr::r#const::ScSpecEventParamV0 {
+                    doc: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b""),
+                    name: soroban_sdk::xdr::r#const::StringM::try_from_slice_or_panic(b"v"),
+                    type_: <u32 as soroban_sdk::SpecTypeDef>::SPEC_TYPE_DEF,
+                    location: soroban_sdk::xdr::ScSpecEventParamLocationV0::Data,
+                },
+            ]),
+            data_format: soroban_sdk::xdr::ScSpecEventDataFormat::Map,
+        });
+    pub const fn spec_xdr() -> [u8; RefEvent::__SPEC_XDR_ENTRY.const_xdr_len()] {
+        const { RefEvent::__SPEC_XDR_ENTRY.const_to_xdr() }
+    }
+}
+impl<'a> soroban_sdk::SpecShakingMarker for RefEvent<'a> {
+    #[doc(hidden)]
+    #[inline(always)]
+    fn spec_shaking_marker() {}
+}
+impl<'a> soroban_sdk::SpecAnchor for RefEvent<'a> {
+    #[inline(never)]
+    fn spec_anchor() {}
+}
+impl<'a> soroban_sdk::Event for RefEvent<'a> {
+    fn topics(&self, env: &soroban_sdk::Env) -> soroban_sdk::Vec<soroban_sdk::Val> {
+        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
+        use soroban_sdk::IntoVal;
+        (&{
+            #[allow(deprecated)]
+            const SYMBOL: soroban_sdk::Symbol = soroban_sdk::Symbol::short("ref_event");
+            SYMBOL
+        },)
+            .into_val(env)
+    }
+    fn data(&self, env: &soroban_sdk::Env) -> soroban_sdk::Val {
+        <Self as soroban_sdk::SpecAnchor>::spec_anchor();
+        use soroban_sdk::{unwrap::UnwrapInfallible, EnvBase, IntoVal};
+        const KEYS: [&'static str; 1usize] = ["v"];
+        let vals: [soroban_sdk::Val; 1usize] = [self.v.into_val(env)];
+        env.sparse_map_new_from_slices(&KEYS, &vals)
+            .unwrap_infallible()
+            .into()
+    }
+}
+impl<'a> RefEvent<'a> {
     pub fn publish(&self, env: &soroban_sdk::Env) {
         <_ as soroban_sdk::Event>::publish(self, env);
     }
