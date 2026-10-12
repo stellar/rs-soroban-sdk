@@ -7,7 +7,6 @@ use stellar_xdr::StringM;
 
 use crate::{
     doc::docs_from_attrs,
-    shaking,
     spec::{const_view_string, const_view_type_def, spec_type_def_gen},
 };
 
@@ -113,23 +112,11 @@ pub fn derive_type_struct(
         }
     };
 
-    // SpecShakingMarker impl.
-    let spec_shaking_impl = shaking::generate_marker_impl(
-        path,
-        quote!(#ident),
-        field_types.iter().cloned(),
-        None,
-        None,
-        None,
-    );
-
     // Output.
     let mut output = quote! {
         #spec_type_def
 
         #spec_gen
-
-        #spec_shaking_impl
 
         impl #path::TryFromVal<#path::Env, #path::Val> for #ident {
             type Error = #path::ConversionError;

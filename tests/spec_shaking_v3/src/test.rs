@@ -1,23 +1,45 @@
 extern crate std;
 
-use soroban_sdk::xdr::ScSpecEntry;
 use std::collections::HashSet;
 use std::vec::Vec;
+use stellar_xdr::ScSpecEntry;
 
-const WASM: &[u8] =
-    include_bytes!("../../../target/wasm32v1-none/release/test_spec_shaking_v2.wasm");
+// This test and the contract are shared by test_spec_shaking_v2, built with
+// soroban-sdk 28.0.0, and test_spec_shaking_v3, built with the SDK in this repo.
+const WASM: &[u8] = include_bytes!(concat!(
+    "../../../target/wasm32v1-none/release/",
+    env!("CARGO_PKG_NAME"),
+    ".wasm"
+));
 
 #[test]
-fn test_spec_shaking_v2() {
+fn test_spec_shaking() {
     // Read all spec entries from the WASM.
     let entries = soroban_spec::read::from_wasm(WASM).unwrap();
 
     // Find markers embedded in the WASM data section.
     let markers = soroban_spec::shaking::find_all(WASM);
 
-    // Filter entries using markers.
+    // The SDK that built the contract is what selects the shaking model, so
+    // read it rather than assuming one. Built by soroban-sdk 28.0.0 the contract
+    // records spec shaking version 2, where every used entry carries a marker.
+    // Built by the SDK in this repo it records its version, from which only its
+    // events and panicked-with errors carry markers, and every other type is
+    // settled by reachability. Either way the same entries survive, except
+    // events published with publish_event, which soroban-sdk 28.0.0 does not
+    // mark.
+    let meta = soroban_meta::read::from_wasm(WASM).unwrap();
+    let model = soroban_spec::shaking::model_for_meta(&meta);
+    let expected_model = match env!("CARGO_PKG_NAME") {
+        "test_spec_shaking_v2" => soroban_spec::shaking::Model::Markers,
+        "test_spec_shaking_v3" => soroban_spec::shaking::Model::References,
+        name => panic!("unexpected package {name}"),
+    };
+    assert_eq!(model, expected_model);
+
+    // Filter entries by that model's rules.
     let filtered: Vec<_> =
-        soroban_spec::shaking::filter(entries.iter().cloned(), &markers).collect();
+        soroban_spec::shaking::filter(entries.iter().cloned(), &markers, model).collect();
 
     // Collect names of filtered entries by kind for assertions.
     let filtered_names: HashSet<std::string::String> =
@@ -45,6 +67,7 @@ fn test_spec_shaking_v2() {
         "with_vec_nested",
         "with_map",
         "with_recursion",
+        "with_self_recursion",
         "publish_simple",
         "publish_topic_type",
         "publish_data_type",
@@ -116,12 +139,6 @@ fn test_spec_shaking_v2() {
         "UsedRefDataType",
         "UsedRefDataInner",
         "UsedEventWithRefs",
-        // event published with Events::publish_event
-        "UsedPublishEventDataType",
-        "UsedEventViaPublishEvent",
-        // event published with the Event trait's publish fn
-        "UsedTraitPublishDataType",
-        "UsedEventViaTraitPublish",
         // tuple element types in fn params/returns
         "UsedTupleElement",
         "UsedTupleReturnElement",
@@ -137,6 +154,8 @@ fn test_spec_shaking_v2() {
         "UsedRecursiveNode",
         "UsedRecursiveLeaf",
         "UsedLeaf",
+        // self-referencing type used as fn param
+        "UsedSelfRef",
         // SDK internal types, which participate in normal shaking when they
         // are reachable.
         "Context",
@@ -155,14 +174,91 @@ fn test_spec_shaking_v2() {
             "used type/event {name} should be present in filtered entries, but was not found"
         );
     }
-    assert_eq!(markers.len(), used.len());
 
-    // Unused types/events should exist in unfiltered entries (they have spec entries, just no markers).
+    // Events published with Events::publish_event or the Event trait's publish
+    // fn, and the types they reference. soroban-sdk 28.0.0 does not mark events
+    // published this way, so they survive shaking only when the contract is
+    // built by the SDK in this repo.
+    let used_via_publish_event = [
+        // event published with Events::publish_event
+        "UsedPublishEventDataType",
+        "UsedEventViaPublishEvent",
+        // event published with the Event trait's publish fn
+        "UsedTraitPublishDataType",
+        "UsedEventViaTraitPublish",
+    ];
+    for name in used_via_publish_event {
+        match model {
+            soroban_spec::shaking::Model::Markers => assert!(
+                !filtered_names.contains(name),
+                "type/event {name} published via publish_event should be absent from filtered entries of a soroban-sdk 28.0.0 wasm, but was found"
+            ),
+            _ => assert!(
+                filtered_names.contains(name),
+                "used type/event {name} should be present in filtered entries, but was not found"
+            ),
+        }
+    }
+
+    match model {
+        soroban_spec::shaking::Model::None => panic!("unexpected model {model:?}"),
+        soroban_spec::shaking::Model::Markers => {
+            // Every used entry carries a marker.
+            assert_eq!(markers.len(), used.len());
+        }
+        soroban_spec::shaking::Model::References => {
+            // Only the entries that nothing in a spec references by name carry a
+            // marker: the events the contract publishes, and the errors it panics
+            // with. Every other type is named by whatever references it and is kept by
+            // reachability, so the wasm carries no marker for it — including the error
+            // types a function returns in a `Result`.
+            let mut marked: Vec<std::string::String> = entries
+                .iter()
+                .filter(|e| markers.contains(&soroban_spec::shaking::generate_marker_for_entry(e)))
+                .filter_map(entry_name)
+                .collect();
+            marked.sort();
+            assert_eq!(
+                marked,
+                [
+                    // An error used only via assert_with_error!.
+                    "UsedAssertErrorEnum",
+                    // Every published event.
+                    "UsedEventSimple",
+                    "UsedEventViaPublishEvent",
+                    "UsedEventViaTraitPublish",
+                    "UsedEventWithDataType",
+                    "UsedEventWithNestedData",
+                    "UsedEventWithNestedTopic",
+                    "UsedEventWithRefs",
+                    "UsedEventWithTopicType",
+                    // An error used only via panic_with_error!.
+                    "UsedPanicErrorEnum",
+                ]
+            );
+            assert_eq!(markers.len(), marked.len());
+        }
+    }
+
+    // Unused types/events should exist in unfiltered entries: they have spec
+    // entries, they are just not reachable and hold no markers.
     let unused = [
         "UnusedStruct",
         "UnusedEnum",
         "UnusedIntEnum",
         "UnusedEvent",
+        // Type referenced only by an event that is never published, and so is
+        // itself shaken out.
+        "UnusedEventDataType",
+        "UnusedEventWithDataType",
+        // Types that only reference each other, reached from nowhere.
+        "UnusedOuter",
+        "UnusedInner",
+        // Types in a reference cycle, and a type referencing itself, reached
+        // from nowhere.
+        "UnusedCycleA",
+        "UnusedCycleB",
+        "UnusedSelfRef",
         "UnusedPubError",
         // Types used only in non-contractimpl fns (not at contract boundary)
         "UnusedNonContractFnParam",
@@ -204,7 +300,13 @@ fn test_spec_shaking_v2() {
             "unused type/event {name} should be absent from filtered entries, but was found"
         );
     }
-    assert_eq!(all_names.len() - filtered_names.len(), unused.len());
+    match model {
+        soroban_spec::shaking::Model::Markers => assert_eq!(
+            all_names.len() - filtered_names.len(),
+            unused.len() + used_via_publish_event.len()
+        ),
+        _ => assert_eq!(all_names.len() - filtered_names.len(), unused.len()),
+    }
 }
 
 /// Extract the name from a non-function spec entry.

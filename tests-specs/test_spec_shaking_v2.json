@@ -89,7 +89,7 @@
             "vec": {
               "element_type": {
                 "udt": {
-                  "name": "::soroban_sdk::auth::Context"
+                  "name": "Context"
                 }
               }
             }
@@ -110,7 +110,7 @@
             "ok_type": "u32",
             "error_type": {
               "udt": {
-                "name": "::test_spec_shaking_v2::UsedErrorEnum"
+                "name": "UsedErrorEnum"
               }
             }
           }
@@ -128,7 +128,7 @@
           "name": "e",
           "type": {
             "udt": {
-              "name": "::soroban_sdk::address::Executable"
+              "name": "Executable"
             }
           }
         }
@@ -146,7 +146,7 @@
           "name": "i",
           "type": {
             "udt": {
-              "name": "::soroban_sdk::auth::InvokerContractAuthEntry"
+              "name": "InvokerContractAuthEntry"
             }
           }
         }
@@ -164,7 +164,7 @@
           "name": "s",
           "type": {
             "udt": {
-              "name": "::test_spec_lib::StructC"
+              "name": "StructC"
             }
           }
         }
@@ -184,12 +184,12 @@
             "map": {
               "key_type": {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::UsedMapKey"
+                  "name": "UsedMapKey"
                 }
               },
               "value_type": {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::UsedMapVal"
+                  "name": "UsedMapVal"
                 }
               }
             }
@@ -209,7 +209,7 @@
           "name": "s",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::UsedNonPubStruct"
+              "name": "UsedNonPubStruct"
             }
           }
         }
@@ -228,7 +228,7 @@
             "ok_type": "u32",
             "error_type": {
               "udt": {
-                "name": "::test_spec_shaking_v2::UsedNonPubError"
+                "name": "UsedNonPubError"
               }
             }
           }
@@ -248,7 +248,7 @@
             "option": {
               "value_type": {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::UsedOptionElement"
+                  "name": "UsedOptionElement"
                 }
               }
             }
@@ -296,7 +296,7 @@
           "name": "s",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::UsedParamStruct"
+              "name": "UsedParamStruct"
             }
           }
         },
@@ -305,7 +305,7 @@
           "name": "ie",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::UsedParamIntEnum"
+              "name": "UsedParamIntEnum"
             }
           }
         }
@@ -323,7 +323,7 @@
           "name": "r",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::UsedRecursiveRoot"
+              "name": "UsedRecursiveRoot"
             }
           }
         }
@@ -341,12 +341,12 @@
           "result": {
             "ok_type": {
               "udt": {
-                "name": "::test_spec_shaking_v2::UsedResultOk"
+                "name": "UsedResultOk"
               }
             },
             "error_type": {
               "udt": {
-                "name": "::test_spec_shaking_v2::UsedErrorEnum"
+                "name": "UsedErrorEnum"
               }
             }
           }
@@ -362,10 +362,28 @@
       "outputs": [
         {
           "udt": {
-            "name": "::test_spec_shaking_v2::UsedReturnEnum"
+            "name": "UsedReturnEnum"
           }
         }
       ]
+    }
+  },
+  {
+    "function_v0": {
+      "doc": "",
+      "name": "with_self_recursion",
+      "inputs": [
+        {
+          "doc": "",
+          "name": "r",
+          "type": {
+            "udt": {
+              "name": "UsedSelfRef"
+            }
+          }
+        }
+      ],
+      "outputs": []
     }
   },
   {
@@ -381,7 +399,7 @@
               "value_types": [
                 {
                   "udt": {
-                    "name": "::test_spec_shaking_v2::UsedTupleElement"
+                    "name": "UsedTupleElement"
                   }
                 },
                 "u32"
@@ -404,7 +422,7 @@
             "value_types": [
               {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::UsedTupleReturnElement"
+                  "name": "UsedTupleReturnElement"
                 }
               },
               "u32"
@@ -426,7 +444,7 @@
             "vec": {
               "element_type": {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::UsedVecElement"
+                  "name": "UsedVecElement"
                 }
               }
             }
@@ -448,7 +466,7 @@
             "vec": {
               "element_type": {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::UsedVecElementNested"
+                  "name": "UsedVecElementNested"
                 }
               }
             }
@@ -468,7 +486,7 @@
           "name": "s",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::wasm_imported::StructA"
+              "name": "StructA"
             }
           }
         }
@@ -480,7 +498,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::ContractContext",
+      "name": "ContractContext",
       "fields": [
         {
           "doc": "",
@@ -508,7 +526,7 @@
     "udt_struct_v0": {
       "doc": "Authorization context of a single contract call.\\n\\nThis struct corresponds to a `require_auth_for_args` call for an address\\nfrom `contract` function with `fn_name` name and `args` arguments.",
       "lib": "",
-      "name": "::soroban_sdk::auth::ContractContext",
+      "name": "ContractContext",
       "fields": [
         {
           "doc": "",
@@ -536,7 +554,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::ContractExecutableRef",
+      "name": "ContractExecutableRef",
       "fields": [
         {
           "doc": "",
@@ -555,7 +573,7 @@
     "udt_struct_v0": {
       "doc": "Executable referenced via a persistent storage entry owned by a contract,\\neither this contract or another contract.\\n\\nThe persistent storage entry owned by the `owner` has the `tag` as its key.",
       "lib": "",
-      "name": "::soroban_sdk::ContractExecutableRef",
+      "name": "ContractExecutableRef",
       "fields": [
         {
           "doc": "",
@@ -574,14 +592,14 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::CreateContractHostFnContext",
+      "name": "CreateContractHostFnContext",
       "fields": [
         {
           "doc": "",
           "name": "executable",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::wasm_imported::ContractExecutable"
+              "name": "ContractExecutable"
             }
           }
         },
@@ -601,14 +619,14 @@
     "udt_struct_v0": {
       "doc": "Authorization context for `create_contract` host function that creates a\\nnew contract on behalf of authorizer address.",
       "lib": "",
-      "name": "::soroban_sdk::auth::CreateContractHostFnContext",
+      "name": "CreateContractHostFnContext",
       "fields": [
         {
           "doc": "",
           "name": "executable",
           "type": {
             "udt": {
-              "name": "::soroban_sdk::ContractExecutable"
+              "name": "ContractExecutable"
             }
           }
         },
@@ -628,7 +646,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::CreateContractWithConstructorHostFnContext",
+      "name": "CreateContractWithConstructorHostFnContext",
       "fields": [
         {
           "doc": "",
@@ -644,7 +662,7 @@
           "name": "executable",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::wasm_imported::ContractExecutable"
+              "name": "ContractExecutable"
             }
           }
         },
@@ -664,7 +682,7 @@
     "udt_struct_v0": {
       "doc": "Authorization context for `create_contract` host function that creates a\\nnew contract on behalf of authorizer address.\\nThis is the same as `CreateContractHostFnContext`, but also has\\ncontract constructor arguments.",
       "lib": "",
-      "name": "::soroban_sdk::auth::CreateContractWithConstructorHostFnContext",
+      "name": "CreateContractWithConstructorHostFnContext",
       "fields": [
         {
           "doc": "",
@@ -680,7 +698,7 @@
           "name": "executable",
           "type": {
             "udt": {
-              "name": "::soroban_sdk::ContractExecutable"
+              "name": "ContractExecutable"
             }
           }
         },
@@ -700,7 +718,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::StructA",
+      "name": "StructA",
       "fields": [
         {
           "doc": "",
@@ -719,7 +737,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::StructA",
+      "name": "StructA",
       "fields": [
         {
           "doc": "",
@@ -738,7 +756,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::StructB",
+      "name": "StructB",
       "fields": [
         {
           "doc": "",
@@ -757,7 +775,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::StructB",
+      "name": "StructB",
       "fields": [
         {
           "doc": "",
@@ -776,7 +794,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::StructC",
+      "name": "StructC",
       "fields": [
         {
           "doc": "",
@@ -799,7 +817,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::StructC",
+      "name": "StructC",
       "fields": [
         {
           "doc": "",
@@ -822,7 +840,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::StructTupleA",
+      "name": "StructTupleA",
       "fields": [
         {
           "doc": "",
@@ -841,7 +859,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::StructTupleA",
+      "name": "StructTupleA",
       "fields": [
         {
           "doc": "",
@@ -860,7 +878,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::StructTupleB",
+      "name": "StructTupleB",
       "fields": [
         {
           "doc": "",
@@ -879,7 +897,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::StructTupleB",
+      "name": "StructTupleB",
       "fields": [
         {
           "doc": "",
@@ -898,7 +916,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::StructTupleC",
+      "name": "StructTupleC",
       "fields": [
         {
           "doc": "",
@@ -917,7 +935,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::StructTupleC",
+      "name": "StructTupleC",
       "fields": [
         {
           "doc": "",
@@ -936,14 +954,14 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::SubContractInvocation",
+      "name": "SubContractInvocation",
       "fields": [
         {
           "doc": "",
           "name": "context",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::wasm_imported::ContractContext"
+              "name": "ContractContext"
             }
           }
         },
@@ -954,7 +972,7 @@
             "vec": {
               "element_type": {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::wasm_imported::InvokerContractAuthEntry"
+                  "name": "InvokerContractAuthEntry"
                 }
               }
             }
@@ -967,14 +985,14 @@
     "udt_struct_v0": {
       "doc": "Value of contract node in InvokerContractAuthEntry tree.",
       "lib": "",
-      "name": "::soroban_sdk::auth::SubContractInvocation",
+      "name": "SubContractInvocation",
       "fields": [
         {
           "doc": "",
           "name": "context",
           "type": {
             "udt": {
-              "name": "::soroban_sdk::auth::ContractContext"
+              "name": "ContractContext"
             }
           }
         },
@@ -985,7 +1003,7 @@
             "vec": {
               "element_type": {
                 "udt": {
-                  "name": "::soroban_sdk::auth::InvokerContractAuthEntry"
+                  "name": "InvokerContractAuthEntry"
                 }
               }
             }
@@ -998,7 +1016,75 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UnusedNonContractFnParam",
+      "name": "UnusedCycleA",
+      "fields": [
+        {
+          "doc": "",
+          "name": "b",
+          "type": {
+            "udt": {
+              "name": "UnusedCycleB"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "UnusedCycleB",
+      "fields": [
+        {
+          "doc": "",
+          "name": "a",
+          "type": {
+            "vec": {
+              "element_type": {
+                "udt": {
+                  "name": "UnusedCycleA"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "UnusedEventDataType",
+      "fields": [
+        {
+          "doc": "",
+          "name": "v",
+          "type": "u32"
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "UnusedInner",
+      "fields": [
+        {
+          "doc": "",
+          "name": "v",
+          "type": "u32"
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "UnusedNonContractFnParam",
       "fields": [
         {
           "doc": "",
@@ -1012,7 +1098,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UnusedNonContractFnReturn",
+      "name": "UnusedNonContractFnReturn",
       "fields": [
         {
           "doc": "",
@@ -1026,7 +1112,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UnusedNonPubStruct",
+      "name": "UnusedNonPubStruct",
       "fields": [
         {
           "doc": "",
@@ -1040,7 +1126,47 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UnusedStruct",
+      "name": "UnusedOuter",
+      "fields": [
+        {
+          "doc": "",
+          "name": "inner",
+          "type": {
+            "udt": {
+              "name": "UnusedInner"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "UnusedSelfRef",
+      "fields": [
+        {
+          "doc": "",
+          "name": "children",
+          "type": {
+            "vec": {
+              "element_type": {
+                "udt": {
+                  "name": "UnusedSelfRef"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "UnusedStruct",
       "fields": [
         {
           "doc": "",
@@ -1054,7 +1180,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedEventDataInner",
+      "name": "UsedEventDataInner",
       "fields": [
         {
           "doc": "",
@@ -1068,14 +1194,14 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedEventDataOuter",
+      "name": "UsedEventDataOuter",
       "fields": [
         {
           "doc": "",
           "name": "inner",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::UsedEventDataInner"
+              "name": "UsedEventDataInner"
             }
           }
         }
@@ -1086,7 +1212,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedEventDataType",
+      "name": "UsedEventDataType",
       "fields": [
         {
           "doc": "",
@@ -1105,7 +1231,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedEventTopicInner",
+      "name": "UsedEventTopicInner",
       "fields": [
         {
           "doc": "",
@@ -1119,14 +1245,14 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedEventTopicOuter",
+      "name": "UsedEventTopicOuter",
       "fields": [
         {
           "doc": "",
           "name": "inner",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::UsedEventTopicInner"
+              "name": "UsedEventTopicInner"
             }
           }
         }
@@ -1137,7 +1263,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedLeaf",
+      "name": "UsedLeaf",
       "fields": [
         {
           "doc": "",
@@ -1151,7 +1277,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedMapVal",
+      "name": "UsedMapVal",
       "fields": [
         {
           "doc": "",
@@ -1165,7 +1291,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedNestedInStruct",
+      "name": "UsedNestedInStruct",
       "fields": [
         {
           "doc": "",
@@ -1179,7 +1305,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedNonPubStruct",
+      "name": "UsedNonPubStruct",
       "fields": [
         {
           "doc": "",
@@ -1193,7 +1319,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedOptionElement",
+      "name": "UsedOptionElement",
       "fields": [
         {
           "doc": "",
@@ -1207,7 +1333,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedParamStruct",
+      "name": "UsedParamStruct",
       "fields": [
         {
           "doc": "",
@@ -1219,7 +1345,7 @@
           "name": "nested",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::UsedNestedInStruct"
+              "name": "UsedNestedInStruct"
             }
           }
         }
@@ -1230,7 +1356,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedPublishEventDataType",
+      "name": "UsedPublishEventDataType",
       "fields": [
         {
           "doc": "",
@@ -1244,7 +1370,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedRecursiveLeaf",
+      "name": "UsedRecursiveLeaf",
       "fields": [
         {
           "doc": "",
@@ -1253,7 +1379,7 @@
             "vec": {
               "element_type": {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::UsedRecursiveRoot"
+                  "name": "UsedRecursiveRoot"
                 }
               }
             }
@@ -1266,14 +1392,14 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedRecursiveRoot",
+      "name": "UsedRecursiveRoot",
       "fields": [
         {
           "doc": "",
           "name": "val",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::UsedRecursiveNode"
+              "name": "UsedRecursiveNode"
             }
           }
         }
@@ -1284,7 +1410,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedRefDataInner",
+      "name": "UsedRefDataInner",
       "fields": [
         {
           "doc": "",
@@ -1298,14 +1424,14 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedRefDataType",
+      "name": "UsedRefDataType",
       "fields": [
         {
           "doc": "",
           "name": "nested",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::UsedRefDataInner"
+              "name": "UsedRefDataInner"
             }
           }
         }
@@ -1316,7 +1442,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedResultOk",
+      "name": "UsedResultOk",
       "fields": [
         {
           "doc": "",
@@ -1330,7 +1456,29 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedTraitPublishDataType",
+      "name": "UsedSelfRef",
+      "fields": [
+        {
+          "doc": "",
+          "name": "children",
+          "type": {
+            "vec": {
+              "element_type": {
+                "udt": {
+                  "name": "UsedSelfRef"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "udt_struct_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "UsedTraitPublishDataType",
       "fields": [
         {
           "doc": "",
@@ -1344,7 +1492,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedTupleElement",
+      "name": "UsedTupleElement",
       "fields": [
         {
           "doc": "",
@@ -1358,7 +1506,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedTupleReturnElement",
+      "name": "UsedTupleReturnElement",
       "fields": [
         {
           "doc": "",
@@ -1372,7 +1520,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedVecElement",
+      "name": "UsedVecElement",
       "fields": [
         {
           "doc": "",
@@ -1386,14 +1534,14 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedVecElementNested",
+      "name": "UsedVecElementNested",
       "fields": [
         {
           "doc": "",
           "name": "inner",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::UsedVecInnerElement"
+              "name": "UsedVecInnerElement"
             }
           }
         },
@@ -1409,7 +1557,7 @@
             "vec": {
               "element_type": {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::UsedVecInnerVecElement"
+                  "name": "UsedVecInnerVecElement"
                 }
               }
             }
@@ -1422,7 +1570,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedVecInnerElement",
+      "name": "UsedVecInnerElement",
       "fields": [
         {
           "doc": "",
@@ -1436,7 +1584,7 @@
     "udt_struct_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedVecInnerVecElement",
+      "name": "UsedVecInnerVecElement",
       "fields": [
         {
           "doc": "",
@@ -1450,7 +1598,7 @@
     "udt_union_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::Context",
+      "name": "Context",
       "cases": [
         {
           "tuple_v0": {
@@ -1459,7 +1607,7 @@
             "type": [
               {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::wasm_imported::ContractContext"
+                  "name": "ContractContext"
                 }
               }
             ]
@@ -1472,7 +1620,7 @@
             "type": [
               {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::wasm_imported::CreateContractHostFnContext"
+                  "name": "CreateContractHostFnContext"
                 }
               }
             ]
@@ -1485,7 +1633,7 @@
             "type": [
               {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::wasm_imported::CreateContractWithConstructorHostFnContext"
+                  "name": "CreateContractWithConstructorHostFnContext"
                 }
               }
             ]
@@ -1498,7 +1646,7 @@
     "udt_union_v0": {
       "doc": "Context of a single authorized call performed by an address.\\n\\nCustom account contracts that implement `__check_auth` special function\\nreceive a list of `Context` values corresponding to all the calls that\\nneed to be authorized.",
       "lib": "",
-      "name": "::soroban_sdk::auth::Context",
+      "name": "Context",
       "cases": [
         {
           "tuple_v0": {
@@ -1507,7 +1655,7 @@
             "type": [
               {
                 "udt": {
-                  "name": "::soroban_sdk::auth::ContractContext"
+                  "name": "ContractContext"
                 }
               }
             ]
@@ -1520,7 +1668,7 @@
             "type": [
               {
                 "udt": {
-                  "name": "::soroban_sdk::auth::CreateContractHostFnContext"
+                  "name": "CreateContractHostFnContext"
                 }
               }
             ]
@@ -1533,7 +1681,7 @@
             "type": [
               {
                 "udt": {
-                  "name": "::soroban_sdk::auth::CreateContractWithConstructorHostFnContext"
+                  "name": "CreateContractWithConstructorHostFnContext"
                 }
               }
             ]
@@ -1546,7 +1694,7 @@
     "udt_union_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::ContractExecutable",
+      "name": "ContractExecutable",
       "cases": [
         {
           "tuple_v0": {
@@ -1568,7 +1716,7 @@
             "type": [
               {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::wasm_imported::ContractExecutableRef"
+                  "name": "ContractExecutableRef"
                 }
               }
             ]
@@ -1581,7 +1729,7 @@
     "udt_union_v0": {
       "doc": "Contract executable used for creating a new contract and used in\\n`CreateContractHostFnContext`.",
       "lib": "",
-      "name": "::soroban_sdk::ContractExecutable",
+      "name": "ContractExecutable",
       "cases": [
         {
           "tuple_v0": {
@@ -1603,7 +1751,7 @@
             "type": [
               {
                 "udt": {
-                  "name": "::soroban_sdk::ContractExecutableRef"
+                  "name": "ContractExecutableRef"
                 }
               }
             ]
@@ -1616,7 +1764,7 @@
     "udt_union_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EnumA",
+      "name": "EnumA",
       "cases": [
         {
           "void_v0": {
@@ -1643,7 +1791,7 @@
     "udt_union_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::EnumA",
+      "name": "EnumA",
       "cases": [
         {
           "void_v0": {
@@ -1670,7 +1818,7 @@
     "udt_union_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EnumB",
+      "name": "EnumB",
       "cases": [
         {
           "void_v0": {
@@ -1704,7 +1852,7 @@
     "udt_union_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::EnumB",
+      "name": "EnumB",
       "cases": [
         {
           "void_v0": {
@@ -1738,7 +1886,7 @@
     "udt_union_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EnumC",
+      "name": "EnumC",
       "cases": [
         {
           "void_v0": {
@@ -1753,7 +1901,7 @@
             "type": [
               {
                 "udt": {
-                  "name": "::test_spec_lib::StructA"
+                  "name": "StructA"
                 }
               }
             ]
@@ -1766,7 +1914,7 @@
             "type": [
               {
                 "udt": {
-                  "name": "::test_spec_lib::StructTupleA"
+                  "name": "StructTupleA"
                 }
               }
             ]
@@ -1779,7 +1927,7 @@
     "udt_union_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::EnumC",
+      "name": "EnumC",
       "cases": [
         {
           "void_v0": {
@@ -1794,7 +1942,7 @@
             "type": [
               {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::wasm_imported::StructA"
+                  "name": "StructA"
                 }
               }
             ]
@@ -1807,7 +1955,7 @@
             "type": [
               {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::wasm_imported::StructTupleA"
+                  "name": "StructTupleA"
                 }
               }
             ]
@@ -1820,7 +1968,7 @@
     "udt_union_v0": {
       "doc": "",
       "lib": "",
-      "name": "::soroban_sdk::address::Executable",
+      "name": "Executable",
       "cases": [
         {
           "tuple_v0": {
@@ -1854,7 +2002,7 @@
     "udt_union_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::Executable",
+      "name": "Executable",
       "cases": [
         {
           "tuple_v0": {
@@ -1888,7 +2036,7 @@
     "udt_union_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::InvokerContractAuthEntry",
+      "name": "InvokerContractAuthEntry",
       "cases": [
         {
           "tuple_v0": {
@@ -1897,7 +2045,7 @@
             "type": [
               {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::wasm_imported::SubContractInvocation"
+                  "name": "SubContractInvocation"
                 }
               }
             ]
@@ -1910,7 +2058,7 @@
             "type": [
               {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::wasm_imported::CreateContractHostFnContext"
+                  "name": "CreateContractHostFnContext"
                 }
               }
             ]
@@ -1923,7 +2071,7 @@
             "type": [
               {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::wasm_imported::CreateContractWithConstructorHostFnContext"
+                  "name": "CreateContractWithConstructorHostFnContext"
                 }
               }
             ]
@@ -1936,7 +2084,7 @@
     "udt_union_v0": {
       "doc": "A node in the tree of authorizations performed on behalf of the current\\ncontract as invoker of the contracts deeper in the call stack.\\n\\nThis is used as an argument of `authorize_as_current_contract` host function.\\n\\nThis tree corresponds `require_auth[_for_args]` calls on behalf of the\\ncurrent contract.",
       "lib": "",
-      "name": "::soroban_sdk::auth::InvokerContractAuthEntry",
+      "name": "InvokerContractAuthEntry",
       "cases": [
         {
           "tuple_v0": {
@@ -1945,7 +2093,7 @@
             "type": [
               {
                 "udt": {
-                  "name": "::soroban_sdk::auth::SubContractInvocation"
+                  "name": "SubContractInvocation"
                 }
               }
             ]
@@ -1958,7 +2106,7 @@
             "type": [
               {
                 "udt": {
-                  "name": "::soroban_sdk::auth::CreateContractHostFnContext"
+                  "name": "CreateContractHostFnContext"
                 }
               }
             ]
@@ -1971,7 +2119,7 @@
             "type": [
               {
                 "udt": {
-                  "name": "::soroban_sdk::auth::CreateContractWithConstructorHostFnContext"
+                  "name": "CreateContractWithConstructorHostFnContext"
                 }
               }
             ]
@@ -1984,7 +2132,7 @@
     "udt_union_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UnusedEnum",
+      "name": "UnusedEnum",
       "cases": [
         {
           "void_v0": {
@@ -2008,7 +2156,7 @@
     "udt_union_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedRecursiveNode",
+      "name": "UsedRecursiveNode",
       "cases": [
         {
           "tuple_v0": {
@@ -2017,7 +2165,7 @@
             "type": [
               {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::UsedLeaf"
+                  "name": "UsedLeaf"
                 }
               }
             ]
@@ -2030,7 +2178,7 @@
             "type": [
               {
                 "udt": {
-                  "name": "::test_spec_shaking_v2::UsedRecursiveLeaf"
+                  "name": "UsedRecursiveLeaf"
                 }
               }
             ]
@@ -2043,7 +2191,7 @@
     "udt_union_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedReturnEnum",
+      "name": "UsedReturnEnum",
       "cases": [
         {
           "tuple_v0": {
@@ -2070,7 +2218,7 @@
     "udt_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EnumIntA",
+      "name": "EnumIntA",
       "cases": [
         {
           "doc": "",
@@ -2094,7 +2242,7 @@
     "udt_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::EnumIntA",
+      "name": "EnumIntA",
       "cases": [
         {
           "doc": "",
@@ -2118,7 +2266,7 @@
     "udt_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EnumIntB",
+      "name": "EnumIntB",
       "cases": [
         {
           "doc": "",
@@ -2142,7 +2290,7 @@
     "udt_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::EnumIntB",
+      "name": "EnumIntB",
       "cases": [
         {
           "doc": "",
@@ -2166,7 +2314,7 @@
     "udt_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EnumIntC",
+      "name": "EnumIntC",
       "cases": [
         {
           "doc": "",
@@ -2190,7 +2338,7 @@
     "udt_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::EnumIntC",
+      "name": "EnumIntC",
       "cases": [
         {
           "doc": "",
@@ -2214,7 +2362,7 @@
     "udt_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UnusedIntEnum",
+      "name": "UnusedIntEnum",
       "cases": [
         {
           "doc": "",
@@ -2233,7 +2381,7 @@
     "udt_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedEventTopicType",
+      "name": "UsedEventTopicType",
       "cases": [
         {
           "doc": "",
@@ -2252,7 +2400,7 @@
     "udt_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedMapKey",
+      "name": "UsedMapKey",
       "cases": [
         {
           "doc": "",
@@ -2271,7 +2419,7 @@
     "udt_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedParamIntEnum",
+      "name": "UsedParamIntEnum",
       "cases": [
         {
           "doc": "",
@@ -2290,7 +2438,7 @@
     "udt_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedRefTopicType",
+      "name": "UsedRefTopicType",
       "cases": [
         {
           "doc": "",
@@ -2309,7 +2457,7 @@
     "udt_error_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::ErrorA",
+      "name": "ErrorA",
       "cases": [
         {
           "doc": "",
@@ -2333,7 +2481,7 @@
     "udt_error_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::ErrorA",
+      "name": "ErrorA",
       "cases": [
         {
           "doc": "",
@@ -2357,7 +2505,7 @@
     "udt_error_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::ErrorB",
+      "name": "ErrorB",
       "cases": [
         {
           "doc": "",
@@ -2381,7 +2529,7 @@
     "udt_error_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::ErrorB",
+      "name": "ErrorB",
       "cases": [
         {
           "doc": "",
@@ -2405,7 +2553,7 @@
     "udt_error_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::ErrorC",
+      "name": "ErrorC",
       "cases": [
         {
           "doc": "",
@@ -2429,7 +2577,7 @@
     "udt_error_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::ErrorC",
+      "name": "ErrorC",
       "cases": [
         {
           "doc": "",
@@ -2453,7 +2601,7 @@
     "udt_error_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UnusedNonPubError",
+      "name": "UnusedNonPubError",
       "cases": [
         {
           "doc": "",
@@ -2467,7 +2615,7 @@
     "udt_error_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UnusedPubError",
+      "name": "UnusedPubError",
       "cases": [
         {
           "doc": "",
@@ -2481,7 +2629,7 @@
     "udt_error_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedAssertErrorEnum",
+      "name": "UsedAssertErrorEnum",
       "cases": [
         {
           "doc": "",
@@ -2495,7 +2643,7 @@
     "udt_error_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedErrorEnum",
+      "name": "UsedErrorEnum",
       "cases": [
         {
           "doc": "",
@@ -2514,7 +2662,7 @@
     "udt_error_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedNonPubError",
+      "name": "UsedNonPubError",
       "cases": [
         {
           "doc": "",
@@ -2528,7 +2676,7 @@
     "udt_error_enum_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedPanicErrorEnum",
+      "name": "UsedPanicErrorEnum",
       "cases": [
         {
           "doc": "",
@@ -2542,7 +2690,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EventA",
+      "name": "EventA",
       "prefix_topics": [
         "event_a"
       ],
@@ -2567,7 +2715,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::EventA",
+      "name": "EventA",
       "prefix_topics": [
         "event_a"
       ],
@@ -2592,7 +2740,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EventB",
+      "name": "EventB",
       "prefix_topics": [
         "event_b"
       ],
@@ -2623,7 +2771,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::EventB",
+      "name": "EventB",
       "prefix_topics": [
         "event_b"
       ],
@@ -2654,7 +2802,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EventC",
+      "name": "EventC",
       "prefix_topics": [
         "event_c"
       ],
@@ -2685,7 +2833,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::EventC",
+      "name": "EventC",
       "prefix_topics": [
         "event_c"
       ],
@@ -2716,7 +2864,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_lib::EventD",
+      "name": "EventD",
       "prefix_topics": [
         "event_d"
       ],
@@ -2728,7 +2876,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::wasm_imported::EventD",
+      "name": "EventD",
       "prefix_topics": [
         "event_d"
       ],
@@ -2740,7 +2888,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UnusedEvent",
+      "name": "UnusedEvent",
       "prefix_topics": [
         "unused_event"
       ],
@@ -2765,7 +2913,36 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedEventSimple",
+      "name": "UnusedEventWithDataType",
+      "prefix_topics": [
+        "unused_event_with_data_type"
+      ],
+      "params": [
+        {
+          "doc": "",
+          "name": "kind",
+          "type": "symbol",
+          "location": "topic_list"
+        },
+        {
+          "doc": "",
+          "name": "payload",
+          "type": {
+            "udt": {
+              "name": "UnusedEventDataType"
+            }
+          },
+          "location": "data"
+        }
+      ],
+      "data_format": "map"
+    }
+  },
+  {
+    "event_v0": {
+      "doc": "",
+      "lib": "",
+      "name": "UsedEventSimple",
       "prefix_topics": [
         "used_event_simple"
       ],
@@ -2790,7 +2967,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedEventViaPublishEvent",
+      "name": "UsedEventViaPublishEvent",
       "prefix_topics": [
         "used_event_via_publish_event"
       ],
@@ -2800,7 +2977,7 @@
           "name": "payload",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::UsedPublishEventDataType"
+              "name": "UsedPublishEventDataType"
             }
           },
           "location": "data"
@@ -2813,7 +2990,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedEventViaTraitPublish",
+      "name": "UsedEventViaTraitPublish",
       "prefix_topics": [
         "used_event_via_trait_publish"
       ],
@@ -2823,7 +3000,7 @@
           "name": "payload",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::UsedTraitPublishDataType"
+              "name": "UsedTraitPublishDataType"
             }
           },
           "location": "data"
@@ -2836,7 +3013,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedEventWithDataType",
+      "name": "UsedEventWithDataType",
       "prefix_topics": [
         "used_event_with_data_type"
       ],
@@ -2852,7 +3029,7 @@
           "name": "payload",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::UsedEventDataType"
+              "name": "UsedEventDataType"
             }
           },
           "location": "data"
@@ -2865,7 +3042,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedEventWithNestedData",
+      "name": "UsedEventWithNestedData",
       "prefix_topics": [
         "used_event_with_nested_data"
       ],
@@ -2881,7 +3058,7 @@
           "name": "payload",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::UsedEventDataOuter"
+              "name": "UsedEventDataOuter"
             }
           },
           "location": "data"
@@ -2894,7 +3071,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedEventWithNestedTopic",
+      "name": "UsedEventWithNestedTopic",
       "prefix_topics": [
         "used_event_with_nested_topic"
       ],
@@ -2904,7 +3081,7 @@
           "name": "info",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::UsedEventTopicOuter"
+              "name": "UsedEventTopicOuter"
             }
           },
           "location": "topic_list"
@@ -2923,7 +3100,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedEventWithRefs",
+      "name": "UsedEventWithRefs",
       "prefix_topics": [
         "used_event_with_refs"
       ],
@@ -2933,7 +3110,7 @@
           "name": "kind",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::UsedRefTopicType"
+              "name": "UsedRefTopicType"
             }
           },
           "location": "topic_list"
@@ -2943,7 +3120,7 @@
           "name": "payload",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::UsedRefDataType"
+              "name": "UsedRefDataType"
             }
           },
           "location": "data"
@@ -2956,7 +3133,7 @@
     "event_v0": {
       "doc": "",
       "lib": "",
-      "name": "::test_spec_shaking_v2::UsedEventWithTopicType",
+      "name": "UsedEventWithTopicType",
       "prefix_topics": [
         "used_event_with_topic_type"
       ],
@@ -2966,7 +3143,7 @@
           "name": "kind",
           "type": {
             "udt": {
-              "name": "::test_spec_shaking_v2::UsedEventTopicType"
+              "name": "UsedEventTopicType"
             }
           },
           "location": "topic_list"
