@@ -111,10 +111,6 @@ impl<'a> soroban_sdk::SpecShakingMarker for Transfer<'a> {
     #[doc(hidden)]
     #[inline(always)]
     fn spec_shaking_marker() {
-        <&'a Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <&'a Address as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <&'a i128 as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
-        <Option<&'a u64> as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         {
             static MARKER: soroban_sdk::reexports_for_macros::soroban_spec::shaking::Marker =
                 soroban_sdk::reexports_for_macros::soroban_spec::shaking::generate_marker_for_xdr(
@@ -156,7 +152,6 @@ impl<'a> soroban_sdk::Event for Transfer<'a> {
 }
 impl<'a> Transfer<'a> {
     pub fn publish(&self, env: &soroban_sdk::Env) {
-        <Self as soroban_sdk::SpecShakingMarker>::spec_shaking_marker();
         <_ as soroban_sdk::Event>::publish(self, env);
     }
 }

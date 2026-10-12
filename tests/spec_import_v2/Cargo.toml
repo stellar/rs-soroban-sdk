@@ -1,0 +1,20 @@
+[package]
+name = "test_spec_import_v2"
+version.workspace = true
+authors = ["Stellar Development Foundation <info@stellar.org>"]
+license = "Apache-2.0"
+edition = "2021"
+publish = false
+rust-version.workspace = true
+
+# test_spec_import_v3's src built with soroban-sdk 28.0.0. The spec shaking
+# crates import this wasm, not v3's, because soroban-sdk 28.0.0 cannot parse a
+# wasm built by the soroban-sdk in this repo.
+[lib]
+path = "../spec_import_v3/src/lib.rs"
+crate-type = ["cdylib"]
+doctest = false
+
+[dependencies]
+soroban-sdk = "=28.0.0"
+test_spec_lib = {package = "test_spec_lib_v2", path = "../spec_lib_v2"}
