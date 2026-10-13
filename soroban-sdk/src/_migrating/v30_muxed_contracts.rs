@@ -12,24 +12,34 @@
 //!
 //! ```
 //! #![no_std]
-//! use soroban_sdk::{contract, contractimpl, MuxedAddress};
+//! use soroban_sdk::{contract, contractevent, contractimpl, Address, Env, MuxedAddress};
+//!
+//! #[contractevent]
+//! pub struct Deposit {
+//!     #[topic]
+//!     to: Address,
+//!     to_muxed_id: Option<u64>,
+//! }
 //!
 //! #[contract]
 //! pub struct Contract;
 //!
 //! #[contractimpl]
 //! impl Contract {
-//!     pub fn deposit(to: MuxedAddress) -> Option<u64> {
-//!         // The address is `G...` or `C...`, whether or not `to` is muxed.
-//!         let _address = to.address();
-//!         // The id is `Some` for a muxed account or muxed contract address.
-//!         to.id()
+//!     pub fn deposit(env: Env, to: MuxedAddress) {
+//!         Deposit {
+//!             // The address is `G...` or `C...`, whether or not `to` is muxed.
+//!             to: to.address(),
+//!             // The id is `Some` for a muxed account or muxed contract address.
+//!             to_muxed_id: to.id(),
+//!         }
+//!         .publish(&env);
 //!     }
 //! }
 //!
 //! mod test {
-//!     use soroban_sdk::testutils::MuxedAddress as _;
-//!     use soroban_sdk::{Env, MuxedAddress};
+//!     use soroban_sdk::testutils::{Events as _, MuxedAddress as _};
+//!     use soroban_sdk::{Env, Event, MuxedAddress};
 //!
 //!     use super::*;
 //!
@@ -41,7 +51,15 @@
 //!
 //!         let to = MuxedAddress::new(&contract, 123);
 //!         assert!(to.to_strkey().to_string().starts_with('W'));
-//!         assert_eq!(client.deposit(&to), Some(123));
+//!         client.deposit(&to);
+//!         assert_eq!(
+//!             env.events().all(),
+//!             [Deposit {
+//!                 to: contract.clone(),
+//!                 to_muxed_id: Some(123),
+//!             }
+//!             .to_xdr(&env, &contract)],
+//!         );
 //!     }
 //! }
 //! # fn main() { }
