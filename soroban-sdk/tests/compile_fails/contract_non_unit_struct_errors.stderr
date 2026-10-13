@@ -68,14 +68,21 @@ error: contract struct must not have a where clause
 38 | |     (): Sized, {}
    | |______________^
 
-error: contract must be a struct, e.g. `pub struct Contract;`
-  --> tests/compile_fails/contract_non_unit_struct_errors.rs:41:5
+error: contract struct must not have a where clause
+  --> tests/compile_fails/contract_non_unit_struct_errors.rs:42:1
    |
-41 | pub enum ContractEnum {}
+42 | / where
+43 | |     (): Sized;
+   | |_____________^
+
+error: contract must be a struct, e.g. `pub struct Contract;`
+  --> tests/compile_fails/contract_non_unit_struct_errors.rs:46:5
+   |
+46 | pub enum ContractEnum {}
    |     ^^^^
 
 error: contract must be a struct, e.g. `pub struct Contract;`
-  --> tests/compile_fails/contract_non_unit_struct_errors.rs:44:5
+  --> tests/compile_fails/contract_non_unit_struct_errors.rs:49:5
    |
-44 | pub union ContractUnion {
+49 | pub union ContractUnion {
    |     ^^^^^

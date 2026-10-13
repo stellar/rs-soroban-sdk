@@ -38,6 +38,11 @@ where
     (): Sized, {}
 
 #[contract]
+pub struct ContractUnitWithWhereClause
+where
+    (): Sized;
+
+#[contract]
 pub enum ContractEnum {}
 
 #[contract]

@@ -1,0 +1,17 @@
+error: contractimpl does not support generic contract types
+ --> tests/compile_fails/contractimpl_generic_self_type_errors.rs:9:6
+  |
+9 | impl Generic<u32> {
+  |      ^^^^^^^^^^^^
+
+error: contractimpl does not support generic contract types
+  --> tests/compile_fails/contractimpl_generic_self_type_errors.rs:14:9
+   |
+14 | impl<T> Generic<T> {
+   |         ^^^^^^^^^^
+
+error: contractimpl does not support generic contract types
+  --> tests/compile_fails/contractimpl_generic_self_type_errors.rs:19:6
+   |
+19 | impl self::Generic<u64> {
+   |      ^^^^^^^^^^^^^^^^^^
