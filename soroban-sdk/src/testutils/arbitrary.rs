@@ -170,7 +170,8 @@
 //! (`G...`) addresses.
 //!
 //! [`MuxedAddress`] has two prototypes: [`ArbitraryMuxedAddress`], its
-//! default; and [`ArbitraryMuxedAddressContract`], which generates only
+//! default, which generates contract (`C...`) and muxed account (`M...`)
+//! addresses; and [`ArbitraryMuxedAddressContract`], which generates only
 //! contract (`C...`) and muxed contract (`W...`) addresses.
 //!
 //! ```
