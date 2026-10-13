@@ -21,8 +21,7 @@
 //!   or [`Env::panic_with_error`]. Their support was accidental. Only [`contracterror`] types are
 //!   intended to be used with [`panic_with_error!`].
 //!
-//! - [A `MuxedAddress` may now be a contract address with an id, a muxed contract address added
-//!   in protocol 30 by CAP-84][v30_muxed_contracts].
+//! - [A `MuxedAddress` may now be a contract address with an id (CAP-84)][v30_muxed_contracts].
 //!
 //! The following changes are largely internal details, but are included here for visibility for
 //! tool builders who may be inspecting Wasm and contract spec internal data.
