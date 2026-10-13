@@ -3,7 +3,7 @@ TEST_CRATES = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.pack
 
 MSRV = $(shell cargo metadata --no-deps --format-version 1 | jq -r '.packages[] | select(.name == "soroban-sdk") | .rust_version')
 TEST_CRATES_RUSTUP_TOOLCHAIN?=$(MSRV)
-TEST_WASMS_PROFILES = release release-without-lto release-without-lto-multi-cgu
+TEST_WASMS_PROFILES?=release release-without-lto release-without-lto-multi-cgu
 
 # Build the test wasms inside a docker container so that the wasms are the same
 # regardless of the host building them. Set TEST_WASMS_BUILD_WITH_DOCKER to
