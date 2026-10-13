@@ -87,6 +87,7 @@ impl<'a> SuperPathTraitClient<'a> {
     }
 }
 impl<'a> SuperPathTraitClient<'a> {
+    /// Call `super_path_method` function on the contract.
     ///
     /// # Panics
     ///
@@ -103,6 +104,7 @@ impl<'a> SuperPathTraitClient<'a> {
         );
         res
     }
+    /// Call `super_path_method` function on the contract.
     ///
     /// # Errors
     ///
@@ -351,6 +353,7 @@ pub mod submodule {
         }
     }
     impl<'a> ContractSuperPathClient<'a> {
+        /// Call `super_path_method` function on the contract.
         ///
         /// # Panics
         ///
@@ -368,6 +371,7 @@ pub mod submodule {
             );
             res
         }
+        /// Call `super_path_method` function on the contract.
         ///
         /// # Errors
         ///

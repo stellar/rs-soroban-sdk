@@ -51,6 +51,7 @@ impl<'a> TraitClient<'a> {
     }
 }
 impl<'a> TraitClient<'a> {
+    /// Call `exec` function on the contract.
     ///
     /// # Panics
     ///
@@ -71,6 +72,7 @@ impl<'a> TraitClient<'a> {
         );
         res
     }
+    /// Call `exec` function on the contract.
     ///
     /// # Errors
     ///
@@ -188,6 +190,7 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    /// Call `exec` function on the contract.
     ///
     /// # Panics
     ///
@@ -208,6 +211,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `exec` function on the contract.
     ///
     /// # Errors
     ///
@@ -292,6 +296,7 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    /// Call `exec2` function on the contract.
     ///
     /// # Panics
     ///
@@ -312,6 +317,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `exec2` function on the contract.
     ///
     /// # Errors
     ///

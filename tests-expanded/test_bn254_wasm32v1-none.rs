@@ -341,6 +341,7 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    /// Call `verify_pairing` function on the contract.
     ///
     /// # Panics
     ///
@@ -357,6 +358,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `verify_pairing` function on the contract.
     ///
     /// # Errors
     ///
@@ -376,6 +378,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `g1_add` function on the contract.
     ///
     /// # Panics
     ///
@@ -399,6 +402,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `g1_add` function on the contract.
     ///
     /// # Errors
     ///
@@ -429,6 +433,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `g1_mul` function on the contract.
     ///
     /// # Panics
     ///
@@ -452,6 +457,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `g1_mul` function on the contract.
     ///
     /// # Errors
     ///
@@ -482,6 +488,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `fr_vec_get` function on the contract.
     ///
     /// # Panics
     ///
@@ -501,6 +508,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `fr_vec_get` function on the contract.
     ///
     /// # Errors
     ///

@@ -2018,6 +2018,8 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    /// Call `test_u32` function on the contract.
+    ///
     /// Test u32 values.
     /// Returns the input unchanged.
     ///
@@ -2040,6 +2042,8 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_u32` function on the contract.
+    ///
     /// Test u32 values.
     /// Returns the input unchanged.
     ///
@@ -2066,6 +2070,8 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_i32` function on the contract.
+    ///
     /// Test i32 values.
     ///
     /// # Panics
@@ -2087,6 +2093,8 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_i32` function on the contract.
+    ///
     /// Test i32 values.
     ///
     /// # Errors
@@ -2112,6 +2120,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_u64` function on the contract.
     ///
     /// # Panics
     ///
@@ -2132,6 +2141,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_u64` function on the contract.
     ///
     /// # Errors
     ///
@@ -2156,6 +2166,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_i64` function on the contract.
     ///
     /// # Panics
     ///
@@ -2176,6 +2187,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_i64` function on the contract.
     ///
     /// # Errors
     ///
@@ -2200,6 +2212,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_u128` function on the contract.
     ///
     /// # Panics
     ///
@@ -2220,6 +2233,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_u128` function on the contract.
     ///
     /// # Errors
     ///
@@ -2244,6 +2258,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_i128` function on the contract.
     ///
     /// # Panics
     ///
@@ -2264,6 +2279,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_i128` function on the contract.
     ///
     /// # Errors
     ///
@@ -2288,6 +2304,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_bool` function on the contract.
     ///
     /// # Panics
     ///
@@ -2308,6 +2325,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_bool` function on the contract.
     ///
     /// # Errors
     ///
@@ -2332,6 +2350,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_address` function on the contract.
     ///
     /// # Panics
     ///
@@ -2348,6 +2367,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_address` function on the contract.
     ///
     /// # Errors
     ///
@@ -2371,6 +2391,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_bytes` function on the contract.
     ///
     /// # Panics
     ///
@@ -2387,6 +2408,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_bytes` function on the contract.
     ///
     /// # Errors
     ///
@@ -2410,6 +2432,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_bytes_n` function on the contract.
     ///
     /// # Panics
     ///
@@ -2426,6 +2449,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_bytes_n` function on the contract.
     ///
     /// # Errors
     ///
@@ -2449,6 +2473,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_string` function on the contract.
     ///
     /// # Panics
     ///
@@ -2465,6 +2490,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_string` function on the contract.
     ///
     /// # Errors
     ///
@@ -2488,6 +2514,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_symbol` function on the contract.
     ///
     /// # Panics
     ///
@@ -2504,6 +2531,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_symbol` function on the contract.
     ///
     /// # Errors
     ///
@@ -2527,6 +2555,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_vec` function on the contract.
     ///
     /// # Panics
     ///
@@ -2547,6 +2576,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_vec` function on the contract.
     ///
     /// # Errors
     ///
@@ -2574,6 +2604,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_map` function on the contract.
     ///
     /// # Panics
     ///
@@ -2594,6 +2625,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_map` function on the contract.
     ///
     /// # Errors
     ///
@@ -2621,6 +2653,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_duration` function on the contract.
     ///
     /// # Panics
     ///
@@ -2637,6 +2670,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_duration` function on the contract.
     ///
     /// # Errors
     ///
@@ -2660,6 +2694,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_timepoint` function on the contract.
     ///
     /// # Panics
     ///
@@ -2676,6 +2711,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_timepoint` function on the contract.
     ///
     /// # Errors
     ///
@@ -2699,6 +2735,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_i256` function on the contract.
     ///
     /// # Panics
     ///
@@ -2719,6 +2756,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_i256` function on the contract.
     ///
     /// # Errors
     ///
@@ -2743,6 +2781,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_u256` function on the contract.
     ///
     /// # Panics
     ///
@@ -2763,6 +2802,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_u256` function on the contract.
     ///
     /// # Errors
     ///
@@ -2787,6 +2827,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_env_param` function on the contract.
     ///
     /// # Panics
     ///
@@ -2803,6 +2844,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_env_param` function on the contract.
     ///
     /// # Errors
     ///
@@ -2822,6 +2864,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_struct` function on the contract.
     ///
     /// # Panics
     ///
@@ -2838,6 +2881,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_struct` function on the contract.
     ///
     /// # Errors
     ///
@@ -2861,6 +2905,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_enum_unit` function on the contract.
     ///
     /// # Panics
     ///
@@ -2877,6 +2922,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_enum_unit` function on the contract.
     ///
     /// # Errors
     ///
@@ -2900,6 +2946,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_enum_variants` function on the contract.
     ///
     /// # Panics
     ///
@@ -2916,6 +2963,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `test_enum_variants` function on the contract.
     ///
     /// # Errors
     ///

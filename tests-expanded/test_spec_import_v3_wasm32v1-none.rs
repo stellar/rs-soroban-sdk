@@ -321,6 +321,7 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    /// Call `fn_struct_a` function on the contract.
     ///
     /// # Panics
     ///
@@ -340,6 +341,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `fn_struct_a` function on the contract.
     ///
     /// # Errors
     ///
@@ -366,6 +368,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `fn_struct_tuple_a` function on the contract.
     ///
     /// # Panics
     ///
@@ -385,6 +388,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `fn_struct_tuple_a` function on the contract.
     ///
     /// # Errors
     ///
@@ -411,6 +415,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `fn_enum_a` function on the contract.
     ///
     /// # Panics
     ///
@@ -431,6 +436,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `fn_enum_a` function on the contract.
     ///
     /// # Errors
     ///
@@ -456,6 +462,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `fn_enum_int_a` function on the contract.
     ///
     /// # Panics
     ///
@@ -472,6 +479,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `fn_enum_int_a` function on the contract.
     ///
     /// # Errors
     ///
@@ -493,6 +501,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `fn_error_a` function on the contract.
     ///
     /// # Panics
     ///
@@ -509,6 +518,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `fn_error_a` function on the contract.
     ///
     /// # Errors
     ///
@@ -528,6 +538,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `fn_event_a` function on the contract.
     ///
     /// # Panics
     ///
@@ -547,6 +558,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `fn_event_a` function on the contract.
     ///
     /// # Errors
     ///
@@ -570,6 +582,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `fn_event_d` function on the contract.
     ///
     /// # Panics
     ///
@@ -586,6 +599,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `fn_event_d` function on the contract.
     ///
     /// # Errors
     ///

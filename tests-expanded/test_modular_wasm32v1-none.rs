@@ -48,6 +48,7 @@ mod feat1 {
         }
     }
     impl<'a> ContractClient<'a> {
+        /// Call `one` function on the contract.
         ///
         /// # Panics
         ///
@@ -68,6 +69,7 @@ mod feat1 {
             );
             res
         }
+        /// Call `one` function on the contract.
         ///
         /// # Errors
         ///
@@ -159,6 +161,7 @@ mod feat2 {
         }
     }
     impl<'a> ContractClient<'a> {
+        /// Call `two` function on the contract.
         ///
         /// # Panics
         ///
@@ -179,6 +182,7 @@ mod feat2 {
             );
             res
         }
+        /// Call `two` function on the contract.
         ///
         /// # Errors
         ///
@@ -285,6 +289,7 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    /// Call `zero` function on the contract.
     ///
     /// # Panics
     ///
@@ -305,6 +310,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `zero` function on the contract.
     ///
     /// # Errors
     ///

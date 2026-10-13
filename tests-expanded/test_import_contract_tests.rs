@@ -85,6 +85,7 @@ mod addcontract {
         }
     }
     impl<'a> Client<'a> {
+        /// Call `add` function on the contract.
         ///
         /// # Panics
         ///
@@ -109,6 +110,7 @@ mod addcontract {
             );
             res
         }
+        /// Call `add` function on the contract.
         ///
         /// # Errors
         ///
@@ -141,6 +143,7 @@ mod addcontract {
             );
             res
         }
+        /// Call `safe_add` function on the contract.
         ///
         /// # Panics
         ///
@@ -165,6 +168,7 @@ mod addcontract {
             );
             res
         }
+        /// Call `safe_add` function on the contract.
         ///
         /// # Errors
         ///
@@ -197,6 +201,7 @@ mod addcontract {
             );
             res
         }
+        /// Call `safe_add_two` function on the contract.
         ///
         /// # Panics
         ///
@@ -217,6 +222,7 @@ mod addcontract {
             );
             res
         }
+        /// Call `safe_add_two` function on the contract.
         ///
         /// # Errors
         ///
@@ -6664,6 +6670,7 @@ mod eventscontract {
         }
     }
     impl<'a> Client<'a> {
+        /// Call `transfer` function on the contract.
         ///
         /// # Panics
         ///
@@ -6697,6 +6704,7 @@ mod eventscontract {
             );
             res
         }
+        /// Call `transfer` function on the contract.
         ///
         /// # Errors
         ///
@@ -6731,6 +6739,7 @@ mod eventscontract {
             );
             res
         }
+        /// Call `map_values` function on the contract.
         ///
         /// # Panics
         ///
@@ -6755,6 +6764,7 @@ mod eventscontract {
             );
             res
         }
+        /// Call `map_values` function on the contract.
         ///
         /// # Errors
         ///
@@ -6785,6 +6795,7 @@ mod eventscontract {
             );
             res
         }
+        /// Call `vec_values` function on the contract.
         ///
         /// # Panics
         ///
@@ -6809,6 +6820,7 @@ mod eventscontract {
             );
             res
         }
+        /// Call `vec_values` function on the contract.
         ///
         /// # Errors
         ///
@@ -6839,6 +6851,7 @@ mod eventscontract {
             );
             res
         }
+        /// Call `single_value` function on the contract.
         ///
         /// # Panics
         ///
@@ -6859,6 +6872,7 @@ mod eventscontract {
             );
             res
         }
+        /// Call `single_value` function on the contract.
         ///
         /// # Errors
         ///
@@ -6884,6 +6898,7 @@ mod eventscontract {
             );
             res
         }
+        /// Call `failed_transfer` function on the contract.
         ///
         /// # Panics
         ///
@@ -6913,6 +6928,7 @@ mod eventscontract {
             );
             res
         }
+        /// Call `failed_transfer` function on the contract.
         ///
         /// # Errors
         ///
@@ -6943,6 +6959,7 @@ mod eventscontract {
             );
             res
         }
+        /// Call `single_value_void` function on the contract.
         ///
         /// # Panics
         ///
@@ -6960,6 +6977,7 @@ mod eventscontract {
             );
             res
         }
+        /// Call `single_value_void` function on the contract.
         ///
         /// # Errors
         ///
@@ -14356,6 +14374,7 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    /// Call `add_with` function on the contract.
     ///
     /// # Panics
     ///
@@ -14383,6 +14402,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `add_with` function on the contract.
     ///
     /// # Errors
     ///
@@ -14416,6 +14436,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `safe_add_with` function on the contract.
     ///
     /// # Panics
     ///
@@ -14439,6 +14460,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `safe_add_with` function on the contract.
     ///
     /// # Errors
     ///
@@ -14468,6 +14490,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `safe_add_with_two` function on the contract.
     ///
     /// # Panics
     ///
@@ -14491,6 +14514,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `safe_add_with_two` function on the contract.
     ///
     /// # Errors
     ///

@@ -238,6 +238,7 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    /// Call `void_fn` function on the contract.
     ///
     /// # Panics
     ///
@@ -258,6 +259,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `void_fn` function on the contract.
     ///
     /// # Errors
     ///
@@ -282,6 +284,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `tuple1` function on the contract.
     ///
     /// # Panics
     ///
@@ -302,6 +305,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `tuple1` function on the contract.
     ///
     /// # Errors
     ///
@@ -329,6 +333,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `tuple2` function on the contract.
     ///
     /// # Panics
     ///
@@ -349,6 +354,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `tuple2` function on the contract.
     ///
     /// # Errors
     ///
@@ -667,6 +673,7 @@ mod test {
             }
         }
         impl<'a> Client<'a> {
+            /// Call `tuple1` function on the contract.
             ///
             /// # Panics
             ///
@@ -688,6 +695,7 @@ mod test {
                 );
                 res
             }
+            /// Call `tuple1` function on the contract.
             ///
             /// # Errors
             ///
@@ -716,6 +724,7 @@ mod test {
                 );
                 res
             }
+            /// Call `tuple2` function on the contract.
             ///
             /// # Panics
             ///
@@ -737,6 +746,7 @@ mod test {
                 );
                 res
             }
+            /// Call `tuple2` function on the contract.
             ///
             /// # Errors
             ///
@@ -771,6 +781,7 @@ mod test {
                 );
                 res
             }
+            /// Call `void_fn` function on the contract.
             ///
             /// # Panics
             ///
@@ -792,6 +803,7 @@ mod test {
                 );
                 res
             }
+            /// Call `void_fn` function on the contract.
             ///
             /// # Errors
             ///

@@ -33,6 +33,7 @@ pub mod traits {
         }
     }
     impl<'a> RelativePathTraitClient<'a> {
+        /// Call `relative_path_method` function on the contract.
         ///
         /// # Panics
         ///
@@ -49,6 +50,7 @@ pub mod traits {
             );
             res
         }
+        /// Call `relative_path_method` function on the contract.
         ///
         /// # Errors
         ///
@@ -189,6 +191,7 @@ impl ContractRelativePath {
     }
 }
 impl<'a> ContractRelativePathClient<'a> {
+    /// Call `relative_path_method` function on the contract.
     ///
     /// # Panics
     ///
@@ -205,6 +208,7 @@ impl<'a> ContractRelativePathClient<'a> {
         );
         res
     }
+    /// Call `relative_path_method` function on the contract.
     ///
     /// # Errors
     ///

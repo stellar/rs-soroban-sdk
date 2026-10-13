@@ -74,6 +74,7 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    /// Call `calc` function on the contract.
     ///
     /// # Panics
     ///
@@ -97,6 +98,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `calc` function on the contract.
     ///
     /// # Errors
     ///

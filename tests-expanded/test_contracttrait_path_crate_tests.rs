@@ -89,6 +89,7 @@ pub mod traits {
         }
     }
     impl<'a> CratePathTraitClient<'a> {
+        /// Call `crate_path_method` function on the contract.
         ///
         /// # Panics
         ///
@@ -106,6 +107,7 @@ pub mod traits {
             );
             res
         }
+        /// Call `crate_path_method` function on the contract.
         ///
         /// # Errors
         ///
@@ -356,6 +358,7 @@ impl ContractCratePath {
     }
 }
 impl<'a> ContractCratePathClient<'a> {
+    /// Call `crate_path_method` function on the contract.
     ///
     /// # Panics
     ///
@@ -372,6 +375,7 @@ impl<'a> ContractCratePathClient<'a> {
         );
         res
     }
+    /// Call `crate_path_method` function on the contract.
     ///
     /// # Errors
     ///

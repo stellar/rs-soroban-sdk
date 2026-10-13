@@ -387,6 +387,7 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    /// Call `set_val` function on the contract.
     ///
     /// # Panics
     ///
@@ -407,6 +408,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `set_val` function on the contract.
     ///
     /// # Errors
     ///
@@ -430,6 +432,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `get_val` function on the contract.
     ///
     /// # Panics
     ///
@@ -450,6 +453,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `get_val` function on the contract.
     ///
     /// # Errors
     ///
@@ -472,6 +476,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `both` function on the contract.
     ///
     /// # Panics
     ///
@@ -492,6 +497,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `both` function on the contract.
     ///
     /// # Errors
     ///
@@ -515,6 +521,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `wrapped` function on the contract.
     ///
     /// # Panics
     ///
@@ -535,6 +542,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `wrapped` function on the contract.
     ///
     /// # Errors
     ///
@@ -558,6 +566,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `double_wrapped` function on the contract.
     ///
     /// # Panics
     ///
@@ -574,6 +583,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `double_wrapped` function on the contract.
     ///
     /// # Errors
     ///
@@ -596,6 +606,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `valval` function on the contract.
     ///
     /// # Panics
     ///
@@ -616,6 +627,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `valval` function on the contract.
     ///
     /// # Errors
     ///
@@ -642,6 +654,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `tuple` function on the contract.
     ///
     /// # Panics
     ///
@@ -662,6 +675,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `tuple` function on the contract.
     ///
     /// # Errors
     ///
@@ -688,6 +702,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `valref` function on the contract.
     ///
     /// # Panics
     ///
@@ -708,6 +723,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `valref` function on the contract.
     ///
     /// # Errors
     ///

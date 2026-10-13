@@ -239,6 +239,7 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    /// Call `put` function on the contract.
     ///
     /// # Panics
     ///
@@ -262,6 +263,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `put` function on the contract.
     ///
     /// # Errors
     ///
@@ -290,6 +292,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `get` function on the contract.
     ///
     /// # Panics
     ///
@@ -310,6 +313,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `get` function on the contract.
     ///
     /// # Errors
     ///
@@ -337,6 +341,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `del` function on the contract.
     ///
     /// # Panics
     ///
@@ -357,6 +362,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `del` function on the contract.
     ///
     /// # Errors
     ///

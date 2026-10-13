@@ -88,6 +88,7 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    /// Call `add_with` function on the contract.
     ///
     /// # Panics
     ///
@@ -115,6 +116,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `add_with` function on the contract.
     ///
     /// # Errors
     ///
@@ -274,6 +276,7 @@ impl AddContract {
     }
 }
 impl<'a> AddContractClient<'a> {
+    /// Call `add` function on the contract.
     ///
     /// # Panics
     ///
@@ -297,6 +300,7 @@ impl<'a> AddContractClient<'a> {
         );
         res
     }
+    /// Call `add` function on the contract.
     ///
     /// # Errors
     ///

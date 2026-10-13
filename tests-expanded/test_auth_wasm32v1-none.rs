@@ -69,6 +69,7 @@ impl ContractA {
     }
 }
 impl<'a> ContractAClient<'a> {
+    /// Call `fn1` function on the contract.
     ///
     /// # Panics
     ///
@@ -89,6 +90,7 @@ impl<'a> ContractAClient<'a> {
         );
         res
     }
+    /// Call `fn1` function on the contract.
     ///
     /// # Errors
     ///
@@ -218,6 +220,7 @@ impl ContractB {
     }
 }
 impl<'a> ContractBClient<'a> {
+    /// Call `fn2` function on the contract.
     ///
     /// # Panics
     ///
@@ -241,6 +244,7 @@ impl<'a> ContractBClient<'a> {
         );
         res
     }
+    /// Call `fn2` function on the contract.
     ///
     /// # Errors
     ///

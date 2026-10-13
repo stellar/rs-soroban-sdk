@@ -447,6 +447,7 @@ impl Contract {
 }
 impl Contract {}
 impl<'a> ContractClient<'a> {
+    /// Call `hello` function on the contract.
     ///
     /// # Panics
     ///
@@ -467,6 +468,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `hello` function on the contract.
     ///
     /// # Errors
     ///

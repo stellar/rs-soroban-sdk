@@ -560,6 +560,7 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    /// Call `add` function on the contract.
     ///
     /// # Panics
     ///
@@ -583,6 +584,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `add` function on the contract.
     ///
     /// # Errors
     ///
@@ -610,6 +612,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `safe_add` function on the contract.
     ///
     /// # Panics
     ///
@@ -633,6 +636,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `safe_add` function on the contract.
     ///
     /// # Errors
     ///
@@ -660,6 +664,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `safe_add_two` function on the contract.
     ///
     /// # Panics
     ///
@@ -679,6 +684,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `safe_add_two` function on the contract.
     ///
     /// # Errors
     ///

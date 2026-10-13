@@ -6864,6 +6864,7 @@ mod wasm_imported {
         }
     }
     impl<'a> Client<'a> {
+        /// Call `fn_enum_a` function on the contract.
         ///
         /// # Panics
         ///
@@ -6884,6 +6885,7 @@ mod wasm_imported {
             );
             res
         }
+        /// Call `fn_enum_a` function on the contract.
         ///
         /// # Errors
         ///
@@ -6909,6 +6911,7 @@ mod wasm_imported {
             );
             res
         }
+        /// Call `fn_error_a` function on the contract.
         ///
         /// # Panics
         ///
@@ -6925,6 +6928,7 @@ mod wasm_imported {
             );
             res
         }
+        /// Call `fn_error_a` function on the contract.
         ///
         /// # Errors
         ///
@@ -6947,6 +6951,7 @@ mod wasm_imported {
             );
             res
         }
+        /// Call `fn_event_a` function on the contract.
         ///
         /// # Panics
         ///
@@ -6966,6 +6971,7 @@ mod wasm_imported {
             );
             res
         }
+        /// Call `fn_event_a` function on the contract.
         ///
         /// # Errors
         ///
@@ -6989,6 +6995,7 @@ mod wasm_imported {
             );
             res
         }
+        /// Call `fn_event_d` function on the contract.
         ///
         /// # Panics
         ///
@@ -7005,6 +7012,7 @@ mod wasm_imported {
             );
             res
         }
+        /// Call `fn_event_d` function on the contract.
         ///
         /// # Errors
         ///
@@ -7023,6 +7031,7 @@ mod wasm_imported {
             );
             res
         }
+        /// Call `fn_struct_a` function on the contract.
         ///
         /// # Panics
         ///
@@ -7042,6 +7051,7 @@ mod wasm_imported {
             );
             res
         }
+        /// Call `fn_struct_a` function on the contract.
         ///
         /// # Errors
         ///
@@ -7068,6 +7078,7 @@ mod wasm_imported {
             );
             res
         }
+        /// Call `fn_enum_int_a` function on the contract.
         ///
         /// # Panics
         ///
@@ -7084,6 +7095,7 @@ mod wasm_imported {
             );
             res
         }
+        /// Call `fn_enum_int_a` function on the contract.
         ///
         /// # Errors
         ///
@@ -7105,6 +7117,7 @@ mod wasm_imported {
             );
             res
         }
+        /// Call `fn_struct_tuple_a` function on the contract.
         ///
         /// # Panics
         ///
@@ -7124,6 +7137,7 @@ mod wasm_imported {
             );
             res
         }
+        /// Call `fn_struct_tuple_a` function on the contract.
         ///
         /// # Errors
         ///
@@ -17145,6 +17159,7 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    /// Call `with_param` function on the contract.
     ///
     /// # Panics
     ///
@@ -17164,6 +17179,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_param` function on the contract.
     ///
     /// # Errors
     ///
@@ -17187,6 +17203,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_return` function on the contract.
     ///
     /// # Panics
     ///
@@ -17203,6 +17220,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_return` function on the contract.
     ///
     /// # Errors
     ///
@@ -17224,6 +17242,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_error` function on the contract.
     ///
     /// # Panics
     ///
@@ -17240,6 +17259,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_error` function on the contract.
     ///
     /// # Errors
     ///
@@ -17258,6 +17278,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_panic_error` function on the contract.
     ///
     /// # Panics
     ///
@@ -17274,6 +17295,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_panic_error` function on the contract.
     ///
     /// # Errors
     ///
@@ -17293,6 +17315,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_assert_error` function on the contract.
     ///
     /// # Panics
     ///
@@ -17309,6 +17332,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_assert_error` function on the contract.
     ///
     /// # Errors
     ///
@@ -17328,6 +17352,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_panic_raw_error` function on the contract.
     ///
     /// # Panics
     ///
@@ -17344,6 +17369,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_panic_raw_error` function on the contract.
     ///
     /// # Errors
     ///
@@ -17363,6 +17389,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_vec` function on the contract.
     ///
     /// # Panics
     ///
@@ -17383,6 +17410,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_vec` function on the contract.
     ///
     /// # Errors
     ///
@@ -17406,6 +17434,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_vec_nested` function on the contract.
     ///
     /// # Panics
     ///
@@ -17422,6 +17451,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_vec_nested` function on the contract.
     ///
     /// # Errors
     ///
@@ -17441,6 +17471,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_map` function on the contract.
     ///
     /// # Panics
     ///
@@ -17461,6 +17492,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_map` function on the contract.
     ///
     /// # Errors
     ///
@@ -17484,6 +17516,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_option` function on the contract.
     ///
     /// # Panics
     ///
@@ -17500,6 +17533,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_option` function on the contract.
     ///
     /// # Errors
     ///
@@ -17519,6 +17553,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_result` function on the contract.
     ///
     /// # Panics
     ///
@@ -17535,6 +17570,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_result` function on the contract.
     ///
     /// # Errors
     ///
@@ -17556,6 +17592,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_recursion` function on the contract.
     ///
     /// # Panics
     ///
@@ -17572,6 +17609,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_recursion` function on the contract.
     ///
     /// # Errors
     ///
@@ -17591,6 +17629,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_self_recursion` function on the contract.
     ///
     /// # Panics
     ///
@@ -17607,6 +17646,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_self_recursion` function on the contract.
     ///
     /// # Errors
     ///
@@ -17626,6 +17666,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_auth_contexts` function on the contract.
     ///
     /// # Panics
     ///
@@ -17642,6 +17683,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_auth_contexts` function on the contract.
     ///
     /// # Errors
     ///
@@ -17661,6 +17703,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_invoker_auth` function on the contract.
     ///
     /// # Panics
     ///
@@ -17677,6 +17720,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_invoker_auth` function on the contract.
     ///
     /// # Errors
     ///
@@ -17696,6 +17740,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_executable` function on the contract.
     ///
     /// # Panics
     ///
@@ -17712,6 +17757,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_executable` function on the contract.
     ///
     /// # Errors
     ///
@@ -17731,6 +17777,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `publish_simple` function on the contract.
     ///
     /// # Panics
     ///
@@ -17747,6 +17794,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `publish_simple` function on the contract.
     ///
     /// # Errors
     ///
@@ -17765,6 +17813,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `publish_topic_type` function on the contract.
     ///
     /// # Panics
     ///
@@ -17781,6 +17830,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `publish_topic_type` function on the contract.
     ///
     /// # Errors
     ///
@@ -17799,6 +17849,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `publish_data_type` function on the contract.
     ///
     /// # Panics
     ///
@@ -17815,6 +17866,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `publish_data_type` function on the contract.
     ///
     /// # Errors
     ///
@@ -17833,6 +17885,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `publish_nested_topic` function on the contract.
     ///
     /// # Panics
     ///
@@ -17849,6 +17902,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `publish_nested_topic` function on the contract.
     ///
     /// # Errors
     ///
@@ -17867,6 +17921,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `publish_nested_data` function on the contract.
     ///
     /// # Panics
     ///
@@ -17883,6 +17938,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `publish_nested_data` function on the contract.
     ///
     /// # Errors
     ///
@@ -17901,6 +17957,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_lib_struct` function on the contract.
     ///
     /// # Panics
     ///
@@ -17917,6 +17974,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_lib_struct` function on the contract.
     ///
     /// # Errors
     ///
@@ -17936,6 +17994,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_wasm_imported` function on the contract.
     ///
     /// # Panics
     ///
@@ -17952,6 +18011,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_wasm_imported` function on the contract.
     ///
     /// # Errors
     ///
@@ -17971,6 +18031,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_non_pub` function on the contract.
     ///
     /// # Panics
     ///
@@ -17987,6 +18048,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_non_pub` function on the contract.
     ///
     /// # Errors
     ///
@@ -18006,6 +18068,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_non_pub_error` function on the contract.
     ///
     /// # Panics
     ///
@@ -18022,6 +18085,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_non_pub_error` function on the contract.
     ///
     /// # Errors
     ///
@@ -18040,6 +18104,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_tuple` function on the contract.
     ///
     /// # Panics
     ///
@@ -18056,6 +18121,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_tuple` function on the contract.
     ///
     /// # Errors
     ///
@@ -18075,6 +18141,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_tuple_return` function on the contract.
     ///
     /// # Panics
     ///
@@ -18091,6 +18158,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `with_tuple_return` function on the contract.
     ///
     /// # Errors
     ///
@@ -18115,6 +18183,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `publish_ref_event` function on the contract.
     ///
     /// # Panics
     ///
@@ -18131,6 +18200,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `publish_ref_event` function on the contract.
     ///
     /// # Errors
     ///
@@ -18149,6 +18219,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `publish_via_publish_event` function on the contract.
     ///
     /// # Panics
     ///
@@ -18165,6 +18236,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `publish_via_publish_event` function on the contract.
     ///
     /// # Errors
     ///
@@ -18183,6 +18255,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `publish_via_trait_publish` function on the contract.
     ///
     /// # Panics
     ///
@@ -18199,6 +18272,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `publish_via_trait_publish` function on the contract.
     ///
     /// # Errors
     ///

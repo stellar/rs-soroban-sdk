@@ -58,6 +58,7 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    /// Call `empty` function on the contract.
     ///
     /// # Panics
     ///
@@ -78,6 +79,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `empty` function on the contract.
     ///
     /// # Errors
     ///

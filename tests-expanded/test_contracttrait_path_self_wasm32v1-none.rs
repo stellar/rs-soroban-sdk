@@ -31,6 +31,7 @@ impl<'a> SelfPathTraitClient<'a> {
     }
 }
 impl<'a> SelfPathTraitClient<'a> {
+    /// Call `self_path_method` function on the contract.
     ///
     /// # Panics
     ///
@@ -47,6 +48,7 @@ impl<'a> SelfPathTraitClient<'a> {
         );
         res
     }
+    /// Call `self_path_method` function on the contract.
     ///
     /// # Errors
     ///
@@ -179,6 +181,7 @@ impl ContractSelfPath {
     }
 }
 impl<'a> ContractSelfPathClient<'a> {
+    /// Call `self_path_method` function on the contract.
     ///
     /// # Panics
     ///
@@ -195,6 +198,7 @@ impl<'a> ContractSelfPathClient<'a> {
         );
         res
     }
+    /// Call `self_path_method` function on the contract.
     ///
     /// # Errors
     ///

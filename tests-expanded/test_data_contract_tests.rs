@@ -337,6 +337,7 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    /// Call `int_enum` function on the contract.
     ///
     /// # Panics
     ///
@@ -357,6 +358,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `int_enum` function on the contract.
     ///
     /// # Errors
     ///
@@ -383,6 +385,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `enum_` function on the contract.
     ///
     /// # Panics
     ///
@@ -403,6 +406,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `enum_` function on the contract.
     ///
     /// # Errors
     ///
@@ -426,6 +430,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `tuple` function on the contract.
     ///
     /// # Panics
     ///
@@ -446,6 +451,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `tuple` function on the contract.
     ///
     /// # Errors
     ///
@@ -472,6 +478,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `outer` function on the contract.
     ///
     /// # Panics
     ///
@@ -492,6 +499,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `outer` function on the contract.
     ///
     /// # Errors
     ///
@@ -515,6 +523,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `wrapper` function on the contract.
     ///
     /// # Panics
     ///
@@ -535,6 +544,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `wrapper` function on the contract.
     ///
     /// # Errors
     ///

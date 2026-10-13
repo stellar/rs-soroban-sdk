@@ -66,6 +66,7 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    /// Call `event` function on the contract.
     ///
     /// # Panics
     ///
@@ -86,6 +87,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `event` function on the contract.
     ///
     /// # Errors
     ///

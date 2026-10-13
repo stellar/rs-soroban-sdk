@@ -3863,6 +3863,7 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    /// Call `add` function on the contract.
     ///
     /// # Panics
     ///
@@ -3886,6 +3887,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `add` function on the contract.
     ///
     /// # Errors
     ///
@@ -3914,6 +3916,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `recursive` function on the contract.
     ///
     /// # Panics
     ///
@@ -3934,6 +3937,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `recursive` function on the contract.
     ///
     /// # Errors
     ///
@@ -3963,6 +3967,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `recursive_enum` function on the contract.
     ///
     /// # Panics
     ///
@@ -3982,6 +3987,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `recursive_enum` function on the contract.
     ///
     /// # Errors
     ///
@@ -4646,6 +4652,7 @@ mod test_with_wasm {
             }
         }
         impl<'a> Client<'a> {
+            /// Call `add` function on the contract.
             ///
             /// # Panics
             ///
@@ -4670,6 +4677,7 @@ mod test_with_wasm {
                 );
                 res
             }
+            /// Call `add` function on the contract.
             ///
             /// # Errors
             ///
@@ -4702,6 +4710,7 @@ mod test_with_wasm {
                 );
                 res
             }
+            /// Call `recursive` function on the contract.
             ///
             /// # Panics
             ///
@@ -4723,6 +4732,7 @@ mod test_with_wasm {
                 );
                 res
             }
+            /// Call `recursive` function on the contract.
             ///
             /// # Errors
             ///
@@ -4754,6 +4764,7 @@ mod test_with_wasm {
                 );
                 res
             }
+            /// Call `recursive_enum` function on the contract.
             ///
             /// # Panics
             ///
@@ -4774,6 +4785,7 @@ mod test_with_wasm {
                 );
                 res
             }
+            /// Call `recursive_enum` function on the contract.
             ///
             /// # Errors
             ///

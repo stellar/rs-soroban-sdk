@@ -974,6 +974,7 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    /// Call `single_value` function on the contract.
     ///
     /// # Panics
     ///
@@ -993,6 +994,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `single_value` function on the contract.
     ///
     /// # Errors
     ///
@@ -1017,6 +1019,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `single_value_void` function on the contract.
     ///
     /// # Panics
     ///
@@ -1033,6 +1036,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `single_value_void` function on the contract.
     ///
     /// # Errors
     ///
@@ -1053,6 +1057,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `vec_values` function on the contract.
     ///
     /// # Panics
     ///
@@ -1076,6 +1081,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `vec_values` function on the contract.
     ///
     /// # Errors
     ///
@@ -1105,6 +1111,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `map_values` function on the contract.
     ///
     /// # Panics
     ///
@@ -1128,6 +1135,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `map_values` function on the contract.
     ///
     /// # Errors
     ///
@@ -1157,6 +1165,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `transfer` function on the contract.
     ///
     /// # Panics
     ///
@@ -1184,6 +1193,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `transfer` function on the contract.
     ///
     /// # Errors
     ///
@@ -1217,6 +1227,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `failed_transfer` function on the contract.
     ///
     /// # Panics
     ///
@@ -1240,6 +1251,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `failed_transfer` function on the contract.
     ///
     /// # Errors
     ///

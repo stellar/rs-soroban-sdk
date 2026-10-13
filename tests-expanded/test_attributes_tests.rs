@@ -737,6 +737,7 @@ impl<'a> AttributeTraitClient<'a> {
     }
 }
 impl<'a> AttributeTraitClient<'a> {
+    /// Call `trait_override` function on the contract.
     ///
     /// # Panics
     ///
@@ -753,6 +754,7 @@ impl<'a> AttributeTraitClient<'a> {
         );
         res
     }
+    /// Call `trait_override` function on the contract.
     ///
     /// # Errors
     ///
@@ -772,6 +774,7 @@ impl<'a> AttributeTraitClient<'a> {
         );
         res
     }
+    /// Call `trait_default` function on the contract.
     ///
     /// # Panics
     ///
@@ -788,6 +791,7 @@ impl<'a> AttributeTraitClient<'a> {
         );
         res
     }
+    /// Call `trait_default` function on the contract.
     ///
     /// # Errors
     ///
@@ -807,6 +811,7 @@ impl<'a> AttributeTraitClient<'a> {
         );
         res
     }
+    /// Call `trait_default_stacked_cfg` function on the contract.
     ///
     /// # Panics
     ///
@@ -823,6 +828,7 @@ impl<'a> AttributeTraitClient<'a> {
         );
         res
     }
+    /// Call `trait_default_stacked_cfg` function on the contract.
     ///
     /// # Errors
     ///
@@ -842,6 +848,7 @@ impl<'a> AttributeTraitClient<'a> {
         );
         res
     }
+    /// Call `trait_override_stacked_cfg` function on the contract.
     ///
     /// # Panics
     ///
@@ -858,6 +865,7 @@ impl<'a> AttributeTraitClient<'a> {
         );
         res
     }
+    /// Call `trait_override_stacked_cfg` function on the contract.
     ///
     /// # Errors
     ///
@@ -877,6 +885,7 @@ impl<'a> AttributeTraitClient<'a> {
         );
         res
     }
+    /// Call `trait_override_negated_cfg` function on the contract.
     ///
     /// # Panics
     ///
@@ -893,6 +902,7 @@ impl<'a> AttributeTraitClient<'a> {
         );
         res
     }
+    /// Call `trait_override_negated_cfg` function on the contract.
     ///
     /// # Errors
     ///
@@ -912,6 +922,7 @@ impl<'a> AttributeTraitClient<'a> {
         );
         res
     }
+    /// Call `trait_override_dual_cfg` function on the contract.
     ///
     /// # Panics
     ///
@@ -928,6 +939,7 @@ impl<'a> AttributeTraitClient<'a> {
         );
         res
     }
+    /// Call `trait_override_dual_cfg` function on the contract.
     ///
     /// # Errors
     ///
@@ -947,6 +959,7 @@ impl<'a> AttributeTraitClient<'a> {
         );
         res
     }
+    /// Call `trait_default_dual_cfg` function on the contract.
     ///
     /// # Panics
     ///
@@ -963,6 +976,7 @@ impl<'a> AttributeTraitClient<'a> {
         );
         res
     }
+    /// Call `trait_default_dual_cfg` function on the contract.
     ///
     /// # Errors
     ///
@@ -1307,6 +1321,7 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    /// Call `always` function on the contract.
     ///
     /// # Panics
     ///
@@ -1327,6 +1342,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `always` function on the contract.
     ///
     /// # Errors
     ///
@@ -1351,6 +1367,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `cfg_included` function on the contract.
     ///
     /// # Panics
     ///
@@ -1367,6 +1384,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `cfg_included` function on the contract.
     ///
     /// # Errors
     ///
@@ -1387,6 +1405,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `publish` function on the contract.
     ///
     /// # Panics
     ///
@@ -1410,6 +1429,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `publish` function on the contract.
     ///
     /// # Errors
     ///
@@ -1806,6 +1826,7 @@ impl Contract {}
 impl Contract {}
 impl Contract {}
 impl<'a> ContractClient<'a> {
+    /// Call `trait_override` function on the contract.
     ///
     /// # Panics
     ///
@@ -1822,6 +1843,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `trait_override` function on the contract.
     ///
     /// # Errors
     ///
@@ -1841,6 +1863,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `trait_override_stacked_cfg` function on the contract.
     ///
     /// # Panics
     ///
@@ -1857,6 +1880,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `trait_override_stacked_cfg` function on the contract.
     ///
     /// # Errors
     ///
@@ -1876,6 +1900,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `trait_override_negated_cfg` function on the contract.
     ///
     /// # Panics
     ///
@@ -1892,6 +1917,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `trait_override_negated_cfg` function on the contract.
     ///
     /// # Errors
     ///
@@ -1911,6 +1937,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `trait_override_dual_cfg` function on the contract.
     ///
     /// # Panics
     ///
@@ -1927,6 +1954,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `trait_override_dual_cfg` function on the contract.
     ///
     /// # Errors
     ///
@@ -2358,6 +2386,7 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    /// Call `trait_default` function on the contract.
     ///
     /// # Panics
     ///
@@ -2374,6 +2403,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `trait_default` function on the contract.
     ///
     /// # Errors
     ///
@@ -2393,6 +2423,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `trait_default_stacked_cfg` function on the contract.
     ///
     /// # Panics
     ///
@@ -2409,6 +2440,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `trait_default_stacked_cfg` function on the contract.
     ///
     /// # Errors
     ///
@@ -2428,6 +2460,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `trait_default_dual_cfg` function on the contract.
     ///
     /// # Panics
     ///
@@ -2444,6 +2477,7 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    /// Call `trait_default_dual_cfg` function on the contract.
     ///
     /// # Errors
     ///
