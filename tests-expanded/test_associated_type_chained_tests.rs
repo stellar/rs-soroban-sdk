@@ -470,6 +470,12 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    ///
+    ///# Panics
+    ///
+    ///Panics if the invoked contract returns an error or panics.
+    ///
+    ///Use [`Self::try_set_val`] to receive errors instead of panicking.
     pub fn set_val(&self, input: &u64) -> () {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -484,6 +490,10 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    ///
+    ///# Errors
+    ///
+    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_set_val(
         &self,
         input: &u64,
@@ -504,6 +514,12 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    ///
+    ///# Panics
+    ///
+    ///Panics if the invoked contract returns an error or panics.
+    ///
+    ///Use [`Self::try_get_val`] to receive errors instead of panicking.
     pub fn get_val(&self) -> u64 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -518,6 +534,10 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    ///
+    ///# Errors
+    ///
+    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_get_val(
         &self,
     ) -> Result<
@@ -537,6 +557,12 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    ///
+    ///# Panics
+    ///
+    ///Panics if the invoked contract returns an error or panics.
+    ///
+    ///Use [`Self::try_both`] to receive errors instead of panicking.
     pub fn both(&self, input: &u64) -> u64 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -551,6 +577,10 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    ///
+    ///# Errors
+    ///
+    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_both(
         &self,
         input: &u64,
@@ -571,6 +601,12 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    ///
+    ///# Panics
+    ///
+    ///Panics if the invoked contract returns an error or panics.
+    ///
+    ///Use [`Self::try_wrapped`] to receive errors instead of panicking.
     pub fn wrapped(&self, input: &Vec<u64>) -> u64 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -585,6 +621,10 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    ///
+    ///# Errors
+    ///
+    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_wrapped(
         &self,
         input: &Vec<u64>,
@@ -605,6 +645,12 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    ///
+    ///# Panics
+    ///
+    ///Panics if the invoked contract returns an error or panics.
+    ///
+    ///Use [`Self::try_double_wrapped`] to receive errors instead of panicking.
     pub fn double_wrapped(&self, input: &Option<Vec<u64>>) -> Vec<u64> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -615,6 +661,10 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    ///
+    ///# Errors
+    ///
+    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_double_wrapped(
         &self,
         input: &Option<Vec<u64>>,
@@ -634,6 +684,12 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    ///
+    ///# Panics
+    ///
+    ///Panics if the invoked contract returns an error or panics.
+    ///
+    ///Use [`Self::try_valval`] to receive errors instead of panicking.
     pub fn valval(&self, input: &u64) -> Option<u64> {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -648,6 +704,10 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    ///
+    ///# Errors
+    ///
+    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_valval(
         &self,
         input: &u64,
@@ -671,6 +731,12 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    ///
+    ///# Panics
+    ///
+    ///Panics if the invoked contract returns an error or panics.
+    ///
+    ///Use [`Self::try_tuple`] to receive errors instead of panicking.
     pub fn tuple(&self, input: &u64) -> (u64, u64) {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -685,6 +751,10 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    ///
+    ///# Errors
+    ///
+    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_tuple(
         &self,
         input: &u64,
@@ -708,6 +778,12 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    ///
+    ///# Panics
+    ///
+    ///Panics if the invoked contract returns an error or panics.
+    ///
+    ///Use [`Self::try_valref`] to receive errors instead of panicking.
     pub fn valref(&self, input: &u64) -> u64 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -722,6 +798,10 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    ///
+    ///# Errors
+    ///
+    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_valref(
         &self,
         input: &u64,

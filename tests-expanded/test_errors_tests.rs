@@ -833,6 +833,12 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    ///
+    ///# Panics
+    ///
+    ///Panics if the invoked contract returns an error or panics.
+    ///
+    ///Use [`Self::try_hello`] to receive errors instead of panicking.
     pub fn hello(&self, flag: &Flag) -> Symbol {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -847,6 +853,10 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    ///
+    ///# Errors
+    ///
+    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_hello(
         &self,
         flag: &Flag,
@@ -870,6 +880,12 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    ///
+    ///# Panics
+    ///
+    ///Panics if the invoked contract returns an error or panics.
+    ///
+    ///Use [`Self::try_persisted`] to receive errors instead of panicking.
     pub fn persisted(&self) -> bool {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -884,6 +900,10 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    ///
+    ///# Errors
+    ///
+    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_persisted(
         &self,
     ) -> Result<

@@ -159,6 +159,12 @@ impl ContractA {
     }
 }
 impl<'a> ContractAClient<'a> {
+    ///
+    ///# Panics
+    ///
+    ///Panics if the invoked contract returns an error or panics.
+    ///
+    ///Use [`Self::try_fn1`] to receive errors instead of panicking.
     pub fn fn1(&self, a: &Address) -> u64 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -173,6 +179,10 @@ impl<'a> ContractAClient<'a> {
         );
         res
     }
+    ///
+    ///# Errors
+    ///
+    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_fn1(
         &self,
         a: &Address,
@@ -1606,6 +1616,12 @@ impl ContractB {
     }
 }
 impl<'a> ContractBClient<'a> {
+    ///
+    ///# Panics
+    ///
+    ///Panics if the invoked contract returns an error or panics.
+    ///
+    ///Use [`Self::try_fn2`] to receive errors instead of panicking.
     pub fn fn2(&self, a: &Address, sub: &Address) -> u64 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -1623,6 +1639,10 @@ impl<'a> ContractBClient<'a> {
         );
         res
     }
+    ///
+    ///# Errors
+    ///
+    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_fn2(
         &self,
         a: &Address,

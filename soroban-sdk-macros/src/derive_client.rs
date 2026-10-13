@@ -207,9 +207,26 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                 .iter()
                 .filter(|attr| pass_through_attr_to_gen_code(attr))
                 .collect::<Vec<_>>();
+            let fn_try_doc =
+                format!("Use [`Self::{fn_try_ident}`] to receive errors instead of panicking.");
+            let fn_docs = quote! {
+                #[doc = ""]
+                #[doc = "# Panics"]
+                #[doc = ""]
+                #[doc = "Panics if the invoked contract returns an error or panics."]
+                #[doc = ""]
+                #[doc = #fn_try_doc]
+            };
+            let fn_try_docs = quote! {
+                #[doc = ""]
+                #[doc = "# Errors"]
+                #[doc = ""]
+                #[doc = "Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller."]
+            };
             if cfg!(not(feature = "testutils")) {
                 quote! {
                     #(#fn_attrs)*
+                    #fn_docs
                     pub fn #fn_ident(&self, #(#fn_input_types),*) -> #fn_output {
                         use core::ops::Not;
                         use #crate_path::{IntoVal,FromVal};
@@ -222,6 +239,7 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                     }
 
                     #(#fn_attrs)*
+                    #fn_try_docs
                     pub fn #fn_try_ident(&self, #(#fn_input_types),*) -> #fn_try_output {
                         use #crate_path::{IntoVal,FromVal};
                         let res = self.env.try_invoke_contract(
@@ -235,6 +253,7 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
             } else {
                 quote! {
                     #(#fn_attrs)*
+                    #fn_docs
                     pub fn #fn_ident(&self, #(#fn_input_types),*) -> #fn_output {
                         // Exists only to be dropped at the end of this fn, restoring the auth
                         // manager even if the call panics. Binding it to `_` would drop it early.
@@ -249,6 +268,7 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                     }
 
                     #(#fn_attrs)*
+                    #fn_try_docs
                     pub fn #fn_try_ident(&self, #(#fn_input_types),*) -> #fn_try_output {
                         // Exists only to be dropped at the end of this fn, restoring the auth
                         // manager even if the call panics. Binding it to `_` would drop it early.

@@ -343,6 +343,12 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    ///
+    ///# Panics
+    ///
+    ///Panics if the invoked contract returns an error or panics.
+    ///
+    ///Use [`Self::try_int_enum`] to receive errors instead of panicking.
     pub fn int_enum(&self, v: &IntEnum) -> IntEnum {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -357,6 +363,10 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    ///
+    ///# Errors
+    ///
+    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_int_enum(
         &self,
         v: &IntEnum,
@@ -379,6 +389,12 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    ///
+    ///# Panics
+    ///
+    ///Panics if the invoked contract returns an error or panics.
+    ///
+    ///Use [`Self::try_enum_`] to receive errors instead of panicking.
     pub fn enum_(&self, v: &Enum) -> Enum {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -393,6 +409,10 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    ///
+    ///# Errors
+    ///
+    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_enum_(
         &self,
         v: &Enum,
@@ -412,6 +432,12 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    ///
+    ///# Panics
+    ///
+    ///Panics if the invoked contract returns an error or panics.
+    ///
+    ///Use [`Self::try_tuple`] to receive errors instead of panicking.
     pub fn tuple(&self, v: &Tuple) -> Tuple {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -426,6 +452,10 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    ///
+    ///# Errors
+    ///
+    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_tuple(
         &self,
         v: &Tuple,
@@ -448,6 +478,12 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    ///
+    ///# Panics
+    ///
+    ///Panics if the invoked contract returns an error or panics.
+    ///
+    ///Use [`Self::try_outer`] to receive errors instead of panicking.
     pub fn outer(&self, v: &Outer) -> u32 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -462,6 +498,10 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    ///
+    ///# Errors
+    ///
+    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_outer(
         &self,
         v: &Outer,
@@ -481,6 +521,12 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    ///
+    ///# Panics
+    ///
+    ///Panics if the invoked contract returns an error or panics.
+    ///
+    ///Use [`Self::try_wrapper`] to receive errors instead of panicking.
     pub fn wrapper(&self, v: &Wrapper) -> u32 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -495,6 +541,10 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    ///
+    ///# Errors
+    ///
+    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_wrapper(
         &self,
         v: &Wrapper,

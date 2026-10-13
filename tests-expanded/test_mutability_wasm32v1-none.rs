@@ -74,6 +74,12 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    ///
+    ///# Panics
+    ///
+    ///Panics if the invoked contract returns an error or panics.
+    ///
+    ///Use [`Self::try_calc`] to receive errors instead of panicking.
     pub fn calc(&self, a: &u32, b: &u32) -> u32 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -91,6 +97,10 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    ///
+    ///# Errors
+    ///
+    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_calc(
         &self,
         a: &u32,

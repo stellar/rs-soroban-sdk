@@ -89,6 +89,12 @@ pub mod traits {
         }
     }
     impl<'a> RelativePathTraitClient<'a> {
+        ///
+        ///# Panics
+        ///
+        ///Panics if the invoked contract returns an error or panics.
+        ///
+        ///Use [`Self::try_relative_path_method`] to receive errors instead of panicking.
         pub fn relative_path_method(&self) -> u32 {
             let _call_scope =
                 soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
@@ -100,6 +106,10 @@ pub mod traits {
             );
             res
         }
+        ///
+        ///# Errors
+        ///
+        ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
         pub fn try_relative_path_method(
             &self,
         ) -> Result<
@@ -348,6 +358,12 @@ impl ContractRelativePath {
     }
 }
 impl<'a> ContractRelativePathClient<'a> {
+    ///
+    ///# Panics
+    ///
+    ///Panics if the invoked contract returns an error or panics.
+    ///
+    ///Use [`Self::try_relative_path_method`] to receive errors instead of panicking.
     pub fn relative_path_method(&self) -> u32 {
         let _call_scope = soroban_sdk::testutils::ClientCallScope::enter(&self.env, self.config);
         use soroban_sdk::{FromVal, IntoVal};
@@ -358,6 +374,10 @@ impl<'a> ContractRelativePathClient<'a> {
         );
         res
     }
+    ///
+    ///# Errors
+    ///
+    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_relative_path_method(
         &self,
     ) -> Result<

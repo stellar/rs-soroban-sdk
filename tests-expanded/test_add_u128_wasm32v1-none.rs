@@ -73,6 +73,12 @@ impl Contract {
     }
 }
 impl<'a> ContractClient<'a> {
+    ///
+    ///# Panics
+    ///
+    ///Panics if the invoked contract returns an error or panics.
+    ///
+    ///Use [`Self::try_add`] to receive errors instead of panicking.
     pub fn add(&self, a: &u128, b: &u128) -> u128 {
         use core::ops::Not;
         use soroban_sdk::{FromVal, IntoVal};
@@ -90,6 +96,10 @@ impl<'a> ContractClient<'a> {
         );
         res
     }
+    ///
+    ///# Errors
+    ///
+    ///Returns an error if the invoked contract returns an error or panics. A panic in the invoked contract is caught and returned as an error rather than panicking the caller.
     pub fn try_add(
         &self,
         a: &u128,
