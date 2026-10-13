@@ -169,11 +169,6 @@
 //! addresses; and [`ArbitraryAddressAccount`], which generates only account
 //! (`G...`) addresses.
 //!
-//! [`MuxedAddress`] has two prototypes: [`ArbitraryMuxedAddress`], its
-//! default, which generates contract (`C...`) and muxed account (`M...`)
-//! addresses; and [`ArbitraryMuxedAddressContract`], which generates only
-//! contract (`C...`) and muxed contract (`W...`) addresses.
-//!
 //! ```
 //! use soroban_sdk::{Address, Env, IntoVal, Vec};
 //! use soroban_sdk::testutils::arbitrary::{
@@ -226,7 +221,7 @@ pub use api::*;
 pub use fuzz_test_helpers::*;
 pub use objects::{
     ArbitraryAddress, ArbitraryAddressAccount, ArbitraryAddressContract, ArbitraryMap,
-    ArbitraryMuxedAddress, ArbitraryMuxedAddressContract, ArbitraryOption, ArbitraryVec,
+    ArbitraryMuxedAddress, ArbitraryOption, ArbitraryVec,
 };
 
 /// The traits that must be implemented on Soroban types to support fuzzing.
@@ -736,10 +731,20 @@ mod objects {
 
     //////////////////////////////////
 
+    /// The prototype of a [`MuxedAddress`], which is a contract address,
+    /// `C...`, an account address, `G...`, a muxed account address, `M...`,
+    /// or a muxed contract address, `W...`.
+    ///
+    /// Convert it to a `MuxedAddress` with [`IntoVal`] or [`FromVal`].
+    ///
+    /// [`IntoVal`]: crate::IntoVal
+    /// [`FromVal`]: crate::FromVal
     #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
     pub enum ArbitraryMuxedAddress {
         Address(ArbitraryAddress),
         Muxed { ed25519: [u8; 32], id: u64 },
+        Account(ArbitraryAddressAccount),
+        MuxedContract { contract_id: [u8; 32], id: u64 },
     }
 
     impl SorobanArbitrary for MuxedAddress {
@@ -749,10 +754,16 @@ mod objects {
     impl TryFromVal<Env, ArbitraryMuxedAddress> for MuxedAddress {
         type Error = ConversionError;
         fn try_from_val(env: &Env, v: &ArbitraryMuxedAddress) -> Result<Self, Self::Error> {
-            use crate::env::xdr::{MuxedEd25519Account, ScAddress, Uint256};
+            use crate::env::xdr::{
+                ContractId, Hash, MuxedContract, MuxedEd25519Account, ScAddress, Uint256,
+            };
 
             let sc_addr = match v {
                 ArbitraryMuxedAddress::Address(v) => {
+                    let address = Address::try_from_val(env, v)?;
+                    return Ok(address.into());
+                }
+                ArbitraryMuxedAddress::Account(v) => {
                     let address = Address::try_from_val(env, v)?;
                     return Ok(address.into());
                 }
@@ -762,34 +773,11 @@ mod objects {
                         id: *id,
                     }))
                 }
-            };
-            Ok(sc_addr.into_val(env))
-        }
-    }
-
-    /// A prototype of a [`MuxedAddress`] that is always a contract address,
-    /// `C...`, or a muxed contract address, `W...`.
-    ///
-    /// Convert it to a `MuxedAddress` with [`IntoVal`] or [`FromVal`].
-    ///
-    /// [`IntoVal`]: crate::IntoVal
-    /// [`FromVal`]: crate::FromVal
-    #[derive(Arbitrary, Debug, Clone, Eq, PartialEq, Ord, PartialOrd)]
-    pub struct ArbitraryMuxedAddressContract {
-        contract_id: [u8; 32],
-        id: Option<u64>,
-    }
-
-    impl TryFromVal<Env, ArbitraryMuxedAddressContract> for MuxedAddress {
-        type Error = ConversionError;
-        fn try_from_val(env: &Env, v: &ArbitraryMuxedAddressContract) -> Result<Self, Self::Error> {
-            use crate::env::xdr::{ContractId, Hash, MuxedContract, ScAddress};
-
-            let contract_id = ContractId(Hash(v.contract_id));
-            let sc_addr = match v.id {
-                None => ScVal::Address(ScAddress::Contract(contract_id)),
-                Some(id) => {
-                    ScVal::Address(ScAddress::MuxedContract(MuxedContract { id, contract_id }))
+                ArbitraryMuxedAddress::MuxedContract { contract_id, id } => {
+                    ScVal::Address(ScAddress::MuxedContract(MuxedContract {
+                        id: *id,
+                        contract_id: ContractId(Hash(*contract_id)),
+                    }))
                 }
             };
             Ok(sc_addr.into_val(env))
@@ -1780,10 +1768,11 @@ mod tests {
         run_test::<MuxedAddress>()
     }
 
+    /// The prototype of `MuxedAddress` generates every kind of address.
     #[test]
-    fn test_muxed_address_contract_is_always_a_contract() {
+    fn test_muxed_address_generates_every_kind() {
         let env = Env::default();
-        let protos = gen_prototypes::<ArbitraryMuxedAddressContract>(100);
+        let protos = gen_prototypes::<<MuxedAddress as SorobanArbitrary>::Prototype>(100);
         let sc_addrs: RustVec<ScAddress> = protos
             .into_iter()
             .map(|proto| {
@@ -1794,10 +1783,11 @@ mod tests {
                 }
             })
             .collect();
+        assert!(sc_addrs.iter().any(|a| matches!(a, ScAddress::Contract(_))));
+        assert!(sc_addrs.iter().any(|a| matches!(a, ScAddress::Account(_))));
         assert!(sc_addrs
             .iter()
-            .all(|a| matches!(a, ScAddress::Contract(_) | ScAddress::MuxedContract(_))));
-        assert!(sc_addrs.iter().any(|a| matches!(a, ScAddress::Contract(_))));
+            .any(|a| matches!(a, ScAddress::MuxedAccount(_))));
         assert!(sc_addrs
             .iter()
             .any(|a| matches!(a, ScAddress::MuxedContract(_))));
