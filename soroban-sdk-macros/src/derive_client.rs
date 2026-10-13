@@ -1,7 +1,9 @@
 use itertools::Itertools;
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
-use syn::{Error, FnArg, LitStr, Path, Type, TypePath, TypeReference};
+use syn::{
+    spanned::Spanned, Error, FnArg, LitStr, Path, ReturnType, Type, TypePath, TypeReference,
+};
 
 use syn::ext::IdentExt as _;
 
@@ -200,6 +202,19 @@ pub fn derive_client_impl(crate_path: &Path, name: &str, fns: &[syn_ext::Fn]) ->
                     (converted_type, conversion)
                 })
                 .multiunzip();
+
+            // Error if the return type is a Hash, because the client can't
+            // convert a returned Val into one, as a Hash can only come from a
+            // source guaranteed to be a secure cryptographic hash function.
+            if let ReturnType::Type(_, ty) = &f.output {
+                if syn_ext::is_generic_type_named(ty, "Hash") {
+                    errors.push(Error::new(
+                        ty.span(),
+                        "`Hash` cannot be used as a contract function return type, because the bytes a caller receives can't be guaranteed to come from a secure cryptographic hash function; return a `BytesN` instead, such as by converting the hash with `.into()`",
+                    ));
+                }
+            }
+
             let fn_output = f.output();
             let fn_try_output = f.try_output(crate_path);
             let fn_attrs = f

@@ -696,3 +696,17 @@ pub fn is_type_named(ty: &Type, name: &str) -> bool {
         _ => false,
     }
 }
+
+/// Whether the type is written with the given name as the last segment of its
+/// path and with generic arguments, such as `soroban_sdk::crypto::Hash<32>` for
+/// `Hash`. Requiring generic arguments limits matches to the generic SDK type
+/// of that name, rather than a user's own non-generic type that shares the
+/// name.
+pub fn is_generic_type_named(ty: &Type, name: &str) -> bool {
+    match ty {
+        Type::Path(TypePath { qself: None, path }) => path.segments.last().is_some_and(|s| {
+            s.ident.unraw() == name && matches!(s.arguments, PathArguments::AngleBracketed(_))
+        }),
+        _ => false,
+    }
+}

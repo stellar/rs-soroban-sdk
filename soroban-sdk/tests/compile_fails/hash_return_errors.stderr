@@ -1,0 +1,5 @@
+error: `Hash` cannot be used as a contract function return type, because the bytes a caller receives can't be guaranteed to come from a secure cryptographic hash function; return a `BytesN` instead, such as by converting the hash with `.into()`
+  --> tests/compile_fails/hash_return_errors.rs:11:40
+   |
+11 |     pub fn f(env: Env, data: Bytes) -> Hash<32> {
+   |                                        ^^^^
