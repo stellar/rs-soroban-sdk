@@ -112,8 +112,6 @@ impl Contract {
 
 #[cfg(test)]
 mod test {
-    extern crate std;
-
     use soroban_sdk::{
         testutils::{Address as _, Events, MuxedAddress as _},
         vec, Address, Env, Event, MuxedAddress,
@@ -138,27 +136,38 @@ mod test {
             Action::Withdraw(from.clone(), to.clone(), 30),
         ]);
 
-        let deposit = |amount| {
-            Deposit {
-                from: from.clone(),
-                to: to.address(),
-                amount,
-                to_muxed_id: Some(123),
-            }
-            .to_xdr(&env, &contract_id)
-        };
-        let withdraw = |amount| {
-            Withdraw {
-                from: from.clone(),
-                to: to.address(),
-                amount,
-                to_muxed_id: Some(123),
-            }
-            .to_xdr(&env, &contract_id)
-        };
         assert_eq!(
             env.events().all(),
-            std::vec![deposit(100), deposit(50), withdraw(120), withdraw(30)],
+            [
+                Deposit {
+                    from: from.clone(),
+                    to: to.address(),
+                    amount: 100,
+                    to_muxed_id: Some(123),
+                }
+                .to_xdr(&env, &contract_id),
+                Deposit {
+                    from: from.clone(),
+                    to: to.address(),
+                    amount: 50,
+                    to_muxed_id: Some(123),
+                }
+                .to_xdr(&env, &contract_id),
+                Withdraw {
+                    from: from.clone(),
+                    to: to.address(),
+                    amount: 120,
+                    to_muxed_id: Some(123),
+                }
+                .to_xdr(&env, &contract_id),
+                Withdraw {
+                    from: from.clone(),
+                    to: to.address(),
+                    amount: 30,
+                    to_muxed_id: Some(123),
+                }
+                .to_xdr(&env, &contract_id),
+            ],
         );
 
         assert_eq!(client.get(&from, &to), None);
